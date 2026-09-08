@@ -11,7 +11,7 @@ Functions that will return a list of objects (in the loosest sense). See more [h
 AllCommands()
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an [objectlist](/types#objectlist) of all commands defined in the game.
 
@@ -20,7 +20,7 @@ Returns an [objectlist](/types#objectlist) of all commands defined in the game.
 AllExits()
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an [objectlist](/types#objectlist) of all exits defined in the game.
 
@@ -29,7 +29,7 @@ Returns an [objectlist](/types#objectlist) of all exits defined in the game.
 AllObjects()
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an [objectlist](/types#objectlist) of all objects defined in the game.
 
@@ -45,7 +45,7 @@ Returns an [objectlist](/types#objectlist) of all objects defined in the game th
 AllTurnScripts()
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an [objectlist](/types#objectlist) of all turn scripts defined in the game.
 
@@ -54,7 +54,7 @@ Returns an [objectlist](/types#objectlist) of all turn scripts defined in the ga
 GetAllChildObjects (object)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an [objectlist](/types#objectlist) containing all objects directly or indirectly contained by the parent object (i.e. including all children of children etc.)
 
@@ -67,7 +67,7 @@ Use [GetDirectChildren](#getdirectchildren) instead if you only want children di
 GetDirectChildren (object)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an [objectlist](/types#objectlist) containing all objects directly contained by the parent object.
 
@@ -214,7 +214,7 @@ If the player is in the specified room, it is the union of two lists - [ScopeVis
 ScopeVisibleLightsource (string light strength)
 ```
 
-Returns an [objectlist](/types#objectlist) containing the visible objects and exits (from [ScopeVisible](#scopevisible) and [ScopeExits](#scopeexits)) that are lightsources with the given light strength ("weak" or "strong" - see [SetObjectLightstrength](/functions/core#setobjectlightstrength)). Used by [CheckDarkness](/functions/core#checkdarkness) to decide whether a dark room is lit.
+Returns an [objectlist](/types#objectlist) containing the visible objects and exits (from [ScopeVisible](#scopevisible) and [ScopeExits](#scopeexits)) that are lightsources with the given light strength ("weak" or "strong" - see [SetObjectLightstrength](/reference/functions/core#setobjectlightstrength)). Used by [CheckDarkness](/reference/functions/core#checkdarkness) to decide whether a dark room is lit.
 
 ## ScopeVisibleNotHeld
 ```quest

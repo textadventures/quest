@@ -246,7 +246,7 @@ GetLinkTextColour()
 GetPlacesObjectsList()
 ```
 
-Required by Quest Viva so it can display the "Places and Objects" list. Returns [ScopeVisibleNotHeldNotScenery](/functions/scope#scopevisiblenotheldnotscenery) with the player object excluded.
+Required by Quest Viva so it can display the "Places and Objects" list. Returns [ScopeVisibleNotHeldNotScenery](/reference/functions/scope#scopevisiblenotheldnotscenery) with the player object excluded.
 
 ## GetScope
 ```quest
@@ -272,7 +272,7 @@ Returns a [string](/types#string).
 GetUniqueElementName (string element name)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [string](/types#string) containing the specified name - if necessary with a number added to ensure it is an unused element name.
 
@@ -383,7 +383,7 @@ Grid_LoadSvg (string data, string id)
 
 Loads and SVG file and associates it with an id, so it can subsequently be drawn on the custom grid drawing layer using [Grid\_DrawSvg](#grid_drawsvg).
 
-The data parameter is the raw file data for the SVG file - you can load a string with file data using the [GetFileData](/functions/general#getfiledata) function.
+The data parameter is the raw file data for the SVG file - you can load a string with file data using the [GetFileData](/reference/functions/general#getfiledata) function.
 
 ## Grid_Redraw
 
@@ -519,7 +519,7 @@ InitVerbsList
 IsGameRunning ()
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [boolean](/types#boolean) indicating whether the game is currently running (i.e. false when the game has finished).
 
@@ -602,13 +602,13 @@ There is also an optional cache ID parameter:
 Populate (string regex, string input, string cache ID)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 The input must be a match for the regular expression, or an error occurs.
 
 Returns a [stringdictionary](/types#stringdictionary), keyed by the group names in the regular expression, with values set to the resolved regex groups.
 
-Use a cache ID for improved performance if you repeatedly test strings against the same regular expression. The compiled regular expression will be cached and used again for subsequent calls to Populate (or [GetMatchStrength](/functions/string#getmatchstrength) or [IsRegexMatch](/functions/string#isregexmatch) ) using the same cache ID.
+Use a cache ID for improved performance if you repeatedly test strings against the same regular expression. The compiled regular expression will be cached and used again for subsequent calls to Populate (or [GetMatchStrength](/reference/functions/string#getmatchstrength) or [IsRegexMatch](/reference/functions/string#isregexmatch) ) using the same cache ID.
 
 For example, given this regex which matches the text "put (object name) on (object name)":
 
@@ -618,7 +618,7 @@ put (<object1>.*) on (<object2>.*)
 
 Passing this to the Populate function with an input "put book on shelf" will return a [stringdictionary](/types#stringdictionary) where object1="book" and object2="shelf".
 
-See also [GetMatchStrength](/functions/string#getmatchstrength), [IsRegexMatch](/functions/string#isregexmatch)
+See also [GetMatchStrength](/reference/functions/string#getmatchstrength), [IsRegexMatch](/reference/functions/string#isregexmatch)
 
 ## ProcessTextCommand
 ```quest

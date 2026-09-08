@@ -17,7 +17,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const repoRoot = join(__dirname, "..", "..");
 
 const coreDir = join(repoRoot, "src", "Engine", "Core");
-const functionsDir = join(repoRoot, "site", "src", "content", "docs", "functions");
+const functionsDir = join(repoRoot, "site", "src", "content", "docs", "reference", "functions");
 const functionProvidersDir = join(repoRoot, "src", "Engine", "Functions");
 
 // Function names that are known to have been removed from Core.aslx but are

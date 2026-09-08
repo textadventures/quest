@@ -74,7 +74,7 @@ or
 create (string name, string type)
 ```
 
-Creates an object with the specified name. You can subsequently access the object using the [GetObject](/functions/objects#getobject) function, or just use its name directly in an expression.
+Creates an object with the specified name. You can subsequently access the object using the [GetObject](/reference/functions/objects#getobject) function, or just use its name directly in an expression.
 
 If you specify a type, the object created will be of that type. The command only accepts one type name - if you want the new object to inherit multiple types, you could create one type which inherits all of those types, and specify that here.
 
@@ -425,13 +425,13 @@ Valid request names, what they do, and their modern alternative:
 
 | Request name | Effect | Use instead |
 |---|---|---|
-| `Background` | Sets the background to the specified HTML colour. | [SetBackgroundColour](/functions/user-interface#setbackgroundcolour) |
-| `ClearScreen` | Clears the screen. Parameter is ignored. | [ClearScreen](/functions/user-interface#clearscreen) |
-| `Foreground` | Sets the foreground to the specified HTML colour. | [SetForegroundColour](/functions/user-interface#setforegroundcolour) |
+| `Background` | Sets the background to the specified HTML colour. | [SetBackgroundColour](/reference/functions/user-interface#setbackgroundcolour) |
+| `ClearScreen` | Clears the screen. Parameter is ignored. | [ClearScreen](/reference/functions/user-interface#clearscreen) |
+| `Foreground` | Sets the foreground to the specified HTML colour. | [SetForegroundColour](/reference/functions/user-interface#setforegroundcolour) |
 | `GameName` | Sets the name of the game. | [JS.setGameName(name)](/js/#setgamename) |
 | `Hide` | Turns off an interface element. | [JS.uiHide(...)](/js/#uihide) |
-| `LinkForeground` | Sets the link foreground to the specified HTML colour. | [SetLinkForegroundColour](/functions/internal-core#setlinkforegroundcolour) |
-| `Log` | Logs the specified text. | [Log](/functions/general#log) |
+| `LinkForeground` | Sets the link foreground to the specified HTML colour. | [SetLinkForegroundColour](/reference/functions/internal-core#setlinkforegroundcolour) |
+| `Log` | Logs the specified text. | [Log](/reference/functions/general#log) |
 | `PanesVisible` | Shows/hides the side panes. "on"/"off" toggle them; "disabled" turns them off and removes the button to turn them back on (that button appears to no longer be available). | [JS.panesVisible(true / false)](/js/#panesvisible) |
 | `Pause` | Pauses the game for the specified number of milliseconds. | — |
 | `Quit` | Quits the game. Parameter is ignored. | [finish](#finish) |
@@ -439,14 +439,14 @@ Valid request names, what they do, and their modern alternative:
 | `RunScript` | Runs the specified JavaScript function. | the [JS](/js/) object, e.g. `JS.myCustomFunction(15, "some string")` |
 | `SetCompassDirections` | Assigns compass direction names from a semicolon-separated list. | [JS.setCompassDirections(...)](/js/#setcompassdirections) |
 | `SetInterfaceString` | Sets UI text via an `"ElementName=Value"` parameter. | [JS.setInterfaceString(...)](/js/#setinterfacestring) |
-| `SetPanelContents` | Sets the static panel HTML contents. | [SetFramePicture](/functions/user-interface#setframepicture) and [ClearFramePicture](/functions/user-interface#clearframepicture) |
+| `SetPanelContents` | Sets the static panel HTML contents. | [SetFramePicture](/reference/functions/user-interface#setframepicture) and [ClearFramePicture](/reference/functions/user-interface#clearframepicture) |
 | `SetStatus` | Sets the status area text (right of screen, under "Inventory"); blank removes it. | [status attributes](/status-attributes) |
 | `Show` | Turns on an interface element ("Panes", "Location" or "Command"). | [JS.uiShow(...)](/js/#uishow) |
 | `ShowPicture` | Shows the specified picture file from the game directory. | [picture](#picture) |
 | `UpdateLocation` | Updates the location bar with the parameter text. | [JS.updateLocation(location)](/js/#updatelocation) |
 | `Wait` | Waits for the player to press a key. Parameter is ignored. | [wait](#wait) script command |
 
-`FontName` and `FontSize` aren't listed above: they now raise an error rather than do anything, so use [SetFontName](/functions/user-interface#setfontname) and [SetFontSize](/functions/user-interface#setfontsize) instead.
+`FontName` and `FontSize` aren't listed above: they now raise an error rather than do anything, so use [SetFontName](/reference/functions/user-interface#setfontname) and [SetFontSize](/reference/functions/user-interface#setfontsize) instead.
 
 ## return
 ```quest
@@ -490,7 +490,7 @@ Shows a popup menu of options and then runs the nested script. The script can ac
 
 If the "allow cancel" parameter is set to **true**, the Cancel button is available. If "cancel" is pressed, the variable "result" returns [null](/types#null).
 
-For an in-line menu, use the [ShowMenu](/functions/user-interface#showmenu) function.
+For an in-line menu, use the [ShowMenu](/reference/functions/user-interface#showmenu) function.
 
 **example:**
 

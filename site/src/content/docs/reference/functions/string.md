@@ -9,7 +9,7 @@ sidebar:
 Asc (string input)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 The Asc function returns the character code of the input.
 
@@ -20,7 +20,7 @@ Maps to the VB.net [Asc function](http://msdn.microsoft.com/en-us/library/zew1e4
 CapFirst (input)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [string](/types#string) with the first character of the input capitalised.
 
@@ -29,7 +29,7 @@ Returns a [string](/types#string) with the first character of the input capitali
 Chr (int input)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 The Chr function returns the character with the character code of the input.
 
@@ -167,7 +167,7 @@ or
 DynamicTemplate (string  template name, string  text)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [string](/types#string) containing the requested text, based on the object or string passed in.
 
@@ -196,7 +196,7 @@ NOTE: As the script is defined in the *script* attribute of the *exit*, we use t
 EndsWith (string input, string ending)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [boolean](/types#boolean) - **true** if the input string finishes with the ending string.
 
@@ -230,13 +230,13 @@ There is also an optional cache ID parameter:
 GetMatchStrength (string regex, string input, string cache ID)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an [int](/types#int) indicating how strongly the given input matches the regular expression.
 
 The strength is defined as the length of the "required" parts of the string, i.e. the total length of the string *minus* the total length of all named groups.
 
-Use a cache ID for improved performance if you repeatedly test strings against the same regular expression. The compiled regular expression will be cached and used again for subsequent calls to GetMatchStrength (or [IsRegexMatch](#isregexmatch) or [Populate](/functions/internal-core#populate) ) using the same cache ID.
+Use a cache ID for improved performance if you repeatedly test strings against the same regular expression. The compiled regular expression will be cached and used again for subsequent calls to GetMatchStrength (or [IsRegexMatch](#isregexmatch) or [Populate](/reference/functions/internal-core#populate) ) using the same cache ID.
 
 For example, given this regex which matches the text "look at " followed by any object name:
 
@@ -254,7 +254,7 @@ This is calculated as follows:
 
 The strength is used by the command handling functions in CoreCommands.aslx to determine which command is the best match for a given input.
 
-See also [IsRegexMatch](#isregexmatch), [Populate](/functions/internal-core#populate)
+See also [IsRegexMatch](#isregexmatch), [Populate](/reference/functions/internal-core#populate)
 
 ## Instr
 ```quest
@@ -267,7 +267,7 @@ or
 Instr (int start position, string input, string search)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an [int](/types#int) representing the character position of the search string within the input, or zero if it is not found.
 
@@ -284,7 +284,7 @@ or
 InstrRev (int start position, string input, string search)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an [int](/types#int) representing the character position of the search string within the input, starting from the right side of the string.
 
@@ -295,7 +295,7 @@ Maps to the VB.net [InstrRev function](http://msdn.microsoft.com/en-us/library/t
 IsNumeric (string input)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [boolean](/types#boolean) - **true** if the input is numeric (i.e. a string which can be converted into a number).
 
@@ -310,20 +310,20 @@ There is also an optional cache ID parameter:
 IsRegexMatch (string regex, string, string cache ID)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [boolean](/types#boolean) - **true** if the string matches the specified regular expression.
 
-Use a cache ID for improved performance if you repeatedly test strings against the same regular expression. The compiled regular expression will be cached and used again for subsequent calls to IsRegexMatch (or [Populate](/functions/internal-core#populate) or [GetMatchStrength](#getmatchstrength) ) using the same cache ID.
+Use a cache ID for improved performance if you repeatedly test strings against the same regular expression. The compiled regular expression will be cached and used again for subsequent calls to IsRegexMatch (or [Populate](/reference/functions/internal-core#populate) or [GetMatchStrength](#getmatchstrength) ) using the same cache ID.
 
-See also [GetMatchStrength](#getmatchstrength), [Populate](/functions/internal-core#populate)
+See also [GetMatchStrength](#getmatchstrength), [Populate](/reference/functions/internal-core#populate)
 
 ## Join
 ```quest
 Join (stringlist input, string split character)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [string](/types#string) containing each element of the input, separated by the split character. This is the inverse of the [split](#split) function.
 
@@ -332,7 +332,7 @@ Returns a [string](/types#string) containing each element of the input, separate
 LCase (string input)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [string](/types#string) - the lower-case version of the input.
 
@@ -341,7 +341,7 @@ Returns a [string](/types#string) - the lower-case version of the input.
 Left (string input, int character count)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [string](/types#string) containing characters from the left of the input string.
 
@@ -352,7 +352,7 @@ Maps to the VB.net [Left function](http://msdn.microsoft.com/en-US/library/y050k
 LengthOf (string input)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an [int](/types#int) containing the number of characters in the string.
 
@@ -361,7 +361,7 @@ Returns an [int](/types#int) containing the number of characters in the string.
 LTrim (input)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 The LTrim function removes spaces on the left side of a [string](/types#string).
 
@@ -376,7 +376,7 @@ or
 Mid (string input, int start position, int character count)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [string](/types#string) containing characters from the middle of the input string. The position counts from 1.
 
@@ -426,7 +426,7 @@ Returns an [string](/types#string) - the result of passing the given string thro
 Replace (string input, string old text, string new text)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [string](/types#string) where any text matching "old text" in the input has been replaced by "new text".
 
@@ -442,7 +442,7 @@ Returns a [string](/types#string), the reverse direction of the given string, so
 Right (string input, int character count)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [string](/types#string) containing characters from the right of the input string.
 
@@ -453,7 +453,7 @@ Maps to the VB.net [Right function](http://msdn.microsoft.com/en-us/library/dxs6
 RTrim (input)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 The RTrim function removes spaces on the right side of a [string](/types#string).
 
@@ -462,7 +462,7 @@ The RTrim function removes spaces on the right side of a [string](/types#string)
 SafeXML (string)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an XML encoded version of the string that is safe for output (for example, replacing angle brackets with &amp;lt; and &amp;gt;).
 
@@ -478,7 +478,7 @@ Returns a [string](/types#string) - a number of spaces equal to the given number
 Split (string input, string split character)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [stringlist](/types#stringlist) where the input has been split into individual strings by the split character. Useful for turning a comma-separated string into a list of strings, for example.
 
@@ -500,7 +500,7 @@ list = Split("one;two;three;four")
 StartsWith (string input, string start)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [boolean](/types#boolean) - **true** if the input string begins with the start string.
 
@@ -509,7 +509,7 @@ Returns a [boolean](/types#boolean) - **true** if the input string begins with t
 Template (string template name)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [string](/types#string) containing the text for the requested template.
 
@@ -538,7 +538,7 @@ This function is part of English.aslx, and is currently only available in Englis
 Trim (input)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 The Trim function removes spaces on both sides of a [string](/types#string).
 
@@ -547,7 +547,7 @@ The Trim function removes spaces on both sides of a [string](/types#string).
 UCase (string input)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [string](/types#string) - the upper-case version of the input.
 

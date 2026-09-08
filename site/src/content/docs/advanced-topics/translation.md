@@ -81,7 +81,7 @@ Your translation should also be an expression, but you're not forced to use the 
 <dynamictemplate name="DropUnsuccessful">"Ты не можешь " + object.article + "оставить."</dynamictemplate>
 ```
 
-Some functions that appear within dynamic templates are defined in English.aslx - for example the [GetDefaultPrefix](/functions/internal-core#getdefaultprefix) and [Conjugate](/functions/string#conjugate) functions. You can add, edit, or remove these functions in your template as required.
+Some functions that appear within dynamic templates are defined in English.aslx - for example the [GetDefaultPrefix](/reference/functions/internal-core#getdefaultprefix) and [Conjugate](/reference/functions/string#conjugate) functions. You can add, edit, or remove these functions in your template as required.
 
 If you want to know where a template is used, search through the Core library files. Notepad++ has a good "Find in Files" feature that lets you search across all files in a folder.
 

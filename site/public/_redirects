@@ -3,5 +3,16 @@
 # file. Path-to-path redirects live in src/redirects.mjs instead; see the
 # comment at the top of that file.
 #
+# The /functions/ namespace has to be redirected from *here* rather than with
+# Astro redirect pages, because Cloudflare Pages reserves a top-level
+# `functions` directory for Pages Functions and excludes it from static assets
+# entirely - a redirect stub built at that path would 404 like everything else
+# under it. Redirect rules still fire for those paths, which is why this works.
+# Two dynamic rules, well inside Cloudflare's limit, forwarding the whole dead
+# namespace into /reference/functions/ where the fine-grained legacy mappings
+# in src/redirects.mjs can take over.
+/functions /reference/functions 301
+/functions/* /reference/functions/:splat 301
+
 # Cross-hostname wildcard from the retired docs domain:
 docs.textadventures.co.uk/quest/* https://questviva.com/:splat 301

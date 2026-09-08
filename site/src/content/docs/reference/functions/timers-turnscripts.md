@@ -37,7 +37,7 @@ Enables the specified turn script.
 GetTimer (string timer name)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns the [timer](/elements#timer) of the specified name. Returns null if the timer doesn't exist.
 
@@ -132,7 +132,7 @@ Runs the specified script after the specified number of turns.
 
 If you may need to cancel the turnscript after creation, you can create a named turnscript using [SetTurnTimeoutID](#setturntimeoutid).
 
-**Note:** The `SetTurnTimeout` function has a script, rather than a block, which means that it is non-blocking and that local variables cannot be accessed inside the script. For a fuller discussion, see the note for [ShowMenu](/functions/user-interface#showmenu).
+**Note:** The `SetTurnTimeout` function has a script, rather than a block, which means that it is non-blocking and that local variables cannot be accessed inside the script. For a fuller discussion, see the note for [ShowMenu](/reference/functions/user-interface#showmenu).
 
 **Note:** This function is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](/howto/scripting/blocks-and-scripts).
 

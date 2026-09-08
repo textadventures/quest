@@ -45,7 +45,7 @@ else {
 IsDefined (string variable name)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [boolean](/types#boolean) indicating whether the specified variable name is defined in the current scope.
 
@@ -54,7 +54,7 @@ Returns a [boolean](/types#boolean) indicating whether the specified variable na
 IsDouble (string number)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [boolean](/types#boolean) indicating whether the specified string represents a double.
 
@@ -63,7 +63,7 @@ Returns a [boolean](/types#boolean) indicating whether the specified string repr
 IsInt (string number)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [boolean](/types#boolean) indicating whether the specified string represents an integer.
 
@@ -72,44 +72,44 @@ Returns a [boolean](/types#boolean) indicating whether the specified string repr
 ToDouble (string number)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an [double](/types#double) - converts a valid string to a double.
 
 Note: An error occurs if the string does not represent a number.
 
-See also [HasDouble](/functions/attributes#hasdouble) and [GetDouble](/functions/attributes#getdouble)
+See also [HasDouble](/reference/functions/attributes#hasdouble) and [GetDouble](/reference/functions/attributes#getdouble)
 
 ## ToInt
 ```quest
 ToInt (string number)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an [int](/types#int) - converts a valid string to an integer.
 
 Note: An error occurs if the string does not represent a number. Use [IsInt](#isint) to test if a string represents a number first.
 
-See also [GetInt](/functions/attributes#getint) and [HasInt](/functions/attributes#hasint)
+See also [GetInt](/reference/functions/attributes#getint) and [HasInt](/reference/functions/attributes#hasint)
 
 ## ToString
 ```quest
 ToString (anything)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [string](/types#string). This is most useful for converting an integer or double to a string, however it will also convert an object, script, list or dictionary to a string, prefixing the string with the type (eg, "Object: player" or "List: one; two; three"). It will even convert a string to exactly the same string!
 
-See also [GetString](/functions/attributes#getstring) and [HasString](/functions/attributes#hasstring)
+See also [GetString](/reference/functions/attributes#getstring) and [HasString](/reference/functions/attributes#hasstring)
 
 ## TypeOf
 ```quest
 TypeOf (object, string attribute name)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [string](/types#string) representing the name of the type of the specified object's attribute.
 

@@ -20,7 +20,7 @@ See [Using Dictionaries](/howto/scripting/using-dictionaries)
 DictionaryContains (dictionary, string key)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [boolean](/types#boolean) - **true** if the dictionary contains an element with the specified key.
 
@@ -31,7 +31,7 @@ See [Using Dictionaries](/howto/scripting/using-dictionaries)
 DictionaryCount (dictionary)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an [int](/types#int) - the number of items in the dictionary.
 
@@ -42,7 +42,7 @@ See [Using Dictionaries](/howto/scripting/using-dictionaries)
 DictionaryItem (dictionary, string key)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Retrieves the specified item from the dictionary. Returns a [string](/types#string) or [object](/types#object), depending on whether the dictionary is an [objectdictionary](/types#objectdictionary) or a [stringdictionary](/types#stringdictionary).
 
@@ -64,7 +64,7 @@ See [Using Dictionaries](/howto/scripting/using-dictionaries)
 NewDictionary ()
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an empty [dictionary](/howto/scripting/using-dictionaries). The dictionary can contain any type of data, or a mixture - for example, both objects and strings.
 
@@ -75,7 +75,7 @@ If the dictionary will only contain one type of data (as will usually be the cas
 NewObjectDictionary ()
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an empty [objectdictionary](/types#objectdictionary).
 
@@ -84,7 +84,7 @@ Returns an empty [objectdictionary](/types#objectdictionary).
 NewScriptDictionary ()
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an empty [scriptdictionary](/types#scriptdictionary).
 
@@ -93,7 +93,7 @@ Returns an empty [scriptdictionary](/types#scriptdictionary).
 NewStringDictionary ()
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an empty [stringdictionary](/types#stringdictionary).
 
@@ -102,7 +102,7 @@ Returns an empty [stringdictionary](/types#stringdictionary).
 ObjectDictionaryItem (dictionary, string key)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns the [object](/types#object) specified by the dictionary key.
 
@@ -140,7 +140,7 @@ In this example, the "givefood" script attribute of the NPC is called. In the sc
 ScriptDictionaryItem (scriptdictionary, string key)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns the [script](/types#script) specified by the dictionary key.
 
@@ -153,7 +153,7 @@ See [Using Dictionaries](/howto/scripting/using-dictionaries)
 StringDictionaryItem (stringdictionary, string key)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns the [string](/types#string) specified by the dictionary key.
 
