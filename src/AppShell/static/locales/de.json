@@ -28,6 +28,7 @@
     "toolbar.more": "Mehr",
     "toolbar.discord": "Discord",
     "toolbar.github": "GitHub",
+    "toolbar.documentation": "Dokumentation",
     "toolbar.addPage": "Neue Seite",
     "toolbar.addRoom": "Neuer Raum",
     "toolbar.addObjectIn": "Neues Objekt in \"{name}\"",
@@ -377,6 +378,7 @@
 
     "homeHeader.joinDiscord": "Tritt uns auf Discord bei",
     "homeHeader.viewGithub": "Auf GitHub ansehen",
+    "homeHeader.documentation": "Dokumentation",
 
     "homeTabs.play": "Spielen",
     "homeTabs.create": "Erstellen",
@@ -453,5 +455,7 @@
     "openPage.enterGameName": "Bitte gib einen Spielnamen ein.",
     "openPage.selectTemplate": "Bitte wähle eine Vorlage aus.",
     "openPage.missingGameId": "Dem neuen Spiel fehlt eine Spiel-ID.",
-    "openPage.failedToLoadNewGame": "Neues Spiel konnte nicht geladen werden."
+    "openPage.failedToLoadNewGame": "Neues Spiel konnte nicht geladen werden.",
+    "openPage.newToQuestViva": "Neu bei Quest Viva?",
+    "openPage.readTheTutorial": "Lies das Tutorial"
 }

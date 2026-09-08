@@ -7,6 +7,8 @@
     import GithubIcon from "$components/GithubIcon.svelte";
     import DownloadButton from "$components/DownloadButton.svelte";
     import SettingsIcon from "@lucide/svelte/icons/settings";
+    import BookOpen from "@lucide/svelte/icons/book-open";
+    import { DOCS_URL } from "$lib/docs-links";
 
     let { forceDark = false }: { forceDark?: boolean } = $props();
 
@@ -23,6 +25,16 @@
                 <DownloadButton compact />
             </div>
         {/if}
+        <a
+            href={DOCS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="home-header-link"
+            title={t("homeHeader.documentation")}
+            aria-label={t("homeHeader.documentation")}
+        >
+            <BookOpen size={18} />
+        </a>
         <a
             href="https://textadventures.co.uk/community/discord"
             target="_blank"
