@@ -190,7 +190,7 @@
     "propertyEditor.propertiesFallback": "Eigenschaften",
     "propertyEditor.selectPrompt": "Wähle ein Objekt, um seine Eigenschaften zu sehen.",
     "propertyEditor.noProperties": "Keine Eigenschaften verfügbar.",
-    "propertyEditor.helpForTab": "Hilfe zum Tab {tab}",
+    "propertyEditor.helpGuide": "Hilfe: {title}",
     "propertyEditor.tabFallback": "Tab",
     "propertyEditor.generateButton": "Erzeugen",
     "propertyEditor.selectOption": "Wähle…",

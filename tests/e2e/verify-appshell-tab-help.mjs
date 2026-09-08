@@ -1,7 +1,14 @@
-// Verifies the "?" help link on element editor tabs, driven by <helpurl> in the
-// editor definitions (src/Engine/Core/CoreEditor*.aslx). Only tabs with a
-// <helpurl> get one, so the absence of the link on other tabs is part of the
-// contract, not an oversight.
+// Verifies the help link shown above an element editor tab's contents, driven
+// by <helpurl> in the editor definitions (src/Engine/Core/CoreEditor*.aslx).
+// Only tabs with a <helpurl> get one, so the absence of the link on other tabs
+// is part of the contract, not an oversight.
+//
+// It names the guide it opens ("Help: Exits"), with the title generated from
+// the docs' own frontmatter (see site/scripts/build-docs-index.mjs) rather than
+// repeated in the .aslx, so it can't drift from the page it names. It sits
+// above the tab contents rather than in the tab strip, which keeps the full
+// title readable at any width - titles run up to "Items that can be switched
+// on and off" and the strip already scrolls for space on narrow screens.
 //
 // Editor definitions live in <library type="editor">, which GameSaver excludes
 // from both package and editor saves - so unlike Core.aslx game libraries these
@@ -21,7 +28,7 @@ function check(label, actual, expected) {
     console.log(`PASS: ${label}`);
 }
 
-const helpLink = () => page.locator('a[title^="Help for the"]');
+const helpLink = () => page.locator('a:has-text("Help:")');
 
 async function selectTab(name) {
     await page.getByRole('button', { name: new RegExp(`^${name}$`) }).click();
@@ -44,14 +51,15 @@ async function run() {
     await selectTab('Scripts');
     check('help link on game > Scripts', await helpLink().getAttribute('href'),
         'https://questviva.com/howto/scripting/advanced-game-scripts/');
-    check('help link is labelled with the tab it applies to',
-        await helpLink().getAttribute('title'), 'Help for the Scripts tab');
+    check('help link names the guide it opens',
+        (await helpLink().textContent()).trim(), 'Help: Advanced game scripts');
 
     // --- a room: Exits carries its own target ---
     await page.click('text=room');
     await selectTab('Exits');
     check('help link on room > Exits', await helpLink().getAttribute('href'),
         'https://questviva.com/howto/world/exits/');
+    check('help link title tracks the tab', (await helpLink().textContent()).trim(), 'Help: Exits');
 
     // The link tracks the active tab rather than being fixed per element.
     await selectTab('Room');

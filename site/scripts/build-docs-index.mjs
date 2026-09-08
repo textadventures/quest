@@ -1,8 +1,14 @@
 #!/usr/bin/env node
-// Generates src/AppShell/src/lib/docs-index.generated.ts - a map from a script
-// editor keyword (the <appliesto> value in src/Engine/Core/CoreEditor*.aslx) to
-// the documentation page + anchor describing it, so the editor can deep-link
-// each script command into questviva.com.
+// Generates src/AppShell/src/lib/docs-index.generated.ts, which carries two
+// maps the editor needs from the docs:
+//
+//   DOCS_INDEX       script editor keyword (the <appliesto> value in
+//                    src/Engine/Core/CoreEditor*.aslx) -> the documentation
+//                    page + anchor describing it, for deep-linking each
+//                    script command into questviva.com
+//   HELP_PAGE_TITLES documentation path -> that page's title, so an element
+//                    editor tab's help link can name the guide it opens
+//                    instead of showing a bare "?"
 //
 // Generated rather than hand-maintained because the mapping is mechanical: the
 // docs already use "## Name" headings whose anchors match the keyword. Sibling
@@ -13,7 +19,7 @@
 //   node site/scripts/build-docs-index.mjs           # rewrite the generated file
 //   node site/scripts/build-docs-index.mjs --check   # fail if it's out of date
 
-import { readFileSync, writeFileSync, readdirSync } from "node:fs";
+import { readFileSync, writeFileSync, readdirSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
@@ -122,6 +128,35 @@ function findPage(headingsBySlug, name, preferredSlugs) {
   return matches[0];
 }
 
+// Every <helpurl> in the editor definitions, with the title of the page it
+// points at. Titles are read from the docs rather than repeated in the .aslx
+// so they can't drift out of sync with the page they name.
+function readHelpPageTitles() {
+  const paths = new Set();
+  for (const entry of readdirSync(coreDir, { withFileTypes: true })) {
+    if (!entry.isFile() || !entry.name.endsWith(".aslx")) continue;
+    const text = readFileSync(join(coreDir, entry.name), "utf8");
+    for (const m of text.matchAll(/<helpurl>([^<]*)<\/helpurl>/g)) paths.add(m[1].trim());
+  }
+
+  const titles = {};
+  for (const path of [...paths].sort()) {
+    const slug = path.replace(/^\/|\/$/g, "");
+    const candidates = [`${slug}.md`, `${slug}/index.md`, `${slug}.mdx`];
+    let found = null;
+    for (const c of candidates) {
+      const file = join(docsDir, ...c.split("/"));
+      if (!existsSync(file)) continue;
+      const m = /^title:\s*["']?(.*?)["']?\s*$/m.exec(readFileSync(file, "utf8"));
+      if (m) found = m[1];
+      break;
+    }
+    if (!found) throw new Error(`<helpurl> ${path} has no page with a title - check-editor-help-urls.mjs covers this too`);
+    titles[path] = found;
+  }
+  return titles;
+}
+
 function build() {
   const headingsBySlug = readHeadings();
   const entries = [];
@@ -164,6 +199,7 @@ function build() {
 }
 
 const { entries, unmatched, undocumented } = build();
+const helpPageTitles = readHelpPageTitles();
 
 const lines = [
   "// GENERATED FILE - do not edit by hand.",
@@ -189,6 +225,11 @@ const lines = [
   }),
   "};",
   "",
+  "/** Documentation path (as used in a <helpurl>) -> that page's title. */",
+  "export const HELP_PAGE_TITLES: Readonly<Record<string, string>> = {",
+  ...Object.entries(helpPageTitles).map(([path, title]) => `    ${JSON.stringify(path)}: ${JSON.stringify(title)},`),
+  "};",
+  "",
 ];
 const output = lines.join("\n");
 
@@ -206,10 +247,16 @@ if (process.argv.includes("--check")) {
     );
     process.exit(1);
   }
-  console.log(`OK: docs index is up to date (${entries.length} script keywords mapped).`);
+  console.log(
+    `OK: docs index is up to date (${entries.length} script keywords, ` +
+    `${Object.keys(helpPageTitles).length} help page titles).`
+  );
 } else {
   writeFileSync(outPath, output, "utf8");
-  console.log(`Wrote ${entries.length} entries to src/AppShell/src/lib/docs-index.generated.ts`);
+  console.log(
+    `Wrote ${entries.length} script keyword entries and ${Object.keys(helpPageTitles).length} ` +
+    "help page titles to src/AppShell/src/lib/docs-index.generated.ts"
+  );
   if (unmatched.length > 0) {
     console.log(`\n${unmatched.length} keyword(s) had no matching "## " heading and were skipped:`);
     for (const k of unmatched) console.log(`  - ${k}`);

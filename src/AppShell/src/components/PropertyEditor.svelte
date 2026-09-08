@@ -4,6 +4,7 @@
     import { isLibraryFilename } from "$lib/filesystem/types";
     import { t } from "$lib/i18n";
     import { docsUrlForPath } from "$lib/docs-links";
+    import { HELP_PAGE_TITLES } from "$lib/docs-index.generated";
     import type { ControlInfo, ControlOption, TextProcessorCommand } from "$lib/types";
     import type { TreeNode } from "$lib/types";
     import ChevronLeft from "@lucide/svelte/icons/chevron-left";
@@ -387,6 +388,11 @@
         if (node instanceof HTMLInputElement || node instanceof HTMLTextAreaElement) node.select();
     }
 
+    // The active tab's <helpurl> and the title of the page it points at. Null
+    // for tabs with no help target, which is most of them.
+    let activeHelpUrl = $derived($selectedData?.tabs.find(tab => tab.caption === activeTab)?.helpUrl ?? null);
+    let activeHelpTitle = $derived(activeHelpUrl ? HELP_PAGE_TITLES[activeHelpUrl] ?? null : null);
+
     function tabClass(caption: string | null): string {
         return activeTab === caption
             ? "px-3 py-1.5 text-xs whitespace-nowrap transition-colors text-primary-600-400 border-b-2 border-primary-500 font-medium"
@@ -431,34 +437,34 @@
         <p class="px-3 py-4 text-sm text-surface-600-400">{t("propertyEditor.noProperties")}</p>
     {:else}
         {#if $selectedData.tabs.length > 0}
-            {@const activeHelpUrl = $selectedData.tabs.find(tab => tab.caption === activeTab)?.helpUrl}
-            <div class="flex items-center border-b border-surface-200-800 flex-shrink-0">
-                <div class="flex overflow-x-auto min-w-0">
-                    {#each $selectedData.tabs as tab, ti (ti)}
-                        <button
-                            type="button"
-                            class={tabClass(tab.caption)}
-                            onclick={() => { activeTab = tab.caption; }}
-                        >
-                            {tabLabel(tab.caption)}
-                        </button>
-                    {/each}
-                </div>
-                <!-- Help for the active tab, pinned outside the tabs' own scroll
-                     area so it stays reachable when the tab strip overflows.
-                     Only tabs with a <helpurl> in their editor definition get
-                     one, so this is absent more often than not. -->
-                {#if activeHelpUrl}
-                    <a
-                        href={docsUrlForPath(activeHelpUrl)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="shrink-0 ml-auto mr-2 px-2 py-1.5 text-xs text-surface-600-400 hover:text-primary-600-400 transition-colors"
-                        title={t("propertyEditor.helpForTab", { tab: tabLabel(activeTab) })}
-                        aria-label={t("propertyEditor.helpForTab", { tab: tabLabel(activeTab) })}
-                    >?</a>
-                {/if}
+            <div class="flex border-b border-surface-200-800 overflow-x-auto flex-shrink-0">
+                {#each $selectedData.tabs as tab, ti (ti)}
+                    <button
+                        type="button"
+                        class={tabClass(tab.caption)}
+                        onclick={() => { activeTab = tab.caption; }}
+                    >
+                        {tabLabel(tab.caption)}
+                    </button>
+                {/each}
             </div>
+        {/if}
+
+        <!-- Help for the active tab, above its contents rather than in the tab
+             strip: the strip already scrolls for space on narrower screens, and
+             a guide title ("Items that can be switched on and off") would be
+             competing with the tabs for the same row. Only tabs with a
+             <helpurl> in their editor definition get one. -->
+        {#if activeHelpUrl && activeHelpTitle}
+            <a
+                href={docsUrlForPath(activeHelpUrl)}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center gap-1.5 px-3 py-1.5 text-xs text-surface-600-400 hover:text-primary-600-400 transition-colors border-b border-surface-200-800 flex-shrink-0"
+            >
+                <BookOpen size={14} class="shrink-0" />
+                <span class="truncate">{t("propertyEditor.helpGuide", { title: activeHelpTitle })}</span>
+            </a>
         {/if}
 
         {@const viewControls = getControlsForView()}

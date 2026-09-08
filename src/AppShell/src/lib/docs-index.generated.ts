@@ -138,3 +138,20 @@ export const DOCS_INDEX: Readonly<Record<string, DocsIndexEntry>> = {
     "wait": { path: "/scripts/#wait" },
     "while": { path: "/scripts/#while" },
 };
+
+/** Documentation path (as used in a <helpurl>) -> that page's title. */
+export const HELP_PAGE_TITLES: Readonly<Record<string, string>> = {
+    "/howto/commands/commands/": "How to use commands",
+    "/howto/commands/using-verbs/": "How to use verbs",
+    "/howto/npcs/ask-about/": "Building an Ask/Tell system",
+    "/howto/scripting/advanced-game-scripts/": "Advanced game scripts",
+    "/howto/scripting/using-turnscripts/": "Using turnscripts",
+    "/howto/tasks/showing-a-map/": "Showing a map",
+    "/howto/ux/customising-the-ui/": "Customising the UI",
+    "/howto/ux/ui-fonts/": "Fonts",
+    "/howto/world/containers/": "Using containers",
+    "/howto/world/exits/": "Exits",
+    "/howto/world/switchable/": "Items that can be switched on and off",
+    "/howto/world/wearables/": "Wearable items",
+    "/tutorial/using-timers-and-turn-scripts/": "Using timers and turn scripts",
+};
