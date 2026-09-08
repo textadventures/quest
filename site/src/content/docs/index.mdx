@@ -10,9 +10,18 @@ hero:
     file: ../../assets/quest-viva.svg
   actions:
     - text: Start creating
-      link: https://play.questviva.com/
+      link: https://play.questviva.com/open
       icon: right-arrow
       variant: primary
+    - text: Play games
+      link: https://play.questviva.com/
+      # Lucide's "play" glyph, inlined: Starlight's built-in icon set has no
+      # play icon, but a hero action's `icon` falls back to treating the string
+      # as raw HTML when it doesn't match a built-in name (schemas/hero.ts).
+      # Filled rather than Lucide's usual stroke, to match the built-in icons
+      # sitting next to it; sized to the 1.5rem those get from LinkButton.
+      icon: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="width:1.5rem;height:1.5rem"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></svg>'
+      variant: secondary
     - text: Documentation
       link: /intro
       icon: open-book
