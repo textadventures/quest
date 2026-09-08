@@ -27,6 +27,7 @@
     "toolbar.more": "[Móré]",
     "toolbar.discord": "[Díscórd]",
     "toolbar.github": "[GítHúb]",
+    "toolbar.documentation": "[Dócúméntátíón]",
     "toolbar.addPage": "[Ádd Págé]",
     "toolbar.addRoom": "[Ádd Róóm]",
     "toolbar.addObjectIn": "[Ádd Óbjéct ín \"{name}\"]",
@@ -315,6 +316,7 @@
     "common.textAdventure": "[Téxt Ádvéntúré]",
     "homeHeader.joinDiscord": "[Jóín ús ón Díscórd]",
     "homeHeader.viewGithub": "[Víéw ón GítHúb]",
+    "homeHeader.documentation": "[Dócúméntátíón]",
     "homeTabs.play": "[Pláy]",
     "homeTabs.create": "[Créáté]",
     "gameCard.byAuthor": "[by {author}]",
@@ -381,5 +383,7 @@
     "openPage.enterGameName": "[Pléásé éntér á gámé námé.]",
     "openPage.selectTemplate": "[Pléásé séléct á témpláté.]",
     "openPage.missingGameId": "[Néw gámé ís míssíng á gáméíd.]",
-    "openPage.failedToLoadNewGame": "[Fáíléd tó lóád néw gámé.]"
+    "openPage.failedToLoadNewGame": "[Fáíléd tó lóád néw gámé.]",
+    "openPage.newToQuestViva": "[Néw tó Qúést Vívá?]",
+    "openPage.readTheTutorial": "[Réád thé tútóríál]"
 }

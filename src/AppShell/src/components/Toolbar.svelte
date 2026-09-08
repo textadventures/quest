@@ -43,11 +43,13 @@
     import Ellipsis from "@lucide/svelte/icons/ellipsis";
     import FileCode from "@lucide/svelte/icons/file-code";
     import SettingsIcon from "@lucide/svelte/icons/settings";
+    import BookOpen from "@lucide/svelte/icons/book-open";
     import DiscordIcon from "$components/DiscordIcon.svelte";
     import GithubIcon from "$components/GithubIcon.svelte";
     import DropdownMenu from "$components/DropdownMenu.svelte";
     import type { DropdownMenuItem } from "$components/DropdownMenu.svelte";
     import { isNarrow } from "$lib/layout.svelte";
+    import { DOCS_URL } from "$lib/docs-links";
 
     const DISCORD_URL = "https://textadventures.co.uk/community/discord";
     const GITHUB_URL = "https://github.com/textadventures/quest";
@@ -191,6 +193,7 @@
     // as visible icon-only buttons.
     let overflowItems = $derived.by((): DropdownMenuItem[] => {
         const links: DropdownMenuItem[] = [
+            { label: t("toolbar.documentation"), action: () => openLink(DOCS_URL), icon: BookOpen },
             { label: t("toolbar.discord"), action: () => openLink(DISCORD_URL), icon: DiscordIcon },
             { label: t("toolbar.github"), action: () => openLink(GITHUB_URL), icon: GithubIcon },
             { label: t("common.settings"), action: () => settingsModalOpen.set(true), icon: SettingsIcon },

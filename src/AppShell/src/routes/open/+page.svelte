@@ -29,6 +29,7 @@
     import Trash2 from "@lucide/svelte/icons/trash-2";
     import Download from "@lucide/svelte/icons/download";
     import { t, locale } from "$lib/i18n";
+    import { DOCS_TUTORIAL_URL } from "$lib/docs-links";
 
     const hasServer = PUBLIC_HAS_SERVER === "true";
 
@@ -771,5 +772,17 @@
             {/if}
 
         </div>
+    {/if}
+
+    {#if !loading}
+        <!-- Deliberately the tutorial rather than the docs home: everyone who
+             reaches this page is about to author a game, and HomeHeader's
+             Documentation link already covers the general case. -->
+        <p class="text-sm text-surface-600-400 text-center">
+            {t("openPage.newToQuestViva")}
+            <a class="anchor" href={DOCS_TUTORIAL_URL} target="_blank" rel="noopener noreferrer">
+                {t("openPage.readTheTutorial")}
+            </a>
+        </p>
     {/if}
 </main>
