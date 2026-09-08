@@ -49,7 +49,6 @@ export const DOCS_INDEX: Readonly<Record<string, DocsIndexEntry>> = {
     "(function)Grid_ShowCustomLayer": { path: "/reference/functions/internal-core/#grid_showcustomlayer" },
     "(function)HelperCloseObject": { path: "/reference/functions/core/#helpercloseobject" },
     "(function)HelperOpenObject": { path: "/reference/functions/core/#helperopenobject" },
-    "(function)HidePreviousTurnOutput": { path: "/reference/functions/internal-core/#hidepreviousturnoutput" },
     "(function)IncreaseCounter": { path: "/reference/functions/gamebook/#increasecounter" },
     "(function)IncreaseHealth": { path: "/reference/functions/attributes/#increasehealth" },
     "(function)IncreaseMoney": { path: "/reference/functions/attributes/#increasemoney" },

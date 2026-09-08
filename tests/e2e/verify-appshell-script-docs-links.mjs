@@ -43,6 +43,11 @@ async function run() {
     const learnMore = page.locator('a:has-text("Learn more")');
     check('AddScriptModal "Learn more" href for "Print a message" (msg)',
         await learnMore.getAttribute('href'), 'https://questviva.com/scripts/#msg');
+    // The link names the command, so it's clear it tracks the selection rather
+    // than being generic scripting help - and it's the only place the author
+    // sees the name they'd write in code ("msg", not "Print a message").
+    check('AddScriptModal link names the selected command',
+        (await learnMore.textContent()).trim(), 'Learn more about msg');
 
     // A (function)-style command resolves to a reference/functions/* page rather
     // than the scripts page - that's 88 of the index's 125 entries, and a
@@ -51,6 +56,29 @@ async function run() {
     await page.locator('[role="option"]:has-text("Move object")').first().click();
     check('AddScriptModal "Learn more" href for "Move object" ((function)MoveObject)',
         await learnMore.getAttribute('href'), 'https://questviva.com/reference/functions/objects/#moveobject');
+    // "(function)" is stripped: the author writes MoveObject, not (function)MoveObject.
+    check('AddScriptModal link strips the (function) marker',
+        (await learnMore.textContent()).trim(), 'Learn more about MoveObject');
+    // The name is in a code font so a multi-word command reads as a name rather
+    // than broken grammar ("Learn more about play sound").
+    check('AddScriptModal renders the command name as code',
+        await learnMore.locator('code').textContent(), 'MoveObject');
+
+    // Tabbing to the link and pressing Enter must follow the link, not fall
+    // through to the modal's "Enter adds the selected command" shortcut.
+    await learnMore.focus();
+    const [linkPopup] = await Promise.all([
+        page.waitForEvent('popup', { timeout: 10000 }),
+        page.keyboard.press('Enter'),
+    ]);
+    const linkPopupUrl = linkPopup.url();
+    await linkPopup.close();
+    check('Enter on the focused link opens it instead of adding the command',
+        linkPopupUrl, 'https://questviva.com/reference/functions/objects/#moveobject');
+    if (await page.locator('[role="dialog"]').count() !== 1) {
+        throw new Error('the Add Script modal closed - Enter on the link added the command instead of following it');
+    }
+
 
     // A command with no reference entry must show no link at all. "=" (set a
     // variable) is syntax, deliberately absent from the generated index.

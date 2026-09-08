@@ -171,7 +171,7 @@
     "addScriptModal.matchingCommandsAriaLabel": "Matching script commands",
     "addScriptModal.categoriesAriaLabel": "Script command categories",
     "addScriptModal.commandsInCategoryAriaLabel": "Script commands in {category}",
-    "addScriptModal.learnMore": "Learn more",
+    "addScriptModal.learnMoreAbout": "Learn more about {command}",
 
     "moveElementModal.topLevel": "(top level)",
     "moveElementModal.heading": "Move \"{name}\"",

@@ -171,7 +171,7 @@
     "addScriptModal.matchingCommandsAriaLabel": "Übereinstimmende Skript-Kommandos",
     "addScriptModal.categoriesAriaLabel": "Kategorien Skript-Kommandos",
     "addScriptModal.commandsInCategoryAriaLabel": "Skript-Kommandos unter {category}",
-    "addScriptModal.learnMore": "Mehr erfahren",
+    "addScriptModal.learnMoreAbout": "Mehr über {command} erfahren",
 
     "moveElementModal.topLevel": "(oberste Ebene)",
     "moveElementModal.heading": "Verschiebe \"{name}\"",

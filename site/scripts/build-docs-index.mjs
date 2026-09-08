@@ -68,13 +68,27 @@ function readScriptKeywords() {
   return keywords;
 }
 
-// slug -> Set of "## " headings on that page.
+// An entry documented by nothing but its signature has nothing for the reader
+// to learn, so no help affordance is offered for it at all. The signature
+// itself counts as content - "msg (string message)" tells you the parameter
+// type even when the prose is one line - so this deliberately only strips
+// entries whose prose is empty, rather than applying a length threshold.
+function explanationLength(sectionBody) {
+  return sectionBody.replace(/^\s*```quest\n[\s\S]*?\n```\n?/, "").trim().length;
+}
+
+// slug -> Map of "## " heading -> length of its explanation.
 function readHeadings() {
   const bySlug = new Map();
   const add = (slug, file) => {
     const text = readFileSync(file, "utf8");
-    const headings = new Set();
-    for (const m of text.matchAll(/^## (.+)$/gm)) headings.add(m[1].trim());
+    const headings = new Map();
+    const parts = text.split(/^## /m).slice(1);
+    for (const part of parts) {
+      const newline = part.indexOf("\n");
+      const name = (newline === -1 ? part : part.slice(0, newline)).trim();
+      headings.set(name, explanationLength(newline === -1 ? "" : part.slice(newline + 1)));
+    }
     bySlug.set(slug, headings);
   };
   const functionsDir = join(docsDir, ...FUNCTIONS_SECTION.split("/"));
@@ -94,7 +108,7 @@ const anchorFor = (heading) => heading.toLowerCase().replace(/\s+/g, "-");
 function findPage(headingsBySlug, name, preferredSlugs) {
   const matches = [];
   for (const [slug, headings] of headingsBySlug) {
-    for (const heading of headings) {
+    for (const heading of headings.keys()) {
       if (heading.toLowerCase() === name.toLowerCase()) matches.push([slug, heading]);
     }
   }
@@ -112,6 +126,7 @@ function build() {
   const headingsBySlug = readHeadings();
   const entries = [];
   const unmatched = [];
+  const undocumented = [];
 
   for (const keyword of [...readScriptKeywords()].sort()) {
     const isFunction = keyword.startsWith("(function)");
@@ -130,6 +145,10 @@ function build() {
       continue;
     }
     const [slug, heading] = match;
+    if (headingsBySlug.get(slug).get(heading) === 0) {
+      undocumented.push(`${keyword} (${slug}#${anchorFor(heading)})`);
+      continue;
+    }
     const entry = { keyword, path: `/${slug}/#${anchorFor(heading)}` };
     if (dual) {
       if (slug !== dual.default) throw new Error(`${name}: expected ${dual.default}, resolved ${slug}`);
@@ -141,10 +160,10 @@ function build() {
     entries.push(entry);
   }
 
-  return { entries, unmatched };
+  return { entries, unmatched, undocumented };
 }
 
-const { entries, unmatched } = build();
+const { entries, unmatched, undocumented } = build();
 
 const lines = [
   "// GENERATED FILE - do not edit by hand.",
@@ -194,5 +213,12 @@ if (process.argv.includes("--check")) {
   if (unmatched.length > 0) {
     console.log(`\n${unmatched.length} keyword(s) had no matching "## " heading and were skipped:`);
     for (const k of unmatched) console.log(`  - ${k}`);
+  }
+  if (undocumented.length > 0) {
+    console.log(
+      `\n${undocumented.length} keyword(s) skipped because their docs entry is a signature with no ` +
+      "explanation -\nadd a line of prose to give them a help link:"
+    );
+    for (const k of undocumented) console.log(`  - ${k}`);
   }
 }

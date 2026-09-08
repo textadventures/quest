@@ -141,7 +141,7 @@
     "addScriptModal.matchingCommandsAriaLabel": "[Mátchíng scrípt cómmánds]",
     "addScriptModal.categoriesAriaLabel": "[Scrípt cómmánd cátégóríés]",
     "addScriptModal.commandsInCategoryAriaLabel": "[Scrípt cómmánds ín {category}]",
-    "addScriptModal.learnMore": "[Léárn móré]",
+    "addScriptModal.learnMoreAbout": "[Léárn móré ábóút {command}]",
     "moveElementModal.topLevel": "[(tóp lévél)]",
     "moveElementModal.heading": "[Móvé \"{name}\"]",
     "moveElementModal.newParentLabel": "[Néw párént]",

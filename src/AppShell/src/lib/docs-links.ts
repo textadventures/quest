@@ -28,6 +28,15 @@ export const DOCS_URL = docsUrl("/intro");
 export const DOCS_TUTORIAL_URL = docsUrl("/tutorial/tutorial-introduction");
 
 /**
+ * The command's name as an author would write it in code — the editor keyword
+ * minus the "(function)" marker that distinguishes a function call from a
+ * built-in script command. "(function)MoveObject" -> "MoveObject", "msg" -> "msg".
+ */
+export function scriptKeywordName(keyword: string): string {
+    return keyword.startsWith("(function)") ? keyword.slice("(function)".length) : keyword;
+}
+
+/**
  * Documentation URL for a script editor keyword (a script's <appliesto> value,
  * e.g. "msg" or "(function)OutputTextNoBr"), or null when that command has no
  * reference entry — syntax like `=` and `//`, and the `JS.` call prefix.
