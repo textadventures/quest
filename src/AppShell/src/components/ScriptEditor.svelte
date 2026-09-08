@@ -7,6 +7,7 @@
     import Combobox from "./Combobox.svelte";
     import ExpressionInput from "./ExpressionInput.svelte";
     import { t } from "$lib/i18n";
+    import { docsUrlForScriptKeyword } from "$lib/docs-links";
     import {
         scriptVersion,
         scriptClipboardHasContent,
@@ -42,6 +43,7 @@
         addScriptDictCase,
         removeScriptDictCase,
         renameScriptDictCase,
+        isGamebook,
     } from "$lib/editor-store";
     import { defaultCodeView } from "$lib/code-view-store";
     import { measureTextPx } from "$lib/text-measure";
@@ -639,6 +641,16 @@
     }
 
     const indentClass = $derived(depth > 0 ? "ml-4 border-l border-surface-300-700 pl-2" : "");
+
+    // Null for commands with no reference entry (syntax like `=` and `//`), which
+    // is what hides the help affordance for them rather than linking to a 404.
+    function docsUrlFor(script: ScriptNodeData): string | null {
+        return docsUrlForScriptKeyword(script.keyword, $isGamebook);
+    }
+
+    function openDocs(url: string) {
+        window.open(url, "_blank", "noopener,noreferrer");
+    }
 </script>
 
 <div class={indentClass}>
@@ -668,6 +680,7 @@
     {:else}
         <div role="region" inert={isLocked || undefined} class={isLocked ? "opacity-60" : ""}>
             {#each scripts() as script, i (script.id)}
+                {@const docsUrl = docsUrlFor(script)}
                 <div class="group relative border border-surface-200-800 rounded mb-1 bg-surface-50-950 flex items-start">
                     <label class="flex items-start pt-1.5 pl-1.5 pr-0.5 cursor-pointer flex-shrink-0">
                         <input
@@ -682,6 +695,15 @@
                              toolbar below (Cut/Copy/Delete/Move) that already covers this on
                              touch, so these stay hover-only at all nesting levels. -->
                         <div class="absolute right-1 top-1 flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                            {#if docsUrl}
+                                <button
+                                    type="button"
+                                    class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
+                                    title={t("scriptEditor.helpForCommand", { command: script.displayString ?? "" })}
+                                    aria-label={t("scriptEditor.helpForCommand", { command: script.displayString ?? "" })}
+                                    onclick={() => openDocs(docsUrl)}
+                                >?</button>
+                            {/if}
                             <button
                                 type="button"
                                 class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
@@ -748,6 +770,16 @@
                             disabled={sel[0] === scripts().length - 1}
                             onclick={onMoveDownSelected}
                         >↓ {t("common.moveDown")}</button>
+                        <!-- The row's own "?" is hover-only, so this is the
+                             touch path to the same link. -->
+                        {@const selDocsUrl = docsUrlFor(scripts()[sel[0]])}
+                        {#if selDocsUrl}
+                            <button
+                                type="button"
+                                class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
+                                onclick={() => openDocs(selDocsUrl)}
+                            >{t("common.help")}</button>
+                        {/if}
                     {/if}
                     <span class="ml-auto pl-2 flex-shrink-0 text-surface-600-400">{t("scriptEditor.selectedCount", { count: sel.length })}</span>
                 </div>

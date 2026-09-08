@@ -10,7 +10,9 @@
     "astro": "astro",
     "lint": "eslint .",
     "check-function-docs": "node scripts/check-function-docs.mjs",
-    "check-redirects": "node scripts/check-redirects.mjs"
+    "check-redirects": "node scripts/check-redirects.mjs",
+    "build-docs-index": "node scripts/build-docs-index.mjs",
+    "check-docs-index": "node scripts/build-docs-index.mjs --check"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.41.10",

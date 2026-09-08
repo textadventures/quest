@@ -2,6 +2,7 @@
     "common.cancel": "Cancelar",
     "common.close": "Cerrar",
     "common.delete": "Eliminar",
+    "common.help": "Ayuda",
     "common.settings": "Configuración",
 
     "toolbar.back": "Atrás",
@@ -170,6 +171,7 @@
     "addScriptModal.matchingCommandsAriaLabel": "Comandos de programa coincidentes",
     "addScriptModal.categoriesAriaLabel": "Categorías de comandos de programa",
     "addScriptModal.commandsInCategoryAriaLabel": "Comandos de programa en {category}",
+    "addScriptModal.learnMore": "Más información",
 
     "moveElementModal.topLevel": "(nivel superior)",
     "moveElementModal.heading": "Mover \"{name}\"",
@@ -299,6 +301,7 @@
     "scriptEditor.expressionOption": "expresión",
     "scriptEditor.simpleOption": "simple",
     "scriptEditor.selectedCount": "{count} seleccionados",
+    "scriptEditor.helpForCommand": "Ayuda sobre {command}",
 
     "expressionInput.insertTitle": "Insertar objeto o función",
     "expressionInput.filterPlaceholder": "Filtrar…",

@@ -2,6 +2,7 @@
     "common.cancel": "Abbrechen",
     "common.close": "Schließen",
     "common.delete": "Löschen",
+    "common.help": "Hilfe",
     "common.settings": "Einstellungen",
 
     "toolbar.back": "Zurück",
@@ -170,6 +171,7 @@
     "addScriptModal.matchingCommandsAriaLabel": "Übereinstimmende Skript-Kommandos",
     "addScriptModal.categoriesAriaLabel": "Kategorien Skript-Kommandos",
     "addScriptModal.commandsInCategoryAriaLabel": "Skript-Kommandos unter {category}",
+    "addScriptModal.learnMore": "Mehr erfahren",
 
     "moveElementModal.topLevel": "(oberste Ebene)",
     "moveElementModal.heading": "Verschiebe \"{name}\"",
@@ -299,6 +301,7 @@
     "scriptEditor.expressionOption": "Ausdruck",
     "scriptEditor.simpleOption": "einfach",
     "scriptEditor.selectedCount": "{count} ausgewählt",
+    "scriptEditor.helpForCommand": "Hilfe zu {command}",
 
     "expressionInput.insertTitle": "Objekt oder Funktion einfügen",
     "expressionInput.filterPlaceholder": "Filter…",

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -137,7 +137,11 @@ internal record ScriptNodeData(
     string? Expression,
     List<ScriptNodeData>? ThenScripts,
     List<ElseIfClauseData>? ElseIfClauses,
-    List<ScriptNodeData>? ElseScripts
+    List<ScriptNodeData>? ElseScripts,
+    // The editor definition's <appliesto> value (e.g. "msg",
+    // "(function)OutputTextNoBr"). Lets the client deep-link this command into
+    // the documentation; null when its editor definition couldn't be resolved.
+    string? Keyword = null
 );
 
 internal record ScriptBlockData(List<ScriptNodeData> Scripts);
@@ -3978,18 +3982,21 @@ public partial class WasmEditorBridge
                 ifScript.IfExpression,
                 BuildScriptBlockData(ifScript.ThenScript).Scripts,
                 elseIfClauses,
-                ifScript.ElseScript != null ? BuildScriptBlockData(ifScript.ElseScript).Scripts : null
+                ifScript.ElseScript != null ? BuildScriptBlockData(ifScript.ElseScript).Scripts : null,
+                "if"
             );
         }
 
         string? displayString = null;
         List<ScriptControlData>? controls = null;
+        string? keyword = null;
 
         try
         {
             var def = _controller!.GetEditorDefinition(script);
             var editorData = _controller.GetScriptEditorData(script);
             displayString = script.DisplayString();
+            keyword = def.AppliesTo;
             controls = def.Controls
                 .Where(c => c.IsControlVisibleSync(editorData))
                 .Select(c => BuildScriptControlData(c, editorData))
@@ -4009,7 +4016,8 @@ public partial class WasmEditorBridge
             null,
             null,
             null,
-            null
+            null,
+            keyword
         );
     }
 

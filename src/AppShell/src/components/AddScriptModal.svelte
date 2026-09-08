@@ -1,6 +1,8 @@
 <script lang="ts">
     import type { ScriptCategoryInfo, ScriptCommandInfo } from "$lib/types";
     import { t } from "$lib/i18n";
+    import { docsUrlForScriptKeyword } from "$lib/docs-links";
+    import { isGamebook } from "$lib/editor-store";
     import { trapFocus } from "$lib/actions/trapFocus";
     import Search from "@lucide/svelte/icons/search";
     import X from "@lucide/svelte/icons/x";
@@ -41,6 +43,11 @@
     let selectedCommand = $state<ScriptCommandInfo | null>(null);
 
     const selectedCategory = $derived(categories[selectedCategoryIndex] ?? null);
+    // Null for commands with no reference entry, and while nothing is selected -
+    // which is what hides the footer's "Learn more" link in those cases.
+    const selectedCommandDocsUrl = $derived(
+        docsUrlForScriptKeyword(selectedCommand?.keyword, $isGamebook)
+    );
 
     // Within a mixed category (not already-entirely-advanced, which already got its own
     // category-level divider above), commands are pre-sorted non-advanced-first by the
@@ -352,7 +359,17 @@
         </div>
 
         <!-- Footer -->
-        <div class="px-5 py-3 border-t border-surface-200-800 flex justify-end gap-3 flex-shrink-0">
+        <div class="px-5 py-3 border-t border-surface-200-800 flex items-center justify-end gap-3 flex-shrink-0">
+            <!-- Reference link for whichever command is highlighted. Absent for
+                 commands with no docs entry, and while nothing is selected. -->
+            {#if selectedCommandDocsUrl}
+                <a
+                    href={selectedCommandDocsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="anchor text-xs mr-auto"
+                >{t("addScriptModal.learnMore")}</a>
+            {/if}
             <button type="button" onclick={onClose} class="btn btn-sm preset-tonal text-xs">{t("common.cancel")}</button>
             <button
                 type="button"

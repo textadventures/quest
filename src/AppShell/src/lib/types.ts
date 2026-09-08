@@ -178,6 +178,11 @@ export interface ScriptNodeData {
   id: string
   type: "normal" | "if"
   displayString?: string
+  // The editor definition's <appliesto> value (e.g. "msg",
+  // "(function)OutputTextNoBr"), used to deep-link this command into the
+  // documentation - see docsUrlForScriptKeyword. Absent when the script's
+  // editor definition couldn't be resolved.
+  keyword?: string
   controls?: ScriptControlData[]
   expression?: string
   thenScripts?: ScriptNodeData[]

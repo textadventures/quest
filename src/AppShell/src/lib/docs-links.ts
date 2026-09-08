@@ -10,6 +10,8 @@
 // separate build (Electron main process) with no import path into AppShell, so
 // it stays duplicated rather than shared.
 
+import { DOCS_INDEX } from "./docs-index.generated";
+
 const DOCS_BASE_URL = "https://questviva.com";
 
 // Trailing slashes are deliberate: the site builds to directory-style routes,
@@ -24,3 +26,18 @@ export const DOCS_URL = docsUrl("/intro");
 
 /** Step-by-step "build your first game" walkthrough, for first-time authors. */
 export const DOCS_TUTORIAL_URL = docsUrl("/tutorial/tutorial-introduction");
+
+/**
+ * Documentation URL for a script editor keyword (a script's <appliesto> value,
+ * e.g. "msg" or "(function)OutputTextNoBr"), or null when that command has no
+ * reference entry — syntax like `=` and `//`, and the `JS.` call prefix.
+ *
+ * isGamebook picks between the two same-named functions where the gamebook and
+ * Text Adventure page APIs collide (AddPageLink and friends).
+ */
+export function docsUrlForScriptKeyword(keyword: string | undefined, isGamebook: boolean): string | null {
+    if (!keyword) return null;
+    const entry = DOCS_INDEX[keyword];
+    if (!entry) return null;
+    return `${DOCS_BASE_URL}${isGamebook && entry.gamebookPath ? entry.gamebookPath : entry.path}`;
+}
