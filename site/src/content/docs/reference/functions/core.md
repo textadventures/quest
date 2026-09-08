@@ -65,7 +65,7 @@ See also [SetDark](#setdark), [SetLight](#setlight), [SetObjectLightstrength](#s
 CloneObjectAndInitialise (object)
 ```
 
-Returns an [object](/types#object). Clones the object using [CloneObject](/functions/objects#cloneobject) and, if the clone has an `_initialise_` script, runs it. Useful for prototype objects that need to set up their own state (e.g. random stats) each time a new copy is created, rather than only when moved into a room - see also [CloneObjectAndMoveHere](/functions/objects#cloneobjectandmovehere).
+Returns an [object](/types#object). Clones the object using [CloneObject](/reference/functions/objects#cloneobject) and, if the clone has an `_initialise_` script, runs it. Useful for prototype objects that need to set up their own state (e.g. random stats) each time a new copy is created, rather than only when moved into a room - see also [CloneObjectAndMoveHere](/reference/functions/objects#cloneobjectandmovehere).
 
 ## FinishTurn
 ```quest
@@ -135,14 +135,14 @@ GetBlockingObject (object)
 
 Returns the [object](/types#object) which is preventing the player from reaching the specified object.
 
-If an object is in [ScopeVisible](/functions/scope#scopevisible) but not in [ScopeReachable](/functions/scope#scopereachable), then it may be inside a container where the player can see it but not reach it. You can call the GetBlockingObject function to find out what is "blocking" the player from reaching the object. It will be the top-most parent which the player cannot reach through.
+If an object is in [ScopeVisible](/reference/functions/scope#scopevisible) but not in [ScopeReachable](/reference/functions/scope#scopereachable), then it may be inside a container where the player can see it but not reach it. You can call the GetBlockingObject function to find out what is "blocking" the player from reaching the object. It will be the top-most parent which the player cannot reach through.
 
 ## GetClone
 ```quest
 GetClone (object prototype, object parent)
 ```
 
-Returns the [object](/types#object) among **parent**'s direct children whose `prototype` attribute points to **prototype**, or [null](/types#null) if there isn't one. **parent** is optional and defaults to the current player. Useful for finding a previously-made clone (see [CloneObject](/functions/objects#cloneobject)) instead of creating a new one.
+Returns the [object](/types#object) among **parent**'s direct children whose `prototype` attribute points to **prototype**, or [null](/types#null) if there isn't one. **parent** is optional and defaults to the current player. Useful for finding a previously-made clone (see [CloneObject](/reference/functions/objects#cloneobject)) instead of creating a new one.
 
 ## GetDefiniteName
 ```quest
@@ -233,7 +233,7 @@ If **inclusiveobject** is true, then the volume of all objects within **object**
 Got (object)
 ```
 
-Returns a [boolean](/types#boolean) - **true** if the player has the specified object. This is just a convenient shortcut to seeing if it is within the list returned by [ScopeInventory](/functions/scope#scopeinventory).
+Returns a [boolean](/types#boolean) - **true** if the player has the specified object. This is just a convenient shortcut to seeing if it is within the list returned by [ScopeInventory](/reference/functions/scope#scopeinventory).
 
 ## GridSquareClick
 ```quest
@@ -281,7 +281,7 @@ Returns an [objectlist](/types#objectlist) of all parents of an object - the obj
 MoveObjectHere (object)
 ```
 
-Moves the object to the current player's room. Equivalent to `object.parent = game.pov.parent`. See also [MoveObject](/functions/objects#moveobject) to move an object to an arbitrary parent, and [AddToInventory](#addtoinventory) to move it into the player's inventory instead.
+Moves the object to the current player's room. Equivalent to `object.parent = game.pov.parent`. See also [MoveObject](/reference/functions/objects#moveobject) to move an object to an arbitrary parent, and [AddToInventory](#addtoinventory) to move it into the player's inventory instead.
 
 ## SetDark
 ```quest

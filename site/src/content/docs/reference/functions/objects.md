@@ -23,7 +23,7 @@ Returns a [boolean](/types#boolean) - **true** if the player is carrying at leas
 Clone (object object to clone)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Clones the object and returns the created clone. It is generally better to use [CloneObject](#cloneobject), which will automatically give the clone an alias so it will appear identical to the player (as names must be unique). 
 
@@ -68,7 +68,7 @@ Creates a new exit in the given direction, from and to the given rooms. Also cre
 DoesInherit (object object, string type name)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [boolean](/types#boolean) indicating whether the object inherits the specified type.
 
@@ -91,7 +91,7 @@ Note that the types "editor_player", "editor_room" and "editor_object" are remov
 GetExitByLink (object from room, object to room)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [string](/types#string) containing the name of the exit joining the specified rooms, if it exits. If it does not exist, [null](/types#null) is returned instead.
 
@@ -100,7 +100,7 @@ Returns a [string](/types#string) containing the name of the exit joining the sp
 GetExitByName (object from room, string direction name)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [string](/types#string) containing the name of the exit going from the specified room in the specified direction, if it exists. If it does not exist, [null](/types#null) is returned instead.
 
@@ -109,11 +109,11 @@ Returns a [string](/types#string) containing the name of the exit going from the
 GetObject (string object name)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns the [object](/types#object) of the specified name (or exit, or command, or turn script; but not timer). Returns null if the object doesn't exist.
 
-See also [HasObject](/functions/attributes#hasobject)
+See also [HasObject](/reference/functions/attributes#hasobject)
 
 ## KeysAvailable
 ```quest

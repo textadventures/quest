@@ -11,7 +11,7 @@ Functions for manipulating lists. For a discussion on how to use lists, see [her
 Contains (object parent, object child)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [boolean](/types#boolean) - **true** if the child object is contained by the parent. This doesn't necessarily mean that there is a direct parent-child relationship - for example if object A has parent B, and B has parent C, then
 
@@ -76,7 +76,7 @@ msg(IndexOf(list, "Five")
 ListCombine (list, list)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Combines two [stringlists](/types#stringlist) or two [objectlists](/types#objectlist) or two generic lists (can cannot add a list of one type to another).
 
@@ -96,7 +96,7 @@ combinedlist = ListCompact (list1 + list2)
 ListContains (list, any type item)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [boolean](/types#boolean) - **true** if the list contains the item.
 
@@ -105,7 +105,7 @@ Returns a [boolean](/types#boolean) - **true** if the list contains the item.
 ListCount (list)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an [int](/types#int) - the number of items in the list.
 
@@ -114,7 +114,7 @@ Returns an [int](/types#int) - the number of items in the list.
 ListExclude (list, any type item or list)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a copy of the [stringlist](/types#stringlist) or [objectlist](/types#objectlist), with the specified item removed, or with all the items removed if the second parameter is a list.
 
@@ -125,7 +125,7 @@ Note that this is different to the [list remove](/scripts#list-remove) script co
 ListItem (list, int index)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [string](/types#string) or an [object](/types#object), depending on whether the list is a [stringlist](/types#stringlist) or an [objectlist](/types#objectlist). Gets an item from the list by index. The index is zero-based. (The first item is at index 0, the second is at index 1, etc.)
 
@@ -136,7 +136,7 @@ Usually you will know the type of list that you're passing in, so you should use
 NewList ()
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an empty [list](/types#list). The list can contain any type of data, or a mixture - for example, both objects and strings.
 
@@ -147,7 +147,7 @@ If the list will only contain one type of data (as will usually be the case), yo
 NewObjectList ()
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an empty [objectlist](/types#objectlist).
 
@@ -156,7 +156,7 @@ Returns an empty [objectlist](/types#objectlist).
 NewStringList ()
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an empty [stringlist](/types#stringlist).
 
@@ -176,14 +176,14 @@ combinedlist = ObjectListCompact (list1 + list2)
 ObjectListItem (objectlist, int index)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns the [object](/types#object) from the list by the specified index. The index is zero-based. (The first item is at index 0, the second is at index 1, etc.)
 
 You can use the [ListItem](#listitem) function if you don't know the type of the list.
 
 ### Example
-For example, to show a specific objects' name from a list, first create an [objectlist](/types#objectlist) called myList, in this example it is a list of objects that can be seen currently [ScopeVisibleNotHeld](/functions/scope#scopevisiblenotheld).
+For example, to show a specific objects' name from a list, first create an [objectlist](/types#objectlist) called myList, in this example it is a list of objects that can be seen currently [ScopeVisibleNotHeld](/reference/functions/scope#scopevisiblenotheld).
 
 ```quest
 myList = ScopeVisibleNotHeld()
@@ -195,14 +195,14 @@ Now show the name of the second item in the list. Note that the second object is
 msg ("myList item 2 is " + ObjectListItem(myList, 1).name)
 ```
 
-This could be used with [GetRandomInt](/functions/random#getrandomint) to remove an item from the players inventory ([ScopeInventory](/functions/scope#scopeinventory)) and place it into the current room (for example, if you're creating a poltergeist or thief).
+This could be used with [GetRandomInt](/reference/functions/random#getrandomint) to remove an item from the players inventory ([ScopeInventory](/reference/functions/scope#scopeinventory)) and place it into the current room (for example, if you're creating a poltergeist or thief).
 
 ## ObjectListSort
 ```quest
 ObjectListSort (objectlist list, string attributes ...)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an [objectlist](/types#objectlist) - a copy of the input objectlist, sorted in order of the values of the first specified attribute (and then optionally by any subsequently specified attributes).
 
@@ -243,7 +243,7 @@ To return the values in reverse order, use [ObjectListSortDescending](#objectlis
 ObjectListSortDescending (objectlist list, string attributes ...)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns the reversed version of [ObjectListSort](#objectlistsort) - see that page for usage.
 
@@ -284,7 +284,7 @@ combinedlist = StringListCompact (list1 + list2)
 StringListItem (stringlist, int index)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns the [string](/types#string) from the list by the specified index. The index is zero-based. (The first item is at index 0, the second is at index 1, etc.)
 
@@ -295,7 +295,7 @@ You can use the [ListItem](#listitem) function if you don't know the type of the
 StringListSort (stringlist list)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [stringlist](/types#stringlist) - a copy of the input stringlist, sorted alphabetically.
 
@@ -306,7 +306,7 @@ To return the values in reverse order, use [StringListSortDescending](#stringlis
 StringListSortDescending (stringlist list)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [stringlist](/types#stringlist) - a copy of the input stringlist, reverse sorted alphabetically.
 

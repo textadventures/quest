@@ -8,7 +8,7 @@ We looked at functions in the [tutorial](/tutorial/more-things-to-do-with-object
 
 Quest Viva has a whole load of functions built in, many of them will be used in your game without you even knowing about it. You can see a full list here:
 
-[Functions](/functions/)
+[Functions](/reference/functions/)
 
 Quest Viva also has "script commands", which in many ways are like functions. One difference is that script commands are all named in lower case, while functions are all in CamelCase.
 

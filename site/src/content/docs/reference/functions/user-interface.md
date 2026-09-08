@@ -11,14 +11,14 @@ Functions that change what is displayed or how it is displayed or require the pl
 AddPageLink (object source, object destination, string text)
 ```
 
-Adds an option to the `dialoguepage` **source** linking to **destination**, displayed as **text**. If a link to that destination already exists, it's replaced. See also [RemovePageLink](#removepagelink) and [ShowPage](#showpage). There's also an [AddPageLink](/functions/gamebook#addpagelink) for gamebook pages, which works the same way.
+Adds an option to the `dialoguepage` **source** linking to **destination**, displayed as **text**. If a link to that destination already exists, it's replaced. See also [RemovePageLink](#removepagelink) and [ShowPage](#showpage). There's also an [AddPageLink](/reference/functions/gamebook#addpagelink) for gamebook pages, which works the same way.
 
 ## Ask
 ```quest
 Ask (string question)  { script }
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Shows an inline menu of the specified **question** and returns a [boolean](/types#boolean) variable **result** with **true** if the player answers "Yes" to the question.
 
@@ -87,7 +87,7 @@ Returns the fonts currently in use - the [defaultwebfont](/attributes#defaultweb
 GetInput()
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Waits for the user to enter some text at the command prompt. Instead of handling the input as a command, it is returned as the result of the function, as a [string](/types#string).
 
@@ -160,7 +160,7 @@ Prints the specified text centered.
 RemovePageLink (object source, object destination)
 ```
 
-Removes the option (if any) on the `dialoguepage` **source** that links to **destination**. See also [AddPageLink](#addpagelink). There's also a [RemovePageLink](/functions/gamebook#removepagelink) for gamebook pages, which works the same way.
+Removes the option (if any) on the `dialoguepage` **source** that links to **destination**. See also [AddPageLink](#addpagelink). There's also a [RemovePageLink](/reference/functions/gamebook#removepagelink) for gamebook pages, which works the same way.
 
 ## SetAlignment
 ```quest
@@ -237,7 +237,7 @@ Sets the web font. Here you can see all available fonts: <https://fonts.google.c
 ShowMenu (string caption, stringdictionary or list options, boolean allow ignore)  { script }
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Shows an inline menu of the specified options and returns a [string](/types#string) variable **result** containing the user input. If a dictionary of options is passed in, the values are displayed as options, the key is returned. If a list of options is passed in, the list item is returned if a string, or the name of the object.
 
@@ -245,7 +245,7 @@ If the "allow ignore" parameter is set to **true**, the player can ignore the me
 
 Use the [show menu](/scripts#show-menu) script command for a popup menu.
 
-The [Split](/functions/string#split) function can be useful to quickly get a list of options, whilst [switch](/scripts#switch) can be useful for dealing with the result. For example:
+The [Split](/reference/functions/string#split) function can be useful to quickly get a list of options, whilst [switch](/scripts#switch) can be useful for dealing with the result. For example:
 
 ```quest
 options = Split("Red;Green;Blue;Yellow", ";")
@@ -281,7 +281,7 @@ ShowMenu ("Select", ScopeInventory(), true) {
 ShowPage (object page, boolean allowCancel, boolean runTurnScripts)  { script }
 ```
 
-Starts a branching dialogue at the given `dialoguepage` object, for building NPC conversations or other choice-driven text out of linked pages rather than [ShowMenu](#showmenu) callbacks. Each page has a description and a set of options (added with [AddPageLink](/functions/gamebook#addpagelink)) linking to other pages; choosing an option is a normal command, so - unlike a ShowMenu-based dialogue - the game is fully idle between choices and save/load/undo work throughout.
+Starts a branching dialogue at the given `dialoguepage` object, for building NPC conversations or other choice-driven text out of linked pages rather than [ShowMenu](#showmenu) callbacks. Each page has a description and a set of options (added with [AddPageLink](/reference/functions/gamebook#addpagelink)) linking to other pages; choosing an option is a normal command, so - unlike a ShowMenu-based dialogue - the game is fully idle between choices and save/load/undo work throughout.
 
 - **allowCancel**: if true, entering any command other than a numbered option or option name ends the dialogue (via [EndPageDialogue](#endpagedialogue)) and then runs normally; if false, the player is told to choose one of the options.
 - **runTurnScripts**: whether turn scripts should fire for each choice made during the dialogue. Off by default, since each choice is a real turn and most games don't want e.g. hunger daemons ticking mid-conversation.

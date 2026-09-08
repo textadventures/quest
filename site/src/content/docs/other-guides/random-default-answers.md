@@ -14,7 +14,7 @@ The default answer of a command is defined in the language file. So if you want 
 
 ## Random default answers
 
-If you want to return more than one default message you have to define additional dynamictemplates and call them from the main-template with the function [DynamicTemplate](/functions/string#dynamictemplate)
+If you want to return more than one default message you have to define additional dynamictemplates and call them from the main-template with the function [DynamicTemplate](/reference/functions/string#dynamictemplate)
 
 **example for kill-command:**
 

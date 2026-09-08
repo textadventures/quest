@@ -39,7 +39,7 @@ d[number of sides]-[penalty]
 GetRandomDouble ()
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a random [double](/types#double) value between 0.0 and 1.0.
 
@@ -48,7 +48,7 @@ Returns a random [double](/types#double) value between 0.0 and 1.0.
 GetRandomInt (integer min, integer max)
 ```
 
-<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
+<a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a random [int](/types#int) value between the specified maximum and minimum.
 

@@ -128,7 +128,7 @@ ShowMenu ("Are you sure?", Split("Yes;No", ";"), false) {
 }
 ```
 
-You can also use the `Ask` function - see [here](/functions/user-interface#ask).
+You can also use the `Ask` function - see [here](/reference/functions/user-interface#ask).
 
 
 ## Note 2: code after will run immediately

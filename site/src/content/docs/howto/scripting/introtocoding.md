@@ -157,7 +157,7 @@ Quest Viva has a large number of script commands and functions, listed on these 
 
 [Script commands](/scripts/)
 
-[Functions](/functions/)
+[Functions](/reference/functions/)
 
 See here for how to use them and how to write your own:
 

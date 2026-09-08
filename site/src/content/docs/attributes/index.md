@@ -486,7 +486,7 @@ See also [unlockmessage](#unlockmessage).
 
 ## lookonly
 
-"lookonly" is a [boolean](/types#boolean) attribute on an exit. If set to true, the exit is excluded from the exit list shown to the player (via [GetExitsList](/functions/scope#getexitslist)) and from the automatically generated map, and the player cannot move through it with "go" - attempting to do so gives the same response as an unrecognised direction. It's intended for exits that exist only to be referred to by name in a "look" context (e.g. "look north"), not as a way to actually move between rooms.
+"lookonly" is a [boolean](/types#boolean) attribute on an exit. If set to true, the exit is excluded from the exit list shown to the player (via [GetExitsList](/reference/functions/scope#getexitslist)) and from the automatically generated map, and the player cannot move through it with "go" - attempting to do so gives the same response as an unrecognised direction. It's intended for exits that exist only to be referred to by name in a "look" context (e.g. "look north"), not as a way to actually move between rooms.
 
 ## male
 
@@ -656,7 +656,7 @@ See also [suffix](#suffix).
 
 ## scenery
 
-"scenery" is a [boolean](/types#boolean) attribute. If set to true, the object is not automatically listed in room descriptions or in the "Places and Objects" list. It is still within [ScopeVisible](/functions/scope#scopevisible) though, so the player can look at and interact with the object.
+"scenery" is a [boolean](/types#boolean) attribute. If set to true, the object is not automatically listed in room descriptions or in the "Places and Objects" list. It is still within [ScopeVisible](/reference/functions/scope#scopevisible) though, so the player can look at and interact with the object.
 
 ## selfuseanything
 

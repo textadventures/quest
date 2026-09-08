@@ -8,7 +8,7 @@ The [Tutorial](/tutorial/using-pages) covers the basics of setting up a Pages di
 
 ## When to use Pages
 
-Quest Viva has several ways to let the player talk to a character - see [Introduction to conversations](/howto/npcs/conversations) for an overview. Pages are the right choice when you want a structured, multi-step exchange where each reply leads to a fixed set of further choices - the Text Adventure equivalent of a gamebook's branching passages. For a one-off list of topics with no follow-up, a [ShowMenu](/functions/user-interface#showmenu)-based menu (see [Handling SPEAK TO](/howto/npcs/speak-to)) is simpler. For a free-form "ask about anything" system, use [Ask/Tell](/howto/npcs/ask-about) instead.
+Quest Viva has several ways to let the player talk to a character - see [Introduction to conversations](/howto/npcs/conversations) for an overview. Pages are the right choice when you want a structured, multi-step exchange where each reply leads to a fixed set of further choices - the Text Adventure equivalent of a gamebook's branching passages. For a one-off list of topics with no follow-up, a [ShowMenu](/reference/functions/user-interface#showmenu)-based menu (see [Handling SPEAK TO](/howto/npcs/speak-to)) is simpler. For a free-form "ask about anything" system, use [Ask/Tell](/howto/npcs/ask-about) instead.
 
 The main practical advantage of Pages over `ShowMenu` is that each choice is a complete, ordinary turn - the game is never "waiting" on a menu callback, so save, load and undo all work in the middle of a conversation.
 
@@ -24,13 +24,13 @@ Each page has:
 
 ## Starting and redirecting
 
-[ShowPage](/functions/user-interface#showpage) starts a dialogue at a given page. Call it from wherever you want the conversation to begin - a verb, a command, an Ask/Tell topic, or a timer:
+[ShowPage](/reference/functions/user-interface#showpage) starts a dialogue at a given page. Call it from wherever you want the conversation to begin - a verb, a command, an Ask/Tell topic, or a timer:
 
 ```quest
 ShowPage (bob_chat, true, false)
 ```
 
-From inside a page's own script (Script or Script + Text page types), you can redirect to a different page with [GoToPage](/functions/user-interface#gotopage) - useful for skipping a page based on game state, the same way you might branch a `SPEAK TO` response:
+From inside a page's own script (Script or Script + Text page types), you can redirect to a different page with [GoToPage](/reference/functions/user-interface#gotopage) - useful for skipping a page based on game state, the same way you might branch a `SPEAK TO` response:
 
 ```quest
 if (not chest.locked) {
@@ -45,11 +45,11 @@ If a Script or Script + Text page's script doesn't redirect anywhere else, the d
 
 ## Ending early
 
-A page with an empty options list ends the dialogue automatically once it's shown. To end things early from partway through a page's own script - for example, some game state means this exchange should be cut short - call [EndPageDialogue](/functions/user-interface#endpagedialogue) directly; it hides the current page's options and clears the dialogue state before the option list would otherwise have been printed.
+A page with an empty options list ends the dialogue automatically once it's shown. To end things early from partway through a page's own script - for example, some game state means this exchange should be cut short - call [EndPageDialogue](/reference/functions/user-interface#endpagedialogue) directly; it hides the current page's options and clears the dialogue state before the option list would otherwise have been printed.
 
 ## Building options dynamically
 
-The editor's Options list is the easiest way to set up a page's links, but you can also add and remove them from a script, which is useful for a conversation that changes shape as the game progresses - for example, unlocking a new topic once the player has found some evidence. [AddPageLink](/functions/user-interface#addpagelink) and [RemovePageLink](/functions/user-interface#removepagelink) do this:
+The editor's Options list is the easiest way to set up a page's links, but you can also add and remove them from a script, which is useful for a conversation that changes shape as the game progresses - for example, unlocking a new topic once the player has found some evidence. [AddPageLink](/reference/functions/user-interface#addpagelink) and [RemovePageLink](/reference/functions/user-interface#removepagelink) do this:
 
 ```quest
 AddPageLink (bob_chat, bob_lab_report, "Ask about the lab report")
@@ -65,11 +65,11 @@ Under the hood, options are stored in the page's `options` attribute, a [stringd
 
 ## Remembering what's been said
 
-[HasSeenPage](/functions/user-interface#hasseenpage) returns whether a given page has already been shown, based on its `visited` attribute, so you can vary a page's script the second time the player reaches it - see the [Tutorial](/tutorial/using-pages#varying-page-text) for a worked example.
+[HasSeenPage](/reference/functions/user-interface#hasseenpage) returns whether a given page has already been shown, based on its `visited` attribute, so you can vary a page's script the second time the player reaches it - see the [Tutorial](/tutorial/using-pages#varying-page-text) for a worked example.
 
 ## See also
 
 - [Tutorial: Using Pages](/tutorial/using-pages)
 - [Creating a gamebook](/tutorial/creating-a-gamebook), for the equivalent gamebook page mechanism
-- [User interface functions](/functions/user-interface) for the full ShowPage/GoToPage/EndPageDialogue/HasSeenPage reference
+- [User interface functions](/reference/functions/user-interface) for the full ShowPage/GoToPage/EndPageDialogue/HasSeenPage reference
 - [Introduction to conversations](/howto/npcs/conversations)

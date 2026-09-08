@@ -628,67 +628,67 @@ export default defineConfig({
                             "items": [
                                 {
                                     "label": "Overview",
-                                    "slug": "functions"
+                                    "slug": "reference/functions"
                                 },
                                 {
                                     "label": "Functions for attributes",
-                                    "slug": "functions/attributes"
+                                    "slug": "reference/functions/attributes"
                                 },
                                 {
                                     "label": "Functions for variables",
-                                    "slug": "functions/variables"
+                                    "slug": "reference/functions/variables"
                                 },
                                 {
                                     "label": "Functions for objects and exits",
-                                    "slug": "functions/objects"
+                                    "slug": "reference/functions/objects"
                                 },
                                 {
                                     "label": "Timers and turnscripts",
-                                    "slug": "functions/timers-turnscripts"
+                                    "slug": "reference/functions/timers-turnscripts"
                                 },
                                 {
                                     "label": "User interface functions",
-                                    "slug": "functions/user-interface"
+                                    "slug": "reference/functions/user-interface"
                                 },
                                 {
                                     "label": "List functions",
-                                    "slug": "functions/list"
+                                    "slug": "reference/functions/list"
                                 },
                                 {
                                     "label": "Scope functions",
-                                    "slug": "functions/scope"
+                                    "slug": "reference/functions/scope"
                                 },
                                 {
                                     "label": "Dictionary functions",
-                                    "slug": "functions/dictionary"
+                                    "slug": "reference/functions/dictionary"
                                 },
                                 {
                                     "label": "String functions",
-                                    "slug": "functions/string"
+                                    "slug": "reference/functions/string"
                                 },
                                 {
                                     "label": "Clothing functions",
-                                    "slug": "functions/clothing"
+                                    "slug": "reference/functions/clothing"
                                 },
                                 {
                                     "label": "Randomising functions",
-                                    "slug": "functions/random"
+                                    "slug": "reference/functions/random"
                                 },
                                 {
                                     "label": "General functions",
-                                    "slug": "functions/general"
+                                    "slug": "reference/functions/general"
                                 },
                                 {
                                     "label": "Core.aslx functions",
-                                    "slug": "functions/core"
+                                    "slug": "reference/functions/core"
                                 },
                                 {
                                     "label": "Internal Core.aslx functions",
-                                    "slug": "functions/internal-core"
+                                    "slug": "reference/functions/internal-core"
                                 },
                                 {
                                     "label": "Mathematical functions",
-                                    "slug": "functions/maths"
+                                    "slug": "reference/functions/maths"
                                 }
                             ]
                         },
@@ -736,7 +736,7 @@ export default defineConfig({
                         },
                         {
                             "label": "Hard-coded functions and library functions",
-                            "slug": "functions/hardcoded"
+                            "slug": "reference/functions/hardcoded"
                         },
                         {
                             "label": "ASLX file format",
