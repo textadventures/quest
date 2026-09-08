@@ -24,6 +24,12 @@ const coreDir = join(repoRoot, "src", "Engine", "Core");
 const docsDir = join(repoRoot, "site", "src", "content", "docs");
 const outPath = join(repoRoot, "src", "AppShell", "src", "lib", "docs-index.generated.ts");
 
+// Where the function reference lives, as a site slug. Not top-level /functions/:
+// Cloudflare Pages reserves a root `functions` directory for Pages Functions and
+// excludes it from static assets entirely, so every page there 404'd in
+// production until it moved (see site/public/_redirects).
+const FUNCTIONS_SECTION = "reference/functions";
+
 // Keywords that name a script command but have no useful reference entry:
 // syntax rather than a command (`=`, `//`, `@failed`), or internal
 // pseudo-elements the editor uses to group the tree (`_objects`, ...).
@@ -45,9 +51,9 @@ const elementTypeKeywords = new Set([
 // than letting one side fall out of readdir order, which would silently pick
 // functions/gamebook for every one of them (g sorts before u).
 const dualPageFunctions = {
-  AddPageLink: { default: "functions/user-interface", gamebook: "functions/gamebook" },
-  HasSeenPage: { default: "functions/user-interface", gamebook: "functions/gamebook" },
-  RemovePageLink: { default: "functions/user-interface", gamebook: "functions/gamebook" },
+  AddPageLink: { default: `${FUNCTIONS_SECTION}/user-interface`, gamebook: `${FUNCTIONS_SECTION}/gamebook` },
+  HasSeenPage: { default: `${FUNCTIONS_SECTION}/user-interface`, gamebook: `${FUNCTIONS_SECTION}/gamebook` },
+  RemovePageLink: { default: `${FUNCTIONS_SECTION}/user-interface`, gamebook: `${FUNCTIONS_SECTION}/gamebook` },
 };
 
 function readScriptKeywords() {
@@ -71,10 +77,11 @@ function readHeadings() {
     for (const m of text.matchAll(/^## (.+)$/gm)) headings.add(m[1].trim());
     bySlug.set(slug, headings);
   };
-  for (const entry of readdirSync(join(docsDir, "functions"), { withFileTypes: true })) {
+  const functionsDir = join(docsDir, ...FUNCTIONS_SECTION.split("/"));
+  for (const entry of readdirSync(functionsDir, { withFileTypes: true })) {
     if (!entry.isFile() || !entry.name.endsWith(".md")) continue;
-    const slug = `functions/${entry.name.replace(/\.md$/, "")}`;
-    add(slug === "functions/index" ? "functions" : slug, join(docsDir, "functions", entry.name));
+    const slug = `${FUNCTIONS_SECTION}/${entry.name.replace(/\.md$/, "")}`;
+    add(slug === `${FUNCTIONS_SECTION}/index` ? FUNCTIONS_SECTION : slug, join(functionsDir, entry.name));
   }
   add("scripts", join(docsDir, "scripts", "index.md"));
   return bySlug;

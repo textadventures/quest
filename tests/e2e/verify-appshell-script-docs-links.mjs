@@ -1,5 +1,5 @@
 // Verifies the contextual documentation deep-links on script commands:
-//   - ScriptEditor's hover "?" on a script row, and the "? Help" button in the
+//   - ScriptEditor's hover "?" on a script row, and the "Help" button in the
 //     selection toolbar (the touch path to the same link)
 //   - AddScriptModal's footer "Learn more" link for the highlighted command
 // Both resolve through docsUrlForScriptKeyword(), backed by the generated
@@ -44,16 +44,16 @@ async function run() {
     check('AddScriptModal "Learn more" href for "Print a message" (msg)',
         await learnMore.getAttribute('href'), 'https://questviva.com/scripts/#msg');
 
-    // A command with no reference entry must show no link at all. "=" (set a
-    // variable) is syntax, deliberately absent from the generated index.
-    // A (function)-style command resolves to a functions/* page rather than the
-    // scripts page - that's 88 of the index's 125 entries, and a different
-    // lookup path in the generator.
+    // A (function)-style command resolves to a reference/functions/* page rather
+    // than the scripts page - that's 88 of the index's 125 entries, and a
+    // different lookup path in the generator.
     await page.fill('input[placeholder="Filter commands..."]', 'Move object');
     await page.locator('[role="option"]:has-text("Move object")').first().click();
     check('AddScriptModal "Learn more" href for "Move object" ((function)MoveObject)',
-        await learnMore.getAttribute('href'), 'https://questviva.com/functions/objects/#moveobject');
+        await learnMore.getAttribute('href'), 'https://questviva.com/reference/functions/objects/#moveobject');
 
+    // A command with no reference entry must show no link at all. "=" (set a
+    // variable) is syntax, deliberately absent from the generated index.
     await page.fill('input[placeholder="Filter commands..."]', 'Set a variable or attribute');
     const setRow = page.locator('[role="option"]:has-text("Set a variable or attribute")').first();
     if (await setRow.count() !== 1) {
