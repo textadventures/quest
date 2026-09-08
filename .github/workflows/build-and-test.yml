@@ -34,6 +34,10 @@ jobs:
         run: npm run check-function-docs
         working-directory: site
 
+      - name: Check the editor's docs deep-link index is in sync with the docs
+        run: npm run check-docs-index
+        working-directory: site
+
       - name: Build
         run: npm run build
         working-directory: site

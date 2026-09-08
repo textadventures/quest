@@ -170,6 +170,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-appshell-script-adder-filter.mjs http://localhost:5174
         working-directory: tests/e2e
+      - run: node verify-appshell-script-docs-links.mjs http://localhost:5174
+        working-directory: tests/e2e
       - run: node verify-appshell-script-label-stacks-below.mjs http://localhost:5174
         working-directory: tests/e2e
       - run: node verify-appshell-scriptadder-advanced-categories.mjs http://localhost:5174

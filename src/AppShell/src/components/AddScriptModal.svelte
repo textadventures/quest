@@ -1,6 +1,8 @@
 <script lang="ts">
     import type { ScriptCategoryInfo, ScriptCommandInfo } from "$lib/types";
     import { t } from "$lib/i18n";
+    import { docsUrlForScriptKeyword, scriptKeywordName } from "$lib/docs-links";
+    import { isGamebook } from "$lib/editor-store";
     import { trapFocus } from "$lib/actions/trapFocus";
     import Search from "@lucide/svelte/icons/search";
     import X from "@lucide/svelte/icons/x";
@@ -41,6 +43,17 @@
     let selectedCommand = $state<ScriptCommandInfo | null>(null);
 
     const selectedCategory = $derived(categories[selectedCategoryIndex] ?? null);
+    // Null for commands with no reference entry, and while nothing is selected -
+    // which is what hides the footer's "Learn more" link in those cases.
+    const selectedCommandDocsUrl = $derived(
+        docsUrlForScriptKeyword(selectedCommand?.keyword, $isGamebook)
+    );
+
+    // Split the label around its {command} placeholder so the command name can
+    // be rendered in a code font. Without that, multi-word commands read as
+    // broken grammar ("Learn more about play sound") rather than as the name of
+    // a thing. t() with no params returns the template unsubstituted.
+    const learnMoreParts = $derived(t("addScriptModal.learnMoreAbout").split("{command}"));
 
     // Within a mixed category (not already-entirely-advanced, which already got its own
     // category-level divider above), commands are pre-sorted non-advanced-first by the
@@ -176,6 +189,14 @@
             onClose();
         }
         if (e.key === "Enter" && selectedCommand) {
+            // "Enter adds the selected command" is for the filter box and the
+            // command list. A focused link or footer button activates itself on
+            // Enter, so hijacking it there means Tab-to-the-docs-link + Enter
+            // adds the command instead of opening the link (and Enter on Cancel
+            // added it instead of cancelling). The command rows are buttons too,
+            // but their own click only re-selects - they still need this.
+            const target = e.target as HTMLElement | null;
+            if (target?.closest("a[href], button") && !target.closest("[role=\"option\"]")) return;
             e.preventDefault();
             onOk();
         }
@@ -352,7 +373,21 @@
         </div>
 
         <!-- Footer -->
-        <div class="px-5 py-3 border-t border-surface-200-800 flex justify-end gap-3 flex-shrink-0">
+        <div class="px-5 py-3 border-t border-surface-200-800 flex items-center justify-end gap-3 flex-shrink-0">
+            <!-- Reference link for whichever command is highlighted. Named after
+                 the command rather than a bare "Learn more": the list shows the
+                 editor's own wording ("Move object"), so the link is the only
+                 place the author sees the name they'd actually write in code,
+                 and it makes clear the link tracks the selection. Absent for
+                 commands with no docs entry, and while nothing is selected. -->
+            {#if selectedCommandDocsUrl}
+                <a
+                    href={selectedCommandDocsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="anchor text-xs mr-auto"
+                >{learnMoreParts[0]}<code class="font-mono">{scriptKeywordName(selectedCommand!.keyword)}</code>{learnMoreParts[1] ?? ""}</a>
+            {/if}
             <button type="button" onclick={onClose} class="btn btn-sm preset-tonal text-xs">{t("common.cancel")}</button>
             <button
                 type="button"
