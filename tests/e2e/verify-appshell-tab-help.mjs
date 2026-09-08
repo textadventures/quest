@@ -54,11 +54,19 @@ async function run() {
     await selectTab('Setup');
     check('no help link on a tab without a <helpurl> (game > Setup)', await helpLink().count(), 0);
 
+    // game > Scripts is start/room-enter/turn scripts, which nothing documents;
+    // "Advanced game scripts" is about inituserinterface and friends, so it
+    // belongs to the Advanced Scripts tab and this one deliberately has no link.
     await selectTab('Scripts');
-    check('help link on game > Scripts', await helpLink().getAttribute('href'),
-        'https://questviva.com/howto/scripting/advanced-game-scripts/');
-    check('help link names the guide it opens',
-        (await helpLink().textContent()).trim(), 'Help: Advanced game scripts');
+    check('no help link on game > Scripts (nothing documents those scripts)', await helpLink().count(), 0);
+
+    // /howto/ux/ui-style/ has a section per tab, so the link is anchored and
+    // names the section rather than the whole page.
+    await selectTab('Display');
+    check('help link on game > Display is anchored at its section',
+        await helpLink().getAttribute('href'), 'https://questviva.com/howto/ux/ui-style/#the-display-tab');
+    check('anchored help link names the section, not the page',
+        (await helpLink().textContent()).trim(), 'Help: The display tab');
 
     // --- a room: Exits carries its own target ---
     await page.click('text=room');

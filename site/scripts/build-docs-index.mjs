@@ -140,19 +140,38 @@ function readHelpPageTitles() {
   }
 
   const titles = {};
-  for (const path of [...paths].sort()) {
+  for (const url of [...paths].sort()) {
+    const [path, anchor] = url.split("#");
     const slug = path.replace(/^\/|\/$/g, "");
     const candidates = [`${slug}.md`, `${slug}/index.md`, `${slug}.mdx`];
-    let found = null;
+    let text = null;
     for (const c of candidates) {
       const file = join(docsDir, ...c.split("/"));
       if (!existsSync(file)) continue;
-      const m = /^title:\s*["']?(.*?)["']?\s*$/m.exec(readFileSync(file, "utf8"));
-      if (m) found = m[1];
+      text = readFileSync(file, "utf8");
       break;
     }
-    if (!found) throw new Error(`<helpurl> ${path} has no page with a title - check-editor-help-urls.mjs covers this too`);
-    titles[path] = found;
+    if (text === null) throw new Error(`<helpurl> ${url} has no page - check-editor-help-urls.mjs covers this too`);
+
+    let found = null;
+    if (anchor) {
+      // An anchored link points at one section, so name that section rather
+      // than the whole page: "The display tab" beats "The UI style" on a tab
+      // whose guide covers several tabs at once.
+      for (const m of text.matchAll(/^#{2,3} (.+)$/gm)) {
+        const heading = m[1].trim();
+        if (anchorFor(heading.replace(/[*_`]/g, "")) === anchor) {
+          found = heading.replace(/[*_`]/g, "");
+          break;
+        }
+      }
+    }
+    if (!found) {
+      const m = /^title:\s*["']?(.*?)["']?\s*$/m.exec(text);
+      found = m ? m[1] : null;
+    }
+    if (!found) throw new Error(`<helpurl> ${url} has no title or matching heading`);
+    titles[url] = found;
   }
   return titles;
 }

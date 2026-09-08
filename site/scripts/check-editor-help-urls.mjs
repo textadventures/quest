@@ -3,7 +3,8 @@
 // against the built documentation. Run after `npm run build` (it inspects
 // dist/):  node site/scripts/check-editor-help-urls.mjs
 //
-// A <helpurl> is the target of the "?" shown on an element editor tab, so a
+// A <helpurl> is the target of the help link shown above an element editor
+// tab's contents, so a
 // docs page that moves or is renamed would silently start 404ing for authors.
 // Both sides live in this repo, so the mismatch can be a build failure instead.
 //
@@ -53,12 +54,20 @@ for (const entry of readdirSync(coreDir, { withFileTypes: true })) {
       problems.push(`${where}: <helpurl> inside <${parent}> - only <tab> reads it, so this one is dead`);
       continue;
     }
-    if (!url.startsWith("/") || !url.endsWith("/")) {
-      problems.push(`${where}: "${url}" should be a site-relative path with a trailing slash (e.g. /howto/world/exits/)`);
+    const [path, anchor] = url.split("#");
+    if (!path.startsWith("/") || !path.endsWith("/")) {
+      problems.push(`${where}: "${url}" should be a site-relative path with a trailing slash (e.g. /howto/world/exits/, or /howto/ux/ui-style/#the-display-tab)`);
       continue;
     }
-    if (!existsSync(join(dist, url.replace(/^\/|\/$/g, ""), "index.html"))) {
+    const page = join(dist, path.replace(/^\/|\/$/g, ""), "index.html");
+    if (!existsSync(page)) {
       problems.push(`${where}: "${url}" does not resolve to a built page`);
+      continue;
+    }
+    // An anchor that has gone stale lands the reader at the top of a page that
+    // may be about something much broader than their tab, so check it too.
+    if (anchor && !readFileSync(page, "utf8").includes(`id="${anchor}"`)) {
+      problems.push(`${where}: "${url}" - no #${anchor} on that page`);
     }
   }
 }
