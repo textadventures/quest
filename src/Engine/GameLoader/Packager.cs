@@ -27,15 +27,18 @@ internal class Packager(WorldModel worldModel)
             var ifid = _worldModel.Game.Fields.GetString("gameid")!.Trim().ToUpperInvariant();
             var ifidBrand = $"UUID://{ifid}//\n";
 
+            var includeFileList = includeFiles?.ToList() ?? [];
+            var ifiction = IFictionWriter.Write(_worldModel, includeFileList);
+
             if (filename != null)
             {
                 using var fileStream = File.Create(filename);
-                WriteZip(fileStream, data, ifidBrand, includeFiles);
+                WriteZip(fileStream, data, ifidBrand, ifiction, includeFileList);
             }
             else
             {
                 // Caller owns outputStream — do not dispose it.
-                WriteZip(outputStream, data, ifidBrand, includeFiles);
+                WriteZip(outputStream, data, ifidBrand, ifiction, includeFileList);
             }
         }
         catch (Exception ex)
@@ -47,8 +50,8 @@ internal class Packager(WorldModel worldModel)
         return true;
     }
 
-    private static void WriteZip(Stream stream, string data, string ifidBrand,
-        IEnumerable<WorldModel.PackageIncludeFile> includeFiles)
+    private static void WriteZip(Stream stream, string data, string ifidBrand, string ifiction,
+        List<WorldModel.PackageIncludeFile> includeFileList)
     {
         using var zip = new ZipArchive(stream, ZipArchiveMode.Create, leaveOpen: true);
         zip.Comment = ifidBrand;
@@ -60,7 +63,14 @@ internal class Packager(WorldModel worldModel)
             writer.Write(data);
         }
 
-        foreach (var file in includeFiles)
+        var ifictionEntry = zip.CreateEntry("metadata.iFiction", CompressionLevel.Optimal);
+        using (var entryStream = ifictionEntry.Open())
+        using (var writer = new StreamWriter(entryStream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false)))
+        {
+            writer.Write(ifiction);
+        }
+
+        foreach (var file in includeFileList)
         {
             var fileEntry = zip.CreateEntry(file.Filename, CompressionLevel.Optimal);
             using var fileEntryStream = fileEntry.Open();

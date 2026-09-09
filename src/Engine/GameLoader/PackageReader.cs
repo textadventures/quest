@@ -31,6 +31,12 @@ internal class PackageReader
             foreach (var entry in zip.Entries)
             {
                 var entryName = entry.FullName;
+                // Bibliographic sidecar for Babel / IF Archive — not a game resource.
+                if (string.Equals(entryName, "metadata.iFiction", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
                 var memoryStream = new MemoryStream();
                 entry.Open().CopyTo(memoryStream);
                 _files.TryAdd(entryName, memoryStream.ToArray());
