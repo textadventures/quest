@@ -134,6 +134,7 @@
   <template name="EditorGameAuthor">Author</template>
   <template name="EditorGameDisplaytitle">Display title and author when the game begins</template>
   <template name="EditorGameVersion">Version</template>
+  <template name="EditorGameVersionCode">Version Code</template>
   <template name="EditorGameTheGameIDbelow">The Game ID below is used to uniquely identify your game. You should only generate a new ID if you have copied a game to create a new one.</template>
   <template name="EditorGameGameID">Game ID</template>
   <template name="EditorGameCategory">Category</template>

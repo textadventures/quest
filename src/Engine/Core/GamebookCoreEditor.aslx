@@ -217,6 +217,16 @@
         <controltype>textbox</controltype>
         <caption>[EditorGameVersion]</caption>
         <attribute>version</attribute>
+        <width>120</width>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <caption>[EditorGameVersionCode]</caption>
+        <attribute>versioncode</attribute>
+        <width>80</width>
+        <minimum>0</minimum>
+        <samerow/>
       </control>
 
       <control>

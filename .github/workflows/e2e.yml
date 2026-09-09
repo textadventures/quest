@@ -200,6 +200,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-appshell-verbs-editor.mjs http://localhost:5174
         working-directory: tests/e2e
+      - run: node verify-appshell-versioncode.mjs http://localhost:5174
+        working-directory: tests/e2e
       - run: node verify-rename-invalid-name.mjs http://localhost:5174
         working-directory: tests/e2e
       - run: node verify-update-banner-web.mjs http://localhost:5174

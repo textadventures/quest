@@ -938,7 +938,11 @@
         if (HasAttribute (game, "author")) {
           s = s + "<b>AUTHOR: </b>" + game.author + "<br/>"
         }
-        s = s + "<b>VERSION: </b>" + game.version + "<br/>"
+        s = s + "<b>VERSION: </b>" + game.version
+        if (HasInt (game, "versioncode")) {
+          s = s + " (" + game.versioncode + ")"
+        }
+        s = s + "<br/>"
         s = s + "<b>IFID: </b>" + game.gameid + "<br/>"
         s = s + "<br/>"
         msg (s)
