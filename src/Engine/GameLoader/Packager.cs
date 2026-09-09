@@ -14,24 +14,28 @@ internal class Packager(WorldModel worldModel)
 
         try
         {
-            var data = _worldModel.Save(SaveMode.Package, includeWalkthrough);
-
-            using var stream = filename != null ? File.Create(filename) : outputStream;
-            using (var zip = new ZipArchive(stream, ZipArchiveMode.Create, leaveOpen: true))
+            // Editor normally assigns gameid on open; ensure publish never ships without an IFID.
+            if (string.IsNullOrWhiteSpace(_worldModel.Game.Fields.GetString("gameid")))
             {
-                var gameEntry = zip.CreateEntry("game.aslx", CompressionLevel.Optimal);
-                using (var entryStream = gameEntry.Open())
-                using (var writer = new StreamWriter(entryStream, Encoding.UTF8))
-                {
-                    writer.Write(data);
-                }
+                _worldModel.Game.Fields.Set("gameid", Guid.NewGuid().ToString());
+            }
 
-                foreach (var file in includeFiles)
-                {
-                    var fileEntry = zip.CreateEntry(file.Filename, CompressionLevel.Optimal);
-                    using var fileEntryStream = fileEntry.Open();
-                    file.Content.CopyTo(fileEntryStream);
-                }
+            var data = _worldModel.Save(SaveMode.Package, includeWalkthrough);
+            // Babel "other file formats": literal ASCII UUID://…// somewhere in the file.
+            // ZIP archive comment is written at the end of the archive as raw bytes.
+            // Trailing newline to workaround https://github.com/iftechfoundation/babel-tool/issues/43
+            var ifid = _worldModel.Game.Fields.GetString("gameid")!.Trim().ToUpperInvariant();
+            var ifidBrand = $"UUID://{ifid}//\n";
+
+            if (filename != null)
+            {
+                using var fileStream = File.Create(filename);
+                WriteZip(fileStream, data, ifidBrand, includeFiles);
+            }
+            else
+            {
+                // Caller owns outputStream — do not dispose it.
+                WriteZip(outputStream, data, ifidBrand, includeFiles);
             }
         }
         catch (Exception ex)
@@ -41,5 +45,26 @@ internal class Packager(WorldModel worldModel)
         }
 
         return true;
+    }
+
+    private static void WriteZip(Stream stream, string data, string ifidBrand,
+        IEnumerable<WorldModel.PackageIncludeFile> includeFiles)
+    {
+        using var zip = new ZipArchive(stream, ZipArchiveMode.Create, leaveOpen: true);
+        zip.Comment = ifidBrand;
+
+        var gameEntry = zip.CreateEntry("game.aslx", CompressionLevel.Optimal);
+        using (var entryStream = gameEntry.Open())
+        using (var writer = new StreamWriter(entryStream, Encoding.UTF8))
+        {
+            writer.Write(data);
+        }
+
+        foreach (var file in includeFiles)
+        {
+            var fileEntry = zip.CreateEntry(file.Filename, CompressionLevel.Optimal);
+            using var fileEntryStream = fileEntry.Open();
+            file.Content.CopyTo(fileEntryStream);
+        }
     }
 }
