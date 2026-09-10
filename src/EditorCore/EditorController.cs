@@ -58,10 +58,10 @@ public class TemplateData
 
 public sealed class EditorController : IDisposable
 {
-    private const string k_commands = "_gameCommands";
-    private const string k_verbs = "_gameVerbs";
+    private const string Commands = "_gameCommands";
+    private const string Verbs = "_gameVerbs";
 
-    private static readonly Dictionary<ValidationMessage, string> s_validationMessages = new()
+    private static readonly Dictionary<ValidationMessage, string> ValidationMessages = new()
     {
         {ValidationMessage.OK, "No error"},
         {ValidationMessage.ItemAlreadyExists, "Item '{0}' already exists in the list"},
@@ -94,9 +94,9 @@ public sealed class EditorController : IDisposable
         {ValidationMessage.MismatchingQuotes, "Missing quote character (\")"}
     };
 
-    private static readonly List<string> s_invalidChars = new() {"\\", "/", ":", "*", "?", "\"", "<", ">", "|"};
+    private static readonly List<string> InvalidChars = new() {"\\", "/", ":", "*", "?", "\"", "<", ">", "|"};
 
-    private readonly List<ElementType> m_advancedTypes = new()
+    private readonly List<ElementType> _advancedTypes = new()
     {
         ElementType.DynamicTemplate,
         ElementType.Function,
@@ -108,11 +108,11 @@ public sealed class EditorController : IDisposable
         ElementType.Walkthrough
     };
 
-    private readonly Dictionary<string, Type> m_controlTypes = new();
-    private readonly Dictionary<string, EditorDefinition> m_editorDefinitions = new();
-    private readonly Dictionary<string, EditorDefinition> m_expressionDefinitions = new();
+    private readonly Dictionary<string, Type> _controlTypes = new();
+    private readonly Dictionary<string, EditorDefinition> _editorDefinitions = new();
+    private readonly Dictionary<string, EditorDefinition> _expressionDefinitions = new();
 
-    private readonly List<ElementType> m_ignoredTypes = new()
+    private readonly List<ElementType> _ignoredTypes = new()
     {
         ElementType.ImpliedType,
         ElementType.Delegate,
@@ -122,20 +122,20 @@ public sealed class EditorController : IDisposable
         ElementType.Resource
     };
 
-    private readonly Regex s_startsWithNumberRegex = new(@"^\d");
+    private readonly Regex _startsWithNumberRegex = new(@"^\d");
 
-    private readonly Regex s_validNameRegex = new(@"^[\w ]+$");
-    private List<Element> m_clipboardElements;
-    private ElementType m_clipboardElementType;
-    private List<IScript> m_clipboardScripts;
-    private Dictionary<ElementType, TreeHeader> m_elementTreeStructure;
-    private FilterOptions m_filterOptions;
-    private FontsManager m_fontsManager;
-    private bool m_initialised;
-    private bool m_lastelementscutout;
-    private ScriptFactory m_scriptFactory;
-    private bool m_simpleMode;
-    private Dictionary<string, string> m_treeTitles;
+    private readonly Regex _validNameRegex = new(@"^[\w ]+$");
+    private List<Element> _clipboardElements;
+    private ElementType _clipboardElementType;
+    private List<IScript> _clipboardScripts;
+    private Dictionary<ElementType, TreeHeader> _elementTreeStructure;
+    private FilterOptions _filterOptions;
+    private FontsManager _fontsManager;
+    private bool _initialised;
+    private bool _lastelementscutout;
+    private ScriptFactory _scriptFactory;
+    private bool _simpleMode;
+    private Dictionary<string, string> _treeTitles;
 
     public EditorController()
     {
@@ -143,7 +143,7 @@ public sealed class EditorController : IDisposable
         AvailableFilters.Add("libraries", "Show Library Elements");
         // m_availableFilters.Add("libraries", L.T("EditorFilterShowLibraryElements"));
 
-        m_filterOptions = new FilterOptions();
+        _filterOptions = new FilterOptions();
         // set default filters here
 
         // FontsManager is initialized lazily to avoid firing the Google Fonts network request
@@ -166,12 +166,12 @@ public sealed class EditorController : IDisposable
 
     public bool SimpleMode
     {
-        get => m_simpleMode;
+        get => _simpleMode;
         set
         {
-            if (m_simpleMode != value)
+            if (_simpleMode != value)
             {
-                m_simpleMode = value;
+                _simpleMode = value;
                 UpdateTree();
                 if (SimpleModeChanged != null)
                 {
@@ -238,18 +238,18 @@ public sealed class EditorController : IDisposable
 
     public async Task<bool> Initialise(IGameDataProvider gameDataProvider, bool partialInit = false)
     {
-        m_lastelementscutout = false;
+        _lastelementscutout = false;
         var gameData = await gameDataProvider.GetData();
         Filename = gameData?.Filename ?? string.Empty;
         WorldModel = new WorldModel(gameData, null);
-        m_scriptFactory = new ScriptFactory(WorldModel);
-        WorldModel.ElementFieldUpdated += m_worldModel_ElementFieldUpdated;
-        WorldModel.ElementRefreshed += m_worldModel_ElementRefreshed;
-        WorldModel.ElementMetaFieldUpdated += m_worldModel_ElementMetaFieldUpdated;
+        _scriptFactory = new ScriptFactory(WorldModel);
+        WorldModel.ElementFieldUpdated += OnWorldModelElementFieldUpdated;
+        WorldModel.ElementRefreshed += OnWorldModelElementRefreshed;
+        WorldModel.ElementMetaFieldUpdated += OnWorldModelElementMetaFieldUpdated;
         WorldModel.UndoLogger.TransactionsUpdated += UndoLogger_TransactionsUpdated;
         WorldModel.UndoLogger.TransactionCommitted += (_, _) => Dirty?.Invoke(this, EventArgs.Empty);
         WorldModel.Elements.ElementRenamed += Elements_ElementRenamed;
-        WorldModel.LoadStatus += m_worldModel_LoadStatus;
+        WorldModel.LoadStatus += OnWorldModelLoadStatus;
 
         var ok = await WorldModel.InitialiseEdit();
 
@@ -261,17 +261,17 @@ public sealed class EditorController : IDisposable
                 if (WorldModel.IsGamebook)
                 {
                     EditorStyle = EditorStyle.GameBook;
-                    m_ignoredTypes.Add(ElementType.Template);
-                    m_ignoredTypes.Add(ElementType.ObjectType);
+                    _ignoredTypes.Add(ElementType.Template);
+                    _ignoredTypes.Add(ElementType.ObjectType);
                 }
 
                 // need to initialise the EditableScriptFactory after we've loaded the game XML above,
                 // as the editor definitions contain the "friendly" templates for script commands.
-                ScriptFactory = new EditableScriptFactory(this, m_scriptFactory, WorldModel);
+                ScriptFactory = new EditableScriptFactory(this, _scriptFactory, WorldModel);
 
-                m_initialised = true;
+                _initialised = true;
 
-                WorldModel.ObjectsUpdated += m_worldModel_ObjectsUpdated;
+                WorldModel.ObjectsUpdated += OnWorldModelObjectsUpdated;
 
                 foreach (var e in WorldModel.Elements.GetElements(ElementType.Editor))
                 {
@@ -279,12 +279,12 @@ public sealed class EditorController : IDisposable
                     if (def.AppliesTo != null)
                     {
                         // Normal editor definition for editing an element or a script command
-                        m_editorDefinitions.Add(def.AppliesTo, def);
+                        _editorDefinitions.Add(def.AppliesTo, def);
                     }
                     else if (def.Pattern != null)
                     {
                         // Editor definition for an expression template in the "if" editor
-                        m_expressionDefinitions.Add(def.Pattern, def);
+                        _expressionDefinitions.Add(def.Pattern, def);
                     }
                 }
 
@@ -308,7 +308,7 @@ public sealed class EditorController : IDisposable
         return ok;
     }
 
-    private void m_worldModel_LoadStatus(object sender, Engine.LoadStatusEventArgs e)
+    private void OnWorldModelLoadStatus(object sender, Engine.LoadStatusEventArgs e)
     {
         if (LoadStatus != null)
         {
@@ -341,9 +341,9 @@ public sealed class EditorController : IDisposable
         }
     }
 
-    private void m_worldModel_ElementFieldUpdated(object sender, ElementFieldUpdatedEventArgs e)
+    private void OnWorldModelElementFieldUpdated(object sender, ElementFieldUpdatedEventArgs e)
     {
-        if (!m_initialised)
+        if (!_initialised)
         {
             return;
         }
@@ -412,9 +412,9 @@ public sealed class EditorController : IDisposable
         }
     }
 
-    private void m_worldModel_ElementMetaFieldUpdated(object sender, ElementFieldUpdatedEventArgs e)
+    private void OnWorldModelElementMetaFieldUpdated(object sender, ElementFieldUpdatedEventArgs e)
     {
-        if (!m_initialised)
+        if (!_initialised)
         {
             return;
         }
@@ -484,9 +484,9 @@ public sealed class EditorController : IDisposable
         RemovedNode(this, new RemovedNodeEventArgs {Key = e.Name});
     }
 
-    private void m_worldModel_ElementRefreshed(object sender, ElementRefreshEventArgs e)
+    private void OnWorldModelElementRefreshed(object sender, ElementRefreshEventArgs e)
     {
-        if (m_initialised)
+        if (_initialised)
         {
             if (ElementRefreshed != null)
             {
@@ -495,7 +495,7 @@ public sealed class EditorController : IDisposable
         }
     }
 
-    private void m_worldModel_ObjectsUpdated(object sender, ObjectsUpdatedEventArgs args)
+    private void OnWorldModelObjectsUpdated(object sender, ObjectsUpdatedEventArgs args)
     {
         if (args.Added != null)
         {
@@ -516,8 +516,8 @@ public sealed class EditorController : IDisposable
 
     private void InitialiseTreeStructure()
     {
-        m_treeTitles = new Dictionary<string, string> {{k_commands, "Commands"}, {k_verbs, "Verbs"}};
-        m_elementTreeStructure = new Dictionary<ElementType, TreeHeader>();
+        _treeTitles = new Dictionary<string, string> {{Commands, "Commands"}, {Verbs, "Verbs"}};
+        _elementTreeStructure = new Dictionary<ElementType, TreeHeader>();
 
         AddTreeHeader(EditorStyle.TextAdventure, ElementType.Object, "_objects", "Objects", null, false);
         AddTreeHeader(EditorStyle.GameBook, ElementType.Object, "_objects", "Pages", null, false);
@@ -545,11 +545,11 @@ public sealed class EditorController : IDisposable
 
         if (simple || !SimpleMode)
         {
-            m_treeTitles.Add(key, title);
+            _treeTitles.Add(key, title);
             var header = new TreeHeader {Key = key, Title = title};
             if (type != null)
             {
-                m_elementTreeStructure.Add(type.Value, header);
+                _elementTreeStructure.Add(type.Value, header);
             }
 
             AddedNode(this,
@@ -580,7 +580,7 @@ public sealed class EditorController : IDisposable
             // redistribution), but a full rebuild like this one must sort explicitly or a
             // reordered element's new tree position silently reverts to its old, pre-reorder spot
             // the next time anything triggers a full UpdateTree() rather than an incremental
-            // single-element reposition (see m_worldModel_ElementMetaFieldUpdated's own
+            // single-element reposition (see OnWorldModelElementMetaFieldUpdated's own
             // GetElementPosition, which already gets this right for that path).
             foreach (var o in WorldModel.Elements.GetElements(type).Where(e => e.Parent == null)
                          .OrderBy(e => e.MetaFields[MetaFieldDefinitions.SortIndex]))
@@ -619,7 +619,7 @@ public sealed class EditorController : IDisposable
         var display = true;
         var isLibrary = o.MetaFields.GetAsType<bool>("library");
 
-        if (isLibrary && !m_filterOptions.IsSet("libraries"))
+        if (isLibrary && !_filterOptions.IsSet("libraries"))
         {
             display = false;
         }
@@ -642,13 +642,13 @@ public sealed class EditorController : IDisposable
                 AddedNode(this,
                     new AddedNodeEventArgs
                     {
-                        Key = k_verbs, Text = "Verbs", Parent = "game", IsLibraryNode = false, Position = null,
+                        Key = Verbs, Text = "Verbs", Parent = "game", IsLibraryNode = false, Position = null,
                         NodeType = "header"
                     });
                 AddedNode(this,
                     new AddedNodeEventArgs
                     {
-                        Key = k_commands, Text = "Commands", Parent = "game", IsLibraryNode = false, Position = null,
+                        Key = Commands, Text = "Commands", Parent = "game", IsLibraryNode = false, Position = null,
                         NodeType = "header"
                     });
             }
@@ -658,12 +658,12 @@ public sealed class EditorController : IDisposable
     private bool IsElementVisible(Element e)
     {
         // Don't display implied types, editor elements etc.
-        if (m_ignoredTypes.Contains(e.ElemType))
+        if (_ignoredTypes.Contains(e.ElemType))
         {
             return false;
         }
 
-        if (SimpleMode && m_advancedTypes.Contains(e.ElemType))
+        if (SimpleMode && _advancedTypes.Contains(e.ElemType))
         {
             return false;
         }
@@ -710,10 +710,10 @@ public sealed class EditorController : IDisposable
 
         if (o.ElemType == ElementType.Object && o.Type == ObjectType.Command)
         {
-            return o.Fields.GetAsType<bool>("isverb") ? k_verbs : k_commands;
+            return o.Fields.GetAsType<bool>("isverb") ? Verbs : Commands;
         }
 
-        return m_elementTreeStructure[o.ElemType].Key;
+        return _elementTreeStructure[o.ElemType].Key;
     }
 
     private string GetDisplayName(Element e)
@@ -772,9 +772,9 @@ public sealed class EditorController : IDisposable
 
     public string GetDisplayName(string element)
     {
-        if (m_treeTitles.ContainsKey(element))
+        if (_treeTitles.ContainsKey(element))
         {
-            return m_treeTitles[element];
+            return _treeTitles[element];
         }
 
         if (!WorldModel.Elements.ContainsKey(element))
@@ -828,7 +828,7 @@ public sealed class EditorController : IDisposable
 
     public void UpdateFilterOptions(FilterOptions options)
     {
-        m_filterOptions = options;
+        _filterOptions = options;
         UpdateTree();
     }
 
@@ -863,12 +863,12 @@ public sealed class EditorController : IDisposable
                 }
             }
 
-            if (m_editorDefinitions.ContainsKey(type))
+            if (_editorDefinitions.ContainsKey(type))
             {
                 return type;
             }
         }
-        else if (m_editorDefinitions.ContainsKey(elementKey))
+        else if (_editorDefinitions.ContainsKey(elementKey))
         {
             return elementKey;
         }
@@ -878,7 +878,7 @@ public sealed class EditorController : IDisposable
 
     public IEnumerable<string> GetAllEditorNames()
     {
-        return m_editorDefinitions.Keys;
+        return _editorDefinitions.Keys;
     }
 
     public Dictionary<string, EditableScriptData> GetScriptEditorData()
@@ -897,7 +897,7 @@ public sealed class EditorController : IDisposable
         {
             // see if we have a specific editor definition for this function
             EditorDefinition result;
-            if (m_editorDefinitions.TryGetValue(script.EditorName, out result))
+            if (_editorDefinitions.TryGetValue(script.EditorName, out result))
             {
                 return result;
             }
@@ -908,12 +908,12 @@ public sealed class EditorController : IDisposable
             script.EditorName = "()";
         }
 
-        return m_editorDefinitions[script.EditorName];
+        return _editorDefinitions[script.EditorName];
     }
 
     public IEditorDefinition GetEditorDefinition(string editorName)
     {
-        return m_editorDefinitions[editorName];
+        return _editorDefinitions[editorName];
     }
 
     public IEditorData GetEditorData(string elementKey)
@@ -1292,13 +1292,13 @@ public sealed class EditorController : IDisposable
 
     public void AddControlType(string name, Type type)
     {
-        m_controlTypes.Add(name, type);
+        _controlTypes.Add(name, type);
     }
 
     public Type GetControlType(string name)
     {
         Type controlType;
-        m_controlTypes.TryGetValue(name, out controlType);
+        _controlTypes.TryGetValue(name, out controlType);
         return controlType;
     }
 
@@ -1929,7 +1929,7 @@ public sealed class EditorController : IDisposable
             return new ValidationResult {Valid = false, Message = ValidationMessage.InvalidElementNameEmpty};
         }
 
-        if (!s_validNameRegex.IsMatch(name))
+        if (!_validNameRegex.IsMatch(name))
         {
             var invalidChars = Regex.Matches(name, "[^\\w ]").Select(m => m.Value).Distinct().ToList();
             return new ValidationResult
@@ -1944,7 +1944,7 @@ public sealed class EditorController : IDisposable
             return new ValidationResult {Valid = false, Message = ValidationMessage.InvalidElementNameMultipleSpaces};
         }
 
-        if (s_startsWithNumberRegex.IsMatch(name))
+        if (_startsWithNumberRegex.IsMatch(name))
         {
             return new ValidationResult {Valid = false, Message = ValidationMessage.InvalidElementNameStartsWithNumber};
         }
@@ -2051,27 +2051,27 @@ public sealed class EditorController : IDisposable
 
     public void CopyElements(IEnumerable<string> elementNames)
     {
-        m_clipboardElements = (from name in elementNames select WorldModel.Elements.Get(name)).ToList();
+        _clipboardElements = (from name in elementNames select WorldModel.Elements.Get(name)).ToList();
 
         var first = true;
 
-        foreach (var e in m_clipboardElements)
+        foreach (var e in _clipboardElements)
         {
             if (first)
             {
-                m_clipboardElementType = e.ElemType;
+                _clipboardElementType = e.ElemType;
                 first = false;
             }
             else
             {
-                if (m_clipboardElementType != e.ElemType)
+                if (_clipboardElementType != e.ElemType)
                 {
                     throw new InvalidOperationException("Cannot mix element types in the clipboard");
                 }
             }
         }
 
-        m_lastelementscutout = false;
+        _lastelementscutout = false;
     }
 
     public string PasteElements(string parentName)
@@ -2087,16 +2087,16 @@ public sealed class EditorController : IDisposable
 
         WorldModel.UndoLogger.StartTransaction("Paste");
 
-        foreach (var e in m_clipboardElements)
+        foreach (var e in _clipboardElements)
         {
             Element newElement;
             if (EditorStyle == EditorStyle.TextAdventure)
             {
-                newElement = e.Clone(el => true, m_lastelementscutout);
+                newElement = e.Clone(el => true, _lastelementscutout);
             }
             else if (EditorStyle == EditorStyle.GameBook)
             {
-                newElement = e.Clone(el => el.Name != "player", m_lastelementscutout);
+                newElement = e.Clone(el => el.Name != "player", _lastelementscutout);
             }
             else
             {
@@ -2109,7 +2109,7 @@ public sealed class EditorController : IDisposable
 
         WorldModel.UndoLogger.EndTransaction();
 
-        m_lastelementscutout = false;
+        _lastelementscutout = false;
 
         return lastPastedElement;
     }
@@ -2118,7 +2118,7 @@ public sealed class EditorController : IDisposable
     {
         WorldModel.UndoLogger.StartTransaction("Cut");
         CopyElements(elementNames);
-        m_lastelementscutout = true;
+        _lastelementscutout = true;
 
         /*
          * The cut out elements should be displayed in gray.
@@ -2137,7 +2137,7 @@ public sealed class EditorController : IDisposable
 
     public bool CanPaste(string parentName)
     {
-        if (m_clipboardElements == null || m_clipboardElements.Count == 0)
+        if (_clipboardElements == null || _clipboardElements.Count == 0)
         {
             return false;
         }
@@ -2153,7 +2153,7 @@ public sealed class EditorController : IDisposable
             return false;
         }
 
-        return parent.ElemType == m_clipboardElementType;
+        return parent.ElemType == _clipboardElementType;
     }
 
     private Element GetPasteParent(string parentName)
@@ -2175,7 +2175,7 @@ public sealed class EditorController : IDisposable
             {
                 // But don't paste a copy of an object inside itself
 
-                if (m_clipboardElements.Any(clipboardElement => clipboardElement == e))
+                if (_clipboardElements.Any(clipboardElement => clipboardElement == e))
                 {
                     return e.Parent;
                 }
@@ -2264,21 +2264,21 @@ public sealed class EditorController : IDisposable
 
     public bool CanPasteScript()
     {
-        return m_clipboardScripts != null && m_clipboardScripts.Count > 0;
+        return _clipboardScripts != null && _clipboardScripts.Count > 0;
     }
 
     internal void SetClipboardScript(IEnumerable<IScript> script)
     {
-        m_clipboardScripts = new List<IScript>(script);
+        _clipboardScripts = new List<IScript>(script);
         if (ScriptClipboardUpdated != null)
         {
-            ScriptClipboardUpdated(this, new ScriptClipboardUpdateEventArgs {HasScript = m_clipboardScripts.Count > 0});
+            ScriptClipboardUpdated(this, new ScriptClipboardUpdateEventArgs {HasScript = _clipboardScripts.Count > 0});
         }
     }
 
     internal IEnumerable<IScript> GetClipboardScript()
     {
-        return m_clipboardScripts.AsReadOnly();
+        return _clipboardScripts.AsReadOnly();
     }
 
     public IEnumerable<string> GetPropertyNames()
@@ -2288,7 +2288,7 @@ public sealed class EditorController : IDisposable
 
     public IEnumerable<string> GetExpressionEditorNames(string expressionType)
     {
-        return m_expressionDefinitions.Values.Where(d => d.ExpressionType == expressionType).Select(d => d.Description);
+        return _expressionDefinitions.Values.Where(d => d.ExpressionType == expressionType).Select(d => d.Description);
     }
 
     public string GetExpressionEditorDefinitionName(string expression, string expressionType)
@@ -2308,7 +2308,7 @@ public sealed class EditorController : IDisposable
         // Definition which corresponds to "(Got(#object#))" [note: this is turned into a
         // regex by the SimplePattern attribute loader]
 
-        var candidates = from def in m_expressionDefinitions.Values
+        var candidates = from def in _expressionDefinitions.Values
             where def.ExpressionType == expressionType
             where Engine.Utility.IsRegexMatch(def.Pattern, expression)
             select def;
@@ -2333,7 +2333,7 @@ public sealed class EditorController : IDisposable
 
     public string GetNewExpression(string templateName)
     {
-        var definitions = from def in m_expressionDefinitions.Values
+        var definitions = from def in _expressionDefinitions.Values
             where def.Description == templateName
             select def;
 
@@ -2866,39 +2866,39 @@ public sealed class EditorController : IDisposable
 
     public void Uninitialise()
     {
-        if (m_editorDefinitions != null)
+        if (_editorDefinitions != null)
         {
-            m_editorDefinitions.Clear();
+            _editorDefinitions.Clear();
         }
 
-        if (m_expressionDefinitions != null)
+        if (_expressionDefinitions != null)
         {
-            m_expressionDefinitions.Clear();
+            _expressionDefinitions.Clear();
         }
 
-        if (m_elementTreeStructure != null)
+        if (_elementTreeStructure != null)
         {
-            m_elementTreeStructure.Clear();
+            _elementTreeStructure.Clear();
         }
 
-        if (m_clipboardElements != null)
+        if (_clipboardElements != null)
         {
-            m_clipboardElements.Clear();
+            _clipboardElements.Clear();
         }
 
-        if (m_clipboardScripts != null)
+        if (_clipboardScripts != null)
         {
-            m_clipboardScripts.Clear();
+            _clipboardScripts.Clear();
         }
 
         if (WorldModel != null)
         {
-            WorldModel.ElementFieldUpdated -= m_worldModel_ElementFieldUpdated;
-            WorldModel.ElementRefreshed -= m_worldModel_ElementRefreshed;
-            WorldModel.ElementMetaFieldUpdated -= m_worldModel_ElementMetaFieldUpdated;
+            WorldModel.ElementFieldUpdated -= OnWorldModelElementFieldUpdated;
+            WorldModel.ElementRefreshed -= OnWorldModelElementRefreshed;
+            WorldModel.ElementMetaFieldUpdated -= OnWorldModelElementMetaFieldUpdated;
             WorldModel.UndoLogger.TransactionsUpdated -= UndoLogger_TransactionsUpdated;
             WorldModel.Elements.ElementRenamed -= Elements_ElementRenamed;
-            WorldModel.ObjectsUpdated -= m_worldModel_ObjectsUpdated;
+            WorldModel.ObjectsUpdated -= OnWorldModelObjectsUpdated;
         }
 
         EditableScripts.Clear();
@@ -2919,7 +2919,7 @@ public sealed class EditorController : IDisposable
 
     public string GetSelectedDropDownType(IEditorControl ctl, string element)
     {
-        const string k_noType = "*";
+        const string noType = "*";
 
         var types = ctl.GetDictionary("types");
         var inheritedTypes = new List<string>();
@@ -2929,7 +2929,7 @@ public sealed class EditorController : IDisposable
 
         // Find out which of the handled types are inherited by the object
 
-        foreach (var item in types.Where(i => i.Key != k_noType))
+        foreach (var item in types.Where(i => i.Key != noType))
         {
             if (DoesElementInheritType(element, item.Key))
             {
@@ -2941,7 +2941,7 @@ public sealed class EditorController : IDisposable
         {
             case 0:
                 // Default - no types inherited
-                return k_noType;
+                return noType;
             case 1:
                 return inheritedTypes[0];
             default:
@@ -3000,7 +3000,7 @@ public sealed class EditorController : IDisposable
     public static string GenerateSafeFilename(string gameName)
     {
         var result = gameName;
-        foreach (var invalidChar in s_invalidChars)
+        foreach (var invalidChar in InvalidChars)
         {
             result = result.Replace(invalidChar, "");
         }
@@ -3035,7 +3035,7 @@ public sealed class EditorController : IDisposable
         // string/script dictionaries (determined by their corresponding control having a source of "object",
         // and update keys if necessary
 
-        var objectEditor = m_editorDefinitions["object"];
+        var objectEditor = _editorDefinitions["object"];
         foreach (var tab in objectEditor.Tabs.Values)
         {
             foreach (var ctl in tab.Controls.Where(c => c.GetString("source") == "object"))
@@ -3103,27 +3103,27 @@ public sealed class EditorController : IDisposable
 
     public static string GetValidationError(ValidationResult result, object input)
     {
-        return string.Format(s_validationMessages[result.Message], input, result.MessageData);
+        return string.Format(ValidationMessages[result.Message], input, result.MessageData);
     }
 
     public List<string> AvailableBaseFonts()
     {
-        if (m_fontsManager == null)
+        if (_fontsManager == null)
         {
-            m_fontsManager = new FontsManager();
+            _fontsManager = new FontsManager();
         }
 
-        return m_fontsManager.GetBaseFonts();
+        return _fontsManager.GetBaseFonts();
     }
 
     public List<string> AvailableWebFonts()
     {
-        if (m_fontsManager == null)
+        if (_fontsManager == null)
         {
-            m_fontsManager = new FontsManager();
+            _fontsManager = new FontsManager();
         }
 
-        return m_fontsManager.GetWebFonts();
+        return _fontsManager.GetWebFonts();
     }
 
     public class AddedNodeEventArgs : EventArgs

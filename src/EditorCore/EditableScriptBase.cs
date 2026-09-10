@@ -5,9 +5,9 @@ namespace QuestViva.EditorCore;
 
 public abstract class EditableScriptBase : IEditableScript
 {
-    private static int s_count;
+    private static int _count;
 
-    private IScript m_script;
+    private IScript _script;
 
     public EditableScriptBase(EditorController controller, IScript script, UndoLogger undoLogger)
     {
@@ -18,28 +18,28 @@ public abstract class EditableScriptBase : IEditableScript
             script.UndoLog = undoLogger;
         }
 
-        s_count++;
-        Id = "script" + s_count;
+        _count++;
+        Id = "script" + _count;
     }
 
     internal IScript Script
     {
-        get => m_script;
+        get => _script;
         set
         {
-            if (m_script != null)
+            if (_script != null)
             {
-                m_script.ScriptUpdated -= ScriptUpdated;
+                _script.ScriptUpdated -= ScriptUpdated;
                 if (FunctionCallScript != null)
                 {
                     FunctionCallScript.FunctionCallParametersUpdated -= FunctionCallParametersUpdated;
                 }
             }
 
-            m_script = value;
-            if (m_script != null)
+            _script = value;
+            if (_script != null)
             {
-                m_script.ScriptUpdated += ScriptUpdated;
+                _script.ScriptUpdated += ScriptUpdated;
                 if (FunctionCallScript != null)
                 {
                     FunctionCallScript.FunctionCallParametersUpdated += FunctionCallParametersUpdated;
@@ -48,7 +48,7 @@ public abstract class EditableScriptBase : IEditableScript
         }
     }
 
-    internal IFunctionCallScript FunctionCallScript => m_script as IFunctionCallScript;
+    internal IFunctionCallScript FunctionCallScript => _script as IFunctionCallScript;
 
     protected EditorController Controller { get; }
 

@@ -13,32 +13,32 @@ public interface IMultiScript : IScript
 
 public class MultiScript : ScriptBase, IScriptParent, IMultiScript
 {
-    private readonly WorldModel m_worldModel;
+    private readonly WorldModel _worldModel;
 
-    private ScriptFactory m_scriptFactory;
-    private List<IScript> m_scripts;
+    private ScriptFactory _scriptFactory;
+    private List<IScript> _scripts;
 
     public MultiScript(WorldModel worldModel, params IScript[] scripts)
         : this(worldModel)
     {
-        m_scripts = new List<IScript>(scripts);
+        _scripts = new List<IScript>(scripts);
     }
 
     private MultiScript(WorldModel worldModel)
     {
-        m_worldModel = worldModel;
+        _worldModel = worldModel;
     }
 
     private ScriptFactory ScriptFactory
     {
         get
         {
-            if (m_scriptFactory == null)
+            if (_scriptFactory == null)
             {
-                m_scriptFactory = new ScriptFactory(m_worldModel);
+                _scriptFactory = new ScriptFactory(_worldModel);
             }
 
-            return m_scriptFactory;
+            return _scriptFactory;
         }
     }
 
@@ -46,7 +46,7 @@ public class MultiScript : ScriptBase, IScriptParent, IMultiScript
 
     public void Add(params IScript[] scripts)
     {
-        m_scripts.AddRange(scripts);
+        _scripts.AddRange(scripts);
         if (UndoLog != null)
         {
             foreach (var script in scripts)
@@ -66,10 +66,10 @@ public class MultiScript : ScriptBase, IScriptParent, IMultiScript
     {
         if (UndoLog != null)
         {
-            UndoLog.AddUndoAction(() => new UndoMultiScriptAddRemove(this, m_scripts[index], false, index));
+            UndoLog.AddUndoAction(() => new UndoMultiScriptAddRemove(this, _scripts[index], false, index));
         }
 
-        RemoveSilent(m_scripts[index]);
+        RemoveSilent(_scripts[index]);
     }
 
     public void Insert(int index, IScript script)
@@ -99,7 +99,7 @@ public class MultiScript : ScriptBase, IScriptParent, IMultiScript
         IScript script;
 
         // This swap assumes index1 < index2
-        script = m_scripts[index1];
+        script = _scripts[index1];
         Remove(index1);
         Insert(index2, script);
 
@@ -107,17 +107,17 @@ public class MultiScript : ScriptBase, IScriptParent, IMultiScript
         // move the second script, as it's already in the correct place
         if (index1 != index2 - 1)
         {
-            script = m_scripts[index2 - 1];
+            script = _scripts[index2 - 1];
             Remove(index2 - 1);
             Insert(index1, script);
         }
     }
 
-    public IEnumerable<IScript> Scripts => m_scripts.AsReadOnly();
+    public IEnumerable<IScript> Scripts => _scripts.AsReadOnly();
 
     public override async Task ExecuteAsync(Context c)
     {
-        foreach (var script in m_scripts)
+        foreach (var script in _scripts)
         {
             await script.ExecuteAsync(c);
             if (c.IsReturned)
@@ -132,7 +132,7 @@ public class MultiScript : ScriptBase, IScriptParent, IMultiScript
         get
         {
             var result = string.Empty;
-            foreach (var script in m_scripts)
+            foreach (var script in _scripts)
             {
                 result += script.Line + Environment.NewLine;
             }
@@ -146,7 +146,7 @@ public class MultiScript : ScriptBase, IScriptParent, IMultiScript
     {
         var result = string.Empty;
 
-        foreach (var script in m_scripts)
+        foreach (var script in _scripts)
         {
             if (result.Length > 0)
             {
@@ -170,7 +170,7 @@ public class MultiScript : ScriptBase, IScriptParent, IMultiScript
         var newScriptList = new List<IScript>(newScript.Scripts);
         if (UndoLog != null)
         {
-            UndoLog.AddUndoAction(() => new UndoMultiScriptLoadCode(this, m_scripts, newScriptList));
+            UndoLog.AddUndoAction(() => new UndoMultiScriptLoadCode(this, _scripts, newScriptList));
         }
 
         ReplaceScripts(newScriptList);
@@ -181,7 +181,7 @@ public class MultiScript : ScriptBase, IScriptParent, IMultiScript
         if (Parent == null)
         {
             var result = new List<string>();
-            foreach (var script in m_scripts)
+            foreach (var script in _scripts)
             {
                 // add any variables defined by the child script to the list
                 var definedVariables = script.GetDefinedVariables();
@@ -199,13 +199,13 @@ public class MultiScript : ScriptBase, IScriptParent, IMultiScript
 
     protected override ScriptBase CloneScript()
     {
-        var clone = new MultiScript(m_worldModel);
-        clone.m_scripts = new List<IScript>();
-        foreach (var script in m_scripts)
+        var clone = new MultiScript(_worldModel);
+        clone._scripts = new List<IScript>();
+        foreach (var script in _scripts)
         {
             var clonedScript = (IScript) script.Clone();
             clonedScript.Parent = clone;
-            clone.m_scripts.Add(clonedScript);
+            clone._scripts.Add(clonedScript);
         }
 
         return clone;
@@ -214,21 +214,21 @@ public class MultiScript : ScriptBase, IScriptParent, IMultiScript
     private void RemoveSilent(IScript script)
     {
         script.Parent = null;
-        m_scripts.Remove(script);
+        _scripts.Remove(script);
         NotifyUpdate(null, script);
     }
 
     private void AddSilent(IScript script)
     {
         script.Parent = this;
-        m_scripts.Add(script);
+        _scripts.Add(script);
         NotifyUpdate(script, null);
     }
 
     private void InsertSilent(int index, IScript script)
     {
         script.Parent = this;
-        m_scripts.Insert(index, script);
+        _scripts.Insert(index, script);
         NotifyUpdate(script, index);
     }
 
@@ -239,13 +239,13 @@ public class MultiScript : ScriptBase, IScriptParent, IMultiScript
 
     private void ReplaceScripts(List<IScript> newScripts)
     {
-        foreach (var script in m_scripts)
+        foreach (var script in _scripts)
         {
             script.Parent = null;
         }
 
-        m_scripts = newScripts;
-        foreach (var script in m_scripts)
+        _scripts = newScripts;
+        foreach (var script in _scripts)
         {
             script.Parent = this;
         }
@@ -255,65 +255,65 @@ public class MultiScript : ScriptBase, IScriptParent, IMultiScript
 
     private class UndoMultiScriptLoadCode : UndoLogger.IUndoAction
     {
-        private readonly MultiScript m_appliesTo;
-        private readonly List<IScript> m_newScripts;
-        private readonly List<IScript> m_oldScripts;
+        private readonly MultiScript _appliesTo;
+        private readonly List<IScript> _newScripts;
+        private readonly List<IScript> _oldScripts;
 
         public UndoMultiScriptLoadCode(MultiScript appliesTo, List<IScript> oldScripts, List<IScript> newScripts)
         {
-            m_appliesTo = appliesTo;
-            m_oldScripts = oldScripts;
-            m_newScripts = newScripts;
+            _appliesTo = appliesTo;
+            _oldScripts = oldScripts;
+            _newScripts = newScripts;
         }
 
         public void DoUndo(WorldModel worldModel)
         {
-            m_appliesTo.ReplaceScripts(m_oldScripts);
+            _appliesTo.ReplaceScripts(_oldScripts);
         }
 
         public void DoRedo(WorldModel worldModel)
         {
-            m_appliesTo.ReplaceScripts(m_newScripts);
+            _appliesTo.ReplaceScripts(_newScripts);
         }
     }
 
     private class UndoMultiScriptAddRemove : UndoLogger.IUndoAction
     {
-        private readonly MultiScript m_appliesTo;
-        private readonly int? m_index;
-        private readonly bool m_isAdd;
-        private readonly IScript m_script;
+        private readonly MultiScript _appliesTo;
+        private readonly int? _index;
+        private readonly bool _isAdd;
+        private readonly IScript _script;
 
         public UndoMultiScriptAddRemove(MultiScript appliesTo, IScript script, bool isAdd, int? index)
         {
-            m_appliesTo = appliesTo;
-            m_script = script;
-            m_isAdd = isAdd;
-            m_index = index;
+            _appliesTo = appliesTo;
+            _script = script;
+            _isAdd = isAdd;
+            _index = index;
         }
 
         private void DoAdd()
         {
-            if (m_index.HasValue)
+            if (_index.HasValue)
             {
-                m_appliesTo.InsertSilent(m_index.Value, m_script);
+                _appliesTo.InsertSilent(_index.Value, _script);
             }
             else
             {
-                m_appliesTo.AddSilent(m_script);
+                _appliesTo.AddSilent(_script);
             }
         }
 
         private void DoRemove()
         {
-            m_appliesTo.RemoveSilent(m_script);
+            _appliesTo.RemoveSilent(_script);
         }
 
         #region IUndoAction Members
 
         public void DoUndo(WorldModel worldModel)
         {
-            if (m_isAdd)
+            if (_isAdd)
             {
                 DoRemove();
             }
@@ -325,7 +325,7 @@ public class MultiScript : ScriptBase, IScriptParent, IMultiScript
 
         public void DoRedo(WorldModel worldModel)
         {
-            if (m_isAdd)
+            if (_isAdd)
             {
                 DoAdd();
             }

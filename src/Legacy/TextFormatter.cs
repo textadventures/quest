@@ -4,16 +4,16 @@ namespace QuestViva.Legacy;
 
 public class TextFormatter
 {
-    private string align = "";
+    private string _align = "";
     // the Player generates style tags for us
     // so all we need to do is have some kind of <color> <fontsize> <justify> tags etc.
     // it would actually be a really good idea for the player to handle the <wait> and <clear> tags too...?
 
-    private bool bold;
-    private string colour = "";
-    private int fontSize;
-    private bool italic;
-    private bool underline;
+    private bool _bold;
+    private string _colour = "";
+    private int _fontSize;
+    private bool _italic;
+    private bool _underline;
 
     public string OutputHTML(string input)
     {
@@ -63,57 +63,57 @@ public class TextFormatter
                 {
                     case "xb":
                     {
-                        bold = false;
+                        _bold = false;
                         break;
                     }
                     case "xi":
                     {
-                        italic = false;
+                        _italic = false;
                         break;
                     }
                     case "xu":
                     {
-                        underline = false;
+                        _underline = false;
                         break;
                     }
                     case "cb":
                     {
-                        colour = "";
+                        _colour = "";
                         break;
                     }
                     case "cr":
                     {
-                        colour = "red";
+                        _colour = "red";
                         break;
                     }
                     case "cl":
                     {
-                        colour = "blue";
+                        _colour = "blue";
                         break;
                     }
                     case "cy":
                     {
-                        colour = "yellow";
+                        _colour = "yellow";
                         break;
                     }
                     case "cg":
                     {
-                        colour = "green";
+                        _colour = "green";
                         break;
                     }
                     case "jl":
                     {
-                        align = "";
+                        _align = "";
                         break;
                     }
                     case "jc":
                     {
-                        align = "center";
+                        _align = "center";
                         break;
                     }
                     case "jr":
                     {
-                        align = "right";
+                        _align = "right";
                         break;
                     }
 
@@ -135,17 +135,17 @@ public class TextFormatter
                     {
                         case "b":
                         {
-                            bold = true;
+                            _bold = true;
                             break;
                         }
                         case "i":
                         {
-                            italic = true;
+                            _italic = true;
                             break;
                         }
                         case "u":
                         {
-                            underline = true;
+                            _underline = true;
                             break;
                         }
                         case "n":
@@ -175,7 +175,7 @@ public class TextFormatter
                         if (position < input.Length - 2)
                         {
                             var sizeCode = input.Substring(position + 1, 2);
-                            if (int.TryParse(sizeCode, out fontSize))
+                            if (int.TryParse(sizeCode, out _fontSize))
                             {
                                 foundCode = true;
                                 position += 3;
@@ -205,63 +205,63 @@ public class TextFormatter
 
         var output = "";
 
-        if (align.Length > 0)
+        if (_align.Length > 0)
         {
-            output += "<align align=\"" + align + "\">";
+            output += "<align align=\"" + _align + "\">";
         }
 
-        if (fontSize > 0)
+        if (_fontSize > 0)
         {
-            output += "<font size=\"" + fontSize + "\">";
+            output += "<font size=\"" + _fontSize + "\">";
         }
 
-        if (colour.Length > 0)
+        if (_colour.Length > 0)
         {
-            output += "<color color=\"" + colour + "\">";
+            output += "<color color=\"" + _colour + "\">";
         }
 
-        if (bold)
+        if (_bold)
         {
             output += "<b>";
         }
 
-        if (italic)
+        if (_italic)
         {
             output += "<i>";
         }
 
-        if (underline)
+        if (_underline)
         {
             output += "<u>";
         }
 
         output += input;
-        if (underline)
+        if (_underline)
         {
             output += "</u>";
         }
 
-        if (italic)
+        if (_italic)
         {
             output += "</i>";
         }
 
-        if (bold)
+        if (_bold)
         {
             output += "</b>";
         }
 
-        if (colour.Length > 0)
+        if (_colour.Length > 0)
         {
             output += "</color>";
         }
 
-        if (fontSize > 0)
+        if (_fontSize > 0)
         {
             output += "</font>";
         }
 
-        if (align.Length > 0)
+        if (_align.Length > 0)
         {
             output += "</align>";
         }

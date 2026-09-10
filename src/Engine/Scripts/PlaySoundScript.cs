@@ -23,34 +23,34 @@ public class PlaySoundScriptConstructor : ScriptConstructorBase
 
 public class PlaySoundScript : ScriptBase
 {
-    private readonly ScriptContext m_scriptContext;
-    private readonly WorldModel m_worldModel;
-    private IFunction<string> m_filename;
-    private IFunction<bool> m_loop;
-    private IFunction<bool> m_synchronous;
+    private readonly ScriptContext _scriptContext;
+    private readonly WorldModel _worldModel;
+    private IFunction<string> _filename;
+    private IFunction<bool> _loop;
+    private IFunction<bool> _synchronous;
 
     public PlaySoundScript(ScriptContext scriptContext, IFunction<string> function, IFunction<bool> synchronous,
         IFunction<bool> loop)
     {
-        m_scriptContext = scriptContext;
-        m_worldModel = scriptContext.WorldModel;
-        m_filename = function;
-        m_synchronous = synchronous;
-        m_loop = loop;
+        _scriptContext = scriptContext;
+        _worldModel = scriptContext.WorldModel;
+        _filename = function;
+        _synchronous = synchronous;
+        _loop = loop;
     }
 
     public override string Keyword => "play sound";
 
     protected override ScriptBase CloneScript()
     {
-        return new PlaySoundScript(m_scriptContext, m_filename.Clone(), m_synchronous.Clone(), m_loop.Clone());
+        return new PlaySoundScript(_scriptContext, _filename.Clone(), _synchronous.Clone(), _loop.Clone());
     }
 
     public override async Task ExecuteAsync(Context c)
     {
-        var filename = await m_filename.ExecuteAsync(c);
-        var synchronous = await m_synchronous.ExecuteAsync(c);
-        var loop = await m_loop.ExecuteAsync(c);
+        var filename = await _filename.ExecuteAsync(c);
+        var synchronous = await _synchronous.ExecuteAsync(c);
+        var loop = await _loop.ExecuteAsync(c);
 
         if (synchronous && loop)
         {
@@ -59,10 +59,10 @@ public class PlaySoundScript : ScriptBase
 
         if (synchronous)
         {
-            var tcs = WorldModel.BeginPrompt(ref m_worldModel._waitTcs);
-            await m_worldModel.PlayerUi.PlaySoundAsync(filename, true, loop);
-            m_worldModel.BeginPendingCallback();
-            m_worldModel.SignalTurnSuspended();
+            var tcs = WorldModel.BeginPrompt(ref _worldModel._waitTcs);
+            await _worldModel.PlayerUi.PlaySoundAsync(filename, true, loop);
+            _worldModel.BeginPendingCallback();
+            _worldModel.SignalTurnSuspended();
             try
             {
                 await tcs.Task;
@@ -70,19 +70,19 @@ public class PlaySoundScript : ScriptBase
             catch (OperationCanceledException) { }
             finally
             {
-                await m_worldModel.EndPendingCallbackAsync();
-                m_worldModel.SignalTurnSuspended();
+                await _worldModel.EndPendingCallbackAsync();
+                _worldModel.SignalTurnSuspended();
             }
         }
         else
         {
-            await m_worldModel.PlayerUi.PlaySoundAsync(filename, false, loop);
+            await _worldModel.PlayerUi.PlaySoundAsync(filename, false, loop);
         }
     }
 
     public override string Save()
     {
-        return SaveScript("play sound", m_filename.Save(), m_synchronous.Save(), m_loop.Save());
+        return SaveScript("play sound", _filename.Save(), _synchronous.Save(), _loop.Save());
     }
 
     public override object GetParameter(int index)
@@ -90,11 +90,11 @@ public class PlaySoundScript : ScriptBase
         switch (index)
         {
             case 0:
-                return m_filename.Save();
+                return _filename.Save();
             case 1:
-                return m_synchronous.Save();
+                return _synchronous.Save();
             case 2:
-                return m_loop.Save();
+                return _loop.Save();
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -105,13 +105,13 @@ public class PlaySoundScript : ScriptBase
         switch (index)
         {
             case 0:
-                m_filename = new Expression<string>((string) value, m_scriptContext);
+                _filename = new Expression<string>((string) value, _scriptContext);
                 break;
             case 1:
-                m_synchronous = new Expression<bool>((string) value, m_scriptContext);
+                _synchronous = new Expression<bool>((string) value, _scriptContext);
                 break;
             case 2:
-                m_loop = new Expression<bool>((string) value, m_scriptContext);
+                _loop = new Expression<bool>((string) value, _scriptContext);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -136,23 +136,23 @@ public class StopSoundScriptConstructor : ScriptConstructorBase
 
 public class StopSoundScript : ScriptBase
 {
-    private readonly WorldModel m_worldModel;
+    private readonly WorldModel _worldModel;
 
     public StopSoundScript(WorldModel worldModel)
     {
-        m_worldModel = worldModel;
+        _worldModel = worldModel;
     }
 
     public override string Keyword => "stop sound";
 
     protected override ScriptBase CloneScript()
     {
-        return new StopSoundScript(m_worldModel);
+        return new StopSoundScript(_worldModel);
     }
 
     public override Task ExecuteAsync(Context c)
     {
-        m_worldModel.PlayerUi.StopSound();
+        _worldModel.PlayerUi.StopSound();
         return Task.CompletedTask;
     }
 

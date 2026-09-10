@@ -21,8 +21,8 @@ public class QuestDictionaryUpdatedEventArgs<T> : EventArgs
 
 public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableField, IQuestDictionary
 {
-    private readonly OrderedDictionary<string, T> m_dictionary = new();
-    private UndoLogger m_undoLog;
+    private readonly OrderedDictionary<string, T> _dictionary = new();
+    private UndoLogger _undoLog;
 
     public QuestDictionary()
     {
@@ -34,7 +34,7 @@ public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableF
         {
             foreach (var kvp in dictionary)
             {
-                m_dictionary.Add(kvp.Key, kvp.Value);
+                _dictionary.Add(kvp.Key, kvp.Value);
             }
         }
     }
@@ -43,7 +43,7 @@ public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableF
 
     public IEnumerator<KeyValuePair<string, T>> GetEnumerator()
     {
-        return m_dictionary.GetEnumerator();
+        return _dictionary.GetEnumerator();
     }
 
     #endregion
@@ -52,7 +52,7 @@ public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableF
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return m_dictionary.GetEnumerator();
+        return _dictionary.GetEnumerator();
     }
 
     #endregion
@@ -65,14 +65,14 @@ public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableF
         if (UndoLog != null)
         {
             // also set UndoLog property on added item, if it needs a reference to the undo logger
-            object value = m_dictionary[(string) key];
+            object value = _dictionary[(string) key];
             var mutableValue = value as IMutableField;
             if (mutableValue != null)
             {
                 mutableValue.UndoLog = UndoLog;
             }
 
-            UndoLog.AddUndoAction(() => new UndoDictionaryAdd(this, key, value, m_dictionary.IndexOfKey((string) key)));
+            UndoLog.AddUndoAction(() => new UndoDictionaryAdd(this, key, value, _dictionary.IndexOfKey((string) key)));
         }
     }
 
@@ -81,13 +81,13 @@ public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableF
         if (UndoLog != null)
         {
             UndoLog.AddUndoAction(() =>
-                new UndoDictionaryRemove(this, key, m_dictionary[(string) key], m_dictionary.IndexOfKey((string) key)));
+                new UndoDictionaryRemove(this, key, _dictionary[(string) key], _dictionary.IndexOfKey((string) key)));
         }
     }
 
     public int IndexOfKey(string key)
     {
-        return m_dictionary.IndexOfKey(key);
+        return _dictionary.IndexOfKey(key);
     }
 
     private void CheckNotLocked()
@@ -114,11 +114,11 @@ public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableF
         var result = string.Empty;
         var count = 0;
 
-        foreach (var kvp in m_dictionary)
+        foreach (var kvp in _dictionary)
         {
             count++;
             result += kvp.Key + " = " + converter(kvp.Value);
-            if (count < m_dictionary.Count)
+            if (count < _dictionary.Count)
             {
                 result += ";";
             }
@@ -151,29 +151,29 @@ public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableF
 
     private class UndoDictionaryAdd : UndoLogger.IUndoAction
     {
-        private readonly object m_addedItem;
-        private readonly object m_addedKey;
-        private readonly IQuestDictionary m_appliesTo;
-        private readonly int m_index;
+        private readonly object _addedItem;
+        private readonly object _addedKey;
+        private readonly IQuestDictionary _appliesTo;
+        private readonly int _index;
 
         public UndoDictionaryAdd(IQuestDictionary appliesTo, object addedKey, object addedItem, int index)
         {
-            m_appliesTo = appliesTo;
-            m_addedKey = addedKey;
-            m_addedItem = addedItem;
-            m_index = index;
+            _appliesTo = appliesTo;
+            _addedKey = addedKey;
+            _addedItem = addedItem;
+            _index = index;
         }
 
         #region IUndoAction Members
 
         public void DoUndo(WorldModel worldModel)
         {
-            m_appliesTo.Remove(m_addedKey);
+            _appliesTo.Remove(_addedKey);
         }
 
         public void DoRedo(WorldModel worldModel)
         {
-            m_appliesTo.Add(m_addedKey, m_addedItem, m_index);
+            _appliesTo.Add(_addedKey, _addedItem, _index);
         }
 
         #endregion
@@ -181,29 +181,29 @@ public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableF
 
     private class UndoDictionaryRemove : UndoLogger.IUndoAction
     {
-        private readonly IQuestDictionary m_appliesTo;
-        private readonly int m_index;
-        private readonly object m_removedItem;
-        private readonly object m_removedKey;
+        private readonly IQuestDictionary _appliesTo;
+        private readonly int _index;
+        private readonly object _removedItem;
+        private readonly object _removedKey;
 
         public UndoDictionaryRemove(IQuestDictionary appliesTo, object removedKey, object removedItem, int index)
         {
-            m_appliesTo = appliesTo;
-            m_removedKey = removedKey;
-            m_removedItem = removedItem;
-            m_index = index;
+            _appliesTo = appliesTo;
+            _removedKey = removedKey;
+            _removedItem = removedItem;
+            _index = index;
         }
 
         #region IUndoAction Members
 
         public void DoUndo(WorldModel worldModel)
         {
-            m_appliesTo.Add(m_removedKey, m_removedItem, m_index);
+            _appliesTo.Add(_removedKey, _removedItem, _index);
         }
 
         public void DoRedo(WorldModel worldModel)
         {
-            m_appliesTo.Remove(m_removedKey);
+            _appliesTo.Remove(_removedKey);
         }
 
         #endregion
@@ -215,15 +215,15 @@ public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableF
 
     public UndoLogger UndoLog
     {
-        get => m_undoLog;
+        get => _undoLog;
         set
         {
-            if (m_undoLog == value)
+            if (_undoLog == value)
             {
                 return;
             }
 
-            m_undoLog = value;
+            _undoLog = value;
             foreach (var item in Values)
             {
                 var mutableValue = item as IMutableField;
@@ -238,7 +238,7 @@ public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableF
     public IMutableField Clone()
     {
         var result = new QuestDictionary<T>();
-        foreach (var kvp in m_dictionary)
+        foreach (var kvp in _dictionary)
         {
             var newValue = kvp.Value;
             var clonableValue = newValue as IMutableField;
@@ -270,23 +270,23 @@ public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableF
     public void Add(string key, T value, UpdateSource source)
     {
         CheckNotLocked();
-        m_dictionary.Add(key, value);
-        ItemAdded(key, value, source, m_dictionary.IndexOfKey(key));
+        _dictionary.Add(key, value);
+        ItemAdded(key, value, source, _dictionary.IndexOfKey(key));
     }
 
     public void Add(string key, T value, UpdateSource source, int index)
     {
         CheckNotLocked();
-        m_dictionary.Insert(index, key, value);
+        _dictionary.Insert(index, key, value);
         ItemAdded(key, value, source, index);
     }
 
     public bool ContainsKey(string key)
     {
-        return m_dictionary.ContainsKey(key);
+        return _dictionary.ContainsKey(key);
     }
 
-    public ICollection<string> Keys => m_dictionary.Keys;
+    public ICollection<string> Keys => _dictionary.Keys;
 
     public bool Remove(string key)
     {
@@ -296,32 +296,32 @@ public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableF
     public bool Remove(string key, UpdateSource source)
     {
         CheckNotLocked();
-        var removedValue = m_dictionary[key];
-        var removedIndex = m_dictionary.IndexOfKey(key);
+        var removedValue = _dictionary[key];
+        var removedIndex = _dictionary.IndexOfKey(key);
         ItemRemoved(key, removedValue, source, removedIndex);
-        return m_dictionary.Remove(key);
+        return _dictionary.Remove(key);
     }
 
     public bool TryGetValue(string key, out T value)
     {
-        return m_dictionary.TryGetValue(key, out value);
+        return _dictionary.TryGetValue(key, out value);
     }
 
-    public ICollection<T> Values => m_dictionary.Values;
+    public ICollection<T> Values => _dictionary.Values;
 
     public T this[string key]
     {
-        get => m_dictionary[key];
+        get => _dictionary[key];
         set
         {
             CheckNotLocked();
             if (ContainsKey(key))
             {
-                ItemRemoved(key, value, UpdateSource.System, m_dictionary.IndexOfKey(key));
+                ItemRemoved(key, value, UpdateSource.System, _dictionary.IndexOfKey(key));
             }
 
-            ItemAdded(key, value, UpdateSource.System, m_dictionary.IndexOfKey(key));
-            m_dictionary[key] = value;
+            ItemAdded(key, value, UpdateSource.System, _dictionary.IndexOfKey(key));
+            _dictionary[key] = value;
         }
     }
 
@@ -332,8 +332,8 @@ public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableF
     public void Add(KeyValuePair<string, T> item)
     {
         CheckNotLocked();
-        ((ICollection<KeyValuePair<string, T>>) m_dictionary).Add(item);
-        ItemAdded(item.Key, item.Value, UpdateSource.System, m_dictionary.IndexOfKey(item.Key));
+        ((ICollection<KeyValuePair<string, T>>) _dictionary).Add(item);
+        ItemAdded(item.Key, item.Value, UpdateSource.System, _dictionary.IndexOfKey(item.Key));
     }
 
     public void Clear()
@@ -343,23 +343,23 @@ public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableF
 
     public bool Contains(KeyValuePair<string, T> item)
     {
-        return ((ICollection<KeyValuePair<string, T>>) m_dictionary).Contains(item);
+        return ((ICollection<KeyValuePair<string, T>>) _dictionary).Contains(item);
     }
 
     public void CopyTo(KeyValuePair<string, T>[] array, int arrayIndex)
     {
-        ((ICollection<KeyValuePair<string, T>>) m_dictionary).CopyTo(array, arrayIndex);
+        ((ICollection<KeyValuePair<string, T>>) _dictionary).CopyTo(array, arrayIndex);
     }
 
-    public int Count => m_dictionary.Count;
+    public int Count => _dictionary.Count;
 
-    public bool IsReadOnly => m_dictionary.IsReadOnly;
+    public bool IsReadOnly => _dictionary.IsReadOnly;
 
     public bool Remove(KeyValuePair<string, T> item)
     {
         CheckNotLocked();
-        ItemRemoved(item.Key, item.Value, UpdateSource.System, m_dictionary.IndexOfKey(item.Key));
-        return ((ICollection<KeyValuePair<string, T>>) m_dictionary).Remove(item);
+        ItemRemoved(item.Key, item.Value, UpdateSource.System, _dictionary.IndexOfKey(item.Key));
+        return ((ICollection<KeyValuePair<string, T>>) _dictionary).Remove(item);
     }
 
     #endregion
@@ -368,7 +368,7 @@ public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableF
 
     public void Add(object key, object value)
     {
-        Add(key, value, m_dictionary.Count);
+        Add(key, value, _dictionary.Count);
     }
 
     public void Add(object key, object value, int index)
@@ -376,39 +376,39 @@ public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableF
         CheckNotLocked();
         try
         {
-            m_dictionary.Insert(index, (string) key, (T) value);
+            _dictionary.Insert(index, (string) key, (T) value);
         }
         catch (Exception ex)
         {
             throw new Exception(string.Format("Error adding key '{0}' to dictionary: {1}", key, ex.Message), ex);
         }
 
-        ItemAdded((string) key, (T) value, UpdateSource.System, m_dictionary.IndexOfKey((string) key));
+        ItemAdded((string) key, (T) value, UpdateSource.System, _dictionary.IndexOfKey((string) key));
     }
 
     public bool Contains(object key)
     {
-        return m_dictionary.ContainsKey((string) key);
+        return _dictionary.ContainsKey((string) key);
     }
 
     IDictionaryEnumerator IDictionary.GetEnumerator()
     {
-        return (IDictionaryEnumerator) m_dictionary.GetEnumerator();
+        return (IDictionaryEnumerator) _dictionary.GetEnumerator();
     }
 
-    public bool IsFixedSize => ((IDictionary) m_dictionary).IsFixedSize;
+    public bool IsFixedSize => ((IDictionary) _dictionary).IsFixedSize;
 
-    ICollection IDictionary.Keys => (ICollection) m_dictionary.Keys;
+    ICollection IDictionary.Keys => (ICollection) _dictionary.Keys;
 
     public void Remove(object key)
     {
         CheckNotLocked();
-        ItemRemoved((string) key, m_dictionary[(string) key], UpdateSource.System,
-            m_dictionary.IndexOfKey((string) key));
-        m_dictionary.Remove((string) key);
+        ItemRemoved((string) key, _dictionary[(string) key], UpdateSource.System,
+            _dictionary.IndexOfKey((string) key));
+        _dictionary.Remove((string) key);
     }
 
-    ICollection IDictionary.Values => (ICollection) m_dictionary.Values;
+    ICollection IDictionary.Values => (ICollection) _dictionary.Values;
 
     public object this[object key]
     {
@@ -422,12 +422,12 @@ public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableF
 
     public void CopyTo(Array array, int index)
     {
-        ((ICollection) m_dictionary).CopyTo(array, index);
+        ((ICollection) _dictionary).CopyTo(array, index);
     }
 
-    public bool IsSynchronized => ((ICollection) m_dictionary).IsSynchronized;
+    public bool IsSynchronized => ((ICollection) _dictionary).IsSynchronized;
 
-    public object SyncRoot => ((ICollection) m_dictionary).SyncRoot;
+    public object SyncRoot => ((ICollection) _dictionary).SyncRoot;
 
     #endregion
 }
@@ -485,9 +485,9 @@ public sealed class OrderedDictionary<TKey, TValue> : IOrderedDictionary<TKey, T
 {
     private const int DefaultInitialCapacity = 0;
 
-    private static readonly string _keyTypeName = typeof(TKey).FullName;
-    private static readonly string _valueTypeName = typeof(TValue).FullName;
-    private static readonly bool _valueTypeIsReferenceType = !typeof(ValueType).IsAssignableFrom(typeof(TValue));
+    private static readonly string KeyTypeName = typeof(TKey).FullName;
+    private static readonly string ValueTypeName = typeof(TValue).FullName;
+    private static readonly bool ValueTypeIsReferenceType = !typeof(ValueType).IsAssignableFrom(typeof(TValue));
     private readonly IEqualityComparer<TKey> _comparer;
     private readonly int _initialCapacity;
 
@@ -1264,7 +1264,7 @@ public sealed class OrderedDictionary<TKey, TValue> : IOrderedDictionary<TKey, T
             return (TKey) keyObject;
         }
 
-        throw new ArgumentException("'key' must be of type " + _keyTypeName, "key");
+        throw new ArgumentException("'key' must be of type " + KeyTypeName, "key");
     }
 
     /// <summary>
@@ -1285,7 +1285,7 @@ public sealed class OrderedDictionary<TKey, TValue> : IOrderedDictionary<TKey, T
     {
         if (null == value)
         {
-            if (_valueTypeIsReferenceType)
+            if (ValueTypeIsReferenceType)
             {
                 return default;
             }
@@ -1298,7 +1298,7 @@ public sealed class OrderedDictionary<TKey, TValue> : IOrderedDictionary<TKey, T
             return (TValue) value;
         }
 
-        throw new ArgumentException("'value' must be of type " + _valueTypeName, "value");
+        throw new ArgumentException("'value' must be of type " + ValueTypeName, "value");
     }
 
     /// <summary>

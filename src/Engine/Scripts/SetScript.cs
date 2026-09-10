@@ -96,36 +96,36 @@ public class SetScriptConstructor : IScriptConstructor
 
 public abstract class SetScriptBase : ScriptBase
 {
-    private IFunction<Element> m_appliesTo;
-    private string m_property;
-    protected ScriptContext m_scriptContext;
+    private IFunction<Element> _appliesTo;
+    private string _property;
+    protected ScriptContext _scriptContext;
 
     internal SetScriptBase(SetScriptConstructor constructor, ScriptContext scriptContext, IFunction<Element> appliesTo,
         string property)
     {
         Constructor = constructor;
         WorldModel = constructor.WorldModel;
-        m_scriptContext = scriptContext;
+        _scriptContext = scriptContext;
         AppliesTo = appliesTo;
         Property = property;
     }
 
     protected IFunction<Element> AppliesTo
     {
-        get => m_appliesTo;
+        get => _appliesTo;
         private set
         {
-            m_appliesTo = value;
+            _appliesTo = value;
             AddAttributeNameToWorldModel();
         }
     }
 
     protected string Property
     {
-        get => m_property;
+        get => _property;
         private set
         {
-            m_property = value;
+            _property = value;
             AddAttributeNameToWorldModel();
         }
     }
@@ -180,7 +180,7 @@ public abstract class SetScriptBase : ScriptBase
         {
             case 0:
                 string variable;
-                AppliesTo = Constructor.GetAppliesTo(m_scriptContext, (string) value, out variable);
+                AppliesTo = Constructor.GetAppliesTo(_scriptContext, (string) value, out variable);
                 Property = variable;
                 break;
             case 1:
@@ -209,13 +209,13 @@ public abstract class SetScriptBase : ScriptBase
 
 public class SetExpressionScript : SetScriptBase
 {
-    private Expression<object> m_expr;
+    private Expression<object> _expr;
 
     public SetExpressionScript(SetScriptConstructor constructor, ScriptContext scriptContext,
         IFunction<Element> appliesTo, string property, Expression<object> expr)
         : base(constructor, scriptContext, appliesTo, property)
     {
-        m_expr = expr;
+        _expr = expr;
     }
 
     protected override string GetEqualsString => " = ";
@@ -224,13 +224,13 @@ public class SetExpressionScript : SetScriptBase
 
     protected override ScriptBase CloneScript()
     {
-        return new SetExpressionScript(Constructor, m_scriptContext, AppliesTo == null ? null : AppliesTo.Clone(),
-            Property, (Expression<object>) m_expr.Clone());
+        return new SetExpressionScript(Constructor, _scriptContext, AppliesTo == null ? null : AppliesTo.Clone(),
+            Property, (Expression<object>) _expr.Clone());
     }
 
     public override async Task ExecuteAsync(Context c)
     {
-        var result = await m_expr.ExecuteAsync(c);
+        var result = await _expr.ExecuteAsync(c);
         if (AppliesTo != null)
         {
             // we're setting an object property
@@ -246,31 +246,31 @@ public class SetExpressionScript : SetScriptBase
 
     protected override string GetSaveString()
     {
-        return m_expr.Save();
+        return _expr.Save();
     }
 
     protected override void SetValue(string newValue)
     {
-        m_expr = new Expression<object>(newValue, m_scriptContext);
+        _expr = new Expression<object>(newValue, _scriptContext);
     }
 
     protected override object GetValue()
     {
-        return m_expr.Save();
+        return _expr.Save();
     }
 }
 
 public class SetScriptScript : SetScriptBase
 {
-    private readonly IScriptFactory m_scriptFactory;
-    private IScript m_script;
+    private readonly IScriptFactory _scriptFactory;
+    private IScript _script;
 
     public SetScriptScript(SetScriptConstructor constructor, ScriptContext scriptContext, IFunction<Element> appliesTo,
         string property, IScript script)
         : base(constructor, scriptContext, appliesTo, property)
     {
-        m_script = script;
-        m_scriptFactory = constructor.ScriptFactory;
+        _script = script;
+        _scriptFactory = constructor.ScriptFactory;
     }
 
     protected override string GetEqualsString => " => ";
@@ -279,8 +279,8 @@ public class SetScriptScript : SetScriptBase
 
     protected override ScriptBase CloneScript()
     {
-        return new SetScriptScript(Constructor, m_scriptContext, AppliesTo == null ? null : AppliesTo.Clone(), Property,
-            (IScript) m_script.Clone());
+        return new SetScriptScript(Constructor, _scriptContext, AppliesTo == null ? null : AppliesTo.Clone(), Property,
+            (IScript) _script.Clone());
     }
 
     public override async Task ExecuteAsync(Context c)
@@ -289,27 +289,27 @@ public class SetScriptScript : SetScriptBase
         {
             // we're setting an object property
             var obj = await AppliesTo.ExecuteAsync(c);
-            await obj.SetFieldAsync(Property, m_script);
+            await obj.SetFieldAsync(Property, _script);
         }
         else
         {
             // we're setting a local variable
-            c.Parameters[Property] = m_script;
+            c.Parameters[Property] = _script;
         }
     }
 
     protected override string GetSaveString()
     {
-        return SaveScript("", m_script).Trim();
+        return SaveScript("", _script).Trim();
     }
 
     protected override void SetValue(string newValue)
     {
-        m_script = m_scriptFactory.CreateScript(newValue);
+        _script = _scriptFactory.CreateScript(newValue);
     }
 
     protected override object GetValue()
     {
-        return m_script;
+        return _script;
     }
 }

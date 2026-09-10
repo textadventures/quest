@@ -20,31 +20,31 @@ public class DestroyScriptConstructor : ScriptConstructorBase
 
 public class DestroyScript : ScriptBase
 {
-    private readonly ScriptContext m_scriptContext;
-    private readonly WorldModel m_worldModel;
-    private IFunction<string> m_expr;
+    private readonly ScriptContext _scriptContext;
+    private readonly WorldModel _worldModel;
+    private IFunction<string> _expr;
 
     public DestroyScript(ScriptContext scriptContext, IFunction<string> expr)
     {
-        m_scriptContext = scriptContext;
-        m_worldModel = scriptContext.WorldModel;
-        m_expr = expr;
+        _scriptContext = scriptContext;
+        _worldModel = scriptContext.WorldModel;
+        _expr = expr;
     }
 
     public override string Keyword => "destroy";
 
     protected override ScriptBase CloneScript()
     {
-        return new DestroyScript(m_scriptContext, m_expr.Clone());
+        return new DestroyScript(_scriptContext, _expr.Clone());
     }
 
     public override async Task ExecuteAsync(Context c)
     {
-        var elementName = await m_expr.ExecuteAsync(c);
-        var element = m_worldModel.Elements.Get(elementName);
+        var elementName = await _expr.ExecuteAsync(c);
+        var element = _worldModel.Elements.Get(elementName);
         if (element.ElemType == ElementType.Object || element.ElemType == ElementType.Timer)
         {
-            m_worldModel.GetElementFactory(element.ElemType).DestroyElement(elementName);
+            _worldModel.GetElementFactory(element.ElemType).DestroyElement(elementName);
         }
         else
         {
@@ -55,16 +55,16 @@ public class DestroyScript : ScriptBase
 
     public override string Save()
     {
-        return SaveScript("destroy", m_expr.Save());
+        return SaveScript("destroy", _expr.Save());
     }
 
     public override object GetParameter(int index)
     {
-        return m_expr.Save();
+        return _expr.Save();
     }
 
     protected override void SetParameterInternal(int index, object value)
     {
-        m_expr = new Expression<string>((string) value, m_scriptContext);
+        _expr = new Expression<string>((string) value, _scriptContext);
     }
 }

@@ -134,7 +134,7 @@ public class IncludedLibraryTests
         Assert.IsTrue(ok, $"Initialisation failed for template '{templateName}'");
 
         // Building the tree at least once (as every real caller does right after a successful
-        // Initialise — see WasmEditorBridge.Initialise) is what populates m_elementTreeStructure;
+        // Initialise — see WasmEditorBridge.Initialise) is what populates _elementTreeStructure;
         // without it, later element-creation calls NRE deep in EditorController's tree-update path.
         controller.UpdateTree();
 

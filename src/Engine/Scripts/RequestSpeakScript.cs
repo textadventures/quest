@@ -30,42 +30,42 @@ public class RequestSpeakScriptConstructor : ScriptConstructorBase
 
 public class RequestSpeakScript : ScriptBase
 {
-    private readonly ScriptContext m_scriptContext;
-    private readonly WorldModel m_worldModel;
-    private IFunctionDynamic m_function;
+    private readonly ScriptContext _scriptContext;
+    private readonly WorldModel _worldModel;
+    private IFunctionDynamic _function;
 
     public RequestSpeakScript(ScriptContext scriptContext, IFunctionDynamic function)
     {
-        m_scriptContext = scriptContext;
-        m_worldModel = scriptContext.WorldModel;
-        m_function = function;
+        _scriptContext = scriptContext;
+        _worldModel = scriptContext.WorldModel;
+        _function = function;
     }
 
     public override string Keyword => "requestspeak";
 
     protected override ScriptBase CloneScript()
     {
-        return new RequestSpeakScript(m_scriptContext, m_function.Clone());
+        return new RequestSpeakScript(_scriptContext, _function.Clone());
     }
 
     public override async Task ExecuteAsync(Context c)
     {
-        var result = await m_function.ExecuteAsync(c);
-        m_worldModel.PlayerUi.Speak(Utility.ExpressionResultToString(result));
+        var result = await _function.ExecuteAsync(c);
+        _worldModel.PlayerUi.Speak(Utility.ExpressionResultToString(result));
     }
 
     public override string Save()
     {
-        return SaveScript("requestspeak", m_function.Save());
+        return SaveScript("requestspeak", _function.Save());
     }
 
     public override object GetParameter(int index)
     {
-        return m_function.Save();
+        return _function.Save();
     }
 
     protected override void SetParameterInternal(int index, object value)
     {
-        m_function = new ExpressionDynamic((string) value, m_scriptContext);
+        _function = new ExpressionDynamic((string) value, _scriptContext);
     }
 }

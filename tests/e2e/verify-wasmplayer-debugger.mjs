@@ -196,7 +196,7 @@ check(
 // The table's Value column still shows the human-readable display string
 // (Element.ToString()'s "Type: name", e.g. "Object: kitchen"), but the
 // override input is pre-filled from DebugDataItem.EditValue — the same
-// value pre-formatted as valid script syntax (Fields.cs's s_editFormatters) —
+// value pre-formatted as valid script syntax (Fields.cs's EditFormatters) —
 // so it should show just the bare name, already appliable as-is.
 const parentValueCell = await previewPage.$eval('[data-attr-row="parent"] td:nth-child(2)', el => el.textContent);
 check('Value column shows the display form ("Object: kitchen")', /Object:\s*kitchen/i.test(parentValueCell));

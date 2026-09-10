@@ -47,64 +47,64 @@ public class RunDelegateScriptConstructor : ScriptConstructorBase
 
 public class RunDelegateScript : ScriptBase
 {
-    private readonly FunctionCallParameters m_parameters;
-    private readonly ScriptContext m_scriptContext;
-    private readonly WorldModel m_worldModel;
-    private IFunction<Element> m_appliesTo;
-    private IFunction<string> m_delegate;
+    private readonly FunctionCallParameters _parameters;
+    private readonly ScriptContext _scriptContext;
+    private readonly WorldModel _worldModel;
+    private IFunction<Element> _appliesTo;
+    private IFunction<string> _delegate;
 
     public RunDelegateScript(ScriptContext scriptContext, IFunction<Element> obj, IFunction<string> del,
         IList<IFunction<object>> parameters)
     {
-        m_scriptContext = scriptContext;
-        m_worldModel = scriptContext.WorldModel;
-        m_delegate = del;
-        m_parameters = new FunctionCallParameters(m_worldModel, parameters);
-        m_appliesTo = obj;
+        _scriptContext = scriptContext;
+        _worldModel = scriptContext.WorldModel;
+        _delegate = del;
+        _parameters = new FunctionCallParameters(_worldModel, parameters);
+        _appliesTo = obj;
     }
 
     public override string Keyword => "rundelegate";
 
     protected override ScriptBase CloneScript()
     {
-        return new RunDelegateScript(m_scriptContext, m_appliesTo.Clone(), m_delegate.Clone(), m_parameters.Parameters);
+        return new RunDelegateScript(_scriptContext, _appliesTo.Clone(), _delegate.Clone(), _parameters.Parameters);
     }
 
     public override async Task ExecuteAsync(Context c)
     {
-        if (m_parameters == null)
+        if (_parameters == null)
         {
             throw new NotImplementedException();
         }
 
-        var obj = await m_appliesTo.ExecuteAsync(c);
-        var delName = await m_delegate.ExecuteAsync(c);
+        var obj = await _appliesTo.ExecuteAsync(c);
+        var delName = await _delegate.ExecuteAsync(c);
         var impl = obj.Fields.Get(delName) as DelegateImplementation;
 
         if (impl == null)
         {
             throw new Exception(
-                string.Format("Object '{0}' has no delegate implementation '{1}'", obj.Name, m_delegate));
+                string.Format("Object '{0}' has no delegate implementation '{1}'", obj.Name, _delegate));
         }
 
         var paramValues = new Parameters();
 
         var cnt = 0;
-        foreach (var f in m_parameters.Parameters)
+        foreach (var f in _parameters.Parameters)
         {
             paramValues.Add((string) impl.Definition.Fields[FieldDefinitions.ParamNames][cnt], await f.ExecuteAsync(c));
             cnt++;
         }
 
-        await m_worldModel.RunScriptAsync(impl.Implementation.Fields[FieldDefinitions.Script], paramValues, obj);
+        await _worldModel.RunScriptAsync(impl.Implementation.Fields[FieldDefinitions.Script], paramValues, obj);
     }
 
     public override string Save()
     {
         var saveParameters = new List<string>();
-        saveParameters.Add(m_appliesTo.Save());
-        saveParameters.Add(m_delegate.Save());
-        foreach (var p in m_parameters.ParametersAsQuestList)
+        saveParameters.Add(_appliesTo.Save());
+        saveParameters.Add(_delegate.Save());
+        foreach (var p in _parameters.ParametersAsQuestList)
         {
             saveParameters.Add(p);
         }
@@ -117,11 +117,11 @@ public class RunDelegateScript : ScriptBase
         switch (index)
         {
             case 0:
-                return m_appliesTo.Save();
+                return _appliesTo.Save();
             case 1:
-                return m_delegate.Save();
+                return _delegate.Save();
             case 2:
-                return m_parameters.ParametersAsQuestList;
+                return _parameters.ParametersAsQuestList;
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -132,10 +132,10 @@ public class RunDelegateScript : ScriptBase
         switch (index)
         {
             case 0:
-                m_appliesTo = new Expression<Element>((string) value, m_scriptContext);
+                _appliesTo = new Expression<Element>((string) value, _scriptContext);
                 break;
             case 1:
-                m_delegate = new Expression<string>((string) value, m_scriptContext);
+                _delegate = new Expression<string>((string) value, _scriptContext);
                 break;
             case 2:
                 // any updates to the parameters should change the list itself - nothing should cause SetParameter to be triggered.

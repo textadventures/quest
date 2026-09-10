@@ -2,7 +2,7 @@
 
 public class AttributeSubEditorControlData : IEditorControl
 {
-    private static readonly Dictionary<string, string> s_allTypes = new()
+    private static readonly Dictionary<string, string> AllTypes = new()
     {
         {"string", "String"},
         {"boolean", "Boolean"},
@@ -22,7 +22,7 @@ public class AttributeSubEditorControlData : IEditorControl
         Attribute = attribute;
     }
 
-    protected virtual Dictionary<string, string> AllowedTypes => s_allTypes;
+    protected virtual Dictionary<string, string> AllowedTypes => AllTypes;
 
     public string Attribute { get; }
 

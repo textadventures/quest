@@ -18,23 +18,23 @@ public class FinishScriptConstructor : ScriptConstructorBase
 
 public class FinishScript : ScriptBase
 {
-    private readonly WorldModel m_worldModel;
+    private readonly WorldModel _worldModel;
 
     public FinishScript(WorldModel worldModel)
     {
-        m_worldModel = worldModel;
+        _worldModel = worldModel;
     }
 
     public override string Keyword => "finish";
 
     protected override ScriptBase CloneScript()
     {
-        return new FinishScript(m_worldModel);
+        return new FinishScript(_worldModel);
     }
 
     public override Task ExecuteAsync(Context c)
     {
-        m_worldModel.FinishGame();
+        _worldModel.FinishGame();
         return Task.CompletedTask;
     }
 

@@ -42,7 +42,7 @@ Two conventions for the flags themselves, established by the audit:
 ## Dormant EditorCore plumbing — keep it
 
 EditorCore still carries the full v5 Simple Mode plumbing, all deliberately dormant:
-`SimpleMode` / `SimpleModeChanged` on `EditorController`, the `m_advancedTypes` tree
+`SimpleMode` / `SimpleModeChanged` on `EditorController`, the `_advancedTypes` tree
 filtering, `IsTabVisibleInSimpleMode` (`EditorTab.cs`), `IsControlVisibleInSimpleMode`
 (`EditorControl.cs` — this one *is* consulted, inverted, by `WasmEditorBridge` to
 populate the `Advanced` flags above), `IsVisibleInSimpleMode`

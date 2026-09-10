@@ -19,34 +19,34 @@ public class OnReadyScriptConstructor : IScriptConstructor
 
 public class OnReadyScript : ScriptBase
 {
-    private readonly IScript m_callbackScript;
-    private readonly ScriptContext m_scriptContext;
-    private readonly IScriptFactory m_scriptFactory;
-    private readonly WorldModel m_worldModel;
+    private readonly IScript _callbackScript;
+    private readonly ScriptContext _scriptContext;
+    private readonly IScriptFactory _scriptFactory;
+    private readonly WorldModel _worldModel;
 
     public OnReadyScript(ScriptContext scriptContext, IScriptFactory scriptFactory, IScript callbackScript)
     {
-        m_scriptContext = scriptContext;
-        m_worldModel = scriptContext.WorldModel;
-        m_scriptFactory = scriptFactory;
-        m_callbackScript = callbackScript;
+        _scriptContext = scriptContext;
+        _worldModel = scriptContext.WorldModel;
+        _scriptFactory = scriptFactory;
+        _callbackScript = callbackScript;
     }
 
     public override string Keyword => "on ready";
 
     protected override ScriptBase CloneScript()
     {
-        return new OnReadyScript(m_scriptContext, m_scriptFactory, (IScript) m_callbackScript.Clone());
+        return new OnReadyScript(_scriptContext, _scriptFactory, (IScript) _callbackScript.Clone());
     }
 
     public override Task ExecuteAsync(Context c)
     {
-        return m_worldModel.AddOnReady(m_callbackScript, c);
+        return _worldModel.AddOnReady(_callbackScript, c);
     }
 
     public override string Save()
     {
-        return SaveScript("on ready", m_callbackScript);
+        return SaveScript("on ready", _callbackScript);
     }
 
     public override object GetParameter(int index)
@@ -54,7 +54,7 @@ public class OnReadyScript : ScriptBase
         switch (index)
         {
             case 0:
-                return m_callbackScript;
+                return _callbackScript;
             default:
                 throw new ArgumentOutOfRangeException();
         }

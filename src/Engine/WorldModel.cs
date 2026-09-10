@@ -32,7 +32,7 @@ public partial class WorldModel : IGame, IGameDebug
 
     private static readonly Dictionary<Type, string> TypesToTypeNames = new();
 
-    private static List<string>? FunctionNames;
+    private static List<string>? _functionNames;
     private readonly List<string> _attributeNames = [];
     private readonly Dictionary<string, ElementType> _debuggerElementTypes = new();
     private readonly Dictionary<string, ObjectType> _debuggerObjectTypes = new();
@@ -1690,7 +1690,7 @@ public partial class WorldModel : IGame, IGameDebug
     }
 
     [GeneratedRegex(@"\d*$")]
-    private static partial Regex s_removeTrailingDigits();
+    private static partial Regex RemoveTrailingDigitsRegex();
 
     public string GetUniqueElementName(string elementName)
     {
@@ -1702,7 +1702,7 @@ public partial class WorldModel : IGame, IGameDebug
         }
 
         // Otherwise get a uniquely numbered element
-        var root = s_removeTrailingDigits().Replace(elementName, "");
+        var root = RemoveTrailingDigitsRegex().Replace(elementName, "");
         var elementAlreadyExists = true;
         var number = 0;
         string result = null!;
@@ -1769,9 +1769,9 @@ public partial class WorldModel : IGame, IGameDebug
 
     public IEnumerable<string> GetBuiltInFunctionNames()
     {
-        if (FunctionNames != null)
+        if (_functionNames != null)
         {
-            return FunctionNames.AsReadOnly();
+            return _functionNames.AsReadOnly();
         }
 
         var methods = typeof(ExpressionOwner).GetMethods();
@@ -1780,9 +1780,9 @@ public partial class WorldModel : IGame, IGameDebug
 
         var allMethods = methods.Union(stringMethods).Union(dateTimeMethods);
 
-        FunctionNames = new List<string>(allMethods.Select(m => m.Name));
+        _functionNames = new List<string>(allMethods.Select(m => m.Name));
 
-        return FunctionNames.AsReadOnly();
+        return _functionNames.AsReadOnly();
     }
 
     // Signatures (name + parameter names) for the built-in expression functions, reflected from

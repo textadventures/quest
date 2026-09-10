@@ -24,36 +24,36 @@ public class DictionaryAddScriptConstructor : ScriptConstructorBase
 
 public class DictionaryAddScript : ScriptBase
 {
-    private readonly ScriptContext m_scriptContext;
-    private IFunctionDynamic m_dictionary;
-    private IFunction<string> m_key;
-    private IFunction<object> m_value;
-    private WorldModel m_worldModel;
+    private readonly ScriptContext _scriptContext;
+    private IFunctionDynamic _dictionary;
+    private IFunction<string> _key;
+    private IFunction<object> _value;
+    private WorldModel _worldModel;
 
     public DictionaryAddScript(ScriptContext scriptContext, IFunctionDynamic dictionary, IFunction<string> key,
         IFunction<object> value)
     {
-        m_scriptContext = scriptContext;
-        m_dictionary = dictionary;
-        m_key = key;
-        m_value = value;
-        m_worldModel = scriptContext.WorldModel;
+        _scriptContext = scriptContext;
+        _dictionary = dictionary;
+        _key = key;
+        _value = value;
+        _worldModel = scriptContext.WorldModel;
     }
 
     public override string Keyword => "dictionary add";
 
     protected override ScriptBase CloneScript()
     {
-        return new DictionaryAddScript(m_scriptContext, m_dictionary.Clone(), m_key.Clone(), m_value.Clone());
+        return new DictionaryAddScript(_scriptContext, _dictionary.Clone(), _key.Clone(), _value.Clone());
     }
 
     public override async Task ExecuteAsync(Context c)
     {
-        var result = await m_dictionary.ExecuteAsync(c) as IDictionary;
+        var result = await _dictionary.ExecuteAsync(c) as IDictionary;
 
         if (result != null)
         {
-            result.Add(await m_key.ExecuteAsync(c), await m_value.ExecuteAsync(c));
+            result.Add(await _key.ExecuteAsync(c), await _value.ExecuteAsync(c));
         }
         else
         {
@@ -63,7 +63,7 @@ public class DictionaryAddScript : ScriptBase
 
     public override string Save()
     {
-        return SaveScript("dictionary add", m_dictionary.Save(), m_key.Save(), m_value.Save());
+        return SaveScript("dictionary add", _dictionary.Save(), _key.Save(), _value.Save());
     }
 
     public override object GetParameter(int index)
@@ -71,11 +71,11 @@ public class DictionaryAddScript : ScriptBase
         switch (index)
         {
             case 0:
-                return m_dictionary.Save();
+                return _dictionary.Save();
             case 1:
-                return m_key.Save();
+                return _key.Save();
             case 2:
-                return m_value.Save();
+                return _value.Save();
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -86,13 +86,13 @@ public class DictionaryAddScript : ScriptBase
         switch (index)
         {
             case 0:
-                m_dictionary = new ExpressionDynamic((string) value, m_scriptContext);
+                _dictionary = new ExpressionDynamic((string) value, _scriptContext);
                 break;
             case 1:
-                m_key = new Expression<string>((string) value, m_scriptContext);
+                _key = new Expression<string>((string) value, _scriptContext);
                 break;
             case 2:
-                m_value = new Expression<object>((string) value, m_scriptContext);
+                _value = new Expression<object>((string) value, _scriptContext);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -119,33 +119,33 @@ public class DictionaryRemoveScriptConstructor : ScriptConstructorBase
 
 public class DictionaryRemoveScript : ScriptBase
 {
-    private readonly ScriptContext m_scriptContext;
-    private IFunctionDynamic m_dictionary;
-    private IFunction<string> m_key;
-    private WorldModel m_worldModel;
+    private readonly ScriptContext _scriptContext;
+    private IFunctionDynamic _dictionary;
+    private IFunction<string> _key;
+    private WorldModel _worldModel;
 
     public DictionaryRemoveScript(ScriptContext scriptContext, IFunctionDynamic dictionary, IFunction<string> key)
     {
-        m_scriptContext = scriptContext;
-        m_dictionary = dictionary;
-        m_key = key;
-        m_worldModel = scriptContext.WorldModel;
+        _scriptContext = scriptContext;
+        _dictionary = dictionary;
+        _key = key;
+        _worldModel = scriptContext.WorldModel;
     }
 
     public override string Keyword => "dictionary remove";
 
     protected override ScriptBase CloneScript()
     {
-        return new DictionaryRemoveScript(m_scriptContext, m_dictionary.Clone(), m_key.Clone());
+        return new DictionaryRemoveScript(_scriptContext, _dictionary.Clone(), _key.Clone());
     }
 
     public override async Task ExecuteAsync(Context c)
     {
-        var result = await m_dictionary.ExecuteAsync(c) as IDictionary;
+        var result = await _dictionary.ExecuteAsync(c) as IDictionary;
 
         if (result != null)
         {
-            result.Remove(await m_key.ExecuteAsync(c));
+            result.Remove(await _key.ExecuteAsync(c));
         }
         else
         {
@@ -155,7 +155,7 @@ public class DictionaryRemoveScript : ScriptBase
 
     public override string Save()
     {
-        return SaveScript("dictionary remove", m_dictionary.Save(), m_key.Save());
+        return SaveScript("dictionary remove", _dictionary.Save(), _key.Save());
     }
 
     public override object GetParameter(int index)
@@ -163,9 +163,9 @@ public class DictionaryRemoveScript : ScriptBase
         switch (index)
         {
             case 0:
-                return m_dictionary.Save();
+                return _dictionary.Save();
             case 1:
-                return m_key.Save();
+                return _key.Save();
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -176,10 +176,10 @@ public class DictionaryRemoveScript : ScriptBase
         switch (index)
         {
             case 0:
-                m_dictionary = new ExpressionDynamic((string) value, m_scriptContext);
+                _dictionary = new ExpressionDynamic((string) value, _scriptContext);
                 break;
             case 1:
-                m_key = new Expression<string>((string) value, m_scriptContext);
+                _key = new Expression<string>((string) value, _scriptContext);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

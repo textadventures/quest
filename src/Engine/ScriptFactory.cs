@@ -13,11 +13,11 @@ public interface IScriptFactory
 
 public partial class ScriptFactory : IScriptFactory
 {
-    private readonly bool m_lazyLoadingEnabled = true;
-    private readonly FunctionCallScriptConstructor m_procConstructor;
+    private readonly bool _lazyLoadingEnabled = true;
+    private readonly FunctionCallScriptConstructor _procConstructor;
 
-    private readonly Dictionary<string, IScriptConstructor> m_scriptConstructors = new();
-    private readonly SetScriptConstructor m_setConstructor;
+    private readonly Dictionary<string, IScriptConstructor> _scriptConstructors = new();
+    private readonly SetScriptConstructor _setConstructor;
 
     public ScriptFactory(WorldModel worldModel)
     {
@@ -68,8 +68,8 @@ public partial class ScriptFactory : IScriptFactory
         ];
         foreach (var c in constructors) AddConstructor(c);
 
-        m_setConstructor = (SetScriptConstructor) InitScriptConstructor(new SetScriptConstructor());
-        m_procConstructor = (FunctionCallScriptConstructor) InitScriptConstructor(new FunctionCallScriptConstructor());
+        _setConstructor = (SetScriptConstructor) InitScriptConstructor(new SetScriptConstructor());
+        _procConstructor = (FunctionCallScriptConstructor) InitScriptConstructor(new FunctionCallScriptConstructor());
     }
 
     internal WorldModel WorldModel { get; }
@@ -81,7 +81,7 @@ public partial class ScriptFactory : IScriptFactory
 
     public IScript CreateScript(string line, ScriptContext scriptContext)
     {
-        return CreateScript(line, scriptContext, m_lazyLoadingEnabled);
+        return CreateScript(line, scriptContext, _lazyLoadingEnabled);
     }
 
     public IScript CreateScript(string line, ScriptContext scriptContext, bool lazy, bool addExceptionsToLog = true)
@@ -190,7 +190,7 @@ public partial class ScriptFactory : IScriptFactory
                         {
                             try
                             {
-                                if (m_lazyLoadingEnabled)
+                                if (_lazyLoadingEnabled)
                                 {
                                     newScript = new LazyLoadScript(this, constructor, line, scriptContext);
                                 }
@@ -222,13 +222,13 @@ public partial class ScriptFactory : IScriptFactory
                             if (newScript == null)
                             {
                                 // See if the script is like "myvar = 2". newScript will be null otherwise.
-                                newScript = m_setConstructor.Create(line, scriptContext);
+                                newScript = _setConstructor.Create(line, scriptContext);
                             }
 
                             if (newScript == null)
                             {
                                 // See if the script calls a procedure defined by the game
-                                newScript = m_procConstructor.Create(line, scriptContext);
+                                newScript = _procConstructor.Create(line, scriptContext);
                             }
                         }
                     }
@@ -242,7 +242,7 @@ public partial class ScriptFactory : IScriptFactory
                     }
                     else
                     {
-                        if (!m_lazyLoadingEnabled)
+                        if (!_lazyLoadingEnabled)
                         {
                             newScript.Line = line;
                         }
@@ -268,7 +268,7 @@ public partial class ScriptFactory : IScriptFactory
     {
         if (constructor.Keyword != null)
         {
-            m_scriptConstructors.Add(constructor.Keyword, InitScriptConstructor(constructor));
+            _scriptConstructors.Add(constructor.Keyword, InitScriptConstructor(constructor));
         }
     }
 
@@ -300,13 +300,13 @@ public partial class ScriptFactory : IScriptFactory
     }
 
     [GeneratedRegex(@"^\W")]
-    private static partial Regex s_nonWordCharacterRegex();
+    private static partial Regex NonWordCharacterRegex();
 
     private IScriptConstructor GetScriptConstructor(string line)
     {
         IScriptConstructor constructor = null;
         var strength = 0;
-        foreach (var c in m_scriptConstructors.Values)
+        foreach (var c in _scriptConstructors.Values)
         {
             if (line.StartsWith(c.Keyword))
             {
@@ -315,7 +315,7 @@ public partial class ScriptFactory : IScriptFactory
                 // a match for "msg".
 
                 if (line.Length == c.Keyword.Length ||
-                    s_nonWordCharacterRegex().IsMatch(line.Substring(c.Keyword.Length)) ||
+                    NonWordCharacterRegex().IsMatch(line.Substring(c.Keyword.Length)) ||
                     c is CommentScriptConstructor || c is JSScriptConstructor)
                 {
                     if (c.Keyword.Length > strength)

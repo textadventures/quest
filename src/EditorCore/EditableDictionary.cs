@@ -4,21 +4,21 @@ namespace QuestViva.EditorCore;
 
 public class EditableDictionary<T> : IEditableDictionary<T>, IDataWrapper
 {
-    private static int s_count;
-    private readonly EditorController m_controller;
+    private static int _count;
+    private readonly EditorController _controller;
 
-    private readonly QuestDictionary<T> m_source;
-    private readonly Dictionary<string, IEditableListItem<T>> m_wrappedItems = new();
+    private readonly QuestDictionary<T> _source;
+    private readonly Dictionary<string, IEditableListItem<T>> _wrappedItems = new();
 
     public EditableDictionary(EditorController controller, QuestDictionary<T> source)
     {
-        s_count++;
-        Id = "dictionary" + s_count;
+        _count++;
+        Id = "dictionary" + _count;
 
-        m_controller = controller;
-        m_source = source;
-        m_source.Added += m_source_Added;
-        m_source.Removed += m_source_Removed;
+        _controller = controller;
+        _source = source;
+        _source.Added += OnSourceAdded;
+        _source.Removed += OnSourceRemoved;
         PopulateWrappedItems();
     }
 
@@ -31,7 +31,7 @@ public class EditableDictionary<T> : IEditableDictionary<T>, IDataWrapper
 
     public object GetUnderlyingValue()
     {
-        return m_source;
+        return _source;
     }
 
     public string DisplayString()
@@ -50,7 +50,7 @@ public class EditableDictionary<T> : IEditableDictionary<T>, IDataWrapper
         remove { }
     }
 
-    public IDictionary<string, IEditableListItem<T>> Items => m_wrappedItems;
+    public IDictionary<string, IEditableListItem<T>> Items => _wrappedItems;
 
     public IEnumerable<KeyValuePair<string, string>> DisplayItems
     {
@@ -58,7 +58,7 @@ public class EditableDictionary<T> : IEditableDictionary<T>, IDataWrapper
         {
             var result = new Dictionary<string, string>();
 
-            foreach (var item in m_wrappedItems)
+            foreach (var item in _wrappedItems)
             {
                 // TO DO: We will need some kind of projection function for non-string T's
                 result.Add(item.Key, item.Value.Value as string);
@@ -81,9 +81,9 @@ public class EditableDictionary<T> : IEditableDictionary<T>, IDataWrapper
             throw new InvalidOperationException("Unknown dictionary type");
         }
 
-        m_controller.WorldModel.UndoLogger.StartTransaction(undoEntry);
-        m_source.Add(key, value, UpdateSource.User);
-        m_controller.WorldModel.UndoLogger.EndTransaction();
+        _controller.WorldModel.UndoLogger.StartTransaction(undoEntry);
+        _source.Add(key, value, UpdateSource.User);
+        _controller.WorldModel.UndoLogger.EndTransaction();
     }
 
     public void Remove(params string[] keys)
@@ -99,18 +99,18 @@ public class EditableDictionary<T> : IEditableDictionary<T>, IDataWrapper
             throw new InvalidOperationException("Unknown list type");
         }
 
-        m_controller.WorldModel.UndoLogger.StartTransaction(undoEntry);
+        _controller.WorldModel.UndoLogger.StartTransaction(undoEntry);
         foreach (var key in keys)
         {
-            m_source.Remove(key, UpdateSource.User);
+            _source.Remove(key, UpdateSource.User);
         }
 
-        m_controller.WorldModel.UndoLogger.EndTransaction();
+        _controller.WorldModel.UndoLogger.EndTransaction();
     }
 
     public ValidationResult CanAdd(string key)
     {
-        if (m_source.ContainsKey(key))
+        if (_source.ContainsKey(key))
         {
             return new ValidationResult {Valid = false, Message = ValidationMessage.ItemAlreadyExists};
         }
@@ -118,23 +118,23 @@ public class EditableDictionary<T> : IEditableDictionary<T>, IDataWrapper
         return new ValidationResult {Valid = true};
     }
 
-    public T this[string key] => m_source[key];
+    public T this[string key] => _source[key];
 
     public void Update(string key, T value)
     {
-        var index = m_source.IndexOfKey(key);
-        m_source.Remove(key, UpdateSource.User);
-        m_source.Add(key, value, UpdateSource.User, index);
+        var index = _source.IndexOfKey(key);
+        _source.Remove(key, UpdateSource.User);
+        _source.Add(key, value, UpdateSource.User, index);
     }
 
-    public bool Locked => m_source.Locked;
+    public bool Locked => _source.Locked;
 
     public IEditableDictionary<T> Clone(string parent, string attribute)
     {
         IEditableDictionary<T> result;
-        m_controller.WorldModel.UndoLogger.StartTransaction(string.Format("Copy '{0}' {1}", parent, attribute));
-        result = CloneInternal(m_controller.WorldModel.Elements.Get(parent), attribute);
-        m_controller.WorldModel.UndoLogger.EndTransaction();
+        _controller.WorldModel.UndoLogger.StartTransaction(string.Format("Copy '{0}' {1}", parent, attribute));
+        result = CloneInternal(_controller.WorldModel.Elements.Get(parent), attribute);
+        _controller.WorldModel.UndoLogger.EndTransaction();
         return result;
     }
 
@@ -142,31 +142,31 @@ public class EditableDictionary<T> : IEditableDictionary<T>, IDataWrapper
     {
         get
         {
-            if (m_source.Owner == null)
+            if (_source.Owner == null)
             {
                 return null;
             }
 
-            return m_source.Owner.Name;
+            return _source.Owner.Name;
         }
     }
 
     public void ChangeKey(string oldKey, string newKey)
     {
-        var index = m_source.IndexOfKey(oldKey);
-        var value = m_source[oldKey];
-        m_source.Remove(oldKey, UpdateSource.User);
-        m_source.Add(newKey, value, UpdateSource.User, index);
+        var index = _source.IndexOfKey(oldKey);
+        var value = _source[oldKey];
+        _source.Remove(oldKey, UpdateSource.User);
+        _source.Add(newKey, value, UpdateSource.User, index);
     }
 
     public string Id { get; }
 
     private void PopulateWrappedItems()
     {
-        m_wrappedItems.Clear();
+        _wrappedItems.Clear();
         var index = 0;
 
-        foreach (var item in m_source)
+        foreach (var item in _source)
         {
             AddWrappedItem(item.Key, item.Value, EditorUpdateSource.System, index);
             index++;
@@ -176,7 +176,7 @@ public class EditableDictionary<T> : IEditableDictionary<T>, IDataWrapper
     private void AddWrappedItem(string key, T value, EditorUpdateSource source, int index)
     {
         IEditableListItem<T> wrappedValue = new EditableListItem<T>(key, value);
-        m_wrappedItems.Add(key, wrappedValue);
+        _wrappedItems.Add(key, wrappedValue);
 
         if (Added != null)
         {
@@ -187,44 +187,44 @@ public class EditableDictionary<T> : IEditableDictionary<T>, IDataWrapper
 
     private void RemoveWrappedItem(IEditableListItem<T> item, EditorUpdateSource source, int index)
     {
-        m_wrappedItems.Remove(item.Key);
+        _wrappedItems.Remove(item.Key);
         if (Removed != null)
         {
             Removed(this, new EditableListUpdatedEventArgs<T> {UpdatedItem = item, Index = index, Source = source});
         }
     }
 
-    private void m_source_Added(object sender, QuestDictionaryUpdatedEventArgs<T> e)
+    private void OnSourceAdded(object sender, QuestDictionaryUpdatedEventArgs<T> e)
     {
         AddWrappedItem(e.Key, e.Item, (EditorUpdateSource) e.Source, e.Index);
     }
 
-    private void m_source_Removed(object sender, QuestDictionaryUpdatedEventArgs<T> e)
+    private void OnSourceRemoved(object sender, QuestDictionaryUpdatedEventArgs<T> e)
     {
-        RemoveWrappedItem(m_wrappedItems[e.Key], (EditorUpdateSource) e.Source, e.Index);
+        RemoveWrappedItem(_wrappedItems[e.Key], (EditorUpdateSource) e.Source, e.Index);
     }
 
     private IEditableDictionary<T> CloneInternal(Element parent, string attribute)
     {
-        var newSource = (QuestDictionary<T>) m_source.Clone();
+        var newSource = (QuestDictionary<T>) _source.Clone();
         newSource.Locked = false;
         parent.Fields.Set(attribute, newSource);
         newSource = (QuestDictionary<T>) parent.Fields.Get(attribute);
-        return GetNewInstance(m_controller, newSource);
+        return GetNewInstance(_controller, newSource);
     }
 
     #region Static DataWrapper
 
-    private static readonly EditableDataWrapper<QuestDictionary<T>, EditableDictionary<T>> s_wrapper;
+    private static readonly EditableDataWrapper<QuestDictionary<T>, EditableDictionary<T>> Wrapper;
 
     static EditableDictionary()
     {
-        s_wrapper = new EditableDataWrapper<QuestDictionary<T>, EditableDictionary<T>>(GetNewInstance);
+        Wrapper = new EditableDataWrapper<QuestDictionary<T>, EditableDictionary<T>>(GetNewInstance);
     }
 
     public static EditableDictionary<T> GetInstance(EditorController controller, QuestDictionary<T> list)
     {
-        return s_wrapper.GetInstance(controller, list);
+        return Wrapper.GetInstance(controller, list);
     }
 
     private static EditableDictionary<T> GetNewInstance(EditorController controller, QuestDictionary<T> list)
@@ -234,7 +234,7 @@ public class EditableDictionary<T> : IEditableDictionary<T>, IDataWrapper
 
     public static void Clear()
     {
-        s_wrapper.Clear();
+        Wrapper.Clear();
     }
 
     #endregion

@@ -24,42 +24,42 @@ public class ErrorScriptConstructor : ScriptConstructorBase
 
 public class ErrorScript : ScriptBase
 {
-    private readonly ScriptContext m_scriptContext;
-    private IFunctionDynamic m_function;
-    private WorldModel m_worldModel;
+    private readonly ScriptContext _scriptContext;
+    private IFunctionDynamic _function;
+    private WorldModel _worldModel;
 
     public ErrorScript(ScriptContext scriptContext, IFunctionDynamic function)
     {
-        m_scriptContext = scriptContext;
-        m_function = function;
-        m_worldModel = scriptContext.WorldModel;
+        _scriptContext = scriptContext;
+        _function = function;
+        _worldModel = scriptContext.WorldModel;
     }
 
     public override string Keyword => "error";
 
     protected override ScriptBase CloneScript()
     {
-        return new ErrorScript(m_scriptContext, m_function.Clone());
+        return new ErrorScript(_scriptContext, _function.Clone());
     }
 
     public override async Task ExecuteAsync(Context c)
     {
-        var result = await m_function.ExecuteAsync(c);
+        var result = await _function.ExecuteAsync(c);
         throw new Exception(Utility.ExpressionResultToString(result));
     }
 
     public override string Save()
     {
-        return SaveScript("error", m_function.Save());
+        return SaveScript("error", _function.Save());
     }
 
     public override object GetParameter(int index)
     {
-        return m_function.Save();
+        return _function.Save();
     }
 
     protected override void SetParameterInternal(int index, object value)
     {
-        m_function = new ExpressionDynamic((string) value, m_scriptContext);
+        _function = new ExpressionDynamic((string) value, _scriptContext);
     }
 }

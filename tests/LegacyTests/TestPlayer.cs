@@ -4,9 +4,9 @@ namespace QuestViva.LegacyTests;
 
 internal class TestPlayer : IPlayer
 {
-    private readonly List<string> m_output = new();
+    private readonly List<string> _output = new();
 
-    public int BufferLength => m_output.Count;
+    public int BufferLength => _output.Count;
 
     public MenuData LatestMenu { get; set; }
 
@@ -170,12 +170,12 @@ internal class TestPlayer : IPlayer
 
     public void ClearBuffer()
     {
-        m_output.Clear();
+        _output.Clear();
     }
 
     public string Buffer(int index)
     {
-        return m_output[index];
+        return _output[index];
     }
 
     public void PrintText(string text)
@@ -187,6 +187,6 @@ internal class TestPlayer : IPlayer
 
         // remove <output> and </output>
         text = text.Substring(8, text.Length - 17);
-        m_output.Add(text);
+        _output.Add(text);
     }
 }

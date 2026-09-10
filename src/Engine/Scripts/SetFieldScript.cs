@@ -21,38 +21,38 @@ public class SetFieldScriptConstructor : ScriptConstructorBase
 
 public class SetFieldScript : ScriptBase
 {
-    private readonly ScriptContext m_scriptContext;
-    private IFunction<string> m_field;
-    private IFunction<Element> m_obj;
-    private IFunction<object> m_value;
-    private WorldModel m_worldModel;
+    private readonly ScriptContext _scriptContext;
+    private IFunction<string> _field;
+    private IFunction<Element> _obj;
+    private IFunction<object> _value;
+    private WorldModel _worldModel;
 
     public SetFieldScript(ScriptContext scriptContext, IFunction<Element> obj, IFunction<string> field,
         IFunction<object> value)
     {
-        m_scriptContext = scriptContext;
-        m_worldModel = scriptContext.WorldModel;
-        m_obj = obj;
-        m_field = field;
-        m_value = value;
+        _scriptContext = scriptContext;
+        _worldModel = scriptContext.WorldModel;
+        _obj = obj;
+        _field = field;
+        _value = value;
     }
 
     public override string Keyword => "set";
 
     protected override ScriptBase CloneScript()
     {
-        return new SetFieldScript(m_scriptContext, m_obj.Clone(), m_field.Clone(), m_value.Clone());
+        return new SetFieldScript(_scriptContext, _obj.Clone(), _field.Clone(), _value.Clone());
     }
 
     public override async Task ExecuteAsync(Context c)
     {
-        var obj = await m_obj.ExecuteAsync(c);
-        await obj.SetFieldAsync(await m_field.ExecuteAsync(c), await m_value.ExecuteAsync(c));
+        var obj = await _obj.ExecuteAsync(c);
+        await obj.SetFieldAsync(await _field.ExecuteAsync(c), await _value.ExecuteAsync(c));
     }
 
     public override string Save()
     {
-        return SaveScript("set", m_obj.Save(), m_field.Save(), m_value.Save());
+        return SaveScript("set", _obj.Save(), _field.Save(), _value.Save());
     }
 
     public override object GetParameter(int index)
@@ -60,11 +60,11 @@ public class SetFieldScript : ScriptBase
         switch (index)
         {
             case 0:
-                return m_obj.Save();
+                return _obj.Save();
             case 1:
-                return m_field.Save();
+                return _field.Save();
             case 2:
-                return m_value.Save();
+                return _value.Save();
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -75,13 +75,13 @@ public class SetFieldScript : ScriptBase
         switch (index)
         {
             case 0:
-                m_obj = new Expression<Element>((string) value, m_scriptContext);
+                _obj = new Expression<Element>((string) value, _scriptContext);
                 break;
             case 1:
-                m_field = new Expression<string>((string) value, m_scriptContext);
+                _field = new Expression<string>((string) value, _scriptContext);
                 break;
             case 2:
-                m_value = new Expression<object>((string) value, m_scriptContext);
+                _value = new Expression<object>((string) value, _scriptContext);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

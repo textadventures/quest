@@ -5,26 +5,26 @@ namespace QuestViva.EngineTests;
 [TestClass]
 public class ComplexTypesTests
 {
-    private Element m_object;
-    private WorldModel m_worldModel;
+    private Element _object;
+    private WorldModel _worldModel;
 
     [TestInitialize]
     public void Setup()
     {
-        m_worldModel = Helpers.CreateWorldModel();
+        _worldModel = Helpers.CreateWorldModel();
 
-        m_object = m_worldModel.GetElementFactory(ElementType.Object).Create("object");
+        _object = _worldModel.GetElementFactory(ElementType.Object).Create("object");
         var list = new QuestList<object> {"string1"};
         var dictionary = new QuestDictionary<object> {{"key1", "nested string"}};
         list.Add(dictionary);
-        m_object.Fields.Set("list", list);
-        m_object.Fields.Resolve(null);
+        _object.Fields.Set("list", list);
+        _object.Fields.Resolve(null);
     }
 
     [TestMethod]
     public void TestSetup()
     {
-        var obj = m_worldModel.Elements.Get("object");
+        var obj = _worldModel.Elements.Get("object");
         Assert.IsNotNull(obj);
         var list = obj.Fields.GetAsType<QuestList<object>>("list");
         Assert.IsNotNull(list);
@@ -38,35 +38,35 @@ public class ComplexTypesTests
     [TestMethod]
     public void TestAddListItemUndoRedo()
     {
-        var obj = m_worldModel.Elements.Get("object");
+        var obj = _worldModel.Elements.Get("object");
         var list = obj.Fields.GetAsType<QuestList<object>>("list");
         Assert.AreEqual(2, list.Count);
 
-        m_worldModel.UndoLogger.StartTransaction("Add list item");
+        _worldModel.UndoLogger.StartTransaction("Add list item");
         list.Add("new item");
-        m_worldModel.UndoLogger.EndTransaction();
+        _worldModel.UndoLogger.EndTransaction();
 
         Assert.AreEqual(3, list.Count);
 
-        m_worldModel.UndoLogger.Undo();
+        _worldModel.UndoLogger.Undo();
         Assert.AreEqual(2, list.Count);
     }
 
     [TestMethod]
     public void TestNestedDictionaryAddUndoRedo()
     {
-        var obj = m_worldModel.Elements.Get("object");
+        var obj = _worldModel.Elements.Get("object");
         var list = obj.Fields.GetAsType<QuestList<object>>("list");
         var dictionary = list[1] as QuestDictionary<object>;
         Assert.AreEqual(1, dictionary.Count);
 
-        m_worldModel.UndoLogger.StartTransaction("Add dictionary item");
+        _worldModel.UndoLogger.StartTransaction("Add dictionary item");
         dictionary.Add("key2", "new string");
-        m_worldModel.UndoLogger.EndTransaction();
+        _worldModel.UndoLogger.EndTransaction();
 
         Assert.AreEqual(2, dictionary.Count);
 
-        m_worldModel.UndoLogger.Undo();
+        _worldModel.UndoLogger.Undo();
         Assert.AreEqual(1, dictionary.Count);
     }
 }

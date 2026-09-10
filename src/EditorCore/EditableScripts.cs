@@ -6,22 +6,22 @@ namespace QuestViva.EditorCore;
 
 public class EditableScripts : IEditableScripts, IDataWrapper
 {
-    private static readonly EditableDataWrapper<IScript, EditableScripts> s_wrapper;
-    private readonly EditorController m_controller;
+    private static readonly EditableDataWrapper<IScript, EditableScripts> Wrapper;
+    private readonly EditorController _controller;
 
-    private readonly List<IEditableScript> m_scripts;
-    private bool m_replacingScripts;
-    private IMultiScript m_underlyingScript;
+    private readonly List<IEditableScript> _scripts;
+    private bool _replacingScripts;
+    private IMultiScript _underlyingScript;
 
     static EditableScripts()
     {
-        s_wrapper = new EditableDataWrapper<IScript, EditableScripts>(GetNewInstance);
+        Wrapper = new EditableDataWrapper<IScript, EditableScripts>(GetNewInstance);
     }
 
     private EditableScripts(EditorController controller)
     {
-        m_controller = controller;
-        m_scripts = new List<IEditableScript>();
+        _controller = controller;
+        _scripts = new List<IEditableScript>();
     }
 
     private EditableScripts(EditorController controller, IScript script)
@@ -37,8 +37,8 @@ public class EditableScripts : IEditableScripts, IDataWrapper
 
     public object GetUnderlyingValue()
     {
-        Debug.Assert(m_underlyingScript.Scripts.Count() == m_scripts.Count);
-        return m_underlyingScript;
+        Debug.Assert(_underlyingScript.Scripts.Count() == _scripts.Count);
+        return _underlyingScript;
     }
 
     #endregion
@@ -50,11 +50,11 @@ public class EditableScripts : IEditableScripts, IDataWrapper
 
     public string DisplayString(int index, string newValue)
     {
-        Debug.Assert(m_underlyingScript.Scripts.Count() == m_scripts.Count);
+        Debug.Assert(_underlyingScript.Scripts.Count() == _scripts.Count);
 
         var count = 0;
         var result = new StringBuilder();
-        foreach (var script in m_scripts)
+        foreach (var script in _scripts)
         {
             if (result.Length > 0)
             {
@@ -78,7 +78,7 @@ public class EditableScripts : IEditableScripts, IDataWrapper
 
     public void Swap(int index1, int index2)
     {
-        m_underlyingScript.Swap(index1, index2);
+        _underlyingScript.Swap(index1, index2);
     }
 
     public void Cut(int[] indexes)
@@ -92,38 +92,38 @@ public class EditableScripts : IEditableScripts, IDataWrapper
         var scripts = new List<IScript>();
         foreach (var index in indexes)
         {
-            scripts.Add(m_underlyingScript.Scripts.ElementAt(index));
+            scripts.Add(_underlyingScript.Scripts.ElementAt(index));
         }
 
-        m_controller.SetClipboardScript(scripts);
+        _controller.SetClipboardScript(scripts);
     }
 
     public void Paste(int index, bool useTransaction)
     {
         if (useTransaction)
         {
-            m_controller.StartTransaction("Paste script");
+            _controller.StartTransaction("Paste script");
         }
 
-        foreach (var script in m_controller.GetClipboardScript())
+        foreach (var script in _controller.GetClipboardScript())
         {
-            m_underlyingScript.Insert(index, m_controller.ScriptFactory.Clone(script));
+            _underlyingScript.Insert(index, _controller.ScriptFactory.Clone(script));
             index++;
         }
 
         if (useTransaction)
         {
-            m_controller.EndTransaction();
+            _controller.EndTransaction();
         }
     }
 
     public IEditableScripts Clone(string parent, string attribute)
     {
-        var clonedScript = (IScript) m_underlyingScript.Clone();
-        var parentElement = m_controller.WorldModel.Elements.Get(parent);
+        var clonedScript = (IScript) _underlyingScript.Clone();
+        var parentElement = _controller.WorldModel.Elements.Get(parent);
         parentElement.Fields.Set(attribute, clonedScript);
         clonedScript = (IScript) parentElement.Fields.Get(attribute);
-        var result = new EditableScripts(m_controller, clonedScript);
+        var result = new EditableScripts(_controller, clonedScript);
 
         return result;
     }
@@ -132,17 +132,17 @@ public class EditableScripts : IEditableScripts, IDataWrapper
     {
         get
         {
-            if (m_underlyingScript == null)
+            if (_underlyingScript == null)
             {
                 return null;
             }
 
-            if (m_underlyingScript.Owner == null)
+            if (_underlyingScript.Owner == null)
             {
                 return null;
             }
 
-            return m_underlyingScript.Owner.Name;
+            return _underlyingScript.Owner.Name;
         }
     }
 
@@ -150,12 +150,12 @@ public class EditableScripts : IEditableScripts, IDataWrapper
     {
         get
         {
-            if (m_underlyingScript == null)
+            if (_underlyingScript == null)
             {
                 return string.Empty;
             }
 
-            var result = Engine.Utility.IndentScript(m_underlyingScript.Save(), 0, "  ");
+            var result = Engine.Utility.IndentScript(_underlyingScript.Save(), 0, "  ");
             if (result.StartsWith(Environment.NewLine))
             {
                 result = result.Substring(Environment.NewLine.Length);
@@ -170,17 +170,17 @@ public class EditableScripts : IEditableScripts, IDataWrapper
         }
         set
         {
-            m_controller.StartTransaction("Editing script in code view");
-            m_underlyingScript.LoadCode(value);
+            _controller.StartTransaction("Editing script in code view");
+            _underlyingScript.LoadCode(value);
             ClearScripts();
-            InitialiseScript(m_underlyingScript);
-            m_controller.EndTransaction();
+            InitialiseScript(_underlyingScript);
+            _controller.EndTransaction();
         }
     }
 
     public static EditableScripts GetInstance(EditorController controller, IScript script)
     {
-        return s_wrapper.GetInstance(controller, script);
+        return Wrapper.GetInstance(controller, script);
     }
 
     private static EditableScripts GetNewInstance(EditorController controller, IScript script)
@@ -190,41 +190,41 @@ public class EditableScripts : IEditableScripts, IDataWrapper
 
     public static void Clear()
     {
-        s_wrapper.Clear();
+        Wrapper.Clear();
     }
 
     private void InitialiseScript(IScript script)
     {
         InitialiseMultiScript((IMultiScript) script);
 
-        foreach (var scriptItem in m_underlyingScript.Scripts)
+        foreach (var scriptItem in _underlyingScript.Scripts)
         {
-            m_scripts.Add(m_controller.ScriptFactory.CreateEditableScript(scriptItem));
+            _scripts.Add(_controller.ScriptFactory.CreateEditableScript(scriptItem));
         }
 
-        foreach (var editableScript in m_scripts)
+        foreach (var editableScript in _scripts)
         {
             editableScript.Updated += script_Updated;
         }
 
-        Debug.Assert(m_underlyingScript.Scripts.Count() == m_scripts.Count);
+        Debug.Assert(_underlyingScript.Scripts.Count() == _scripts.Count);
     }
 
     private void InitialiseMultiScript(IMultiScript script)
     {
-        if (m_underlyingScript != null)
+        if (_underlyingScript != null)
         {
-            m_underlyingScript.ScriptUpdated -= multiScript_ScriptUpdated;
+            _underlyingScript.ScriptUpdated -= multiScript_ScriptUpdated;
         }
 
-        m_underlyingScript = script;
-        m_underlyingScript.ScriptUpdated += multiScript_ScriptUpdated;
-        m_underlyingScript.UndoLog = m_controller.WorldModel.UndoLogger;
+        _underlyingScript = script;
+        _underlyingScript.ScriptUpdated += multiScript_ScriptUpdated;
+        _underlyingScript.UndoLog = _controller.WorldModel.UndoLogger;
     }
 
     private void multiScript_ScriptUpdated(object sender, ScriptUpdatedEventArgs e)
     {
-        if (m_adding)
+        if (_adding)
         {
             return;
         }
@@ -233,36 +233,36 @@ public class EditableScripts : IEditableScripts, IDataWrapper
         // to remove it from this wrapper too.
         if (e.RemovedScript != null)
         {
-            foreach (var es in m_scripts.ToArray())
+            foreach (var es in _scripts.ToArray())
             {
                 var s = (EditableScriptBase) es;
                 if (s.Script == e.RemovedScript)
                 {
-                    m_scripts.Remove(es);
+                    _scripts.Remove(es);
                 }
             }
         }
 
         if (e.AddedScript != null)
         {
-            Add(m_controller.ScriptFactory.CreateEditableScript(e.AddedScript), true);
+            Add(_controller.ScriptFactory.CreateEditableScript(e.AddedScript), true);
         }
 
         if (e.InsertedScript != null)
         {
-            Add(m_controller.ScriptFactory.CreateEditableScript(e.InsertedScript), e.Index, true);
+            Add(_controller.ScriptFactory.CreateEditableScript(e.InsertedScript), e.Index, true);
         }
 
         if (e.ScriptsReplaced)
         {
-            m_replacingScripts = true;
-            m_scripts.Clear();
+            _replacingScripts = true;
+            _scripts.Clear();
             foreach (var script in ((MultiScript) sender).Scripts)
             {
-                Add(m_controller.ScriptFactory.CreateEditableScript(script), true);
+                Add(_controller.ScriptFactory.CreateEditableScript(script), true);
             }
 
-            m_replacingScripts = false;
+            _replacingScripts = false;
         }
 
         if (Updated != null)
@@ -275,7 +275,7 @@ public class EditableScripts : IEditableScripts, IDataWrapper
             UnderlyingValueUpdated(this, new DataWrapperUpdatedEventArgs());
         }
 
-        Debug.Assert(m_underlyingScript.Scripts.Count() == m_scripts.Count);
+        Debug.Assert(_underlyingScript.Scripts.Count() == _scripts.Count);
     }
 
     private void script_Updated(object sender, EditableScriptUpdatedEventArgs e)
@@ -290,22 +290,22 @@ public class EditableScripts : IEditableScripts, IDataWrapper
             UnderlyingValueUpdated(this, new DataWrapperUpdatedEventArgs());
         }
 
-        Debug.Assert(m_underlyingScript.Scripts.Count() == m_scripts.Count);
+        Debug.Assert(_underlyingScript.Scripts.Count() == _scripts.Count);
     }
 
     private void ClearScripts()
     {
-        foreach (var script in m_scripts)
+        foreach (var script in _scripts)
         {
             script.Updated -= script_Updated;
         }
 
-        m_scripts.Clear();
+        _scripts.Clear();
     }
 
     #region IEditableScripts Members
 
-    public IEnumerable<IEditableScript> Scripts => m_scripts.AsReadOnly();
+    public IEnumerable<IEditableScript> Scripts => _scripts.AsReadOnly();
 
     private void Add(EditableScriptBase script, bool fromUpdate)
     {
@@ -317,16 +317,16 @@ public class EditableScripts : IEditableScripts, IDataWrapper
         script.Updated += script_Updated;
         if (index.HasValue)
         {
-            m_scripts.Insert(index.Value, script);
+            _scripts.Insert(index.Value, script);
         }
         else
         {
-            m_scripts.Add(script);
+            _scripts.Add(script);
         }
 
-        if (m_underlyingScript == null)
+        if (_underlyingScript == null)
         {
-            InitialiseMultiScript(new MultiScript(m_controller.WorldModel));
+            InitialiseMultiScript(new MultiScript(_controller.WorldModel));
         }
 
         if (!fromUpdate)
@@ -336,25 +336,25 @@ public class EditableScripts : IEditableScripts, IDataWrapper
             // to a multiscript update in the first place so no point adding the same
             // script again!
 
-            m_adding = true;
-            m_underlyingScript.Add(script.Script);
-            m_adding = false;
+            _adding = true;
+            _underlyingScript.Add(script.Script);
+            _adding = false;
         }
 
-        Debug.Assert(m_replacingScripts || m_underlyingScript.Scripts.Count() == m_scripts.Count);
+        Debug.Assert(_replacingScripts || _underlyingScript.Scripts.Count() == _scripts.Count);
     }
 
     // TO DO: This is a temporary hacky flag to prevent re-entrant updates. What we should be doing instead is
-    // never adding to our own wrapped m_scripts collection unless we receive an update from the underlying
+    // never adding to our own wrapped _scripts collection unless we receive an update from the underlying
     // MultiScript.
-    private bool m_adding;
+    private bool _adding;
 
     public void AddNew(string keyword, string elementName)
     {
-        m_controller.WorldModel.UndoLogger.StartTransaction(string.Format("Add '{0}' script to '{1}'", keyword,
+        _controller.WorldModel.UndoLogger.StartTransaction(string.Format("Add '{0}' script to '{1}'", keyword,
             elementName));
         AddNewInternal(keyword);
-        m_controller.WorldModel.UndoLogger.EndTransaction();
+        _controller.WorldModel.UndoLogger.EndTransaction();
     }
 
     internal void AddNewInternal(string keyword)
@@ -362,25 +362,25 @@ public class EditableScripts : IEditableScripts, IDataWrapper
         EditableScriptBase script;
         if (!string.IsNullOrEmpty(keyword))
         {
-            script = m_controller.ScriptFactory.CreateEditableScript(keyword);
+            script = _controller.ScriptFactory.CreateEditableScript(keyword);
         }
         else
         {
-            script = m_controller.ScriptFactory.CreateEditableFunctionCallScript();
+            script = _controller.ScriptFactory.CreateEditableFunctionCallScript();
         }
 
         Add(script, false);
     }
 
-    public IEditableScript this[int index] => m_scripts[index];
+    public IEditableScript this[int index] => _scripts[index];
 
     public void Remove(int[] indexes)
     {
         var desc = indexes.Length == 0
-            ? string.Format("Remove '{0}' script", m_scripts[indexes[0]].DisplayString())
+            ? string.Format("Remove '{0}' script", _scripts[indexes[0]].DisplayString())
             : string.Format("Remove {0} scripts", indexes.Length);
 
-        m_controller.WorldModel.UndoLogger.StartTransaction(desc);
+        _controller.WorldModel.UndoLogger.StartTransaction(desc);
 
         var indexesDescending = from index in indexes
             orderby index descending
@@ -388,16 +388,16 @@ public class EditableScripts : IEditableScripts, IDataWrapper
 
         foreach (var index in indexesDescending)
         {
-            m_scripts.Remove(m_scripts[index]);
-            m_underlyingScript.Remove(index);
+            _scripts.Remove(_scripts[index]);
+            _underlyingScript.Remove(index);
         }
 
-        m_controller.WorldModel.UndoLogger.EndTransaction();
+        _controller.WorldModel.UndoLogger.EndTransaction();
 
-        Debug.Assert(m_underlyingScript.Scripts.Count() == m_scripts.Count);
+        Debug.Assert(_underlyingScript.Scripts.Count() == _scripts.Count);
     }
 
-    public int Count => m_scripts.Count;
+    public int Count => _scripts.Count;
 
     #endregion
 }

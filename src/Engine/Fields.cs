@@ -132,13 +132,13 @@ public static class MetaFieldDefinitions
 
 public class Fields
 {
-    private static readonly Dictionary<Type, DebugFormatDelegate> s_formatters = new()
+    private static readonly Dictionary<Type, DebugFormatDelegate> Formatters = new()
     {
         {typeof(List<string>), ListFormatter}
     };
 
     // Debugger attribute-override pre-fill (see WasmPlayerBridge's debugger):
-    // unlike s_formatters above (a human-readable *display* string — an
+    // unlike Formatters above (a human-readable *display* string — an
     // Element shows as "Object: kitchen", a string has no quotes, a bool
     // reads "True"), this produces a value already written as valid script
     // syntax, ready to feed straight into ScriptFactory.CreateScript for
@@ -146,7 +146,7 @@ public class Fields
     // scripts, ...) fall back to the same display string, which isn't
     // generally re-enterable — there's no simple literal syntax for those,
     // so the debugger's override hint still covers that residual case.
-    private static readonly Dictionary<Type, DebugFormatDelegate> s_editFormatters = new()
+    private static readonly Dictionary<Type, DebugFormatDelegate> EditFormatters = new()
     {
         {typeof(bool), v => (bool) v ? "true" : "false"},
         {typeof(string), v => "\"" + ((string) v).Replace("\\", "\\\\").Replace("\"", "\\\"") + "\""},
@@ -154,13 +154,13 @@ public class Fields
     };
 
     // Which value kinds the debugger's override control should even offer —
-    // the types above (their ToString() already needs the s_editFormatters
+    // the types above (their ToString() already needs the EditFormatters
     // rewrite to become valid script syntax) plus plain numeric types (whose
     // ToString() already *is* valid script syntax, no rewrite needed). Lists,
     // dictionaries, scripts etc. have no simple literal syntax to write back,
     // so there's deliberately no entry for them here — an override textbox
     // for those would just be a dead end.
-    private static readonly HashSet<Type> s_overridableValueTypes = new()
+    private static readonly HashSet<Type> OverridableValueTypes = new()
     {
         typeof(bool), typeof(string), typeof(Element),
         typeof(int), typeof(double), typeof(long), typeof(float), typeof(decimal), typeof(short)
@@ -168,37 +168,37 @@ public class Fields
 
     private static bool CanOverrideValue(object value)
     {
-        return value == null || s_overridableValueTypes.Contains(value.GetType());
+        return value == null || OverridableValueTypes.Contains(value.GetType());
     }
 
-    private readonly Dictionary<string, object> m_attributes = new();
-    private readonly Element m_element;
-    private readonly Dictionary<string, IExtendableField> m_extendableFields = new();
-    private readonly bool m_isMeta;
-    private readonly WorldModel m_worldModel;
-    private Stack<Element> m_types = new();
+    private readonly Dictionary<string, object> _attributes = new();
+    private readonly Element _element;
+    private readonly Dictionary<string, IExtendableField> _extendableFields = new();
+    private readonly bool _isMeta;
+    private readonly WorldModel _worldModel;
+    private Stack<Element> _types = new();
 
     public Fields(WorldModel worldModel, Element element, bool isMeta)
     {
-        m_worldModel = worldModel;
-        m_element = element;
+        _worldModel = worldModel;
+        _element = element;
         LazyFields = new LazyFields(worldModel, this);
-        m_isMeta = isMeta;
+        _isMeta = isMeta;
     }
 
     internal bool MutableFieldsLocked { get; set; }
 
     internal LazyFields LazyFields { get; }
 
-    internal IEnumerable<string> FieldNames => m_attributes.Keys;
+    internal IEnumerable<string> FieldNames => _attributes.Keys;
 
     internal IEnumerable<string> FieldExtensionNames
     {
         get
         {
-            var result = new List<string>(m_extendableFields.Keys);
+            var result = new List<string>(_extendableFields.Keys);
 
-            foreach (var type in m_types)
+            foreach (var type in _types)
             {
                 result.AddRange(type.Fields.FieldExtensionNames);
             }
@@ -207,21 +207,21 @@ public class Fields
         }
     }
 
-    internal IEnumerable<Element> Types => m_types;
+    internal IEnumerable<Element> Types => _types;
     public event EventHandler<AttributeChangedEventArgs> AttributeChanged;
     public event EventHandler<AttributeChangedEventArgs> AttributeChangedSilent;
     internal event EventHandler<NameChangedEventArgs> NameChanged;
 
     internal Fields Clone(Element newElement)
     {
-        var clone = new Fields(m_worldModel, newElement, m_isMeta);
+        var clone = new Fields(_worldModel, newElement, _isMeta);
 
-        foreach (var type in m_types.Reverse())
+        foreach (var type in _types.Reverse())
         {
-            clone.m_types.Push(type);
+            clone._types.Push(type);
         }
 
-        foreach (var attribute in m_attributes)
+        foreach (var attribute in _attributes)
         {
             if (attribute.Key != "name")
             {
@@ -239,9 +239,9 @@ public class Fields
             return DefaultFormatter;
         }
 
-        if (s_formatters.ContainsKey(type))
+        if (Formatters.ContainsKey(type))
         {
-            return s_formatters[type];
+            return Formatters[type];
         }
 
         return DefaultFormatter;
@@ -276,18 +276,18 @@ public class Fields
 
     private void UndoLog(string property, object oldValue, object newValue, bool added)
     {
-        if (m_worldModel != null)
+        if (_worldModel != null)
         {
-            m_worldModel.UndoLogger.AddUndoAction(() =>
-                new UndoFieldSet(m_worldModel, m_element.Name, property, oldValue, newValue, added, m_isMeta));
+            _worldModel.UndoLogger.AddUndoAction(() =>
+                new UndoFieldSet(_worldModel, _element.Name, property, oldValue, newValue, added, _isMeta));
         }
     }
 
     internal void UndoLog(UndoLogger.IUndoAction action)
     {
-        if (m_worldModel != null)
+        if (_worldModel != null)
         {
-            m_worldModel.UndoLogger.AddUndoAction(() => action);
+            _worldModel.UndoLogger.AddUndoAction(() => action);
         }
     }
 
@@ -304,7 +304,7 @@ public class Fields
     internal void RemoveFieldInternal(string name)
     {
         var oldValue = Get(name);
-        m_attributes.Remove(name);
+        _attributes.Remove(name);
 
         if (AttributeChangedSilent != null && name != "name")
         {
@@ -314,7 +314,7 @@ public class Fields
 
     public void RemoveField(string name)
     {
-        UndoLog(new UndoFieldRemove(m_element.Name, name, m_attributes[name]));
+        UndoLog(new UndoFieldRemove(_element.Name, name, _attributes[name]));
         RemoveFieldInternal(name);
     }
 
@@ -324,7 +324,7 @@ public class Fields
         {
             // extendable fields should only ever exist in types, and be set at the start of the game,
             // so we should never need to worry about adding them to the undo log etc.
-            m_extendableFields[name] = value;
+            _extendableFields[name] = value;
         }
         else
         {
@@ -339,7 +339,7 @@ public class Fields
         var added = true;
         object oldValue = null;
 
-        if (m_attributes.ContainsKey(name))
+        if (_attributes.ContainsKey(name))
         {
             added = false;
             oldValue = Get(name);
@@ -367,7 +367,7 @@ public class Fields
             var mutableNewValue = value as IMutableField;
             if (mutableOldValue != null)
             {
-                if (m_worldModel.EditMode || mutableOldValue.RequiresCloning)
+                if (_worldModel.EditMode || mutableOldValue.RequiresCloning)
                 {
                     oldValue = mutableOldValue.Clone();
                 }
@@ -375,15 +375,15 @@ public class Fields
 
             if (mutableNewValue != null)
             {
-                if (m_worldModel.EditMode || mutableNewValue.RequiresCloning)
+                if (_worldModel.EditMode || mutableNewValue.RequiresCloning)
                 {
                     value = mutableNewValue.Clone();
                 }
 
                 var mutableValue = (IMutableField) value;
                 mutableValue.Locked = MutableFieldsLocked;
-                mutableValue.UndoLog = m_worldModel.UndoLogger;
-                mutableValue.Owner = m_element;
+                mutableValue.UndoLog = _worldModel.UndoLogger;
+                mutableValue.Owner = _element;
             }
         }
 
@@ -396,34 +396,34 @@ public class Fields
                     throw new ArgumentException("Invalid data type for 'name'");
                 }
 
-                m_element.SetNameFromFields(strValue);
+                _element.SetNameFromFields(strValue);
                 break;
             }
             case "parent":
-                m_element.SetParentFromFields(value as Element);
+                _element.SetParentFromFields(value as Element);
                 break;
             case "text":
-                m_element.SetTextFromFields(value as string);
+                _element.SetTextFromFields(value as string);
                 break;
         }
 
-        if (m_worldModel.Version >= WorldModelVersion.v530 && value == null)
+        if (_worldModel.Version >= WorldModelVersion.v530 && value == null)
         {
-            m_attributes.Remove(name);
+            _attributes.Remove(name);
         }
         else
         {
-            m_attributes[name] = value;
+            _attributes[name] = value;
         }
 
-        if (changed && allowUpdateSortOrder && name == "parent" && m_element.Initialised)
+        if (changed && allowUpdateSortOrder && name == "parent" && _element.Initialised)
         {
-            m_worldModel.UpdateElementSortOrder(m_element);
+            _worldModel.UpdateElementSortOrder(_element);
         }
 
         if (name == "name" && changed && value != null && !added && NameChanged != null)
         {
-            if (!m_worldModel.EditMode)
+            if (!_worldModel.EditMode)
             {
                 // Actually we could allow this I suppose but I don't think it's sensible.
                 throw new InvalidOperationException("Cannot change name of element when not in Edit mode");
@@ -432,7 +432,7 @@ public class Fields
             NameChanged(this, new NameChangedEventArgs
             {
                 OldName = (string) oldValue,
-                Element = m_element
+                Element = _element
             });
         }
 
@@ -478,18 +478,18 @@ public class Fields
     {
         var result = new AttributeData();
 
-        if (m_attributes.TryGetValue(attribute, out result.Value))
+        if (_attributes.TryGetValue(attribute, out result.Value))
         {
             if (withSource)
             {
-                result.Source = m_element.Name;
+                result.Source = _element.Name;
                 result.IsInherited = false;
             }
 
             return result;
         }
 
-        foreach (var type in m_types)
+        foreach (var type in _types)
         {
             if (type.Fields.Exists(attribute, false))
             {
@@ -545,12 +545,12 @@ public class Fields
 
     private bool HasExtendableField(string attribute)
     {
-        if (m_extendableFields.ContainsKey(attribute))
+        if (_extendableFields.ContainsKey(attribute))
         {
             return true;
         }
 
-        foreach (var type in m_types)
+        foreach (var type in _types)
         {
             if (type.Fields.HasExtendableField(attribute))
             {
@@ -565,13 +565,13 @@ public class Fields
     {
         IExtendableField result = null;
 
-        if (m_extendableFields.ContainsKey(attribute))
+        if (_extendableFields.ContainsKey(attribute))
         {
-            result = MergeExtendableFields(result, m_extendableFields[attribute]);
-            source.Add(m_element.Name);
+            result = MergeExtendableFields(result, _extendableFields[attribute]);
+            source.Add(_element.Name);
         }
 
-        foreach (var type in m_types)
+        foreach (var type in _types)
         {
             if (type.Fields.HasExtendableField(attribute))
             {
@@ -600,13 +600,13 @@ public class Fields
         string source = null;
         var isInherited = false;
 
-        if (m_attributes.ContainsKey(attribute))
+        if (_attributes.ContainsKey(attribute))
         {
-            source = m_element.Name;
+            source = _element.Name;
         }
         else
         {
-            foreach (var type in m_types)
+            foreach (var type in _types)
             {
                 if (type.Fields.Exists(attribute, true))
                 {
@@ -624,12 +624,12 @@ public class Fields
 
     internal bool Exists(string attribute, bool includeExtendableFields)
     {
-        if (m_attributes.ContainsKey(attribute))
+        if (_attributes.ContainsKey(attribute))
         {
             return true;
         }
 
-        foreach (var type in m_types)
+        foreach (var type in _types)
         {
             if (type.Fields.Exists(attribute, includeExtendableFields))
             {
@@ -647,21 +647,21 @@ public class Fields
 
     public void AddType(Element addType)
     {
-        if (m_element.ElemType == ElementType.ObjectType &&
-            (addType == m_element || addType.Fields.InheritsTypeRecursive(m_element)))
+        if (_element.ElemType == ElementType.ObjectType &&
+            (addType == _element || addType.Fields.InheritsTypeRecursive(_element)))
         {
             throw new Exception("Circular type reference");
         }
 
-        m_types.Push(addType);
+        _types.Push(addType);
     }
 
     public void AddTypeUndoable(Element addType)
     {
-        var oldValue = CloneStack(m_types);
+        var oldValue = CloneStack(_types);
         AddType(addType);
-        var newValue = CloneStack(m_types);
-        m_worldModel.UndoLogger.AddUndoAction(() => new UndoAddRemoveType(m_element.Name, oldValue, newValue));
+        var newValue = CloneStack(_types);
+        _worldModel.UndoLogger.AddUndoAction(() => new UndoAddRemoveType(_element.Name, oldValue, newValue));
         if (AttributeChangedSilent != null)
         {
             AttributeChangedSilent(this, new AttributeChangedEventArgs(true));
@@ -670,10 +670,10 @@ public class Fields
 
     public void RemoveTypeUndoable(Element removeType)
     {
-        var oldValue = CloneStack(m_types);
-        m_types = CloneStackAndDelete(m_types, removeType);
-        var newValue = CloneStack(m_types);
-        m_worldModel.UndoLogger.AddUndoAction(() => new UndoAddRemoveType(m_element.Name, oldValue, newValue));
+        var oldValue = CloneStack(_types);
+        _types = CloneStackAndDelete(_types, removeType);
+        var newValue = CloneStack(_types);
+        _worldModel.UndoLogger.AddUndoAction(() => new UndoAddRemoveType(_element.Name, oldValue, newValue));
         if (AttributeChangedSilent != null)
         {
             AttributeChangedSilent(this, new AttributeChangedEventArgs(true));
@@ -692,7 +692,7 @@ public class Fields
             return "null";
         }
 
-        return s_editFormatters.TryGetValue(value.GetType(), out var formatter)
+        return EditFormatters.TryGetValue(value.GetType(), out var formatter)
             ? formatter.Invoke(value)
             : FormatDebugData(value);
     }
@@ -721,12 +721,12 @@ public class Fields
         var result = new DebugData();
 
         // First we want all the types we include directly
-        foreach (var type in m_types)
+        foreach (var type in _types)
         {
             if (!result.Data.ContainsKey(type.Name))
             {
                 var newItem = new DebugDataItem(type.Name);
-                newItem.Source = m_element.Name;
+                newItem.Source = _element.Name;
                 newItem.IsDefaultType = WorldModel.DefaultTypeNames.ContainsValue(type.Name);
                 result.Data.Add(type.Name, newItem);
             }
@@ -735,7 +735,7 @@ public class Fields
                 // This element directly inherits a type which has also been included
                 // via inheriting another type
 
-                result.Data[type.Name].Source += "," + m_element.Name;
+                result.Data[type.Name].Source += "," + _element.Name;
             }
 
             // Next we want all the types that are inherited from those, as attributes
@@ -799,10 +799,10 @@ public class Fields
         // return a clone of the attributes dictionary as we don't
         // want external code changing any.
         var result = new Dictionary<string, object>();
-        foreach (var key in m_attributes.Keys)
+        foreach (var key in _attributes.Keys)
         {
             // ok so it's not strictly a clone for things like Lists
-            result.Add(key, m_attributes[key]);
+            result.Add(key, _attributes[key]);
         }
 
         return result;
@@ -810,7 +810,7 @@ public class Fields
 
     internal void DoUndoAddRemoveType(Stack<Element> newValue)
     {
-        m_types = newValue;
+        _types = newValue;
         if (AttributeChangedSilent != null)
         {
             AttributeChangedSilent(this, new AttributeChangedEventArgs(true));
@@ -843,17 +843,17 @@ public class Fields
 
     public bool InheritsType(Element type)
     {
-        return m_types.Contains(type);
+        return _types.Contains(type);
     }
 
     public bool InheritsTypeRecursive(Element type)
     {
-        if (m_types.Contains(type))
+        if (_types.Contains(type))
         {
             return true;
         }
 
-        foreach (var inheritedType in m_types)
+        foreach (var inheritedType in _types)
         {
             if (inheritedType.Fields.InheritsTypeRecursive(type))
             {
@@ -868,7 +868,7 @@ public class Fields
     {
         var nullifyAttributes = new List<string>();
 
-        foreach (var attribute in m_attributes)
+        foreach (var attribute in _attributes)
         {
             var elementValue = attribute.Value as Element;
             if (elementValue != null)
@@ -919,10 +919,10 @@ public class Fields
 
     public IEnumerable<string> GetAttributeNames(bool includeInheritedAttributes)
     {
-        var result = new List<string>(m_attributes.Select(a => a.Key));
+        var result = new List<string>(_attributes.Select(a => a.Key));
         if (includeInheritedAttributes)
         {
-            foreach (var type in m_types)
+            foreach (var type in _types)
             {
                 result.AddRange(type.Fields.GetAttributeNames(true).Where(a => !result.Contains(a)));
             }
@@ -995,137 +995,137 @@ public class Fields
 
 public class LazyFields
 {
-    private readonly Fields m_fields;
-    private readonly WorldModel m_worldModel;
-    private List<Action> m_actions = new();
-    private List<string> m_defaultTypes = new();
-    private Dictionary<string, IDictionary<string, string>> m_objectDictionaries = new();
-    private Dictionary<string, string> m_objectFields = new();
-    private Dictionary<string, IEnumerable<string>> m_objectLists = new();
-    private bool m_resolved;
-    private Dictionary<string, IDictionary<string, string>> m_scriptDictionaries = new();
-    private Dictionary<string, string> m_scripts = new();
-    private List<string> m_types = new();
+    private readonly Fields _fields;
+    private readonly WorldModel _worldModel;
+    private List<Action> _actions = new();
+    private List<string> _defaultTypes = new();
+    private Dictionary<string, IDictionary<string, string>> _objectDictionaries = new();
+    private Dictionary<string, string> _objectFields = new();
+    private Dictionary<string, IEnumerable<string>> _objectLists = new();
+    private bool _resolved;
+    private Dictionary<string, IDictionary<string, string>> _scriptDictionaries = new();
+    private Dictionary<string, string> _scripts = new();
+    private List<string> _types = new();
 
     internal LazyFields(WorldModel worldModel, Fields fields)
     {
-        m_worldModel = worldModel;
-        m_fields = fields;
+        _worldModel = worldModel;
+        _fields = fields;
     }
 
     public void Resolve(ScriptFactory scriptFactory)
     {
         CheckNotResolved();
-        foreach (var typename in m_defaultTypes)
+        foreach (var typename in _defaultTypes)
         {
             // It is legitimate for a default type not to exist
-            if (m_worldModel.Elements.ContainsKey(ElementType.ObjectType, typename))
+            if (_worldModel.Elements.ContainsKey(ElementType.ObjectType, typename))
             {
-                m_fields.AddType(m_worldModel.GetObjectType(typename));
+                _fields.AddType(_worldModel.GetObjectType(typename));
             }
         }
 
-        m_defaultTypes = null;
-        foreach (var typename in m_types)
+        _defaultTypes = null;
+        foreach (var typename in _types)
         {
             try
             {
-                m_fields.AddType(m_worldModel.GetObjectType(typename));
+                _fields.AddType(_worldModel.GetObjectType(typename));
             }
             catch (Exception ex)
             {
                 throw new Exception(
-                    string.Format("Error adding type '{0}' to element '{1}': {2}", typename, m_fields.Get("name"),
+                    string.Format("Error adding type '{0}' to element '{1}': {2}", typename, _fields.Get("name"),
                         ex.Message), ex);
             }
         }
 
-        m_types = null;
-        foreach (var property in m_objectFields.Keys)
+        _types = null;
+        foreach (var property in _objectFields.Keys)
         {
             try
             {
-                m_fields.Set(property, m_worldModel.Elements.Get(m_objectFields[property]));
+                _fields.Set(property, _worldModel.Elements.Get(_objectFields[property]));
             }
             catch (Exception ex)
             {
                 throw new Exception(
-                    string.Format("Error adding attribute '{0}' to element '{1}': {2}", property, m_fields.Get("name"),
+                    string.Format("Error adding attribute '{0}' to element '{1}': {2}", property, _fields.Get("name"),
                         ex.Message), ex);
             }
         }
 
-        m_objectFields = null;
-        foreach (var property in m_scripts.Keys)
+        _objectFields = null;
+        foreach (var property in _scripts.Keys)
         {
             try
             {
-                m_fields.Set(property, scriptFactory.CreateScript(m_scripts[property]));
+                _fields.Set(property, scriptFactory.CreateScript(_scripts[property]));
             }
             catch (Exception ex)
             {
                 throw new Exception(
                     string.Format("Error adding script attribute '{0}' to element '{1}': {2}", property,
-                        m_fields.Get("name"), ex.Message), ex);
+                        _fields.Get("name"), ex.Message), ex);
             }
         }
 
-        m_scripts = null;
-        foreach (var property in m_scriptDictionaries.Keys)
+        _scripts = null;
+        foreach (var property in _scriptDictionaries.Keys)
         {
             try
             {
-                m_fields.Set(property, ConvertToScriptDictionary(m_scriptDictionaries[property], scriptFactory));
+                _fields.Set(property, ConvertToScriptDictionary(_scriptDictionaries[property], scriptFactory));
             }
             catch (Exception ex)
             {
                 throw new Exception(
                     string.Format("Error adding script dictionary '{0}' to element '{1}': {2}", property,
-                        m_fields.Get("name"), ex.Message), ex);
+                        _fields.Get("name"), ex.Message), ex);
             }
         }
 
-        m_scriptDictionaries = null;
-        foreach (var property in m_objectLists.Keys)
+        _scriptDictionaries = null;
+        foreach (var property in _objectLists.Keys)
         {
             try
             {
-                m_fields.Set(property,
-                    new QuestList<Element>(m_objectLists[property].Select(n => m_worldModel.Elements.Get(n))));
+                _fields.Set(property,
+                    new QuestList<Element>(_objectLists[property].Select(n => _worldModel.Elements.Get(n))));
             }
             catch (Exception ex)
             {
                 throw new Exception(
                     string.Format("Error adding object list '{0}' to element '{1}': {2}", property,
-                        m_fields.Get("name"), ex.Message), ex);
+                        _fields.Get("name"), ex.Message), ex);
             }
         }
 
-        m_objectLists = null;
-        foreach (var property in m_objectDictionaries.Keys)
+        _objectLists = null;
+        foreach (var property in _objectDictionaries.Keys)
         {
             try
             {
-                m_fields.Set(property, ConvertToObjectDictionary(m_objectDictionaries[property]));
+                _fields.Set(property, ConvertToObjectDictionary(_objectDictionaries[property]));
             }
             catch (Exception ex)
             {
                 throw new Exception(
                     string.Format("Error adding object dictionary '{0}' to element '{1}': {2}", property,
-                        m_fields.Get("name"), ex.Message), ex);
+                        _fields.Get("name"), ex.Message), ex);
             }
         }
 
-        m_objectDictionaries = null;
-        foreach (var action in m_actions)
+        _objectDictionaries = null;
+        foreach (var action in _actions)
         {
             action();
         }
 
-        m_actions = null;
-        foreach (var field in m_fields.FieldNames)
+        _actions = null;
+        foreach (var field in _fields.FieldNames)
         {
-            var attribute = m_fields.Get(field);
+            var attribute = _fields.Get(field);
             var objectList = attribute as QuestList<object>;
             if (objectList != null)
             {
@@ -1139,7 +1139,7 @@ public class LazyFields
             }
         }
 
-        m_resolved = true;
+        _resolved = true;
     }
 
     private QuestDictionary<IScript> ConvertToScriptDictionary(IDictionary<string, string> dictionary,
@@ -1160,7 +1160,7 @@ public class LazyFields
         var newDictionary = new QuestDictionary<Element>();
         foreach (var item in dictionary)
         {
-            var element = m_worldModel.Elements.Get(item.Value);
+            var element = _worldModel.Elements.Get(item.Value);
             newDictionary.Add(item.Key, element);
         }
 
@@ -1170,49 +1170,49 @@ public class LazyFields
     public void AddType(string typename)
     {
         CheckNotResolved();
-        m_types.Add(typename);
+        _types.Add(typename);
     }
 
     public void AddDefaultType(string typename)
     {
         CheckNotResolved();
-        m_defaultTypes.Add(typename);
+        _defaultTypes.Add(typename);
     }
 
     public void AddObjectField(string property, string value)
     {
         CheckNotResolved();
-        m_objectFields.Add(property, value);
+        _objectFields.Add(property, value);
     }
 
     public void AddScript(string property, string value)
     {
         CheckNotResolved();
-        m_scripts.Add(property, value);
+        _scripts.Add(property, value);
     }
 
     public void AddScriptDictionary(string property, IDictionary<string, string> value)
     {
         CheckNotResolved();
-        m_scriptDictionaries.Add(property, value);
+        _scriptDictionaries.Add(property, value);
     }
 
     public void AddObjectList(string property, IEnumerable<string> value)
     {
         CheckNotResolved();
-        m_objectLists.Add(property, value);
+        _objectLists.Add(property, value);
     }
 
     public void AddObjectDictionary(string property, IDictionary<string, string> value)
     {
         CheckNotResolved();
-        m_objectDictionaries.Add(property, value);
+        _objectDictionaries.Add(property, value);
     }
 
     public void AddAction(Action action)
     {
         CheckNotResolved();
-        m_actions.Add(action);
+        _actions.Add(action);
     }
 
     private void ResolveObjectList(QuestList<object> list, ScriptFactory scriptFactory)
@@ -1269,14 +1269,14 @@ public class LazyFields
         var objRef = value as LazyObjectReference;
         if (objRef != null)
         {
-            replacement = m_worldModel.Elements.Get(objRef.ObjectName);
+            replacement = _worldModel.Elements.Get(objRef.ObjectName);
             return true;
         }
 
         var objList = value as LazyObjectList;
         if (objList != null)
         {
-            replacement = new QuestList<Element>(objList.Objects.Select(o => m_worldModel.Elements.Get(o)));
+            replacement = new QuestList<Element>(objList.Objects.Select(o => _worldModel.Elements.Get(o)));
             return true;
         }
 
@@ -1286,7 +1286,7 @@ public class LazyFields
             var newDictionary = new QuestDictionary<Element>();
             foreach (var kvp in objDictionary.Dictionary)
             {
-                newDictionary.Add(kvp.Key, m_worldModel.Elements.Get(kvp.Value));
+                newDictionary.Add(kvp.Key, _worldModel.Elements.Get(kvp.Value));
             }
 
             replacement = newDictionary;
@@ -1312,7 +1312,7 @@ public class LazyFields
 
     private void CheckNotResolved()
     {
-        if (m_resolved)
+        if (_resolved)
         {
             throw new Exception("LazyFields instance already resolved.");
         }
@@ -1321,42 +1321,42 @@ public class LazyFields
 
 public class UndoFieldSet : UndoLogger.IUndoAction
 {
-    private readonly bool m_added;
-    private readonly object m_newValue;
-    private readonly string m_newValueElementName;
-    private readonly object m_oldValue;
-    private readonly string m_oldValueElementName;
-    private readonly bool m_useMetaFields;
-    private readonly WorldModel m_worldModel;
+    private readonly bool _added;
+    private readonly object _newValue;
+    private readonly string _newValueElementName;
+    private readonly object _oldValue;
+    private readonly string _oldValueElementName;
+    private readonly bool _useMetaFields;
+    private readonly WorldModel _worldModel;
 
     public UndoFieldSet(WorldModel worldModel, string appliesTo, string property, object oldValue, object newValue,
         bool added, bool useMetaFields)
     {
         Debug.Assert(!string.IsNullOrEmpty(appliesTo));
-        m_worldModel = worldModel;
+        _worldModel = worldModel;
         AppliesTo = appliesTo;
         Property = property;
-        m_useMetaFields = useMetaFields;
+        _useMetaFields = useMetaFields;
 
         if (oldValue is Element)
         {
-            m_oldValueElementName = ((Element) oldValue).Name;
+            _oldValueElementName = ((Element) oldValue).Name;
         }
         else
         {
-            m_oldValue = oldValue;
+            _oldValue = oldValue;
         }
 
         if (newValue is Element)
         {
-            m_newValueElementName = ((Element) newValue).Name;
+            _newValueElementName = ((Element) newValue).Name;
         }
         else
         {
-            m_newValue = newValue;
+            _newValue = newValue;
         }
 
-        m_added = added;
+        _added = added;
 
         //System.Diagnostics.Debug.Print("UndoFieldSet: {0}.{1} from '{2}' to '{3}'", appliesTo, property, oldValue, newValue);
     }
@@ -1369,18 +1369,18 @@ public class UndoFieldSet : UndoLogger.IUndoAction
     {
         get
         {
-            if (m_oldValueElementName != null)
+            if (_oldValueElementName != null)
             {
-                if (m_worldModel.Elements.ContainsKey(m_oldValueElementName))
+                if (_worldModel.Elements.ContainsKey(_oldValueElementName))
                 {
-                    return m_worldModel.Elements.Get(m_oldValueElementName);
+                    return _worldModel.Elements.Get(_oldValueElementName);
                 }
 
                 // element may have been deleted
                 return null;
             }
 
-            return m_oldValue;
+            return _oldValue;
         }
     }
 
@@ -1388,19 +1388,19 @@ public class UndoFieldSet : UndoLogger.IUndoAction
     {
         get
         {
-            if (m_newValueElementName != null)
+            if (_newValueElementName != null)
             {
-                return m_worldModel.Elements.Get(m_newValueElementName);
+                return _worldModel.Elements.Get(_newValueElementName);
             }
 
-            return m_newValue;
+            return _newValue;
         }
     }
 
     public void DoUndo(WorldModel worldModel)
     {
         var fields = GetFields(AppliesTo);
-        if (m_added)
+        if (_added)
         {
             fields.RemoveFieldInternal(Property);
         }
@@ -1418,7 +1418,7 @@ public class UndoFieldSet : UndoLogger.IUndoAction
         }
         else
         {
-            // When redoing a name change, m_appliesTo will be incorrect as it will be the new object name.
+            // When redoing a name change, _appliesTo will be incorrect as it will be the new object name.
             // So in this specific case we get the appliesTo name from the old property value.
             // (If OldValue is null then this is just setting the name property for a brand new object,
             // so the above comment doesn't apply, and this case is handled in the above "if")
@@ -1428,55 +1428,55 @@ public class UndoFieldSet : UndoLogger.IUndoAction
 
     private Fields GetFields(string elementName)
     {
-        var element = m_worldModel.Elements.Get(elementName);
-        return m_useMetaFields ? element.MetaFields : element.Fields;
+        var element = _worldModel.Elements.Get(elementName);
+        return _useMetaFields ? element.MetaFields : element.Fields;
     }
 }
 
 public class UndoFieldRemove : UndoLogger.IUndoAction
 {
-    private readonly string m_appliesTo;
-    private readonly object m_oldValue;
-    private readonly string m_property;
+    private readonly string _appliesTo;
+    private readonly object _oldValue;
+    private readonly string _property;
 
     public UndoFieldRemove(string appliesTo, string property, object oldValue)
     {
-        m_appliesTo = appliesTo;
-        m_property = property;
-        m_oldValue = oldValue;
+        _appliesTo = appliesTo;
+        _property = property;
+        _oldValue = oldValue;
     }
 
     public void DoUndo(WorldModel worldModel)
     {
-        worldModel.Object(m_appliesTo).Fields.SetFromUndo(m_property, m_oldValue);
+        worldModel.Object(_appliesTo).Fields.SetFromUndo(_property, _oldValue);
     }
 
     public void DoRedo(WorldModel worldModel)
     {
-        worldModel.Object(m_appliesTo).Fields.RemoveFieldInternal(m_property);
+        worldModel.Object(_appliesTo).Fields.RemoveFieldInternal(_property);
     }
 }
 
 public class UndoAddRemoveType : UndoLogger.IUndoAction
 {
-    private readonly string m_appliesTo;
-    private readonly Stack<Element> m_newValue;
-    private readonly Stack<Element> m_oldValue;
+    private readonly string _appliesTo;
+    private readonly Stack<Element> _newValue;
+    private readonly Stack<Element> _oldValue;
 
     public UndoAddRemoveType(string appliesTo, Stack<Element> oldValue, Stack<Element> newValue)
     {
-        m_appliesTo = appliesTo;
-        m_oldValue = oldValue;
-        m_newValue = newValue;
+        _appliesTo = appliesTo;
+        _oldValue = oldValue;
+        _newValue = newValue;
     }
 
     public void DoUndo(WorldModel worldModel)
     {
-        worldModel.Object(m_appliesTo).Fields.DoUndoAddRemoveType(m_oldValue);
+        worldModel.Object(_appliesTo).Fields.DoUndoAddRemoveType(_oldValue);
     }
 
     public void DoRedo(WorldModel worldModel)
     {
-        worldModel.Object(m_appliesTo).Fields.DoUndoAddRemoveType(m_newValue);
+        worldModel.Object(_appliesTo).Fields.DoUndoAddRemoveType(_newValue);
     }
 }

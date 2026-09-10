@@ -264,11 +264,11 @@ internal partial class GameLoader
         }
 
         [GeneratedRegex("[A-Za-z0-9]+")]
-        private partial Regex m_regex();
+        private partial Regex CommandIdCharactersRegex();
 
         private string GetUniqueCommandId(string? pattern)
         {
-            var name = pattern == null ? null : m_regex().Match(pattern.Replace(" ", "")).Value;
+            var name = pattern == null ? null : CommandIdCharactersRegex().Match(pattern.Replace(" ", "")).Value;
 
             if (string.IsNullOrEmpty(name) || WorldModel.ObjectExists(name))
             {

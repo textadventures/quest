@@ -290,7 +290,7 @@ internal partial class GameLoader
         // e.g. ask man about[ the] #subject#
 
         [GeneratedRegex("#([A-Za-z]\\w+)#")]
-        private partial Regex m_regex();
+        private partial Regex PatternVariableRegex();
 
         public override void Load(Element element, string attribute, string value)
         {
@@ -312,7 +312,7 @@ internal partial class GameLoader
         private void LoadCommand(Element element, string attribute, string value)
         {
             value = value.Replace("(", @"\(").Replace(")", @"\)").Replace(".", @"\.").Replace("?", @"\?");
-            value = m_regex().Replace(value, MatchReplace);
+            value = PatternVariableRegex().Replace(value, MatchReplace);
 
             if (value.Contains('#'))
             {

@@ -20,51 +20,51 @@ public class PictureScriptConstructor : ScriptConstructorBase
 
 public class PictureScript : ScriptBase
 {
-    private readonly ScriptContext m_scriptContext;
-    private readonly WorldModel m_worldModel;
-    private IFunction<string> m_filename;
+    private readonly ScriptContext _scriptContext;
+    private readonly WorldModel _worldModel;
+    private IFunction<string> _filename;
 
     public PictureScript(ScriptContext scriptContext, IFunction<string> function)
     {
-        m_scriptContext = scriptContext;
-        m_worldModel = scriptContext.WorldModel;
-        m_filename = function;
+        _scriptContext = scriptContext;
+        _worldModel = scriptContext.WorldModel;
+        _filename = function;
     }
 
     public override string Keyword => "picture";
 
     protected override ScriptBase CloneScript()
     {
-        return new PictureScript(m_scriptContext, m_filename.Clone());
+        return new PictureScript(_scriptContext, _filename.Clone());
     }
 
     public override async Task ExecuteAsync(Context c)
     {
-        var filename = await m_filename.ExecuteAsync(c);
+        var filename = await _filename.ExecuteAsync(c);
 
-        if (m_worldModel.Version >= WorldModelVersion.v540)
+        if (_worldModel.Version >= WorldModelVersion.v540)
         {
-            await m_worldModel.PrintAsync("<img src=\"" + await m_worldModel.GetExternalUrlAsync(filename) + "\" />");
+            await _worldModel.PrintAsync("<img src=\"" + await _worldModel.GetExternalUrlAsync(filename) + "\" />");
         }
         else
         {
-            await m_worldModel.PlayerUi.ShowPictureAsync(filename);
-            ((LegacyOutputLogger) m_worldModel.OutputLogger).AddPicture(filename);
+            await _worldModel.PlayerUi.ShowPictureAsync(filename);
+            ((LegacyOutputLogger) _worldModel.OutputLogger).AddPicture(filename);
         }
     }
 
     public override string Save()
     {
-        return SaveScript("picture", m_filename.Save());
+        return SaveScript("picture", _filename.Save());
     }
 
     public override object GetParameter(int index)
     {
-        return m_filename.Save();
+        return _filename.Save();
     }
 
     protected override void SetParameterInternal(int index, object value)
     {
-        m_filename = new Expression<string>((string) value, m_scriptContext);
+        _filename = new Expression<string>((string) value, _scriptContext);
     }
 }

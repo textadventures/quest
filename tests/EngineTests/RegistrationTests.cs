@@ -76,7 +76,7 @@ public class RegistrationTests
     {
         var factory = new ScriptFactory(new WorldModel());
         var registered = (Dictionary<string, IScriptConstructor>)
-            typeof(ScriptFactory).GetField("m_scriptConstructors", NonPublicInstance)!.GetValue(factory)!;
+            typeof(ScriptFactory).GetField("_scriptConstructors", NonPublicInstance)!.GetValue(factory)!;
 
         var missing = FindImplementations(typeof(IScriptConstructor))
             .Select(t => (IScriptConstructor)Activator.CreateInstance(t)!)

@@ -3,18 +3,18 @@ namespace QuestViva.Engine.Scripts;
 
 internal class FailedScript : ScriptBase
 {
-    private string m_script;
+    private string _script;
 
     public FailedScript(string script)
     {
-        m_script = script;
+        _script = script;
     }
 
     public override string Keyword => "@failed";
 
     protected override ScriptBase CloneScript()
     {
-        return new FailedScript(m_script);
+        return new FailedScript(_script);
     }
 
     public override Task ExecuteAsync(Context c)
@@ -24,7 +24,7 @@ internal class FailedScript : ScriptBase
 
     public override string Save()
     {
-        return m_script;
+        return _script;
     }
 
     protected override void SetParameterInternal(int index, object value)
@@ -34,7 +34,7 @@ internal class FailedScript : ScriptBase
             throw new ArgumentOutOfRangeException();
         }
 
-        m_script = (string) value;
+        _script = (string) value;
     }
 
     public override object GetParameter(int index)
@@ -44,6 +44,6 @@ internal class FailedScript : ScriptBase
             throw new ArgumentOutOfRangeException();
         }
 
-        return m_script;
+        return _script;
     }
 }

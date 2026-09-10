@@ -24,39 +24,39 @@ public class WhileScriptConstructor : IScriptConstructor
 
 public class WhileScript : ScriptBase
 {
-    private readonly IScript m_loopScript;
-    private readonly ScriptContext m_scriptContext;
-    private readonly IScriptFactory m_scriptFactory;
-    private IFunction<bool> m_expression;
-    private WorldModel m_worldModel;
+    private readonly IScript _loopScript;
+    private readonly ScriptContext _scriptContext;
+    private readonly IScriptFactory _scriptFactory;
+    private IFunction<bool> _expression;
+    private WorldModel _worldModel;
 
     public WhileScript(ScriptContext scriptContext, IScriptFactory scriptFactory, IFunction<bool> expression,
         IScript loopScript)
     {
-        m_scriptContext = scriptContext;
-        m_worldModel = scriptContext.WorldModel;
-        m_scriptFactory = scriptFactory;
-        m_expression = expression;
-        m_loopScript = loopScript;
+        _scriptContext = scriptContext;
+        _worldModel = scriptContext.WorldModel;
+        _scriptFactory = scriptFactory;
+        _expression = expression;
+        _loopScript = loopScript;
     }
 
     public override string Keyword => "while";
 
     protected override ScriptBase CloneScript()
     {
-        return new WhileScript(m_scriptContext, m_scriptFactory, m_expression.Clone(), (IScript) m_loopScript.Clone());
+        return new WhileScript(_scriptContext, _scriptFactory, _expression.Clone(), (IScript) _loopScript.Clone());
     }
 
     protected override void ParentUpdated()
     {
-        m_loopScript.Parent = Parent;
+        _loopScript.Parent = Parent;
     }
 
     public override async Task ExecuteAsync(Context c)
     {
-        while (await m_expression.ExecuteAsync(c))
+        while (await _expression.ExecuteAsync(c))
         {
-            await m_loopScript.ExecuteAsync(c);
+            await _loopScript.ExecuteAsync(c);
             if (c.IsReturned)
             {
                 break;
@@ -66,7 +66,7 @@ public class WhileScript : ScriptBase
 
     public override string Save()
     {
-        return SaveScript("while", m_loopScript, m_expression.Save());
+        return SaveScript("while", _loopScript, _expression.Save());
     }
 
     public override object GetParameter(int index)
@@ -74,9 +74,9 @@ public class WhileScript : ScriptBase
         switch (index)
         {
             case 0:
-                return m_expression.Save();
+                return _expression.Save();
             case 1:
-                return m_loopScript;
+                return _loopScript;
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -87,7 +87,7 @@ public class WhileScript : ScriptBase
         switch (index)
         {
             case 0:
-                m_expression = new Expression<bool>((string) value, m_scriptContext);
+                _expression = new Expression<bool>((string) value, _scriptContext);
                 break;
             case 1:
                 // any updates to the script should change the script itself - nothing should cause SetParameter to be triggered.

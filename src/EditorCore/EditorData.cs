@@ -24,14 +24,14 @@ internal class EditorAttributeData : IEditorAttributeData
 
 internal class EditorData : IEditorDataExtendedAttributeInfo
 {
-    private readonly EditorController m_controller;
-    private readonly Element m_element;
-    private readonly Dictionary<string, string> m_filters = new();
+    private readonly EditorController _controller;
+    private readonly Element _element;
+    private readonly Dictionary<string, string> _filters = new();
 
     public EditorData(Element element, EditorController controller)
     {
-        m_element = element;
-        m_controller = controller;
+        _element = element;
+        _controller = controller;
 
         element.Fields.AttributeChanged += Fields_AttributeChanged;
         element.Fields.AttributeChangedSilent += Fields_AttributeChanged;
@@ -39,16 +39,16 @@ internal class EditorData : IEditorDataExtendedAttributeInfo
 
     public event EventHandler Changed;
 
-    public string Name => m_element.Name;
+    public string Name => _element.Name;
 
     public object GetAttribute(string attribute)
     {
-        if (attribute == "name" && m_element.Fields[FieldDefinitions.Anonymous])
+        if (attribute == "name" && _element.Fields[FieldDefinitions.Anonymous])
         {
             return string.Empty;
         }
 
-        return m_controller.WrapValue(m_element.Fields.Get(attribute), m_element, attribute);
+        return _controller.WrapValue(_element.Fields.Get(attribute), _element, attribute);
     }
 
     public ValidationResult SetAttribute(string attribute, object value)
@@ -62,15 +62,15 @@ internal class EditorData : IEditorDataExtendedAttributeInfo
 
             ValidationResult result;
 
-            result = m_controller.CanRename(m_element, (string) value);
+            result = _controller.CanRename(_element, (string) value);
             if (!result.Valid)
             {
                 return result;
             }
 
-            if (m_element.Fields[FieldDefinitions.Anonymous])
+            if (_element.Fields[FieldDefinitions.Anonymous])
             {
-                m_element.Fields[FieldDefinitions.Anonymous] = false;
+                _element.Fields[FieldDefinitions.Anonymous] = false;
             }
         }
 
@@ -88,14 +88,14 @@ internal class EditorData : IEditorDataExtendedAttributeInfo
         string oldName = null;
         if (attribute == "name")
         {
-            oldName = m_element.Name;
+            oldName = _element.Name;
         }
 
-        m_element.Fields.Set(attribute, value);
+        _element.Fields.Set(attribute, value);
 
         if (attribute == "name")
         {
-            m_controller.UpdateDictionariesReferencingRenamedObject(oldName, (string) value);
+            _controller.UpdateDictionariesReferencingRenamedObject(oldName, (string) value);
         }
 
         return new ValidationResult {Valid = true};
@@ -116,13 +116,13 @@ internal class EditorData : IEditorDataExtendedAttributeInfo
     public string GetSelectedFilter(string filterGroup)
     {
         string result;
-        m_filters.TryGetValue(filterGroup, out result);
+        _filters.TryGetValue(filterGroup, out result);
         return result;
     }
 
     public void SetSelectedFilter(string filterGroup, string filter)
     {
-        m_filters[filterGroup] = filter;
+        _filters[filterGroup] = filter;
         if (Changed != null)
         {
             Changed(this, new EventArgs());
@@ -131,30 +131,30 @@ internal class EditorData : IEditorDataExtendedAttributeInfo
 
     public IEnumerable<IEditorAttributeData> GetAttributeData()
     {
-        var data = m_controller.WorldModel.GetDebugData(m_element.Name);
+        var data = _controller.WorldModel.GetDebugData(_element.Name);
         return ConvertDebugDataToEditorAttributeData(data);
     }
 
     public IEditorAttributeData GetAttributeData(string attribute)
     {
-        var data = m_controller.WorldModel.GetDebugDataItem(m_element.Name, attribute);
+        var data = _controller.WorldModel.GetDebugDataItem(_element.Name, attribute);
         return new EditorAttributeData(attribute, data.IsInherited, data.Source, data.IsDefaultType);
     }
 
     public void RemoveAttribute(string attribute)
     {
-        m_element.Fields.RemoveField(attribute);
+        _element.Fields.RemoveField(attribute);
     }
 
     public IEnumerable<IEditorAttributeData> GetInheritedTypes()
     {
-        var data = m_controller.WorldModel.GetInheritedTypesDebugData(m_element.Name);
+        var data = _controller.WorldModel.GetInheritedTypesDebugData(_element.Name);
         return ConvertDebugDataToEditorAttributeData(data);
     }
 
-    public bool IsLibraryElement => m_element.MetaFields[MetaFieldDefinitions.Library];
+    public bool IsLibraryElement => _element.MetaFields[MetaFieldDefinitions.Library];
 
-    public string Filename => m_element.MetaFields[MetaFieldDefinitions.Filename];
+    public string Filename => _element.MetaFields[MetaFieldDefinitions.Filename];
 
     public void MakeElementLocal()
     {
@@ -163,8 +163,8 @@ internal class EditorData : IEditorDataExtendedAttributeInfo
             throw new InvalidOperationException("Element is not defined in a library");
         }
 
-        m_element.MetaFields[MetaFieldDefinitions.Library] = false;
-        m_element.MetaFields[MetaFieldDefinitions.Filename] = null;
+        _element.MetaFields[MetaFieldDefinitions.Library] = false;
+        _element.MetaFields[MetaFieldDefinitions.Filename] = null;
     }
 
     public bool ReadOnly

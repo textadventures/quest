@@ -6,7 +6,7 @@ namespace QuestViva.Engine.Scripts;
 
 public class JSScriptConstructor : IScriptConstructor
 {
-    private static readonly Regex s_jsFunctionName = new(@"^JS\.([\w\.\@]*)");
+    private static readonly Regex JsFunctionName = new(@"^JS\.([\w\.\@]*)");
     public string Keyword => "JS.";
 
     public IScript Create(string script, ScriptContext scriptContext)
@@ -25,12 +25,12 @@ public class JSScriptConstructor : IScriptConstructor
             }
         }
 
-        if (!s_jsFunctionName.IsMatch(script))
+        if (!JsFunctionName.IsMatch(script))
         {
             throw new Exception(string.Format("Invalid JS function name in '{0}'", script));
         }
 
-        var functionName = s_jsFunctionName.Match(script).Groups[1].Value;
+        var functionName = JsFunctionName.Match(script).Groups[1].Value;
 
         return new JSScript(scriptContext, functionName, expressions);
     }
@@ -42,54 +42,54 @@ public class JSScriptConstructor : IScriptConstructor
 
 public class JSScript : ScriptBase
 {
-    private readonly ScriptContext m_scriptContext;
-    private string m_function;
-    private List<IFunctionDynamic> m_parameters;
+    private readonly ScriptContext _scriptContext;
+    private string _function;
+    private List<IFunctionDynamic> _parameters;
 
     public JSScript(ScriptContext scriptContext, string function, List<IFunctionDynamic> parameters)
     {
-        m_scriptContext = scriptContext;
-        m_function = function;
-        m_parameters = parameters;
+        _scriptContext = scriptContext;
+        _function = function;
+        _parameters = parameters;
     }
 
     public override string Keyword => "JS.";
 
     protected override ScriptBase CloneScript()
     {
-        return new JSScript(m_scriptContext, m_function,
-            m_parameters == null ? null : new List<IFunctionDynamic>(m_parameters));
+        return new JSScript(_scriptContext, _function,
+            _parameters == null ? null : new List<IFunctionDynamic>(_parameters));
     }
 
     public override async Task ExecuteAsync(Context c)
     {
-        if (string.IsNullOrEmpty(m_function))
+        if (string.IsNullOrEmpty(_function))
         {
             return;
         }
 
-        if (m_parameters != null)
+        if (_parameters != null)
         {
-            var paramValues = new object[m_parameters.Count];
-            for (var i = 0; i < m_parameters.Count; i++)
-                paramValues[i] = await m_parameters[i].ExecuteAsync(c);
-            await m_scriptContext.WorldModel.PlayerUi.RunScriptAsync(m_function, paramValues);
+            var paramValues = new object[_parameters.Count];
+            for (var i = 0; i < _parameters.Count; i++)
+                paramValues[i] = await _parameters[i].ExecuteAsync(c);
+            await _scriptContext.WorldModel.PlayerUi.RunScriptAsync(_function, paramValues);
         }
         else
         {
-            await m_scriptContext.WorldModel.PlayerUi.RunScriptAsync(m_function, null);
+            await _scriptContext.WorldModel.PlayerUi.RunScriptAsync(_function, null);
         }
     }
 
     public override string Save()
     {
-        if (string.IsNullOrEmpty(m_function))
+        if (string.IsNullOrEmpty(_function))
         {
             return "JS.";
         }
 
-        return SaveScript("JS." + m_function,
-            m_parameters == null ? new[] {string.Empty} : m_parameters.Select(p => p.Save()).ToArray());
+        return SaveScript("JS." + _function,
+            _parameters == null ? new[] {string.Empty} : _parameters.Select(p => p.Save()).ToArray());
     }
 
     protected override void SetParameterInternal(int index, object value)
@@ -97,9 +97,9 @@ public class JSScript : ScriptBase
         var constuctor = new JSScriptConstructor();
         try
         {
-            var newScript = (JSScript) constuctor.Create("JS." + (string) value, m_scriptContext);
-            m_function = newScript.m_function;
-            m_parameters = newScript.m_parameters;
+            var newScript = (JSScript) constuctor.Create("JS." + (string) value, _scriptContext);
+            _function = newScript._function;
+            _parameters = newScript._parameters;
         }
         catch
         {

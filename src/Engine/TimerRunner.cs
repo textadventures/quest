@@ -6,12 +6,12 @@ namespace QuestViva.Engine;
 
 internal class TimerRunner
 {
-    private readonly WorldModel m_worldModel;
-    private Element m_gameElement;
+    private readonly WorldModel _worldModel;
+    private Element _gameElement;
 
     public TimerRunner(WorldModel worldModel, bool initialise)
     {
-        m_worldModel = worldModel;
+        _worldModel = worldModel;
         if (initialise)
         {
             // When a game begins, set initial triggers. We don't need to do this when loading
@@ -27,7 +27,7 @@ internal class TimerRunner
     {
         get
         {
-            return m_worldModel.Elements.GetElements(ElementType.Timer).Where(t => t.Fields[FieldDefinitions.Enabled]);
+            return _worldModel.Elements.GetElements(ElementType.Timer).Where(t => t.Fields[FieldDefinitions.Enabled]);
         }
     }
 
@@ -35,7 +35,7 @@ internal class TimerRunner
     {
         get
         {
-            return m_worldModel.Elements.GetElements(ElementType.Timer).Where(t => !t.Fields[FieldDefinitions.Enabled]);
+            return _worldModel.Elements.GetElements(ElementType.Timer).Where(t => !t.Fields[FieldDefinitions.Enabled]);
         }
     }
 
@@ -43,12 +43,12 @@ internal class TimerRunner
     {
         get
         {
-            if (m_gameElement == null)
+            if (_gameElement == null)
             {
-                m_gameElement = m_worldModel.Elements.Get("game");
+                _gameElement = _worldModel.Elements.Get("game");
             }
 
-            return m_gameElement;
+            return _gameElement;
         }
     }
 

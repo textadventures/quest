@@ -33,39 +33,39 @@ public class ShowMenuScriptConstructor : IScriptConstructor
 
 public class ShowMenuScript : ScriptBase
 {
-    private readonly IScript m_callbackScript;
-    private readonly ScriptContext m_scriptContext;
-    private readonly IScriptFactory m_scriptFactory;
-    private readonly WorldModel m_worldModel;
-    private IFunction<bool> m_allowCancel;
-    private IFunction<string> m_caption;
-    private IFunctionDynamic m_options;
+    private readonly IScript _callbackScript;
+    private readonly ScriptContext _scriptContext;
+    private readonly IScriptFactory _scriptFactory;
+    private readonly WorldModel _worldModel;
+    private IFunction<bool> _allowCancel;
+    private IFunction<string> _caption;
+    private IFunctionDynamic _options;
 
     public ShowMenuScript(ScriptContext scriptContext, IScriptFactory scriptFactory, IFunction<string> caption,
         IFunctionDynamic options, IFunction<bool> allowCancel, IScript callbackScript)
     {
-        m_scriptContext = scriptContext;
-        m_worldModel = scriptContext.WorldModel;
-        m_scriptFactory = scriptFactory;
-        m_caption = caption;
-        m_options = options;
-        m_allowCancel = allowCancel;
-        m_callbackScript = callbackScript;
+        _scriptContext = scriptContext;
+        _worldModel = scriptContext.WorldModel;
+        _scriptFactory = scriptFactory;
+        _caption = caption;
+        _options = options;
+        _allowCancel = allowCancel;
+        _callbackScript = callbackScript;
     }
 
     public override string Keyword => "show menu";
 
     protected override ScriptBase CloneScript()
     {
-        return new ShowMenuScript(m_scriptContext, m_scriptFactory, m_caption.Clone(), m_options.Clone(),
-            m_allowCancel.Clone(), (IScript) m_callbackScript.Clone());
+        return new ShowMenuScript(_scriptContext, _scriptFactory, _caption.Clone(), _options.Clone(),
+            _allowCancel.Clone(), (IScript) _callbackScript.Clone());
     }
 
     public override async Task ExecuteAsync(Context c)
     {
-        var caption = await m_caption.ExecuteAsync(c);
-        var options = await m_options.ExecuteAsync(c);
-        var allowCancel = await m_allowCancel.ExecuteAsync(c);
+        var caption = await _caption.ExecuteAsync(c);
+        var options = await _options.ExecuteAsync(c);
+        var allowCancel = await _allowCancel.ExecuteAsync(c);
 
         IDictionary<string, string> optionsDictionary;
         if (options is IList<string> stringListOptions)
@@ -83,13 +83,13 @@ public class ShowMenuScript : ScriptBase
             throw new Exception("Unknown menu options type");
         }
 
-        await m_worldModel.PrintAsync(caption);
+        await _worldModel.PrintAsync(caption);
         var menuData = new MenuData(caption, optionsDictionary, allowCancel);
-        m_worldModel.PlayerUi.ShowMenu(menuData);
+        _worldModel.PlayerUi.ShowMenu(menuData);
 
-        WorldModel.BeginPrompt(ref m_worldModel._menuTcs);
-        m_worldModel.BeginDormantSuspension();
-        m_worldModel.SignalTurnSuspended();
+        WorldModel.BeginPrompt(ref _worldModel._menuTcs);
+        _worldModel.BeginDormantSuspension();
+        _worldModel.SignalTurnSuspended();
         _ = AwaitResponseAndRunCallbackAsync(c, optionsDictionary);
     }
 
@@ -98,27 +98,27 @@ public class ShowMenuScript : ScriptBase
         var resolved = false;
         try
         {
-            var response = await m_worldModel._menuTcs!.Task;
+            var response = await _worldModel._menuTcs!.Task;
             resolved = true;
-            m_worldModel.SignalCallbackResolving();
+            _worldModel.SignalCallbackResolving();
             if (response != null)
-                await m_worldModel.PrintAsync(" - " + optionsDictionary[response]);
+                await _worldModel.PrintAsync(" - " + optionsDictionary[response]);
             c.Parameters["result"] = response;
-            await m_worldModel.RunScriptAsync(m_callbackScript, c);
+            await _worldModel.RunScriptAsync(_callbackScript, c);
         }
         catch (OperationCanceledException) { }
-        catch (Exception ex) { m_worldModel.LogException(ex); }
+        catch (Exception ex) { _worldModel.LogException(ex); }
         finally
         {
-            if (!resolved) m_worldModel.SignalCallbackResolving();
-            await m_worldModel.EndPendingCallbackAsync();
-            m_worldModel.SignalTurnSuspended();
+            if (!resolved) _worldModel.SignalCallbackResolving();
+            await _worldModel.EndPendingCallbackAsync();
+            _worldModel.SignalTurnSuspended();
         }
     }
 
     public override string Save()
     {
-        return SaveScript("show menu", m_callbackScript, m_caption.Save(), m_options.Save(), m_allowCancel.Save());
+        return SaveScript("show menu", _callbackScript, _caption.Save(), _options.Save(), _allowCancel.Save());
     }
 
     public override object GetParameter(int index)
@@ -126,13 +126,13 @@ public class ShowMenuScript : ScriptBase
         switch (index)
         {
             case 0:
-                return m_caption.Save();
+                return _caption.Save();
             case 1:
-                return m_options.Save();
+                return _options.Save();
             case 2:
-                return m_allowCancel.Save();
+                return _allowCancel.Save();
             case 3:
-                return m_callbackScript;
+                return _callbackScript;
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -143,13 +143,13 @@ public class ShowMenuScript : ScriptBase
         switch (index)
         {
             case 0:
-                m_caption = new Expression<string>((string) value, m_scriptContext);
+                _caption = new Expression<string>((string) value, _scriptContext);
                 break;
             case 1:
-                m_options = new ExpressionDynamic((string) value, m_scriptContext);
+                _options = new ExpressionDynamic((string) value, _scriptContext);
                 break;
             case 2:
-                m_allowCancel = new Expression<bool>((string) value, m_scriptContext);
+                _allowCancel = new Expression<bool>((string) value, _scriptContext);
                 break;
             case 3:
                 throw new InvalidOperationException(

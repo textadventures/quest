@@ -33,35 +33,35 @@ public class ForEachScriptConstructor : IScriptConstructor
 
 public class ForEachScript : ScriptBase
 {
-    private readonly IScript m_loopScript;
-    private readonly ScriptContext m_scriptContext;
-    private IFunctionDynamic m_list;
-    private string m_variable;
+    private readonly IScript _loopScript;
+    private readonly ScriptContext _scriptContext;
+    private IFunctionDynamic _list;
+    private string _variable;
 
     public ForEachScript(ScriptContext scriptContext, string variable, IFunctionDynamic list, IScript loopScript)
     {
-        m_scriptContext = scriptContext;
-        m_variable = variable;
-        m_list = list;
-        m_loopScript = loopScript;
+        _scriptContext = scriptContext;
+        _variable = variable;
+        _list = list;
+        _loopScript = loopScript;
     }
 
     public override string Keyword => "foreach";
 
     protected override ScriptBase CloneScript()
     {
-        return new ForEachScript(m_scriptContext, m_variable, m_list.Clone(), (IScript) m_loopScript.Clone());
+        return new ForEachScript(_scriptContext, _variable, _list.Clone(), (IScript) _loopScript.Clone());
     }
 
     public override async Task ExecuteAsync(Context c)
     {
-        var result = await m_list.ExecuteAsync(c);
+        var result = await _list.ExecuteAsync(c);
         IEnumerable resultList = null;
 
         // Cannot foreach over strings as of Quest 5.3, as the Char data type is not supported (retained functionality
         // for pre-5.3 to prevent breaking existing scripts)
 
-        if (m_scriptContext.WorldModel.Version < WorldModelVersion.v530 || !(result is string))
+        if (_scriptContext.WorldModel.Version < WorldModelVersion.v530 || !(result is string))
         {
             var resultDictionary = result as IDictionary;
             if (resultDictionary != null)
@@ -81,8 +81,8 @@ public class ForEachScript : ScriptBase
 
         foreach (var variable in resultList)
         {
-            c.Parameters[m_variable] = variable;
-            await m_loopScript.ExecuteAsync(c);
+            c.Parameters[_variable] = variable;
+            await _loopScript.ExecuteAsync(c);
             if (c.IsReturned)
             {
                 break;
@@ -92,7 +92,7 @@ public class ForEachScript : ScriptBase
 
     public override string Save()
     {
-        return SaveScript("foreach", m_loopScript, m_variable, m_list.Save());
+        return SaveScript("foreach", _loopScript, _variable, _list.Save());
     }
 
     public override object GetParameter(int index)
@@ -100,11 +100,11 @@ public class ForEachScript : ScriptBase
         switch (index)
         {
             case 0:
-                return m_variable;
+                return _variable;
             case 1:
-                return m_list.Save();
+                return _list.Save();
             case 2:
-                return m_loopScript;
+                return _loopScript;
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -115,10 +115,10 @@ public class ForEachScript : ScriptBase
         switch (index)
         {
             case 0:
-                m_variable = (string) value;
+                _variable = (string) value;
                 break;
             case 1:
-                m_list = new ExpressionDynamic((string) value, m_scriptContext);
+                _list = new ExpressionDynamic((string) value, _scriptContext);
                 break;
             case 2:
                 throw new InvalidOperationException(

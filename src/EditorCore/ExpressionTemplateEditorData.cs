@@ -2,9 +2,9 @@
 
 internal class ExpressionTemplateEditorData : IEditorData
 {
-    private readonly string m_originalPattern;
-    private readonly IDictionary<string, string> m_parameters;
-    private readonly IEditorData m_parentData;
+    private readonly string _originalPattern;
+    private readonly IDictionary<string, string> _parameters;
+    private readonly IEditorData _parentData;
 
     public ExpressionTemplateEditorData(string expression, EditorDefinition definition, IEditorData parentData)
     {
@@ -13,9 +13,9 @@ internal class ExpressionTemplateEditorData : IEditorData
         // We create the parameter dictionary in the same way as the command parser, so
         // we end up with a dictionary like "object=myobject".
 
-        m_parameters = Engine.Utility.Populate(definition.Pattern, expression);
-        m_originalPattern = definition.OriginalPattern;
-        m_parentData = parentData;
+        _parameters = Engine.Utility.Populate(definition.Pattern, expression);
+        _originalPattern = definition.OriginalPattern;
+        _parentData = parentData;
     }
 
     public event EventHandler Changed;
@@ -24,12 +24,12 @@ internal class ExpressionTemplateEditorData : IEditorData
 
     public object GetAttribute(string attribute)
     {
-        return m_parameters[attribute];
+        return _parameters[attribute];
     }
 
     public ValidationResult SetAttribute(string attribute, object value)
     {
-        m_parameters[attribute] = (string) value;
+        _parameters[attribute] = (string) value;
         if (Changed != null)
         {
             Changed(this, new EventArgs());
@@ -57,7 +57,7 @@ internal class ExpressionTemplateEditorData : IEditorData
 
     public IEnumerable<string> GetVariablesInScope()
     {
-        return m_parentData.GetVariablesInScope();
+        return _parentData.GetVariablesInScope();
     }
 
     public bool IsDirectlySaveable => false;
@@ -68,8 +68,8 @@ internal class ExpressionTemplateEditorData : IEditorData
         // names with their values. If changedAttribute and changedValue are set, then
         // we're in the middle of editing, so use the specified change in place of the
         // currently saved values.
-        var result = m_originalPattern;
-        foreach (var parameter in m_parameters)
+        var result = _originalPattern;
+        foreach (var parameter in _parameters)
         {
             var value = parameter.Key == changedAttribute ? changedValue : parameter.Value;
             result = result.Replace(string.Format("#{0}#", parameter.Key), value);

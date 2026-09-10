@@ -20,34 +20,34 @@ public class InsertScriptConstructor : ScriptConstructorBase
 
 public class InsertScript : ScriptBase
 {
-    private readonly ScriptContext m_scriptContext;
-    private readonly WorldModel m_worldModel;
-    private IFunction<string> m_filename;
+    private readonly ScriptContext _scriptContext;
+    private readonly WorldModel _worldModel;
+    private IFunction<string> _filename;
 
     public InsertScript(ScriptContext scriptContext, IFunction<string> filename)
     {
-        m_scriptContext = scriptContext;
-        m_worldModel = scriptContext.WorldModel;
-        m_filename = filename;
+        _scriptContext = scriptContext;
+        _worldModel = scriptContext.WorldModel;
+        _filename = filename;
     }
 
     public override string Keyword => "insert";
 
     protected override ScriptBase CloneScript()
     {
-        return new InsertScript(m_scriptContext, m_filename.Clone());
+        return new InsertScript(_scriptContext, _filename.Clone());
     }
 
     public override async Task ExecuteAsync(Context c)
     {
-        if (m_worldModel.Version >= WorldModelVersion.v540)
+        if (_worldModel.Version >= WorldModelVersion.v540)
         {
             throw new Exception(
                 "The 'insert' script command is not supported for games with WorldModel version 540 or later. You can output HTML directly using the 'msg' command instead.");
         }
 
-        var filename = await m_filename.ExecuteAsync(c);
-        if (m_worldModel.Version == WorldModelVersion.v500)
+        var filename = await _filename.ExecuteAsync(c);
+        if (_worldModel.Version == WorldModelVersion.v500)
         {
             // v500 games used Frame.htm for static panel feature. This is now implemented natively
             // in Player and WebPlayer.
@@ -57,7 +57,7 @@ public class InsertScript : ScriptBase
             }
         }
 
-        var stream = m_worldModel.GetResourceStream(filename);
+        var stream = _worldModel.GetResourceStream(filename);
         if (stream == null)
         {
             return;
@@ -65,21 +65,21 @@ public class InsertScript : ScriptBase
 
         using var reader = new StreamReader(stream);
         var html = reader.ReadToEnd();
-        m_worldModel.PlayerUi.WriteHTML(html);
+        _worldModel.PlayerUi.WriteHTML(html);
     }
 
     public override string Save()
     {
-        return SaveScript("insert", m_filename.Save());
+        return SaveScript("insert", _filename.Save());
     }
 
     public override object GetParameter(int index)
     {
-        return m_filename.Save();
+        return _filename.Save();
     }
 
     protected override void SetParameterInternal(int index, object value)
     {
-        m_filename = new Expression<string>((string) value, m_scriptContext);
+        _filename = new Expression<string>((string) value, _scriptContext);
     }
 }

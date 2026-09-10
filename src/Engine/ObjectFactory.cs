@@ -192,27 +192,27 @@ public abstract class ElementFactoryBase : IElementFactory
 
     protected class CreateDestroyLogEntry : UndoLogger.IUndoAction
     {
-        private readonly bool m_create;
-        private readonly Element m_element;
-        private readonly string m_name;
-        private readonly Action<string> m_notifyAdded;
-        private readonly Action<string> m_notifyRemoved;
-        private readonly ElementType m_type;
+        private readonly bool _create;
+        private readonly Element _element;
+        private readonly string _name;
+        private readonly Action<string> _notifyAdded;
+        private readonly Action<string> _notifyRemoved;
+        private readonly ElementType _type;
 
         public CreateDestroyLogEntry(string name, ElementType type, Element element, bool create,
             Action<string> notifyAdded, Action<string> notifyRemoved)
         {
-            m_name = name;
-            m_type = type;
-            m_create = create;
-            m_element = element;
-            m_notifyAdded = notifyAdded;
-            m_notifyRemoved = notifyRemoved;
+            _name = name;
+            _type = type;
+            _create = create;
+            _element = element;
+            _notifyAdded = notifyAdded;
+            _notifyRemoved = notifyRemoved;
         }
 
         public void DoUndo(WorldModel worldModel)
         {
-            if (m_create)
+            if (_create)
             {
                 DestroyElement(worldModel);
             }
@@ -224,7 +224,7 @@ public abstract class ElementFactoryBase : IElementFactory
 
         public void DoRedo(WorldModel worldModel)
         {
-            if (m_create)
+            if (_create)
             {
                 CreateElement(worldModel);
             }
@@ -236,14 +236,14 @@ public abstract class ElementFactoryBase : IElementFactory
 
         private void CreateElement(WorldModel worldModel)
         {
-            worldModel.Elements.Add(m_type, m_name, m_element);
-            m_notifyAdded(m_name);
+            worldModel.Elements.Add(_type, _name, _element);
+            _notifyAdded(_name);
         }
 
         private void DestroyElement(WorldModel worldModel)
         {
-            worldModel.Elements.Remove(m_type, m_name);
-            m_notifyRemoved(m_name);
+            worldModel.Elements.Remove(_type, _name);
+            _notifyRemoved(_name);
         }
     }
 }

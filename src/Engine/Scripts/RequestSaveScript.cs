@@ -26,23 +26,23 @@ public class RequestSaveScriptConstructor : ScriptConstructorBase
 
 public class RequestSaveScript : ScriptBase
 {
-    private readonly WorldModel m_worldModel;
+    private readonly WorldModel _worldModel;
 
     public RequestSaveScript(WorldModel worldModel)
     {
-        m_worldModel = worldModel;
+        _worldModel = worldModel;
     }
 
     public override string Keyword => "requestsave";
 
     protected override ScriptBase CloneScript()
     {
-        return new RequestSaveScript(m_worldModel);
+        return new RequestSaveScript(_worldModel);
     }
 
     public override Task ExecuteAsync(Context c)
     {
-        m_worldModel.PlayerUi.RequestSave(null);
+        _worldModel.PlayerUi.RequestSave(null);
         return Task.CompletedTask;
     }
 

@@ -87,55 +87,55 @@ public class SwitchScriptConstructor : IScriptConstructor
 
 public class SwitchScript : ScriptBase
 {
-    private readonly IScript m_default;
-    private readonly ScriptContext m_scriptContext;
-    private readonly WorldModel m_worldModel;
-    private SwitchCases m_cases;
-    private IFunctionDynamic m_expr;
+    private readonly IScript _default;
+    private readonly ScriptContext _scriptContext;
+    private readonly WorldModel _worldModel;
+    private SwitchCases _cases;
+    private IFunctionDynamic _expr;
 
     public SwitchScript(ScriptContext scriptContext, IFunctionDynamic expression,
         Dictionary<IFunctionDynamic, IScript> cases, IScript defaultScript)
         : this(scriptContext, expression, defaultScript)
     {
-        m_cases = new SwitchCases(this, cases);
+        _cases = new SwitchCases(this, cases);
     }
 
     private SwitchScript(ScriptContext scriptContext, IFunctionDynamic expression, IScript defaultScript)
     {
-        m_scriptContext = scriptContext;
-        m_worldModel = scriptContext.WorldModel;
-        m_expr = expression;
-        m_default = defaultScript ?? new MultiScript(m_worldModel);
+        _scriptContext = scriptContext;
+        _worldModel = scriptContext.WorldModel;
+        _expr = expression;
+        _default = defaultScript ?? new MultiScript(_worldModel);
     }
 
     public override string Keyword => "switch";
 
     protected override ScriptBase CloneScript()
     {
-        var clone = new SwitchScript(m_scriptContext, m_expr.Clone(), (IScript) m_default.Clone());
-        clone.m_cases = m_cases.Clone(clone);
+        var clone = new SwitchScript(_scriptContext, _expr.Clone(), (IScript) _default.Clone());
+        clone._cases = _cases.Clone(clone);
         return clone;
     }
 
     public override async Task ExecuteAsync(Context c)
     {
-        var result = await m_expr.ExecuteAsync(c);
+        var result = await _expr.ExecuteAsync(c);
         // using .ToString() here as an object comparison of ints won't work
-        var success = await m_cases.ExecuteAsync(c, Utility.ExpressionResultToString(result));
+        var success = await _cases.ExecuteAsync(c, Utility.ExpressionResultToString(result));
 
-        if (!success && m_default != null)
+        if (!success && _default != null)
         {
-            await m_default.ExecuteAsync(c);
+            await _default.ExecuteAsync(c);
         }
     }
 
     public override string Save()
     {
-        var result = SaveScript("switch", m_expr.Save()) + " {" + Environment.NewLine;
-        result += m_cases.Save();
-        if (m_default != null && ((IMultiScript) m_default).Scripts.Count() > 0)
+        var result = SaveScript("switch", _expr.Save()) + " {" + Environment.NewLine;
+        result += _cases.Save();
+        if (_default != null && ((IMultiScript) _default).Scripts.Count() > 0)
         {
-            result += SaveScript("default", m_default);
+            result += SaveScript("default", _default);
         }
 
         result += Environment.NewLine + "}";
@@ -147,11 +147,11 @@ public class SwitchScript : ScriptBase
         switch (index)
         {
             case 0:
-                return m_expr.Save();
+                return _expr.Save();
             case 1:
-                return m_cases.CasesAsQuestDictionary;
+                return _cases.CasesAsQuestDictionary;
             case 2:
-                return m_default;
+                return _default;
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -162,7 +162,7 @@ public class SwitchScript : ScriptBase
         switch (index)
         {
             case 0:
-                m_expr = new ExpressionDynamic((string) value, m_scriptContext);
+                _expr = new ExpressionDynamic((string) value, _scriptContext);
                 break;
             case 1:
                 // any updates to the cases should change the scriptdictionary itself - nothing should cause SetParameter to be triggered.
@@ -179,8 +179,8 @@ public class SwitchScript : ScriptBase
     // using the standard scriptdictionary editor control.
     private class SwitchCases
     {
-        private readonly SwitchScript m_parent;
-        private Dictionary<string, IFunctionDynamic> m_compiledExpressions = new();
+        private readonly SwitchScript _parent;
+        private Dictionary<string, IFunctionDynamic> _compiledExpressions = new();
 
         public SwitchCases(SwitchScript parent, Dictionary<IFunctionDynamic, IScript> cases)
             : this(parent)
@@ -197,16 +197,16 @@ public class SwitchScript : ScriptBase
                 }
 
                 CasesAsQuestDictionary.Add(caseString, script);
-                m_compiledExpressions.Add(caseString, compiledExpression);
+                _compiledExpressions.Add(caseString, compiledExpression);
             }
         }
 
         private SwitchCases(SwitchScript parent)
         {
-            m_parent = parent;
-            if (parent.m_worldModel.EditMode)
+            _parent = parent;
+            if (parent._worldModel.EditMode)
             {
-                CasesAsQuestDictionary.UndoLog = parent.m_worldModel.UndoLogger;
+                CasesAsQuestDictionary.UndoLog = parent._worldModel.UndoLogger;
             }
         }
 
@@ -216,10 +216,10 @@ public class SwitchScript : ScriptBase
         {
             var clone = new SwitchCases(newParent);
             clone.CasesAsQuestDictionary = (QuestDictionary<IScript>) CasesAsQuestDictionary.Clone();
-            clone.m_compiledExpressions = new Dictionary<string, IFunctionDynamic>();
-            foreach (var compiledExpression in m_compiledExpressions)
+            clone._compiledExpressions = new Dictionary<string, IFunctionDynamic>();
+            foreach (var compiledExpression in _compiledExpressions)
             {
-                clone.m_compiledExpressions.Add(compiledExpression.Key, compiledExpression.Value);
+                clone._compiledExpressions.Add(compiledExpression.Key, compiledExpression.Value);
             }
 
             return clone;
@@ -230,7 +230,7 @@ public class SwitchScript : ScriptBase
             var result = string.Empty;
             foreach (var caseItem in CasesAsQuestDictionary)
             {
-                result += m_parent.SaveScript("case", caseItem.Value, caseItem.Key);
+                result += _parent.SaveScript("case", caseItem.Value, caseItem.Key);
             }
 
             return result;
@@ -240,7 +240,7 @@ public class SwitchScript : ScriptBase
         {
             foreach (var switchCase in CasesAsQuestDictionary)
             {
-                var expr = m_compiledExpressions[switchCase.Key];
+                var expr = _compiledExpressions[switchCase.Key];
 
                 if (result == Utility.ExpressionResultToString(await expr.ExecuteAsync(c)))
                 {
