@@ -164,9 +164,9 @@ internal partial class GameSaver
         _impliedTypes = new Dictionary<string, string>();
         foreach (var impliedType in _worldModel.Elements.GetElements(ElementType.ImpliedType))
         {
-            var element = impliedType.Fields[FieldDefinitions.Element];
-            var property = impliedType.Fields[FieldDefinitions.Property];
-            var type = impliedType.Fields[FieldDefinitions.Type];
+            var element = impliedType.Fields[FieldDefinitions.Element]!;
+            var property = impliedType.Fields[FieldDefinitions.Property]!;
+            var type = impliedType.Fields[FieldDefinitions.Type]!;
             _impliedTypes.Add(GetImpliedTypeKey(element, property), type);
         }
     }

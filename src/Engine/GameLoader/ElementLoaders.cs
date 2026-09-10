@@ -451,7 +451,7 @@ internal partial class GameLoader
                 if (string.IsNullOrEmpty(currentElementType))
                 {
                     // the type property is the object type, so is not set for other element types.
-                    currentElementType = current.Fields.GetString("elementtype");
+                    currentElementType = current.Fields.GetString("elementtype")!;
                 }
 
                 type = GameLoader._implicitTypes.Get(currentElementType, attribute);
@@ -729,7 +729,7 @@ internal partial class GameLoader
                 throw new Exception("Current element is not set");
             }
 
-            current.Fields.LazyFields.AddType(reader.GetAttribute("name"));
+            current.Fields.LazyFields.AddType(reader.GetAttribute("name")!);
             return null;
         }
     }

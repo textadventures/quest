@@ -11,7 +11,7 @@ public delegate void ErrorHandler(Exception ex);
 public interface IGame
 {
     List<string> Errors { get; }
-    string GameID { get; }
+    string? GameID { get; }
     Task<bool> Initialise(IPlayer player);
     Task Begin();
     Task SendCommand(string command);

@@ -442,7 +442,7 @@ internal partial class GameLoader
 
         public override void Load(Element element, string attribute, string value)
         {
-            var result = new Dictionary<string, string>();
+            var result = new Dictionary<string, string?>();
 
             var values = Utility.ListSplit(value);
             foreach (var pair in values)

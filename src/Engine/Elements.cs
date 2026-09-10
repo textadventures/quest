@@ -1,4 +1,5 @@
-﻿#nullable disable
+﻿using System.Diagnostics.CodeAnalysis;
+
 namespace QuestViva.Engine;
 
 public class Elements
@@ -37,7 +38,7 @@ public class Elements
 
     public IEnumerable<Element> Objects => GetElements(ElementType.Object);
 
-    public event EventHandler<NameChangedEventArgs> ElementRenamed;
+    public event EventHandler<NameChangedEventArgs>? ElementRenamed;
 
     public void Add(ElementType t, string key, Element e)
     {
@@ -85,7 +86,7 @@ public class Elements
         e.Fields.NameChanged += ElementNameChanged;
     }
 
-    private void ElementNameChanged(object sender, NameChangedEventArgs e)
+    private void ElementNameChanged(object? sender, NameChangedEventArgs e)
     {
         if (string.IsNullOrEmpty(e.Element.Name))
         {
@@ -119,7 +120,7 @@ public class Elements
 
     // Called by Element.SetParentFromFields whenever an element's parent changes, so the
     // parent -> children index stays in sync without needing a full rescan of all elements.
-    internal void UpdateParentIndex(Element child, Element oldParent, Element newParent)
+    internal void UpdateParentIndex(Element child, Element? oldParent, Element? newParent)
     {
         if (!_indexedElements.Contains(child))
         {
@@ -132,7 +133,7 @@ public class Elements
         AddToParentIndex(child, newParent);
     }
 
-    private void AddToParentIndex(Element child, Element parent)
+    private void AddToParentIndex(Element child, Element? parent)
     {
         if (parent == null)
         {
@@ -149,7 +150,7 @@ public class Elements
         children.Add(child);
     }
 
-    private void RemoveFromParentIndex(Element child, Element parent)
+    private void RemoveFromParentIndex(Element child, Element? parent)
     {
         if (parent == null)
         {
@@ -218,7 +219,7 @@ public class Elements
         }
     }
 
-    public bool TryGetValue(ElementType t, string key, out Element element)
+    public bool TryGetValue(ElementType t, string key, [MaybeNullWhen(false)] out Element element)
     {
         return _elements[t].TryGetValue(key, out element);
     }
@@ -233,7 +234,7 @@ public class Elements
         return _allElements.Count;
     }
 
-    public Element GetSingle(ElementType t)
+    public Element? GetSingle(ElementType t)
     {
         foreach (var e in _elements[t].Values)
         {
@@ -262,7 +263,7 @@ public class Elements
         }
     }
 
-    public IEnumerable<Element> GetDirectChildren(Element parent)
+    public IEnumerable<Element> GetDirectChildren(Element? parent)
     {
         if (parent == null)
         {
@@ -272,7 +273,7 @@ public class Elements
         return _childrenByParent.TryGetValue(parent, out var children) ? children : [];
     }
 
-    internal int GetNextSortIndex(Element parent)
+    internal int GetNextSortIndex(Element? parent)
     {
         if (parent == null)
         {

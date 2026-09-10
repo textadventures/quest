@@ -247,9 +247,9 @@ internal partial class GameSaver
                     writer.WriteAttributeString("alias", e.Fields[FieldDefinitions.Alias]);
                 }
 
-                if (e.Fields[FieldDefinitions.To] != null)
+                if (e.Fields[FieldDefinitions.To] is { } to)
                 {
-                    writer.WriteAttributeString("to", e.Fields[FieldDefinitions.To].Name);
+                    writer.WriteAttributeString("to", to.Name);
                 }
 
                 ObjectSaver.SaveFields(writer, e);

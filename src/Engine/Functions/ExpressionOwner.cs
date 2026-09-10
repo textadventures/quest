@@ -51,7 +51,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         return element.Fields.HasString(property);
     }
 
-    public string GetString( /* Element */ object? obj, string? property)
+    public string? GetString( /* Element */ object? obj, string? property)
     {
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentNullException.ThrowIfNull(property);
@@ -131,7 +131,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         return element.Fields.HasType<DelegateImplementation>(property);
     }
 
-    public object GetAttribute( /* Element */ object? obj, string? property)
+    public object? GetAttribute( /* Element */ object? obj, string? property)
     {
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentNullException.ThrowIfNull(property);
@@ -283,7 +283,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         return questList.Count;
     }
 
-    public object ListItem( /* IQuestList */ object? list, int index)
+    public object? ListItem( /* IQuestList */ object? list, int index)
     {
         ArgumentNullException.ThrowIfNull(list);
 
@@ -337,19 +337,19 @@ internal class ExpressionOwner(WorldModel worldModel)
         }
     }
 
-    public Element GetObject(string? name)
+    public Element? GetObject(string? name)
     {
         ArgumentNullException.ThrowIfNull(name);
         return TryGetElement(ElementType.Object, name);
     }
 
-    public Element GetTimer(string? name)
+    public Element? GetTimer(string? name)
     {
         ArgumentNullException.ThrowIfNull(name);
         return TryGetElement(ElementType.Timer, name);
     }
 
-    private Element TryGetElement(ElementType type, string name)
+    private Element? TryGetElement(ElementType type, string name)
     {
         worldModel.Elements.TryGetValue(type, name, out var result);
         return result;
@@ -390,11 +390,11 @@ internal class ExpressionOwner(WorldModel worldModel)
         var cnt = 0;
         foreach (var p in parameters)
         {
-            paramValues.Add((string) impl.Definition.Fields[FieldDefinitions.ParamNames][cnt], p);
+            paramValues.Add((string) impl.Definition.Fields[FieldDefinitions.ParamNames]![cnt]!, p);
             cnt++;
         }
 
-        return await worldModel.RunDelegateScriptAsync(impl.Implementation.Fields[FieldDefinitions.Script], paramValues, element);
+        return await worldModel.RunDelegateScriptAsync(impl.Implementation.Fields[FieldDefinitions.Script]!, paramValues, element);
     }
 
     // ReSharper disable once InconsistentNaming
@@ -742,7 +742,7 @@ internal class ExpressionOwner(WorldModel worldModel)
 
     private QuestList<T> ListCombine<T>(QuestList<T>? list1, QuestList<T>? list2)
     {
-        return list1 == null ? new QuestList<T>(list2) : list1.MergeLists(list2);
+        return list1 == null ? new QuestList<T>(list2) : list1.MergeLists(list2!);
     }
 
     public QuestList<string> ListExclude(QuestList<string>? list, string? str)

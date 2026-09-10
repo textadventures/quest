@@ -282,9 +282,9 @@ public partial class WorldModel : IGame, IGameDebug
 
     public int ASLVersion => int.Parse(VersionString!);
 
-    public string Category => Game.Fields[FieldDefinitions.Category];
-    public string Description => Game.Fields[FieldDefinitions.Description];
-    public string Cover => Game.Fields[FieldDefinitions.Cover];
+    public string? Category => Game.Fields[FieldDefinitions.Category];
+    public string? Description => Game.Fields[FieldDefinitions.Description];
+    public string? Cover => Game.Fields[FieldDefinitions.Cover];
     public bool IsGamebook => Game.Fields[FieldDefinitions.EditorStyle] == "gamebook";
     public string? LanguageId => Template.GetText("LanguageId", false);
     public string? GetTemplateText(string name) => Template.GetText(name, false);
@@ -367,7 +367,7 @@ public partial class WorldModel : IGame, IGameDebug
                 }
                 else if (Version >= WorldModelVersion.v540)
                 {
-                    await PlayerUi.RunScriptAsync("loadHtml", [output.Fields.GetString("html")]);
+                    await PlayerUi.RunScriptAsync("loadHtml", [output.Fields.GetString("html")!]);
                     await PlayerUi.RunScriptAsync("markScrollPosition", null);
                     ScrollToEnd();
                 }
@@ -520,7 +520,7 @@ public partial class WorldModel : IGame, IGameDebug
             return;
         }
 
-        var parameters = new Parameters {{(string) handler.Fields[FieldDefinitions.ParamNames][0], param}};
+        var parameters = new Parameters {{(string) handler.Fields[FieldDefinitions.ParamNames]![0]!, param}};
 
         await RunProcedureAsync(eventName, parameters, false);
 
@@ -582,17 +582,18 @@ public partial class WorldModel : IGame, IGameDebug
         var result = new List<string>();
         foreach (var jsRef in Elements.GetElements(ElementType.Javascript))
         {
+            var src = jsRef.Fields[FieldDefinitions.Src]!;
             if (Version == WorldModelVersion.v500)
             {
                 // v500 games used Frame.js functions for static panel feature. This is now implemented natively
                 // in Player and WebPlayer.
-                if (jsRef.Fields[FieldDefinitions.Src].Equals("frame.js", StringComparison.CurrentCultureIgnoreCase))
+                if (src.Equals("frame.js", StringComparison.CurrentCultureIgnoreCase))
                 {
                     continue;
                 }
             }
 
-            result.Add(jsRef.Fields[FieldDefinitions.Src]);
+            result.Add(src);
         }
 
         return result;
@@ -697,7 +698,7 @@ public partial class WorldModel : IGame, IGameDebug
             : _gameData?.GetAdjacentFile(filename);
     }
 
-    public string GameID => Game.Fields[FieldDefinitions.GameID];
+    public string? GameID => Game.Fields[FieldDefinitions.GameID];
 
     IEnumerable<string> IGame.GetResourceNames()
     {
@@ -1101,8 +1102,8 @@ public partial class WorldModel : IGame, IGameDebug
             if (Version <= WorldModelVersion.v520 || !Elements.ContainsKey(ElementType.Function, "GetDisplayVerbs"))
             {
                 verbs = held.Contains(obj)
-                    ? obj.Fields[FieldDefinitions.InventoryVerbs]
-                    : obj.Fields[FieldDefinitions.DisplayVerbs];
+                    ? obj.Fields[FieldDefinitions.InventoryVerbs]!
+                    : obj.Fields[FieldDefinitions.DisplayVerbs]!;
             }
             else
             {
@@ -1129,12 +1130,12 @@ public partial class WorldModel : IGame, IGameDebug
             {
                 if (scope == "ScopeInventory")
                 {
-                    objects.Add(new ListData(await GetListDisplayAliasAsync(obj), obj.Fields[FieldDefinitions.InventoryVerbs],
+                    objects.Add(new ListData(await GetListDisplayAliasAsync(obj), obj.Fields[FieldDefinitions.InventoryVerbs]!,
                         obj.Name, await GetDisplayAliasAsync(obj)));
                 }
                 else
                 {
-                    objects.Add(new ListData(await GetListDisplayAliasAsync(obj), obj.Fields[FieldDefinitions.DisplayVerbs],
+                    objects.Add(new ListData(await GetListDisplayAliasAsync(obj), obj.Fields[FieldDefinitions.DisplayVerbs]!,
                         obj.Name, await GetDisplayAliasAsync(obj)));
                 }
             }
@@ -1203,7 +1204,7 @@ public partial class WorldModel : IGame, IGameDebug
             IEnumerable<string> verbs;
             if (Version <= WorldModelVersion.v520 || !Elements.ContainsKey(ElementType.Function, "GetDisplayVerbs"))
             {
-                verbs = exit.Fields[FieldDefinitions.DisplayVerbs];
+                verbs = exit.Fields[FieldDefinitions.DisplayVerbs]!;
             }
             else
             {
@@ -1437,25 +1438,26 @@ public partial class WorldModel : IGame, IGameDebug
             // would ignore this (but would usually still fail when the function was run, as the required
             // variable wouldn't exist). For Quest 5.3, an additional check if parameters is non-null but empty.
 
+            var paramNames = function.Fields[FieldDefinitions.ParamNames]!;
             var parametersInvalid = false;
             if (Version == WorldModelVersion.v520)
             {
-                parametersInvalid = parameters == null && function.Fields[FieldDefinitions.ParamNames].Count > 0;
+                parametersInvalid = parameters == null && paramNames.Count > 0;
             }
             else if (Version >= WorldModelVersion.v530)
             {
                 parametersInvalid = (parameters == null || parameters.Count == 0) &&
-                                    function.Fields[FieldDefinitions.ParamNames].Count > 0;
+                                    paramNames.Count > 0;
             }
 
             if (parametersInvalid)
             {
                 throw new Exception(string.Format("No parameters passed to {0} function - expected {1} parameters",
                     name,
-                    function.Fields[FieldDefinitions.ParamNames].Count));
+                    paramNames.Count));
             }
 
-            return await RunScriptAsync(function.Fields[FieldDefinitions.Script], parameters, expectResult);
+            return await RunScriptAsync(function.Fields[FieldDefinitions.Script]!, parameters, expectResult);
         }
 
         await PrintAsync($"Error - no such procedure '{name}'");
@@ -1614,7 +1616,7 @@ public partial class WorldModel : IGame, IGameDebug
         return result;
     }
 
-    internal void NotifyElementFieldUpdate(Element element, string attribute, object newValue, bool isUndo)
+    internal void NotifyElementFieldUpdate(Element element, string attribute, object? newValue, bool isUndo)
     {
         if (!element.Initialised)
         {
@@ -1624,7 +1626,7 @@ public partial class WorldModel : IGame, IGameDebug
         ElementFieldUpdated?.Invoke(this, new ElementFieldUpdatedEventArgs(element, attribute, newValue, isUndo));
     }
 
-    internal void NotifyElementMetaFieldUpdate(Element element, string attribute, object newValue, bool isUndo)
+    internal void NotifyElementMetaFieldUpdate(Element element, string attribute, object? newValue, bool isUndo)
     {
         if (!element.Initialised)
         {
