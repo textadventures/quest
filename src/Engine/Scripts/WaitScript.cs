@@ -1,4 +1,3 @@
-#nullable disable
 namespace QuestViva.Engine.Scripts;
 
 public class WaitScriptConstructor : IScriptConstructor
@@ -14,8 +13,8 @@ public class WaitScriptConstructor : IScriptConstructor
         return new WaitScript(WorldModel, ScriptFactory, callbackScript);
     }
 
-    public IScriptFactory ScriptFactory { get; set; }
-    public WorldModel WorldModel { get; set; }
+    public IScriptFactory ScriptFactory { get; set; } = null!;
+    public WorldModel WorldModel { get; set; } = null!;
 }
 
 public class WaitScript : ScriptBase
@@ -53,7 +52,7 @@ public class WaitScript : ScriptBase
         var resolved = false;
         try
         {
-            await _worldModel._waitTcs.Task;
+            await _worldModel._waitTcs!.Task;
             resolved = true;
             _worldModel.SignalCallbackResolving();
             if (_callbackScript != null)
@@ -74,7 +73,7 @@ public class WaitScript : ScriptBase
         return SaveScript("wait", _callbackScript);
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         switch (index)
         {
@@ -85,7 +84,7 @@ public class WaitScript : ScriptBase
         }
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
         switch (index)
         {

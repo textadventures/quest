@@ -1,5 +1,4 @@
-﻿#nullable disable
-using System.Collections;
+﻿using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
 namespace QuestViva.Engine.Scripts;
@@ -15,19 +14,19 @@ public class Context
         ReturnValue = new NoReturnValue();
     }
 
-    public Parameters Parameters { get; set; }
+    public Parameters? Parameters { get; set; }
     public object ReturnValue { get; set; }
     public bool IsReturned { get; set; }
 }
 
 [SuppressMessage("Microsoft.Usage", "CA2237:MarkISerializableTypesWithSerializable")]
-public class Parameters : Dictionary<string, object>
+public class Parameters : Dictionary<string, object?>
 {
     public Parameters()
     {
     }
 
-    public Parameters(string key, object value)
+    public Parameters(string key, object? value)
     {
         Add(key, value);
     }

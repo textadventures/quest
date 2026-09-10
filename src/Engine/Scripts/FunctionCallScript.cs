@@ -1,5 +1,4 @@
-﻿#nullable disable
-using QuestViva.Engine.Functions;
+﻿using QuestViva.Engine.Functions;
 
 namespace QuestViva.Engine.Scripts;
 
@@ -7,11 +6,11 @@ public class FunctionCallScriptConstructor : IScriptConstructor
 {
     public IScript Create(string script, ScriptContext scriptContext)
     {
-        List<IFunction<object>> paramExpressions = null;
+        List<IFunction<object>>? paramExpressions = null;
         string procName, afterParameter;
 
         var param = Utility.GetParameter(script, out afterParameter);
-        IScript paramScript = null;
+        IScript? paramScript = null;
 
         // Handle functions of the form
         //    SomeFunction (parameter) { script }
@@ -58,18 +57,18 @@ public class FunctionCallScriptConstructor : IScriptConstructor
         return new FunctionCallScript(WorldModel, procName, paramExpressions, paramScript);
     }
 
-    public IScriptFactory ScriptFactory { get; set; }
+    public IScriptFactory ScriptFactory { get; set; } = null!;
 
-    public WorldModel WorldModel { get; set; }
+    public WorldModel WorldModel { get; set; } = null!;
 
-    public string Keyword => null;
+    public string? Keyword => null;
 }
 
 public class FunctionCallScript : ScriptBase, IFunctionCallScript
 {
     private readonly FunctionCallParameters _parameters;
     private readonly WorldModel _worldModel;
-    private IScript _paramFunction;
+    private IScript? _paramFunction;
     private string _procedure;
 
     public FunctionCallScript(WorldModel worldModel, string procedure)
@@ -77,8 +76,8 @@ public class FunctionCallScript : ScriptBase, IFunctionCallScript
     {
     }
 
-    public FunctionCallScript(WorldModel worldModel, string procedure, IList<IFunction<object>> parameters,
-        IScript paramFunction)
+    public FunctionCallScript(WorldModel worldModel, string procedure, IList<IFunction<object>>? parameters,
+        IScript? paramFunction)
     {
         _worldModel = worldModel;
         _procedure = procedure;
@@ -89,7 +88,7 @@ public class FunctionCallScript : ScriptBase, IFunctionCallScript
         _parameters.ParametersAsQuestList.Removed += Parameters_Removed;
     }
 
-    public event EventHandler<ScriptUpdatedEventArgs> FunctionCallParametersUpdated;
+    public event EventHandler<ScriptUpdatedEventArgs>? FunctionCallParametersUpdated;
 
     public override async Task ExecuteAsync(Context c)
     {
@@ -100,11 +99,12 @@ public class FunctionCallScript : ScriptBase, IFunctionCallScript
         else
         {
             var paramValues = new Parameters();
-            var proc = _worldModel.Procedure(_procedure);
+            var proc = _worldModel.Procedure(_procedure)!;
 
-            var paramNames = proc.Fields[FieldDefinitions.ParamNames];
+            var paramNames = proc.Fields[FieldDefinitions.ParamNames]!;
 
-            var paramCount = _parameters.Parameters.Count;
+            var parameters = _parameters.Parameters!;
+            var paramCount = parameters.Count;
             if (_paramFunction != null)
             {
                 paramCount++;
@@ -132,15 +132,15 @@ public class FunctionCallScript : ScriptBase, IFunctionCallScript
             }
 
             var cnt = 0;
-            foreach (var f in _parameters.Parameters)
+            foreach (var f in parameters)
             {
-                paramValues.Add((string) paramNames[cnt], await f.ExecuteAsync(c));
+                paramValues.Add((string) paramNames[cnt]!, await f.ExecuteAsync(c));
                 cnt++;
             }
 
             if (_paramFunction != null)
             {
-                paramValues.Add((string) paramNames[cnt], _paramFunction);
+                paramValues.Add((string) paramNames[cnt]!, _paramFunction);
             }
 
             await _worldModel.RunProcedureAsync(_procedure, paramValues, false);
@@ -159,7 +159,7 @@ public class FunctionCallScript : ScriptBase, IFunctionCallScript
             //throw new Exception(string.Format("Unable to save call to function '{0}' - function does not exist", _procedure));
         }
 
-        if ((_parameters == null || _parameters.ParametersAsQuestList.Count == 0) && _paramFunction == null)
+        if (_parameters.ParametersAsQuestList.Count == 0 && _paramFunction == null)
         {
             return _procedure;
         }
@@ -183,7 +183,7 @@ public class FunctionCallScript : ScriptBase, IFunctionCallScript
         return SaveScript(_procedure + "()", _paramFunction);
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         switch (index)
         {
@@ -196,7 +196,7 @@ public class FunctionCallScript : ScriptBase, IFunctionCallScript
         }
     }
 
-    public object GetFunctionCallParameter(int index)
+    public object? GetFunctionCallParameter(int index)
     {
         if (index >= _parameters.ParametersAsQuestList.Count)
         {
@@ -209,7 +209,7 @@ public class FunctionCallScript : ScriptBase, IFunctionCallScript
         return _parameters.ParametersAsQuestList[index];
     }
 
-    public void SetFunctionCallParameter(int index, object value)
+    public void SetFunctionCallParameter(int index, object? value)
     {
         if (index < _parameters.ParametersAsQuestList.Count)
         {
@@ -221,12 +221,12 @@ public class FunctionCallScript : ScriptBase, IFunctionCallScript
         _parameters.ParametersAsQuestList.Add(value, UpdateSource.User, index);
     }
 
-    public IScript GetFunctionCallParameterScript()
+    public IScript? GetFunctionCallParameterScript()
     {
         return _paramFunction;
     }
 
-    public void SetFunctionCallParameterScript(IScript script)
+    public void SetFunctionCallParameterScript(IScript? script)
     {
         _paramFunction = script;
     }
@@ -234,7 +234,7 @@ public class FunctionCallScript : ScriptBase, IFunctionCallScript
     // Only an EditableScript wrapper - i.e. a script currently open in the editor - subscribes
     // to FunctionCallParametersUpdated, so both handlers below have to cope with there being no
     // subscriber at all.
-    private void Parameters_Added(object sender, QuestListUpdatedEventArgs<string> e)
+    private void Parameters_Added(object? sender, QuestListUpdatedEventArgs<string> e)
     {
         // the number of parameters in a function call cannot change. So, as QuestList doesn't
         // provide an Updated event (we simulate Updates with a Remove and an Add at the same
@@ -243,7 +243,7 @@ public class FunctionCallScript : ScriptBase, IFunctionCallScript
         FunctionCallParametersUpdated?.Invoke(this, new ScriptUpdatedEventArgs(e.Index, e.UpdatedItem));
     }
 
-    private void Parameters_Removed(object sender, QuestListUpdatedEventArgs<string> e)
+    private void Parameters_Removed(object? sender, QuestListUpdatedEventArgs<string> e)
     {
         // the only time we care about a parameter being removed is if it's the first parameter being
         // deleted. Everything else should simply be a Remove followed by an Add, and we handle the
@@ -256,16 +256,16 @@ public class FunctionCallScript : ScriptBase, IFunctionCallScript
 
     protected override ScriptBase CloneScript()
     {
-        return new FunctionCallScript(_worldModel, _procedure, _parameters == null ? null : _parameters.Parameters,
+        return new FunctionCallScript(_worldModel, _procedure, _parameters.Parameters,
             _paramFunction);
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
         switch (index)
         {
             case 0:
-                _procedure = (string) value;
+                _procedure = (string) value!;
                 break;
             case 1:
                 // any updates to the parameters should change the list itself - nothing should cause SetParameter to be triggered.

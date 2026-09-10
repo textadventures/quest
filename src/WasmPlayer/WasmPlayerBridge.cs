@@ -832,7 +832,7 @@ public partial class WasmPlayerBridge
 
         void IPlayer.Speak(string text) { }
 
-        void IPlayer.RequestSave(string html) => JsRunScript("saveGame()");
+        void IPlayer.RequestSave(string? html) => JsRunScript("saveGame()");
 
         void IPlayer.Show(string element)
         {

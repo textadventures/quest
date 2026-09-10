@@ -63,7 +63,7 @@ public class AskScript(
             var response = await _worldModel._questionTcs!.Task;
             resolved = true;
             _worldModel.SignalCallbackResolving();
-            c.Parameters["result"] = response;
+            c.Parameters!["result"] = response;
             await _worldModel.RunScriptAsync(callbackScript, c);
         }
         catch (OperationCanceledException) { }
@@ -81,7 +81,7 @@ public class AskScript(
         return SaveScript("ask", callbackScript, _caption.Save());
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         switch (index)
         {
@@ -94,11 +94,11 @@ public class AskScript(
         }
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
         _caption = index switch
         {
-            0 => new Expression<string>((string) value, scriptContext),
+            0 => new Expression<string>((string) value!, scriptContext),
             1 =>
                 // any updates to the script should change the script itself - nothing should cause SetParameter to be triggered.
                 throw new InvalidOperationException(

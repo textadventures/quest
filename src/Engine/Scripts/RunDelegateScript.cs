@@ -1,5 +1,4 @@
-﻿#nullable disable
-using QuestViva.Engine.Functions;
+﻿using QuestViva.Engine.Functions;
 
 namespace QuestViva.Engine.Scripts;
 
@@ -19,26 +18,12 @@ public class RunDelegateScriptConstructor : ScriptConstructorBase
             throw new Exception("Expected at least 2 parameters in rundelegate call");
         }
 
+        var obj = new Expression<Element>(parameters[0], scriptContext);
+        var delegateName = new Expression<string>(parameters[1], scriptContext);
         var paramExpressions = new List<IFunction<object>>();
-        IFunction<Element> obj = null;
-        var cnt = 0;
-        IFunction<string> delegateName = null;
-
-        foreach (var param in parameters)
+        foreach (var param in parameters.Skip(2))
         {
-            cnt++;
-            switch (cnt)
-            {
-                case 1:
-                    obj = new Expression<Element>(param, scriptContext);
-                    break;
-                case 2:
-                    delegateName = new Expression<string>(param, scriptContext);
-                    break;
-                default:
-                    paramExpressions.Add(new Expression<object>(param, scriptContext));
-                    break;
-            }
+            paramExpressions.Add(new Expression<object>(param, scriptContext));
         }
 
         return new RunDelegateScript(scriptContext, obj, delegateName, paramExpressions);
@@ -67,7 +52,7 @@ public class RunDelegateScript : ScriptBase
 
     protected override ScriptBase CloneScript()
     {
-        return new RunDelegateScript(_scriptContext, _appliesTo.Clone(), _delegate.Clone(), _parameters.Parameters);
+        return new RunDelegateScript(_scriptContext, _appliesTo.Clone(), _delegate.Clone(), _parameters.Parameters!);
     }
 
     public override async Task ExecuteAsync(Context c)
@@ -90,13 +75,13 @@ public class RunDelegateScript : ScriptBase
         var paramValues = new Parameters();
 
         var cnt = 0;
-        foreach (var f in _parameters.Parameters)
+        foreach (var f in _parameters.Parameters!)
         {
-            paramValues.Add((string) impl.Definition.Fields[FieldDefinitions.ParamNames][cnt], await f.ExecuteAsync(c));
+            paramValues.Add((string) impl.Definition.Fields[FieldDefinitions.ParamNames]![cnt]!, await f.ExecuteAsync(c));
             cnt++;
         }
 
-        await _worldModel.RunScriptAsync(impl.Implementation.Fields[FieldDefinitions.Script], paramValues, obj);
+        await _worldModel.RunScriptAsync(impl.Implementation.Fields[FieldDefinitions.Script]!, paramValues, obj);
     }
 
     public override string Save()
@@ -112,7 +97,7 @@ public class RunDelegateScript : ScriptBase
         return SaveScript("rundelegate", saveParameters.ToArray());
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         switch (index)
         {
@@ -127,15 +112,15 @@ public class RunDelegateScript : ScriptBase
         }
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
         switch (index)
         {
             case 0:
-                _appliesTo = new Expression<Element>((string) value, _scriptContext);
+                _appliesTo = new Expression<Element>((string) value!, _scriptContext);
                 break;
             case 1:
-                _delegate = new Expression<string>((string) value, _scriptContext);
+                _delegate = new Expression<string>((string) value!, _scriptContext);
                 break;
             case 2:
                 // any updates to the parameters should change the list itself - nothing should cause SetParameter to be triggered.

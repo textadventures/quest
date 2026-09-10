@@ -1,5 +1,4 @@
-﻿#nullable disable
-using QuestViva.Engine.Functions;
+﻿using QuestViva.Engine.Functions;
 
 namespace QuestViva.Engine.Scripts;
 
@@ -17,9 +16,9 @@ public class WhileScriptConstructor : IScriptConstructor
         return new WhileScript(scriptContext, ScriptFactory, new Expression<bool>(param, scriptContext), loopScript);
     }
 
-    public IScriptFactory ScriptFactory { get; set; }
+    public IScriptFactory ScriptFactory { get; set; } = null!;
 
-    public WorldModel WorldModel { get; set; }
+    public WorldModel WorldModel { get; set; } = null!;
 }
 
 public class WhileScript : ScriptBase
@@ -69,7 +68,7 @@ public class WhileScript : ScriptBase
         return SaveScript("while", _loopScript, _expression.Save());
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         switch (index)
         {
@@ -82,12 +81,12 @@ public class WhileScript : ScriptBase
         }
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
         switch (index)
         {
             case 0:
-                _expression = new Expression<bool>((string) value, _scriptContext);
+                _expression = new Expression<bool>((string) value!, _scriptContext);
                 break;
             case 1:
                 // any updates to the script should change the script itself - nothing should cause SetParameter to be triggered.

@@ -1,5 +1,4 @@
-﻿#nullable disable
-namespace QuestViva.Engine.Scripts;
+﻿namespace QuestViva.Engine.Scripts;
 
 public class CommentScriptConstructor : IScriptConstructor
 {
@@ -15,7 +14,7 @@ public class CommentScriptConstructor : IScriptConstructor
         set { }
     }
 
-    public WorldModel WorldModel { get; set; }
+    public WorldModel WorldModel { get; set; } = null!;
 }
 
 public class CommentScript : ScriptBase
@@ -45,14 +44,14 @@ public class CommentScript : ScriptBase
             _comment.Split(new[] {"\n"}, StringSplitOptions.RemoveEmptyEntries));
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         return _comment;
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
-        _comment = (string) value;
+        _comment = (string) value!;
     }
 
     public void AddLine(string line)

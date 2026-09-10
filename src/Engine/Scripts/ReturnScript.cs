@@ -1,5 +1,4 @@
-﻿#nullable disable
-using QuestViva.Engine.Functions;
+﻿using QuestViva.Engine.Functions;
 
 namespace QuestViva.Engine.Scripts;
 
@@ -54,13 +53,13 @@ public class ReturnScript : ScriptBase
         return SaveScript("return", _returnValue.Save());
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         return _returnValue.Save();
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
-        _returnValue = new ExpressionDynamic((string) value, _scriptContext);
+        _returnValue = new ExpressionDynamic((string) value!, _scriptContext);
     }
 }

@@ -1,5 +1,4 @@
-﻿#nullable disable
-using QuestViva.Engine.Functions;
+﻿using QuestViva.Engine.Functions;
 
 namespace QuestViva.Engine.Scripts;
 
@@ -7,7 +6,7 @@ public class SetScriptConstructor : IScriptConstructor
 {
     public string Keyword => "=";
 
-    public IScript Create(string script, ScriptContext scriptContext)
+    public IScript? Create(string script, ScriptContext scriptContext)
     {
         var isScript = false;
         var offset = 0;
@@ -76,11 +75,11 @@ public class SetScriptConstructor : IScriptConstructor
         return null;
     }
 
-    public IScriptFactory ScriptFactory { get; set; }
+    public IScriptFactory ScriptFactory { get; set; } = null!;
 
-    public WorldModel WorldModel { get; set; }
+    public WorldModel WorldModel { get; set; } = null!;
 
-    internal IFunction<Element> GetAppliesTo(ScriptContext scriptContext, string value, out string variable)
+    internal IFunction<Element>? GetAppliesTo(ScriptContext scriptContext, string value, out string variable)
     {
         value = value.Trim();
         var dotPos = value.LastIndexOf('.');
@@ -96,11 +95,12 @@ public class SetScriptConstructor : IScriptConstructor
 
 public abstract class SetScriptBase : ScriptBase
 {
-    private IFunction<Element> _appliesTo;
-    private string _property;
+    private IFunction<Element>? _appliesTo;
+    // Always assigned through Property in the constructor
+    private string _property = null!;
     protected ScriptContext _scriptContext;
 
-    internal SetScriptBase(SetScriptConstructor constructor, ScriptContext scriptContext, IFunction<Element> appliesTo,
+    internal SetScriptBase(SetScriptConstructor constructor, ScriptContext scriptContext, IFunction<Element>? appliesTo,
         string property)
     {
         Constructor = constructor;
@@ -110,7 +110,7 @@ public abstract class SetScriptBase : ScriptBase
         Property = property;
     }
 
-    protected IFunction<Element> AppliesTo
+    protected IFunction<Element>? AppliesTo
     {
         get => _appliesTo;
         private set
@@ -161,7 +161,7 @@ public abstract class SetScriptBase : ScriptBase
         return result;
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         switch (index)
         {
@@ -174,24 +174,24 @@ public abstract class SetScriptBase : ScriptBase
         }
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
         switch (index)
         {
             case 0:
                 string variable;
-                AppliesTo = Constructor.GetAppliesTo(_scriptContext, (string) value, out variable);
+                AppliesTo = Constructor.GetAppliesTo(_scriptContext, (string) value!, out variable);
                 Property = variable;
                 break;
             case 1:
-                SetValue((string) value);
+                SetValue((string) value!);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
     }
 
-    public override IEnumerable<string> GetDefinedVariables()
+    public override IEnumerable<string>? GetDefinedVariables()
     {
         if (AppliesTo == null)
         {
@@ -212,7 +212,7 @@ public class SetExpressionScript : SetScriptBase
     private Expression<object> _expr;
 
     public SetExpressionScript(SetScriptConstructor constructor, ScriptContext scriptContext,
-        IFunction<Element> appliesTo, string property, Expression<object> expr)
+        IFunction<Element>? appliesTo, string property, Expression<object> expr)
         : base(constructor, scriptContext, appliesTo, property)
     {
         _expr = expr;
@@ -240,7 +240,7 @@ public class SetExpressionScript : SetScriptBase
         else
         {
             // we're setting a local variable
-            c.Parameters[Property] = result;
+            c.Parameters![Property] = result;
         }
     }
 
@@ -265,7 +265,7 @@ public class SetScriptScript : SetScriptBase
     private readonly IScriptFactory _scriptFactory;
     private IScript _script;
 
-    public SetScriptScript(SetScriptConstructor constructor, ScriptContext scriptContext, IFunction<Element> appliesTo,
+    public SetScriptScript(SetScriptConstructor constructor, ScriptContext scriptContext, IFunction<Element>? appliesTo,
         string property, IScript script)
         : base(constructor, scriptContext, appliesTo, property)
     {
@@ -294,7 +294,7 @@ public class SetScriptScript : SetScriptBase
         else
         {
             // we're setting a local variable
-            c.Parameters[Property] = _script;
+            c.Parameters![Property] = _script;
         }
     }
 

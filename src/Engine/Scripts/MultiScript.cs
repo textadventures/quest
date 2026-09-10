@@ -1,5 +1,4 @@
-﻿#nullable disable
-namespace QuestViva.Engine.Scripts;
+﻿namespace QuestViva.Engine.Scripts;
 
 public interface IMultiScript : IScript
 {
@@ -15,7 +14,7 @@ public class MultiScript : ScriptBase, IScriptParent, IMultiScript
 {
     private readonly WorldModel _worldModel;
 
-    private ScriptFactory _scriptFactory;
+    private ScriptFactory? _scriptFactory;
     private List<IScript> _scripts;
 
     public MultiScript(WorldModel worldModel, params IScript[] scripts)
@@ -27,6 +26,7 @@ public class MultiScript : ScriptBase, IScriptParent, IMultiScript
     private MultiScript(WorldModel worldModel)
     {
         _worldModel = worldModel;
+        _scripts = [];
     }
 
     private ScriptFactory ScriptFactory
@@ -42,7 +42,7 @@ public class MultiScript : ScriptBase, IScriptParent, IMultiScript
         }
     }
 
-    public override string Keyword => null;
+    public override string? Keyword => null;
 
     public void Add(params IScript[] scripts)
     {
@@ -127,7 +127,7 @@ public class MultiScript : ScriptBase, IScriptParent, IMultiScript
         }
     }
 
-    public override string Line
+    public override string? Line
     {
         get
         {
@@ -159,7 +159,7 @@ public class MultiScript : ScriptBase, IScriptParent, IMultiScript
         return result;
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         throw new NotImplementedException();
     }
@@ -232,7 +232,7 @@ public class MultiScript : ScriptBase, IScriptParent, IMultiScript
         NotifyUpdate(script, index);
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
         throw new NotImplementedException();
     }

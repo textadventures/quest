@@ -1,11 +1,10 @@
-﻿#nullable disable
-namespace QuestViva.Engine.Scripts;
+﻿namespace QuestViva.Engine.Scripts;
 
 public abstract class ScriptConstructorBase : IScriptConstructor
 {
     protected abstract int[] ExpectedParameters { get; }
 
-    protected abstract IScript CreateInt(List<string> parameters, ScriptContext scriptContext);
+    protected abstract IScript? CreateInt(List<string> parameters, ScriptContext scriptContext);
 
     private string FormatExpectedParameters()
     {
@@ -22,9 +21,9 @@ public abstract class ScriptConstructorBase : IScriptConstructor
 
     public abstract string Keyword { get; }
 
-    public IScript Create(string script, ScriptContext scriptContext)
+    public IScript? Create(string script, ScriptContext scriptContext)
     {
-        List<string> parameters = null;
+        List<string>? parameters = null;
         var param = Utility.GetParameter(script);
 
         int numParams;
@@ -47,12 +46,13 @@ public abstract class ScriptConstructorBase : IScriptConstructor
             }
         }
 
-        return CreateInt(parameters, scriptContext);
+        // Only null if the script had no parameter list at all, which ExpectedParameters has to allow
+        return CreateInt(parameters!, scriptContext);
     }
 
-    public IScriptFactory ScriptFactory { get; set; }
+    public IScriptFactory ScriptFactory { get; set; } = null!;
 
-    public WorldModel WorldModel { get; set; }
+    public WorldModel WorldModel { get; set; } = null!;
 
     #endregion
 }

@@ -1,5 +1,4 @@
-﻿#nullable disable
-using System.Collections;
+﻿using System.Collections;
 using QuestViva.Engine.Functions;
 
 namespace QuestViva.Engine.Scripts;
@@ -26,9 +25,9 @@ public class ForEachScriptConstructor : IScriptConstructor
             loopScript);
     }
 
-    public IScriptFactory ScriptFactory { get; set; }
+    public IScriptFactory ScriptFactory { get; set; } = null!;
 
-    public WorldModel WorldModel { get; set; }
+    public WorldModel WorldModel { get; set; } = null!;
 }
 
 public class ForEachScript : ScriptBase
@@ -56,7 +55,7 @@ public class ForEachScript : ScriptBase
     public override async Task ExecuteAsync(Context c)
     {
         var result = await _list.ExecuteAsync(c);
-        IEnumerable resultList = null;
+        IEnumerable? resultList = null;
 
         // Cannot foreach over strings as of Quest 5.3, as the Char data type is not supported (retained functionality
         // for pre-5.3 to prevent breaking existing scripts)
@@ -81,7 +80,7 @@ public class ForEachScript : ScriptBase
 
         foreach (var variable in resultList)
         {
-            c.Parameters[_variable] = variable;
+            c.Parameters![_variable] = variable;
             await _loopScript.ExecuteAsync(c);
             if (c.IsReturned)
             {
@@ -95,7 +94,7 @@ public class ForEachScript : ScriptBase
         return SaveScript("foreach", _loopScript, _variable, _list.Save());
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         switch (index)
         {
@@ -110,15 +109,15 @@ public class ForEachScript : ScriptBase
         }
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
         switch (index)
         {
             case 0:
-                _variable = (string) value;
+                _variable = (string) value!;
                 break;
             case 1:
-                _list = new ExpressionDynamic((string) value, _scriptContext);
+                _list = new ExpressionDynamic((string) value!, _scriptContext);
                 break;
             case 2:
                 throw new InvalidOperationException(

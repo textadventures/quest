@@ -1,5 +1,4 @@
-﻿#nullable disable
-using QuestViva.Engine.Functions;
+﻿using QuestViva.Engine.Functions;
 
 /*
  * This script command is an alternative to request (Speak, "some text"), and is added as part of deprecating
@@ -59,13 +58,13 @@ public class RequestSpeakScript : ScriptBase
         return SaveScript("requestspeak", _function.Save());
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         return _function.Save();
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
-        _function = new ExpressionDynamic((string) value, _scriptContext);
+        _function = new ExpressionDynamic((string) value!, _scriptContext);
     }
 }

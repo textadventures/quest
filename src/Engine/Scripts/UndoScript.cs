@@ -1,5 +1,4 @@
-﻿#nullable disable
-using QuestViva.Engine.Functions;
+﻿using QuestViva.Engine.Functions;
 
 namespace QuestViva.Engine.Scripts;
 
@@ -44,12 +43,12 @@ public class UndoScript : ScriptBase
         return "undo";
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         throw new ArgumentOutOfRangeException();
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
         throw new ArgumentOutOfRangeException();
     }
@@ -100,13 +99,13 @@ public class StartTransactionScript : ScriptBase
         return SaveScript("start transaction", _command.Save());
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         return _command.Save();
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
-        _command = new Expression<string>((string) value, _scriptContext);
+        _command = new Expression<string>((string) value!, _scriptContext);
     }
 }

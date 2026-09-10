@@ -1,5 +1,4 @@
-﻿#nullable disable
-namespace QuestViva.Engine.Scripts;
+﻿namespace QuestViva.Engine.Scripts;
 
 internal class DelegateImplementation
 {
@@ -19,6 +18,6 @@ internal class DelegateImplementation
     public override string ToString()
     {
         var script = Implementation.Fields[FieldDefinitions.Script];
-        return script == null ? string.Empty : script.ToString();
+        return script?.ToString() ?? string.Empty;
     }
 }

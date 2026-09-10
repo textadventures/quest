@@ -1,5 +1,4 @@
-﻿#nullable disable
-namespace QuestViva.Engine.Scripts;
+﻿namespace QuestViva.Engine.Scripts;
 
 internal class FailedScript : ScriptBase
 {
@@ -27,17 +26,17 @@ internal class FailedScript : ScriptBase
         return _script;
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
         if (index != 0)
         {
             throw new ArgumentOutOfRangeException();
         }
 
-        _script = (string) value;
+        _script = (string) value!;
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         if (index != 0)
         {

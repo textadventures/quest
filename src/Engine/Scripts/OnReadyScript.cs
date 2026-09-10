@@ -1,5 +1,4 @@
-﻿#nullable disable
-namespace QuestViva.Engine.Scripts;
+﻿namespace QuestViva.Engine.Scripts;
 
 public class OnReadyScriptConstructor : IScriptConstructor
 {
@@ -12,9 +11,9 @@ public class OnReadyScriptConstructor : IScriptConstructor
         return new OnReadyScript(scriptContext, ScriptFactory, callbackScript);
     }
 
-    public IScriptFactory ScriptFactory { get; set; }
+    public IScriptFactory ScriptFactory { get; set; } = null!;
 
-    public WorldModel WorldModel { get; set; }
+    public WorldModel WorldModel { get; set; } = null!;
 }
 
 public class OnReadyScript : ScriptBase
@@ -49,7 +48,7 @@ public class OnReadyScript : ScriptBase
         return SaveScript("on ready", _callbackScript);
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         switch (index)
         {
@@ -60,7 +59,7 @@ public class OnReadyScript : ScriptBase
         }
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
         switch (index)
         {

@@ -1282,7 +1282,7 @@ public class LazyFields
             var newDictionary = new QuestDictionary<Element>();
             foreach (var kvp in objDictionary.Dictionary)
             {
-                newDictionary.Add(kvp.Key, _worldModel.Elements.Get(kvp.Value));
+                newDictionary.Add(kvp.Key, _worldModel.Elements.Get(kvp.Value!));
             }
 
             replacement = newDictionary;

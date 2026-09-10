@@ -103,7 +103,7 @@ public class ShowMenuScript : ScriptBase
             _worldModel.SignalCallbackResolving();
             if (response != null)
                 await _worldModel.PrintAsync(" - " + optionsDictionary[response]);
-            c.Parameters["result"] = response;
+            c.Parameters!["result"] = response;
             await _worldModel.RunScriptAsync(_callbackScript, c);
         }
         catch (OperationCanceledException) { }
@@ -121,7 +121,7 @@ public class ShowMenuScript : ScriptBase
         return SaveScript("show menu", _callbackScript, _caption.Save(), _options.Save(), _allowCancel.Save());
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         switch (index)
         {
@@ -138,18 +138,18 @@ public class ShowMenuScript : ScriptBase
         }
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
         switch (index)
         {
             case 0:
-                _caption = new Expression<string>((string) value, _scriptContext);
+                _caption = new Expression<string>((string) value!, _scriptContext);
                 break;
             case 1:
-                _options = new ExpressionDynamic((string) value, _scriptContext);
+                _options = new ExpressionDynamic((string) value!, _scriptContext);
                 break;
             case 2:
-                _allowCancel = new Expression<bool>((string) value, _scriptContext);
+                _allowCancel = new Expression<bool>((string) value!, _scriptContext);
                 break;
             case 3:
                 throw new InvalidOperationException(

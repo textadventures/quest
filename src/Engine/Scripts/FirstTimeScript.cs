@@ -1,5 +1,4 @@
-﻿#nullable disable
-namespace QuestViva.Engine.Scripts;
+﻿namespace QuestViva.Engine.Scripts;
 
 internal interface IFirstTimeScript
 {
@@ -20,9 +19,9 @@ public class FirstTimeScriptConstructor : IScriptConstructor
         return new FirstTimeScript(WorldModel, ScriptFactory, firstTimeScript);
     }
 
-    public IScriptFactory ScriptFactory { get; set; }
+    public IScriptFactory ScriptFactory { get; set; } = null!;
 
-    public WorldModel WorldModel { get; set; }
+    public WorldModel WorldModel { get; set; } = null!;
 
     public static void AddOtherwiseScript(IScript firstTimeScript, string script, IScriptFactory scriptFactory)
     {
@@ -40,7 +39,7 @@ public class FirstTimeScript : ScriptBase, IFirstTimeScript
     private readonly IScriptFactory _scriptFactory;
     private readonly WorldModel _worldModel;
     private bool _hasRun;
-    private IScript _otherwiseScript;
+    private IScript? _otherwiseScript;
 
     public FirstTimeScript(WorldModel worldModel, IScriptFactory scriptFactory, IScript firstTimeScript)
     {
@@ -110,7 +109,7 @@ public class FirstTimeScript : ScriptBase, IFirstTimeScript
         return _otherwiseScript.Save();
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         switch (index)
         {
@@ -123,7 +122,7 @@ public class FirstTimeScript : ScriptBase, IFirstTimeScript
         }
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
         switch (index)
         {
@@ -132,7 +131,7 @@ public class FirstTimeScript : ScriptBase, IFirstTimeScript
                 throw new InvalidOperationException(
                     "Attempt to use SetParameter to change the script of a 'firsttime' script");
             case 1:
-                _otherwiseScript = (IScript) value;
+                _otherwiseScript = (IScript) value!;
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

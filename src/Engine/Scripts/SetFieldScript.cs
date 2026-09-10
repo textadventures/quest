@@ -1,5 +1,4 @@
-﻿#nullable disable
-using QuestViva.Engine.Functions;
+﻿using QuestViva.Engine.Functions;
 
 namespace QuestViva.Engine.Scripts;
 
@@ -55,7 +54,7 @@ public class SetFieldScript : ScriptBase
         return SaveScript("set", _obj.Save(), _field.Save(), _value.Save());
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         switch (index)
         {
@@ -70,18 +69,18 @@ public class SetFieldScript : ScriptBase
         }
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
         switch (index)
         {
             case 0:
-                _obj = new Expression<Element>((string) value, _scriptContext);
+                _obj = new Expression<Element>((string) value!, _scriptContext);
                 break;
             case 1:
-                _field = new Expression<string>((string) value, _scriptContext);
+                _field = new Expression<string>((string) value!, _scriptContext);
                 break;
             case 2:
-                _value = new Expression<object>((string) value, _scriptContext);
+                _value = new Expression<object>((string) value!, _scriptContext);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

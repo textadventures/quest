@@ -1,5 +1,4 @@
-﻿#nullable disable
-using QuestViva.Engine.Functions;
+﻿using QuestViva.Engine.Functions;
 
 namespace QuestViva.Engine.Scripts;
 // We store the parameters internally as a QuestList<string>, so we can edit them in the Editor
@@ -10,7 +9,7 @@ namespace QuestViva.Engine.Scripts;
 // a game there is no mechanism for modifying a script command.
 internal class FunctionCallParameters
 {
-    public FunctionCallParameters(WorldModel worldModel, IList<IFunction<object>> parameters)
+    public FunctionCallParameters(WorldModel worldModel, IList<IFunction<object>>? parameters)
     {
         Parameters = parameters;
 
@@ -34,7 +33,7 @@ internal class FunctionCallParameters
         }
     }
 
-    public IList<IFunction<object>> Parameters { get; }
+    public IList<IFunction<object>>? Parameters { get; }
 
     public QuestList<string> ParametersAsQuestList { get; } = new();
 }

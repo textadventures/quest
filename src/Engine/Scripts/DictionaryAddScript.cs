@@ -1,5 +1,4 @@
-﻿#nullable disable
-using System.Collections;
+﻿using System.Collections;
 using QuestViva.Engine.Functions;
 
 namespace QuestViva.Engine.Scripts;
@@ -66,7 +65,7 @@ public class DictionaryAddScript : ScriptBase
         return SaveScript("dictionary add", _dictionary.Save(), _key.Save(), _value.Save());
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         switch (index)
         {
@@ -81,18 +80,18 @@ public class DictionaryAddScript : ScriptBase
         }
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
         switch (index)
         {
             case 0:
-                _dictionary = new ExpressionDynamic((string) value, _scriptContext);
+                _dictionary = new ExpressionDynamic((string) value!, _scriptContext);
                 break;
             case 1:
-                _key = new Expression<string>((string) value, _scriptContext);
+                _key = new Expression<string>((string) value!, _scriptContext);
                 break;
             case 2:
-                _value = new Expression<object>((string) value, _scriptContext);
+                _value = new Expression<object>((string) value!, _scriptContext);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -158,7 +157,7 @@ public class DictionaryRemoveScript : ScriptBase
         return SaveScript("dictionary remove", _dictionary.Save(), _key.Save());
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         switch (index)
         {
@@ -171,15 +170,15 @@ public class DictionaryRemoveScript : ScriptBase
         }
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
         switch (index)
         {
             case 0:
-                _dictionary = new ExpressionDynamic((string) value, _scriptContext);
+                _dictionary = new ExpressionDynamic((string) value!, _scriptContext);
                 break;
             case 1:
-                _key = new Expression<string>((string) value, _scriptContext);
+                _key = new Expression<string>((string) value!, _scriptContext);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

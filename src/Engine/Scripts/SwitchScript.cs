@@ -1,5 +1,4 @@
-﻿#nullable disable
-using QuestViva.Engine.Functions;
+﻿using QuestViva.Engine.Functions;
 
 namespace QuestViva.Engine.Scripts;
 
@@ -11,17 +10,17 @@ public class SwitchScriptConstructor : IScriptConstructor
     {
         string afterExpr;
         var param = Utility.GetParameter(script, out afterExpr);
-        IScript defaultScript;
+        IScript? defaultScript;
         var cases = ProcessCases(Utility.GetScript(afterExpr), out defaultScript, scriptContext);
 
         return new SwitchScript(scriptContext, new ExpressionDynamic(param, scriptContext), cases, defaultScript);
     }
 
-    public IScriptFactory ScriptFactory { get; set; }
+    public IScriptFactory ScriptFactory { get; set; } = null!;
 
-    public WorldModel WorldModel { get; set; }
+    public WorldModel WorldModel { get; set; } = null!;
 
-    private Dictionary<IFunctionDynamic, IScript> ProcessCases(string cases, out IScript defaultScript,
+    private Dictionary<IFunctionDynamic, IScript> ProcessCases(string cases, out IScript? defaultScript,
         ScriptContext scriptContext)
     {
         var finished = false;
@@ -90,17 +89,18 @@ public class SwitchScript : ScriptBase
     private readonly IScript _default;
     private readonly ScriptContext _scriptContext;
     private readonly WorldModel _worldModel;
-    private SwitchCases _cases;
+    // Assigned straight after construction, by the public constructor and by CloneScript
+    private SwitchCases _cases = null!;
     private IFunctionDynamic _expr;
 
     public SwitchScript(ScriptContext scriptContext, IFunctionDynamic expression,
-        Dictionary<IFunctionDynamic, IScript> cases, IScript defaultScript)
+        Dictionary<IFunctionDynamic, IScript> cases, IScript? defaultScript)
         : this(scriptContext, expression, defaultScript)
     {
         _cases = new SwitchCases(this, cases);
     }
 
-    private SwitchScript(ScriptContext scriptContext, IFunctionDynamic expression, IScript defaultScript)
+    private SwitchScript(ScriptContext scriptContext, IFunctionDynamic expression, IScript? defaultScript)
     {
         _scriptContext = scriptContext;
         _worldModel = scriptContext.WorldModel;
@@ -142,7 +142,7 @@ public class SwitchScript : ScriptBase
         return result;
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         switch (index)
         {
@@ -157,12 +157,12 @@ public class SwitchScript : ScriptBase
         }
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
         switch (index)
         {
             case 0:
-                _expr = new ExpressionDynamic((string) value, _scriptContext);
+                _expr = new ExpressionDynamic((string) value!, _scriptContext);
                 break;
             case 1:
                 // any updates to the cases should change the scriptdictionary itself - nothing should cause SetParameter to be triggered.

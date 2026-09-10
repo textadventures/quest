@@ -1,5 +1,4 @@
-﻿#nullable disable
-namespace QuestViva.Engine.Scripts;
+﻿namespace QuestViva.Engine.Scripts;
 
 public class GetInputScriptConstructor : IScriptConstructor
 {
@@ -12,9 +11,9 @@ public class GetInputScriptConstructor : IScriptConstructor
         return new GetInputScript(scriptContext, ScriptFactory, callbackScript);
     }
 
-    public IScriptFactory ScriptFactory { get; set; }
+    public IScriptFactory ScriptFactory { get; set; } = null!;
 
-    public WorldModel WorldModel { get; set; }
+    public WorldModel WorldModel { get; set; } = null!;
 }
 
 public class GetInputScript : ScriptBase
@@ -54,11 +53,11 @@ public class GetInputScript : ScriptBase
         var resolved = false;
         try
         {
-            var result = await _worldModel._commandInputTcs.Task;
+            var result = await _worldModel._commandInputTcs!.Task;
             resolved = true;
             _worldModel.SignalCallbackResolving();
             _worldModel._commandOverride = false;
-            c.Parameters["result"] = result;
+            c.Parameters!["result"] = result;
             await _worldModel.RunScriptAsync(_callbackScript, c);
         }
         catch (OperationCanceledException) { }
@@ -76,7 +75,7 @@ public class GetInputScript : ScriptBase
         return SaveScript("get input", _callbackScript);
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         switch (index)
         {
@@ -87,7 +86,7 @@ public class GetInputScript : ScriptBase
         }
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
         switch (index)
         {

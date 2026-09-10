@@ -72,7 +72,7 @@ public interface IPlayer
     void SetFont(string fontName);
     void SetFontSize(string fontSize);
     void Speak(string text);
-    void RequestSave(string html);
+    void RequestSave(string? html);
     void Show(string element);
     void Hide(string element);
     void SetCompassDirections(IEnumerable<string> dirs);

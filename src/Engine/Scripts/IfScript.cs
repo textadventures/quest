@@ -1,5 +1,4 @@
-﻿#nullable disable
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using QuestViva.Engine.Functions;
 
 namespace QuestViva.Engine.Scripts;
@@ -8,10 +7,10 @@ public interface IIfScript : IScript
 {
     IFunction<bool> Expression { get; }
     IScript ThenScript { get; set; }
-    IScript ElseScript { get; }
+    IScript? ElseScript { get; }
     IList<IElseIfScript> ElseIfScripts { get; }
     string ExpressionString { get; set; }
-    void SetElse(IScript elseScript);
+    void SetElse(IScript? elseScript);
     IElseIfScript AddElseIf(string expression, IScript script);
     IElseIfScript AddElseIf(IFunction<bool> expression, IScript script);
     event EventHandler<IfScriptUpdatedEventArgs> IfScriptUpdated;
@@ -77,9 +76,9 @@ public class IfScriptConstructor : IScriptConstructor
         return new IfScript(new Expression<bool>(expr, scriptContext), thenScript, scriptContext);
     }
 
-    public IScriptFactory ScriptFactory { get; set; }
+    public IScriptFactory ScriptFactory { get; set; } = null!;
 
-    public WorldModel WorldModel { get; set; }
+    public WorldModel WorldModel { get; set; } = null!;
 
     #endregion
 }
@@ -99,7 +98,7 @@ public class IfScript : ScriptBase, IIfScript
     {
     }
 
-    public IfScript(IFunction<bool> expression, IScript thenScript, IScript elseScript, ScriptContext scriptContext)
+    public IfScript(IFunction<bool> expression, IScript thenScript, IScript? elseScript, ScriptContext scriptContext)
     {
         Expression = expression;
         ThenScript = thenScript;
@@ -108,9 +107,9 @@ public class IfScript : ScriptBase, IIfScript
         _worldModel = scriptContext.WorldModel;
     }
 
-    public event EventHandler<IfScriptUpdatedEventArgs> IfScriptUpdated;
+    public event EventHandler<IfScriptUpdatedEventArgs>? IfScriptUpdated;
 
-    public void SetElse(IScript elseScript)
+    public void SetElse(IScript? elseScript)
     {
         if (UndoLog != null)
         {
@@ -179,7 +178,7 @@ public class IfScript : ScriptBase, IIfScript
         get => Expression.Save();
         set
         {
-            UndoLog.AddUndoAction(() => new UndoChangeExpression(this, Expression.Save(), value));
+            UndoLog!.AddUndoAction(() => new UndoChangeExpression(this, Expression.Save(), value));
             SetExpressionSilent(value);
         }
     }
@@ -188,7 +187,7 @@ public class IfScript : ScriptBase, IIfScript
 
     public IScript ThenScript { get; set; }
 
-    public IScript ElseScript { get; private set; }
+    public IScript? ElseScript { get; private set; }
 
     protected override ScriptBase CloneScript()
     {
@@ -204,7 +203,7 @@ public class IfScript : ScriptBase, IIfScript
         return clone;
     }
 
-    private void SetElseSilent(IScript elseScript)
+    private void SetElseSilent(IScript? elseScript)
     {
         ElseScript = elseScript;
 
@@ -275,7 +274,7 @@ public class IfScript : ScriptBase, IIfScript
             get => Expression.Save();
             set
             {
-                _parent.UndoLog.AddUndoAction(() => new UndoChangeExpression(this, Expression.Save(), value));
+                _parent.UndoLog!.AddUndoAction(() => new UndoChangeExpression(this, Expression.Save(), value));
                 SetExpressionSilent(value);
             }
         }
@@ -294,10 +293,10 @@ public class IfScript : ScriptBase, IIfScript
 
     private class UndoChangeExpression : UndoLogger.IUndoAction
     {
-        private readonly ElseIfScript _elseIfScript;
+        private readonly ElseIfScript? _elseIfScript;
         private readonly string _newValue;
         private readonly string _oldValue;
-        private readonly IfScript _script;
+        private readonly IfScript? _script;
 
         private UndoChangeExpression(string oldValue, string newValue)
         {
@@ -351,12 +350,12 @@ public class IfScript : ScriptBase, IIfScript
     private class UndoSetElse : UndoLogger.IUndoAction
     {
         private readonly bool _newHasElse;
-        private readonly IScript _newValue;
+        private readonly IScript? _newValue;
         private readonly bool _oldHasElse;
-        private readonly IScript _oldValue;
+        private readonly IScript? _oldValue;
         private readonly IfScript _script;
 
-        public UndoSetElse(IfScript script, IScript oldValue, IScript newValue, bool oldHasElse, bool newHasElse)
+        public UndoSetElse(IfScript script, IScript? oldValue, IScript? newValue, bool oldHasElse, bool newHasElse)
         {
             _script = script;
             _oldValue = oldValue;
@@ -471,7 +470,7 @@ public class IfScript : ScriptBase, IIfScript
 
     public override string Keyword => "if";
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         switch (index)
         {
@@ -486,7 +485,7 @@ public class IfScript : ScriptBase, IIfScript
         }
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
         throw new NotImplementedException();
     }
@@ -516,5 +515,5 @@ public class IfScriptUpdatedEventArgs : EventArgs
     }
 
     public IfScriptUpdatedEventType EventType { get; private set; }
-    public IElseIfScript Data { get; private set; }
+    public IElseIfScript? Data { get; private set; }
 }

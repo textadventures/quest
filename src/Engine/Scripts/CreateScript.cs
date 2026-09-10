@@ -1,5 +1,4 @@
-﻿#nullable disable
-using QuestViva.Engine.Functions;
+﻿using QuestViva.Engine.Functions;
 
 namespace QuestViva.Engine.Scripts;
 
@@ -12,7 +11,7 @@ public class CreateScriptConstructor : ScriptConstructorBase
         get { return new[] {1, 2}; }
     }
 
-    protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
+    protected override IScript? CreateInt(List<string> parameters, ScriptContext scriptContext)
     {
         switch (parameters.Count)
         {
@@ -32,7 +31,7 @@ public class CreateScript : ScriptBase
     private readonly ScriptContext _scriptContext;
     private readonly WorldModel _worldModel;
     private IFunction<string> _expr;
-    private IFunction<string> _type;
+    private IFunction<string>? _type;
 
     public CreateScript(ScriptContext scriptContext, IFunction<string> expr)
     {
@@ -82,7 +81,7 @@ public class CreateScript : ScriptBase
         return SaveScript("create", _expr.Save(), _type.Save());
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         switch (index)
         {
@@ -95,12 +94,12 @@ public class CreateScript : ScriptBase
         }
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
         switch (index)
         {
             case 0:
-                _expr = new Expression<string>((string) value, _scriptContext);
+                _expr = new Expression<string>((string) value!, _scriptContext);
                 break;
             case 1:
                 _type = value == null ? null : new Expression<string>((string) value, _scriptContext);
@@ -120,7 +119,7 @@ public class CreateExitScriptConstructor : ScriptConstructorBase
         get { return new[] {3, 4, 5}; }
     }
 
-    protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
+    protected override IScript? CreateInt(List<string> parameters, ScriptContext scriptContext)
     {
         switch (parameters.Count)
         {
@@ -150,8 +149,8 @@ public class CreateExitScript : ScriptBase
     private readonly ScriptContext _scriptContext;
     private readonly WorldModel _worldModel;
     private IFunction<Element> _from;
-    private IFunction<string> _id;
-    private IFunction<string> _initialType;
+    private IFunction<string>? _id;
+    private IFunction<string>? _initialType;
     private IFunction<string> _name;
     private IFunction<Element> _to;
 
@@ -219,7 +218,7 @@ public class CreateExitScript : ScriptBase
         return SaveScript("create exit", _id.Save(), _name.Save(), _from.Save(), _to.Save(), _initialType.Save());
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         switch (index)
         {
@@ -238,7 +237,7 @@ public class CreateExitScript : ScriptBase
         }
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
         switch (index)
         {
@@ -246,13 +245,13 @@ public class CreateExitScript : ScriptBase
                 _id = value == null ? null : new Expression<string>((string) value, _scriptContext);
                 break;
             case 1:
-                _name = new Expression<string>((string) value, _scriptContext);
+                _name = new Expression<string>((string) value!, _scriptContext);
                 break;
             case 2:
-                _from = new Expression<Element>((string) value, _scriptContext);
+                _from = new Expression<Element>((string) value!, _scriptContext);
                 break;
             case 3:
-                _to = new Expression<Element>((string) value, _scriptContext);
+                _to = new Expression<Element>((string) value!, _scriptContext);
                 break;
             case 4:
                 _initialType = value == null ? null : new Expression<string>((string) value, _scriptContext);
@@ -309,14 +308,14 @@ public class CreateTimerScript : ScriptBase
         return SaveScript("create timer", _expr.Save());
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         return _expr.Save();
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
-        _expr = new Expression<string>((string) value, _scriptContext);
+        _expr = new Expression<string>((string) value!, _scriptContext);
     }
 }
 
@@ -365,13 +364,13 @@ public class CreateTurnScript : ScriptBase
         return SaveScript("create turnscript", _expr.Save());
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         return _expr.Save();
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
-        _expr = new Expression<string>((string) value, _scriptContext);
+        _expr = new Expression<string>((string) value!, _scriptContext);
     }
 }
