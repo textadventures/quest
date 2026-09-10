@@ -224,9 +224,63 @@ See [Types](/advanced-topics/about-types).
 <game name="name">properties</game>
 ```
 
-Defines the name of the game and any global properties.
+Defines the game and its global properties. Every ASLX file has exactly one `<game>` element.
 
-Game attributes handled by Core.aslx:
+### Bibliographic metadata
+
+These fields describe the game for players and catalogues. Most are optional; new games created in the editor are given a `gameid`, `version`, `versioncode`, and `firstpublished` automatically. You can edit them on the game's **Setup** tab.
+
+```xml
+<game name="Cloak of Darkness">
+  <subtitle>A basic IF sample</subtitle>
+  <author>The Pixie</author>
+  <version>1.0</version>
+  <versioncode type="int">1</versioncode>
+  <gameid>18ad63b5-78e2-4846-872b-9177d78cc5e6</gameid>
+  <category>Fantasy</category>
+  <firstpublished>2018</firstpublished>
+  <cover>cover.png</cover>
+  <description>From the specification here:...</description>
+</game>
+```
+
+**name** (XML attribute)  
+The title of the game. Written as the `name` attribute on the `<game>` tag, but stored internally as `gamename` (`game.gamename`). It appears on the title screen (when `showtitle` is enabled), in the `version` command output, and as the default transcript name.
+
+**subtitle**  
+An optional secondary title, shown under the game name on the title screen.
+
+**author**  
+The author's name. Shown on the title screen (when `showtitle` is enabled) and by the `version` command.
+
+**version**  
+A free-form version string for display (for example `"1.0"` or `"1.2-beta"`). Shown by the `version` command.
+
+**versioncode**  
+A non-negative integer version number (`type="int"`). Use `version` for the human-readable label and `versioncode` for a number that tools and catalogues can compare. Bump `versioncode` whenever you publish a new release.
+
+**gameid**  
+A unique identifier for the game, also known as an "IFID" under the [Treaty of Babel](https://babel.ifarchive.org/). Stored as a UUID string (for example `18ad63b5-78e2-4846-872b-9177d78cc5e6`). The editor creates one when you start a new game. Keep the same `gameid` across updates of the same game; only generate a new one if you have copied a game to create a different game. The `version` command displays this as the IFID.
+
+**category**  
+A genre or category string used when listing the game (for example `Fantasy`, `Mystery`, `Puzzle`). The editor offers a dropdown of common values, but any string is allowed.
+
+**firstpublished**  
+The year the game was first released, typically a four-digit year such as `2018`.
+
+**cover**  
+The filename of the cover image, relative to the game folder (for example `cover.png`). Recommended format is a 512×512 PNG.
+
+**description**  
+A plain text blurb describing the game for catalogues and listings. This is not the same as an object's [description](/attributes#description) attribute (which describes a room or item in play).
+
+**difficulty** (legacy)  
+A difficulty rating string. Typical values were `Easy`, `Medium`, `Hard`, and `Very Hard`. Removed from the editor in Quest 5.6.2; still present in some older games.
+
+**cruelty** (legacy)  
+A [Zarfian cruelty scale](https://www.ifwiki.org/Cruelty_scale) rating. Typical values were `Merciful`, `Polite`, `Tough`, `Nasty`, and `Cruel`. Removed from the editor in Quest 5.6.2; still present in some older games.
+
+### Game attributes handled by Core.aslx:
 
 -   [allobjects](/attributes#allobjects)
 -   [appendobjectdescription](/attributes#appendobjectdescription)
@@ -251,7 +305,6 @@ Game attributes handled by Core.aslx:
 -   [defaultforeground](/attributes#defaultforeground)
 -   [defaultlinkforeground](/attributes#defaultlinkforeground)
 -   [defaultwebfont](/attributes#defaultwebfont)
--   [description](/attributes#description)
 -   [displayroomdescriptiononstart](/attributes#displayroomdescriptiononstart)
 -   [echohyperlinks](/attributes#echohyperlinks)
 -   [enablehyperlinks](/attributes#enablehyperlinks)
