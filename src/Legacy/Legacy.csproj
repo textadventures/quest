@@ -3,6 +3,13 @@
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
+        <!--
+            Nullable is deliberately disabled here. Legacy is frozen compatibility code for Quest 4 and
+            earlier games (converted VB6 -> VB.NET -> C#) with little test coverage: the e2e game corpus
+            has no .asl/.cas games. Callers already get annotated types through Common's IGame and IPlayer
+            interfaces. If a file gets real feature work, opt just that file in with #nullable enable
+            rather than enabling it for the whole project.
+        -->
         <Nullable>disable</Nullable>
         <RootNamespace>QuestViva.Legacy</RootNamespace>
         <IsAotCompatible>true</IsAotCompatible>

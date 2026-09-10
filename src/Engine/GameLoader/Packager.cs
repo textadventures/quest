@@ -7,8 +7,8 @@ internal class Packager(WorldModel worldModel)
 {
     private readonly WorldModel _worldModel = worldModel;
 
-    public bool CreatePackage(string filename, bool includeWalkthrough, out string error,
-        IEnumerable<WorldModel.PackageIncludeFile> includeFiles, Stream outputStream)
+    public bool CreatePackage(string? filename, bool includeWalkthrough, out string error,
+        IEnumerable<WorldModel.PackageIncludeFile>? includeFiles, Stream? outputStream)
     {
         error = string.Empty;
 
@@ -37,8 +37,9 @@ internal class Packager(WorldModel worldModel)
             }
             else
             {
-                // Caller owns outputStream — do not dispose it.
-                WriteZip(outputStream, data, ifidBrand, ifiction, includeFileList);
+                // Caller owns outputStream — do not dispose it. Callers pass one whenever they
+                // don't pass a filename.
+                WriteZip(outputStream!, data, ifidBrand, ifiction, includeFileList);
             }
         }
         catch (Exception ex)

@@ -95,7 +95,7 @@ internal class EditorData : IEditorDataExtendedAttributeInfo
 
         if (attribute == "name")
         {
-            _controller.UpdateDictionariesReferencingRenamedObject(oldName, (string) value!);
+            _controller.UpdateDictionariesReferencingRenamedObject(oldName!, (string) value!);
         }
 
         return new ValidationResult {Valid = true};

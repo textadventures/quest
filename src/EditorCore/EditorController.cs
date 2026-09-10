@@ -1,5 +1,5 @@
-﻿#nullable disable
-using System.Collections;
+﻿using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using System.Xml;
 using QuestViva.Common;
@@ -46,14 +46,14 @@ public struct ValidationResult
 {
     public bool Valid;
     public ValidationMessage Message;
-    public string MessageData;
-    public string SuggestedName;
+    public string? MessageData;
+    public string? SuggestedName;
 }
 
 public class TemplateData
 {
-    public string TemplateName { get; set; }
-    public string ResourceName { get; set; }
+    public required string TemplateName { get; set; }
+    public required string ResourceName { get; set; }
     public EditorStyle Type { get; set; }
 }
 
@@ -126,17 +126,20 @@ public sealed class EditorController : IDisposable
     private readonly Regex _startsWithNumberRegex = new(@"^\d");
 
     private readonly Regex _validNameRegex = new(@"^[\w ]+$");
-    private List<Element> _clipboardElements;
+    private List<Element>? _clipboardElements;
     private ElementType _clipboardElementType;
-    private List<IScript> _clipboardScripts;
-    private Dictionary<ElementType, TreeHeader> _elementTreeStructure;
+    private List<IScript>? _clipboardScripts;
+    // Set by InitialiseTreeStructure, which UpdateTree runs before anything reads the tree
+    private Dictionary<ElementType, TreeHeader> _elementTreeStructure = null!;
     private FilterOptions _filterOptions;
-    private FontsManager _fontsManager;
+    private FontsManager? _fontsManager;
     private bool _initialised;
     private bool _lastelementscutout;
-    private ScriptFactory _scriptFactory;
+    // Set by Initialise
+    private ScriptFactory _scriptFactory = null!;
     private bool _simpleMode;
-    private Dictionary<string, string> _treeTitles;
+    // Set by InitialiseTreeStructure, as for _elementTreeStructure
+    private Dictionary<string, string> _treeTitles = null!;
 
     public EditorController()
     {
@@ -153,17 +156,20 @@ public sealed class EditorController : IDisposable
 
     public AvailableFilters AvailableFilters { get; }
 
-    public string GameName => WorldModel.Game.Fields.GetString("gamename");
+    public string? GameName => WorldModel.Game.Fields.GetString("gamename");
 
-    public string GameId => WorldModel.GameID;
+    public string? GameId => WorldModel.GameID;
 
-    internal EditableScriptFactory ScriptFactory { get; private set; }
+    // Set by Initialise
+    internal EditableScriptFactory ScriptFactory { get; private set; } = null!;
 
-    internal WorldModel WorldModel { get; private set; }
+    // Set by Initialise (Dispose and Uninitialise still check for null, in case it never ran)
+    internal WorldModel WorldModel { get; private set; } = null!;
 
     public static IList<string> ExpressionKeywords => Engine.Utility.ExpressionKeywords;
 
-    public string Filename { get; set; }
+    // Set by Initialise
+    public string Filename { get; set; } = null!;
 
     public bool SimpleMode
     {
@@ -189,41 +195,44 @@ public sealed class EditorController : IDisposable
         WorldModel?.FinishGame();
     }
 
-    public event EventHandler ClearTree;
-    public event EventHandler BeginTreeUpdate;
-    public event EventHandler EndTreeUpdate;
+    // The tree events (ClearTree through RetitledNode), ShowMessage, RequestAddElement,
+    // RequestEdit and RequestRunWalkthrough are raised without a null check, so a host must
+    // subscribe to them; the rest are optional.
+    public event EventHandler? ClearTree;
+    public event EventHandler? BeginTreeUpdate;
+    public event EventHandler? EndTreeUpdate;
 
-    public event EventHandler<AddedNodeEventArgs> AddedNode;
+    public event EventHandler<AddedNodeEventArgs>? AddedNode;
 
-    public event EventHandler<RemovedNodeEventArgs> RemovedNode;
+    public event EventHandler<RemovedNodeEventArgs>? RemovedNode;
 
-    public event EventHandler<RenamedNodeEventArgs> RenamedNode;
+    public event EventHandler<RenamedNodeEventArgs>? RenamedNode;
 
-    public event EventHandler<RetitledNodeEventArgs> RetitledNode;
+    public event EventHandler<RetitledNodeEventArgs>? RetitledNode;
 
-    public event EventHandler<ShowMessageEventArgs> ShowMessage;
+    public event EventHandler<ShowMessageEventArgs>? ShowMessage;
 
-    public event EventHandler<RequestAddElementEventArgs> RequestAddElement;
+    public event EventHandler<RequestAddElementEventArgs>? RequestAddElement;
 
-    public event EventHandler<RequestEditEventArgs> RequestEdit;
+    public event EventHandler<RequestEditEventArgs>? RequestEdit;
 
-    public event EventHandler ElementsUpdated;
+    public event EventHandler? ElementsUpdated;
 
-    public event EventHandler<ElementMovedEventArgs> ElementMoved;
+    public event EventHandler<ElementMovedEventArgs>? ElementMoved;
 
-    public event EventHandler<ScriptClipboardUpdateEventArgs> ScriptClipboardUpdated;
+    public event EventHandler<ScriptClipboardUpdateEventArgs>? ScriptClipboardUpdated;
 
-    public event EventHandler<RequestRunWalkthroughEventArgs> RequestRunWalkthrough;
+    public event EventHandler<RequestRunWalkthroughEventArgs>? RequestRunWalkthrough;
 
-    public event EventHandler SimpleModeChanged;
+    public event EventHandler? SimpleModeChanged;
 
-    public event EventHandler<ElementUpdatedEventArgs> ElementUpdated;
-    public event EventHandler<ElementRefreshedEventArgs> ElementRefreshed;
-    public event EventHandler<UpdateUndoListEventArgs> UndoListUpdated;
-    public event EventHandler<UpdateUndoListEventArgs> RedoListUpdated;
-    public event EventHandler Dirty;
-    public event EventHandler<LoadStatusEventArgs> LoadStatus;
-    public event EventHandler<LibrariesUpdatedEventArgs> LibrariesUpdated;
+    public event EventHandler<ElementUpdatedEventArgs>? ElementUpdated;
+    public event EventHandler<ElementRefreshedEventArgs>? ElementRefreshed;
+    public event EventHandler<UpdateUndoListEventArgs>? UndoListUpdated;
+    public event EventHandler<UpdateUndoListEventArgs>? RedoListUpdated;
+    public event EventHandler? Dirty;
+    public event EventHandler<LoadStatusEventArgs>? LoadStatus;
+    public event EventHandler<LibrariesUpdatedEventArgs>? LibrariesUpdated;
 
     // public event EventHandler<InitialiseResults> InitialiseFinished;
 
@@ -303,13 +312,13 @@ public sealed class EditorController : IDisposable
                 message += "* " + error + Environment.NewLine;
             }
 
-            ShowMessage(this, new ShowMessageEventArgs {Message = message});
+            ShowMessage!(this, new ShowMessageEventArgs {Message = message});
         }
 
         return ok;
     }
 
-    private void OnWorldModelLoadStatus(object sender, Engine.LoadStatusEventArgs e)
+    private void OnWorldModelLoadStatus(object? sender, Engine.LoadStatusEventArgs e)
     {
         if (LoadStatus != null)
         {
@@ -317,19 +326,19 @@ public sealed class EditorController : IDisposable
         }
     }
 
-    private void Elements_ElementRenamed(object sender, NameChangedEventArgs e)
+    private void Elements_ElementRenamed(object? sender, NameChangedEventArgs e)
     {
         var oldName = e.OldName;
         var newName = e.Element.Name;
 
-        RenamedNode(this, new RenamedNodeEventArgs {OldName = oldName, NewName = newName});
+        RenamedNode!(this, new RenamedNodeEventArgs {OldName = oldName, NewName = newName});
         if (ElementsUpdated != null)
         {
             ElementsUpdated(this, EventArgs.Empty);
         }
     }
 
-    private void UndoLogger_TransactionsUpdated(object sender, EventArgs e)
+    private void UndoLogger_TransactionsUpdated(object? sender, EventArgs e)
     {
         if (UndoListUpdated != null)
         {
@@ -342,7 +351,7 @@ public sealed class EditorController : IDisposable
         }
     }
 
-    private void OnWorldModelElementFieldUpdated(object sender, ElementFieldUpdatedEventArgs e)
+    private void OnWorldModelElementFieldUpdated(object? sender, ElementFieldUpdatedEventArgs e)
     {
         if (!_initialised)
         {
@@ -358,10 +367,10 @@ public sealed class EditorController : IDisposable
 
         if (e.Attribute == "parent")
         {
-            BeginTreeUpdate(this, new EventArgs());
+            BeginTreeUpdate!(this, new EventArgs());
             RemoveElementAndSubElementsFromTree(e.Element);
             AddElementAndSubElementsToTree(e.Element);
-            EndTreeUpdate(this, new EventArgs());
+            EndTreeUpdate!(this, new EventArgs());
             if (ElementsUpdated != null)
             {
                 ElementsUpdated(this, new EventArgs());
@@ -382,7 +391,7 @@ public sealed class EditorController : IDisposable
             if (e.Element.Name != null)
             {
                 // element name might be null if we're undoing an element add
-                RetitledNode(this,
+                RetitledNode!(this,
                     new RetitledNodeEventArgs {Key = e.Element.Name, NewTitle = GetDisplayName(e.Element)});
                 if (ElementsUpdated != null)
                 {
@@ -393,7 +402,7 @@ public sealed class EditorController : IDisposable
 
         if (e.Element.Type == ObjectType.Command && e.Attribute == "isverb")
         {
-            MoveNove(e.Element.Name, GetDisplayName(e.Element), GetElementTreeParent(e.Element));
+            MoveNove(e.Element.Name!, GetDisplayName(e.Element), GetElementTreeParent(e.Element));
         }
 
         if (e.Attribute == "editorfolder" && e.Element.Name != null)
@@ -413,7 +422,7 @@ public sealed class EditorController : IDisposable
         }
     }
 
-    private void OnWorldModelElementMetaFieldUpdated(object sender, ElementFieldUpdatedEventArgs e)
+    private void OnWorldModelElementMetaFieldUpdated(object? sender, ElementFieldUpdatedEventArgs e)
     {
         if (!_initialised)
         {
@@ -424,7 +433,7 @@ public sealed class EditorController : IDisposable
 
         if (e.Attribute == "sortindex")
         {
-            RemovedNode(this, new RemovedNodeEventArgs {Key = e.Element.Name});
+            RemovedNode!(this, new RemovedNodeEventArgs {Key = e.Element.Name});
             AddElementAndSubElementsToTree(e.Element, GetElementPosition(e.Element));
             if (ElementMoved != null)
             {
@@ -435,7 +444,7 @@ public sealed class EditorController : IDisposable
         if (e.Attribute == "library")
         {
             // Refresh the element in the tree by deleting and readding it
-            RemovedNode(this, new RemovedNodeEventArgs {Key = e.Element.Name});
+            RemovedNode!(this, new RemovedNodeEventArgs {Key = e.Element.Name});
             AddElementAndSubElementsToTree(e.Element);
         }
     }
@@ -448,11 +457,11 @@ public sealed class EditorController : IDisposable
         return siblings.IndexOf(e);
     }
 
-    private void MoveNove(string key, string text, string newParent)
+    private void MoveNove(string key, string text, string? newParent)
     {
-        RemovedNode(this, new RemovedNodeEventArgs {Key = key});
+        RemovedNode!(this, new RemovedNodeEventArgs {Key = key});
         var movedElement = WorldModel.Elements.ContainsKey(key) ? WorldModel.Elements.Get(key) : null;
-        AddedNode(this,
+        AddedNode!(this,
             new AddedNodeEventArgs
             {
                 Key = key, Text = text, Parent = newParent, IsLibraryNode = false, Position = null,
@@ -478,14 +487,14 @@ public sealed class EditorController : IDisposable
 
         foreach (var key in nodesToRemove)
         {
-            RemovedNode(this, new RemovedNodeEventArgs {Key = key});
+            RemovedNode!(this, new RemovedNodeEventArgs {Key = key});
         }
 
         // finally remove the parent
-        RemovedNode(this, new RemovedNodeEventArgs {Key = e.Name});
+        RemovedNode!(this, new RemovedNodeEventArgs {Key = e.Name});
     }
 
-    private void OnWorldModelElementRefreshed(object sender, ElementRefreshEventArgs e)
+    private void OnWorldModelElementRefreshed(object? sender, ElementRefreshEventArgs e)
     {
         if (_initialised)
         {
@@ -496,7 +505,7 @@ public sealed class EditorController : IDisposable
         }
     }
 
-    private void OnWorldModelObjectsUpdated(object sender, ObjectsUpdatedEventArgs args)
+    private void OnWorldModelObjectsUpdated(object? sender, ObjectsUpdatedEventArgs args)
     {
         if (args.Added != null)
         {
@@ -506,7 +515,7 @@ public sealed class EditorController : IDisposable
 
         if (args.Removed != null)
         {
-            RemovedNode(this, new RemovedNodeEventArgs {Key = args.Removed});
+            RemovedNode!(this, new RemovedNodeEventArgs {Key = args.Removed});
         }
 
         if (ElementsUpdated != null)
@@ -536,7 +545,7 @@ public sealed class EditorController : IDisposable
         AddTreeHeader(null, ElementType.Javascript, "_javascript", "Javascript", "_advanced", false);
     }
 
-    private void AddTreeHeader(EditorStyle? editorStyle, ElementType? type, string key, string title, string parent,
+    private void AddTreeHeader(EditorStyle? editorStyle, ElementType? type, string key, string title, string? parent,
         bool simple)
     {
         if (editorStyle.HasValue && EditorStyle != editorStyle)
@@ -553,7 +562,7 @@ public sealed class EditorController : IDisposable
                 _elementTreeStructure.Add(type.Value, header);
             }
 
-            AddedNode(this,
+            AddedNode!(this,
                 new AddedNodeEventArgs
                 {
                     Key = key, Text = title, Parent = parent, IsLibraryNode = false, Position = null,
@@ -570,7 +579,7 @@ public sealed class EditorController : IDisposable
         }
 
         BeginTreeUpdate(this, new EventArgs());
-        ClearTree(this, new EventArgs());
+        ClearTree!(this, new EventArgs());
         InitialiseTreeStructure();
 
         foreach (ElementType type in Enum.GetValues<ElementType>())
@@ -590,7 +599,7 @@ public sealed class EditorController : IDisposable
             }
         }
 
-        EndTreeUpdate(this, new EventArgs());
+        EndTreeUpdate!(this, new EventArgs());
     }
 
     private void AddElementAndChildrenToTree(Element o)
@@ -607,7 +616,7 @@ public sealed class EditorController : IDisposable
 
     // optional name parameter to prevent an exception when redoing object creation, as the
     // object will not have a name attribute immediately
-    private void AddElementToTree(Element o, int? position = null, string name = null)
+    private void AddElementToTree(Element o, int? position = null, string? name = null)
     {
         if (!IsElementVisible(o))
         {
@@ -628,7 +637,7 @@ public sealed class EditorController : IDisposable
         if (display)
         {
             var key = name ?? o.Name;
-            AddedNode(this,
+            AddedNode!(this,
                 new AddedNodeEventArgs
                 {
                     Key = key, Text = text, Parent = parent, IsLibraryNode = isLibrary,
@@ -640,13 +649,13 @@ public sealed class EditorController : IDisposable
 
             if (o.Name == "game" && !SimpleMode && EditorStyle == EditorStyle.TextAdventure)
             {
-                AddedNode(this,
+                AddedNode!(this,
                     new AddedNodeEventArgs
                     {
                         Key = Verbs, Text = "Verbs", Parent = "game", IsLibraryNode = false, Position = null,
                         NodeType = "header"
                     });
-                AddedNode(this,
+                AddedNode!(this,
                     new AddedNodeEventArgs
                     {
                         Key = Commands, Text = "Commands", Parent = "game", IsLibraryNode = false, Position = null,
@@ -687,8 +696,8 @@ public sealed class EditorController : IDisposable
             }
 
             // Don't display templates which have been overridden
-            if (e.Fields[FieldDefinitions.TemplateName] != null &&
-                WorldModel.TryGetTemplateElement(e.Fields[FieldDefinitions.TemplateName]) != e)
+            if (e.Fields[FieldDefinitions.TemplateName] is { } templateName &&
+                WorldModel.TryGetTemplateElement(templateName) != e)
             {
                 return false;
             }
@@ -697,7 +706,7 @@ public sealed class EditorController : IDisposable
         return true;
     }
 
-    private string GetElementTreeParent(Element o)
+    private string? GetElementTreeParent(Element o)
     {
         if (SimpleMode)
         {
@@ -756,7 +765,8 @@ public sealed class EditorController : IDisposable
 
                     return "(filename not set)";
                 case ElementType.Template:
-                    return e.Fields[FieldDefinitions.TemplateName];
+                    // Templates.AddTemplate always sets templatename
+                    return e.Fields[FieldDefinitions.TemplateName]!;
                 case ElementType.Javascript:
                     var src = e.Fields[FieldDefinitions.Src];
                     if (!string.IsNullOrEmpty(src))
@@ -771,7 +781,7 @@ public sealed class EditorController : IDisposable
         return e.Name;
     }
 
-    public string GetDisplayName(string element)
+    public string? GetDisplayName(string element)
     {
         if (_treeTitles.ContainsKey(element))
         {
@@ -833,7 +843,7 @@ public sealed class EditorController : IDisposable
         UpdateTree();
     }
 
-    public string GetElementEditorName(string elementKey)
+    public string? GetElementEditorName(string elementKey)
     {
         // elementKey is "game", "k1" (a command), "someobject", "myexit" etc.
         // we return the editor type name, e.g. "game", "command", "object", "exit".
@@ -842,7 +852,7 @@ public sealed class EditorController : IDisposable
         {
             var e = WorldModel.Elements.Get(elementKey);
 
-            string type = null;
+            string? type = null;
 
             if (e.ElemType == ElementType.Object)
             {
@@ -851,7 +861,8 @@ public sealed class EditorController : IDisposable
 
             if (string.IsNullOrEmpty(type))
             {
-                type = e.Fields.GetString("elementtype");
+                // Every element has an elementtype field (set by Element itself)
+                type = e.Fields.GetString("elementtype")!;
             }
             else
             {
@@ -897,8 +908,7 @@ public sealed class EditorController : IDisposable
         if (script.EditorName.StartsWith("(function)"))
         {
             // see if we have a specific editor definition for this function
-            EditorDefinition result;
-            if (_editorDefinitions.TryGetValue(script.EditorName, out result))
+            if (_editorDefinitions.TryGetValue(script.EditorName, out var result))
             {
                 return result;
             }
@@ -917,7 +927,7 @@ public sealed class EditorController : IDisposable
         return _editorDefinitions[editorName];
     }
 
-    public IEditorData GetEditorData(string elementKey)
+    public IEditorData? GetEditorData(string elementKey)
     {
         if (!WorldModel.Elements.ContainsKey(elementKey))
         {
@@ -1007,12 +1017,14 @@ public sealed class EditorController : IDisposable
         return WorldModel.UndoLogger.RedoList();
     }
 
-    internal object WrapValue(object value)
+    [return: NotNullIfNotNull(nameof(value))]
+    internal object? WrapValue(object? value)
     {
         return WrapValue(value, null, null);
     }
 
-    internal object WrapValue(object value, Element element, string attribute)
+    [return: NotNullIfNotNull(nameof(value))]
+    internal object? WrapValue(object? value, Element? element, string? attribute)
     {
         if (value is IScript)
         {
@@ -1060,7 +1072,7 @@ public sealed class EditorController : IDisposable
         return value;
     }
 
-    public EditableScripts CreateNewEditableScripts(string parent, string attribute, string keyword,
+    public EditableScripts CreateNewEditableScripts(string? parent, string? attribute, string? keyword,
         bool useTransaction, bool nullKeywordIsFunctionCall = false)
     {
         if (useTransaction)
@@ -1080,7 +1092,7 @@ public sealed class EditorController : IDisposable
         {
             element.Fields.Set(attribute, newValue.GetUnderlyingValue());
             // Setting the element field value will clone the IScript, so we need to return an updated reference
-            newValue = EditableScripts.GetInstance(this, element.Fields.GetAsType<IScript>(attribute));
+            newValue = EditableScripts.GetInstance(this, element.Fields.GetAsType<IScript>(attribute)!);
         }
 
         if (useTransaction)
@@ -1114,7 +1126,7 @@ public sealed class EditorController : IDisposable
         return newValue;
     }
 
-    public IEditableList<string> CreateNewEditableList(string parent, string attribute, string item,
+    public IEditableList<string> CreateNewEditableList(string? parent, string attribute, string? item,
         bool useTransaction)
     {
         if (useTransaction)
@@ -1136,7 +1148,7 @@ public sealed class EditorController : IDisposable
             element.Fields.Set(attribute, newList);
 
             // setting an element field will clone the value, so we want to return the new list
-            newList = element.Fields.GetAsType<QuestList<string>>(attribute);
+            newList = element.Fields.GetAsType<QuestList<string>>(attribute)!;
         }
 
         var newValue = new EditableList<string>(this, newList);
@@ -1149,7 +1161,7 @@ public sealed class EditorController : IDisposable
         return newValue;
     }
 
-    public IEditableDictionary<string> CreateNewEditableStringDictionary(string parent, string attribute, string key,
+    public IEditableDictionary<string> CreateNewEditableStringDictionary(string? parent, string attribute, string? key,
         string item, bool useTransaction)
     {
         if (useTransaction)
@@ -1171,7 +1183,7 @@ public sealed class EditorController : IDisposable
             element.Fields.Set(attribute, newDictionary);
 
             // setting an element field will clone the value, so we want to return the new dictionary
-            newDictionary = element.Fields.GetAsType<QuestDictionary<string>>(attribute);
+            newDictionary = element.Fields.GetAsType<QuestDictionary<string>>(attribute)!;
         }
 
         var newValue = new EditableDictionary<string>(this, newDictionary);
@@ -1184,8 +1196,8 @@ public sealed class EditorController : IDisposable
         return newValue;
     }
 
-    public IEditableDictionary<IEditableScripts> CreateNewEditableScriptDictionary(string parent, string attribute,
-        string key, IEditableScripts script, bool useTransaction)
+    public IEditableDictionary<IEditableScripts> CreateNewEditableScriptDictionary(string? parent, string attribute,
+        string? key, IEditableScripts script, bool useTransaction)
     {
         if (useTransaction)
         {
@@ -1199,7 +1211,7 @@ public sealed class EditorController : IDisposable
 
         if (key != null)
         {
-            newDictionary.Add(key, (IScript) script.GetUnderlyingValue());
+            newDictionary.Add(key, (IScript) script.GetUnderlyingValue()!);
         }
 
         if (element != null)
@@ -1207,7 +1219,7 @@ public sealed class EditorController : IDisposable
             element.Fields.Set(attribute, newDictionary);
 
             // setting an element field will clone the value, so we want to return the new dictionary
-            newDictionary = element.Fields.GetAsType<QuestDictionary<IScript>>(attribute);
+            newDictionary = element.Fields.GetAsType<QuestDictionary<IScript>>(attribute)!;
         }
 
         var newValue = (IEditableDictionary<IEditableScripts>) WrapValue(newDictionary);
@@ -1296,10 +1308,9 @@ public sealed class EditorController : IDisposable
         _controlTypes.Add(name, type);
     }
 
-    public Type GetControlType(string name)
+    public Type? GetControlType(string name)
     {
-        Type controlType;
-        _controlTypes.TryGetValue(name, out controlType);
+        _controlTypes.TryGetValue(name, out var controlType);
         return controlType;
     }
 
@@ -1324,7 +1335,7 @@ public sealed class EditorController : IDisposable
         return GetElements(elementType).Where(e => !e.MetaFields[MetaFieldDefinitions.Library]).Select(e => e.Name);
     }
 
-    public string GetElementType(string element)
+    public string? GetElementType(string element)
     {
         if (!WorldModel.Elements.ContainsKey(element))
         {
@@ -1334,13 +1345,13 @@ public sealed class EditorController : IDisposable
         return WorldModel.GetTypeStringForElementType(WorldModel.Elements.Get(element).ElemType);
     }
 
-    public object GetElementDataAttribute(string elementName, string attribute)
+    public object? GetElementDataAttribute(string elementName, string attribute)
     {
         var element = WorldModel.Elements.Get(elementName);
         return element.Fields.Get(attribute);
     }
 
-    public string GetObjectType(string element)
+    public string? GetObjectType(string element)
     {
         if (!WorldModel.Elements.ContainsKey(element))
         {
@@ -1350,7 +1361,7 @@ public sealed class EditorController : IDisposable
         return WorldModel.GetTypeStringForObjectType(WorldModel.Elements.Get(element).Type);
     }
 
-    private IEnumerable<Element> GetObjectNamesInternal(string objectType, string parent = null,
+    private IEnumerable<Element> GetObjectNamesInternal(string objectType, string? parent = null,
         bool includeAnonymous = false)
     {
         var t = WorldModel.GetObjectTypeForTypeString(objectType);
@@ -1368,12 +1379,12 @@ public sealed class EditorController : IDisposable
         return result.OrderBy(e => e.MetaFields[MetaFieldDefinitions.SortIndex]);
     }
 
-    public IEnumerable<string> GetObjectNames(string objectType, string parent = null, bool includeAnonymous = false)
+    public IEnumerable<string> GetObjectNames(string objectType, string? parent = null, bool includeAnonymous = false)
     {
         return GetObjectNamesInternal(objectType, parent, includeAnonymous).Select(e => e.Name);
     }
 
-    public IEnumerable<string> GetObjectNames(string objectType, bool includeLibraryObjects, string parent = null,
+    public IEnumerable<string> GetObjectNames(string objectType, bool includeLibraryObjects, string? parent = null,
         bool includeAnonymous = false)
     {
         if (includeLibraryObjects)
@@ -1401,7 +1412,8 @@ public sealed class EditorController : IDisposable
         var result = new Dictionary<string, string>();
         foreach (var verb in verbElements)
         {
-            var verbProperty = verb.Fields[FieldDefinitions.Property];
+            // verbElements only includes verbs with a property
+            var verbProperty = verb.Fields[FieldDefinitions.Property]!;
             var pattern = verb.Fields.Get(FieldDefinitions.Pattern.Property);
             var simplePattern = pattern as EditorCommandPattern;
             var displayName = simplePattern != null ? simplePattern.Pattern : verbProperty;
@@ -1485,7 +1497,7 @@ public sealed class EditorController : IDisposable
         return element.Fields.InheritsType(type);
     }
 
-    public void CreateNewObject(string name, string parent, string alias)
+    public void CreateNewObject(string name, string? parent, string? alias)
     {
         WorldModel.UndoLogger.StartTransaction(string.Format("Create object '{0}'", name));
         CreateNewObject(name, parent, "editor_object", alias);
@@ -1495,7 +1507,7 @@ public sealed class EditorController : IDisposable
     // A Text Adventure dialogue page (see CorePages.aslx) is an ordinary object plus the
     // "dialoguepage" inherited type. Gamebook games have no such type - their pages are
     // plain objects - so this degrades to CreateNewObject there.
-    public void CreateNewPage(string name, string parent, string alias)
+    public void CreateNewPage(string name, string? parent, string? alias)
     {
         WorldModel.UndoLogger.StartTransaction(string.Format("Create page '{0}'", name));
         CreateNewObject(name, parent, "editor_object", alias);
@@ -1531,7 +1543,7 @@ public sealed class EditorController : IDisposable
         return o.Type == ObjectType.Object && o.Fields.GetAsType<bool>("isroom");
     }
 
-    public void CreateNewRoom(string name, string parent, string alias)
+    public void CreateNewRoom(string name, string? parent, string? alias)
     {
         WorldModel.UndoLogger.StartTransaction(string.Format("Create room '{0}'", name));
         CreateNewObject(name, parent, "editor_room", alias);
@@ -1543,12 +1555,12 @@ public sealed class EditorController : IDisposable
         return CreateNewAnonymousObject(parent, "exit", ObjectType.Exit);
     }
 
-    public string CreateNewExit(string parent, string to, string alias, string type, bool lookonly)
+    public string CreateNewExit(string parent, string? to, string alias, string type, bool lookonly)
     {
         return CreateNewExitInternal(parent, to, alias, true, type, lookonly);
     }
 
-    public string CreateNewExitInternal(string parent, string to, string alias, bool useTransaction, string type,
+    public string CreateNewExitInternal(string parent, string? to, string alias, bool useTransaction, string type,
         bool lookonly)
     {
         if (to == null && lookonly)
@@ -1566,7 +1578,8 @@ public sealed class EditorController : IDisposable
         return CreateNewAnonymousObject(parent, "exit", ObjectType.Exit, new List<string> {type},
             new Dictionary<string, object>
             {
-                {"to", WorldModel.Elements.Get(to)},
+                // Only a look-only exit can be created without a destination
+                {"to", WorldModel.Elements.Get(to!)},
                 {"alias", alias}
             }, useTransaction);
     }
@@ -1587,12 +1600,12 @@ public sealed class EditorController : IDisposable
         return CreateNewAnonymousObject(parent, "turn script", ObjectType.TurnScript);
     }
 
-    public string CreateNewCommand(string parent)
+    public string CreateNewCommand(string? parent)
     {
         return CreateNewAnonymousObject(parent, "command", ObjectType.Command);
     }
 
-    public string CreateNewVerb(string parent, bool useTransaction)
+    public string CreateNewVerb(string? parent, bool useTransaction)
     {
         return CreateNewAnonymousObject(parent, "command", ObjectType.Command,
             new List<string> {"defaultverb"},
@@ -1600,11 +1613,11 @@ public sealed class EditorController : IDisposable
             useTransaction);
     }
 
-    private string CreateNewAnonymousObject(string parent, string typeName, ObjectType type,
-        IList<string> initialTypes = null, IDictionary<string, object> initialFields = null, bool useTransaction = true)
+    private string CreateNewAnonymousObject(string? parent, string typeName, ObjectType type,
+        IList<string>? initialTypes = null, IDictionary<string, object>? initialFields = null, bool useTransaction = true)
     {
         string desc;
-        Element parentEl;
+        Element? parentEl;
         if (parent != null)
         {
             desc = string.Format("Create new {0} in '{1}'", typeName, parent);
@@ -1633,7 +1646,7 @@ public sealed class EditorController : IDisposable
         return newObject.Name;
     }
 
-    private void CreateNewObject(string name, string parent, string editorType, string alias)
+    private void CreateNewObject(string name, string? parent, string editorType, string? alias)
     {
         var newObject = WorldModel.GetElementFactory(ElementType.Object).Create(name);
         if (parent != null)
@@ -1652,8 +1665,8 @@ public sealed class EditorController : IDisposable
         }
     }
 
-    private string CreateNewElement(ElementType type, string typeName, string elementName, string parent = null,
-        IDictionary<string, object> initialFields = null)
+    private string CreateNewElement(ElementType type, string typeName, string? elementName, string? parent = null,
+        IDictionary<string, object>? initialFields = null)
     {
         WorldModel.UndoLogger.StartTransaction(string.Format("Create {0} '{1}'", typeName, elementName));
         Element newElement;
@@ -1697,7 +1710,7 @@ public sealed class EditorController : IDisposable
             initialFields: new Dictionary<string, object> {{"interval", 1}});
     }
 
-    public void CreateNewWalkthrough(string name, string parent)
+    public void CreateNewWalkthrough(string name, string? parent)
     {
         CreateNewElement(ElementType.Walkthrough, "walkthrough", name, parent);
     }
@@ -1711,7 +1724,9 @@ public sealed class EditorController : IDisposable
     public string CreateNewTemplate(string name)
     {
         WorldModel.UndoLogger.StartTransaction(string.Format("Add new template '{0}'", name));
-        var newTemplate = WorldModel.AddNewTemplate(name);
+        // Null if a base template (one defined in the game file itself) already has this name -
+        // CanAddTemplate checks for that
+        var newTemplate = WorldModel.AddNewTemplate(name)!;
         newTemplate.Fields[FieldDefinitions.Anonymous] = true;
         WorldModel.UndoLogger.EndTransaction();
         return newTemplate.Name;
@@ -1819,12 +1834,12 @@ public sealed class EditorController : IDisposable
         WorldModel.UndoLogger.EndTransaction();
     }
 
-    public IEnumerable<string> GetPossibleNewObjectParentsForCurrentSelection(string elementKey)
+    public IEnumerable<string>? GetPossibleNewObjectParentsForCurrentSelection(string elementKey)
     {
         return GetPossibleNewParentsForCurrentSelection(elementKey, "object");
     }
 
-    public IEnumerable<string> GetPossibleNewParentsForCurrentSelection(string elementKey, string elementTypeString)
+    public IEnumerable<string>? GetPossibleNewParentsForCurrentSelection(string elementKey, string elementTypeString)
     {
         // When an object is selected and the user clicks "Add object", we can either create the
         // object as a sub-object of the current selection, or as a sibling of the current object.
@@ -1866,7 +1881,7 @@ public sealed class EditorController : IDisposable
         return null;
     }
 
-    public IEnumerable<string> GetMovePossibleParents(string elementKey)
+    public IEnumerable<string>? GetMovePossibleParents(string elementKey)
     {
         if (!CanMoveElement(elementKey))
         {
@@ -2020,13 +2035,13 @@ public sealed class EditorController : IDisposable
 
     public void UIRequestAddElement(string elementType, string objectType, string filter)
     {
-        RequestAddElement(this,
+        RequestAddElement!(this,
             new RequestAddElementEventArgs {ElementType = elementType, ObjectType = objectType, Filter = filter});
     }
 
     public void UIRequestEditElement(string key)
     {
-        RequestEdit(this, new RequestEditEventArgs {Key = key});
+        RequestEdit!(this, new RequestEditEventArgs {Key = key});
     }
 
     public bool ElementExists(string elementKey)
@@ -2046,7 +2061,7 @@ public sealed class EditorController : IDisposable
 
     public IEnumerable<string> GetAvailableExternalFiles(string searchPattern)
     {
-        var baseFolder = Path.GetDirectoryName(WorldModel.Filename);
+        var baseFolder = Path.GetDirectoryName(WorldModel.Filename) ?? string.Empty;
         return WorldModel.GetAvailableExternalFiles(searchPattern).Select(f => Path.Combine(baseFolder, f));
     }
 
@@ -2075,14 +2090,14 @@ public sealed class EditorController : IDisposable
         _lastelementscutout = false;
     }
 
-    public string PasteElements(string parentName)
+    public string? PasteElements(string parentName)
     {
         if (!CanPaste(parentName))
         {
             return null;
         }
 
-        string lastPastedElement = null;
+        string? lastPastedElement = null;
 
         var parent = GetPasteParent(parentName);
 
@@ -2136,6 +2151,7 @@ public sealed class EditorController : IDisposable
         WorldModel.UndoLogger.EndTransaction();
     }
 
+    [MemberNotNullWhen(true, nameof(_clipboardElements))]
     public bool CanPaste(string parentName)
     {
         if (_clipboardElements == null || _clipboardElements.Count == 0)
@@ -2157,7 +2173,7 @@ public sealed class EditorController : IDisposable
         return parent.ElemType == _clipboardElementType;
     }
 
-    private Element GetPasteParent(string parentName)
+    private Element? GetPasteParent(string parentName)
     {
         if (EditorStyle == EditorStyle.GameBook)
         {
@@ -2176,7 +2192,8 @@ public sealed class EditorController : IDisposable
             {
                 // But don't paste a copy of an object inside itself
 
-                if (_clipboardElements.Any(clipboardElement => clipboardElement == e))
+                // Only called once CanPaste has found elements on the clipboard
+                if (_clipboardElements!.Any(clipboardElement => clipboardElement == e))
                 {
                     return e.Parent;
                 }
@@ -2263,6 +2280,7 @@ public sealed class EditorController : IDisposable
         return true;
     }
 
+    [MemberNotNullWhen(true, nameof(_clipboardScripts))]
     public bool CanPasteScript()
     {
         return _clipboardScripts != null && _clipboardScripts.Count > 0;
@@ -2279,7 +2297,8 @@ public sealed class EditorController : IDisposable
 
     internal IEnumerable<IScript> GetClipboardScript()
     {
-        return _clipboardScripts.AsReadOnly();
+        // Script paste is only offered once scripts have been copied
+        return _clipboardScripts!.AsReadOnly();
     }
 
     public IEnumerable<string> GetPropertyNames()
@@ -2289,29 +2308,31 @@ public sealed class EditorController : IDisposable
 
     public IEnumerable<string> GetExpressionEditorNames(string expressionType)
     {
-        return _expressionDefinitions.Values.Where(d => d.ExpressionType == expressionType).Select(d => d.Description);
+        // Expression template editors always define a description
+        return _expressionDefinitions.Values.Where(d => d.ExpressionType == expressionType).Select(d => d.Description!);
     }
 
-    public string GetExpressionEditorDefinitionName(string expression, string expressionType)
+    public string? GetExpressionEditorDefinitionName(string expression, string expressionType)
     {
-        return GetExpressionEditorDefinitionInternal(expression, expressionType).Description;
+        return GetExpressionEditorDefinitionInternal(expression, expressionType)?.Description;
     }
 
-    public IEditorDefinition GetExpressionEditorDefinition(string expression, string expressionType)
+    public IEditorDefinition? GetExpressionEditorDefinition(string expression, string expressionType)
     {
         return GetExpressionEditorDefinitionInternal(expression, expressionType);
     }
 
-    private EditorDefinition GetExpressionEditorDefinitionInternal(string expression, string expressionType)
+    private EditorDefinition? GetExpressionEditorDefinitionInternal(string expression, string expressionType)
     {
         // Get the Expression Editor Definition which matches the current expression.
         // e.g. if the expression is "(Got(myobject))", we want to return the Editor
         // Definition which corresponds to "(Got(#object#))" [note: this is turned into a
         // regex by the SimplePattern attribute loader]
 
+        // Initialise only puts definitions with a pattern into _expressionDefinitions
         var candidates = from def in _expressionDefinitions.Values
             where def.ExpressionType == expressionType
-            where Engine.Utility.IsRegexMatch(def.Pattern, expression)
+            where Engine.Utility.IsRegexMatch(def.Pattern!, expression)
             select def;
 
         if (!candidates.Any())
@@ -2320,7 +2341,7 @@ public sealed class EditorController : IDisposable
         }
 
         var orderedCandidates = from def in candidates
-            orderby Engine.Utility.GetMatchStrength(def.Pattern, expression) descending
+            orderby Engine.Utility.GetMatchStrength(def.Pattern!, expression) descending
             select def;
 
         return orderedCandidates.First();
@@ -2328,11 +2349,12 @@ public sealed class EditorController : IDisposable
 
     public IEditorData GetExpressionEditorData(string expression, string expressionType, IEditorData parentData)
     {
+        // Callers first check GetExpressionEditorDefinition finds a definition
         return new ExpressionTemplateEditorData(expression,
-            GetExpressionEditorDefinitionInternal(expression, expressionType), parentData);
+            GetExpressionEditorDefinitionInternal(expression, expressionType)!, parentData);
     }
 
-    public string GetNewExpression(string templateName)
+    public string? GetNewExpression(string templateName)
     {
         var definitions = from def in _expressionDefinitions.Values
             where def.Description == templateName
@@ -2349,7 +2371,7 @@ public sealed class EditorController : IDisposable
         return expressionData.SaveExpression(changedAttribute, changedValue);
     }
 
-    public string GetDisplayVerbPatternForAttribute(string attribute)
+    public string? GetDisplayVerbPatternForAttribute(string attribute)
     {
         // If the user adds a verb like "look in", it will have an attribute name like "lookin".
         // Here we return the simple pattern for the corresponding verb, if it has one (library
@@ -2379,8 +2401,8 @@ public sealed class EditorController : IDisposable
         return FriendlyVerbDisplayName(simplePattern.Pattern);
     }
 
-    public ValidationResult Publish(string filename, bool includeWalkthrough,
-        IEnumerable<PackageIncludeFile> includeFiles = null, Stream outputStream = null)
+    public ValidationResult Publish(string? filename, bool includeWalkthrough,
+        IEnumerable<PackageIncludeFile>? includeFiles = null, Stream? outputStream = null)
     {
         string error;
         if (WorldModel.CreatePackage(filename, includeWalkthrough, out error, includeFiles == null
@@ -2449,7 +2471,8 @@ public sealed class EditorController : IDisposable
         var templateName = stem;
         var templateEditorStyle = EditorStyle.TextAdventure;
 
-        var stream = WorldModel.GetEmbeddedResourceStream(resourceName);
+        // resourceName comes from GetEmbeddedResources
+        var stream = WorldModel.GetEmbeddedResourceStream(resourceName)!;
         var xmlReader = new XmlTextReader(stream);
 
         xmlReader.Read();
@@ -2480,7 +2503,8 @@ public sealed class EditorController : IDisposable
 
     public static string CreateNewGameFile(string template, string gameName)
     {
-        var stream = WorldModel.GetEmbeddedResourceStream(template);
+        // template is a resource name from GetAvailableTemplates
+        var stream = WorldModel.GetEmbeddedResourceStream(template)!;
         var templateText = new StreamReader(stream).ReadToEnd();
         var initialFileText = templateText
             .Replace("$NAME$", Engine.Utility.SafeXML(gameName))
@@ -2526,7 +2550,7 @@ public sealed class EditorController : IDisposable
                      where !e.Fields[FieldDefinitions.IsVerb]
                      select e)
             {
-                string regexPattern = null;
+                string? regexPattern = null;
 
                 var pattern = cmd.Fields.Get(FieldDefinitions.Pattern.Property);
                 var editorCommandPattern = pattern as EditorCommandPattern;
@@ -2613,7 +2637,8 @@ public sealed class EditorController : IDisposable
     {
         return WorldModel.Elements.GetElements(ElementType.Function)
             .Select(e => e.Fields[FieldDefinitions.EditorFolder])
-            .Where(f => !string.IsNullOrEmpty(f))
+            .OfType<string>()
+            .Where(f => f.Length > 0)
             .Distinct()
             .OrderBy(f => f, StringComparer.OrdinalIgnoreCase);
     }
@@ -2624,7 +2649,7 @@ public sealed class EditorController : IDisposable
     // after the last existing member of that folder (or at the end of the list for a brand-new
     // folder), so the display grouping's "contiguous run" assumption holds without needing the
     // frontend to do anything fancier than #2113's existing library-filename grouping.
-    public void SetFunctionFolder(string key, string folder)
+    public void SetFunctionFolder(string key, string? folder)
     {
         var element = WorldModel.Elements.Get(key);
 
@@ -2847,7 +2872,7 @@ public sealed class EditorController : IDisposable
 
     public void BeginWalkthrough(string name, bool record)
     {
-        RequestRunWalkthrough(this, new RequestRunWalkthroughEventArgs {Name = name, Record = record});
+        RequestRunWalkthrough!(this, new RequestRunWalkthroughEventArgs {Name = name, Record = record});
     }
 
     public void RecordWalkthrough(string name, IEnumerable<string> steps)
@@ -2918,11 +2943,12 @@ public sealed class EditorController : IDisposable
         return WorldModel.GetUniqueElementName(elementName);
     }
 
-    public string GetSelectedDropDownType(IEditorControl ctl, string element)
+    public string? GetSelectedDropDownType(IEditorControl ctl, string element)
     {
         const string noType = "*";
 
-        var types = ctl.GetDictionary("types");
+        // dropdowntypes controls always define their types
+        var types = ctl.GetDictionary("types")!;
         var inheritedTypes = new List<string>();
 
         // The inherited types look like:
@@ -3046,11 +3072,10 @@ public sealed class EditorController : IDisposable
 
                 foreach (var element in WorldModel.Elements.GetElements(ElementType.Object))
                 {
-                    var value = element.Fields.Get(ctl.Attribute);
-                    var dictionary = value as IDictionary;
-                    if (dictionary != null && dictionary.Contains(oldName))
+                    // Controls with an object source always edit an attribute
+                    if (element.Fields.Get(ctl.Attribute!) is IDictionary dictionary && dictionary.Contains(oldName))
                     {
-                        var wrappedValue = WrapValue(value);
+                        var wrappedValue = WrapValue(dictionary);
                         var editableStringDictionary = wrappedValue as IEditableDictionary<string>;
                         var editableScriptDictionary = wrappedValue as IEditableDictionary<IEditableScripts>;
                         if (editableStringDictionary != null)
@@ -3129,53 +3154,53 @@ public sealed class EditorController : IDisposable
 
     public class AddedNodeEventArgs : EventArgs
     {
-        public string Key { get; set; }
-        public string Text { get; set; }
-        public string Parent { get; set; }
+        public required string Key { get; set; }
+        public required string Text { get; set; }
+        public string? Parent { get; set; }
         public bool IsLibraryNode { get; set; }
-        public string Filename { get; set; }
-        public string Folder { get; set; }
+        public string? Filename { get; set; }
+        public string? Folder { get; set; }
         public int? Position { get; set; }
-        public string NodeType { get; set; }
+        public string? NodeType { get; set; }
     }
 
     public class RemovedNodeEventArgs : EventArgs
     {
-        public string Key { get; set; }
+        public required string Key { get; set; }
     }
 
     public class RenamedNodeEventArgs : EventArgs
     {
-        public string OldName { get; set; }
-        public string NewName { get; set; }
+        public required string OldName { get; set; }
+        public required string NewName { get; set; }
     }
 
     public class RetitledNodeEventArgs : EventArgs
     {
-        public string Key { get; set; }
-        public string NewTitle { get; set; }
+        public required string Key { get; set; }
+        public required string NewTitle { get; set; }
     }
 
     public class ShowMessageEventArgs : EventArgs
     {
-        public string Message { get; set; }
+        public required string Message { get; set; }
     }
 
     public class RequestAddElementEventArgs : EventArgs
     {
-        public string ElementType { get; set; }
-        public string ObjectType { get; set; }
-        public string Filter { get; set; }
+        public required string ElementType { get; set; }
+        public required string ObjectType { get; set; }
+        public required string Filter { get; set; }
     }
 
     public class RequestEditEventArgs : EventArgs
     {
-        public string Key { get; set; }
+        public required string Key { get; set; }
     }
 
     public class ElementMovedEventArgs : EventArgs
     {
-        public string Key { get; set; }
+        public required string Key { get; set; }
     }
 
     public class ScriptClipboardUpdateEventArgs : EventArgs
@@ -3185,13 +3210,13 @@ public sealed class EditorController : IDisposable
 
     public class RequestRunWalkthroughEventArgs : EventArgs
     {
-        public string Name { get; set; }
+        public required string Name { get; set; }
         public bool Record { get; set; }
     }
 
     public class ElementUpdatedEventArgs : EventArgs
     {
-        internal ElementUpdatedEventArgs(string element, string attribute, object newValue, bool isUndo)
+        internal ElementUpdatedEventArgs(string element, string attribute, object? newValue, bool isUndo)
         {
             Element = element;
             Attribute = attribute;
@@ -3201,7 +3226,7 @@ public sealed class EditorController : IDisposable
 
         public string Element { get; private set; }
         public string Attribute { get; private set; }
-        public object NewValue { get; private set; }
+        public object? NewValue { get; private set; }
         public bool IsUndo { get; private set; }
     }
 
@@ -3241,8 +3266,8 @@ public sealed class EditorController : IDisposable
 
     private class TreeHeader
     {
-        public string Key;
-        public string Title;
+        public required string Key;
+        public required string Title;
     }
 
     public class InitialiseResults : EventArgs
@@ -3257,14 +3282,14 @@ public sealed class EditorController : IDisposable
 
     public class PackageIncludeFile
     {
-        public string Filename { get; set; }
-        public Stream Content { get; set; }
+        public required string Filename { get; set; }
+        public required Stream Content { get; set; }
     }
 
     public struct CanAddVerbResult
     {
         public bool CanAdd;
-        public string ClashingCommand;
-        public string ClashingCommandDisplay;
+        public string? ClashingCommand;
+        public string? ClashingCommandDisplay;
     }
 }

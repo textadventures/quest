@@ -360,7 +360,7 @@ public class EditableScripts : IEditableScripts, IDataWrapper
         _controller.WorldModel.UndoLogger.EndTransaction();
     }
 
-    internal void AddNewInternal(string keyword)
+    internal void AddNewInternal(string? keyword)
     {
         EditableScriptBase script;
         if (!string.IsNullOrEmpty(keyword))

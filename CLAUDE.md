@@ -79,7 +79,7 @@ EditorCore ───────────────────────
 - **Engine** — Core game interpreter: script execution, expression evaluation, game loading, built-in functions. Contains embedded `.aslx` files (game templates, language definitions) in `Core/`
 - **PlayerCore** — Game player runtime that wraps Engine. Contains embedded UI resources (HTML, CSS, JS including jQuery UI, jPlayer)
 - **EditorCore** — Game editor logic (non-UI)
-- **Legacy** — Quest 4 (and earlier) backward-compatibility layer with embedded `.lib`/`.dat` files
+- **Legacy** — Quest 4 (and earlier) backward-compatibility layer with embedded `.lib`/`.dat` files. Nullable reference types are deliberately left disabled (see the comment in `Legacy.csproj`)
 - **WebPlayer** — ASP.NET Core web app with Blazor Razor components (`Game.razor`, `Slots.razor`, debugger)
 - **WasmPlayer** — Pure browser-WASM player (`browser-wasm` target, AOT-compiled). Uses `JSImport`/`JSExport` for JS interop. Serves as a static site with no server-side .NET required. IL trimming is enabled; `WasmPlayer.linker.xml` preserves the Engine assembly (which uses reflection-based type discovery).
 - **WasmEditor** — Browser-WASM bridge (`browser-wasm` target) exposing `EditorCore` to the AppShell SvelteKit frontend via `[JSExport]` (see `WasmEditorBridge.cs`)

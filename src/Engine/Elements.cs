@@ -244,13 +244,13 @@ public class Elements
         return null;
     }
 
-    public IEnumerable<Element> GetChildElements(Element parent)
+    public IEnumerable<Element> GetChildElements(Element? parent)
     {
-        var visited = new HashSet<Element> { parent };
+        var visited = new HashSet<Element?> { parent };
         return CollectChildElements(parent, visited);
     }
 
-    private IEnumerable<Element> CollectChildElements(Element parent, HashSet<Element> visited)
+    private IEnumerable<Element> CollectChildElements(Element? parent, HashSet<Element?> visited)
     {
         foreach (var e in GetDirectChildren(parent))
         {
