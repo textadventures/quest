@@ -6,7 +6,7 @@
     import { PUBLIC_WASM_PLAYER_URL, PUBLIC_SHOW_HOME } from "$env/static/public";
     import {
         gameFilename, isLoaded, isDirty, isSaving, isEditingField, getLastEditedElement, saveError, retrySave, saveGame, saveGameAs, canSaveAs, backupGame, canBackup,
-        publishModalOpen, exportSingleFile,
+        publishModalOpen, exportHtmlModalOpen,
         previewInWasmPlayer,
         undo, redo, canUndo, canRedo,
         navigateBack, navigateForward, canGoBack, canGoForward,
@@ -18,7 +18,6 @@
         codeViewCloseRequested,
     } from "$lib/editor-store";
     import { hasActiveCmView, cmUndo, cmRedo } from "$lib/code-editor-registry";
-    import { showToast } from "$lib/toast";
     import { settingsModalOpen } from "$lib/settings-store";
     import { t } from "$lib/i18n";
     import type { TreeNode } from "$lib/types";
@@ -87,11 +86,6 @@
     async function handleBackup() {
         saving = true;
         try { await backupGame(); } finally { saving = false; }
-    }
-
-    async function handleExportSingleFile() {
-        saving = true;
-        try { await exportSingleFile(); } catch (err) { showToast(String(err)); } finally { saving = false; }
     }
 
     async function handlePreview() {
@@ -182,7 +176,7 @@
         if ($canSaveAs) items.push({ label: t("toolbar.saveAs"), action: handleSaveAs, icon: Save, disabled: saving });
         if ($canBackup) items.push({ label: t("toolbar.backup"), action: handleBackup, icon: Download, disabled: saving });
         if ($gameFilename) items.push({ label: t("toolbar.publish"), action: () => publishModalOpen.set(true), icon: Package });
-        if ($gameFilename) items.push({ label: t("toolbar.exportSingleFile"), action: handleExportSingleFile, icon: Globe, disabled: saving });
+        if ($gameFilename) items.push({ label: t("toolbar.exportHtml"), action: () => exportHtmlModalOpen.set(true), icon: Globe });
         return items;
     });
 

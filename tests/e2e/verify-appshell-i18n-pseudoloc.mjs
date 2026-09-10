@@ -457,13 +457,27 @@ async function run() {
     // the Toolbar DOM-order comment near the top of this file). ---
     await page.click('header button >> nth=9');
     await page.waitForSelector('.absolute button', { timeout: 10000 });
-    await page.click('.absolute button >> nth=1'); // "Publish…" (Backup…, Publish…, Export as single file…)
+    await page.click('.absolute button >> nth=1'); // "Publish…" (Backup…, Publish…, Export as HTML…)
     await page.waitForSelector('div[role="dialog"]', { timeout: 10000 });
     assertPseudo('PublishModal title', await page.textContent('div[role="dialog"] h2'));
     assertPseudo('PublishModal Close button', await page.textContent('div[role="dialog"] button >> nth=0'));
     assertPseudo('PublishModal description', await page.textContent('div[role="dialog"] p'));
     assertPseudo('PublishModal "Include walkthrough" label', await page.textContent('div[role="dialog"] label'));
     assertPseudo('PublishModal Publish button', await page.textContent('div[role="dialog"] button >> nth=1'));
+    await closeDialog();
+
+    // --- ExportHtmlModal — same File menu, third item when Backup is present ---
+    await page.click('header button >> nth=9');
+    await page.waitForSelector('.absolute button', { timeout: 10000 });
+    await page.click('.absolute button >> nth=2'); // "Export as HTML…"
+    await page.waitForSelector('div[role="dialog"]', { timeout: 10000 });
+    assertPseudo('ExportHtmlModal title', await page.textContent('div[role="dialog"] h2'));
+    assertPseudo('ExportHtmlModal Close button', await page.textContent('div[role="dialog"] button >> nth=0'));
+    assertPseudo('ExportHtmlModal description', await page.textContent('div[role="dialog"] p'));
+    assertPseudo('ExportHtmlModal CDN option', await page.textContent('div[role="dialog"] label >> nth=0'));
+    assertPseudo('ExportHtmlModal zip option', await page.textContent('div[role="dialog"] label >> nth=1'));
+    assertPseudo('ExportHtmlModal footnote', await page.textContent('div[role="dialog"] p.text-xs'));
+    assertPseudo('ExportHtmlModal Export button', await page.textContent('div[role="dialog"] button >> nth=1'));
     await closeDialog();
 
     // --- Search page — validates whichever branch (results / no games / load error) renders ---

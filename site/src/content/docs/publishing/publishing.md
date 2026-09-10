@@ -51,7 +51,7 @@ If your game is too large, you can try:
 
 * Host larger video/image/sound files on another web site
 
-* Host your game yourself instead - see [Hosting your game](/publishing/hosting) for several options, including one that's just a single file to upload
+* Host your game yourself instead - see [Hosting your game](/publishing/hosting) for several options
 
 
 ## Announcing your game
