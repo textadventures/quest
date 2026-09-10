@@ -10,7 +10,7 @@ public class WalkthroughRunner(IGameDebug game, string walkthrough)
 
     private readonly IGame _game = (IGame) game;
     private bool _cancelled;
-    private IDictionary<string, string> _menuOptions;
+    private IDictionary<string, string>? _menuOptions;
     private bool _pausing;
     private bool _showingMenu;
     private bool _showingQuestion;
@@ -18,9 +18,9 @@ public class WalkthroughRunner(IGameDebug game, string walkthrough)
 
     public int Steps => game.Walkthroughs.Walkthroughs[walkthrough].Steps.Length;
 
-    public event OutputEventHandler Output;
+    public event OutputEventHandler? Output;
 
-    public event ClearBufferEventHandler ClearBuffer;
+    public event ClearBufferEventHandler? ClearBuffer;
 
     public async Task Run()
     {
@@ -125,7 +125,7 @@ public class WalkthroughRunner(IGameDebug game, string walkthrough)
             _showingMenu = false;
             var menuResponse = response[5..];
             WriteLine("  - " + menuResponse);
-            if (_menuOptions.ContainsKey(menuResponse))
+            if (_menuOptions!.ContainsKey(menuResponse))
             {
                 await _game.SetMenuResponse(menuResponse);
             }

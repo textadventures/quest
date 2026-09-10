@@ -35,7 +35,7 @@ public static class ChromeStrings
         ["ShowPanesButton"] = "Show panels",
     };
 
-    public static Dictionary<string, string> Resolve(WorldModel worldModel)
+    public static Dictionary<string, string> Resolve(WorldModel? worldModel)
     {
         var result = new Dictionary<string, string>(Defaults);
         if (worldModel == null) return result;

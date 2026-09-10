@@ -5,6 +5,7 @@
         <RootNamespace>QuestViva.PlayerCore</RootNamespace>
         <PackageId>QuestViva.PlayerCore</PackageId>
         <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
         <LangVersion>default</LangVersion>
         <IsAotCompatible>true</IsAotCompatible>
         <Description>Game player runtime for Quest Viva — load and query .aslx text adventure game files.</Description>
