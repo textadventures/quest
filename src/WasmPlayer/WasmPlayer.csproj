@@ -58,5 +58,8 @@
         <Copy SourceFiles="@(_LibAssets)" DestinationFolder="$(WasmAppDir)lib\"/>
         <Copy SourceFiles="@(_ImageAssets)" DestinationFolder="$(WasmAppDir)lib\images\"/>
         <Copy SourceFiles="@(_TranscriptViewerAssets)" DestinationFolder="$(WasmAppDir)TranscriptViewer\"/>
+        <!-- Manifest of every non-_framework file for AppShell's zip HTML export —
+             keeps that list from drifting when assets are added/removed above. -->
+        <Exec Command="node scripts/write-export-manifest.mjs &quot;$(WasmAppDir)&quot;" WorkingDirectory="$(MSBuildThisFileDirectory)"/>
     </Target>
 </Project>

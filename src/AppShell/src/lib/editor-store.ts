@@ -829,31 +829,6 @@ function bytesToBase64(bytes: Uint8Array): string {
 
 export type ExportHtmlMode = "cdn" | "zip";
 
-// Shell files that sit next to index.html in a WasmPlayer AppBundle (everything the
-// template + wasm-player.js need that isn't listed in _framework/dotnet.boot.js).
-// Keep in sync with src/WasmPlayer's published layout — lib/images is derived from
-// jquery-ui.min.css at export time rather than hard-coded here.
-const PLAYER_SHELL_FILES = [
-    "chrome.css",
-    "favicon.svg",
-    "grid.js",
-    "logo.svg",
-    "package.json",
-    "player.js",
-    "playercore.css",
-    "playercore.htm",
-    "playercore.js",
-    "quest-config.js",
-    "wasm-player.js",
-    "WasmPlayer.runtimeconfig.json",
-    "lib/jquery-2.1.1.min.js",
-    "lib/jquery-ui.min.css",
-    "lib/jquery-ui.min.js",
-    "lib/jquery.multi-open-accordion-1.5.3.js",
-    "lib/paper.js",
-    "TranscriptViewer/index.html",
-];
-
 function playerBaseUrl(): string {
     const base = PUBLIC_WASM_PLAYER_URL || "/player/";
     return base.endsWith("/") ? base : base + "/";
@@ -973,18 +948,6 @@ function frameworkPathsFromBoot(bootJs: string): string[] {
     return [...names].map(n => `_framework/${n}`);
 }
 
-function jqueryUiImagePaths(css: string): string[] {
-    const paths = new Set<string>();
-    for (const match of css.matchAll(/url\((['"]?)([^)'"]+)\1\)/g)) {
-        const raw = match[2].split("?")[0];
-        if (!raw || raw.startsWith("data:")) continue;
-        // jquery-ui.min.css lives in lib/, so relative urls like images/foo.png resolve there.
-        const resolved = raw.startsWith("/") ? raw.slice(1) : ("lib/" + raw.replace(/^\.\//, ""));
-        if (resolved.startsWith("lib/images/")) paths.add(resolved);
-    }
-    return [...paths];
-}
-
 async function fetchPlayerFile(playerBase: string, relativePath: string): Promise<Uint8Array | null> {
     const res = await fetch(playerBase + relativePath);
     if (res.status === 404) return null;
@@ -1020,28 +983,32 @@ async function exportHtmlZip(): Promise<void> {
     const template = await templateResponse.text();
     const html = buildEmbeddedPlayerHtml(template, packageBytes, embeddedFilename, null);
 
+    // Shell file list is generated into the AppBundle at WasmPlayer build time
+    // (scripts/write-export-manifest.mjs) so it can't drift from the layout.
+    const manifestResponse = await fetch(`${playerBase}export-manifest.json`);
+    if (!manifestResponse.ok) {
+        throw new Error(`Export as HTML: player export manifest missing (HTTP ${manifestResponse.status}).`);
+    }
+    const shellFiles = await manifestResponse.json() as unknown;
+    if (!Array.isArray(shellFiles) || shellFiles.some(p => typeof p !== "string")) {
+        throw new Error("Export as HTML: invalid player export manifest.");
+    }
+    // quest-config.js is local-hosting config; the embedded export drops its <script>
+    // tag, so omit it from the zip rather than shipping an unused file.
+    const shellPaths = (shellFiles as string[]).filter(p => p !== "quest-config.js");
+
     const bootBytes = await fetchPlayerFile(playerBase, "_framework/dotnet.boot.js");
     if (!bootBytes) throw new Error("Export as HTML: WasmPlayer boot manifest missing from /player/.");
-    const bootText = new TextDecoder().decode(bootBytes);
+    const frameworkPaths = frameworkPathsFromBoot(new TextDecoder().decode(bootBytes));
 
-    const cssBytes = await fetchPlayerFile(playerBase, "lib/jquery-ui.min.css");
-    const imagePaths = cssBytes ? jqueryUiImagePaths(new TextDecoder().decode(cssBytes)) : [];
-
-    // Required shell files must exist; TranscriptViewer / runtimeconfig are nice-to-have.
-    const optionalShell = new Set(["TranscriptViewer/index.html", "WasmPlayer.runtimeconfig.json", "package.json", "quest-config.js"]);
-    const frameworkPaths = frameworkPathsFromBoot(bootText);
-
-    const paths = [...new Set([...PLAYER_SHELL_FILES, ...imagePaths, ...frameworkPaths])];
+    const paths = [...new Set([...shellPaths, ...frameworkPaths])];
     const zipEntries = await fetchPlayerFiles(playerBase, paths);
 
-    for (const path of PLAYER_SHELL_FILES) {
-        if (optionalShell.has(path)) continue;
+    for (const path of shellPaths) {
         if (!zipEntries[path]) throw new Error(`Export as HTML: required player file missing: ${path}`);
     }
-    // Embedded index replaces the stock start-screen template; drop quest-config.js since
-    // buildEmbeddedPlayerHtml already removed its <script> tag (game is inlined).
+    // Embedded index replaces the stock start-screen template.
     zipEntries["index.html"] = new TextEncoder().encode(html);
-    delete zipEntries["quest-config.js"];
 
     const zipBytes = zipSync(zipEntries);
     triggerDownload(zipBytes, baseName + "-html.zip");
