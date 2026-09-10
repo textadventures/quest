@@ -7,7 +7,7 @@ public class EditableObjectReference : IEditableObjectReference
     private readonly string _attribute;
     private readonly EditorController _controller;
     private readonly Element _parent;
-    private Element _object;
+    private Element? _object;
 
     public EditableObjectReference(EditorController controller, Element obj, Element parent, string attribute)
     {
@@ -23,19 +23,19 @@ public class EditableObjectReference : IEditableObjectReference
         remove { }
     }
 
-    public object GetUnderlyingValue()
+    public object? GetUnderlyingValue()
     {
         return _object;
     }
 
     public string DisplayString()
     {
-        return "Object: " + _object.Name;
+        return "Object: " + _object!.Name;
     }
 
     public string Reference
     {
-        get => _object.Name;
+        get => _object!.Name;
         set
         {
             _object = string.IsNullOrEmpty(value) ? null : _controller.WorldModel.Elements.Get(value);

@@ -12,8 +12,8 @@ public class EditableScriptsUpdatedEventArgs : EventArgs
         UpdatedScriptEventArgs = args;
     }
 
-    public IEditableScript UpdatedScript { get; private set; }
-    public EditableScriptUpdatedEventArgs UpdatedScriptEventArgs { get; private set; }
+    public IEditableScript? UpdatedScript { get; private set; }
+    public EditableScriptUpdatedEventArgs? UpdatedScriptEventArgs { get; private set; }
 }
 
 public interface IEditableScripts : IDataWrapper
@@ -21,7 +21,7 @@ public interface IEditableScripts : IDataWrapper
     IEnumerable<IEditableScript> Scripts { get; }
     IEditableScript this[int index] { get; }
     int Count { get; }
-    string Owner { get; }
+    string? Owner { get; }
     string Code { get; set; }
     void AddNew(string keyword, string elementName);
     event EventHandler<EditableScriptsUpdatedEventArgs> Updated;

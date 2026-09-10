@@ -1,6 +1,7 @@
 ﻿namespace QuestViva.EditorCore;
 
 internal class EditableDataWrapper<TSource, TWrapped>
+    where TSource : notnull
 {
     private readonly Func<EditorController, TSource, TWrapped> _getNewWrappedInstance;
     private readonly Dictionary<TSource, TWrapped> _instances = new();
@@ -12,13 +13,12 @@ internal class EditableDataWrapper<TSource, TWrapped>
 
     public TWrapped GetInstance(EditorController controller, TSource source)
     {
-        TWrapped instance;
-        if (_instances.TryGetValue(source, out instance))
+        if (_instances.TryGetValue(source, out var existing))
         {
-            return instance;
+            return existing;
         }
 
-        instance = _getNewWrappedInstance(controller, source);
+        var instance = _getNewWrappedInstance(controller, source);
         _instances.Add(source, instance);
         return instance;
     }

@@ -13,28 +13,28 @@ public class ScriptCommandEditorData : IEditorData
         _script.Updated += OnScriptUpdated;
     }
 
-    public event EventHandler Changed;
+    public event EventHandler? Changed;
 
-    public string Name => null;
+    public string? Name => null;
 
-    public object GetAttribute(string attribute)
+    public object? GetAttribute(string attribute)
     {
         return _controller.WrapValue(_script.GetParameter(attribute));
     }
 
-    public ValidationResult SetAttribute(string attribute, object value)
+    public ValidationResult SetAttribute(string attribute, object? value)
     {
         _script.SetParameter(attribute, value);
 
         return new ValidationResult {Valid = true};
     }
 
-    public IEnumerable<string> GetAffectedRelatedAttributes(string attribute)
+    public IEnumerable<string>? GetAffectedRelatedAttributes(string attribute)
     {
         return null;
     }
 
-    public string GetSelectedFilter(string filterGroup)
+    public string? GetSelectedFilter(string filterGroup)
     {
         return null;
     }
@@ -45,14 +45,14 @@ public class ScriptCommandEditorData : IEditorData
 
     public bool ReadOnly { get; set; }
 
-    public IEnumerable<string> GetVariablesInScope()
+    public IEnumerable<string>? GetVariablesInScope()
     {
         return _script.GetVariablesInScope();
     }
 
     public bool IsDirectlySaveable => true;
 
-    private void OnScriptUpdated(object sender, EditableScriptUpdatedEventArgs e)
+    private void OnScriptUpdated(object? sender, EditableScriptUpdatedEventArgs e)
     {
         if (Changed != null)
         {

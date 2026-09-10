@@ -39,8 +39,8 @@ public class EditableDictionary<T> : IEditableDictionary<T>, IDataWrapper
         throw new NotImplementedException();
     }
 
-    public event EventHandler<EditableListUpdatedEventArgs<T>> Added;
-    public event EventHandler<EditableListUpdatedEventArgs<T>> Removed;
+    public event EventHandler<EditableListUpdatedEventArgs<T>>? Added;
+    public event EventHandler<EditableListUpdatedEventArgs<T>>? Removed;
 
     // currently unused - we currently only use EditableDictionary<string>, and we don't
     // use the Updated event as the same behaviour is implemented with a combination of Added and Removed.
@@ -61,7 +61,7 @@ public class EditableDictionary<T> : IEditableDictionary<T>, IDataWrapper
             foreach (var item in _wrappedItems)
             {
                 // TO DO: We will need some kind of projection function for non-string T's
-                result.Add(item.Key, item.Value.Value as string);
+                result.Add(item.Key, (item.Value.Value as string)!);
             }
 
             return result;
@@ -70,7 +70,7 @@ public class EditableDictionary<T> : IEditableDictionary<T>, IDataWrapper
 
     public void Add(string key, T value)
     {
-        string undoEntry = null;
+        string? undoEntry = null;
         if (typeof(T) == typeof(string))
         {
             undoEntry = string.Format("Add '{0}={1}'", key, value as string);
@@ -88,7 +88,7 @@ public class EditableDictionary<T> : IEditableDictionary<T>, IDataWrapper
 
     public void Remove(params string[] keys)
     {
-        string undoEntry = null;
+        string? undoEntry = null;
         if (typeof(T) == typeof(string))
         {
             undoEntry = string.Format("Remove '{0}'", string.Join(",", keys));
@@ -138,7 +138,7 @@ public class EditableDictionary<T> : IEditableDictionary<T>, IDataWrapper
         return result;
     }
 
-    public string Owner
+    public string? Owner
     {
         get
         {
@@ -194,12 +194,12 @@ public class EditableDictionary<T> : IEditableDictionary<T>, IDataWrapper
         }
     }
 
-    private void OnSourceAdded(object sender, QuestDictionaryUpdatedEventArgs<T> e)
+    private void OnSourceAdded(object? sender, QuestDictionaryUpdatedEventArgs<T> e)
     {
         AddWrappedItem(e.Key, e.Item, (EditorUpdateSource) e.Source, e.Index);
     }
 
-    private void OnSourceRemoved(object sender, QuestDictionaryUpdatedEventArgs<T> e)
+    private void OnSourceRemoved(object? sender, QuestDictionaryUpdatedEventArgs<T> e)
     {
         RemoveWrappedItem(_wrappedItems[e.Key], (EditorUpdateSource) e.Source, e.Index);
     }
@@ -209,7 +209,7 @@ public class EditableDictionary<T> : IEditableDictionary<T>, IDataWrapper
         var newSource = (QuestDictionary<T>) _source.Clone();
         newSource.Locked = false;
         parent.Fields.Set(attribute, newSource);
-        newSource = (QuestDictionary<T>) parent.Fields.Get(attribute);
+        newSource = (QuestDictionary<T>) parent.Fields.Get(attribute)!;
         return GetNewInstance(_controller, newSource);
     }
 

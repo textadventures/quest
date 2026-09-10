@@ -6,13 +6,14 @@ namespace QuestViva.EditorCore;
 
 public class EditableScriptData
 {
-    private readonly Expression<bool> _visibilityExpression;
+    private readonly Expression<bool>? _visibilityExpression;
 
     public EditableScriptData(Element editor, WorldModel worldModel, int order)
     {
         Order = order;
         DisplayString = editor.Fields.GetString("display");
-        Category = editor.Fields.GetString("category");
+        // Only created for editors that have a category - see EditableScriptFactory.IsScriptEditor
+        Category = editor.Fields.GetString("category")!;
         CreateString = editor.Fields.GetString("create");
         AdderDisplayString = editor.Fields.GetString("add");
         IsVisibleInSimpleMode = !editor.Fields.GetAsType<bool>("advanced");
@@ -25,12 +26,12 @@ public class EditableScriptData
         }
     }
 
-    public string DisplayString { get; }
+    public string? DisplayString { get; }
     public string Category { get; }
-    public string CreateString { get; private set; }
-    public string AdderDisplayString { get; private set; }
+    public string? CreateString { get; private set; }
+    public string? AdderDisplayString { get; private set; }
     public bool IsVisibleInSimpleMode { get; }
-    public string CommonButton { get; private set; }
+    public string? CommonButton { get; private set; }
     public int Order { get; private set; }
 
     public async Task<bool> IsVisible()
@@ -56,7 +57,8 @@ internal class EditableScriptFactory
         foreach (var editor in worldModel.Elements.GetElements(ElementType.Editor).Where(IsScriptEditor))
         {
             var appliesTo = editor.Fields.GetString("appliesto");
-            ScriptData.Add(appliesTo, new EditableScriptData(editor, worldModel, order++));
+            // Script editors always name the script command they apply to
+            ScriptData.Add(appliesTo!, new EditableScriptData(editor, worldModel, order++));
         }
     }
 
@@ -75,12 +77,12 @@ internal class EditableScriptFactory
 
     internal EditableScriptBase CreateEditableScript(IScript script)
     {
-        EditableScriptBase newScript;
-
-        if (_cache.TryGetValue(script, out newScript))
+        if (_cache.TryGetValue(script, out var cachedScript))
         {
-            return newScript;
+            return cachedScript;
         }
+
+        EditableScriptBase newScript;
 
         if (script.Keyword == "if")
         {
@@ -89,9 +91,9 @@ internal class EditableScriptFactory
         else
         {
             var newEditableScript = new EditableScript(_controller, script, _worldModel.UndoLogger);
-            if (ScriptData.ContainsKey(script.Keyword))
+            if (script.Keyword != null && ScriptData.TryGetValue(script.Keyword, out var scriptData))
             {
-                newEditableScript.DisplayTemplate = ScriptData[script.Keyword].DisplayString;
+                newEditableScript.DisplayTemplate = scriptData.DisplayString;
             }
 
             newScript = newEditableScript;

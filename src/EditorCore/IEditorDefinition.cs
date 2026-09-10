@@ -7,11 +7,11 @@ public interface IEditorDefinition
     /// ("msg", "(function)OutputTextNoBr") or element type ("object") this
     /// editor definition describes.
     /// </summary>
-    string AppliesTo { get; }
+    string? AppliesTo { get; }
 
     IDictionary<string, IEditorTab> Tabs { get; }
     IEnumerable<IEditorControl> Controls { get; }
-    string Description { get; }
-    string OriginalPattern { get; }
+    string? Description { get; }
+    string? OriginalPattern { get; }
     string GetDefaultFilterName(string filterGroupName, IEditorData data);
 }

@@ -183,7 +183,7 @@ internal record AttributeDataItem(
     string Name,
     string? Value,
     bool IsInherited,
-    string Source,
+    string? Source,
     bool IsDefaultType,
     string Type);
 
@@ -1468,13 +1468,13 @@ public partial class WasmEditorBridge
     {
         foreach (var ctrl in controls.Where(c => c.ControlType == "dropdowntypes"))
         {
-            attrs[ctrl.Id] = _controller!.GetSelectedDropDownType(ctrl, elementKey);
+            attrs[ctrl.Id!] = _controller!.GetSelectedDropDownType(ctrl, elementKey);
         }
 
         foreach (var ctrl in controls.Where(c => c.ControlType == "multi" && c.Attribute != null))
         {
             var val = data.GetAttribute(ctrl.Attribute!);
-            attrs[ctrl.Id] = val switch
+            attrs[ctrl.Id!] = val switch
             {
                 null => "null",
                 string => "string",
@@ -1507,8 +1507,8 @@ public partial class WasmEditorBridge
                 continue;
             }
 
-            attrs[ctrl.Id] = data.GetSelectedFilter(filterGroupName)
-                ?? ctrl.Parent.GetDefaultFilterName(filterGroupName, data);
+            attrs[ctrl.Id!] = data.GetSelectedFilter(filterGroupName)
+                ?? ctrl.Parent!.GetDefaultFilterName(filterGroupName, data);
         }
 
         // Matches the old Quest 5 desktop editor's RichTextControl.Populate: show real linebreaks
@@ -2284,8 +2284,8 @@ public partial class WasmEditorBridge
                 var increment = isNumeric ? GetNumericHint(ctrl, "increment") : null;
 
                 return new ExpressionTemplateControlData(
-                    ctrl.Attribute ?? ctrl.Id,
-                    ctrl.ControlType,
+                    (ctrl.Attribute ?? ctrl.Id)!,
+                    ctrl.ControlType!,
                     ctrl.Caption,
                     paramValue,
                     simpleEditor,
@@ -2300,8 +2300,8 @@ public partial class WasmEditorBridge
 
         return JsonSerializer.Serialize(
             new ExpressionTemplateData(
-                definition.Description,
-                definition.OriginalPattern,
+                definition.Description!,
+                definition.OriginalPattern!,
                 controls
             ),
             WasmEditorJsonContext.Default.ExpressionTemplateData
@@ -2534,8 +2534,8 @@ public partial class WasmEditorBridge
             return JsonSerializer.Serialize(empty, WasmEditorJsonContext.Default.ExitsData);
         }
 
-        var directions = exitsControl.GetListString("compass").ToList();
-        var types = exitsControl.GetDictionary("compasstypes");
+        var directions = exitsControl.GetListString("compass")!.ToList();
+        var types = exitsControl.GetDictionary("compasstypes")!;
 
         var compass = directions.Select((d, i) => new CompassDirectionInfo(
             d, types[d], directions[OppositeDirs[i]], types[directions[OppositeDirs[i]]],
@@ -2583,8 +2583,8 @@ public partial class WasmEditorBridge
             return "error:No exits control found";
         }
 
-        var directions = exitsControl.GetListString("compass").ToList();
-        var types = exitsControl.GetDictionary("compasstypes");
+        var directions = exitsControl.GetListString("compass")!.ToList();
+        var types = exitsControl.GetDictionary("compasstypes")!;
         var dirIndex = directions.IndexOf(direction);
         if (dirIndex < 0)
         {
@@ -2638,7 +2638,7 @@ public partial class WasmEditorBridge
             return "error:No exits control found";
         }
 
-        var types = exitsControl.GetDictionary("compasstypes");
+        var types = exitsControl.GetDictionary("compasstypes")!;
         if (!types.TryGetValue(direction, out var type))
         {
             return "error:Unknown direction";
@@ -4138,7 +4138,7 @@ public partial class WasmEditorBridge
         var increment = isNumericSimpleEditor ? GetNumericHint(ctrl, "increment") : null;
 
         return new ScriptControlData(
-            ctrl.ControlType,
+            ctrl.ControlType!,
             ctrl.Caption,
             ctrl.Attribute,
             value,
@@ -4357,7 +4357,7 @@ public partial class WasmEditorBridge
         var nullable = ctrl.GetBool("nullable");
         var sameRow = ctrl.GetBool("samerow");
 
-        return new ControlInfo(attribute, ctrl.ControlType, ctrl.Caption ?? ctrl.GetString("selfcaption"), options,
+        return new ControlInfo(attribute, ctrl.ControlType!, ctrl.Caption ?? ctrl.GetString("selfcaption"), options,
             null, null, textProcessorCommands, addPrompt, Source: source,
             Advanced: !ctrl.IsControlVisibleInSimpleMode,
             KeyPrompt: keyPrompt, ValuePrompt: valuePrompt, SourceExclude: sourceExclude, SourceType: sourceType,

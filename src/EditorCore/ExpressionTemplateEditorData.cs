@@ -13,23 +13,24 @@ internal class ExpressionTemplateEditorData : IEditorData
         // We create the parameter dictionary in the same way as the command parser, so
         // we end up with a dictionary like "object=myobject".
 
-        _parameters = Engine.Utility.Populate(definition.Pattern, expression);
-        _originalPattern = definition.OriginalPattern;
+        // Expression template editors always define a pattern and its original form
+        _parameters = Engine.Utility.Populate(definition.Pattern!, expression);
+        _originalPattern = definition.OriginalPattern!;
         _parentData = parentData;
     }
 
-    public event EventHandler Changed;
+    public event EventHandler? Changed;
 
     public string Name => throw new NotImplementedException();
 
-    public object GetAttribute(string attribute)
+    public object? GetAttribute(string attribute)
     {
         return _parameters[attribute];
     }
 
-    public ValidationResult SetAttribute(string attribute, object value)
+    public ValidationResult SetAttribute(string attribute, object? value)
     {
-        _parameters[attribute] = (string) value;
+        _parameters[attribute] = (string) value!;
         if (Changed != null)
         {
             Changed(this, new EventArgs());
@@ -38,12 +39,12 @@ internal class ExpressionTemplateEditorData : IEditorData
         return new ValidationResult {Valid = true};
     }
 
-    public IEnumerable<string> GetAffectedRelatedAttributes(string attribute)
+    public IEnumerable<string>? GetAffectedRelatedAttributes(string attribute)
     {
         throw new NotImplementedException();
     }
 
-    public string GetSelectedFilter(string filterGroup)
+    public string? GetSelectedFilter(string filterGroup)
     {
         throw new NotImplementedException();
     }
@@ -55,7 +56,7 @@ internal class ExpressionTemplateEditorData : IEditorData
 
     public bool ReadOnly { get; set; }
 
-    public IEnumerable<string> GetVariablesInScope()
+    public IEnumerable<string>? GetVariablesInScope()
     {
         return _parentData.GetVariablesInScope();
     }
