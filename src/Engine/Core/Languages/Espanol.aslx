@@ -711,7 +711,7 @@
   <template name="TranscriptAlreadyDisabled">La transcripción ya está desactivada.</template>
   <template name="TranscriptEnterFilename">Por favor ingresa un nombre para la transcripción.</template>
   <dynamictemplate name="ToDisableTranscript"><![CDATA["<b><i>[  Escribe </i>" + Template("TranscriptOffAllCaps") + "<i> para desactivar la transcripción.  ]</i></b>"]]></dynamictemplate>
-  <dynamictemplate name="TranscriptEnabledMessage"><![CDATA["<hr/>Inicio de la transcripción de:<br/><b>TÍTULO: </b>" + game.gamename + "<br/><b>AUTOR: </b>" + game.author + "<br/><b>VERSIÓN: </b>" + game.version + "<br/><b>IFID: </b>" + game.gameid]]></dynamictemplate>
+  <dynamictemplate name="TranscriptEnabledMessage"><![CDATA["<hr/>Inicio de la transcripción de:<br/><b>TÍTULO: </b>" + game.gamename + "<br/><b>AUTOR: </b>" + game.author + "<br/><b>VERSIÓN: </b>" + game.version + (HasInt(game, "versioncode") ? (" (" + game.versioncode + ")") : "") + "<br/><b>IFID: </b>" + game.gameid]]></dynamictemplate>
   <template name="TranscriptOffAllCaps">TRANSCRIPCIÓN APAGADA</template>
   <template name="TranscriptViewerMessage">Tus transcripciones se guardan en el localStorage de tu navegador. Puedes verlas, descargarlas o eliminarlas aquí:</template>
   <template name="TranscriptViewerLinkText">Tus transcripciones</template>

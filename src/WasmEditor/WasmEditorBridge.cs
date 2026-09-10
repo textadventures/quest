@@ -62,7 +62,10 @@ internal record ControlInfo(
     int? Width = null,
     // <bold/> - renders a "label" control's caption in bold, e.g. to draw attention to a
     // warning-style label (a locked exit's "to unlock this" note, a disabled-feature notice).
-    bool Bold = false);
+    bool Bold = false,
+    // <samerow/> - pack this control onto the same horizontal row as the previous control
+    // in the property editor (e.g. Version + Version Code on the Setup tab).
+    bool SameRow = false);
 
 internal record TabInfo(string? Caption, List<ControlInfo> Controls, string? HelpUrl = null);
 
@@ -4352,6 +4355,7 @@ public partial class WasmEditorBridge
         // number, ...) - the dictionary/list/multi controltypes above return early and never
         // reach here, so this can't misfire on something with no single value to clear.
         var nullable = ctrl.GetBool("nullable");
+        var sameRow = ctrl.GetBool("samerow");
 
         return new ControlInfo(attribute, ctrl.ControlType, ctrl.Caption ?? ctrl.GetString("selfcaption"), options,
             null, null, textProcessorCommands, addPrompt, Source: source,
@@ -4362,7 +4366,8 @@ public partial class WasmEditorBridge
             Minimum: minimum, Maximum: maximum, Increment: increment,
             Nullable: nullable,
             Width: ctrl.Width,
-            Bold: bold);
+            Bold: bold,
+            SameRow: sameRow);
     }
 
     // <minimum>/<maximum>/<increment> can be authored as either an int or a double literal in

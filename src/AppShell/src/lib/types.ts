@@ -78,6 +78,8 @@ export interface ControlInfo {
   width?: number | null
   // <bold/> - renders a "label" control's caption in bold.
   bold?: boolean
+  // <samerow/> - pack this control onto the same horizontal row as the previous control.
+  sameRow?: boolean
 }
 
 export interface TabInfo {

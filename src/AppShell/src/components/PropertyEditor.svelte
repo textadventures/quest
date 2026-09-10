@@ -200,6 +200,20 @@
         return { main: controls.filter(c => !c.advanced), advanced };
     }
 
+    // <samerow/> - pack consecutive controls onto one horizontal flex row. A control with
+    // sameRow joins the previous row; one without starts a new row.
+    function groupControlRows(controls: ControlInfo[]): ControlInfo[][] {
+        const rows: ControlInfo[][] = [];
+        for (const ctrl of controls) {
+            if (ctrl.sameRow && rows.length > 0) {
+                rows[rows.length - 1].push(ctrl);
+            } else {
+                rows.push([ctrl]);
+            }
+        }
+        return rows;
+    }
+
     function attrValue(attribute: string): string | null {
         return $selectedData?.attributes[attribute] ?? null;
     }
@@ -475,8 +489,16 @@
             <div class="flex-1 overflow-hidden flex flex-col min-h-0 {readOnly ? "pointer-events-none opacity-60" : ""}">
                 <AttributesEditor>
                     {#snippet extraControls()}
-                        {#each main as ctrl, i (i)}
-                            {@render controlRow(ctrl)}
+                        {#each groupControlRows(main) as row, ri (ri)}
+                            {#if row.length === 1}
+                                {@render controlRow(row[0])}
+                            {:else}
+                                <div class="flex flex-wrap items-start gap-x-2">
+                                    {#each row as ctrl, ci (ci)}
+                                        {@render controlRow(ctrl)}
+                                    {/each}
+                                </div>
+                            {/if}
                         {/each}
                         {@render advancedExpander(advanced)}
                     {/snippet}
@@ -485,8 +507,16 @@
         {:else}
             {@const { main, advanced } = partitionControls(viewControls)}
             <div class="flex-1 overflow-y-auto {readOnly ? "pointer-events-none opacity-60" : ""}">
-                {#each main as ctrl, i (i)}
-                    {@render controlRow(ctrl)}
+                {#each groupControlRows(main) as row, ri (ri)}
+                    {#if row.length === 1}
+                        {@render controlRow(row[0])}
+                    {:else}
+                        <div class="flex flex-wrap items-start gap-x-2">
+                            {#each row as ctrl, ci (ci)}
+                                {@render controlRow(ctrl)}
+                            {/each}
+                        </div>
+                    {/if}
                 {/each}
                 {@render advancedExpander(advanced)}
             </div>
@@ -967,8 +997,16 @@
             <summary class="px-3 pt-2.5 pb-1.5 text-xs font-semibold uppercase text-surface-600-400 cursor-pointer select-none">
                 {t("common.advanced")}
             </summary>
-            {#each controls as ctrl, i (i)}
-                {@render controlRow(ctrl)}
+            {#each groupControlRows(controls) as row, ri (ri)}
+                {#if row.length === 1}
+                    {@render controlRow(row[0])}
+                {:else}
+                    <div class="flex flex-wrap items-start gap-x-2">
+                        {#each row as ctrl, ci (ci)}
+                            {@render controlRow(ctrl)}
+                        {/each}
+                    </div>
+                {/if}
             {/each}
         </details>
     {/if}

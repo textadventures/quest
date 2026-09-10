@@ -135,6 +135,7 @@
   <template name="EditorGameAuthor">Autor</template>
   <template name="EditorGameDisplaytitle">Titel und Autor anzeigen, wenn das Spiel beginnt</template>
   <template name="EditorGameVersion">Version</template>
+  <template name="EditorGameVersionCode">Versionscode</template>
   <template name="EditorGameTheGameIDbelow">Die Spiel-ID wird verwendet, um dein Spiel eindeutig zu identifizieren. Du solltest nur eine neue ID generieren, wenn du ein Spiel kopiert hast, um ein neues zu erstellen.</template>
   <template name="EditorGameGameID">Spiel-ID</template>
   <template name="EditorGameCategory">Kategorie</template>
