@@ -5,7 +5,7 @@ namespace QuestViva.EditorCore;
 
 internal class EditorAttributeData : IEditorAttributeData
 {
-    public EditorAttributeData(string attributeName, bool isInherited, string source, bool isDefaultType)
+    public EditorAttributeData(string attributeName, bool isInherited, string? source, bool isDefaultType)
     {
         AttributeName = attributeName;
         IsInherited = isInherited;
@@ -17,7 +17,7 @@ internal class EditorAttributeData : IEditorAttributeData
 
     public bool IsInherited { get; }
 
-    public string Source { get; set; }
+    public string? Source { get; set; }
 
     public bool IsDefaultType { get; set; }
 }
@@ -37,11 +37,11 @@ internal class EditorData : IEditorDataExtendedAttributeInfo
         element.Fields.AttributeChangedSilent += Fields_AttributeChanged;
     }
 
-    public event EventHandler Changed;
+    public event EventHandler? Changed;
 
     public string Name => _element.Name;
 
-    public object GetAttribute(string attribute)
+    public object? GetAttribute(string attribute)
     {
         if (attribute == "name" && _element.Fields[FieldDefinitions.Anonymous])
         {
@@ -51,7 +51,7 @@ internal class EditorData : IEditorDataExtendedAttributeInfo
         return _controller.WrapValue(_element.Fields.Get(attribute), _element, attribute);
     }
 
-    public ValidationResult SetAttribute(string attribute, object value)
+    public ValidationResult SetAttribute(string attribute, object? value)
     {
         if (attribute == "name")
         {
@@ -85,7 +85,7 @@ internal class EditorData : IEditorDataExtendedAttributeInfo
             value = wrapper.GetUnderlyingValue();
         }
 
-        string oldName = null;
+        string? oldName = null;
         if (attribute == "name")
         {
             oldName = _element.Name;
@@ -95,7 +95,7 @@ internal class EditorData : IEditorDataExtendedAttributeInfo
 
         if (attribute == "name")
         {
-            _controller.UpdateDictionariesReferencingRenamedObject(oldName, (string) value);
+            _controller.UpdateDictionariesReferencingRenamedObject(oldName, (string) value!);
         }
 
         return new ValidationResult {Valid = true};
@@ -103,7 +103,7 @@ internal class EditorData : IEditorDataExtendedAttributeInfo
 
     // When the "anonymous" field is updated, that affects how the "name" attribute is displayed.
 
-    public IEnumerable<string> GetAffectedRelatedAttributes(string attribute)
+    public IEnumerable<string>? GetAffectedRelatedAttributes(string attribute)
     {
         if (attribute == "anonymous")
         {
@@ -113,10 +113,9 @@ internal class EditorData : IEditorDataExtendedAttributeInfo
         return null;
     }
 
-    public string GetSelectedFilter(string filterGroup)
+    public string? GetSelectedFilter(string filterGroup)
     {
-        string result;
-        _filters.TryGetValue(filterGroup, out result);
+        _filters.TryGetValue(filterGroup, out var result);
         return result;
     }
 
@@ -154,7 +153,7 @@ internal class EditorData : IEditorDataExtendedAttributeInfo
 
     public bool IsLibraryElement => _element.MetaFields[MetaFieldDefinitions.Library];
 
-    public string Filename => _element.MetaFields[MetaFieldDefinitions.Filename];
+    public string? Filename => _element.MetaFields[MetaFieldDefinitions.Filename];
 
     public void MakeElementLocal()
     {
@@ -173,14 +172,14 @@ internal class EditorData : IEditorDataExtendedAttributeInfo
         set { }
     }
 
-    public IEnumerable<string> GetVariablesInScope()
+    public IEnumerable<string>? GetVariablesInScope()
     {
         return null;
     }
 
     public bool IsDirectlySaveable => true;
 
-    private void Fields_AttributeChanged(object sender, AttributeChangedEventArgs e)
+    private void Fields_AttributeChanged(object? sender, AttributeChangedEventArgs e)
     {
         if (Changed != null)
         {

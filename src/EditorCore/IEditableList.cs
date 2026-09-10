@@ -4,7 +4,7 @@ namespace QuestViva.EditorCore;
 
 public class EditableListUpdatedEventArgs<T> : EventArgs
 {
-    public IEditableListItem<T> UpdatedItem { get; set; }
+    public required IEditableListItem<T> UpdatedItem { get; set; }
     public int Index { get; set; }
     public EditorUpdateSource Source { get; set; }
 }
@@ -14,7 +14,7 @@ public interface IEditableList<T> : IEnumerable
     IDictionary<string, IEditableListItem<T>> Items { get; }
     IEnumerable<KeyValuePair<string, string>> DisplayItems { get; }
     bool Locked { get; }
-    string Owner { get; }
+    string? Owner { get; }
     IEnumerable<IEditableListItem<T>> ItemsList { get; }
     event EventHandler<EditableListUpdatedEventArgs<T>> Added;
     event EventHandler<EditableListUpdatedEventArgs<T>> Removed;
@@ -39,7 +39,7 @@ public interface IEditableDictionary<T>
     IEnumerable<KeyValuePair<string, string>> DisplayItems { get; }
     T this[string key] { get; }
     bool Locked { get; }
-    string Owner { get; }
+    string? Owner { get; }
     event EventHandler<EditableListUpdatedEventArgs<T>> Added;
     event EventHandler<EditableListUpdatedEventArgs<T>> Removed;
     event EventHandler<EditableListUpdatedEventArgs<T>> Updated;

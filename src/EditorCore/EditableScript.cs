@@ -15,19 +15,20 @@ public class EditableScript : EditableScriptBase, IEditableScript
     internal EditableScript(EditorController controller, IScript script, UndoLogger undoLogger)
         : base(controller, script, undoLogger)
     {
-        _editorName = Script.Keyword;
+        // An editable script always wraps a single script command, which has a keyword
+        _editorName = Script.Keyword!;
     }
 
-    internal string DisplayTemplate { get; set; }
+    internal string? DisplayTemplate { get; set; }
 
-    public override string DisplayString(int index, object newValue)
+    public override string DisplayString(int index, object? newValue)
     {
         // This version of DisplayString is used while we are editing an attribute value
         // as we don't want to save updates for every keypress
 
         if (string.IsNullOrEmpty(DisplayTemplate))
         {
-            return Script == null ? null : Script.Save();
+            return Script.Save();
         }
 
         var result = DisplayTemplate;
@@ -39,7 +40,7 @@ public class EditableScript : EditableScriptBase, IEditableScript
             var attributeNum = int.Parse(m.Groups["attribute"].Value);
             string attributeValue;
 
-            object value;
+            object? value;
             if (attributeNum == index)
             {
                 value = newValue;
@@ -95,22 +96,22 @@ public class EditableScript : EditableScriptBase, IEditableScript
         set => _editorName = value;
     }
 
-    public override object GetParameter(string index)
+    public override object? GetParameter(string index)
     {
         if (EditorName.StartsWith("(function)"))
         {
             if (index == "script")
             {
-                return FunctionCallScript.GetFunctionCallParameterScript();
+                return FunctionCallScript!.GetFunctionCallParameterScript();
             }
 
-            return FunctionCallScript.GetFunctionCallParameter(int.Parse(index));
+            return FunctionCallScript!.GetFunctionCallParameter(int.Parse(index));
         }
 
         return Script.GetParameter(int.Parse(index));
     }
 
-    public override void SetParameter(string index, object value)
+    public override void SetParameter(string index, object? value)
     {
         var valueToSet = value;
         var wrappedValue = value as IDataWrapper;
@@ -123,12 +124,12 @@ public class EditableScript : EditableScriptBase, IEditableScript
         {
             if (index == "script")
             {
-                FunctionCallScript.SetFunctionCallParameterScript(valueToSet as IScript);
+                FunctionCallScript!.SetFunctionCallParameterScript(valueToSet as IScript);
                 RaiseUpdated(new EditableScriptUpdatedEventArgs {IsNestedScriptUpdate = true});
                 return;
             }
 
-            FunctionCallScript.SetFunctionCallParameter(int.Parse(index), valueToSet);
+            FunctionCallScript!.SetFunctionCallParameter(int.Parse(index), valueToSet);
             return;
         }
 
@@ -146,7 +147,7 @@ public class EditableScript : EditableScriptBase, IEditableScript
         }
     }
 
-    private void nestedScript_Updated(object sender, EditableScriptsUpdatedEventArgs e)
+    private void nestedScript_Updated(object? sender, EditableScriptsUpdatedEventArgs e)
     {
         RaiseUpdateForNestedScriptChange(e);
     }

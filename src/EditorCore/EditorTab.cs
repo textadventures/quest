@@ -33,9 +33,9 @@ internal class EditorTab : IEditorTab
         _source = source;
     }
 
-    public string Caption { get; }
+    public string? Caption { get; }
 
-    public string HelpUrl { get; }
+    public string? HelpUrl { get; }
 
     public IEnumerable<IEditorControl> Controls => _controls.Values;
 

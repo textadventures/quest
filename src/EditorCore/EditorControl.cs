@@ -36,35 +36,36 @@ internal class EditorControl : IEditorControl
         IsControlVisibleInSimpleMode = !source.Fields.GetAsType<bool>("advanced");
         Id = source.Name;
 
-        if (source.Fields.HasString("filtergroup"))
+        if (source.Fields.GetString("filtergroup") is { } filterGroup)
         {
-            parent.RegisterFilter(source.Fields.GetString("filtergroup"), source.Fields.GetString("filter"), Attribute);
+            // A control in a filter group always names its filter and attribute
+            parent.RegisterFilter(filterGroup, source.Fields.GetString("filter")!, Attribute!);
         }
     }
 
-    public string ControlType { get; }
+    public string? ControlType { get; }
 
-    public string Caption { get; }
+    public string? Caption { get; }
 
     public int? Height { get; }
 
     public int? Width { get; }
 
-    public string Attribute { get; }
+    public string? Attribute { get; }
 
     public bool Expand { get; }
 
-    public string GetString(string tag)
+    public string? GetString(string tag)
     {
         return _source.Fields.GetString(tag);
     }
 
-    public IEnumerable<string> GetListString(string tag)
+    public IEnumerable<string>? GetListString(string tag)
     {
         return _source.Fields.GetAsType<QuestList<string>>(tag);
     }
 
-    public IDictionary<string, string> GetDictionary(string tag)
+    public IDictionary<string, string>? GetDictionary(string tag)
     {
         return _source.Fields.GetAsType<QuestDictionary<string>>(tag);
     }

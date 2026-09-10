@@ -37,17 +37,17 @@ internal class EditorDefinition : IEditorDefinition
         }
     }
 
-    public string AppliesTo { get; }
+    public string? AppliesTo { get; }
 
-    public string Pattern { get; }
+    public string? Pattern { get; }
 
-    public string Create { get; }
+    public string? Create { get; }
 
-    public string ExpressionType { get; }
+    public string? ExpressionType { get; }
 
-    public string OriginalPattern { get; }
+    public string? OriginalPattern { get; }
 
-    public string Description { get; }
+    public string? Description { get; }
 
     public IDictionary<string, IEditorTab> Tabs => _tabs;
 

@@ -7,18 +7,18 @@ namespace QuestViva.EditorCore;
 internal class EditorVisibilityHelper
 {
     private readonly bool _alwaysVisible = true;
-    private readonly string _filter;
-    private readonly string _filterGroup;
-    private readonly IList<string> _notVisibleIfElementInheritsType;
+    private readonly string? _filter;
+    private readonly string? _filterGroup;
+    private readonly IList<string>? _notVisibleIfElementInheritsType;
     private readonly EditorDefinition _parent;
-    private readonly string _relatedAttribute;
+    private readonly string? _relatedAttribute;
     private readonly bool _relatedAttributeNegate;
-    private readonly Expression<bool> _visibilityExpression;
-    private readonly IList<string> _visibleIfElementInheritsType;
-    private readonly string _visibleIfRelatedAttributeIsType;
+    private readonly Expression<bool>? _visibilityExpression;
+    private readonly IList<string>? _visibleIfElementInheritsType;
+    private readonly string? _visibleIfRelatedAttributeIsType;
     private readonly WorldModel _worldModel;
-    private List<Element> _notVisibleIfElementInheritsTypeElement;
-    private List<Element> _visibleIfElementInheritsTypeElement;
+    private List<Element>? _notVisibleIfElementInheritsTypeElement;
+    private List<Element>? _visibleIfElementInheritsTypeElement;
 
     public EditorVisibilityHelper(EditorDefinition parent, WorldModel worldModel, Element source)
     {
@@ -66,7 +66,8 @@ internal class EditorVisibilityHelper
         {
             // evaluate <onlydisplayif> expression, with "this" as the current element
             var context = new Context();
-            context.Parameters = new Parameters("this", _worldModel.Elements.Get(data.Name));
+            // Visibility is only evaluated for element editors, whose data is always named
+            context.Parameters = new Parameters("this", _worldModel.Elements.Get(data.Name!));
             var result = false;
             try
             {
@@ -115,7 +116,7 @@ internal class EditorVisibilityHelper
 
             // if the element does inherit any of the "forbidden" types, then this control is not visible
 
-            var element = _worldModel.Elements.Get(data.Name);
+            var element = _worldModel.Elements.Get(data.Name!);
 
             foreach (var forbiddenType in _notVisibleIfElementInheritsTypeElement)
             {
@@ -161,7 +162,7 @@ internal class EditorVisibilityHelper
 
             // if the element does inherit any of the types, then this control is visible
 
-            var element = _worldModel.Elements.Get(data.Name);
+            var element = _worldModel.Elements.Get(data.Name!);
 
             foreach (var type in _visibleIfElementInheritsTypeElement)
             {

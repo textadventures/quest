@@ -26,9 +26,9 @@ public class AttributeSubEditorControlData : IEditorControl
 
     public string Attribute { get; }
 
-    public string Caption => null;
+    public string? Caption => null;
 
-    public string ControlType => null;
+    public string? ControlType => null;
 
     public bool Expand => false;
 
@@ -37,7 +37,7 @@ public class AttributeSubEditorControlData : IEditorControl
         return false;
     }
 
-    public IDictionary<string, string> GetDictionary(string tag)
+    public IDictionary<string, string>? GetDictionary(string tag)
     {
         if (tag == "types")
         {
@@ -67,7 +67,7 @@ public class AttributeSubEditorControlData : IEditorControl
         throw new NotImplementedException();
     }
 
-    public virtual string GetString(string tag)
+    public virtual string? GetString(string tag)
     {
         switch (tag)
         {
@@ -99,7 +99,7 @@ public class AttributeSubEditorControlData : IEditorControl
 
     public int? Width => null;
 
-    public IEditorDefinition Parent => null;
+    public IEditorDefinition? Parent => null;
 
     public bool IsControlVisibleInSimpleMode => true;
 

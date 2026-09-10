@@ -7,7 +7,8 @@ public abstract class EditableScriptBase : IEditableScript
 {
     private static int _count;
 
-    private IScript _script;
+    // Assigned through Script in the constructor
+    private IScript _script = null!;
 
     public EditableScriptBase(EditorController controller, IScript script, UndoLogger undoLogger)
     {
@@ -48,31 +49,32 @@ public abstract class EditableScriptBase : IEditableScript
         }
     }
 
-    internal IFunctionCallScript FunctionCallScript => _script as IFunctionCallScript;
+    internal IFunctionCallScript? FunctionCallScript => _script as IFunctionCallScript;
 
     protected EditorController Controller { get; }
 
-    public event EventHandler<EditableScriptUpdatedEventArgs> Updated;
+    public event EventHandler<EditableScriptUpdatedEventArgs>? Updated;
 
     public virtual string DisplayString()
     {
         return DisplayString(-1, string.Empty);
     }
 
-    public abstract string DisplayString(int index, object newValue);
+    public abstract string DisplayString(int index, object? newValue);
     public abstract string EditorName { get; set; }
-    public abstract object GetParameter(string index);
-    public abstract void SetParameter(string index, object value);
+    public abstract object? GetParameter(string index);
+    public abstract void SetParameter(string index, object? value);
     public abstract ScriptType Type { get; }
 
     public string Id { get; }
 
     public IEnumerable<string> GetVariablesInScope()
     {
-        return Script.Parent.GetVariablesInScope();
+        // Editable scripts always live inside a MultiScript
+        return Script.Parent!.GetVariablesInScope();
     }
 
-    protected void ScriptUpdated(object sender, ScriptUpdatedEventArgs e)
+    protected void ScriptUpdated(object? sender, ScriptUpdatedEventArgs e)
     {
         if (Updated != null)
         {
@@ -82,7 +84,7 @@ public abstract class EditableScriptBase : IEditableScript
             }
             else if (e != null && e.IsNamedParameterUpdate)
             {
-                Updated(this, new EditableScriptUpdatedEventArgs(e.Id, (string) e.NewValue));
+                Updated(this, new EditableScriptUpdatedEventArgs(e.Id, (string?) e.NewValue));
             }
             else
             {
@@ -91,11 +93,11 @@ public abstract class EditableScriptBase : IEditableScript
         }
     }
 
-    private void FunctionCallParametersUpdated(object sender, ScriptUpdatedEventArgs e)
+    private void FunctionCallParametersUpdated(object? sender, ScriptUpdatedEventArgs e)
     {
         if (EditorName.StartsWith("(function)"))
         {
-            Updated(this, new EditableScriptUpdatedEventArgs(e.Index, Controller.WrapValue(e.NewValue)));
+            Updated!(this, new EditableScriptUpdatedEventArgs(e.Index, Controller.WrapValue(e.NewValue)));
         }
     }
 

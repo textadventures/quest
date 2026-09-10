@@ -7,6 +7,6 @@ public class DataWrapperUpdatedEventArgs : EventArgs
 public interface IDataWrapper
 {
     event EventHandler<DataWrapperUpdatedEventArgs> UnderlyingValueUpdated;
-    object GetUnderlyingValue();
+    object? GetUnderlyingValue();
     string DisplayString();
 }

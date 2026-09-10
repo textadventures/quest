@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.RegularExpressions;
 
 namespace QuestViva.EditorCore;
 
@@ -6,7 +7,8 @@ public static class EditorUtility
 {
     private static readonly Regex ContainsUnescapedQuote = new("^\"|[^\\\\]\\\"");
 
-    public static string FormatAsOneLine(string input)
+    [return: NotNullIfNotNull(nameof(input))]
+    public static string? FormatAsOneLine(string? input)
     {
         if (input == null)
         {
@@ -69,20 +71,20 @@ public static class EditorUtility
         do
         {
             i++;
-            newFilename = Path.Combine(directory, baseFilename + " " + i + extension);
+            newFilename = Path.Combine(directory!, baseFilename + " " + i + extension);
         } while (File.Exists(newFilename));
 
         return newFilename;
     }
 
-    public static string GetDisplayString(object value)
+    public static string GetDisplayString(object? value)
     {
         var scriptValue = value as IEditableScripts;
         var listStringValue = value as IEditableList<string>;
         var dictionaryStringValue = value as IEditableDictionary<string>;
         var dictionaryScriptValue = value as IEditableDictionary<IEditableScripts>;
         var wrappedValue = value as IDataWrapper;
-        string result = null;
+        string result;
 
         if (scriptValue != null)
         {
@@ -110,7 +112,7 @@ public static class EditorUtility
         }
         else
         {
-            result = value.ToString();
+            result = value.ToString() ?? string.Empty;
         }
 
         return FormatAsOneLine(result);

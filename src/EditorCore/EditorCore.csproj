@@ -4,6 +4,7 @@
         <OutputType>Library</OutputType>
         <RootNamespace>QuestViva.EditorCore</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
         <LangVersion>default</LangVersion>
         <IsAotCompatible>true</IsAotCompatible>
     </PropertyGroup>

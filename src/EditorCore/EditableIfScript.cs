@@ -9,7 +9,7 @@ public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
 
     private readonly IIfScript _ifScript;
     private readonly EditableScripts _thenScript;
-    private EditableScripts _elseScript;
+    private EditableScripts? _elseScript;
 
     internal EditableIfScript(EditorController controller, IIfScript script, UndoLogger undoLogger)
         : base(controller, script, undoLogger)
@@ -44,16 +44,16 @@ public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
 
     public IEditableScripts ThenScript => _thenScript;
 
-    public IEditableScripts ElseScript => _elseScript;
+    public IEditableScripts? ElseScript => _elseScript;
 
     public IEnumerable<EditableElseIf> ElseIfScripts => _elseIfScripts.Values;
 
-    public override string DisplayString(int index, object newValue)
+    public override string DisplayString(int index, object? newValue)
     {
         // if index is 0 then we're editing, and newValue is the entire new script, so just return it straight away.
         if (index == 0)
         {
-            return (string) newValue;
+            return (string) newValue!;
         }
 
         // if index is not 0, then this is a request for the DisplayString based on the stored data, so generate it.
@@ -67,12 +67,12 @@ public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
     }
 
     // these should probably not be on the interface...
-    public override object GetParameter(string index)
+    public override object? GetParameter(string index)
     {
         throw new NotImplementedException();
     }
 
-    public override void SetParameter(string index, object value)
+    public override void SetParameter(string index, object? value)
     {
         throw new NotImplementedException();
     }
@@ -85,9 +85,9 @@ public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
         remove { }
     }
 
-    public string Name => null;
+    public string? Name => null;
 
-    public object GetAttribute(string attribute)
+    public object? GetAttribute(string attribute)
     {
         if (attribute == "expression")
         {
@@ -97,11 +97,11 @@ public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
         throw new ArgumentOutOfRangeException("attribute", "Unrecognised 'if' attribute");
     }
 
-    public ValidationResult SetAttribute(string attribute, object value)
+    public ValidationResult SetAttribute(string attribute, object? value)
     {
         if (attribute == "expression")
         {
-            _ifScript.ExpressionString = (string) value;
+            _ifScript.ExpressionString = (string) value!;
         }
         else
         {
@@ -111,12 +111,12 @@ public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
         return new ValidationResult {Valid = true};
     }
 
-    public IEnumerable<string> GetAffectedRelatedAttributes(string attribute)
+    public IEnumerable<string>? GetAffectedRelatedAttributes(string attribute)
     {
         return null;
     }
 
-    public string GetSelectedFilter(string filterGroup)
+    public string? GetSelectedFilter(string filterGroup)
     {
         return null;
     }
@@ -129,17 +129,17 @@ public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
 
     public bool IsDirectlySaveable => true;
 
-    public event EventHandler AddedElse;
-    public event EventHandler RemovedElse;
-    public event EventHandler<ElseIfEventArgs> AddedElseIf;
-    public event EventHandler<ElseIfEventArgs> RemovedElseIf;
+    public event EventHandler? AddedElse;
+    public event EventHandler? RemovedElse;
+    public event EventHandler<ElseIfEventArgs>? AddedElseIf;
+    public event EventHandler<ElseIfEventArgs>? RemovedElseIf;
 
-    private void OnIfScriptUpdated(object sender, IfScriptUpdatedEventArgs e)
+    private void OnIfScriptUpdated(object? sender, IfScriptUpdatedEventArgs e)
     {
         switch (e.EventType)
         {
             case IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.AddedElse:
-                _elseScript = EditableScripts.GetInstance(Controller, _ifScript.ElseScript);
+                _elseScript = EditableScripts.GetInstance(Controller, _ifScript.ElseScript!);
                 _elseScript.Updated += nestedScript_Updated;
                 if (AddedElse != null)
                 {
@@ -148,7 +148,7 @@ public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
 
                 break;
             case IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.RemovedElse:
-                _elseScript.Updated -= nestedScript_Updated;
+                _elseScript!.Updated -= nestedScript_Updated;
                 _elseScript = null;
                 if (RemovedElse != null)
                 {
@@ -157,7 +157,7 @@ public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
 
                 break;
             case IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.AddedElseIf:
-                var editableNewScript = EditableScripts.GetInstance(Controller, e.Data.Script);
+                var editableNewScript = EditableScripts.GetInstance(Controller, e.Data!.Script);
                 editableNewScript.Updated += nestedScript_Updated;
 
                 // Wrap the newly created elseif in an EditableElseIf and add it to our internal dictionary
@@ -172,7 +172,7 @@ public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
 
                 break;
             case IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.RemovedElseIf:
-                EditableScripts.GetInstance(Controller, e.Data.Script).Updated -= nestedScript_Updated;
+                EditableScripts.GetInstance(Controller, e.Data!.Script).Updated -= nestedScript_Updated;
                 if (RemovedElseIf != null)
                 {
                     RemovedElseIf(this, new ElseIfEventArgs(_elseIfScripts[e.Data.Script]));
@@ -187,12 +187,12 @@ public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
         RaiseUpdated(new EditableScriptUpdatedEventArgs(DisplayString()));
     }
 
-    private void nestedScript_Updated(object sender, EditableScriptsUpdatedEventArgs e)
+    private void nestedScript_Updated(object? sender, EditableScriptsUpdatedEventArgs e)
     {
         RaiseUpdateForNestedScriptChange(e);
     }
 
-    public string DisplayString(IEditableScripts modifiedSection, int index, string newValue)
+    public string DisplayString(IEditableScripts? modifiedSection, int index, string newValue)
     {
         // If we've updated the "then" script, then we need to get an updated "then" script where attribute "index" has been updated to "newValue"
         var result = modifiedSection == ThenScript
@@ -232,7 +232,7 @@ public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
 
     private string ElseDisplayStringFragment(int index, string newValue)
     {
-        return string.Format(", Else ({0})", index == 1 ? newValue : ElseScript.DisplayString());
+        return string.Format(", Else ({0})", index == 1 ? newValue : ElseScript!.DisplayString());
     }
 
     public void AddElse()
@@ -296,9 +296,9 @@ public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
             remove { }
         }
 
-        public string Name => null;
+        public string? Name => null;
 
-        public object GetAttribute(string attribute)
+        public object? GetAttribute(string attribute)
         {
             if (attribute == "expression")
             {
@@ -308,11 +308,11 @@ public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
             throw new ArgumentOutOfRangeException("attribute", "Unrecognised 'else if' attribute");
         }
 
-        public ValidationResult SetAttribute(string attribute, object value)
+        public ValidationResult SetAttribute(string attribute, object? value)
         {
             if (attribute == "expression")
             {
-                Expression = (string) value;
+                Expression = (string) value!;
             }
             else
             {
@@ -322,12 +322,12 @@ public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
             return new ValidationResult {Valid = true};
         }
 
-        public IEnumerable<string> GetAffectedRelatedAttributes(string attribute)
+        public IEnumerable<string>? GetAffectedRelatedAttributes(string attribute)
         {
             return null;
         }
 
-        public string GetSelectedFilter(string filterGroup)
+        public string? GetSelectedFilter(string filterGroup)
         {
             return null;
         }
@@ -353,7 +353,7 @@ public class IfExpressionControlDefinition : IEditorControl
 
     public string ControlType => "textbox";
 
-    public string Caption => null;
+    public string? Caption => null;
 
     public int? Height => null;
 
@@ -363,7 +363,7 @@ public class IfExpressionControlDefinition : IEditorControl
 
     public bool Expand => false;
 
-    public string GetString(string tag)
+    public string? GetString(string tag)
     {
         if (tag == "usetemplates")
         {
@@ -413,9 +413,9 @@ public class IfExpressionControlDefinition : IEditorControl
         return true;
     }
 
-    public IEditorDefinition Parent => null;
+    public IEditorDefinition? Parent => null;
 
     public bool IsControlVisibleInSimpleMode => true;
 
-    public string Id => null;
+    public string? Id => null;
 }

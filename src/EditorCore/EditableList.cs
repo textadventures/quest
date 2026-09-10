@@ -40,14 +40,14 @@ public class EditableList<T> : IEditableList<T>, IDataWrapper, INotifyCollection
         throw new NotImplementedException();
     }
 
-    public event EventHandler<EditableListUpdatedEventArgs<T>> Added;
-    public event EventHandler<EditableListUpdatedEventArgs<T>> Removed;
+    public event EventHandler<EditableListUpdatedEventArgs<T>>? Added;
+    public event EventHandler<EditableListUpdatedEventArgs<T>>? Removed;
 
     public IDictionary<string, IEditableListItem<T>> Items => _wrappedItems;
 
     public void Add(T item)
     {
-        string undoEntry = null;
+        string? undoEntry = null;
         if (typeof(T) == typeof(string))
         {
             undoEntry = string.Format("Add '{0}'", item as string);
@@ -65,7 +65,7 @@ public class EditableList<T> : IEditableList<T>, IDataWrapper, INotifyCollection
 
     public void Remove(params string[] keys)
     {
-        string undoEntry = null;
+        string? undoEntry = null;
         if (typeof(T) == typeof(string))
         {
             undoEntry = "Remove items from list";
@@ -88,7 +88,7 @@ public class EditableList<T> : IEditableList<T>, IDataWrapper, INotifyCollection
 
     public void Update(int index, T item)
     {
-        string undoEntry = null;
+        string? undoEntry = null;
         if (typeof(T) == typeof(string))
         {
             undoEntry = string.Format("Update '{0}'", item as string);
@@ -119,7 +119,7 @@ public class EditableList<T> : IEditableList<T>, IDataWrapper, INotifyCollection
             foreach (var item in _wrappedItems)
             {
                 // TO DO: We will need some kind of projection function for non-string T's
-                result.Add(item.Key, item.Value.Value as string);
+                result.Add(item.Key, (item.Value.Value as string)!);
             }
 
             return result;
@@ -154,7 +154,7 @@ public class EditableList<T> : IEditableList<T>, IDataWrapper, INotifyCollection
         return _wrappedItemsList.GetEnumerator();
     }
 
-    public string Owner
+    public string? Owner
     {
         get
         {
@@ -168,7 +168,7 @@ public class EditableList<T> : IEditableList<T>, IDataWrapper, INotifyCollection
     }
 
     public IEnumerable<IEditableListItem<T>> ItemsList => _wrappedItemsList;
-    public event NotifyCollectionChangedEventHandler CollectionChanged;
+    public event NotifyCollectionChangedEventHandler? CollectionChanged;
 
     private void PopulateWrappedItems()
     {
@@ -233,12 +233,12 @@ public class EditableList<T> : IEditableList<T>, IDataWrapper, INotifyCollection
         }
     }
 
-    private void OnSourceAdded(object sender, QuestListUpdatedEventArgs<T> e)
+    private void OnSourceAdded(object? sender, QuestListUpdatedEventArgs<T> e)
     {
         AddWrappedItem(e.UpdatedItem, (EditorUpdateSource) e.Source, e.Index);
     }
 
-    private void OnSourceRemoved(object sender, QuestListUpdatedEventArgs<T> e)
+    private void OnSourceRemoved(object? sender, QuestListUpdatedEventArgs<T> e)
     {
         RemoveWrappedItem(_wrappedItems[_wrappedItemKeys[e.Index]], (EditorUpdateSource) e.Source, e.Index);
     }
@@ -248,7 +248,7 @@ public class EditableList<T> : IEditableList<T>, IDataWrapper, INotifyCollection
         var newSource = (QuestList<T>) _source.Clone();
         newSource.Locked = false;
         parent.Fields.Set(attribute, newSource);
-        newSource = (QuestList<T>) parent.Fields.Get(attribute);
+        newSource = (QuestList<T>) parent.Fields.Get(attribute)!;
         return GetNewInstance(_controller, newSource);
     }
 

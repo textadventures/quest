@@ -46,10 +46,10 @@ public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDiction
         return string.Format("(Script Dictionary: {0} items)", _source.Count);
     }
 
-    public event EventHandler<EditableListUpdatedEventArgs<TWrapped>> Added;
-    public event EventHandler<EditableListUpdatedEventArgs<TWrapped>> Removed;
+    public event EventHandler<EditableListUpdatedEventArgs<TWrapped>>? Added;
+    public event EventHandler<EditableListUpdatedEventArgs<TWrapped>>? Removed;
 
-    public event EventHandler<EditableListUpdatedEventArgs<TWrapped>> Updated;
+    public event EventHandler<EditableListUpdatedEventArgs<TWrapped>>? Updated;
 
     public IDictionary<string, IEditableListItem<TWrapped>> Items => _wrappedItems;
 
@@ -72,8 +72,7 @@ public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDiction
 
     public void Add(string key, TWrapped value)
     {
-        string undoEntry = null;
-        undoEntry = string.Format("Add '{0}={1}'", key, value == null ? string.Empty : value.DisplayString());
+        var undoEntry = string.Format("Add '{0}={1}'", key, value == null ? string.Empty : value.DisplayString());
 
         _controller.WorldModel.UndoLogger.StartTransaction(undoEntry);
         _source.Add(key, UnwrapValue(value), UpdateSource.User);
@@ -82,8 +81,7 @@ public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDiction
 
     public void Remove(params string[] keys)
     {
-        string undoEntry = null;
-        undoEntry = string.Format("Remove '{0}'", string.Join(",", keys));
+        var undoEntry = string.Format("Remove '{0}'", string.Join(",", keys));
 
         _controller.WorldModel.UndoLogger.StartTransaction(undoEntry);
         foreach (var key in keys)
@@ -149,7 +147,7 @@ public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDiction
     //    return EditableWrappedItemDictionary<TSource, TWrapped>.GetNewInstance(_controller, newSource);
     //}
 
-    public string Owner
+    public string? Owner
     {
         get
         {
@@ -181,14 +179,15 @@ public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDiction
         return (TWrapped) _controller.WrapValue(source);
     }
 
-    private TSource UnwrapValue(TWrapped wrapped)
+    private TSource UnwrapValue(TWrapped? wrapped)
     {
         if (wrapped == null)
         {
-            return null;
+            // Stored as a null value in the underlying dictionary
+            return null!;
         }
 
-        return (TSource) wrapped.GetUnderlyingValue();
+        return (TSource) wrapped.GetUnderlyingValue()!;
     }
 
     private void AddWrappedItem(string key, TWrapped value, EditorUpdateSource source, int index)
@@ -218,12 +217,12 @@ public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDiction
         }
     }
 
-    private void WrappedUnderlyingValueUpdated(object sender, DataWrapperUpdatedEventArgs e)
+    private void WrappedUnderlyingValueUpdated(object? sender, DataWrapperUpdatedEventArgs e)
     {
         if (Updated != null)
         {
             // sender will be the underlying wrapped value that has been updated. e.g. an IEditableScripts item
-            var updatedItem = (TWrapped) sender;
+            var updatedItem = (TWrapped) sender!;
 
             Updated(this, new EditableListUpdatedEventArgs<TWrapped>
             {
@@ -233,12 +232,12 @@ public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDiction
         }
     }
 
-    private void OnSourceAdded(object sender, QuestDictionaryUpdatedEventArgs<TSource> e)
+    private void OnSourceAdded(object? sender, QuestDictionaryUpdatedEventArgs<TSource> e)
     {
         AddWrappedItem(e.Key, WrapValue(e.Item), (EditorUpdateSource) e.Source, e.Index);
     }
 
-    private void OnSourceRemoved(object sender, QuestDictionaryUpdatedEventArgs<TSource> e)
+    private void OnSourceRemoved(object? sender, QuestDictionaryUpdatedEventArgs<TSource> e)
     {
         RemoveWrappedItem(_wrappedItems[e.Key], (EditorUpdateSource) e.Source, e.Index);
     }

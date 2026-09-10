@@ -2,18 +2,18 @@
 
 public interface IEditorControl
 {
-    string ControlType { get; }
-    string Caption { get; }
+    string? ControlType { get; }
+    string? Caption { get; }
     int? Height { get; }
     int? Width { get; }
-    string Attribute { get; }
+    string? Attribute { get; }
     bool Expand { get; }
-    IEditorDefinition Parent { get; }
+    IEditorDefinition? Parent { get; }
     bool IsControlVisibleInSimpleMode { get; }
-    string Id { get; }
-    string GetString(string tag);
-    IEnumerable<string> GetListString(string tag);
-    IDictionary<string, string> GetDictionary(string tag);
+    string? Id { get; }
+    string? GetString(string tag);
+    IEnumerable<string>? GetListString(string tag);
+    IDictionary<string, string>? GetDictionary(string tag);
     int? GetInt(string tag);
     double? GetDouble(string tag);
     bool GetBool(string tag);

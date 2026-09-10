@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using QuestViva.Engine.Scripts;
 
@@ -11,7 +12,8 @@ public class EditableScripts : IEditableScripts, IDataWrapper
 
     private readonly List<IEditableScript> _scripts;
     private bool _replacingScripts;
-    private IMultiScript _underlyingScript;
+    // Set by InitialiseScript, which every constructor path calls
+    private IMultiScript _underlyingScript = null!;
 
     static EditableScripts()
     {
@@ -30,8 +32,8 @@ public class EditableScripts : IEditableScripts, IDataWrapper
         InitialiseScript(script);
     }
 
-    public event EventHandler<EditableScriptsUpdatedEventArgs> Updated;
-    public event EventHandler<DataWrapperUpdatedEventArgs> UnderlyingValueUpdated;
+    public event EventHandler<EditableScriptsUpdatedEventArgs>? Updated;
+    public event EventHandler<DataWrapperUpdatedEventArgs>? UnderlyingValueUpdated;
 
     #region IDataWrapper Members
 
@@ -122,13 +124,13 @@ public class EditableScripts : IEditableScripts, IDataWrapper
         var clonedScript = (IScript) _underlyingScript.Clone();
         var parentElement = _controller.WorldModel.Elements.Get(parent);
         parentElement.Fields.Set(attribute, clonedScript);
-        clonedScript = (IScript) parentElement.Fields.Get(attribute);
+        clonedScript = (IScript) parentElement.Fields.Get(attribute)!;
         var result = new EditableScripts(_controller, clonedScript);
 
         return result;
     }
 
-    public string Owner
+    public string? Owner
     {
         get
         {
@@ -210,6 +212,7 @@ public class EditableScripts : IEditableScripts, IDataWrapper
         Debug.Assert(_underlyingScript.Scripts.Count() == _scripts.Count);
     }
 
+    [MemberNotNull(nameof(_underlyingScript))]
     private void InitialiseMultiScript(IMultiScript script)
     {
         if (_underlyingScript != null)
@@ -222,7 +225,7 @@ public class EditableScripts : IEditableScripts, IDataWrapper
         _underlyingScript.UndoLog = _controller.WorldModel.UndoLogger;
     }
 
-    private void multiScript_ScriptUpdated(object sender, ScriptUpdatedEventArgs e)
+    private void multiScript_ScriptUpdated(object? sender, ScriptUpdatedEventArgs e)
     {
         if (_adding)
         {
@@ -257,7 +260,7 @@ public class EditableScripts : IEditableScripts, IDataWrapper
         {
             _replacingScripts = true;
             _scripts.Clear();
-            foreach (var script in ((MultiScript) sender).Scripts)
+            foreach (var script in ((MultiScript) sender!).Scripts)
             {
                 Add(_controller.ScriptFactory.CreateEditableScript(script), true);
             }
@@ -278,11 +281,11 @@ public class EditableScripts : IEditableScripts, IDataWrapper
         Debug.Assert(_underlyingScript.Scripts.Count() == _scripts.Count);
     }
 
-    private void script_Updated(object sender, EditableScriptUpdatedEventArgs e)
+    private void script_Updated(object? sender, EditableScriptUpdatedEventArgs e)
     {
         if (Updated != null)
         {
-            Updated(this, new EditableScriptsUpdatedEventArgs((IEditableScript) sender, e));
+            Updated(this, new EditableScriptsUpdatedEventArgs((IEditableScript) sender!, e));
         }
 
         if (UnderlyingValueUpdated != null)
