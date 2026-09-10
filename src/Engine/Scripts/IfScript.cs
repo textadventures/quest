@@ -60,10 +60,10 @@ public class IfScriptConstructor : IScriptConstructor
 
     public IScript Create(string script, ScriptContext scriptContext)
     {
-        string afterExpr;
+        string? afterExpr;
         var expr = Utility.GetParameter(script, out afterExpr);
 
-        if (afterExpr.StartsWith(")"))
+        if (afterExpr!.StartsWith(")"))
         {
             // We have a mismatch of brackets in the expression
             throw new Exception("Too many ')'");
@@ -73,7 +73,7 @@ public class IfScriptConstructor : IScriptConstructor
 
         var thenScript = ScriptFactory.CreateScript(then, scriptContext);
 
-        return new IfScript(new Expression<bool>(expr, scriptContext), thenScript, scriptContext);
+        return new IfScript(new Expression<bool>(expr!, scriptContext), thenScript, scriptContext);
     }
 
     public IScriptFactory ScriptFactory { get; set; } = null!;

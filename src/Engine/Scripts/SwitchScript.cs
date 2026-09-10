@@ -8,12 +8,12 @@ public class SwitchScriptConstructor : IScriptConstructor
 
     public IScript Create(string script, ScriptContext scriptContext)
     {
-        string afterExpr;
+        string? afterExpr;
         var param = Utility.GetParameter(script, out afterExpr);
         IScript? defaultScript;
-        var cases = ProcessCases(Utility.GetScript(afterExpr), out defaultScript, scriptContext);
+        var cases = ProcessCases(Utility.GetScript(afterExpr!), out defaultScript, scriptContext);
 
-        return new SwitchScript(scriptContext, new ExpressionDynamic(param, scriptContext), cases, defaultScript);
+        return new SwitchScript(scriptContext, new ExpressionDynamic(param!, scriptContext), cases, defaultScript);
     }
 
     public IScriptFactory ScriptFactory { get; set; } = null!;
@@ -24,8 +24,8 @@ public class SwitchScriptConstructor : IScriptConstructor
         ScriptContext scriptContext)
     {
         var finished = false;
-        string remainingCases;
-        string afterExpr;
+        string? remainingCases;
+        string? afterExpr;
         var result = new Dictionary<IFunctionDynamic, IScript>();
         defaultScript = null;
 
@@ -33,18 +33,14 @@ public class SwitchScriptConstructor : IScriptConstructor
 
         while (!finished)
         {
-            cases = Utility.GetScript(cases, out remainingCases);
-            if (cases != null)
-            {
-                cases = cases.Trim();
-            }
+            cases = Utility.GetScript(cases, out remainingCases).Trim();
 
             if (!string.IsNullOrEmpty(cases))
             {
                 if (cases.StartsWith("case"))
                 {
-                    var expr = Utility.GetParameter(cases, out afterExpr);
-                    var caseScript = Utility.GetScript(afterExpr);
+                    var expr = Utility.GetParameter(cases, out afterExpr)!;
+                    var caseScript = Utility.GetScript(afterExpr!);
                     var script = ScriptFactory.CreateScript(caseScript, scriptContext);
 
                     // Case expression can have multiple values separated by commas. In Edit mode,
@@ -73,10 +69,13 @@ public class SwitchScriptConstructor : IScriptConstructor
                 }
             }
 
-            cases = remainingCases;
-            if (string.IsNullOrEmpty(cases))
+            if (string.IsNullOrEmpty(remainingCases))
             {
                 finished = true;
+            }
+            else
+            {
+                cases = remainingCases;
             }
         }
 

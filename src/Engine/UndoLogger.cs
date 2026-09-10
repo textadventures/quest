@@ -1,12 +1,11 @@
-﻿#nullable disable
-namespace QuestViva.Engine;
+﻿namespace QuestViva.Engine;
 
 public class UndoLogger
 {
     private readonly Stack<Transaction> _redoTransactions = new();
     private readonly Stack<Transaction> _undoTransactions = new();
     private readonly WorldModel _worldModel;
-    private Transaction _currentTransaction;
+    private Transaction? _currentTransaction;
 
     private bool _logging;
 
@@ -15,8 +14,8 @@ public class UndoLogger
         _worldModel = worldModel;
     }
 
-    public event EventHandler TransactionsUpdated;
-    public event EventHandler TransactionCommitted;
+    public event EventHandler? TransactionsUpdated;
+    public event EventHandler? TransactionCommitted;
 
     public void StartTransaction(string command)
     {
@@ -26,7 +25,7 @@ public class UndoLogger
         }
 
         _logging = true;
-        Transaction previousTransaction = null;
+        Transaction? previousTransaction = null;
         if (_currentTransaction != null)
         {
             previousTransaction = _currentTransaction.Count > 0
@@ -41,7 +40,7 @@ public class UndoLogger
     public void EndTransaction()
     {
         _logging = false;
-        if (_currentTransaction.Count > 0)
+        if (_currentTransaction!.Count > 0)
         {
             _undoTransactions.Push(_currentTransaction);
             _redoTransactions.Clear();
@@ -76,7 +75,8 @@ public class UndoLogger
             return;
         }
 
-        _currentTransaction.AddUndoAction(getAction());
+        // _logging is only true between StartTransaction and EndTransaction
+        _currentTransaction!.AddUndoAction(getAction());
     }
 
     public async Task RollbackTransaction()
@@ -170,7 +170,7 @@ public class UndoLogger
 
         internal string Description { get; }
 
-        public Transaction PreviousTransaction { get; set; }
+        public Transaction? PreviousTransaction { get; set; }
 
         public void AddUndoAction(IUndoAction action)
         {

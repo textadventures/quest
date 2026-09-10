@@ -9,5 +9,5 @@ public interface IExpressionEvaluator<T>
 
 public interface IDynamicExpressionEvaluator
 {
-    Task<object> EvaluateAsync(Context c);
+    Task<object?> EvaluateAsync(Context c);
 }

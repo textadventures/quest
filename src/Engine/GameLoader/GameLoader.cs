@@ -257,7 +257,7 @@ internal partial class GameLoader
         return loader;
     }
 
-    private string GetTemplateAttribute(XmlReader reader, string attribute)
+    private string? GetTemplateAttribute(XmlReader reader, string attribute)
     {
         return GetTemplate(reader.GetAttribute(attribute));
     }
@@ -267,7 +267,8 @@ internal partial class GameLoader
         return GetTemplate(reader.ReadElementContentAsString());
     }
 
-    private string GetTemplate(string? text)
+    [return: System.Diagnostics.CodeAnalysis.NotNullIfNotNull(nameof(text))]
+    private string? GetTemplate(string? text)
     {
         return WorldModel.Template.ReplaceTemplateText(text);
     }

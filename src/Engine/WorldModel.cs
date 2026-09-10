@@ -868,7 +868,7 @@ public partial class WorldModel : IGame, IGameDebug
 
     public Task PrintTemplateAsync(string t)
     {
-        return PrintAsync(Template.GetText(t));
+        return PrintAsync(Template.GetText(t)!);
     }
 
     public void Print(string text, bool linebreak = true)
@@ -1681,7 +1681,7 @@ public partial class WorldModel : IGame, IGameDebug
         return DefaultTypeNames.ContainsValue(typeName);
     }
 
-    public Element AddNewTemplate(string templateName)
+    public Element? AddNewTemplate(string templateName)
     {
         return Template.AddTemplate(templateName, string.Empty, false);
     }

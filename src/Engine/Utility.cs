@@ -1,5 +1,4 @@
-﻿#nullable disable
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -32,24 +31,22 @@ public static partial class Utility
 
     public static IList<string> ExpressionKeywords => Keywords.AsReadOnly();
 
-    public static string GetParameter(string script)
+    public static string? GetParameter(string script)
     {
-        string afterParameter;
-        return GetParameter(script, out afterParameter);
+        return GetParameter(script, out _);
     }
 
-    public static string GetParameter(string script, out string afterParameter)
+    public static string? GetParameter(string script, out string? afterParameter)
     {
         return GetParameterInt(script, '(', ')', out afterParameter);
     }
 
     public static string GetScript(string script)
     {
-        string afterScript;
-        return GetScript(script, out afterScript);
+        return GetScript(script, out _);
     }
 
-    public static string GetScript(string script, out string afterScript)
+    public static string GetScript(string script, out string? afterScript)
     {
         afterScript = null;
         var obscuredScript = ObscureStrings(script);
@@ -68,7 +65,8 @@ public static partial class Utility
         }
 
         var beforeBrace = script[..bracePos];
-        var insideBraces = GetParameterInt(script, '{', '}', out afterScript);
+        // Never null here, as the script is known to contain a '{'
+        var insideBraces = GetParameterInt(script, '{', '}', out afterScript)!;
 
         string result;
 
@@ -85,7 +83,7 @@ public static partial class Utility
         return result;
     }
 
-    private static string GetParameterInt(string text, char open, char close, out string afterParameter)
+    private static string? GetParameterInt(string text, char open, char close, out string? afterParameter)
     {
         afterParameter = null;
         var obscuredText = ObscureStrings(text);
@@ -417,7 +415,7 @@ public static partial class Utility
     // when the result is null - most commonly because it came from an attribute that was never
     // assigned a value. Use this instead wherever a script command converts an expression result
     // to a string, so the author gets a clear error rather than a leaked NRE.
-    public static string ExpressionResultToString(object value)
+    public static string ExpressionResultToString(object? value)
     {
         if (value is null)
         {
@@ -425,7 +423,7 @@ public static partial class Utility
                 "Cannot convert this value to a string because it has not been set - check whether an attribute or variable has been assigned a value before using it.");
         }
 
-        return value.ToString();
+        return value.ToString()!;
     }
 
     public static string[] ListSplit(string value)
@@ -542,7 +540,7 @@ public static partial class Utility
         return result;
     }
 
-    public static string ConvertVerbSimplePattern(string pattern, string separator)
+    public static string ConvertVerbSimplePattern(string pattern, string? separator)
     {
         // For verbs, we replace "eat; consume; munch" with
         // "^eat (?<object>.*)$|^consume (?<object>.*)$|^munch (?<object>.*)$"
@@ -552,7 +550,7 @@ public static partial class Utility
 
         var verbs = ListSplit(pattern);
         var result = string.Empty;
-        string separatorRegex = null;
+        string? separatorRegex = null;
 
         if (!string.IsNullOrEmpty(separator))
         {

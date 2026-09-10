@@ -69,7 +69,7 @@ public class ExpressionDynamic : ExpressionBase, IFunctionDynamic
         return new ExpressionDynamic(Expression, ScriptContext);
     }
 
-    public Task<object> ExecuteAsync(Context c)
+    public Task<object?> ExecuteAsync(Context c)
     {
         return _dynamicExpressionEvaluator.EvaluateAsync(c);
     }

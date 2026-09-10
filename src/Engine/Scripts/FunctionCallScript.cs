@@ -7,7 +7,8 @@ public class FunctionCallScriptConstructor : IScriptConstructor
     public IScript Create(string script, ScriptContext scriptContext)
     {
         List<IFunction<object>>? paramExpressions = null;
-        string procName, afterParameter;
+        string procName;
+        string? afterParameter;
 
         var param = Utility.GetParameter(script, out afterParameter);
         IScript? paramScript = null;

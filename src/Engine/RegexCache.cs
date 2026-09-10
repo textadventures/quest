@@ -1,5 +1,4 @@
-﻿#nullable disable
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace QuestViva.Engine;
 
@@ -9,7 +8,7 @@ internal class RegexCache
 
     public Regex GetRegex(string regex, string cacheID)
     {
-        Regex result;
+        Regex? result;
         if (_cache.TryGetValue(cacheID, out result))
         {
             return result;

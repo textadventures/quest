@@ -9,11 +9,11 @@ public class ShowMenuScriptConstructor : IScriptConstructor
 
     public IScript Create(string script, ScriptContext scriptContext)
     {
-        string afterExpr;
+        string? afterExpr;
         var param = Utility.GetParameter(script, out afterExpr);
-        var callback = Utility.GetScript(afterExpr);
+        var callback = Utility.GetScript(afterExpr!);
 
-        var parameters = Utility.SplitParameter(param).ToArray();
+        var parameters = Utility.SplitParameter(param!).ToArray();
         if (parameters.Count() != 3)
         {
             throw new Exception(string.Format("'show menu' script should have 3 parameters: 'show menu ({0})'", param));

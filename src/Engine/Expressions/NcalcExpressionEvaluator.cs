@@ -1,4 +1,3 @@
-#nullable disable
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
@@ -35,7 +34,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         _nCalcExpression.EvaluateBinaryAsync += EvaluateBinaryAsync;
     }
 
-    async Task<object> IDynamicExpressionEvaluator.EvaluateAsync(Context c)
+    async Task<object?> IDynamicExpressionEvaluator.EvaluateAsync(Context c)
     {
         return await EvaluateAsync(c);
     }
@@ -52,7 +51,8 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
                 return (T) (object) (double) i;
             }
 
-            return (T) result;
+            // T is unconstrained, so a null result (e.g. for Expression<object>) is passed through as-is
+            return (T) result!;
         }
         catch (Exception ex)
         {
@@ -62,12 +62,14 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
     }
 
     // NCalc returns Int64 for integer literals; coerce to Int32 to match engine expectations.
-    private static object CoerceLong(object value)
+    [return: NotNullIfNotNull(nameof(value))]
+    private static object? CoerceLong(object? value)
     {
         return value is long l ? (int) l : value;
     }
 
-    private Context _context;
+    // Set at the start of EvaluateAsync, before NCalc raises any of the evaluation events below
+    private Context _context = null!;
 
     // Set to true while evaluating cast()'s type argument so EvaluateParameter
     // returns the identifier name as a string rather than trying to resolve it as a variable.
@@ -77,7 +79,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
     // because the attribute has never been assigned, e.g. "object.unsetattribute". EvaluateBinaryAsync
     // snapshots this right after evaluating each operand so a null-operand error can name the
     // actual unset attribute instead of just saying "this value".
-    private string _lastNullPropertyAccessDescription;
+    private string? _lastNullPropertyAccessDescription;
 
     private void EvaluateParameter(string name, ParameterEventArgs args)
     {
@@ -97,7 +99,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         args.Result = ResolveVariable(name);
     }
 
-    private object ResolveVariable(string name)
+    private object? ResolveVariable(string name)
     {
         if (name.Equals("null", StringComparison.InvariantCultureIgnoreCase)) return null;
 
@@ -144,7 +146,6 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         args.Result = await EvaluateAslFunctionAsync(name, args);
     }
 
-#nullable enable
     private static async Task<(bool handled, object? result)> EvaluateFunctionFromTypeAsync([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)] Type type, object? instance,
         string name, FunctionData parameters)
     {
@@ -289,7 +290,6 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
 
         return (true, methodNoParams.Invoke(instance, evaluatedArgs));
     }
-#nullable disable
 
     // FLEE compiled expressions to IL so C# operator overloads (e.g. QuestList<T> - Element)
     // resolved automatically. NCalc evaluates at runtime and doesn't use operator overloads,
@@ -327,7 +327,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         {
             if (right is IDictionary dictionary)
             {
-                var contains = dictionary.Contains(left);
+                var contains = dictionary.Contains(left!);
                 args.Result = args.BinaryExpression.Type == BinaryExpressionType.In ? contains : !contains;
             }
 
@@ -337,8 +337,8 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         HandleBinaryResult(args, isEquality, operatorName, left, right, leftNullDescription, rightNullDescription);
     }
 
-    private static void HandleBinaryResult(BinaryEventArgs args, bool isEquality, string operatorName, object left,
-        object right, string leftNullDescription, string rightNullDescription)
+    private static void HandleBinaryResult(BinaryEventArgs args, bool isEquality, string? operatorName, object? left,
+        object? right, string? leftNullDescription, string? rightNullDescription)
     {
         // NCalc's internal equality logic calls Convert.ChangeType() which requires IConvertible.
         // Element doesn't implement IConvertible, so intercept equality/inequality for non-standard
@@ -392,7 +392,8 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         {
             // types exposed to scripts are rooted in ScriptDispatchRoots.cs
 #pragma warning disable IL2072
-            var method = TryFindOperatorOverload(declaringType, operatorName, leftType, rightType);
+            // operatorName is only null for equality, which is always handled above
+            var method = TryFindOperatorOverload(declaringType!, operatorName!, leftType, rightType);
 #pragma warning restore IL2072
             if (method != null)
             {
@@ -404,16 +405,16 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
 
     // '+' means concatenation as soon as either side is a string, so a null on the other side is
     // an empty string rather than an unset number - see the guard in HandleBinaryResult.
-    private static bool IsStringConcatenation(BinaryEventArgs args, object left, object right) =>
+    private static bool IsStringConcatenation(BinaryEventArgs args, object? left, object? right) =>
         args.BinaryExpression.Type == BinaryExpressionType.Plus && (left is string || right is string);
 
-    private static bool IsStandardNCalcType(object value) =>
+    private static bool IsStandardNCalcType(object? value) =>
         value is null or int or long or double or float or decimal or byte or short or uint or ulong or ushort or sbyte or bool or string;
 
-    private static bool IsIntegerType(object value) =>
+    private static bool IsIntegerType(object? value) =>
         value is int or long or byte or short or uint or ulong or ushort or sbyte;
 
-    private static MethodInfo TryFindOperatorOverload([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)] Type declaringType, string operatorName, Type leftType, Type rightType)
+    private static MethodInfo? TryFindOperatorOverload([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)] Type declaringType, string operatorName, Type? leftType, Type? rightType)
     {
         foreach (var method in declaringType.GetMethods(BindingFlags.Public | BindingFlags.Static)
             .Where(m => m.Name == operatorName))
@@ -427,7 +428,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         return null;
     }
 
-    private static (bool handled, object result) EvaluateVariableFromType([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] Type type, string name)
+    private static (bool handled, object? result) EvaluateVariableFromType([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] Type type, string name)
     {
         var fields = type
             .GetFields(BindingFlags.Public | BindingFlags.Static)
@@ -444,7 +445,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         return (true, field.GetRawConstantValue());
     }
 
-    private async Task<object> EvaluateAslFunctionAsync(string name, FunctionEventArgs args)
+    private async Task<object?> EvaluateAslFunctionAsync(string name, FunctionEventArgs args)
     {
         if (name == "__Quest_MethodCall__")
         {
@@ -453,7 +454,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
             var receiver = CoerceLong(await args.Parameters.EvaluateAsync(0));
             var methodName = await args.Parameters.EvaluateAsync(1) as string
                 ?? throw new Exception("__Quest_MethodCall__ second argument must be a string method name");
-            var methodArgs = new object[args.Parameters.Count - 2];
+            var methodArgs = new object?[args.Parameters.Count - 2];
             for (var i = 0; i < methodArgs.Length; i++)
                 methodArgs[i] = CoerceLong(await args.Parameters.EvaluateAsync(i + 2));
             return DispatchMethodCall(receiver, methodName, methodArgs);
@@ -496,7 +497,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
             var collection = await args.Parameters.EvaluateAsync(0);
             var key = CoerceLong(await args.Parameters.EvaluateAsync(1));
             if (collection is IQuestList)
-                return _expressionOwner.ListItem(collection, (int) key);
+                return _expressionOwner.ListItem(collection, (int) key!);
             return _expressionOwner.DictionaryItem(collection, key?.ToString());
         }
 
@@ -506,7 +507,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
                 throw new Exception("cast() expects 2 parameters: value and type");
             var value = CoerceLong(await args.Parameters.EvaluateAsync(0));
             _evaluatingCastType = true;
-            object typeArg;
+            object? typeArg;
             try { typeArg = await args.Parameters.EvaluateAsync(1); }
             finally { _evaluatingCastType = false; }
             var typeName = typeArg as string
@@ -530,14 +531,14 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
                 throw new Exception("IsDefined function expects 1 parameter");
             if (await args.Parameters.EvaluateAsync(0) is not string variableName)
                 throw new Exception("IsDefined function expects a string parameter");
-            return _context.Parameters.ContainsKey(variableName);
+            return _context.Parameters!.ContainsKey(variableName);
         }
 
         return await RunQuestProcedureAsync(name, args.Parameters.Count,
             i => args.Parameters.EvaluateAsync(i));
     }
 
-    private async Task<object> RunQuestProcedureAsync(string name, int argCount, Func<int, Task<object>> evaluateArgAsync)
+    private async Task<object?> RunQuestProcedureAsync(string name, int argCount, Func<int, Task<object?>> evaluateArgAsync)
     {
         var proc = _scriptContext.WorldModel.Procedure(name);
 
@@ -550,13 +551,13 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
 
         for (var cnt = 0; cnt < argCount; cnt++)
         {
-            parameters.Add((string) proc.Fields[FieldDefinitions.ParamNames][cnt], await evaluateArgAsync(cnt));
+            parameters.Add((string) proc.Fields[FieldDefinitions.ParamNames]![cnt]!, await evaluateArgAsync(cnt));
         }
 
         return await _scriptContext.WorldModel.RunProcedureAsync(name, parameters, true);
     }
 
-    private static object DispatchMethodCall(object receiver, string methodName, object[] methodArgs)
+    private static object? DispatchMethodCall(object? receiver, string methodName, object?[] methodArgs)
     {
         var argTypes = methodArgs.Select(a => a?.GetType() ?? typeof(object)).ToArray();
         // script-accessible types are explicitly rooted in ScriptDispatchRoots.cs
@@ -592,7 +593,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         return method.Invoke(receiver, methodArgs);
     }
 
-    private static object CastValue(object value, string typeName) => typeName switch
+    private static object? CastValue(object? value, string typeName) => typeName switch
     {
         "boolean" => Convert.ToBoolean(value),
         "byte" => Convert.ToByte(value),

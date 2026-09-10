@@ -1,5 +1,4 @@
-﻿#nullable disable
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using QuestViva.Engine.Scripts;
 
 namespace QuestViva.Engine;
@@ -7,7 +6,7 @@ namespace QuestViva.Engine;
 internal class TimerRunner
 {
     private readonly WorldModel _worldModel;
-    private Element _gameElement;
+    private Element? _gameElement;
 
     public TimerRunner(WorldModel worldModel, bool initialise)
     {
@@ -92,7 +91,7 @@ internal class TimerRunner
             if (TimeElapsed >= timer.Fields[FieldDefinitions.Trigger])
             {
                 Debug.Print("     - TRIGGER");
-                scripts.Add(timer, timer.Fields[FieldDefinitions.Script]);
+                scripts.Add(timer, timer.Fields[FieldDefinitions.Script]!);
                 timer.Fields[FieldDefinitions.Trigger] += timer.Fields[FieldDefinitions.Interval];
             }
         }

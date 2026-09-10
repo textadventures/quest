@@ -9,11 +9,11 @@ public class ForEachScriptConstructor : IScriptConstructor
 
     public IScript Create(string script, ScriptContext scriptContext)
     {
-        string afterExpr;
+        string? afterExpr;
         var param = Utility.GetParameter(script, out afterExpr);
-        var loop = Utility.GetScript(afterExpr);
+        var loop = Utility.GetScript(afterExpr!);
 
-        var parameters = Utility.SplitParameter(param).ToArray();
+        var parameters = Utility.SplitParameter(param!).ToArray();
         if (parameters.Count() != 2)
         {
             throw new Exception(string.Format("'foreach' script should have 2 parameters: 'foreach ({0})'", param));
