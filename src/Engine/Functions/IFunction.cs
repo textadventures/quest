@@ -11,7 +11,7 @@ public interface IFunction<T>
 
 public interface IFunctionDynamic
 {
-    Task<object> ExecuteAsync(Context c);
+    Task<object?> ExecuteAsync(Context c);
     string Save();
     IFunctionDynamic Clone();
 }

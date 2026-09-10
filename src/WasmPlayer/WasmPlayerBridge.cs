@@ -783,7 +783,7 @@ public partial class WasmPlayerBridge
         // duration — e.g. RunWalkthrough's loop never awaits anything else between steps, so
         // without this the browser couldn't process input or DevTools protocol calls until the
         // entire walkthrough finished.
-        async Task IPlayer.RunScriptAsync(string function, object[]? parameters)
+        async Task IPlayer.RunScriptAsync(string function, object?[]? parameters)
         {
             // Strip newlines from string parameters — some games depend on this (matching WebPlayer behaviour)
             var processedParams = parameters?.Select(p =>

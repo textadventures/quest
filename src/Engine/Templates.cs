@@ -1,4 +1,4 @@
-﻿#nullable disable
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using QuestViva.Engine.Functions;
 using QuestViva.Engine.Scripts;
@@ -15,15 +15,14 @@ public partial class Template
         _worldModel = worldModel;
     }
 
-    internal Element AddTemplate(string templateName, string text, bool isCommandTemplate, bool isBaseTemplate = false)
+    internal Element? AddTemplate(string templateName, string text, bool isCommandTemplate, bool isBaseTemplate = false)
     {
         // if a template is marked as IsBaseTemplate, it's from the base .aslx file so shouldn't be overwritten
         // by an equivalent library definition. But a later base-template definition (e.g. a second
         // <template> for the same name further down the same base file, as produced by old Quest 5.8
         // exports that inline a full library per language one after another) must still win over an
         // earlier one from the same scan - only non-base (library) definitions are blocked here.
-        Element existingTemplate;
-        if (_templateLookup.TryGetValue(templateName, out existingTemplate))
+        if (_templateLookup.TryGetValue(templateName, out var existingTemplate))
         {
             if (existingTemplate.Fields[FieldDefinitions.IsBaseTemplate] && !isBaseTemplate)
             {
@@ -49,7 +48,8 @@ public partial class Template
         return template;
     }
 
-    public string GetText(string t, bool throwException = true)
+    // Only returns null when throwException is false
+    public string? GetText(string t, bool throwException = true)
     {
         if (_templateLookup.TryGetValue(t, out var value))
         {
@@ -96,13 +96,13 @@ public partial class Template
     {
         if (!_worldModel.Elements.ContainsKey(ElementType.DynamicTemplate, t))
         {
-            return GetText(t);
+            return GetText(t)!;
         }
 
         var c = new Context();
         c.Parameters = parameters;
         var template = _worldModel.Elements.Get(ElementType.DynamicTemplate, t);
-        return await template.Fields[FieldDefinitions.Function].ExecuteAsync(c);
+        return await template.Fields[FieldDefinitions.Function]!.ExecuteAsync(c);
     }
 
     internal Element AddVerbTemplate(string c, string text, string filename)
@@ -111,7 +111,8 @@ public partial class Template
 
         if (!_templateLookup.ContainsKey(c))
         {
-            template = AddTemplate(c, "", true);
+            // Can't be blocked by an existing base template, as there's no existing template
+            template = AddTemplate(c, "", true)!;
         }
         else
         {
@@ -178,7 +179,8 @@ public partial class Template
     [GeneratedRegex(@"\[(?<name>.*?)\]")]
     private partial Regex TemplateRegex();
 
-    public string ReplaceTemplateText(string text)
+    [return: NotNullIfNotNull(nameof(text))]
+    public string? ReplaceTemplateText(string? text)
     {
         if (text == null)
         {

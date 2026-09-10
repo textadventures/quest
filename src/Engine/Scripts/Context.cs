@@ -15,7 +15,7 @@ public class Context
     }
 
     public Parameters? Parameters { get; set; }
-    public object ReturnValue { get; set; }
+    public object? ReturnValue { get; set; }
     public bool IsReturned { get; set; }
 }
 

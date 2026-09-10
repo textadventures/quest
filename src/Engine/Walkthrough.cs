@@ -1,5 +1,4 @@
-﻿#nullable disable
-using QuestViva.Common;
+﻿using QuestViva.Common;
 
 namespace QuestViva.Engine;
 
@@ -48,7 +47,7 @@ public class Walkthrough : IWalkthrough
     private string[] ThisSteps()
     {
         var result = new List<string>();
-        IEnumerable<string> steps = _element.Fields[FieldDefinitions.Steps];
+        IEnumerable<string>? steps = _element.Fields[FieldDefinitions.Steps];
         if (steps != null)
         {
             result.AddRange(steps);

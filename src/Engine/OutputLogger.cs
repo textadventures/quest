@@ -1,12 +1,11 @@
-﻿#nullable disable
-using System.Text;
+﻿using System.Text;
 using System.Xml;
 
 namespace QuestViva.Engine;
 
 internal interface IOutputLogger
 {
-    void Save(string html);
+    void Save(string? html);
     void Clear();
 }
 
@@ -19,7 +18,7 @@ internal class OutputLogger : IOutputLogger
         _worldModel = worldModel;
     }
 
-    public void Save(string html)
+    public void Save(string? html)
     {
         var element = _worldModel.Elements.GetSingle(ElementType.Output) ??
                       _worldModel.GetElementFactory(ElementType.Output).Create();
@@ -49,7 +48,7 @@ internal class LegacyOutputLogger : IOutputLogger
         _anyText = false;
     }
 
-    public void Save(string html)
+    public void Save(string? html)
     {
         var element = _worldModel.Elements.GetSingle(ElementType.Output);
         if (element == null)
@@ -78,17 +77,17 @@ internal class LegacyOutputLogger : IOutputLogger
         _text.Append(string.Format("<output_picture filename=\"{0}\"/>", filename));
     }
 
-    public void SetFontName(string fontName)
+    public void SetFontName(string? fontName)
     {
         _text.Append(string.Format("<output_setfontname name=\"{0}\"/>", fontName));
     }
 
-    public void SetFontSize(string fontSize)
+    public void SetFontSize(string? fontSize)
     {
         _text.Append(string.Format("<output_setfontsize size=\"{0}\"/>", fontSize));
     }
 
-    public async Task DisplayOutputAsync(string text)
+    public async Task DisplayOutputAsync(string? text)
     {
         text = "<output>" + text + "</output>";
         var output = new StringBuilder();
@@ -127,8 +126,10 @@ internal class LegacyOutputLogger : IOutputLogger
                             }
 
                             var size = reader.GetAttribute("size");
-                            ((LegacyOutputLogger) _worldModel.OutputLogger).SetFontSize(size);
-                            _worldModel.PlayerUi.SetFontSize(size);
+                            // WorldModel's OutputLogger is this instance whenever legacy output is being replayed
+                            SetFontSize(size);
+                            // Written by SetFontSize above, so always present
+                            _worldModel.PlayerUi.SetFontSize(size!);
                             break;
                         case "output_setfontname":
                             if (output.Length > 0)
@@ -138,8 +139,8 @@ internal class LegacyOutputLogger : IOutputLogger
                             }
 
                             var name = reader.GetAttribute("name");
-                            ((LegacyOutputLogger) _worldModel.OutputLogger).SetFontName(name);
-                            _worldModel.PlayerUi.SetFont(name);
+                            SetFontName(name);
+                            _worldModel.PlayerUi.SetFont(name!);
                             break;
                         default:
                             output.Append("<" + reader.Name);

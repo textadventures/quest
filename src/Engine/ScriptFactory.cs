@@ -1,5 +1,4 @@
-﻿#nullable disable
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using QuestViva.Engine.Scripts;
 
 namespace QuestViva.Engine;
@@ -88,10 +87,10 @@ public partial class ScriptFactory : IScriptFactory
     {
         var result = new MultiScript(WorldModel);
         var finished = false;
-        IScript lastIf = null;
-        IScript lastComment = null;
-        IScript lastFirstTime = null;
-        IfScriptConstructor ifConstructor = null;
+        IScript? lastIf = null;
+        IScript? lastComment = null;
+        IScript? lastFirstTime = null;
+        IfScriptConstructor? ifConstructor = null;
 
         if (lazy)
         {
@@ -103,7 +102,7 @@ public partial class ScriptFactory : IScriptFactory
 
         while (!finished)
         {
-            string remainingScript;
+            string? remainingScript;
             try
             {
                 line = Utility.GetScript(line, out remainingScript);
@@ -119,14 +118,11 @@ public partial class ScriptFactory : IScriptFactory
                 throw;
             }
 
-            if (line != null)
-            {
-                line = line.Trim();
-            }
+            line = line.Trim();
 
             if (!string.IsNullOrEmpty(line))
             {
-                IScript newScript = null;
+                IScript? newScript = null;
                 var dontAdd = false;
                 var addedError = false;
 
@@ -138,13 +134,14 @@ public partial class ScriptFactory : IScriptFactory
                     }
                     else
                     {
+                        // ifConstructor is always set alongside lastIf
                         if (line.StartsWith("else if"))
                         {
-                            ifConstructor.AddElseIf(lastIf, line, scriptContext);
+                            ifConstructor!.AddElseIf(lastIf, line, scriptContext);
                         }
                         else
                         {
-                            ifConstructor.AddElse(lastIf, line, scriptContext);
+                            ifConstructor!.AddElse(lastIf, line, scriptContext);
                         }
                     }
 
@@ -252,17 +249,20 @@ public partial class ScriptFactory : IScriptFactory
                 }
             }
 
-            line = remainingScript;
-            if (string.IsNullOrEmpty(line))
+            if (string.IsNullOrEmpty(remainingScript))
             {
                 finished = true;
+            }
+            else
+            {
+                line = remainingScript;
             }
         }
 
         return result;
     }
 
-    public event EventHandler<AddErrorEventArgs> ErrorHandler;
+    public event EventHandler<AddErrorEventArgs>? ErrorHandler;
 
     private void AddConstructor(IScriptConstructor constructor)
     {
@@ -302,26 +302,26 @@ public partial class ScriptFactory : IScriptFactory
     [GeneratedRegex(@"^\W")]
     private static partial Regex NonWordCharacterRegex();
 
-    private IScriptConstructor GetScriptConstructor(string line)
+    private IScriptConstructor? GetScriptConstructor(string line)
     {
-        IScriptConstructor constructor = null;
+        IScriptConstructor? constructor = null;
         var strength = 0;
-        foreach (var c in _scriptConstructors.Values)
+        foreach (var (keyword, c) in _scriptConstructors)
         {
-            if (line.StartsWith(c.Keyword))
+            if (line.StartsWith(keyword))
             {
                 // The line must start with the script keyword, and then the following
                 // character must be a non-word character. For example "msgfunction" is not
                 // a match for "msg".
 
-                if (line.Length == c.Keyword.Length ||
-                    NonWordCharacterRegex().IsMatch(line.Substring(c.Keyword.Length)) ||
+                if (line.Length == keyword.Length ||
+                    NonWordCharacterRegex().IsMatch(line.Substring(keyword.Length)) ||
                     c is CommentScriptConstructor || c is JSScriptConstructor)
                 {
-                    if (c.Keyword.Length > strength)
+                    if (keyword.Length > strength)
                     {
                         constructor = c;
-                        strength = c.Keyword.Length;
+                        strength = keyword.Length;
                     }
                 }
             }
@@ -340,6 +340,6 @@ public partial class ScriptFactory : IScriptFactory
 
     public class AddErrorEventArgs : EventArgs
     {
-        public string Error { get; set; }
+        public required string Error { get; set; }
     }
 }

@@ -230,7 +230,7 @@ internal partial class GameLoader
 
         private void LoadTemplate(Element newCommand, string template)
         {
-            var pattern = WorldModel.Template.GetText(template);
+            var pattern = WorldModel.Template.GetText(template)!;
             if (WorldModel.EditMode)
             {
                 newCommand.Fields.Set(FieldDefinitions.Pattern.Property,
@@ -332,7 +332,7 @@ internal partial class GameLoader
         public override object? Load(XmlReader reader, ref Element? current)
         {
             var filename = GameLoader.GetTemplateAttribute(reader, "ref");
-            if (filename.Length == 0)
+            if (filename!.Length == 0)
             {
                 return null;
             }
@@ -535,8 +535,8 @@ internal partial class GameLoader
         public override object Load(XmlReader reader, ref Element? current)
         {
             return current != null
-                ? WorldModel.ObjectFactory.CreateObject(reader.GetAttribute("name"), current)
-                : WorldModel.ObjectFactory.CreateObject(reader.GetAttribute("name"));
+                ? WorldModel.ObjectFactory.CreateObject(reader.GetAttribute("name")!, current)
+                : WorldModel.ObjectFactory.CreateObject(reader.GetAttribute("name")!);
         }
     }
 
@@ -586,7 +586,7 @@ internal partial class GameLoader
 
         public override object Load(XmlReader reader, ref Element? current)
         {
-            return WorldModel.GetElementFactory(ElementType.ObjectType).Create(reader.GetAttribute("name"));
+            return WorldModel.GetElementFactory(ElementType.ObjectType).Create(reader.GetAttribute("name")!);
         }
     }
 
@@ -625,7 +625,7 @@ internal partial class GameLoader
 
         private Element AddVerbTemplate(string? c, string text)
         {
-            return WorldModel.Template.AddVerbTemplate(c, text, GameLoader._currentFile.Peek().Filename);
+            return WorldModel.Template.AddVerbTemplate(c!, text, GameLoader._currentFile.Peek().Filename);
         }
     }
 
@@ -869,7 +869,7 @@ internal partial class GameLoader
             var jsRef = WorldModel.GetElementFactory(ElementType.Javascript).Create();
             jsRef.Fields[FieldDefinitions.Anonymous] = true;
             var file = GameLoader.GetTemplateAttribute(reader, "src");
-            if (file.Length == 0)
+            if (file!.Length == 0)
             {
                 return null;
             }

@@ -27,7 +27,7 @@ internal class ExpressionOwner(WorldModel worldModel)
     public string Template(string? template)
     {
         ArgumentNullException.ThrowIfNull(template);
-        return worldModel.Template.GetText(template);
+        return worldModel.Template.GetText(template)!;
     }
 
     public Task<string> DynamicTemplate(string? template, params Element[] obj)
@@ -680,13 +680,13 @@ internal class ExpressionOwner(WorldModel worldModel)
         return _random.NextDouble();
     }
 
-    public Task<object> Eval(string? expression)
+    public Task<object?> Eval(string? expression)
     {
         ArgumentNullException.ThrowIfNull(expression);
         return Eval(expression, null);
     }
 
-    public Task<object> Eval(string? expression, /* IDictionary */ object? obj)
+    public Task<object?> Eval(string? expression, /* IDictionary */ object? obj)
     {
         ArgumentNullException.ThrowIfNull(expression);
         var parameters = obj == null ? null : GetParameter<IDictionary>(obj, "Eval", "dictionary");

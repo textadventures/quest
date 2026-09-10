@@ -1,5 +1,4 @@
-﻿#nullable disable
-using QuestViva.Common;
+﻿using QuestViva.Common;
 
 namespace QuestViva.Engine;
 
@@ -19,9 +18,9 @@ public interface IElementFactory
 public abstract class ElementFactoryBase : IElementFactory
 {
     protected string FriendlyElementTypeName => ((ElementTypeInfo) typeof(ElementType)
-        .GetField(CreateElementType.ToString()).GetCustomAttributes(typeof(ElementTypeInfo), false)[0]).Name;
+        .GetField(CreateElementType.ToString())!.GetCustomAttributes(typeof(ElementTypeInfo), false)[0]).Name;
 
-    public event EventHandler<ObjectsUpdatedEventArgs> ObjectsUpdated;
+    public event EventHandler<ObjectsUpdatedEventArgs>? ObjectsUpdated;
 
     public abstract ElementType CreateElementType { get; }
 
@@ -46,7 +45,8 @@ public abstract class ElementFactoryBase : IElementFactory
         return CreateInternal(newElementName, true, null, elementToClone: elementToClone);
     }
 
-    public WorldModel WorldModel { get; set; }
+    // Set by WorldModel straight after the factory is created
+    public WorldModel WorldModel { get; set; } = null!;
 
     public void DestroyElement(string elementName)
     {
@@ -58,9 +58,9 @@ public abstract class ElementFactoryBase : IElementFactory
         DestroyElement(elementName, true);
     }
 
-    protected Element CreateInternal(string name, bool addToUndoLog, Action<Element> extraInitialisation,
-        IList<string> initialTypes = null, IDictionary<string, object> initialFields = null,
-        Element elementToClone = null)
+    protected Element CreateInternal(string name, bool addToUndoLog, Action<Element>? extraInitialisation,
+        IList<string>? initialTypes = null, IDictionary<string, object>? initialFields = null,
+        Element? elementToClone = null)
     {
         Element newElement;
 
@@ -267,14 +267,14 @@ public class ObjectFactory : ElementFactoryBase
         return CreateObject(objectName, type, true);
     }
 
-    public Element CreateObject(ObjectType type, IList<string> initialTypes, IDictionary<string, object> initialFields)
+    public Element CreateObject(ObjectType type, IList<string>? initialTypes, IDictionary<string, object>? initialFields)
     {
         var id = type == ObjectType.Exit ? WorldModel.GetUniqueId("exit") : WorldModel.GetUniqueId();
         return CreateObject(id, type, true, initialTypes, initialFields);
     }
 
     internal Element CreateObject(string objectName, ObjectType type, bool addToUndoLog,
-        IList<string> initialTypes = null, IDictionary<string, object> initialFields = null)
+        IList<string>? initialTypes = null, IDictionary<string, object>? initialFields = null)
     {
         var defaultType = WorldModel.DefaultTypeNames[type];
 
@@ -322,7 +322,7 @@ public class ObjectFactory : ElementFactoryBase
         return newCommand;
     }
 
-    public Element CreateTurnScript(string id, Element parent)
+    public Element CreateTurnScript(string? id, Element? parent)
     {
         var anonymous = false;
         if (string.IsNullOrEmpty(id))
@@ -342,12 +342,12 @@ public class ObjectFactory : ElementFactoryBase
         return newTurnScript;
     }
 
-    public Element CreateExit(string exitName, Element fromRoom, Element toRoom, string initialType)
+    public Element CreateExit(string? exitName, Element? fromRoom, Element? toRoom, string? initialType)
     {
         return CreateExit(null, exitName, fromRoom, toRoom, initialType);
     }
 
-    public Element CreateExit(string exitID, string exitName, Element fromRoom, Element toRoom, string initialType)
+    public Element CreateExit(string? exitID, string? exitName, Element? fromRoom, Element? toRoom, string? initialType)
     {
         var anonymous = false;
         if (string.IsNullOrEmpty(exitID))
@@ -380,21 +380,21 @@ public class ObjectFactory : ElementFactoryBase
         return newExit;
     }
 
-    public Element CreateExitLazy(string exitName, Element fromRoom, string toRoom)
+    public Element CreateExitLazy(string? exitName, Element? fromRoom, string? toRoom)
     {
         var newExit = CreateExit(exitName, fromRoom, null, null);
         InitLazyExit(newExit, toRoom);
         return newExit;
     }
 
-    public Element CreateExitLazy(string exitID, string exitName, Element fromRoom, string toRoom)
+    public Element CreateExitLazy(string? exitID, string? exitName, Element? fromRoom, string? toRoom)
     {
         var newExit = CreateExit(exitID, exitName, fromRoom, null, null);
         InitLazyExit(newExit, toRoom);
         return newExit;
     }
 
-    private void InitLazyExit(Element exit, string toRoom)
+    private void InitLazyExit(Element exit, string? toRoom)
     {
         if (toRoom != null)
         {
