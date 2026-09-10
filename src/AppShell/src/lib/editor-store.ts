@@ -879,7 +879,15 @@ export async function exportSingleFile(): Promise<void> {
     }
 
     html = html.replace('<html lang="en">', '<html lang="en" class="qv-booting">');
-    html = html.replace("<head>", `<head>\n    <base href="${cdnBase}" />`);
+    // Babel Treaty §"The IFID for an HTML story file": expose <gameid> as an
+    // ifiction:ifid meta so IFDB/babel/etc. can identify the export without
+    // unpacking the embedded .quest. Uppercase matches the UUID:// form the
+    // treaty requires elsewhere; the RDFa prefix keeps the markup valid RDFa.
+    const ifid = (_bridge.GetGameId() || _loadedGameId || "").trim().toUpperCase();
+    const headOpen = ifid
+        ? `<head prefix="ifiction: http://babel.ifarchive.org/protocol/iFiction/">\n    <base href="${cdnBase}" />\n    <meta property="ifiction:ifid" content="${ifid}" />`
+        : `<head>\n    <base href="${cdnBase}" />`;
+    html = html.replace("<head>", headOpen);
     html = replaceOrFail(html, scriptLine("quest-config.js"), () => "", "the quest-config.js tag");
     const embedScript = "    <script type=\"text/javascript\">\n"
         + `        window.QuestVivaEmbeddedGame = ${JSON.stringify(bytesToBase64(packageBytes))};\n`

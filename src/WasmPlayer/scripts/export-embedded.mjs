@@ -18,6 +18,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { inflateRawSync } from 'node:zlib';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '..');
@@ -47,6 +48,59 @@ const template = fs.readFileSync(templatePath, 'utf8');
 const gameBytes = fs.readFileSync(gameFile);
 const gameBase64 = gameBytes.toString('base64');
 const gameFilename = path.basename(gameFile);
+
+// Pull <gameid> out of a plain .aslx or out of game.aslx inside a .quest zip so
+// the exported HTML can carry the Babel Treaty ifiction:ifid meta. Returns null
+// for legacy games that predate the field (or non-Quest inputs).
+function extractGameId(bytes, filename) {
+    const ext = path.extname(filename).toLowerCase();
+    if (ext === '.aslx' || ext === '.asl') {
+        return parseGameIdFromXml(bytes.toString('utf8'));
+    }
+    if (ext === '.quest') {
+        const aslx = readZipEntry(bytes, 'game.aslx');
+        return aslx ? parseGameIdFromXml(aslx.toString('utf8')) : null;
+    }
+    return null;
+}
+
+function parseGameIdFromXml(xml) {
+    const match = /<gameid>\s*([^<]+?)\s*<\/gameid>/i.exec(xml);
+    return match?.[1]?.trim() || null;
+}
+
+// Minimal ZIP local-file-header walk — enough to pull game.aslx without adding
+// a dependency. Stored (method 0) and deflated (method 8) only.
+function readZipEntry(buf, entryName) {
+    let offset = 0;
+    while (offset + 30 <= buf.length) {
+        if (buf.readUInt32LE(offset) !== 0x04034b50) break;
+        const method = buf.readUInt16LE(offset + 8);
+        const compSize = buf.readUInt32LE(offset + 18);
+        const uncompSize = buf.readUInt32LE(offset + 22);
+        const nameLen = buf.readUInt16LE(offset + 26);
+        const extraLen = buf.readUInt16LE(offset + 28);
+        const name = buf.subarray(offset + 30, offset + 30 + nameLen).toString('utf8');
+        const dataStart = offset + 30 + nameLen + extraLen;
+        const dataEnd = dataStart + compSize;
+        if (dataEnd > buf.length) break;
+        if (name === entryName) {
+            const data = buf.subarray(dataStart, dataEnd);
+            if (method === 0) return Buffer.from(data);
+            if (method === 8) return inflateRawSync(data);
+            return null;
+        }
+        offset = dataEnd;
+        // Skip data descriptor if bit 3 of general-purpose flag is set and
+        // sizes were zero — Packager writes sizes up front, so we don't need
+        // that path; still advance past a possible descriptor if sizes were 0.
+        if (compSize === 0 && uncompSize === 0) break;
+    }
+    return null;
+}
+
+const gameId = extractGameId(gameBytes, gameFilename);
+const ifid = gameId ? gameId.toUpperCase() : null;
 
 const cdnBase = `https://cdn.jsdelivr.net/npm/@textadventures/quest-viva-wasmplayer@${version}/`;
 
@@ -82,8 +136,13 @@ html = html.replace('<html lang="en">', '<html lang="en" class="qv-booting">');
 //    relative <script src>/<link href>/fetch() in the document resolves
 //    against the CDN instead of this file's own (nonexistent) sibling
 //    assets. See docs/wasmplayer-single-file-export.md §3 for why this
-//    alone is sufficient — no per-tag rewriting needed.
-html = html.replace('<head>', `<head>\n    <base href="${cdnBase}" />`);
+//    alone is sufficient — no per-tag rewriting needed. When the game has
+//    a <gameid>, also stamp the Babel Treaty ifiction:ifid meta (uppercase
+//    UUID + RDFa prefix) so IFDB/babel can identify the HTML export.
+const headOpen = ifid
+    ? `<head prefix="ifiction: http://babel.ifarchive.org/protocol/iFiction/">\n    <base href="${cdnBase}" />\n    <meta property="ifiction:ifid" content="${ifid}" />`
+    : `<head>\n    <base href="${cdnBase}" />`;
+html = html.replace('<head>', headOpen);
 
 // 3. quest-config.js is local-hosting config (API root, defaultGameUrl) —
 //    nothing in this flavor is local, so drop the tag entirely rather than
@@ -126,4 +185,5 @@ const outFile = outFileArg
 
 fs.writeFileSync(outFile, html);
 const sizeKb = (fs.statSync(outFile).size / 1024).toFixed(1);
-console.log(`Wrote ${outFile} (${sizeKb} KB) — game: ${gameFilename}, runtime: ${cdnBase}`);
+const ifidNote = ifid ? `, ifid: ${ifid}` : '';
+console.log(`Wrote ${outFile} (${sizeKb} KB) — game: ${gameFilename}, runtime: ${cdnBase}${ifidNote}`);
