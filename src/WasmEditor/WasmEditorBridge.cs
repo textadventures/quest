@@ -17,7 +17,7 @@ using QuestViva.PlayerCore;
 
 namespace QuestViva.WasmEditor;
 
-internal record TreeNodeData(string Key, string Text, string? Parent, string NodeType, bool IsLibrary, bool CanDelete, string? Filename, string? Folder);
+internal record TreeNodeData(string Key, string Text, string? Parent, string? NodeType, bool IsLibrary, bool CanDelete, string? Filename, string? Folder);
 
 internal record ControlOption(string Value, string Label);
 
@@ -175,7 +175,7 @@ internal record ExpressionTemplateData(
     List<ExpressionTemplateControlData> Controls
 );
 
-internal record ExpressionTemplate(string Name, string CreateExpression);
+internal record ExpressionTemplate(string Name, string? CreateExpression);
 
 internal record ListItemData(string Key, string Value);
 
@@ -2544,7 +2544,7 @@ public partial class WasmEditorBridge
         var allExits = new List<ExitRowInfo>();
         foreach (var exitKey in _controller.GetObjectNames("exit", roomKey, true))
         {
-            var data = _controller.GetEditorData(exitKey);
+            var data = _controller.GetEditorData(exitKey)!;
             var to = data.GetAttribute("to") as IEditableObjectReference;
             var alias = data.GetAttribute("alias") as string;
             var lookOnly = data.GetAttribute("lookonly") as bool? == true;
@@ -2605,7 +2605,7 @@ public partial class WasmEditorBridge
 
             var inverseAlreadyExists = _controller.GetObjectNames("exit", to, true).Any(exitKey =>
             {
-                var data = _controller.GetEditorData(exitKey);
+                var data = _controller.GetEditorData(exitKey)!;
                 var lookOnly = data.GetAttribute("lookonly") as bool? == true;
                 return !lookOnly && data.GetAttribute("alias") as string == inverseDirection;
             });
@@ -3225,7 +3225,7 @@ public partial class WasmEditorBridge
                 // what makes the pattern actually get parsed by the player at runtime) before
                 // recording that this object handles it.
                 var newVerbId = _controller.CreateNewVerb(null, false);
-                var verbData = _controller.GetEditorData(newVerbId);
+                var verbData = _controller.GetEditorData(newVerbId)!;
                 verbData.SetAttribute("property", verbAttribute);
                 if (verbData.GetAttribute("pattern") is IEditableCommandPattern pattern)
                 {

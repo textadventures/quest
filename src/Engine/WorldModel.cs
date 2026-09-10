@@ -1762,8 +1762,8 @@ public partial class WorldModel : IGame, IGameDebug
         return Task.CompletedTask;
     }
 
-    public bool CreatePackage(string filename, bool includeWalkthrough, out string error,
-        IEnumerable<PackageIncludeFile> includeFiles, Stream outputStream)
+    public bool CreatePackage(string? filename, bool includeWalkthrough, out string error,
+        IEnumerable<PackageIncludeFile>? includeFiles, Stream? outputStream)
     {
         var packager = new Packager(this);
         return packager.CreatePackage(filename, includeWalkthrough, out error, includeFiles, outputStream);
