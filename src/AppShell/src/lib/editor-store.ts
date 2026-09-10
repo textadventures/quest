@@ -858,19 +858,41 @@ export async function exportSingleFile(): Promise<void> {
     const embeddedFilename = baseName + ".quest";
     const cdnBase = `https://cdn.jsdelivr.net/npm/@textadventures/quest-viva-wasmplayer@${version}/`;
 
-    // Same three transforms as export-embedded.mjs — see that file's comments for why each is
+    // Same transforms as export-embedded.mjs — see that file's comments for why each is
     // needed (in particular why wasm-player.js itself, not this code, has to resolve its own
     // dynamic import of dotnet.js via an absolute URL rather than relying on <base href> alone).
+    // inject-version.mjs stamps ?v=<version> onto every asset URL in the template, so the
+    // patterns below must accept an optional query (exact "src=wasm-player.js" misses and
+    // produces a spinner-forever export — see issue #2233).
     let html = template;
+
+    const scriptLine = (file: string) => new RegExp(
+        `^[ \\t]*<script type="text/javascript" src="${file.replace(/\./g, "\\.")}(?:\\?[^"]*)?"></script>\\r?\\n`,
+        "m");
+    const styleLine = (file: string) => new RegExp(
+        `^[ \\t]*<link rel="stylesheet" type="text/css" href="${file.replace(/\./g, "\\.")}(?:\\?[^"]*)?" />\\r?\\n`,
+        "m");
+    function replaceOrFail(haystack: string, pattern: RegExp, replacement: (matched: string) => string, what: string): string {
+        const match = pattern.exec(haystack);
+        if (!match) throw new Error(`Export as single file: could not find ${what} in WasmPlayer template`);
+        return haystack.slice(0, match.index) + replacement(match[0]) + haystack.slice(match.index + match[0].length);
+    }
+
     html = html.replace('<html lang="en">', '<html lang="en" class="qv-booting">');
     html = html.replace("<head>", `<head>\n    <base href="${cdnBase}" />`);
-    html = html.replace('    <script type="text/javascript" src="quest-config.js"></script>\n', "");
-    const embedScript = "<script type=\"text/javascript\">\n"
+    html = replaceOrFail(html, scriptLine("quest-config.js"), () => "", "the quest-config.js tag");
+    const embedScript = "    <script type=\"text/javascript\">\n"
         + `        window.QuestVivaEmbeddedGame = ${JSON.stringify(bytesToBase64(packageBytes))};\n`
         + `        window.QuestVivaEmbeddedGameFilename = ${JSON.stringify(embeddedFilename)};\n`
-        + "    </script>\n"
-        + "    <script type=\"text/javascript\" src=\"wasm-player.js\"></script>";
-    html = html.replace('<script type="text/javascript" src="wasm-player.js"></script>', embedScript);
+        + "    </script>\n";
+    html = replaceOrFail(html, scriptLine("wasm-player.js"), (line) => embedScript + line, "the wasm-player.js tag");
+    // Same crossorigin fix as export-embedded.mjs — CDN stylesheets need it for cssRules
+    // (issue #2192). Harmless on same-origin deployments that share this template.
+    for (const file of ["lib/jquery-ui.min.css", "playercore.css", "chrome.css"]) {
+        html = replaceOrFail(html, styleLine(file),
+            (line) => line.replace(/ \/>(\r?\n)$/, ' crossorigin="anonymous" />$1'),
+            `the ${file} stylesheet link`);
+    }
 
     triggerDownload(html, baseName + ".html");
 }
