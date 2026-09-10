@@ -69,7 +69,7 @@
     ];
     // Gamebook mode only supports Function/Library/JavaScript — Timer/Walkthrough
     // don't apply to a flat page-based game, and Template/Object Type are in
-    // EditorController's m_ignoredTypes for gamebook (adding one would create an
+    // EditorController's _ignoredTypes for gamebook (adding one would create an
     // invisible, orphaned element).
     let ADVANCED_ADDERS = $derived(ALL_ADVANCED_ADDERS.filter(a => !$isGamebook || a.gamebook));
 

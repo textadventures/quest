@@ -5,36 +5,36 @@ namespace QuestViva.Engine.Scripts;
 
 public class LazyLoadScript : IScript, IIfScript, IFirstTimeScript, IMultiScript
 {
-    private readonly IScriptConstructor m_scriptConstructor;
-    private readonly ScriptContext m_scriptContext;
-    private readonly ScriptFactory m_scriptFactory;
-    private readonly WorldModel m_worldModel;
-    private IScriptParent m_parent;
-    private IScript m_script;
-    private string m_scriptString;
+    private readonly IScriptConstructor _scriptConstructor;
+    private readonly ScriptContext _scriptContext;
+    private readonly ScriptFactory _scriptFactory;
+    private readonly WorldModel _worldModel;
+    private IScriptParent _parent;
+    private IScript _script;
+    private string _scriptString;
 
     public LazyLoadScript(ScriptFactory scriptFactory, string scriptString, ScriptContext scriptContext)
     {
-        m_scriptFactory = scriptFactory;
-        m_scriptString = scriptString;
-        m_scriptContext = scriptContext;
-        m_worldModel = scriptFactory.WorldModel;
+        _scriptFactory = scriptFactory;
+        _scriptString = scriptString;
+        _scriptContext = scriptContext;
+        _worldModel = scriptFactory.WorldModel;
     }
 
     public LazyLoadScript(ScriptFactory scriptFactory, IScriptConstructor scriptConstructor, string scriptString,
         ScriptContext scriptContext)
     {
-        m_scriptFactory = scriptFactory;
-        m_scriptConstructor = scriptConstructor;
-        m_scriptString = scriptString;
-        m_scriptContext = scriptContext;
-        m_worldModel = scriptConstructor.WorldModel;
+        _scriptFactory = scriptFactory;
+        _scriptConstructor = scriptConstructor;
+        _scriptString = scriptString;
+        _scriptContext = scriptContext;
+        _worldModel = scriptConstructor.WorldModel;
     }
 
     public void SetOtherwiseScript(IScript script)
     {
         Initialise();
-        ((FirstTimeScript) m_script).SetOtherwiseScript(script);
+        ((FirstTimeScript) _script).SetOtherwiseScript(script);
     }
 
     public event EventHandler<IfScriptUpdatedEventArgs> IfScriptUpdated
@@ -42,31 +42,31 @@ public class LazyLoadScript : IScript, IIfScript, IFirstTimeScript, IMultiScript
         add
         {
             Initialise();
-            ((IfScript) m_script).IfScriptUpdated += value;
+            ((IfScript) _script).IfScriptUpdated += value;
         }
         remove
         {
             Initialise();
-            ((IfScript) m_script).IfScriptUpdated -= value;
+            ((IfScript) _script).IfScriptUpdated -= value;
         }
     }
 
     public void SetElse(IScript elseScript)
     {
         Initialise();
-        ((IfScript) m_script).SetElse(elseScript);
+        ((IfScript) _script).SetElse(elseScript);
     }
 
     public IElseIfScript AddElseIf(string expression, IScript script)
     {
         Initialise();
-        return ((IfScript) m_script).AddElseIf(expression, script);
+        return ((IfScript) _script).AddElseIf(expression, script);
     }
 
     public IElseIfScript AddElseIf(IFunction<bool> expression, IScript script)
     {
         Initialise();
-        return ((IfScript) m_script).AddElseIf(expression, script);
+        return ((IfScript) _script).AddElseIf(expression, script);
     }
 
     public IFunction<bool> Expression
@@ -74,7 +74,7 @@ public class LazyLoadScript : IScript, IIfScript, IFirstTimeScript, IMultiScript
         get
         {
             Initialise();
-            return ((IfScript) m_script).Expression;
+            return ((IfScript) _script).Expression;
         }
     }
 
@@ -83,12 +83,12 @@ public class LazyLoadScript : IScript, IIfScript, IFirstTimeScript, IMultiScript
         get
         {
             Initialise();
-            return ((IfScript) m_script).ThenScript;
+            return ((IfScript) _script).ThenScript;
         }
         set
         {
             Initialise();
-            ((IfScript) m_script).ThenScript = value;
+            ((IfScript) _script).ThenScript = value;
         }
     }
 
@@ -97,7 +97,7 @@ public class LazyLoadScript : IScript, IIfScript, IFirstTimeScript, IMultiScript
         get
         {
             Initialise();
-            return ((IfScript) m_script).ElseScript;
+            return ((IfScript) _script).ElseScript;
         }
     }
 
@@ -106,7 +106,7 @@ public class LazyLoadScript : IScript, IIfScript, IFirstTimeScript, IMultiScript
         get
         {
             Initialise();
-            return ((IfScript) m_script).ElseIfScripts;
+            return ((IfScript) _script).ElseIfScripts;
         }
     }
 
@@ -115,19 +115,19 @@ public class LazyLoadScript : IScript, IIfScript, IFirstTimeScript, IMultiScript
         get
         {
             Initialise();
-            return ((IfScript) m_script).ExpressionString;
+            return ((IfScript) _script).ExpressionString;
         }
         set
         {
             Initialise();
-            ((IfScript) m_script).ExpressionString = value;
+            ((IfScript) _script).ExpressionString = value;
         }
     }
 
     public void RemoveElseIf(IElseIfScript elseIfScript)
     {
         Initialise();
-        ((IfScript) m_script).RemoveElseIf(elseIfScript);
+        ((IfScript) _script).RemoveElseIf(elseIfScript);
     }
 
     public IEnumerable<IScript> Scripts
@@ -135,50 +135,50 @@ public class LazyLoadScript : IScript, IIfScript, IFirstTimeScript, IMultiScript
         get
         {
             Initialise();
-            return ((MultiScript) m_script).Scripts;
+            return ((MultiScript) _script).Scripts;
         }
     }
 
     public void Add(params IScript[] scripts)
     {
         Initialise();
-        ((MultiScript) m_script).Add(scripts);
+        ((MultiScript) _script).Add(scripts);
     }
 
     public void Remove(int index)
     {
         Initialise();
-        ((MultiScript) m_script).Remove(index);
+        ((MultiScript) _script).Remove(index);
     }
 
     public void Swap(int index1, int index2)
     {
         Initialise();
-        ((MultiScript) m_script).Swap(index1, index2);
+        ((MultiScript) _script).Swap(index1, index2);
     }
 
     public void Insert(int index, IScript script)
     {
         Initialise();
-        ((MultiScript) m_script).Insert(index, script);
+        ((MultiScript) _script).Insert(index, script);
     }
 
     public void LoadCode(string code)
     {
         Initialise();
-        ((MultiScript) m_script).LoadCode(code);
+        ((MultiScript) _script).LoadCode(code);
     }
 
     public IMutableField Clone()
     {
-        if (m_script != null)
+        if (_script != null)
         {
-            return m_script.Clone();
+            return _script.Clone();
         }
 
-        var result = new LazyLoadScript(m_scriptFactory, m_scriptString, m_scriptContext);
-        result.Line = m_scriptString;
-        result.Parent = m_parent;
+        var result = new LazyLoadScript(_scriptFactory, _scriptString, _scriptContext);
+        result.Line = _scriptString;
+        result.Parent = _parent;
         return result;
     }
 
@@ -187,66 +187,66 @@ public class LazyLoadScript : IScript, IIfScript, IFirstTimeScript, IMultiScript
         add
         {
             Initialise();
-            m_script.ScriptUpdated += value;
+            _script.ScriptUpdated += value;
         }
         remove
         {
             Initialise();
-            m_script.ScriptUpdated -= value;
+            _script.ScriptUpdated -= value;
         }
     }
 
     public Task ExecuteAsync(Context c)
     {
         Initialise();
-        return m_script.ExecuteAsync(c);
+        return _script.ExecuteAsync(c);
     }
 
     public string Line
     {
         get
         {
-            if (m_script == null)
+            if (_script == null)
             {
-                return m_scriptString;
+                return _scriptString;
             }
 
-            return m_script.Line;
+            return _script.Line;
         }
         set
         {
-            if (m_script == null)
+            if (_script == null)
             {
-                m_scriptString = value;
+                _scriptString = value;
                 return;
             }
 
-            m_script.Line = value;
+            _script.Line = value;
         }
     }
 
     public string Save()
     {
         Initialise();
-        return m_script.Save();
+        return _script.Save();
     }
 
     public void SetParameter(int index, object value)
     {
         Initialise();
-        m_script.SetParameter(index, value);
+        _script.SetParameter(index, value);
     }
 
     public void SetParameterSilent(int index, object value)
     {
         Initialise();
-        m_script.SetParameterSilent(index, value);
+        _script.SetParameterSilent(index, value);
     }
 
     public object GetParameter(int index)
     {
         Initialise();
-        return m_script.GetParameter(index);
+        return _script.GetParameter(index);
     }
 
     public string Keyword
@@ -254,7 +254,7 @@ public class LazyLoadScript : IScript, IIfScript, IFirstTimeScript, IMultiScript
         get
         {
             Initialise();
-            return m_script.Keyword;
+            return _script.Keyword;
         }
     }
 
@@ -262,29 +262,29 @@ public class LazyLoadScript : IScript, IIfScript, IFirstTimeScript, IMultiScript
     {
         get
         {
-            if (m_script == null)
+            if (_script == null)
             {
-                return m_parent;
+                return _parent;
             }
 
-            return m_script.Parent;
+            return _script.Parent;
         }
         set
         {
-            if (m_script == null)
+            if (_script == null)
             {
-                m_parent = value;
+                _parent = value;
                 return;
             }
 
-            m_script.Parent = value;
+            _script.Parent = value;
         }
     }
 
     public IEnumerable<string> GetDefinedVariables()
     {
         Initialise();
-        return m_script.GetDefinedVariables();
+        return _script.GetDefinedVariables();
     }
 
     public UndoLogger UndoLog
@@ -292,12 +292,12 @@ public class LazyLoadScript : IScript, IIfScript, IFirstTimeScript, IMultiScript
         get
         {
             Initialise();
-            return m_script.UndoLog;
+            return _script.UndoLog;
         }
         set
         {
             Initialise();
-            m_script.UndoLog = value;
+            _script.UndoLog = value;
         }
     }
 
@@ -306,12 +306,12 @@ public class LazyLoadScript : IScript, IIfScript, IFirstTimeScript, IMultiScript
         get
         {
             Initialise();
-            return m_script.Owner;
+            return _script.Owner;
         }
         set
         {
             Initialise();
-            m_script.Owner = value;
+            _script.Owner = value;
         }
     }
 
@@ -320,12 +320,12 @@ public class LazyLoadScript : IScript, IIfScript, IFirstTimeScript, IMultiScript
         get
         {
             Initialise();
-            return m_script.Locked;
+            return _script.Locked;
         }
         set
         {
             Initialise();
-            m_script.Locked = value;
+            _script.Locked = value;
         }
     }
 
@@ -334,54 +334,54 @@ public class LazyLoadScript : IScript, IIfScript, IFirstTimeScript, IMultiScript
         get
         {
             Initialise();
-            return m_script.RequiresCloning;
+            return _script.RequiresCloning;
         }
     }
 
     private void Initialise()
     {
-        if (m_script != null)
+        if (_script != null)
         {
             return;
         }
 
         try
         {
-            if (m_scriptConstructor == null)
+            if (_scriptConstructor == null)
             {
-                m_script = m_scriptFactory.CreateScript(m_scriptString, m_scriptContext, false, false);
+                _script = _scriptFactory.CreateScript(_scriptString, _scriptContext, false, false);
             }
             else
             {
-                m_script = m_scriptConstructor.Create(m_scriptString, m_scriptContext);
-                m_script.Line = m_scriptString;
+                _script = _scriptConstructor.Create(_scriptString, _scriptContext);
+                _script.Line = _scriptString;
             }
         }
         catch
         {
-            if (!m_worldModel.EditMode)
+            if (!_worldModel.EditMode)
             {
                 throw;
             }
 
-            m_script = new FailedScript(m_scriptString);
-            if (m_scriptConstructor == null)
+            _script = new FailedScript(_scriptString);
+            if (_scriptConstructor == null)
             {
-                m_script = new MultiScript(m_scriptFactory.WorldModel, m_script);
+                _script = new MultiScript(_scriptFactory.WorldModel, _script);
             }
         }
 
-        m_script.Parent = m_parent;
-        m_scriptString = null;
+        _script.Parent = _parent;
+        _scriptString = null;
     }
 
     public override string ToString()
     {
-        if (m_script != null)
+        if (_script != null)
         {
-            return m_script.ToString();
+            return _script.ToString();
         }
 
-        return m_scriptString;
+        return _scriptString;
     }
 }

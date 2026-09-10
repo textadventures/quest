@@ -9,7 +9,7 @@ internal partial class FontsManagerJsonContext : JsonSerializerContext { }
 
 internal class FontsManager
 {
-    private static readonly HttpClient s_client = new();
+    private static readonly HttpClient Client = new();
 
     private readonly List<string> _basefonts = new()
     {
@@ -39,7 +39,7 @@ internal class FontsManager
     {
         try
         {
-            var json = await s_client.GetStringAsync(
+            var json = await Client.GetStringAsync(
                 "https://www.googleapis.com/webfonts/v1/webfonts?key=AIzaSyDs93IH2UgudQK5IyNSdvKnm1N8TIYzlcM");
             var result = JsonSerializer.Deserialize(json, FontsManagerJsonContext.Default.WebFontsResult);
             if (result?.items != null)

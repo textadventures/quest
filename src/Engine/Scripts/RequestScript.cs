@@ -49,60 +49,60 @@ public class RequestScriptConstructor : ScriptConstructorBase
 
 public class RequestScript : ScriptBase
 {
-    private readonly ScriptContext m_scriptContext;
-    private readonly WorldModel m_worldModel;
-    private IFunction<string> m_data;
-    private Request m_request;
+    private readonly ScriptContext _scriptContext;
+    private readonly WorldModel _worldModel;
+    private IFunction<string> _data;
+    private Request _request;
 
     public RequestScript(ScriptContext scriptContext, string request, IFunction<string> data)
     {
-        m_scriptContext = scriptContext;
-        m_worldModel = scriptContext.WorldModel;
-        m_data = data;
-        m_request = (Request) Enum.Parse(typeof(Request), request);
+        _scriptContext = scriptContext;
+        _worldModel = scriptContext.WorldModel;
+        _data = data;
+        _request = (Request) Enum.Parse(typeof(Request), request);
     }
 
     public override string Keyword => "request";
 
     protected override ScriptBase CloneScript()
     {
-        return new RequestScript(m_scriptContext, m_request.ToString(), m_data.Clone());
+        return new RequestScript(_scriptContext, _request.ToString(), _data.Clone());
     }
 
     public override async Task ExecuteAsync(Context c)
     {
-        var data = await m_data.ExecuteAsync(c);
+        var data = await _data.ExecuteAsync(c);
 
         // TO DO: Replace with dictionary mapping the enum to lambda functions
-        switch (m_request)
+        switch (_request)
         {
             case Request.UpdateLocation:
-                m_worldModel.PlayerUi.LocationUpdated(data);
+                _worldModel.PlayerUi.LocationUpdated(data);
                 break;
             case Request.GameName:
-                m_worldModel.PlayerUi.UpdateGameName(data);
+                _worldModel.PlayerUi.UpdateGameName(data);
                 break;
             case Request.ClearScreen:
-                m_worldModel.PlayerUi.ClearScreen();
-                m_worldModel.OutputLogger.Clear();
+                _worldModel.PlayerUi.ClearScreen();
+                _worldModel.OutputLogger.Clear();
                 break;
             case Request.ShowPicture:
-                await m_worldModel.PlayerUi.ShowPictureAsync(data);
+                await _worldModel.PlayerUi.ShowPictureAsync(data);
                 // TO DO: Picture should be added to the OutputLogger, but the data we
                 // get here includes the full path/URL - we want the original filename
                 // only, so this would be a breaking change.
                 break;
             case Request.PanesVisible:
-                m_worldModel.PlayerUi.SetPanesVisible(data);
+                _worldModel.PlayerUi.SetPanesVisible(data);
                 break;
             case Request.Background:
-                m_worldModel.PlayerUi.SetBackground(data);
+                _worldModel.PlayerUi.SetBackground(data);
                 break;
             case Request.Foreground:
-                m_worldModel.PlayerUi.SetForeground(data);
+                _worldModel.PlayerUi.SetForeground(data);
                 break;
             case Request.RunScript:
-                if (m_worldModel.Version == WorldModelVersion.v500)
+                if (_worldModel.Version == WorldModelVersion.v500)
                 {
                     // v500 games used Frame.js functions for static panel feature. This is now implemented natively
                     // in Player and WebPlayer.
@@ -114,14 +114,14 @@ public class RequestScript : ScriptBase
                     if (data.StartsWith("setFramePicture;"))
                     {
                         var frameArgs = data.Split(';');
-                        m_worldModel.PlayerUi.SetPanelContents("<img src=\"" + frameArgs[1].Trim() +
+                        _worldModel.PlayerUi.SetPanelContents("<img src=\"" + frameArgs[1].Trim() +
                                                                "\" onload=\"setPanelHeight()\"/>");
                         return;
                     }
 
                     if (data == "clearFramePicture")
                     {
-                        m_worldModel.PlayerUi.SetPanelContents("");
+                        _worldModel.PlayerUi.SetPanelContents("");
                     }
                 }
 
@@ -129,54 +129,54 @@ public class RequestScript : ScriptBase
                 var functionName = jsArgs[0];
                 if (jsArgs.Length == 0)
                 {
-                    await m_worldModel.PlayerUi.RunScriptAsync(functionName, null);
+                    await _worldModel.PlayerUi.RunScriptAsync(functionName, null);
                 }
                 else
                 {
-                    await m_worldModel.PlayerUi.RunScriptAsync(functionName, jsArgs.Skip(1).ToArray());
+                    await _worldModel.PlayerUi.RunScriptAsync(functionName, jsArgs.Skip(1).ToArray());
                 }
 
                 break;
             case Request.Quit:
-                m_worldModel.Finish();
+                _worldModel.Finish();
                 break;
             case Request.FontName:
-                if (m_worldModel.Version >= WorldModelVersion.v540)
+                if (_worldModel.Version >= WorldModelVersion.v540)
                 {
                     throw new InvalidOperationException(
                         "FontName request is not supported for games with WorldModel version 540 or later.");
                 }
 
-                m_worldModel.PlayerUi.SetFont(data);
-                ((LegacyOutputLogger) m_worldModel.OutputLogger).SetFontName(data);
+                _worldModel.PlayerUi.SetFont(data);
+                ((LegacyOutputLogger) _worldModel.OutputLogger).SetFontName(data);
                 break;
             case Request.FontSize:
-                if (m_worldModel.Version >= WorldModelVersion.v540)
+                if (_worldModel.Version >= WorldModelVersion.v540)
                 {
                     throw new InvalidOperationException(
                         "FontSize request is not supported for games with WorldModel version 540 or later.");
                 }
 
-                m_worldModel.PlayerUi.SetFontSize(data);
-                ((LegacyOutputLogger) m_worldModel.OutputLogger).SetFontSize(data);
+                _worldModel.PlayerUi.SetFontSize(data);
+                ((LegacyOutputLogger) _worldModel.OutputLogger).SetFontSize(data);
                 break;
             case Request.LinkForeground:
-                m_worldModel.PlayerUi.SetLinkForeground(data);
+                _worldModel.PlayerUi.SetLinkForeground(data);
                 break;
             case Request.Show:
-                m_worldModel.PlayerUi.Show(data);
+                _worldModel.PlayerUi.Show(data);
                 break;
             case Request.Hide:
-                m_worldModel.PlayerUi.Hide(data);
+                _worldModel.PlayerUi.Hide(data);
                 break;
             case Request.SetCompassDirections:
-                m_worldModel.PlayerUi.SetCompassDirections(data.Split(';'));
+                _worldModel.PlayerUi.SetCompassDirections(data.Split(';'));
                 break;
             case Request.SetStatus:
-                m_worldModel.PlayerUi.SetStatusText(data.Replace("\n", Environment.NewLine));
+                _worldModel.PlayerUi.SetStatusText(data.Replace("\n", Environment.NewLine));
                 break;
             case Request.Pause:
-                if (m_worldModel.Version >= WorldModelVersion.v550 && m_worldModel.Version < WorldModelVersion.v600)
+                if (_worldModel.Version >= WorldModelVersion.v550 && _worldModel.Version < WorldModelVersion.v600)
                 {
                     throw new Exception(
                         "The 'Pause' request is not supported for games with WorldModel version 550–580. Use the 'SetTimeout' function instead, or set the game's WorldModel version to 600 or later.");
@@ -185,34 +185,34 @@ public class RequestScript : ScriptBase
                 int ms;
                 if (int.TryParse(data, out ms))
                 {
-                    await m_worldModel.DoPauseAsync(ms);
+                    await _worldModel.DoPauseAsync(ms);
                 }
 
                 break;
             case Request.Wait:
-                if (m_worldModel.Version >= WorldModelVersion.v540 && m_worldModel.Version < WorldModelVersion.v600)
+                if (_worldModel.Version >= WorldModelVersion.v540 && _worldModel.Version < WorldModelVersion.v600)
                 {
                     throw new Exception(
                         "The 'Wait' request is not supported for games with WorldModel version 540–580. Use the 'wait' script command instead, or set the game's WorldModel version to 600 or later.");
                 }
 
-                await m_worldModel.DoWaitAsync();
+                await _worldModel.DoWaitAsync();
                 break;
             case Request.SetInterfaceString:
                 var args = data.Split('=');
-                m_worldModel.PlayerUi.SetInterfaceString(args[0], args[1]);
+                _worldModel.PlayerUi.SetInterfaceString(args[0], args[1]);
                 break;
             case Request.RequestSave:
-                m_worldModel.PlayerUi.RequestSave(null);
+                _worldModel.PlayerUi.RequestSave(null);
                 break;
             case Request.SetPanelContents:
-                m_worldModel.PlayerUi.SetPanelContents(data);
+                _worldModel.PlayerUi.SetPanelContents(data);
                 break;
             case Request.Log:
-                m_worldModel.PlayerUi.Log(data);
+                _worldModel.PlayerUi.Log(data);
                 break;
             case Request.Speak:
-                m_worldModel.PlayerUi.Speak(data);
+                _worldModel.PlayerUi.Speak(data);
                 break;
             default:
                 throw new ArgumentOutOfRangeException("request", "Unhandled request type");
@@ -221,7 +221,7 @@ public class RequestScript : ScriptBase
 
     public override string Save()
     {
-        return SaveScript("request", m_request.ToString(), m_data.Save());
+        return SaveScript("request", _request.ToString(), _data.Save());
     }
 
     public override object GetParameter(int index)
@@ -229,9 +229,9 @@ public class RequestScript : ScriptBase
         switch (index)
         {
             case 0:
-                return m_request.ToString();
+                return _request.ToString();
             case 1:
-                return m_data.Save();
+                return _data.Save();
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -242,10 +242,10 @@ public class RequestScript : ScriptBase
         switch (index)
         {
             case 0:
-                m_request = (Request) Enum.Parse(typeof(Request), (string) value);
+                _request = (Request) Enum.Parse(typeof(Request), (string) value);
                 break;
             case 1:
-                m_data = new Expression<string>((string) value, m_scriptContext);
+                _data = new Expression<string>((string) value, _scriptContext);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

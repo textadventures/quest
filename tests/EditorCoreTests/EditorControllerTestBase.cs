@@ -7,7 +7,7 @@ namespace QuestViva.EditorCoreTests;
 [TestClass]
 public abstract class EditorControllerTestBase
 {
-    private readonly EditorTreeData m_tree = new();
+    private readonly EditorTreeData _tree = new();
 
     protected EditorController Controller { get; private set; }
 
@@ -19,12 +19,12 @@ public abstract class EditorControllerTestBase
     public async Task Init()
     {
         Controller = new EditorController();
-        Controller.ClearTree += m_controller_ClearTree;
-        Controller.BeginTreeUpdate += m_controller_BeginTreeUpdate;
-        Controller.EndTreeUpdate += m_controller_EndTreeUpdate;
-        Controller.AddedNode += m_controller_AddedNode;
-        Controller.UndoListUpdated += m_controller_UndoListUpdated;
-        Controller.RedoListUpdated += m_controller_RedoListUpdated;
+        Controller.ClearTree += OnControllerClearTree;
+        Controller.BeginTreeUpdate += OnControllerBeginTreeUpdate;
+        Controller.EndTreeUpdate += OnControllerEndTreeUpdate;
+        Controller.AddedNode += OnControllerAddedNode;
+        Controller.UndoListUpdated += OnControllerUndoListUpdated;
+        Controller.RedoListUpdated += OnControllerRedoListUpdated;
         var bytes = GetResourceBytes("QuestViva.EditorCoreTests.test.aslx");
         await Controller.Initialise(new ByteArrayGameDataProvider(bytes, "test.aslx"));
         DoExtraInitialisation();
@@ -48,32 +48,32 @@ public abstract class EditorControllerTestBase
         Controller.Dispose();
     }
 
-    private void m_controller_ClearTree(object sender, EventArgs e)
+    private void OnControllerClearTree(object sender, EventArgs e)
     {
-        m_tree.Clear();
+        _tree.Clear();
     }
 
-    private void m_controller_BeginTreeUpdate(object sender, EventArgs e)
+    private void OnControllerBeginTreeUpdate(object sender, EventArgs e)
     {
-        m_tree.BeginUpdate();
+        _tree.BeginUpdate();
     }
 
-    private void m_controller_EndTreeUpdate(object sender, EventArgs e)
+    private void OnControllerEndTreeUpdate(object sender, EventArgs e)
     {
-        m_tree.EndUpdate();
+        _tree.EndUpdate();
     }
 
-    private void m_controller_AddedNode(object sender, EditorController.AddedNodeEventArgs e)
+    private void OnControllerAddedNode(object sender, EditorController.AddedNodeEventArgs e)
     {
-        m_tree.Add(e.Key, e.Text, e.Parent);
+        _tree.Add(e.Key, e.Text, e.Parent);
     }
 
-    private void m_controller_UndoListUpdated(object sender, EditorController.UpdateUndoListEventArgs e)
+    private void OnControllerUndoListUpdated(object sender, EditorController.UpdateUndoListEventArgs e)
     {
         UndoList = new List<string>(e.UndoList);
     }
 
-    private void m_controller_RedoListUpdated(object sender, EditorController.UpdateUndoListEventArgs e)
+    private void OnControllerRedoListUpdated(object sender, EditorController.UpdateUndoListEventArgs e)
     {
         RedoList = new List<string>(e.UndoList);
     }

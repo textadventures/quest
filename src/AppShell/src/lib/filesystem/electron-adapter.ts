@@ -2,7 +2,7 @@ import { isJunkAssetName, isLibraryFilename, type AssetInfo, type FileAdapter } 
 
 const ASLX_FILTER = [{ name: "Quest game files", extensions: ["aslx"] }];
 
-// Mirrors PlayerHelper.cs's s_mimeTypes. window.electronApp.fs.readFile returns
+// Mirrors PlayerHelper.cs's MimeTypes. window.electronApp.fs.readFile returns
 // raw bytes with no type info (unlike FSA's FileSystemFileHandle.getFile(),
 // which browsers auto-type from the OS) — without this, getAsset()'s Blob has
 // an empty type, WasmPlayer's data-URL resource protocol produces an untyped

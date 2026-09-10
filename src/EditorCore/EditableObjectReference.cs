@@ -4,17 +4,17 @@ namespace QuestViva.EditorCore;
 
 public class EditableObjectReference : IEditableObjectReference
 {
-    private readonly string m_attribute;
-    private readonly EditorController m_controller;
-    private readonly Element m_parent;
-    private Element m_object;
+    private readonly string _attribute;
+    private readonly EditorController _controller;
+    private readonly Element _parent;
+    private Element _object;
 
     public EditableObjectReference(EditorController controller, Element obj, Element parent, string attribute)
     {
-        m_object = obj;
-        m_controller = controller;
-        m_parent = parent;
-        m_attribute = attribute;
+        _object = obj;
+        _controller = controller;
+        _parent = parent;
+        _attribute = attribute;
     }
 
     public event EventHandler<DataWrapperUpdatedEventArgs> UnderlyingValueUpdated
@@ -25,21 +25,21 @@ public class EditableObjectReference : IEditableObjectReference
 
     public object GetUnderlyingValue()
     {
-        return m_object;
+        return _object;
     }
 
     public string DisplayString()
     {
-        return "Object: " + m_object.Name;
+        return "Object: " + _object.Name;
     }
 
     public string Reference
     {
-        get => m_object.Name;
+        get => _object.Name;
         set
         {
-            m_object = string.IsNullOrEmpty(value) ? null : m_controller.WorldModel.Elements.Get(value);
-            m_parent.Fields.Set(m_attribute, m_object);
+            _object = string.IsNullOrEmpty(value) ? null : _controller.WorldModel.Elements.Get(value);
+            _parent.Fields.Set(_attribute, _object);
         }
     }
 }

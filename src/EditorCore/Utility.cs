@@ -4,7 +4,7 @@ namespace QuestViva.EditorCore;
 
 public static class EditorUtility
 {
-    private static readonly Regex s_containsUnescapedQuote = new("^\"|[^\\\\]\\\"");
+    private static readonly Regex ContainsUnescapedQuote = new("^\"|[^\\\\]\\\"");
 
     public static string FormatAsOneLine(string input)
     {
@@ -32,7 +32,7 @@ public static class EditorUtility
         var inner = expression.Substring(1, expression.Length - 2);
 
         // must not contain an unescaped quote character
-        return !s_containsUnescapedQuote.IsMatch(inner);
+        return !ContainsUnescapedQuote.IsMatch(inner);
     }
 
     public static string ConvertToSimpleStringExpression(string expression)

@@ -86,13 +86,13 @@ public class IfScriptConstructor : IScriptConstructor
 
 public class IfScript : ScriptBase, IIfScript
 {
-    private readonly List<IElseIfScript> m_elseIfScript = new();
-    private readonly ScriptContext m_scriptContext;
+    private readonly List<IElseIfScript> _elseIfScript = new();
+    private readonly ScriptContext _scriptContext;
 
-    private bool m_hasElse;
+    private bool _hasElse;
 
-    private int m_lastElseIfId;
-    private WorldModel m_worldModel;
+    private int _lastElseIfId;
+    private WorldModel _worldModel;
 
     public IfScript(IFunction<bool> expression, IScript thenScript, ScriptContext scriptContext)
         : this(expression, thenScript, null, scriptContext)
@@ -104,8 +104,8 @@ public class IfScript : ScriptBase, IIfScript
         Expression = expression;
         ThenScript = thenScript;
         ElseScript = elseScript;
-        m_scriptContext = scriptContext;
-        m_worldModel = scriptContext.WorldModel;
+        _scriptContext = scriptContext;
+        _worldModel = scriptContext.WorldModel;
     }
 
     public event EventHandler<IfScriptUpdatedEventArgs> IfScriptUpdated;
@@ -114,14 +114,14 @@ public class IfScript : ScriptBase, IIfScript
     {
         if (UndoLog != null)
         {
-            Debug.Assert(elseScript == null || !m_hasElse,
+            Debug.Assert(elseScript == null || !_hasElse,
                 "UndoSetElse assumes that we only ever set the Else script once");
 
             UndoLog.StartTransaction("Add Else script");
-            UndoLog.AddUndoAction(() => new UndoSetElse(this, ElseScript, elseScript, m_hasElse, true));
+            UndoLog.AddUndoAction(() => new UndoSetElse(this, ElseScript, elseScript, _hasElse, true));
         }
 
-        m_hasElse = true;
+        _hasElse = true;
         SetElseSilent(elseScript);
 
         if (UndoLog != null)
@@ -132,7 +132,7 @@ public class IfScript : ScriptBase, IIfScript
 
     public IElseIfScript AddElseIf(string expression, IScript script)
     {
-        IFunction<bool> expr = new Expression<bool>(expression, m_scriptContext);
+        IFunction<bool> expr = new Expression<bool>(expression, _scriptContext);
         return AddElseIf(expr, script);
     }
 
@@ -172,7 +172,7 @@ public class IfScript : ScriptBase, IIfScript
         }
     }
 
-    public IList<IElseIfScript> ElseIfScripts => m_elseIfScript.AsReadOnly();
+    public IList<IElseIfScript> ElseIfScripts => _elseIfScript.AsReadOnly();
 
     public string ExpressionString
     {
@@ -193,14 +193,14 @@ public class IfScript : ScriptBase, IIfScript
     protected override ScriptBase CloneScript()
     {
         var clone = new IfScript(Expression.Clone(), (IScript) ThenScript.Clone(),
-            ElseScript == null ? null : (IScript) ElseScript.Clone(), m_scriptContext);
-        clone.m_hasElse = m_hasElse;
-        foreach (ElseIfScript elseif in m_elseIfScript)
+            ElseScript == null ? null : (IScript) ElseScript.Clone(), _scriptContext);
+        clone._hasElse = _hasElse;
+        foreach (ElseIfScript elseif in _elseIfScript)
         {
-            clone.m_elseIfScript.Add(elseif.Clone(clone));
+            clone._elseIfScript.Add(elseif.Clone(clone));
         }
 
-        clone.m_lastElseIfId = m_lastElseIfId;
+        clone._lastElseIfId = _lastElseIfId;
         return clone;
     }
 
@@ -220,13 +220,13 @@ public class IfScript : ScriptBase, IIfScript
 
     private string GetNewElseIfID()
     {
-        m_lastElseIfId++;
-        return "elseif" + m_lastElseIfId;
+        _lastElseIfId++;
+        return "elseif" + _lastElseIfId;
     }
 
     private void AddElseIfSilent(IElseIfScript elseIfScript)
     {
-        m_elseIfScript.Add(elseIfScript);
+        _elseIfScript.Add(elseIfScript);
 
         if (IfScriptUpdated != null)
         {
@@ -238,7 +238,7 @@ public class IfScript : ScriptBase, IIfScript
 
     private void RemoveElseIfSilent(IElseIfScript elseIfScript)
     {
-        m_elseIfScript.Remove(elseIfScript);
+        _elseIfScript.Remove(elseIfScript);
 
         if (IfScriptUpdated != null)
         {
@@ -250,19 +250,19 @@ public class IfScript : ScriptBase, IIfScript
 
     private void SetExpressionSilent(string newValue)
     {
-        Expression = new Expression<bool>(newValue, m_scriptContext);
+        Expression = new Expression<bool>(newValue, _scriptContext);
         NotifyUpdate(0, newValue);
     }
 
     public class ElseIfScript : IElseIfScript
     {
-        private readonly IfScript m_parent;
+        private readonly IfScript _parent;
 
         public ElseIfScript(IFunction<bool> expression, IScript script, IfScript parent, string id)
         {
             Expression = expression;
             Script = script;
-            m_parent = parent;
+            _parent = parent;
             Id = id;
         }
 
@@ -275,7 +275,7 @@ public class IfScript : ScriptBase, IIfScript
             get => Expression.Save();
             set
             {
-                m_parent.UndoLog.AddUndoAction(() => new UndoChangeExpression(this, Expression.Save(), value));
+                _parent.UndoLog.AddUndoAction(() => new UndoChangeExpression(this, Expression.Save(), value));
                 SetExpressionSilent(value);
             }
         }
@@ -287,138 +287,138 @@ public class IfScript : ScriptBase, IIfScript
 
         internal void SetExpressionSilent(string newValue)
         {
-            Expression = new Expression<bool>(newValue, m_parent.m_scriptContext);
-            m_parent.NotifyUpdate(Id, newValue);
+            Expression = new Expression<bool>(newValue, _parent._scriptContext);
+            _parent.NotifyUpdate(Id, newValue);
         }
     }
 
     private class UndoChangeExpression : UndoLogger.IUndoAction
     {
-        private readonly ElseIfScript m_elseIfScript;
-        private readonly string m_newValue;
-        private readonly string m_oldValue;
-        private readonly IfScript m_script;
+        private readonly ElseIfScript _elseIfScript;
+        private readonly string _newValue;
+        private readonly string _oldValue;
+        private readonly IfScript _script;
 
         private UndoChangeExpression(string oldValue, string newValue)
         {
-            m_oldValue = oldValue;
-            m_newValue = newValue;
+            _oldValue = oldValue;
+            _newValue = newValue;
         }
 
         public UndoChangeExpression(IfScript script, string oldValue, string newValue)
             : this(oldValue, newValue)
         {
-            m_script = script;
+            _script = script;
         }
 
         public UndoChangeExpression(ElseIfScript elseIfscript, string oldValue, string newValue)
             : this(oldValue, newValue)
         {
-            m_elseIfScript = elseIfscript;
+            _elseIfScript = elseIfscript;
         }
 
         public void DoUndo(WorldModel worldModel)
         {
-            if (m_script != null)
+            if (_script != null)
             {
-                m_script.SetExpressionSilent(m_oldValue);
+                _script.SetExpressionSilent(_oldValue);
             }
 
-            if (m_elseIfScript != null)
+            if (_elseIfScript != null)
             {
-                m_elseIfScript.SetExpressionSilent(m_oldValue);
+                _elseIfScript.SetExpressionSilent(_oldValue);
             }
         }
 
         public void DoRedo(WorldModel worldModel)
         {
-            if (m_script != null)
+            if (_script != null)
             {
-                m_script.SetExpressionSilent(m_newValue);
+                _script.SetExpressionSilent(_newValue);
             }
 
-            if (m_elseIfScript != null)
+            if (_elseIfScript != null)
             {
-                m_elseIfScript.SetExpressionSilent(m_newValue);
+                _elseIfScript.SetExpressionSilent(_newValue);
             }
         }
     }
 
     // We only need an UndoSetElse and not an UndoSetThen, because an "if" *always*
     // has a "then". So here we implictly assume that the old value was null, and that
-    // m_hasElse was false.
+    // _hasElse was false.
 
     private class UndoSetElse : UndoLogger.IUndoAction
     {
-        private readonly bool m_newHasElse;
-        private readonly IScript m_newValue;
-        private readonly bool m_oldHasElse;
-        private readonly IScript m_oldValue;
-        private readonly IfScript m_script;
+        private readonly bool _newHasElse;
+        private readonly IScript _newValue;
+        private readonly bool _oldHasElse;
+        private readonly IScript _oldValue;
+        private readonly IfScript _script;
 
         public UndoSetElse(IfScript script, IScript oldValue, IScript newValue, bool oldHasElse, bool newHasElse)
         {
-            m_script = script;
-            m_oldValue = oldValue;
-            m_newValue = newValue;
-            m_oldHasElse = oldHasElse;
-            m_newHasElse = newHasElse;
+            _script = script;
+            _oldValue = oldValue;
+            _newValue = newValue;
+            _oldHasElse = oldHasElse;
+            _newHasElse = newHasElse;
         }
 
         public void DoUndo(WorldModel worldModel)
         {
-            m_script.m_hasElse = m_oldHasElse;
-            m_script.SetElseSilent(m_oldValue);
+            _script._hasElse = _oldHasElse;
+            _script.SetElseSilent(_oldValue);
         }
 
         public void DoRedo(WorldModel worldModel)
         {
-            m_script.m_hasElse = m_newHasElse;
-            m_script.SetElseSilent(m_newValue);
+            _script._hasElse = _newHasElse;
+            _script.SetElseSilent(_newValue);
         }
     }
 
     private class UndoAddElseIf : UndoLogger.IUndoAction
     {
-        private readonly IElseIfScript m_elseIf;
-        private readonly IfScript m_script;
+        private readonly IElseIfScript _elseIf;
+        private readonly IfScript _script;
 
         public UndoAddElseIf(IfScript script, IElseIfScript elseIf)
         {
-            m_script = script;
-            m_elseIf = elseIf;
+            _script = script;
+            _elseIf = elseIf;
         }
 
         public void DoUndo(WorldModel worldModel)
         {
-            m_script.RemoveElseIfSilent(m_elseIf);
+            _script.RemoveElseIfSilent(_elseIf);
         }
 
         public void DoRedo(WorldModel worldModel)
         {
-            m_script.AddElseIfSilent(m_elseIf);
+            _script.AddElseIfSilent(_elseIf);
         }
     }
 
     private class UndoRemoveElseIf : UndoLogger.IUndoAction
     {
-        private readonly IElseIfScript m_elseIf;
-        private readonly IfScript m_script;
+        private readonly IElseIfScript _elseIf;
+        private readonly IfScript _script;
 
         public UndoRemoveElseIf(IfScript script, IElseIfScript elseIf)
         {
-            m_script = script;
-            m_elseIf = elseIf;
+            _script = script;
+            _elseIf = elseIf;
         }
 
         public void DoUndo(WorldModel worldModel)
         {
-            m_script.AddElseIfSilent(m_elseIf);
+            _script.AddElseIfSilent(_elseIf);
         }
 
         public void DoRedo(WorldModel worldModel)
         {
-            m_script.RemoveElseIfSilent(m_elseIf);
+            _script.RemoveElseIfSilent(_elseIf);
         }
     }
 
@@ -432,9 +432,9 @@ public class IfScript : ScriptBase, IIfScript
             return;
         }
 
-        if (m_elseIfScript != null)
+        if (_elseIfScript != null)
         {
-            foreach (ElseIfScript elseIfScript in m_elseIfScript)
+            foreach (ElseIfScript elseIfScript in _elseIfScript)
             {
                 if (await elseIfScript.Expression.ExecuteAsync(c))
                 {
@@ -453,9 +453,9 @@ public class IfScript : ScriptBase, IIfScript
     public override string Save()
     {
         var result = SaveScript("if", ThenScript, Expression.Save());
-        if (m_elseIfScript != null)
+        if (_elseIfScript != null)
         {
-            foreach (ElseIfScript elseIf in m_elseIfScript)
+            foreach (ElseIfScript elseIf in _elseIfScript)
             {
                 result += Environment.NewLine + SaveScript("else if", elseIf.Script, elseIf.Expression.Save());
             }

@@ -5,18 +5,18 @@ namespace QuestViva.EditorCore;
 
 public class EditableCommandPattern : IEditableCommandPattern
 {
-    private readonly string m_attribute;
-    private readonly Element m_parent;
-    private readonly EditorCommandPattern m_pattern;
-    private EditorController m_controller;
+    private readonly string _attribute;
+    private readonly Element _parent;
+    private readonly EditorCommandPattern _pattern;
+    private EditorController _controller;
 
     public EditableCommandPattern(EditorController controller, EditorCommandPattern pattern, Element parent,
         string attribute)
     {
-        m_pattern = pattern;
-        m_controller = controller;
-        m_parent = parent;
-        m_attribute = attribute;
+        _pattern = pattern;
+        _controller = controller;
+        _parent = parent;
+        _attribute = attribute;
     }
 
     public event EventHandler<DataWrapperUpdatedEventArgs> UnderlyingValueUpdated
@@ -27,17 +27,17 @@ public class EditableCommandPattern : IEditableCommandPattern
 
     public object GetUnderlyingValue()
     {
-        return m_pattern;
+        return _pattern;
     }
 
     public string DisplayString()
     {
-        return m_pattern.Pattern;
+        return _pattern.Pattern;
     }
 
     public string Pattern
     {
-        get => m_pattern.Pattern;
-        set => m_parent.Fields.Set(m_attribute, new EditorCommandPattern(value));
+        get => _pattern.Pattern;
+        set => _parent.Fields.Set(_attribute, new EditorCommandPattern(value));
     }
 }

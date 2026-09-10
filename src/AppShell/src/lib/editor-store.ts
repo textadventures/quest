@@ -1768,7 +1768,7 @@ export async function deleteAssetAndOwner(key: string): Promise<void> {
 function performDeleteElement(key: string) {
     if (!_bridge) return;
     // Same staleness as adding one (see createIncludedLibrary above): a removed library's
-    // <editor> panes stay registered in m_editorDefinitions until Initialise() re-runs, so a
+    // <editor> panes stay registered in _editorDefinitions until Initialise() re-runs, so a
     // deleted library can leave the editor showing panes for elements that no longer exist.
     if (get(treeNodes).find(n => n.key === key)?.nodeType === "include") showLibraryReloadBanner.set(true);
     _bridge.DeleteElement(key);
@@ -1909,7 +1909,7 @@ export const clipboardVersion = writable(0);
 
 // Keys currently staged by Cut (not yet pasted) — TreePanel dims these rows so
 // a cut element doesn't look untouched. Mirrors EditorController's own
-// m_lastelementscutout flag: cleared by Copy (a fresh copy isn't a cut) and by
+// _lastelementscutout flag: cleared by Copy (a fresh copy isn't a cut) and by
 // a completed Paste (the element has landed at its new parent), set by Cut.
 export const cutElementKeys = writable<Set<string>>(new Set());
 

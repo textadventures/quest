@@ -206,7 +206,7 @@ async function run() {
 
 
     // The new verb command element lands under the game's synthetic "Verbs" tree node (key
-    // "_gameVerbs" — see EditorController's k_verbs), alongside any library-defined verbs.
+    // "_gameVerbs" — see EditorController's Verbs), alongside any library-defined verbs.
     // The game node starts collapsed by default (#827), so expand it first to make its
     // Verbs/Commands/Advanced headers visible.
     await page.locator('[data-scope="tree-view"][data-value="game"][data-part="branch-control"] button[aria-label="Expand"]').click();

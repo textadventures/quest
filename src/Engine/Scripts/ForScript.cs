@@ -44,65 +44,65 @@ public class ForScriptConstructor : IScriptConstructor
 
 public class ForScript : ScriptBase
 {
-    private readonly IScript m_loopScript;
-    private readonly ScriptContext m_scriptContext;
-    private readonly IScriptFactory m_scriptFactory;
-    private IFunction<int> m_from;
-    private IFunction<int> m_step;
-    private IFunction<int> m_to;
-    private string m_variable;
-    private WorldModel m_worldModel;
+    private readonly IScript _loopScript;
+    private readonly ScriptContext _scriptContext;
+    private readonly IScriptFactory _scriptFactory;
+    private IFunction<int> _from;
+    private IFunction<int> _step;
+    private IFunction<int> _to;
+    private string _variable;
+    private WorldModel _worldModel;
 
     public ForScript(ScriptContext scriptContext, IScriptFactory scriptFactory, string variable, IFunction<int> from,
         IFunction<int> to, IScript loopScript)
     {
-        m_scriptContext = scriptContext;
-        m_worldModel = scriptContext.WorldModel;
-        m_scriptFactory = scriptFactory;
-        m_variable = variable;
-        m_from = from;
-        m_to = to;
-        m_loopScript = loopScript;
+        _scriptContext = scriptContext;
+        _worldModel = scriptContext.WorldModel;
+        _scriptFactory = scriptFactory;
+        _variable = variable;
+        _from = from;
+        _to = to;
+        _loopScript = loopScript;
     }
 
     public ForScript(ScriptContext scriptContext, IScriptFactory scriptFactory, string variable, IFunction<int> from,
         IFunction<int> to, IFunction<int> step, IScript loopScript)
         : this(scriptContext, scriptFactory, variable, from, to, loopScript)
     {
-        m_step = step;
+        _step = step;
     }
 
     public override string Keyword => "for";
 
     protected override ScriptBase CloneScript()
     {
-        return new ForScript(m_scriptContext, m_scriptFactory, m_variable, m_from.Clone(), m_to.Clone(),
-            m_step == null ? null : m_step.Clone(), (IScript) m_loopScript.Clone());
+        return new ForScript(_scriptContext, _scriptFactory, _variable, _from.Clone(), _to.Clone(),
+            _step == null ? null : _step.Clone(), (IScript) _loopScript.Clone());
     }
 
     protected override void ParentUpdated()
     {
-        m_loopScript.Parent = Parent;
+        _loopScript.Parent = Parent;
     }
 
     public override async Task ExecuteAsync(Context c)
     {
-        var from = await m_from.ExecuteAsync(c);
-        var to = await m_to.ExecuteAsync(c);
-        var step = m_step == null ? 1 : await m_step.ExecuteAsync(c);
+        var from = await _from.ExecuteAsync(c);
+        var to = await _to.ExecuteAsync(c);
+        var step = _step == null ? 1 : await _step.ExecuteAsync(c);
         int count;
-        c.Parameters[m_variable] = 0;
+        c.Parameters[_variable] = 0;
 
         for (count = from; (step > 0 && count <= to) || (step < 0 && count >= to); count += step)
         {
-            c.Parameters[m_variable] = count;
-            await m_loopScript.ExecuteAsync(c);
+            c.Parameters[_variable] = count;
+            await _loopScript.ExecuteAsync(c);
             if (c.IsReturned)
             {
                 break;
             }
 
-            var newCount = c.Parameters[m_variable];
+            var newCount = c.Parameters[_variable];
             if (newCount is int)
             {
                 count = (int) newCount;
@@ -117,12 +117,12 @@ public class ForScript : ScriptBase
 
     public override string Save()
     {
-        if (m_step == null)
+        if (_step == null)
         {
-            return SaveScript("for", m_loopScript, m_variable, m_from.Save(), m_to.Save());
+            return SaveScript("for", _loopScript, _variable, _from.Save(), _to.Save());
         }
 
-        return SaveScript("for", m_loopScript, m_variable, m_from.Save(), m_to.Save(), m_step.Save());
+        return SaveScript("for", _loopScript, _variable, _from.Save(), _to.Save(), _step.Save());
     }
 
     public override object GetParameter(int index)
@@ -130,15 +130,15 @@ public class ForScript : ScriptBase
         switch (index)
         {
             case 0:
-                return m_variable;
+                return _variable;
             case 1:
-                return m_from.Save();
+                return _from.Save();
             case 2:
-                return m_to.Save();
+                return _to.Save();
             case 3:
-                return m_step == null ? null : m_step.Save();
+                return _step == null ? null : _step.Save();
             case 4:
-                return m_loopScript;
+                return _loopScript;
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -149,16 +149,16 @@ public class ForScript : ScriptBase
         switch (index)
         {
             case 0:
-                m_variable = (string) value;
+                _variable = (string) value;
                 break;
             case 1:
-                m_from = new Expression<int>((string) value, m_scriptContext);
+                _from = new Expression<int>((string) value, _scriptContext);
                 break;
             case 2:
-                m_to = new Expression<int>((string) value, m_scriptContext);
+                _to = new Expression<int>((string) value, _scriptContext);
                 break;
             case 3:
-                m_step = new Expression<int>((string) value, m_scriptContext);
+                _step = new Expression<int>((string) value, _scriptContext);
                 break;
             case 4:
                 // any updates to the script should change the script itself - nothing should cause SetParameter to be triggered.
@@ -170,6 +170,6 @@ public class ForScript : ScriptBase
 
     public override IEnumerable<string> GetDefinedVariables()
     {
-        return new List<string> {m_variable};
+        return new List<string> {_variable};
     }
 }

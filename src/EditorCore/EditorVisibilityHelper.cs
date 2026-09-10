@@ -6,71 +6,71 @@ namespace QuestViva.EditorCore;
 
 internal class EditorVisibilityHelper
 {
-    private readonly bool m_alwaysVisible = true;
-    private readonly string m_filter;
-    private readonly string m_filterGroup;
-    private readonly IList<string> m_notVisibleIfElementInheritsType;
-    private readonly EditorDefinition m_parent;
-    private readonly string m_relatedAttribute;
-    private readonly bool m_relatedAttributeNegate;
-    private readonly Expression<bool> m_visibilityExpression;
-    private readonly IList<string> m_visibleIfElementInheritsType;
-    private readonly string m_visibleIfRelatedAttributeIsType;
-    private readonly WorldModel m_worldModel;
-    private List<Element> m_notVisibleIfElementInheritsTypeElement;
-    private List<Element> m_visibleIfElementInheritsTypeElement;
+    private readonly bool _alwaysVisible = true;
+    private readonly string _filter;
+    private readonly string _filterGroup;
+    private readonly IList<string> _notVisibleIfElementInheritsType;
+    private readonly EditorDefinition _parent;
+    private readonly string _relatedAttribute;
+    private readonly bool _relatedAttributeNegate;
+    private readonly Expression<bool> _visibilityExpression;
+    private readonly IList<string> _visibleIfElementInheritsType;
+    private readonly string _visibleIfRelatedAttributeIsType;
+    private readonly WorldModel _worldModel;
+    private List<Element> _notVisibleIfElementInheritsTypeElement;
+    private List<Element> _visibleIfElementInheritsTypeElement;
 
     public EditorVisibilityHelper(EditorDefinition parent, WorldModel worldModel, Element source)
     {
-        m_parent = parent;
-        m_worldModel = worldModel;
-        m_relatedAttribute = source.Fields.GetString("relatedattribute");
-        if (m_relatedAttribute != null)
+        _parent = parent;
+        _worldModel = worldModel;
+        _relatedAttribute = source.Fields.GetString("relatedattribute");
+        if (_relatedAttribute != null)
         {
-            m_alwaysVisible = false;
+            _alwaysVisible = false;
         }
 
-        m_relatedAttributeNegate = source.Fields.GetAsType<bool>("relatedattributenegate");
-        m_visibleIfRelatedAttributeIsType = source.Fields.GetString("relatedattributedisplaytype");
-        m_visibleIfElementInheritsType = source.Fields.GetAsType<QuestList<string>>("mustinherit");
-        m_notVisibleIfElementInheritsType = source.Fields.GetAsType<QuestList<string>>("mustnotinherit");
-        if (m_visibleIfElementInheritsType != null || m_notVisibleIfElementInheritsType != null)
+        _relatedAttributeNegate = source.Fields.GetAsType<bool>("relatedattributenegate");
+        _visibleIfRelatedAttributeIsType = source.Fields.GetString("relatedattributedisplaytype");
+        _visibleIfElementInheritsType = source.Fields.GetAsType<QuestList<string>>("mustinherit");
+        _notVisibleIfElementInheritsType = source.Fields.GetAsType<QuestList<string>>("mustnotinherit");
+        if (_visibleIfElementInheritsType != null || _notVisibleIfElementInheritsType != null)
         {
-            m_alwaysVisible = false;
+            _alwaysVisible = false;
         }
 
-        m_filterGroup = source.Fields.GetString("filtergroup");
-        m_filter = source.Fields.GetString("filter");
-        if (m_filter != null)
+        _filterGroup = source.Fields.GetString("filtergroup");
+        _filter = source.Fields.GetString("filter");
+        if (_filter != null)
         {
-            m_alwaysVisible = false;
+            _alwaysVisible = false;
         }
 
         var expression = source.Fields.GetString("onlydisplayif");
         if (expression != null)
         {
-            m_visibilityExpression = new Expression<bool>(Engine.Utility.EncodeIdentifierSpaces(expression),
+            _visibilityExpression = new Expression<bool>(Engine.Utility.EncodeIdentifierSpaces(expression),
                 new ScriptContext(worldModel, true));
-            m_alwaysVisible = false;
+            _alwaysVisible = false;
         }
     }
 
     public async Task<bool> IsVisible(IEditorData data)
     {
-        if (m_alwaysVisible)
+        if (_alwaysVisible)
         {
             return true;
         }
 
-        if (m_visibilityExpression != null)
+        if (_visibilityExpression != null)
         {
             // evaluate <onlydisplayif> expression, with "this" as the current element
             var context = new Context();
-            context.Parameters = new Parameters("this", m_worldModel.Elements.Get(data.Name));
+            context.Parameters = new Parameters("this", _worldModel.Elements.Get(data.Name));
             var result = false;
             try
             {
-                result = await m_visibilityExpression.ExecuteAsync(context);
+                result = await _visibilityExpression.ExecuteAsync(context);
             }
             catch
             {
@@ -93,7 +93,7 @@ internal class EditorVisibilityHelper
     // evaluated synchronously.
     public bool IsVisibleIgnoringExpression(IEditorData data)
     {
-        if (m_alwaysVisible)
+        if (_alwaysVisible)
         {
             return true;
         }
@@ -103,21 +103,21 @@ internal class EditorVisibilityHelper
 
     private bool IsVisibleSyncCore(IEditorData data)
     {
-        if (m_notVisibleIfElementInheritsType != null)
+        if (_notVisibleIfElementInheritsType != null)
         {
-            if (m_notVisibleIfElementInheritsTypeElement == null)
+            if (_notVisibleIfElementInheritsTypeElement == null)
             {
                 // convert "mustnotinherit" type names list into a list of type elements
-                m_notVisibleIfElementInheritsTypeElement = new List<Element>(
-                    m_notVisibleIfElementInheritsType.Select(t => m_worldModel.Elements.Get(ElementType.ObjectType, t))
+                _notVisibleIfElementInheritsTypeElement = new List<Element>(
+                    _notVisibleIfElementInheritsType.Select(t => _worldModel.Elements.Get(ElementType.ObjectType, t))
                 );
             }
 
             // if the element does inherit any of the "forbidden" types, then this control is not visible
 
-            var element = m_worldModel.Elements.Get(data.Name);
+            var element = _worldModel.Elements.Get(data.Name);
 
-            foreach (var forbiddenType in m_notVisibleIfElementInheritsTypeElement)
+            foreach (var forbiddenType in _notVisibleIfElementInheritsTypeElement)
             {
                 if (element.Fields.InheritsTypeRecursive(forbiddenType))
                 {
@@ -126,9 +126,9 @@ internal class EditorVisibilityHelper
             }
         }
 
-        if (m_relatedAttribute != null)
+        if (_relatedAttribute != null)
         {
-            var relatedAttributeValue = data.GetAttribute(m_relatedAttribute);
+            var relatedAttributeValue = data.GetAttribute(_relatedAttribute);
             if (relatedAttributeValue is IDataWrapper)
             {
                 relatedAttributeValue = ((IDataWrapper) relatedAttributeValue).GetUnderlyingValue();
@@ -146,24 +146,24 @@ internal class EditorVisibilityHelper
             var relatedAttributeType = relatedAttributeValue == null
                 ? "null"
                 : WorldModel.ConvertTypeToTypeName(relatedAttributeValue.GetType());
-            return (relatedAttributeType == m_visibleIfRelatedAttributeIsType) != m_relatedAttributeNegate;
+            return (relatedAttributeType == _visibleIfRelatedAttributeIsType) != _relatedAttributeNegate;
         }
 
-        if (m_visibleIfElementInheritsType != null)
+        if (_visibleIfElementInheritsType != null)
         {
-            if (m_visibleIfElementInheritsTypeElement == null)
+            if (_visibleIfElementInheritsTypeElement == null)
             {
                 // convert "mustinherit" type names list into a list of type elements
-                m_visibleIfElementInheritsTypeElement = new List<Element>(
-                    m_visibleIfElementInheritsType.Select(t => m_worldModel.Elements.Get(ElementType.ObjectType, t))
+                _visibleIfElementInheritsTypeElement = new List<Element>(
+                    _visibleIfElementInheritsType.Select(t => _worldModel.Elements.Get(ElementType.ObjectType, t))
                 );
             }
 
             // if the element does inherit any of the types, then this control is visible
 
-            var element = m_worldModel.Elements.Get(data.Name);
+            var element = _worldModel.Elements.Get(data.Name);
 
-            foreach (var type in m_visibleIfElementInheritsTypeElement)
+            foreach (var type in _visibleIfElementInheritsTypeElement)
             {
                 if (element.Fields.InheritsTypeRecursive(type))
                 {
@@ -174,19 +174,19 @@ internal class EditorVisibilityHelper
             return false;
         }
 
-        if (m_filterGroup != null)
+        if (_filterGroup != null)
         {
             // This control is visible if the named filtergroup's current filter selection is this control's filter.
-            var selectedFilter = data.GetSelectedFilter(m_filterGroup);
+            var selectedFilter = data.GetSelectedFilter(_filterGroup);
 
             // Or, if the named filtergroup's current filter selection is not set, infer the current filter value
             // based on which attribute is populated for this data.
             if (selectedFilter == null)
             {
-                selectedFilter = m_parent.GetDefaultFilterName(m_filterGroup, data);
+                selectedFilter = _parent.GetDefaultFilterName(_filterGroup, data);
             }
 
-            return selectedFilter == m_filter;
+            return selectedFilter == _filter;
         }
 
         return true;

@@ -20,18 +20,18 @@ public class CommentScriptConstructor : IScriptConstructor
 
 public class CommentScript : ScriptBase
 {
-    private string m_comment;
+    private string _comment;
 
     public CommentScript(string comment)
     {
-        m_comment = comment;
+        _comment = comment;
     }
 
     public override string Keyword => "//";
 
     protected override ScriptBase CloneScript()
     {
-        return new CommentScript(m_comment);
+        return new CommentScript(_comment);
     }
 
     public override Task ExecuteAsync(Context c)
@@ -42,17 +42,17 @@ public class CommentScript : ScriptBase
     public override string Save()
     {
         return "// " + string.Join(Environment.NewLine + "// ",
-            m_comment.Split(new[] {"\n"}, StringSplitOptions.RemoveEmptyEntries));
+            _comment.Split(new[] {"\n"}, StringSplitOptions.RemoveEmptyEntries));
     }
 
     public override object GetParameter(int index)
     {
-        return m_comment;
+        return _comment;
     }
 
     protected override void SetParameterInternal(int index, object value)
     {
-        m_comment = (string) value;
+        _comment = (string) value;
     }
 
     public void AddLine(string line)
@@ -62,6 +62,6 @@ public class CommentScript : ScriptBase
             throw new ArgumentException("Expected comment line: " + line);
         }
 
-        m_comment += Environment.NewLine + line.Substring(2).Trim();
+        _comment += Environment.NewLine + line.Substring(2).Trim();
     }
 }

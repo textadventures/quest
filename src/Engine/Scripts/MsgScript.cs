@@ -24,42 +24,42 @@ public class MsgScriptConstructor : ScriptConstructorBase
 
 public class MsgScript : ScriptBase
 {
-    private readonly ScriptContext m_scriptContext;
-    private readonly WorldModel m_worldModel;
-    private IFunctionDynamic m_function;
+    private readonly ScriptContext _scriptContext;
+    private readonly WorldModel _worldModel;
+    private IFunctionDynamic _function;
 
     public MsgScript(ScriptContext scriptContext, IFunctionDynamic function)
     {
-        m_scriptContext = scriptContext;
-        m_worldModel = scriptContext.WorldModel;
-        m_function = function;
+        _scriptContext = scriptContext;
+        _worldModel = scriptContext.WorldModel;
+        _function = function;
     }
 
     public override string Keyword => "msg";
 
     protected override ScriptBase CloneScript()
     {
-        return new MsgScript(m_scriptContext, m_function.Clone());
+        return new MsgScript(_scriptContext, _function.Clone());
     }
 
     public override async Task ExecuteAsync(Context c)
     {
-        var result = await m_function.ExecuteAsync(c);
-        await m_worldModel.PrintAsync(Utility.ExpressionResultToString(result));
+        var result = await _function.ExecuteAsync(c);
+        await _worldModel.PrintAsync(Utility.ExpressionResultToString(result));
     }
 
     public override string Save()
     {
-        return SaveScript("msg", m_function.Save());
+        return SaveScript("msg", _function.Save());
     }
 
     public override object GetParameter(int index)
     {
-        return m_function.Save();
+        return _function.Save();
     }
 
     protected override void SetParameterInternal(int index, object value)
     {
-        m_function = new ExpressionDynamic((string) value, m_scriptContext);
+        _function = new ExpressionDynamic((string) value, _scriptContext);
     }
 }

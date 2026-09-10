@@ -10,7 +10,7 @@ namespace QuestViva.Legacy;
 
 public partial class V4Game
 {
-    private string m_menuResponse;
+    private string _menuResponse;
 
     public int ASLVersion { get; private set; }
 
@@ -145,7 +145,7 @@ public partial class V4Game
 
     public async Task SetMenuResponse(string response)
     {
-        m_menuResponse = response;
+        _menuResponse = response;
         _turnSuspendedTcs = new TaskCompletionSource();
         _waitTcs?.TrySetResult();
         await _turnSuspendedTcs.Task;
@@ -8169,7 +8169,7 @@ public partial class V4Game
         _waitTcs = new TaskCompletionSource();
         SignalTurnSuspended();
         await _waitTcs.Task;
-        return m_menuResponse;
+        return _menuResponse;
     }
 
 

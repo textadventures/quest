@@ -20,23 +20,23 @@ public class UndoScriptConstructor : ScriptConstructorBase
 
 public class UndoScript : ScriptBase
 {
-    private readonly WorldModel m_worldModel;
+    private readonly WorldModel _worldModel;
 
     public UndoScript(WorldModel worldModel)
     {
-        m_worldModel = worldModel;
+        _worldModel = worldModel;
     }
 
     public override string Keyword => "undo";
 
     protected override ScriptBase CloneScript()
     {
-        return new UndoScript(m_worldModel);
+        return new UndoScript(_worldModel);
     }
 
     public override Task ExecuteAsync(Context c)
     {
-        return m_worldModel.UndoLogger.RollbackTransaction();
+        return _worldModel.UndoLogger.RollbackTransaction();
     }
 
     public override string Save()
@@ -72,41 +72,41 @@ public class StartTransactionConstructor : ScriptConstructorBase
 
 public class StartTransactionScript : ScriptBase
 {
-    private readonly ScriptContext m_scriptContext;
-    private readonly WorldModel m_worldModel;
-    private IFunction<string> m_command;
+    private readonly ScriptContext _scriptContext;
+    private readonly WorldModel _worldModel;
+    private IFunction<string> _command;
 
     public StartTransactionScript(ScriptContext scriptContext, IFunction<string> command)
     {
-        m_scriptContext = scriptContext;
-        m_worldModel = scriptContext.WorldModel;
-        m_command = command;
+        _scriptContext = scriptContext;
+        _worldModel = scriptContext.WorldModel;
+        _command = command;
     }
 
     public override string Keyword => "start transaction";
 
     protected override ScriptBase CloneScript()
     {
-        return new StartTransactionScript(m_scriptContext, m_command.Clone());
+        return new StartTransactionScript(_scriptContext, _command.Clone());
     }
 
     public override async Task ExecuteAsync(Context c)
     {
-        m_worldModel.UndoLogger.RollTransaction(await m_command.ExecuteAsync(c));
+        _worldModel.UndoLogger.RollTransaction(await _command.ExecuteAsync(c));
     }
 
     public override string Save()
     {
-        return SaveScript("start transaction", m_command.Save());
+        return SaveScript("start transaction", _command.Save());
     }
 
     public override object GetParameter(int index)
     {
-        return m_command.Save();
+        return _command.Save();
     }
 
     protected override void SetParameterInternal(int index, object value)
     {
-        m_command = new Expression<string>((string) value, m_scriptContext);
+        _command = new Expression<string>((string) value, _scriptContext);
     }
 }

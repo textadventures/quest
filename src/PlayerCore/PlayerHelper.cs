@@ -20,42 +20,42 @@ public interface IPlayerHelperUI : IPlayer
 /// </summary>
 public class PlayerHelper
 {
-    private static readonly Dictionary<string, string> s_mimeTypes = new();
-    private readonly IPlayerHelperUI m_playerUI;
+    private static readonly Dictionary<string, string> MimeTypes = new();
+    private readonly IPlayerHelperUI _playerUI;
 
-    private string m_font = "";
-    private string m_fontSize = "";
-    private string m_fontSizeOverride = "";
-    private string m_foreground = "";
-    private string m_foregroundOverride = "";
+    private string _font = "";
+    private string _fontSize = "";
+    private string _fontSizeOverride = "";
+    private string _foreground = "";
+    private string _foregroundOverride = "";
 
-    private int m_linkCount;
-    private string m_linkForeground = "";
-    private string m_textBuffer = "";
+    private int _linkCount;
+    private string _linkForeground = "";
+    private string _textBuffer = "";
 
     static PlayerHelper()
     {
-        s_mimeTypes.Add(".jpg", "image/jpeg");
-        s_mimeTypes.Add(".jpeg", "image/jpeg");
-        s_mimeTypes.Add(".gif", "image/gif");
-        s_mimeTypes.Add(".bmp", "image/bmp");
-        s_mimeTypes.Add(".png", "image/png");
-        s_mimeTypes.Add(".wav", "audio/wav");
-        s_mimeTypes.Add(".mp3", "audio/mpeg");
-        s_mimeTypes.Add(".ogg", "audio/ogg");
-        s_mimeTypes.Add(".js", "application/javascript");
-        s_mimeTypes.Add(".ttf", "application/font-woff");
-        s_mimeTypes.Add(".svg", "image/svg+xml");
+        MimeTypes.Add(".jpg", "image/jpeg");
+        MimeTypes.Add(".jpeg", "image/jpeg");
+        MimeTypes.Add(".gif", "image/gif");
+        MimeTypes.Add(".bmp", "image/bmp");
+        MimeTypes.Add(".png", "image/png");
+        MimeTypes.Add(".wav", "audio/wav");
+        MimeTypes.Add(".mp3", "audio/mpeg");
+        MimeTypes.Add(".ogg", "audio/ogg");
+        MimeTypes.Add(".js", "application/javascript");
+        MimeTypes.Add(".ttf", "application/font-woff");
+        MimeTypes.Add(".svg", "image/svg+xml");
     }
 
     public PlayerHelper(IGame game, IPlayerHelperUI playerUI)
     {
         UseGameColours = true;
         UseGameFont = true;
-        m_playerUI = playerUI;
+        _playerUI = playerUI;
         Game = game;
 
-        Game.PrintText += m_game_PrintText;
+        Game.PrintText += OnGamePrintText;
     }
 
     public IGame Game { get; }
@@ -79,7 +79,7 @@ public class PlayerHelper
         return (result, errors);
     }
 
-    private void m_game_PrintText(string text)
+    private void OnGamePrintText(string text)
     {
         PrintText(text);
     }
@@ -144,13 +144,13 @@ public class PlayerHelper
                             WriteText("<u>");
                             break;
                         case "color":
-                            m_foregroundOverride = reader.GetAttribute("color");
+                            _foregroundOverride = reader.GetAttribute("color");
                             break;
                         case "font":
-                            m_fontSizeOverride = reader.GetAttribute("size");
+                            _fontSizeOverride = reader.GetAttribute("size");
                             break;
                         case "align":
-                            m_playerUI.SetAlignment(reader.GetAttribute("align"));
+                            _playerUI.SetAlignment(reader.GetAttribute("align"));
                             break;
                         case "a":
                             generatingLink = true;
@@ -211,13 +211,13 @@ public class PlayerHelper
                             WriteText("</u>");
                             break;
                         case "color":
-                            m_foregroundOverride = "";
+                            _foregroundOverride = "";
                             break;
                         case "font":
-                            m_fontSizeOverride = "";
+                            _fontSizeOverride = "";
                             break;
                         case "align":
-                            m_playerUI.SetAlignment("");
+                            _playerUI.SetAlignment("");
                             alignmentSet = true;
                             break;
                         case "a":
@@ -241,7 +241,7 @@ public class PlayerHelper
             }
         }
 
-        if (m_textBuffer.EndsWith("</ul>") || m_textBuffer.EndsWith("</ol>"))
+        if (_textBuffer.EndsWith("</ul>") || _textBuffer.EndsWith("</ol>"))
         {
             nobr = true;
         }
@@ -252,7 +252,7 @@ public class PlayerHelper
             // there's no need to submit an extra <br> tag as subsequent text will be in a
             // brand new <div> element.
 
-            if (!(alignmentSet && m_textBuffer.Length == 0))
+            if (!(alignmentSet && _textBuffer.Length == 0))
             {
                 WriteText("<br />");
             }
@@ -293,9 +293,9 @@ public class PlayerHelper
         var style = "";
         if (UseGameFont)
         {
-            if (!string.IsNullOrEmpty(m_font))
+            if (!string.IsNullOrEmpty(_font))
             {
-                style += string.Format("font-family:{0};", m_font);
+                style += string.Format("font-family:{0};", _font);
             }
         }
         else
@@ -312,10 +312,10 @@ public class PlayerHelper
             }
             else
             {
-                colour = m_foregroundOverride;
+                colour = _foregroundOverride;
                 if (colour.Length == 0)
                 {
-                    colour = m_foreground;
+                    colour = _foreground;
                 }
             }
         }
@@ -332,10 +332,10 @@ public class PlayerHelper
         string fontSize;
         if (UseGameFont)
         {
-            fontSize = m_fontSizeOverride;
+            fontSize = _fontSizeOverride;
             if (fontSize.Length == 0)
             {
-                fontSize = m_fontSize;
+                fontSize = _fontSize;
             }
         }
         else
@@ -354,8 +354,8 @@ public class PlayerHelper
     private void AddLink(string text, string command, string verbs, string colour, string elementId)
     {
         var onclick = string.Empty;
-        m_linkCount++;
-        var linkid = "verbLink" + m_linkCount;
+        _linkCount++;
+        var linkid = "verbLink" + _linkCount;
 
         if (string.IsNullOrEmpty(verbs))
         {
@@ -364,7 +364,7 @@ public class PlayerHelper
 
         WriteText(string.Format("<a id=\"{0}\" style=\"{1}\" class=\"cmdlink\"{2}>{3}</a>",
             linkid,
-            GetCurrentFormat(colour ?? m_linkForeground),
+            GetCurrentFormat(colour ?? _linkForeground),
             onclick,
             text
         ));
@@ -373,31 +373,31 @@ public class PlayerHelper
         // written. So, clear the text buffer, then add the binding.
         if (!string.IsNullOrEmpty(verbs))
         {
-            m_playerUI.OutputText(ClearBuffer());
-            m_playerUI.BindMenu(linkid, verbs, text, elementId);
+            _playerUI.OutputText(ClearBuffer());
+            _playerUI.BindMenu(linkid, verbs, text, elementId);
         }
     }
 
     private void AddExternalLink(string text, string href, string colour, string onclick)
     {
         WriteText(string.Format("<a style=\"{0}\" class=\"cmdlink\" onclick=\"{1}\">{2}</a>",
-            GetCurrentFormat(colour ?? m_linkForeground),
+            GetCurrentFormat(colour ?? _linkForeground),
             onclick ?? string.Format("goUrl('{0}')", href),
             text));
     }
 
     private void WriteText(string text)
     {
-        m_textBuffer += text;
+        _textBuffer += text;
     }
 
     public string ClearBuffer()
     {
         string output;
-        lock (m_textBuffer)
+        lock (_textBuffer)
         {
-            output = m_textBuffer;
-            m_textBuffer = "";
+            output = _textBuffer;
+            _textBuffer = "";
         }
 
         return output;
@@ -410,22 +410,22 @@ public class PlayerHelper
 
     public void SetForeground(string colour)
     {
-        m_foreground = colour;
+        _foreground = colour;
     }
 
     public void SetLinkForeground(string colour)
     {
-        m_linkForeground = colour;
+        _linkForeground = colour;
     }
 
     public void SetFont(string fontName)
     {
-        m_font = fontName;
+        _font = fontName;
     }
 
     public void SetFontSize(string fontSize)
     {
-        m_fontSize = fontSize;
+        _fontSize = fontSize;
     }
 
     public void AppendText(string text)
@@ -512,7 +512,7 @@ public class PlayerHelper
     public static string GetContentType(string filename)
     {
         string result;
-        return s_mimeTypes.TryGetValue(Path.GetExtension(filename).ToLower(), out result) ? result : "";
+        return MimeTypes.TryGetValue(Path.GetExtension(filename).ToLower(), out result) ? result : "";
     }
 
     public class CommandData

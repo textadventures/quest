@@ -8,14 +8,14 @@ namespace QuestViva.EditorCore;
 
 public class EditableScript : EditableScriptBase, IEditableScript
 {
-    private static readonly Regex s_regex = new("#(?<attribute>\\d+)");
-    private readonly List<EditableScripts> m_watchedNestedScripts = new();
-    private string m_editorName;
+    private static readonly Regex AttributeRegex = new("#(?<attribute>\\d+)");
+    private readonly List<EditableScripts> _watchedNestedScripts = new();
+    private string _editorName;
 
     internal EditableScript(EditorController controller, IScript script, UndoLogger undoLogger)
         : base(controller, script, undoLogger)
     {
-        m_editorName = Script.Keyword;
+        _editorName = Script.Keyword;
     }
 
     internal string DisplayTemplate { get; set; }
@@ -33,9 +33,9 @@ public class EditableScript : EditableScriptBase, IEditableScript
         var result = DisplayTemplate;
         var startAt = 1;
 
-        while (startAt < result.Length && s_regex.IsMatch(result, startAt))
+        while (startAt < result.Length && AttributeRegex.IsMatch(result, startAt))
         {
-            var m = s_regex.Match(result);
+            var m = AttributeRegex.Match(result);
             var attributeNum = int.Parse(m.Groups["attribute"].Value);
             string attributeValue;
 
@@ -82,7 +82,7 @@ public class EditableScript : EditableScriptBase, IEditableScript
                 attributeValue = "<unknown>";
             }
 
-            result = s_regex.Replace(result, attributeValue, 1, startAt);
+            result = AttributeRegex.Replace(result, attributeValue, 1, startAt);
             startAt = m.Groups["attribute"].Index + attributeValue.Length;
         }
 
@@ -91,8 +91,8 @@ public class EditableScript : EditableScriptBase, IEditableScript
 
     public override string EditorName
     {
-        get => m_editorName;
-        set => m_editorName = value;
+        get => _editorName;
+        set => _editorName = value;
     }
 
     public override object GetParameter(string index)
@@ -139,10 +139,10 @@ public class EditableScript : EditableScriptBase, IEditableScript
 
     private void RegisterNestedScriptForUpdates(EditableScripts script)
     {
-        if (!m_watchedNestedScripts.Contains(script))
+        if (!_watchedNestedScripts.Contains(script))
         {
             script.Updated += nestedScript_Updated;
-            m_watchedNestedScripts.Add(script);
+            _watchedNestedScripts.Add(script);
         }
     }
 

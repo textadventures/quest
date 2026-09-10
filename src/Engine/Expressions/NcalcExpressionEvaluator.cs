@@ -166,19 +166,19 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         return (handled, result);
     }
 
-    private static readonly Dictionary<(Type, string), MethodBase[]?> s_methodCache = new();
+    private static readonly Dictionary<(Type, string), MethodBase[]?> MethodCache = new();
 
     private static MethodBase[]? GetPublicMethodsByName([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)] Type type, string name)
     {
         var key = (type, name);
-        if (s_methodCache.TryGetValue(key, out var cached))
+        if (MethodCache.TryGetValue(key, out var cached))
             return cached;
 
         var methods = type.GetMethods()
             .Where(m => m.IsPublic && m.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase))
             .ToArray<MethodBase>();
         var result = methods.Length == 0 ? null : methods;
-        s_methodCache[key] = result;
+        MethodCache[key] = result;
         return result;
     }
 

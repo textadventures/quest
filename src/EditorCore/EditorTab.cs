@@ -4,13 +4,13 @@ namespace QuestViva.EditorCore;
 
 internal class EditorTab : IEditorTab
 {
-    private readonly Dictionary<string, IEditorControl> m_controls;
-    private readonly Element m_source;
-    private readonly EditorVisibilityHelper m_visibilityHelper;
+    private readonly Dictionary<string, IEditorControl> _controls;
+    private readonly Element _source;
+    private readonly EditorVisibilityHelper _visibilityHelper;
 
     public EditorTab(EditorDefinition parent, WorldModel worldModel, Element source)
     {
-        m_controls = new Dictionary<string, IEditorControl>();
+        _controls = new Dictionary<string, IEditorControl>();
         Caption = source.Fields.GetString("caption");
         // Editor definitions live in <library type="editor">, which GameSaver
         // excludes from both package and editor saves - so unlike Core.aslx
@@ -25,29 +25,29 @@ internal class EditorTab : IEditorTab
         {
             if (e.Parent == source)
             {
-                m_controls.Add(e.Name, new EditorControl(parent, worldModel, e));
+                _controls.Add(e.Name, new EditorControl(parent, worldModel, e));
             }
         }
 
-        m_visibilityHelper = new EditorVisibilityHelper(parent, worldModel, source);
-        m_source = source;
+        _visibilityHelper = new EditorVisibilityHelper(parent, worldModel, source);
+        _source = source;
     }
 
     public string Caption { get; }
 
     public string HelpUrl { get; }
 
-    public IEnumerable<IEditorControl> Controls => m_controls.Values;
+    public IEnumerable<IEditorControl> Controls => _controls.Values;
 
     public Task<bool> IsTabVisible(IEditorData data)
     {
-        return m_visibilityHelper.IsVisible(data);
+        return _visibilityHelper.IsVisible(data);
     }
 
     public bool IsTabVisibleInSimpleMode { get; }
 
     public bool GetBool(string tag)
     {
-        return m_source.Fields.GetAsType<bool>(tag);
+        return _source.Fields.GetAsType<bool>(tag);
     }
 }

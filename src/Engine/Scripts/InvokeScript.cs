@@ -30,53 +30,53 @@ public class InvokeScriptConstructor : ScriptConstructorBase
 
 public class InvokeScript : ScriptBase
 {
-    private readonly ScriptContext m_scriptContext;
-    private readonly WorldModel m_worldModel;
-    private IFunction<IDictionary> m_parameters;
-    private IFunction<IScript> m_script;
+    private readonly ScriptContext _scriptContext;
+    private readonly WorldModel _worldModel;
+    private IFunction<IDictionary> _parameters;
+    private IFunction<IScript> _script;
 
     public InvokeScript(ScriptContext scriptContext, IFunction<IScript> script)
     {
-        m_scriptContext = scriptContext;
-        m_worldModel = scriptContext.WorldModel;
-        m_script = script;
+        _scriptContext = scriptContext;
+        _worldModel = scriptContext.WorldModel;
+        _script = script;
     }
 
     public InvokeScript(ScriptContext scriptContext, IFunction<IScript> script, IFunction<IDictionary> parameters)
         : this(scriptContext, script)
     {
-        m_parameters = parameters;
+        _parameters = parameters;
     }
 
     public override string Keyword => "invoke";
 
     protected override ScriptBase CloneScript()
     {
-        return new InvokeScript(m_scriptContext, m_script.Clone(), m_parameters == null ? null : m_parameters.Clone());
+        return new InvokeScript(_scriptContext, _script.Clone(), _parameters == null ? null : _parameters.Clone());
     }
 
     public override async Task ExecuteAsync(Context c)
     {
-        var script = await m_script.ExecuteAsync(c);
-        if (m_parameters == null)
+        var script = await _script.ExecuteAsync(c);
+        if (_parameters == null)
         {
-            await m_worldModel.RunScriptAsync(script);
+            await _worldModel.RunScriptAsync(script);
         }
         else
         {
-            await m_worldModel.RunScriptAsync(script, new Parameters(await m_parameters.ExecuteAsync(c)));
+            await _worldModel.RunScriptAsync(script, new Parameters(await _parameters.ExecuteAsync(c)));
         }
     }
 
     public override string Save()
     {
-        var parameters = m_parameters == null ? null : m_parameters.Save();
+        var parameters = _parameters == null ? null : _parameters.Save();
         if (string.IsNullOrEmpty(parameters))
         {
-            return SaveScript("invoke", m_script.Save());
+            return SaveScript("invoke", _script.Save());
         }
 
-        return SaveScript("invoke", m_script.Save(), parameters);
+        return SaveScript("invoke", _script.Save(), parameters);
     }
 
     public override object GetParameter(int index)
@@ -84,9 +84,9 @@ public class InvokeScript : ScriptBase
         switch (index)
         {
             case 0:
-                return m_script.Save();
+                return _script.Save();
             case 1:
-                return m_parameters == null ? null : m_parameters.Save();
+                return _parameters == null ? null : _parameters.Save();
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -97,10 +97,10 @@ public class InvokeScript : ScriptBase
         switch (index)
         {
             case 0:
-                m_script = new Expression<IScript>((string) value, m_scriptContext);
+                _script = new Expression<IScript>((string) value, _scriptContext);
                 break;
             case 1:
-                m_parameters = new Expression<IDictionary>((string) value, m_scriptContext);
+                _parameters = new Expression<IDictionary>((string) value, _scriptContext);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

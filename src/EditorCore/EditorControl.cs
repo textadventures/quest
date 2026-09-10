@@ -4,16 +4,16 @@ namespace QuestViva.EditorCore;
 
 internal class EditorControl : IEditorControl
 {
-    private readonly EditorDefinition m_parent;
-    private readonly Element m_source;
-    private readonly EditorVisibilityHelper m_visibilityHelper;
-    private WorldModel m_worldModel;
+    private readonly EditorDefinition _parent;
+    private readonly Element _source;
+    private readonly EditorVisibilityHelper _visibilityHelper;
+    private WorldModel _worldModel;
 
     public EditorControl(EditorDefinition parent, WorldModel worldModel, Element source)
     {
-        m_parent = parent;
-        m_worldModel = worldModel;
-        m_source = source;
+        _parent = parent;
+        _worldModel = worldModel;
+        _source = source;
         ControlType = source.Fields.GetString("controltype");
         Caption = source.Fields.GetString("caption");
         Attribute = source.Fields.GetString("attribute");
@@ -32,7 +32,7 @@ internal class EditorControl : IEditorControl
             Expand = source.Fields.GetAsType<bool>("expand");
         }
 
-        m_visibilityHelper = new EditorVisibilityHelper(parent, worldModel, source);
+        _visibilityHelper = new EditorVisibilityHelper(parent, worldModel, source);
         IsControlVisibleInSimpleMode = !source.Fields.GetAsType<bool>("advanced");
         Id = source.Name;
 
@@ -56,55 +56,55 @@ internal class EditorControl : IEditorControl
 
     public string GetString(string tag)
     {
-        return m_source.Fields.GetString(tag);
+        return _source.Fields.GetString(tag);
     }
 
     public IEnumerable<string> GetListString(string tag)
     {
-        return m_source.Fields.GetAsType<QuestList<string>>(tag);
+        return _source.Fields.GetAsType<QuestList<string>>(tag);
     }
 
     public IDictionary<string, string> GetDictionary(string tag)
     {
-        return m_source.Fields.GetAsType<QuestDictionary<string>>(tag);
+        return _source.Fields.GetAsType<QuestDictionary<string>>(tag);
     }
 
     public bool GetBool(string tag)
     {
-        return m_source.Fields.GetAsType<bool>(tag);
+        return _source.Fields.GetAsType<bool>(tag);
     }
 
     public int? GetInt(string tag)
     {
-        if (!m_source.Fields.HasType<int>(tag))
+        if (!_source.Fields.HasType<int>(tag))
         {
             return null;
         }
 
-        return m_source.Fields.GetAsType<int>(tag);
+        return _source.Fields.GetAsType<int>(tag);
     }
 
     public double? GetDouble(string tag)
     {
-        if (!m_source.Fields.HasType<double>(tag))
+        if (!_source.Fields.HasType<double>(tag))
         {
             return null;
         }
 
-        return m_source.Fields.GetAsType<double>(tag);
+        return _source.Fields.GetAsType<double>(tag);
     }
 
     public Task<bool> IsControlVisible(IEditorData data)
     {
-        return m_visibilityHelper.IsVisible(data);
+        return _visibilityHelper.IsVisible(data);
     }
 
     public bool IsControlVisibleSync(IEditorData data)
     {
-        return m_visibilityHelper.IsVisibleIgnoringExpression(data);
+        return _visibilityHelper.IsVisibleIgnoringExpression(data);
     }
 
-    public IEditorDefinition Parent => m_parent;
+    public IEditorDefinition Parent => _parent;
 
     public bool IsControlVisibleInSimpleMode { get; }
 

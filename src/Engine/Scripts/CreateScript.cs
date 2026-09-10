@@ -29,57 +29,57 @@ public class CreateScriptConstructor : ScriptConstructorBase
 
 public class CreateScript : ScriptBase
 {
-    private readonly ScriptContext m_scriptContext;
-    private readonly WorldModel m_worldModel;
-    private IFunction<string> m_expr;
-    private IFunction<string> m_type;
+    private readonly ScriptContext _scriptContext;
+    private readonly WorldModel _worldModel;
+    private IFunction<string> _expr;
+    private IFunction<string> _type;
 
     public CreateScript(ScriptContext scriptContext, IFunction<string> expr)
     {
-        m_scriptContext = scriptContext;
-        m_worldModel = scriptContext.WorldModel;
-        m_expr = expr;
+        _scriptContext = scriptContext;
+        _worldModel = scriptContext.WorldModel;
+        _expr = expr;
     }
 
     public CreateScript(ScriptContext scriptContext, IFunction<string> expr, IFunction<string> type)
         : this(scriptContext, expr)
     {
-        m_type = type;
+        _type = type;
     }
 
     public override string Keyword => "create";
 
     protected override ScriptBase CloneScript()
     {
-        if (m_type == null)
+        if (_type == null)
         {
-            return new CreateScript(m_scriptContext, m_expr.Clone());
+            return new CreateScript(_scriptContext, _expr.Clone());
         }
 
-        return new CreateScript(m_scriptContext, m_expr.Clone(), m_type.Clone());
+        return new CreateScript(_scriptContext, _expr.Clone(), _type.Clone());
     }
 
     public override async Task ExecuteAsync(Context c)
     {
-        if (m_type == null)
+        if (_type == null)
         {
-            m_worldModel.ObjectFactory.CreateObject(await m_expr.ExecuteAsync(c));
+            _worldModel.ObjectFactory.CreateObject(await _expr.ExecuteAsync(c));
         }
         else
         {
-            m_worldModel.ObjectFactory.CreateObject(await m_expr.ExecuteAsync(c), ObjectType.Object, true,
-                new List<string> {await m_type.ExecuteAsync(c)});
+            _worldModel.ObjectFactory.CreateObject(await _expr.ExecuteAsync(c), ObjectType.Object, true,
+                new List<string> {await _type.ExecuteAsync(c)});
         }
     }
 
     public override string Save()
     {
-        if (m_type == null)
+        if (_type == null)
         {
-            return SaveScript("create", m_expr.Save());
+            return SaveScript("create", _expr.Save());
         }
 
-        return SaveScript("create", m_expr.Save(), m_type.Save());
+        return SaveScript("create", _expr.Save(), _type.Save());
     }
 
     public override object GetParameter(int index)
@@ -87,9 +87,9 @@ public class CreateScript : ScriptBase
         switch (index)
         {
             case 0:
-                return m_expr.Save();
+                return _expr.Save();
             case 1:
-                return m_type == null ? null : m_type.Save();
+                return _type == null ? null : _type.Save();
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -100,10 +100,10 @@ public class CreateScript : ScriptBase
         switch (index)
         {
             case 0:
-                m_expr = new Expression<string>((string) value, m_scriptContext);
+                _expr = new Expression<string>((string) value, _scriptContext);
                 break;
             case 1:
-                m_type = value == null ? null : new Expression<string>((string) value, m_scriptContext);
+                _type = value == null ? null : new Expression<string>((string) value, _scriptContext);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -147,76 +147,76 @@ public class CreateExitScriptConstructor : ScriptConstructorBase
 
 public class CreateExitScript : ScriptBase
 {
-    private readonly ScriptContext m_scriptContext;
-    private readonly WorldModel m_worldModel;
-    private IFunction<Element> m_from;
-    private IFunction<string> m_id;
-    private IFunction<string> m_initialType;
-    private IFunction<string> m_name;
-    private IFunction<Element> m_to;
+    private readonly ScriptContext _scriptContext;
+    private readonly WorldModel _worldModel;
+    private IFunction<Element> _from;
+    private IFunction<string> _id;
+    private IFunction<string> _initialType;
+    private IFunction<string> _name;
+    private IFunction<Element> _to;
 
     public CreateExitScript(ScriptContext scriptContext, IFunction<string> name, IFunction<Element> from,
         IFunction<Element> to)
     {
-        m_scriptContext = scriptContext;
-        m_worldModel = scriptContext.WorldModel;
-        m_name = name;
-        m_from = from;
-        m_to = to;
+        _scriptContext = scriptContext;
+        _worldModel = scriptContext.WorldModel;
+        _name = name;
+        _from = from;
+        _to = to;
     }
 
     public CreateExitScript(ScriptContext scriptContext, IFunction<string> name, IFunction<Element> from,
         IFunction<Element> to, IFunction<string> initialType)
         : this(scriptContext, name, from, to)
     {
-        m_initialType = initialType;
+        _initialType = initialType;
     }
 
     public CreateExitScript(ScriptContext scriptContext, IFunction<string> name, IFunction<Element> from,
         IFunction<Element> to, IFunction<string> initialType, IFunction<string> id)
         : this(scriptContext, name, from, to, initialType)
     {
-        m_id = id;
+        _id = id;
     }
 
     public override string Keyword => "create exit";
 
     protected override ScriptBase CloneScript()
     {
-        if (m_initialType == null)
+        if (_initialType == null)
         {
-            return new CreateExitScript(m_scriptContext, m_name.Clone(), m_from.Clone(), m_to.Clone());
+            return new CreateExitScript(_scriptContext, _name.Clone(), _from.Clone(), _to.Clone());
         }
 
-        if (m_id == null)
+        if (_id == null)
         {
-            return new CreateExitScript(m_scriptContext, m_name.Clone(), m_from.Clone(), m_to.Clone(),
-                m_initialType.Clone());
+            return new CreateExitScript(_scriptContext, _name.Clone(), _from.Clone(), _to.Clone(),
+                _initialType.Clone());
         }
 
-        return new CreateExitScript(m_scriptContext, m_name.Clone(), m_from.Clone(), m_to.Clone(),
-            m_initialType.Clone(), m_id.Clone());
+        return new CreateExitScript(_scriptContext, _name.Clone(), _from.Clone(), _to.Clone(),
+            _initialType.Clone(), _id.Clone());
     }
 
     public override async Task ExecuteAsync(Context c)
     {
-        m_worldModel.ObjectFactory.CreateExit(m_id == null ? null : await m_id.ExecuteAsync(c), await m_name.ExecuteAsync(c),
-            await m_from.ExecuteAsync(c), await m_to.ExecuteAsync(c), m_initialType == null ? null : await m_initialType.ExecuteAsync(c));
+        _worldModel.ObjectFactory.CreateExit(_id == null ? null : await _id.ExecuteAsync(c), await _name.ExecuteAsync(c),
+            await _from.ExecuteAsync(c), await _to.ExecuteAsync(c), _initialType == null ? null : await _initialType.ExecuteAsync(c));
     }
 
     public override string Save()
     {
-        if (m_initialType == null)
+        if (_initialType == null)
         {
-            return SaveScript("create exit", m_name.Save(), m_from.Save(), m_to.Save());
+            return SaveScript("create exit", _name.Save(), _from.Save(), _to.Save());
         }
 
-        if (m_id == null)
+        if (_id == null)
         {
-            return SaveScript("create exit", m_name.Save(), m_from.Save(), m_to.Save(), m_initialType.Save());
+            return SaveScript("create exit", _name.Save(), _from.Save(), _to.Save(), _initialType.Save());
         }
 
-        return SaveScript("create exit", m_id.Save(), m_name.Save(), m_from.Save(), m_to.Save(), m_initialType.Save());
+        return SaveScript("create exit", _id.Save(), _name.Save(), _from.Save(), _to.Save(), _initialType.Save());
     }
 
     public override object GetParameter(int index)
@@ -224,15 +224,15 @@ public class CreateExitScript : ScriptBase
         switch (index)
         {
             case 0:
-                return m_id == null ? null : m_id.Save();
+                return _id == null ? null : _id.Save();
             case 1:
-                return m_name.Save();
+                return _name.Save();
             case 2:
-                return m_from.Save();
+                return _from.Save();
             case 3:
-                return m_to.Save();
+                return _to.Save();
             case 4:
-                return m_initialType == null ? null : m_initialType.Save();
+                return _initialType == null ? null : _initialType.Save();
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -243,19 +243,19 @@ public class CreateExitScript : ScriptBase
         switch (index)
         {
             case 0:
-                m_id = value == null ? null : new Expression<string>((string) value, m_scriptContext);
+                _id = value == null ? null : new Expression<string>((string) value, _scriptContext);
                 break;
             case 1:
-                m_name = new Expression<string>((string) value, m_scriptContext);
+                _name = new Expression<string>((string) value, _scriptContext);
                 break;
             case 2:
-                m_from = new Expression<Element>((string) value, m_scriptContext);
+                _from = new Expression<Element>((string) value, _scriptContext);
                 break;
             case 3:
-                m_to = new Expression<Element>((string) value, m_scriptContext);
+                _to = new Expression<Element>((string) value, _scriptContext);
                 break;
             case 4:
-                m_initialType = value == null ? null : new Expression<string>((string) value, m_scriptContext);
+                _initialType = value == null ? null : new Expression<string>((string) value, _scriptContext);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -280,43 +280,43 @@ public class CreateTimerScriptConstructor : ScriptConstructorBase
 
 public class CreateTimerScript : ScriptBase
 {
-    private readonly ScriptContext m_scriptContext;
-    private readonly WorldModel m_worldModel;
-    private IFunction<string> m_expr;
+    private readonly ScriptContext _scriptContext;
+    private readonly WorldModel _worldModel;
+    private IFunction<string> _expr;
 
     public CreateTimerScript(ScriptContext scriptContext, IFunction<string> expr)
     {
-        m_scriptContext = scriptContext;
-        m_worldModel = scriptContext.WorldModel;
-        m_expr = expr;
+        _scriptContext = scriptContext;
+        _worldModel = scriptContext.WorldModel;
+        _expr = expr;
     }
 
     public override string Keyword => "create timer";
 
     protected override ScriptBase CloneScript()
     {
-        return new CreateTimerScript(m_scriptContext, m_expr.Clone());
+        return new CreateTimerScript(_scriptContext, _expr.Clone());
     }
 
 
     public override async Task ExecuteAsync(Context c)
     {
-        m_worldModel.GetElementFactory(ElementType.Timer).Create(await m_expr.ExecuteAsync(c));
+        _worldModel.GetElementFactory(ElementType.Timer).Create(await _expr.ExecuteAsync(c));
     }
 
     public override string Save()
     {
-        return SaveScript("create timer", m_expr.Save());
+        return SaveScript("create timer", _expr.Save());
     }
 
     public override object GetParameter(int index)
     {
-        return m_expr.Save();
+        return _expr.Save();
     }
 
     protected override void SetParameterInternal(int index, object value)
     {
-        m_expr = new Expression<string>((string) value, m_scriptContext);
+        _expr = new Expression<string>((string) value, _scriptContext);
     }
 }
 
@@ -337,41 +337,41 @@ public class CreateTurnScriptConstructor : ScriptConstructorBase
 
 public class CreateTurnScript : ScriptBase
 {
-    private readonly ScriptContext m_scriptContext;
-    private readonly WorldModel m_worldModel;
-    private IFunction<string> m_expr;
+    private readonly ScriptContext _scriptContext;
+    private readonly WorldModel _worldModel;
+    private IFunction<string> _expr;
 
     public CreateTurnScript(ScriptContext scriptContext, IFunction<string> expr)
     {
-        m_scriptContext = scriptContext;
-        m_worldModel = scriptContext.WorldModel;
-        m_expr = expr;
+        _scriptContext = scriptContext;
+        _worldModel = scriptContext.WorldModel;
+        _expr = expr;
     }
 
     public override string Keyword => "create turnscript";
 
     protected override ScriptBase CloneScript()
     {
-        return new CreateTurnScript(m_scriptContext, m_expr.Clone());
+        return new CreateTurnScript(_scriptContext, _expr.Clone());
     }
 
     public override async Task ExecuteAsync(Context c)
     {
-        m_worldModel.ObjectFactory.CreateTurnScript(await m_expr.ExecuteAsync(c), null);
+        _worldModel.ObjectFactory.CreateTurnScript(await _expr.ExecuteAsync(c), null);
     }
 
     public override string Save()
     {
-        return SaveScript("create turnscript", m_expr.Save());
+        return SaveScript("create turnscript", _expr.Save());
     }
 
     public override object GetParameter(int index)
     {
-        return m_expr.Save();
+        return _expr.Save();
     }
 
     protected override void SetParameterInternal(int index, object value)
     {
-        m_expr = new Expression<string>((string) value, m_scriptContext);
+        _expr = new Expression<string>((string) value, _scriptContext);
     }
 }

@@ -20,17 +20,17 @@ public class MismatchingQuotesException : Exception
 
 public static partial class Utility
 {
-    private const string k_spaceReplacementString = "___SPACE___";
+    private const string SpaceReplacementString = "___SPACE___";
 
     public static readonly string[] DisallowedAttributes =
         {"object", "command", "turnscript", "game", "exit", "type", "finish"};
 
-    private static readonly List<string> s_keywords = new() {"and", "or", "xor", "not", "if", "in"};
-    private static readonly HashSet<string> s_keywordsSet = new(s_keywords);
+    private static readonly List<string> Keywords = new() {"and", "or", "xor", "not", "if", "in"};
+    private static readonly HashSet<string> KeywordsSet = new(Keywords);
 
-    private static readonly string[] s_listSplitDelimiters = new[] {"; ", ";"};
+    private static readonly string[] ListSplitDelimiters = new[] {"; ", ";"};
 
-    public static IList<string> ExpressionKeywords => s_keywords.AsReadOnly();
+    public static IList<string> ExpressionKeywords => Keywords.AsReadOnly();
 
     public static string GetParameter(string script)
     {
@@ -203,11 +203,11 @@ public static partial class Utility
 
     public static string ResolveElementName(string name)
     {
-        return name.Replace(k_spaceReplacementString, " ");
+        return name.Replace(SpaceReplacementString, " ");
     }
 
     [GeneratedRegex(@"//")]
-    private static partial Regex s_detectComments();
+    private static partial Regex DetectCommentsRegex();
 
     private static string ReplaceRegexMatchesRespectingQuotes(string input, Regex regex, string replaceWith,
         bool replaceInsideQuote)
@@ -239,7 +239,7 @@ public static partial class Utility
             {
                 if (IsSplitVariableName(words[i - 1], words[i]))
                 {
-                    result.Append(k_spaceReplacementString);
+                    result.Append(SpaceReplacementString);
                 }
                 else
                 {
@@ -256,19 +256,19 @@ public static partial class Utility
     // Given two words e.g. "my" and "variable", see if they together comprise a variable name
 
     [GeneratedRegex(@"(\w+)$")]
-    private static partial Regex s_wordRegex1();
+    private static partial Regex WordRegex1();
 
     [GeneratedRegex(@"^(\w+)")]
-    private static partial Regex s_wordRegex2();
+    private static partial Regex WordRegex2();
 
     private static bool IsSplitVariableName(string word1, string word2)
     {
-        var match1 = s_wordRegex1().Match(word1);
-        var match2 = s_wordRegex2().Match(word2);
+        var match1 = WordRegex1().Match(word1);
+        var match2 = WordRegex2().Match(word2);
 
         if (!match1.Success || !match2.Success) return false;
-        if (s_keywordsSet.Contains(match1.Groups[1].Value)) return false;
-        if (s_keywordsSet.Contains(match2.Groups[1].Value)) return false;
+        if (KeywordsSet.Contains(match1.Groups[1].Value)) return false;
+        if (KeywordsSet.Contains(match2.Groups[1].Value)) return false;
 
         return true;
     }
@@ -372,7 +372,7 @@ public static partial class Utility
         // Replace any occurrences of "//" which are inside string expressions. Then any occurrences of "//"
         // which remain mark the beginning of a comment.
         var obfuscateDoubleSlashesInsideStrings =
-            ReplaceRegexMatchesRespectingQuotes(input, s_detectComments(), "--", true);
+            ReplaceRegexMatchesRespectingQuotes(input, DetectCommentsRegex(), "--", true);
         if (obfuscateDoubleSlashesInsideStrings.Contains("//"))
         {
             return input[..obfuscateDoubleSlashesInsideStrings.IndexOf("//", StringComparison.Ordinal)];
@@ -430,7 +430,7 @@ public static partial class Utility
 
     public static string[] ListSplit(string value)
     {
-        return value.Split(s_listSplitDelimiters, StringSplitOptions.None);
+        return value.Split(ListSplitDelimiters, StringSplitOptions.None);
     }
 
     public static string ObscureStrings(string input)
@@ -627,11 +627,11 @@ public static partial class Utility
     //  - can contain spaces, but not at the beginning or end
     //  - cannot be "object", "finish" etc. (attributes only)
     [GeneratedRegex(@"^[A-Za-z_][\w ]*$")]
-    private static partial Regex s_validAttributeName();
+    private static partial Regex ValidAttributeNameRegex();
 
     public static bool IsValidFieldName(string name)
     {
-        if (!s_validAttributeName().IsMatch(name))
+        if (!ValidAttributeNameRegex().IsMatch(name))
         {
             return false;
         }
@@ -641,7 +641,7 @@ public static partial class Utility
             return false;
         }
 
-        if (name.Split(' ').Any(w => s_keywords.Contains(w)))
+        if (name.Split(' ').Any(w => Keywords.Contains(w)))
         {
             return false;
         }

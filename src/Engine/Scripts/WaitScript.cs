@@ -20,30 +20,30 @@ public class WaitScriptConstructor : IScriptConstructor
 
 public class WaitScript : ScriptBase
 {
-    private readonly IScript m_callbackScript;
-    private readonly IScriptFactory m_scriptFactory;
-    private readonly WorldModel m_worldModel;
+    private readonly IScript _callbackScript;
+    private readonly IScriptFactory _scriptFactory;
+    private readonly WorldModel _worldModel;
 
     public WaitScript(WorldModel worldModel, IScriptFactory scriptFactory, IScript callbackScript)
     {
-        m_worldModel = worldModel;
-        m_scriptFactory = scriptFactory;
-        m_callbackScript = callbackScript;
+        _worldModel = worldModel;
+        _scriptFactory = scriptFactory;
+        _callbackScript = callbackScript;
     }
 
     public override string Keyword => "wait";
 
     protected override ScriptBase CloneScript()
     {
-        return new WaitScript(m_worldModel, m_scriptFactory, (IScript) m_callbackScript.Clone());
+        return new WaitScript(_worldModel, _scriptFactory, (IScript) _callbackScript.Clone());
     }
 
     public override Task ExecuteAsync(Context c)
     {
-        m_worldModel.PlayerUi.DoWait();
-        WorldModel.BeginPrompt(ref m_worldModel._waitTcs);
-        m_worldModel.BeginDormantSuspension();
-        m_worldModel.SignalTurnSuspended();
+        _worldModel.PlayerUi.DoWait();
+        WorldModel.BeginPrompt(ref _worldModel._waitTcs);
+        _worldModel.BeginDormantSuspension();
+        _worldModel.SignalTurnSuspended();
         _ = AwaitWaitAndRunCallbackAsync(c);
         return Task.CompletedTask;
     }
@@ -53,25 +53,25 @@ public class WaitScript : ScriptBase
         var resolved = false;
         try
         {
-            await m_worldModel._waitTcs.Task;
+            await _worldModel._waitTcs.Task;
             resolved = true;
-            m_worldModel.SignalCallbackResolving();
-            if (m_callbackScript != null)
-                await m_worldModel.RunScriptAsync(m_callbackScript, c);
+            _worldModel.SignalCallbackResolving();
+            if (_callbackScript != null)
+                await _worldModel.RunScriptAsync(_callbackScript, c);
         }
         catch (OperationCanceledException) { }
-        catch (Exception ex) { m_worldModel.LogException(ex); }
+        catch (Exception ex) { _worldModel.LogException(ex); }
         finally
         {
-            if (!resolved) m_worldModel.SignalCallbackResolving();
-            await m_worldModel.EndPendingCallbackAsync();
-            m_worldModel.SignalTurnSuspended();
+            if (!resolved) _worldModel.SignalCallbackResolving();
+            await _worldModel.EndPendingCallbackAsync();
+            _worldModel.SignalTurnSuspended();
         }
     }
 
     public override string Save()
     {
-        return SaveScript("wait", m_callbackScript);
+        return SaveScript("wait", _callbackScript);
     }
 
     public override object GetParameter(int index)
@@ -79,7 +79,7 @@ public class WaitScript : ScriptBase
         switch (index)
         {
             case 0:
-                return m_callbackScript;
+                return _callbackScript;
             default:
                 throw new ArgumentOutOfRangeException();
         }

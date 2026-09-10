@@ -2,40 +2,40 @@
 
 public class FilterOptions
 {
-    private readonly List<string> m_filters = new();
+    private readonly List<string> _filters = new();
 
     public void Set(string filter, bool value)
     {
-        if (value && !m_filters.Contains(filter))
+        if (value && !_filters.Contains(filter))
         {
-            m_filters.Add(filter);
+            _filters.Add(filter);
         }
 
-        if (!value && m_filters.Contains(filter))
+        if (!value && _filters.Contains(filter))
         {
-            m_filters.Remove(filter);
+            _filters.Remove(filter);
         }
     }
 
     public bool IsSet(string filter)
     {
-        return m_filters.Contains(filter);
+        return _filters.Contains(filter);
     }
 }
 
 public class AvailableFilters
 {
-    private readonly Dictionary<string, string> m_filterDefs = new();
+    private readonly Dictionary<string, string> _filterDefs = new();
 
-    public IEnumerable<string> AllFilters => m_filterDefs.Keys;
+    public IEnumerable<string> AllFilters => _filterDefs.Keys;
 
     internal void Add(string key, string desc)
     {
-        m_filterDefs.Add(key, desc);
+        _filterDefs.Add(key, desc);
     }
 
     public string Get(string key)
     {
-        return m_filterDefs[key];
+        return _filterDefs[key];
     }
 }

@@ -6,23 +6,23 @@ namespace QuestViva.EngineTests;
 [TestClass]
 public class SwitchScriptConstructorTest
 {
-    private SwitchScriptConstructor m_constructor;
-    private ScriptFactory m_scriptFactory;
-    private WorldModel m_worldModel;
+    private SwitchScriptConstructor _constructor;
+    private ScriptFactory _scriptFactory;
+    private WorldModel _worldModel;
 
-    private ScriptContext scriptContext;
+    private ScriptContext _scriptContext;
 
     [TestInitialize]
     public void Setup()
     {
-        m_worldModel = Helpers.CreateWorldModel();
-        m_scriptFactory = new ScriptFactory(m_worldModel);
+        _worldModel = Helpers.CreateWorldModel();
+        _scriptFactory = new ScriptFactory(_worldModel);
 
-        m_constructor = new SwitchScriptConstructor();
-        m_constructor.WorldModel = m_worldModel;
-        m_constructor.ScriptFactory = m_scriptFactory;
+        _constructor = new SwitchScriptConstructor();
+        _constructor.WorldModel = _worldModel;
+        _constructor.ScriptFactory = _scriptFactory;
 
-        scriptContext = new ScriptContext(m_worldModel);
+        _scriptContext = new ScriptContext(_worldModel);
     }
 
     [TestMethod]
@@ -33,7 +33,7 @@ public class SwitchScriptConstructorTest
                 msg (""!"")
             }
             }";
-        var script = m_constructor.Create(text, scriptContext);
+        var script = _constructor.Create(text, _scriptContext);
         var actualCases = (QuestDictionary<IScript>) script.GetParameter(1);
 
         Assert.AreEqual(1, actualCases.Count);
@@ -44,7 +44,7 @@ public class SwitchScriptConstructorTest
                 msg (""!"")
             }
             }";
-        script = m_constructor.Create(text, scriptContext);
+        script = _constructor.Create(text, _scriptContext);
         actualCases = (QuestDictionary<IScript>) script.GetParameter(1);
 
         Assert.AreEqual(2, actualCases.Count);

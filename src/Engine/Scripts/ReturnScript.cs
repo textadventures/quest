@@ -20,30 +20,30 @@ public class ReturnScriptConstructor : ScriptConstructorBase
 
 public class ReturnScript : ScriptBase
 {
-    private readonly ScriptContext m_scriptContext;
-    private readonly WorldModel m_worldModel;
-    private IFunctionDynamic m_returnValue;
+    private readonly ScriptContext _scriptContext;
+    private readonly WorldModel _worldModel;
+    private IFunctionDynamic _returnValue;
 
     public ReturnScript(ScriptContext scriptContext, IFunctionDynamic returnValue)
     {
-        m_scriptContext = scriptContext;
-        m_worldModel = scriptContext.WorldModel;
-        m_returnValue = returnValue;
+        _scriptContext = scriptContext;
+        _worldModel = scriptContext.WorldModel;
+        _returnValue = returnValue;
     }
 
     public override string Keyword => "return";
 
     protected override ScriptBase CloneScript()
     {
-        return new ReturnScript(m_scriptContext, m_returnValue.Clone());
+        return new ReturnScript(_scriptContext, _returnValue.Clone());
     }
 
     public override async Task ExecuteAsync(Context c)
     {
-        c.ReturnValue = await m_returnValue.ExecuteAsync(c);
+        c.ReturnValue = await _returnValue.ExecuteAsync(c);
         // Leaving this set to v550 for backwards compatibility
         // Some things do not work in 550 games when this is changed to 580
-        if (m_worldModel.Version >= WorldModelVersion.v550)
+        if (_worldModel.Version >= WorldModelVersion.v550)
         {
             c.IsReturned = true;
         }
@@ -51,16 +51,16 @@ public class ReturnScript : ScriptBase
 
     public override string Save()
     {
-        return SaveScript("return", m_returnValue.Save());
+        return SaveScript("return", _returnValue.Save());
     }
 
     public override object GetParameter(int index)
     {
-        return m_returnValue.Save();
+        return _returnValue.Save();
     }
 
     protected override void SetParameterInternal(int index, object value)
     {
-        m_returnValue = new ExpressionDynamic((string) value, m_scriptContext);
+        _returnValue = new ExpressionDynamic((string) value, _scriptContext);
     }
 }

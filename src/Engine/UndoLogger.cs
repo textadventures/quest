@@ -3,16 +3,16 @@ namespace QuestViva.Engine;
 
 public class UndoLogger
 {
-    private readonly Stack<Transaction> m_redoTransactions = new();
-    private readonly Stack<Transaction> m_undoTransactions = new();
-    private readonly WorldModel m_worldModel;
-    private Transaction m_currentTransaction;
+    private readonly Stack<Transaction> _redoTransactions = new();
+    private readonly Stack<Transaction> _undoTransactions = new();
+    private readonly WorldModel _worldModel;
+    private Transaction _currentTransaction;
 
-    private bool m_logging;
+    private bool _logging;
 
     internal UndoLogger(WorldModel worldModel)
     {
-        m_worldModel = worldModel;
+        _worldModel = worldModel;
     }
 
     public event EventHandler TransactionsUpdated;
@@ -20,31 +20,31 @@ public class UndoLogger
 
     public void StartTransaction(string command)
     {
-        if (m_logging)
+        if (_logging)
         {
             throw new Exception("Starting transaction when previous transaction not finished");
         }
 
-        m_logging = true;
+        _logging = true;
         Transaction previousTransaction = null;
-        if (m_currentTransaction != null)
+        if (_currentTransaction != null)
         {
-            previousTransaction = m_currentTransaction.Count > 0
-                ? m_currentTransaction
-                : m_currentTransaction.PreviousTransaction;
+            previousTransaction = _currentTransaction.Count > 0
+                ? _currentTransaction
+                : _currentTransaction.PreviousTransaction;
         }
 
-        m_currentTransaction = new Transaction(command);
-        m_currentTransaction.PreviousTransaction = previousTransaction;
+        _currentTransaction = new Transaction(command);
+        _currentTransaction.PreviousTransaction = previousTransaction;
     }
 
     public void EndTransaction()
     {
-        m_logging = false;
-        if (m_currentTransaction.Count > 0)
+        _logging = false;
+        if (_currentTransaction.Count > 0)
         {
-            m_undoTransactions.Push(m_currentTransaction);
-            m_redoTransactions.Clear();
+            _undoTransactions.Push(_currentTransaction);
+            _redoTransactions.Clear();
             TransactionCommitted?.Invoke(this, EventArgs.Empty);
         }
 
@@ -53,7 +53,7 @@ public class UndoLogger
 
     public void RollTransaction(string command)
     {
-        if (m_currentTransaction != null)
+        if (_currentTransaction != null)
         {
             EndTransaction();
         }
@@ -71,37 +71,37 @@ public class UndoLogger
 
     internal void AddUndoAction(Func<IUndoAction> getAction)
     {
-        if (!m_logging)
+        if (!_logging)
         {
             return;
         }
 
-        m_currentTransaction.AddUndoAction(getAction());
+        _currentTransaction.AddUndoAction(getAction());
     }
 
     public async Task RollbackTransaction()
     {
-        if (m_logging)
+        if (_logging)
         {
             EndTransaction();
         }
 
         await Undo();
-        if (m_currentTransaction != null)
+        if (_currentTransaction != null)
         {
-            m_currentTransaction = m_currentTransaction.PreviousTransaction;
+            _currentTransaction = _currentTransaction.PreviousTransaction;
         }
     }
 
     public async Task Undo()
     {
-        const string NothingToUndoTemplate = "NothingToUndo";
+        const string nothingToUndoTemplate = "NothingToUndo";
 
-        if (m_undoTransactions.Count == 0)
+        if (_undoTransactions.Count == 0)
         {
-            if (m_worldModel.Template.TemplateExists(NothingToUndoTemplate))
+            if (_worldModel.Template.TemplateExists(nothingToUndoTemplate))
             {
-                await m_worldModel.PrintTemplateAsync("NothingToUndo");
+                await _worldModel.PrintTemplateAsync("NothingToUndo");
             }
             else
             {
@@ -111,33 +111,33 @@ public class UndoLogger
             return;
         }
 
-        var undoTransaction = m_undoTransactions.Pop();
-        await undoTransaction.DoUndo(m_worldModel);
-        m_redoTransactions.Push(undoTransaction);
+        var undoTransaction = _undoTransactions.Pop();
+        await undoTransaction.DoUndo(_worldModel);
+        _redoTransactions.Push(undoTransaction);
         OnTransactionsUpdated();
     }
 
     public void Redo()
     {
-        if (m_redoTransactions.Count == 0)
+        if (_redoTransactions.Count == 0)
         {
             throw new InvalidOperationException("No transactions to redo");
         }
 
-        var redoTransaction = m_redoTransactions.Pop();
-        redoTransaction.DoRedo(m_worldModel);
-        m_undoTransactions.Push(redoTransaction);
+        var redoTransaction = _redoTransactions.Pop();
+        redoTransaction.DoRedo(_worldModel);
+        _undoTransactions.Push(redoTransaction);
         OnTransactionsUpdated();
     }
 
     public IEnumerable<string> UndoList()
     {
-        return GetTransactionList(m_undoTransactions);
+        return GetTransactionList(_undoTransactions);
     }
 
     public IEnumerable<string> RedoList()
     {
-        return GetTransactionList(m_redoTransactions);
+        return GetTransactionList(_redoTransactions);
     }
 
     private IEnumerable<string> GetTransactionList(Stack<Transaction> transactions)
@@ -159,14 +159,14 @@ public class UndoLogger
 
     private class Transaction
     {
-        private readonly List<IUndoAction> m_attributes = new();
+        private readonly List<IUndoAction> _attributes = new();
 
         public Transaction(string command)
         {
             Description = command;
         }
 
-        public int Count => m_attributes.Count;
+        public int Count => _attributes.Count;
 
         internal string Description { get; }
 
@@ -174,13 +174,13 @@ public class UndoLogger
 
         public void AddUndoAction(IUndoAction action)
         {
-            m_attributes.Add(action);
+            _attributes.Add(action);
         }
 
         public async Task DoUndo(WorldModel worldModel)
         {
             const string undoTurnTemplate = "UndoTurn";
-            m_attributes.Reverse();
+            _attributes.Reverse();
             if (!worldModel.EditMode)
             {
                 if (worldModel.Template.DynamicTemplateExists(undoTurnTemplate))
@@ -189,7 +189,7 @@ public class UndoLogger
                 }
             }
 
-            foreach (var l in m_attributes)
+            foreach (var l in _attributes)
             {
                 l.DoUndo(worldModel);
             }
@@ -197,8 +197,8 @@ public class UndoLogger
 
         public void DoRedo(WorldModel worldModel)
         {
-            m_attributes.Reverse(); // Undo reverses attributes, so put them back in the correct order
-            foreach (var l in m_attributes)
+            _attributes.Reverse(); // Undo reverses attributes, so put them back in the correct order
+            foreach (var l in _attributes)
             {
                 l.DoRedo(worldModel);
             }

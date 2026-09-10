@@ -10,22 +10,22 @@ public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDiction
     where TWrapped : IDataWrapper
     where TSource : class
 {
-    private static int s_count;
-    private readonly EditorController m_controller;
+    private static int _count;
+    private readonly EditorController _controller;
 
-    private readonly QuestDictionary<TSource> m_source;
-    private readonly Dictionary<string, IEditableListItem<TWrapped>> m_wrappedItems = new();
-    private readonly Dictionary<TWrapped, IEditableListItem<TWrapped>> m_wrappedItemsLookup = new();
+    private readonly QuestDictionary<TSource> _source;
+    private readonly Dictionary<string, IEditableListItem<TWrapped>> _wrappedItems = new();
+    private readonly Dictionary<TWrapped, IEditableListItem<TWrapped>> _wrappedItemsLookup = new();
 
     public EditableWrappedItemDictionary(EditorController controller, QuestDictionary<TSource> source)
     {
-        s_count++;
-        Id = "wrapdictionary" + s_count;
+        _count++;
+        Id = "wrapdictionary" + _count;
 
-        m_controller = controller;
-        m_source = source;
-        m_source.Added += m_source_Added;
-        m_source.Removed += m_source_Removed;
+        _controller = controller;
+        _source = source;
+        _source.Added += OnSourceAdded;
+        _source.Removed += OnSourceRemoved;
         PopulateWrappedItems();
     }
 
@@ -38,12 +38,12 @@ public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDiction
 
     public object GetUnderlyingValue()
     {
-        return m_source;
+        return _source;
     }
 
     public string DisplayString()
     {
-        return string.Format("(Script Dictionary: {0} items)", m_source.Count);
+        return string.Format("(Script Dictionary: {0} items)", _source.Count);
     }
 
     public event EventHandler<EditableListUpdatedEventArgs<TWrapped>> Added;
@@ -51,7 +51,7 @@ public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDiction
 
     public event EventHandler<EditableListUpdatedEventArgs<TWrapped>> Updated;
 
-    public IDictionary<string, IEditableListItem<TWrapped>> Items => m_wrappedItems;
+    public IDictionary<string, IEditableListItem<TWrapped>> Items => _wrappedItems;
 
     public IEnumerable<KeyValuePair<string, string>> DisplayItems
     {
@@ -59,7 +59,7 @@ public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDiction
         {
             var result = new Dictionary<string, string>();
 
-            foreach (var item in m_wrappedItems)
+            foreach (var item in _wrappedItems)
             {
                 result.Add(item.Key, item.Value.Value.DisplayString());
             }
@@ -75,9 +75,9 @@ public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDiction
         string undoEntry = null;
         undoEntry = string.Format("Add '{0}={1}'", key, value == null ? string.Empty : value.DisplayString());
 
-        m_controller.WorldModel.UndoLogger.StartTransaction(undoEntry);
-        m_source.Add(key, UnwrapValue(value), UpdateSource.User);
-        m_controller.WorldModel.UndoLogger.EndTransaction();
+        _controller.WorldModel.UndoLogger.StartTransaction(undoEntry);
+        _source.Add(key, UnwrapValue(value), UpdateSource.User);
+        _controller.WorldModel.UndoLogger.EndTransaction();
     }
 
     public void Remove(params string[] keys)
@@ -85,18 +85,18 @@ public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDiction
         string undoEntry = null;
         undoEntry = string.Format("Remove '{0}'", string.Join(",", keys));
 
-        m_controller.WorldModel.UndoLogger.StartTransaction(undoEntry);
+        _controller.WorldModel.UndoLogger.StartTransaction(undoEntry);
         foreach (var key in keys)
         {
-            m_source.Remove(key, UpdateSource.User);
+            _source.Remove(key, UpdateSource.User);
         }
 
-        m_controller.WorldModel.UndoLogger.EndTransaction();
+        _controller.WorldModel.UndoLogger.EndTransaction();
     }
 
     public ValidationResult CanAdd(string key)
     {
-        if (m_source.ContainsKey(key))
+        if (_source.ContainsKey(key))
         {
             return new ValidationResult {Valid = false, Message = ValidationMessage.ItemAlreadyExists};
         }
@@ -104,13 +104,13 @@ public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDiction
         return new ValidationResult {Valid = true};
     }
 
-    public TWrapped this[string key] => WrapValue(m_source[key]);
+    public TWrapped this[string key] => WrapValue(_source[key]);
 
     public void Update(string key, TWrapped value)
     {
-        var index = m_source.IndexOfKey(key);
-        m_source.Remove(key, UpdateSource.User);
-        m_source.Add(key, UnwrapValue(value), UpdateSource.User, index);
+        var index = _source.IndexOfKey(key);
+        _source.Remove(key, UpdateSource.User);
+        _source.Add(key, UnwrapValue(value), UpdateSource.User, index);
     }
 
     // it is up to the caller of this method to start/end a transaction (this should also be the case eventually
@@ -118,15 +118,15 @@ public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDiction
 
     public void ChangeKey(string oldKey, string newKey)
     {
-        //m_controller.WorldModel.UndoLogger.StartTransaction(string.Format("Update key '{0}' to '{1}'", oldKey, newKey));
-        var index = m_source.IndexOfKey(oldKey);
-        var value = m_source[oldKey];
-        m_source.Remove(oldKey, UpdateSource.User);
-        m_source.Add(newKey, value, UpdateSource.User, index);
-        //m_controller.WorldModel.UndoLogger.EndTransaction();
+        //_controller.WorldModel.UndoLogger.StartTransaction(string.Format("Update key '{0}' to '{1}'", oldKey, newKey));
+        var index = _source.IndexOfKey(oldKey);
+        var value = _source[oldKey];
+        _source.Remove(oldKey, UpdateSource.User);
+        _source.Add(newKey, value, UpdateSource.User, index);
+        //_controller.WorldModel.UndoLogger.EndTransaction();
     }
 
-    public bool Locked => m_source.Locked;
+    public bool Locked => _source.Locked;
 
     public IEditableDictionary<TWrapped> Clone(string parent, string attribute)
     {
@@ -134,31 +134,31 @@ public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDiction
         throw new NotImplementedException();
 
         //IEditableDictionary<TWrapped> result;
-        //m_controller.WorldModel.UndoLogger.StartTransaction(string.Format("Copy '{0}' {1}", parent, attribute));
-        //result = CloneInternal(m_controller.WorldModel.Elements.Get(parent), attribute);
-        //m_controller.WorldModel.UndoLogger.EndTransaction();
+        //_controller.WorldModel.UndoLogger.StartTransaction(string.Format("Copy '{0}' {1}", parent, attribute));
+        //result = CloneInternal(_controller.WorldModel.Elements.Get(parent), attribute);
+        //_controller.WorldModel.UndoLogger.EndTransaction();
         //return result;
     }
 
     //private IEditableDictionary<TWrapped> CloneInternal(Element parent, string attribute)
     //{
-    //    QuestDictionary<TSource> newSource = (QuestDictionary<TSource>)m_source.Clone();
+    //    QuestDictionary<TSource> newSource = (QuestDictionary<TSource>)_source.Clone();
     //    newSource.Locked = false;
     //    parent.Fields.Set(attribute, newSource);
     //    newSource = (QuestDictionary<TSource>)parent.Fields.Get(attribute);
-    //    return EditableWrappedItemDictionary<TSource, TWrapped>.GetNewInstance(m_controller, newSource);
+    //    return EditableWrappedItemDictionary<TSource, TWrapped>.GetNewInstance(_controller, newSource);
     //}
 
     public string Owner
     {
         get
         {
-            if (m_source.Owner == null)
+            if (_source.Owner == null)
             {
                 return null;
             }
 
-            return m_source.Owner.Name;
+            return _source.Owner.Name;
         }
     }
 
@@ -166,10 +166,10 @@ public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDiction
 
     private void PopulateWrappedItems()
     {
-        m_wrappedItems.Clear();
+        _wrappedItems.Clear();
         var index = 0;
 
-        foreach (var item in m_source)
+        foreach (var item in _source)
         {
             AddWrappedItem(item.Key, WrapValue(item.Value), EditorUpdateSource.System, index);
             index++;
@@ -178,7 +178,7 @@ public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDiction
 
     private TWrapped WrapValue(TSource source)
     {
-        return (TWrapped) m_controller.WrapValue(source);
+        return (TWrapped) _controller.WrapValue(source);
     }
 
     private TSource UnwrapValue(TWrapped wrapped)
@@ -194,8 +194,8 @@ public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDiction
     private void AddWrappedItem(string key, TWrapped value, EditorUpdateSource source, int index)
     {
         IEditableListItem<TWrapped> wrappedValue = new EditableListItem<TWrapped>(key, value);
-        m_wrappedItems.Add(key, wrappedValue);
-        m_wrappedItemsLookup.Add(value, wrappedValue);
+        _wrappedItems.Add(key, wrappedValue);
+        _wrappedItemsLookup.Add(value, wrappedValue);
         value.UnderlyingValueUpdated += WrappedUnderlyingValueUpdated;
 
         if (Added != null)
@@ -208,9 +208,9 @@ public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDiction
 
     private void RemoveWrappedItem(IEditableListItem<TWrapped> item, EditorUpdateSource source, int index)
     {
-        m_wrappedItems[item.Key].Value.UnderlyingValueUpdated -= WrappedUnderlyingValueUpdated;
-        m_wrappedItemsLookup.Remove(m_wrappedItems[item.Key].Value);
-        m_wrappedItems.Remove(item.Key);
+        _wrappedItems[item.Key].Value.UnderlyingValueUpdated -= WrappedUnderlyingValueUpdated;
+        _wrappedItemsLookup.Remove(_wrappedItems[item.Key].Value);
+        _wrappedItems.Remove(item.Key);
         if (Removed != null)
         {
             Removed(this,
@@ -227,30 +227,30 @@ public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDiction
 
             Updated(this, new EditableListUpdatedEventArgs<TWrapped>
             {
-                UpdatedItem = m_wrappedItemsLookup[updatedItem],
-                Index = m_source.IndexOfKey(m_wrappedItemsLookup[updatedItem].Key)
+                UpdatedItem = _wrappedItemsLookup[updatedItem],
+                Index = _source.IndexOfKey(_wrappedItemsLookup[updatedItem].Key)
             });
         }
     }
 
-    private void m_source_Added(object sender, QuestDictionaryUpdatedEventArgs<TSource> e)
+    private void OnSourceAdded(object sender, QuestDictionaryUpdatedEventArgs<TSource> e)
     {
         AddWrappedItem(e.Key, WrapValue(e.Item), (EditorUpdateSource) e.Source, e.Index);
     }
 
-    private void m_source_Removed(object sender, QuestDictionaryUpdatedEventArgs<TSource> e)
+    private void OnSourceRemoved(object sender, QuestDictionaryUpdatedEventArgs<TSource> e)
     {
-        RemoveWrappedItem(m_wrappedItems[e.Key], (EditorUpdateSource) e.Source, e.Index);
+        RemoveWrappedItem(_wrappedItems[e.Key], (EditorUpdateSource) e.Source, e.Index);
     }
 
     #region Static DataWrapper
 
     private static readonly
-        EditableDataWrapper<QuestDictionary<TSource>, EditableWrappedItemDictionary<TSource, TWrapped>> s_wrapper;
+        EditableDataWrapper<QuestDictionary<TSource>, EditableWrappedItemDictionary<TSource, TWrapped>> Wrapper;
 
     static EditableWrappedItemDictionary()
     {
-        s_wrapper =
+        Wrapper =
             new EditableDataWrapper<QuestDictionary<TSource>, EditableWrappedItemDictionary<TSource, TWrapped>>(
                 GetNewInstance);
     }
@@ -258,7 +258,7 @@ public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDiction
     public static EditableWrappedItemDictionary<TSource, TWrapped> GetInstance(EditorController controller,
         QuestDictionary<TSource> list)
     {
-        return s_wrapper.GetInstance(controller, list);
+        return Wrapper.GetInstance(controller, list);
     }
 
     private static EditableWrappedItemDictionary<TSource, TWrapped> GetNewInstance(EditorController controller,
@@ -269,7 +269,7 @@ public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDiction
 
     public static void Clear()
     {
-        s_wrapper.Clear();
+        Wrapper.Clear();
     }
 
     #endregion

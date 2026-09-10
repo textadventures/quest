@@ -6,7 +6,7 @@ namespace QuestViva.EditorCore;
 
 public class EditableScriptData
 {
-    private readonly Expression<bool> m_visibilityExpression;
+    private readonly Expression<bool> _visibilityExpression;
 
     public EditableScriptData(Element editor, WorldModel worldModel, int order)
     {
@@ -20,7 +20,7 @@ public class EditableScriptData
         var expression = editor.Fields.GetString("onlydisplayif");
         if (expression != null)
         {
-            m_visibilityExpression = new Expression<bool>(Engine.Utility.EncodeIdentifierSpaces(expression),
+            _visibilityExpression = new Expression<bool>(Engine.Utility.EncodeIdentifierSpaces(expression),
                 new ScriptContext(worldModel, true));
         }
     }
@@ -35,22 +35,22 @@ public class EditableScriptData
 
     public async Task<bool> IsVisible()
     {
-        return m_visibilityExpression == null || await m_visibilityExpression.ExecuteAsync(new Context());
+        return _visibilityExpression == null || await _visibilityExpression.ExecuteAsync(new Context());
     }
 }
 
 internal class EditableScriptFactory
 {
-    private readonly Dictionary<IScript, EditableScriptBase> m_cache = new();
-    private readonly EditorController m_controller;
-    private readonly ScriptFactory m_scriptFactory;
-    private readonly WorldModel m_worldModel;
+    private readonly Dictionary<IScript, EditableScriptBase> _cache = new();
+    private readonly EditorController _controller;
+    private readonly ScriptFactory _scriptFactory;
+    private readonly WorldModel _worldModel;
 
     internal EditableScriptFactory(EditorController controller, ScriptFactory factory, WorldModel worldModel)
     {
-        m_controller = controller;
-        m_scriptFactory = factory;
-        m_worldModel = worldModel;
+        _controller = controller;
+        _scriptFactory = factory;
+        _worldModel = worldModel;
 
         var order = 0;
         foreach (var editor in worldModel.Elements.GetElements(ElementType.Editor).Where(IsScriptEditor))
@@ -69,7 +69,7 @@ internal class EditableScriptFactory
 
     internal EditableScriptBase CreateEditableScript(string keyword)
     {
-        var script = m_scriptFactory.CreateSimpleScript(keyword);
+        var script = _scriptFactory.CreateSimpleScript(keyword);
         return CreateEditableScript(script);
     }
 
@@ -77,18 +77,18 @@ internal class EditableScriptFactory
     {
         EditableScriptBase newScript;
 
-        if (m_cache.TryGetValue(script, out newScript))
+        if (_cache.TryGetValue(script, out newScript))
         {
             return newScript;
         }
 
         if (script.Keyword == "if")
         {
-            newScript = new EditableIfScript(m_controller, (IIfScript) script, m_worldModel.UndoLogger);
+            newScript = new EditableIfScript(_controller, (IIfScript) script, _worldModel.UndoLogger);
         }
         else
         {
-            var newEditableScript = new EditableScript(m_controller, script, m_worldModel.UndoLogger);
+            var newEditableScript = new EditableScript(_controller, script, _worldModel.UndoLogger);
             if (ScriptData.ContainsKey(script.Keyword))
             {
                 newEditableScript.DisplayTemplate = ScriptData[script.Keyword].DisplayString;
@@ -97,13 +97,13 @@ internal class EditableScriptFactory
             newScript = newEditableScript;
         }
 
-        m_cache.Add(script, newScript);
+        _cache.Add(script, newScript);
         return newScript;
     }
 
     internal EditableScriptBase CreateEditableFunctionCallScript()
     {
-        var script = m_scriptFactory.CreateBlankFunctionCallScript();
+        var script = _scriptFactory.CreateBlankFunctionCallScript();
         return CreateEditableScript(script);
     }
 
@@ -134,6 +134,6 @@ internal class EditableScriptFactory
 
     internal IScript Clone(IScript script)
     {
-        return m_scriptFactory.CreateSimpleScript(script.Save());
+        return _scriptFactory.CreateSimpleScript(script.Save());
     }
 }

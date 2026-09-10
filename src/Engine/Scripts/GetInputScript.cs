@@ -19,32 +19,32 @@ public class GetInputScriptConstructor : IScriptConstructor
 
 public class GetInputScript : ScriptBase
 {
-    private readonly IScript m_callbackScript;
-    private readonly ScriptContext m_scriptContext;
-    private readonly IScriptFactory m_scriptFactory;
-    private readonly WorldModel m_worldModel;
+    private readonly IScript _callbackScript;
+    private readonly ScriptContext _scriptContext;
+    private readonly IScriptFactory _scriptFactory;
+    private readonly WorldModel _worldModel;
 
     public GetInputScript(ScriptContext scriptContext, IScriptFactory scriptFactory, IScript callbackScript)
     {
-        m_scriptContext = scriptContext;
-        m_worldModel = scriptContext.WorldModel;
-        m_scriptFactory = scriptFactory;
-        m_callbackScript = callbackScript;
+        _scriptContext = scriptContext;
+        _worldModel = scriptContext.WorldModel;
+        _scriptFactory = scriptFactory;
+        _callbackScript = callbackScript;
     }
 
     public override string Keyword => "get input";
 
     protected override ScriptBase CloneScript()
     {
-        return new GetInputScript(m_scriptContext, m_scriptFactory, (IScript) m_callbackScript.Clone());
+        return new GetInputScript(_scriptContext, _scriptFactory, (IScript) _callbackScript.Clone());
     }
 
     public override Task ExecuteAsync(Context c)
     {
-        m_worldModel._commandOverride = true;
-        WorldModel.BeginPrompt(ref m_worldModel._commandInputTcs);
-        m_worldModel.BeginDormantSuspension();
-        m_worldModel.SignalTurnSuspended();
+        _worldModel._commandOverride = true;
+        WorldModel.BeginPrompt(ref _worldModel._commandInputTcs);
+        _worldModel.BeginDormantSuspension();
+        _worldModel.SignalTurnSuspended();
         _ = AwaitResponseAndRunCallbackAsync(c);
         return Task.CompletedTask;
     }
@@ -54,26 +54,26 @@ public class GetInputScript : ScriptBase
         var resolved = false;
         try
         {
-            var result = await m_worldModel._commandInputTcs.Task;
+            var result = await _worldModel._commandInputTcs.Task;
             resolved = true;
-            m_worldModel.SignalCallbackResolving();
-            m_worldModel._commandOverride = false;
+            _worldModel.SignalCallbackResolving();
+            _worldModel._commandOverride = false;
             c.Parameters["result"] = result;
-            await m_worldModel.RunScriptAsync(m_callbackScript, c);
+            await _worldModel.RunScriptAsync(_callbackScript, c);
         }
         catch (OperationCanceledException) { }
-        catch (Exception ex) { m_worldModel.LogException(ex); }
+        catch (Exception ex) { _worldModel.LogException(ex); }
         finally
         {
-            if (!resolved) m_worldModel.SignalCallbackResolving();
-            await m_worldModel.EndPendingCallbackAsync();
-            m_worldModel.SignalTurnSuspended();
+            if (!resolved) _worldModel.SignalCallbackResolving();
+            await _worldModel.EndPendingCallbackAsync();
+            _worldModel.SignalTurnSuspended();
         }
     }
 
     public override string Save()
     {
-        return SaveScript("get input", m_callbackScript);
+        return SaveScript("get input", _callbackScript);
     }
 
     public override object GetParameter(int index)
@@ -81,7 +81,7 @@ public class GetInputScript : ScriptBase
         switch (index)
         {
             case 0:
-                return m_callbackScript;
+                return _callbackScript;
             default:
                 throw new ArgumentOutOfRangeException();
         }

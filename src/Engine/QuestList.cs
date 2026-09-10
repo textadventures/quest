@@ -24,23 +24,23 @@ public class QuestListUpdatedEventArgs<T> : EventArgs
 
 public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollection, IExtendableField
 {
-    private readonly List<T> m_list;
-    private UndoLogger m_undoLog;
+    private readonly List<T> _list;
+    private UndoLogger _undoLog;
 
     public QuestList()
     {
-        m_list = new List<T>();
+        _list = new List<T>();
     }
 
     public QuestList(IEnumerable<T> collection)
     {
         if (collection == null)
         {
-            m_list = new List<T>();
+            _list = new List<T>();
         }
         else
         {
-            m_list = new List<T>(collection);
+            _list = new List<T>(collection);
         }
     }
 
@@ -73,7 +73,7 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
 
     public IEnumerator<T> GetEnumerator()
     {
-        return m_list.GetEnumerator();
+        return _list.GetEnumerator();
     }
 
     #endregion
@@ -82,22 +82,22 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return m_list.GetEnumerator();
+        return _list.GetEnumerator();
     }
 
     #endregion
 
     public UndoLogger UndoLog
     {
-        get => m_undoLog;
+        get => _undoLog;
         set
         {
-            if (m_undoLog == value)
+            if (_undoLog == value)
             {
                 return;
             }
 
-            m_undoLog = value;
+            _undoLog = value;
             foreach (var item in this)
             {
                 var mutableValue = item as IMutableField;
@@ -113,7 +113,7 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
 
     public IMutableField Clone()
     {
-        return new QuestList<T>(m_list);
+        return new QuestList<T>(_list);
     }
 
     public bool Locked { get; set; }
@@ -147,10 +147,10 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
 
     public bool Contains(object item)
     {
-        return m_list.Contains((T) item);
+        return _list.Contains((T) item);
     }
 
-    public object this[int index] => m_list[index];
+    public object this[int index] => _list[index];
     public event EventHandler<QuestListUpdatedEventArgs<T>> Added;
     public event EventHandler<QuestListUpdatedEventArgs<T>> Removed;
 
@@ -168,12 +168,12 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
         CheckNotLocked();
         if (index == null)
         {
-            m_list.Add(item);
-            index = m_list.Count - 1;
+            _list.Add(item);
+            index = _list.Count - 1;
         }
         else
         {
-            m_list.Insert(index.Value, item);
+            _list.Insert(index.Value, item);
         }
 
         ItemAdded(item, source, index.Value);
@@ -184,9 +184,9 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
         CheckNotLocked();
 
         // initial index of the added items, to be passed to the UndoLogger
-        var index = m_list.Count;
+        var index = _list.Count;
 
-        m_list.AddRange(collection);
+        _list.AddRange(collection);
         foreach (var item in collection)
         {
             ItemAdded(item, UpdateSource.System, index);
@@ -196,7 +196,7 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
 
     private bool RemoveInternal(T item)
     {
-        var index = m_list.IndexOf(item);
+        var index = _list.IndexOf(item);
         if (index == -1)
         {
             return false;
@@ -210,13 +210,13 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
     {
         CheckNotLocked();
         UndoLogRemove(item, index);
-        m_list.RemoveAt(index);
+        _list.RemoveAt(index);
         ItemRemoved(item, source, index);
     }
 
     public void RemoveByIndex(int index, UpdateSource source)
     {
-        RemoveInternal(m_list[index], source, index);
+        RemoveInternal(_list[index], source, index);
     }
 
     private void UndoLogAdd(object item, int index)
@@ -366,32 +366,32 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
 
     internal T[] ToArray()
     {
-        return m_list.ToArray();
+        return _list.ToArray();
     }
 
     private class UndoListAdd : UndoLogger.IUndoAction
     {
-        private readonly object m_addedItem;
-        private readonly IQuestList m_appliesTo;
-        private readonly int m_index;
+        private readonly object _addedItem;
+        private readonly IQuestList _appliesTo;
+        private readonly int _index;
 
         public UndoListAdd(IQuestList appliesTo, object addedItem, int index)
         {
-            m_appliesTo = appliesTo;
-            m_addedItem = addedItem;
-            m_index = index;
+            _appliesTo = appliesTo;
+            _addedItem = addedItem;
+            _index = index;
         }
 
         #region IUndoAction Members
 
         public void DoUndo(WorldModel worldModel)
         {
-            m_appliesTo.Remove(m_addedItem, UpdateSource.System, m_index);
+            _appliesTo.Remove(_addedItem, UpdateSource.System, _index);
         }
 
         public void DoRedo(WorldModel worldModel)
         {
-            m_appliesTo.Add(m_addedItem, UpdateSource.System, m_index);
+            _appliesTo.Add(_addedItem, UpdateSource.System, _index);
         }
 
         #endregion
@@ -399,27 +399,27 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
 
     private class UndoListRemove : UndoLogger.IUndoAction
     {
-        private readonly IQuestList m_appliesTo;
-        private readonly int m_index;
-        private readonly object m_removedItem;
+        private readonly IQuestList _appliesTo;
+        private readonly int _index;
+        private readonly object _removedItem;
 
         public UndoListRemove(IQuestList appliesTo, object removedItem, int index)
         {
-            m_appliesTo = appliesTo;
-            m_removedItem = removedItem;
-            m_index = index;
+            _appliesTo = appliesTo;
+            _removedItem = removedItem;
+            _index = index;
         }
 
         #region IUndoAction Members
 
         public void DoUndo(WorldModel worldModel)
         {
-            m_appliesTo.Add(m_removedItem, UpdateSource.System, m_index);
+            _appliesTo.Add(_removedItem, UpdateSource.System, _index);
         }
 
         public void DoRedo(WorldModel worldModel)
         {
-            m_appliesTo.Remove(m_removedItem, UpdateSource.System, m_index);
+            _appliesTo.Remove(_removedItem, UpdateSource.System, _index);
         }
 
         #endregion
@@ -429,14 +429,14 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
 
     public void CopyTo(Array array, int index)
     {
-        ((ICollection) m_list).CopyTo(array, index);
+        ((ICollection) _list).CopyTo(array, index);
     }
 
-    public int Count => m_list.Count;
+    public int Count => _list.Count;
 
-    public bool IsSynchronized => ((ICollection) m_list).IsSynchronized;
+    public bool IsSynchronized => ((ICollection) _list).IsSynchronized;
 
-    public object SyncRoot => ((ICollection) m_list).SyncRoot;
+    public object SyncRoot => ((ICollection) _list).SyncRoot;
 
     #endregion
 
@@ -444,7 +444,7 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
 
     public int IndexOf(T item)
     {
-        return m_list.IndexOf(item);
+        return _list.IndexOf(item);
     }
 
     public void Insert(int index, T item)
@@ -459,7 +459,7 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
 
     T IList<T>.this[int index]
     {
-        get => m_list[index];
+        get => _list[index];
         set => throw new NotImplementedException();
     }
 
@@ -474,15 +474,15 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
 
     public bool Contains(T item)
     {
-        return m_list.Contains(item);
+        return _list.Contains(item);
     }
 
     public void CopyTo(T[] array, int arrayIndex)
     {
-        m_list.CopyTo(array, arrayIndex);
+        _list.CopyTo(array, arrayIndex);
     }
 
-    public bool IsReadOnly => ((ICollection<T>) m_list).IsReadOnly;
+    public bool IsReadOnly => ((ICollection<T>) _list).IsReadOnly;
 
     #endregion
 }

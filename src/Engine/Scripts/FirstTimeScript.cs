@@ -36,32 +36,32 @@ public class FirstTimeScriptConstructor : IScriptConstructor
 
 public class FirstTimeScript : ScriptBase, IFirstTimeScript
 {
-    private readonly IScript m_firstTimeScript;
-    private readonly IScriptFactory m_scriptFactory;
-    private readonly WorldModel m_worldModel;
-    private bool m_hasRun;
-    private IScript m_otherwiseScript;
+    private readonly IScript _firstTimeScript;
+    private readonly IScriptFactory _scriptFactory;
+    private readonly WorldModel _worldModel;
+    private bool _hasRun;
+    private IScript _otherwiseScript;
 
     public FirstTimeScript(WorldModel worldModel, IScriptFactory scriptFactory, IScript firstTimeScript)
     {
-        m_worldModel = worldModel;
-        m_scriptFactory = scriptFactory;
-        m_firstTimeScript = firstTimeScript;
+        _worldModel = worldModel;
+        _scriptFactory = scriptFactory;
+        _firstTimeScript = firstTimeScript;
     }
 
     public override string Keyword => "firsttime";
 
     public void SetOtherwiseScript(IScript script)
     {
-        m_otherwiseScript = script;
+        _otherwiseScript = script;
     }
 
     protected override ScriptBase CloneScript()
     {
-        var result = new FirstTimeScript(m_worldModel, m_scriptFactory, (IScript) m_firstTimeScript.Clone());
-        if (m_otherwiseScript != null)
+        var result = new FirstTimeScript(_worldModel, _scriptFactory, (IScript) _firstTimeScript.Clone());
+        if (_otherwiseScript != null)
         {
-            result.m_otherwiseScript = (IScript) m_otherwiseScript.Clone();
+            result._otherwiseScript = (IScript) _otherwiseScript.Clone();
         }
 
         return result;
@@ -69,45 +69,45 @@ public class FirstTimeScript : ScriptBase, IFirstTimeScript
 
     protected override void ParentUpdated()
     {
-        m_firstTimeScript.Parent = Parent;
+        _firstTimeScript.Parent = Parent;
     }
 
     public override async Task ExecuteAsync(Context c)
     {
-        if (!m_hasRun)
+        if (!_hasRun)
         {
-            m_hasRun = true;
-            m_worldModel.UndoLogger.AddUndoAction(() => new UndoFirstTime(this));
-            await m_firstTimeScript.ExecuteAsync(c);
+            _hasRun = true;
+            _worldModel.UndoLogger.AddUndoAction(() => new UndoFirstTime(this));
+            await _firstTimeScript.ExecuteAsync(c);
         }
         else
         {
-            if (m_otherwiseScript != null)
+            if (_otherwiseScript != null)
             {
-                await m_otherwiseScript.ExecuteAsync(c);
+                await _otherwiseScript.ExecuteAsync(c);
             }
         }
     }
 
     public override string Save()
     {
-        if (m_worldModel.EditMode || !m_hasRun)
+        if (_worldModel.EditMode || !_hasRun)
         {
-            if (m_otherwiseScript == null)
+            if (_otherwiseScript == null)
             {
-                return SaveScript("firsttime", m_firstTimeScript);
+                return SaveScript("firsttime", _firstTimeScript);
             }
 
-            return SaveScript("firsttime", m_firstTimeScript) + Environment.NewLine +
-                   SaveScript("otherwise", m_otherwiseScript);
+            return SaveScript("firsttime", _firstTimeScript) + Environment.NewLine +
+                   SaveScript("otherwise", _otherwiseScript);
         }
 
-        if (m_otherwiseScript == null)
+        if (_otherwiseScript == null)
         {
             return string.Empty;
         }
 
-        return m_otherwiseScript.Save();
+        return _otherwiseScript.Save();
     }
 
     public override object GetParameter(int index)
@@ -115,9 +115,9 @@ public class FirstTimeScript : ScriptBase, IFirstTimeScript
         switch (index)
         {
             case 0:
-                return m_firstTimeScript;
+                return _firstTimeScript;
             case 1:
-                return m_otherwiseScript;
+                return _otherwiseScript;
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -132,7 +132,7 @@ public class FirstTimeScript : ScriptBase, IFirstTimeScript
                 throw new InvalidOperationException(
                     "Attempt to use SetParameter to change the script of a 'firsttime' script");
             case 1:
-                m_otherwiseScript = (IScript) value;
+                _otherwiseScript = (IScript) value;
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -141,21 +141,21 @@ public class FirstTimeScript : ScriptBase, IFirstTimeScript
 
     private class UndoFirstTime : UndoLogger.IUndoAction
     {
-        private readonly FirstTimeScript m_parent;
+        private readonly FirstTimeScript _parent;
 
         public UndoFirstTime(FirstTimeScript parent)
         {
-            m_parent = parent;
+            _parent = parent;
         }
 
         public void DoUndo(WorldModel worldModel)
         {
-            m_parent.m_hasRun = false;
+            _parent._hasRun = false;
         }
 
         public void DoRedo(WorldModel worldModel)
         {
-            m_parent.m_hasRun = true;
+            _parent._hasRun = true;
         }
     }
 }

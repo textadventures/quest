@@ -5,17 +5,17 @@ namespace QuestViva.EngineTests;
 [TestClass]
 public class QuestListTest
 {
-    private Element a, b, c;
-    private WorldModel m_worldModel;
+    private Element _a, _b, _c;
+    private WorldModel _worldModel;
 
     [TestInitialize]
     public void Setup()
     {
-        m_worldModel = Helpers.CreateWorldModel();
+        _worldModel = Helpers.CreateWorldModel();
 
-        a = m_worldModel.GetElementFactory(ElementType.Object).Create("a");
-        b = m_worldModel.GetElementFactory(ElementType.Object).Create("b");
-        c = m_worldModel.GetElementFactory(ElementType.Object).Create("c");
+        _a = _worldModel.GetElementFactory(ElementType.Object).Create("a");
+        _b = _worldModel.GetElementFactory(ElementType.Object).Create("b");
+        _c = _worldModel.GetElementFactory(ElementType.Object).Create("c");
     }
 
     [TestMethod]
@@ -29,10 +29,10 @@ public class QuestListTest
         Assert.IsTrue(actual.SequenceEqual(expected));
 
         //element lists
-        var elList = new QuestList<Element> {a, a, b, c};
+        var elList = new QuestList<Element> {_a, _a, _b, _c};
 
-        var expectedEList = new QuestList<Element> {b, c};
-        var actualEList = elList.Exclude(a);
+        var expectedEList = new QuestList<Element> {_b, _c};
+        var actualEList = elList.Exclude(_a);
         Assert.IsTrue(actualEList.SequenceEqual(expectedEList));
     }
 
@@ -48,10 +48,10 @@ public class QuestListTest
         Assert.IsTrue(actual.SequenceEqual(expected));
 
         //element lists
-        var elList = new QuestList<Element> {a, a, b, c};
-        var excludeEList = new QuestList<Element> {a, b};
+        var elList = new QuestList<Element> {_a, _a, _b, _c};
+        var excludeEList = new QuestList<Element> {_a, _b};
 
-        var expectedEList = new QuestList<Element> {c};
+        var expectedEList = new QuestList<Element> {_c};
         var actualEList = elList.Exclude(excludeEList);
         Assert.IsTrue(actualEList.SequenceEqual(expectedEList));
     }

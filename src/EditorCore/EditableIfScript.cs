@@ -5,48 +5,48 @@ namespace QuestViva.EditorCore;
 
 public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
 {
-    private readonly Dictionary<IScript, EditableElseIf> m_elseIfScripts = new();
+    private readonly Dictionary<IScript, EditableElseIf> _elseIfScripts = new();
 
-    private readonly IIfScript m_ifScript;
-    private readonly EditableScripts m_thenScript;
-    private EditableScripts m_elseScript;
+    private readonly IIfScript _ifScript;
+    private readonly EditableScripts _thenScript;
+    private EditableScripts _elseScript;
 
     internal EditableIfScript(EditorController controller, IIfScript script, UndoLogger undoLogger)
         : base(controller, script, undoLogger)
     {
-        m_ifScript = script;
+        _ifScript = script;
 
-        m_ifScript.IfScriptUpdated += m_ifScript_IfScriptUpdated;
+        _ifScript.IfScriptUpdated += OnIfScriptUpdated;
 
-        if (m_ifScript.ThenScript == null)
+        if (_ifScript.ThenScript == null)
         {
-            m_ifScript.ThenScript = new MultiScript(Controller.WorldModel);
+            _ifScript.ThenScript = new MultiScript(Controller.WorldModel);
         }
 
-        m_thenScript = EditableScripts.GetInstance(Controller, m_ifScript.ThenScript);
-        m_thenScript.Updated += nestedScript_Updated;
+        _thenScript = EditableScripts.GetInstance(Controller, _ifScript.ThenScript);
+        _thenScript.Updated += nestedScript_Updated;
 
-        foreach (var elseIfScript in m_ifScript.ElseIfScripts)
+        foreach (var elseIfScript in _ifScript.ElseIfScripts)
         {
             var newEditableElseIf = new EditableElseIf(elseIfScript, this);
-            m_elseIfScripts.Add(elseIfScript.Script, newEditableElseIf);
+            _elseIfScripts.Add(elseIfScript.Script, newEditableElseIf);
             newEditableElseIf.EditableScripts.Updated += nestedScript_Updated;
         }
 
-        if (m_ifScript.ElseScript != null)
+        if (_ifScript.ElseScript != null)
         {
-            m_elseScript = EditableScripts.GetInstance(Controller, m_ifScript.ElseScript);
-            m_elseScript.Updated += nestedScript_Updated;
+            _elseScript = EditableScripts.GetInstance(Controller, _ifScript.ElseScript);
+            _elseScript.Updated += nestedScript_Updated;
         }
     }
 
-    public string IfExpression => m_ifScript.ExpressionString;
+    public string IfExpression => _ifScript.ExpressionString;
 
-    public IEditableScripts ThenScript => m_thenScript;
+    public IEditableScripts ThenScript => _thenScript;
 
-    public IEditableScripts ElseScript => m_elseScript;
+    public IEditableScripts ElseScript => _elseScript;
 
-    public IEnumerable<EditableElseIf> ElseIfScripts => m_elseIfScripts.Values;
+    public IEnumerable<EditableElseIf> ElseIfScripts => _elseIfScripts.Values;
 
     public override string DisplayString(int index, object newValue)
     {
@@ -91,7 +91,7 @@ public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
     {
         if (attribute == "expression")
         {
-            return m_ifScript.ExpressionString;
+            return _ifScript.ExpressionString;
         }
 
         throw new ArgumentOutOfRangeException("attribute", "Unrecognised 'if' attribute");
@@ -101,7 +101,7 @@ public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
     {
         if (attribute == "expression")
         {
-            m_ifScript.ExpressionString = (string) value;
+            _ifScript.ExpressionString = (string) value;
         }
         else
         {
@@ -134,13 +134,13 @@ public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
     public event EventHandler<ElseIfEventArgs> AddedElseIf;
     public event EventHandler<ElseIfEventArgs> RemovedElseIf;
 
-    private void m_ifScript_IfScriptUpdated(object sender, IfScriptUpdatedEventArgs e)
+    private void OnIfScriptUpdated(object sender, IfScriptUpdatedEventArgs e)
     {
         switch (e.EventType)
         {
             case IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.AddedElse:
-                m_elseScript = EditableScripts.GetInstance(Controller, m_ifScript.ElseScript);
-                m_elseScript.Updated += nestedScript_Updated;
+                _elseScript = EditableScripts.GetInstance(Controller, _ifScript.ElseScript);
+                _elseScript.Updated += nestedScript_Updated;
                 if (AddedElse != null)
                 {
                     AddedElse(this, new EventArgs());
@@ -148,8 +148,8 @@ public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
 
                 break;
             case IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.RemovedElse:
-                m_elseScript.Updated -= nestedScript_Updated;
-                m_elseScript = null;
+                _elseScript.Updated -= nestedScript_Updated;
+                _elseScript = null;
                 if (RemovedElse != null)
                 {
                     RemovedElse(this, new EventArgs());
@@ -162,7 +162,7 @@ public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
 
                 // Wrap the newly created elseif in an EditableElseIf and add it to our internal dictionary
                 var newEditableElseIf = new EditableElseIf(e.Data, this);
-                m_elseIfScripts.Add(e.Data.Script, newEditableElseIf);
+                _elseIfScripts.Add(e.Data.Script, newEditableElseIf);
 
                 // Raise the update to display in the UI
                 if (AddedElseIf != null)
@@ -175,10 +175,10 @@ public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
                 EditableScripts.GetInstance(Controller, e.Data.Script).Updated -= nestedScript_Updated;
                 if (RemovedElseIf != null)
                 {
-                    RemovedElseIf(this, new ElseIfEventArgs(m_elseIfScripts[e.Data.Script]));
+                    RemovedElseIf(this, new ElseIfEventArgs(_elseIfScripts[e.Data.Script]));
                 }
 
-                m_elseIfScripts.Remove(e.Data.Script);
+                _elseIfScripts.Remove(e.Data.Script);
                 break;
             default:
                 throw new Exception("Unhandled event");
@@ -199,7 +199,7 @@ public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
             ? ThenDisplayStringFragment(index, newValue)
             : ThenDisplayStringFragment(-1, string.Empty);
 
-        foreach (var elseIf in m_elseIfScripts.Values)
+        foreach (var elseIf in _elseIfScripts.Values)
         {
             result += modifiedSection == elseIf.EditableScripts
                 ? ElseIfDisplayStringFragment(elseIf, index, newValue)
@@ -238,23 +238,23 @@ public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
     public void AddElse()
     {
         IScript newScript = new MultiScript(Controller.WorldModel);
-        m_ifScript.SetElse(newScript);
+        _ifScript.SetElse(newScript);
     }
 
     public void AddElseIf()
     {
         IScript newScript = new MultiScript(Controller.WorldModel);
-        var newElseIf = m_ifScript.AddElseIf(string.Empty, newScript);
+        var newElseIf = _ifScript.AddElseIf(string.Empty, newScript);
     }
 
     public void RemoveElseIf(EditableElseIf removeElseIf)
     {
-        m_ifScript.RemoveElseIf(removeElseIf.ElseIfScript);
+        _ifScript.RemoveElseIf(removeElseIf.ElseIfScript);
     }
 
     public void RemoveElse()
     {
-        m_ifScript.SetElse(null);
+        _ifScript.SetElse(null);
     }
 
     public class ElseIfEventArgs : EventArgs
@@ -269,12 +269,12 @@ public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
 
     public class EditableElseIf : IEditorData
     {
-        private readonly EditableIfScript m_parent;
+        private readonly EditableIfScript _parent;
 
         internal EditableElseIf(IElseIfScript elseIfScript, EditableIfScript parent)
         {
             ElseIfScript = elseIfScript;
-            m_parent = parent;
+            _parent = parent;
             EditableScripts = EditorCore.EditableScripts.GetInstance(parent.Controller, elseIfScript.Script);
         }
 
@@ -340,7 +340,7 @@ public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
 
         public IEnumerable<string> GetVariablesInScope()
         {
-            return m_parent.GetVariablesInScope();
+            return _parent.GetVariablesInScope();
         }
 
         public bool IsDirectlySaveable => true;

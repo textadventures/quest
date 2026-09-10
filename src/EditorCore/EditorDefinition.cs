@@ -4,15 +4,15 @@ namespace QuestViva.EditorCore;
 
 internal class EditorDefinition : IEditorDefinition
 {
-    private readonly Dictionary<string, IEditorControl> m_controls;
-    private readonly Dictionary<string, FilterGroup> m_filterGroups = new();
+    private readonly Dictionary<string, IEditorControl> _controls;
+    private readonly Dictionary<string, FilterGroup> _filterGroups = new();
 
-    private readonly Dictionary<string, IEditorTab> m_tabs;
+    private readonly Dictionary<string, IEditorTab> _tabs;
 
     public EditorDefinition(WorldModel worldModel, Element source)
     {
-        m_tabs = new Dictionary<string, IEditorTab>();
-        m_controls = new Dictionary<string, IEditorControl>();
+        _tabs = new Dictionary<string, IEditorTab>();
+        _controls = new Dictionary<string, IEditorControl>();
         AppliesTo = source.Fields.GetString("appliesto");
         Pattern = source.Fields.GetString("pattern");
         OriginalPattern = source.Fields.GetString(FieldDefinitions.OriginalPattern.Property);
@@ -24,7 +24,7 @@ internal class EditorDefinition : IEditorDefinition
         {
             if (e.Parent == source)
             {
-                m_tabs.Add(e.Name, new EditorTab(this, worldModel, e));
+                _tabs.Add(e.Name, new EditorTab(this, worldModel, e));
             }
         }
 
@@ -32,7 +32,7 @@ internal class EditorDefinition : IEditorDefinition
         {
             if (e.Parent == source)
             {
-                m_controls.Add(e.Name, new EditorControl(this, worldModel, e));
+                _controls.Add(e.Name, new EditorControl(this, worldModel, e));
             }
         }
     }
@@ -49,13 +49,13 @@ internal class EditorDefinition : IEditorDefinition
 
     public string Description { get; }
 
-    public IDictionary<string, IEditorTab> Tabs => m_tabs;
+    public IDictionary<string, IEditorTab> Tabs => _tabs;
 
-    public IEnumerable<IEditorControl> Controls => m_controls.Values;
+    public IEnumerable<IEditorControl> Controls => _controls.Values;
 
     public string GetDefaultFilterName(string filterGroupName, IEditorData data)
     {
-        var filterGroup = m_filterGroups[filterGroupName];
+        var filterGroup = _filterGroups[filterGroupName];
         var candidates = new List<Filter>();
 
         foreach (var filter in filterGroup.Filters.Values)
@@ -82,12 +82,12 @@ internal class EditorDefinition : IEditorDefinition
 
     internal void RegisterFilter(string filterGroupName, string filterName, string attribute)
     {
-        if (!m_filterGroups.ContainsKey(filterGroupName))
+        if (!_filterGroups.ContainsKey(filterGroupName))
         {
-            m_filterGroups.Add(filterGroupName, new FilterGroup(filterGroupName));
+            _filterGroups.Add(filterGroupName, new FilterGroup(filterGroupName));
         }
 
-        var filterGroup = m_filterGroups[filterGroupName];
+        var filterGroup = _filterGroups[filterGroupName];
 
         if (!filterGroup.Filters.ContainsKey(filterName))
         {
