@@ -1,5 +1,5 @@
-﻿#nullable disable
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using QuestViva.Common;
 using QuestViva.Engine.Functions;
 using QuestViva.Engine.Scripts;
@@ -9,7 +9,7 @@ namespace QuestViva.Engine;
 
 public class AttributeChangedEventArgs : EventArgs
 {
-    internal AttributeChangedEventArgs(string property, object value, object oldValue)
+    internal AttributeChangedEventArgs(string property, object? value, object? oldValue)
     {
         Property = property;
         Value = value;
@@ -21,23 +21,24 @@ public class AttributeChangedEventArgs : EventArgs
         InheritedTypesSet = inheritedTypesSet;
     }
 
-    public string Property { get; private set; }
-    public object Value { get; private set; }
-    public object OldValue { get; private set; }
+    // Property is only null when InheritedTypesSet is true (the element's inherited types changed)
+    public string? Property { get; private set; }
+    public object? Value { get; private set; }
+    public object? OldValue { get; private set; }
     public bool InheritedTypesSet { get; private set; }
 }
 
 public class NameChangedEventArgs : EventArgs
 {
-    public string OldName { get; set; }
-    public Element Element { get; set; }
+    public required string OldName { get; set; }
+    public required Element Element { get; set; }
 }
 
 public interface IMutableField
 {
-    UndoLogger UndoLog { get; set; }
+    UndoLogger? UndoLog { get; set; }
 
-    Element Owner { get; set; }
+    Element? Owner { get; set; }
 
     /// <summary>
     ///     True if we're in an inherited type, so we must be unmodifable. Implementors must check this and throw an exception
@@ -148,9 +149,9 @@ public class Fields
     // so the debugger's override hint still covers that residual case.
     private static readonly Dictionary<Type, DebugFormatDelegate> EditFormatters = new()
     {
-        {typeof(bool), v => (bool) v ? "true" : "false"},
-        {typeof(string), v => "\"" + ((string) v).Replace("\\", "\\\\").Replace("\"", "\\\"") + "\""},
-        {typeof(Element), v => ((Element) v).Name}
+        {typeof(bool), v => (bool) v! ? "true" : "false"},
+        {typeof(string), v => "\"" + ((string) v!).Replace("\\", "\\\\").Replace("\"", "\\\"") + "\""},
+        {typeof(Element), v => ((Element) v!).Name}
     };
 
     // Which value kinds the debugger's override control should even offer —
@@ -166,12 +167,12 @@ public class Fields
         typeof(int), typeof(double), typeof(long), typeof(float), typeof(decimal), typeof(short)
     };
 
-    private static bool CanOverrideValue(object value)
+    private static bool CanOverrideValue(object? value)
     {
         return value == null || OverridableValueTypes.Contains(value.GetType());
     }
 
-    private readonly Dictionary<string, object> _attributes = new();
+    private readonly Dictionary<string, object?> _attributes = new();
     private readonly Element _element;
     private readonly Dictionary<string, IExtendableField> _extendableFields = new();
     private readonly bool _isMeta;
@@ -208,9 +209,9 @@ public class Fields
     }
 
     internal IEnumerable<Element> Types => _types;
-    public event EventHandler<AttributeChangedEventArgs> AttributeChanged;
-    public event EventHandler<AttributeChangedEventArgs> AttributeChangedSilent;
-    internal event EventHandler<NameChangedEventArgs> NameChanged;
+    public event EventHandler<AttributeChangedEventArgs>? AttributeChanged;
+    public event EventHandler<AttributeChangedEventArgs>? AttributeChangedSilent;
+    internal event EventHandler<NameChangedEventArgs>? NameChanged;
 
     internal Fields Clone(Element newElement)
     {
@@ -232,7 +233,7 @@ public class Fields
         return clone;
     }
 
-    private DebugFormatDelegate GetFormatter(Type type)
+    private DebugFormatDelegate GetFormatter(Type? type)
     {
         if (type == null)
         {
@@ -247,19 +248,19 @@ public class Fields
         return DefaultFormatter;
     }
 
-    private string DefaultFormatter(object input)
+    private string DefaultFormatter(object? input)
     {
         if (input == null)
         {
             return "(null)";
         }
 
-        return input.ToString();
+        return input.ToString() ?? string.Empty;
     }
 
-    private static string ListFormatter(object input)
+    private static string ListFormatter(object? input)
     {
-        var list = (List<string>) input;
+        var list = (List<string>) input!;
         var output = string.Empty;
         if (list.Count == 0)
         {
@@ -274,7 +275,7 @@ public class Fields
         return output.Substring(0, output.Length - 2);
     }
 
-    private void UndoLog(string property, object oldValue, object newValue, bool added)
+    private void UndoLog(string property, object? oldValue, object? newValue, bool added)
     {
         if (_worldModel != null)
         {
@@ -291,12 +292,12 @@ public class Fields
         }
     }
 
-    public void Set(string name, object value)
+    public void Set(string name, object? value)
     {
         Set(name, value, true, true);
     }
 
-    internal void SetFromUndo(string name, object value)
+    internal void SetFromUndo(string name, object? value)
     {
         Set(name, value, false, false, false);
     }
@@ -332,12 +333,12 @@ public class Fields
         }
     }
 
-    private void Set(string name, object value, bool raiseEvent, bool cloneClonableValues,
+    private void Set(string name, object? value, bool raiseEvent, bool cloneClonableValues,
         bool allowUpdateSortOrder = true)
     {
         bool changed;
         var added = true;
-        object oldValue = null;
+        object? oldValue = null;
 
         if (_attributes.ContainsKey(name))
         {
@@ -377,13 +378,13 @@ public class Fields
             {
                 if (_worldModel.EditMode || mutableNewValue.RequiresCloning)
                 {
-                    value = mutableNewValue.Clone();
+                    mutableNewValue = mutableNewValue.Clone();
+                    value = mutableNewValue;
                 }
 
-                var mutableValue = (IMutableField) value;
-                mutableValue.Locked = MutableFieldsLocked;
-                mutableValue.UndoLog = _worldModel.UndoLogger;
-                mutableValue.Owner = _element;
+                mutableNewValue.Locked = MutableFieldsLocked;
+                mutableNewValue.UndoLog = _worldModel.UndoLogger;
+                mutableNewValue.Owner = _element;
             }
         }
 
@@ -431,7 +432,7 @@ public class Fields
 
             NameChanged(this, new NameChangedEventArgs
             {
-                OldName = (string) oldValue,
+                OldName = (string) oldValue!,
                 Element = _element
             });
         }
@@ -458,7 +459,7 @@ public class Fields
         }
     }
 
-    public Type GetCurrentType(string attribute)
+    public Type? GetCurrentType(string attribute)
     {
         var value = Get(attribute);
         if (value == null)
@@ -469,7 +470,7 @@ public class Fields
         return value.GetType();
     }
 
-    public object Get(string attribute)
+    public object? Get(string attribute)
     {
         return Get(attribute, false).Value;
     }
@@ -561,9 +562,9 @@ public class Fields
         return false;
     }
 
-    private IExtendableField GetExtendableField(string attribute, List<string> source)
+    private IExtendableField? GetExtendableField(string attribute, List<string> source)
     {
-        IExtendableField result = null;
+        IExtendableField? result = null;
 
         if (_extendableFields.ContainsKey(attribute))
         {
@@ -575,7 +576,7 @@ public class Fields
         {
             if (type.Fields.HasExtendableField(attribute))
             {
-                result = MergeExtendableFields(result, type.Fields.GetExtendableField(attribute, source));
+                result = MergeExtendableFields(result, type.Fields.GetExtendableField(attribute, source)!);
                 // Don't need to add to source here as the call to GetExtendableField will do that automatically
             }
         }
@@ -583,7 +584,7 @@ public class Fields
         return result;
     }
 
-    private IExtendableField MergeExtendableFields(IExtendableField field, IExtendableField parent)
+    private IExtendableField MergeExtendableFields(IExtendableField? field, IExtendableField parent)
     {
         if (field == null)
         {
@@ -597,7 +598,7 @@ public class Fields
     {
         var result = new DebugDataItem(FormatDebugData(Get(attribute)));
 
-        string source = null;
+        string? source = null;
         var isInherited = false;
 
         if (_attributes.ContainsKey(attribute))
@@ -680,12 +681,12 @@ public class Fields
         }
     }
 
-    private string FormatDebugData(object value)
+    private string FormatDebugData(object? value)
     {
         return GetFormatter(value == null ? null : value.GetType()).Invoke(value);
     }
 
-    private string FormatEditValue(object value)
+    private string FormatEditValue(object? value)
     {
         if (value == null)
         {
@@ -757,7 +758,7 @@ public class Fields
         return result;
     }
 
-    public T GetAsType<T>(string attribute)
+    public T? GetAsType<T>(string attribute)
     {
         var value = Get(attribute);
         if (value is T)
@@ -774,7 +775,7 @@ public class Fields
         return value is T;
     }
 
-    public string GetString(string attribute)
+    public string? GetString(string attribute)
     {
         return GetAsType<string>(attribute);
     }
@@ -784,7 +785,7 @@ public class Fields
         return HasType<string>(attribute);
     }
 
-    public Element GetObject(string attribute)
+    public Element? GetObject(string attribute)
     {
         return GetAsType<Element>(attribute);
     }
@@ -794,11 +795,11 @@ public class Fields
         return HasType<Element>(attribute);
     }
 
-    public Dictionary<string, object> GetAllAttributes()
+    public Dictionary<string, object?> GetAllAttributes()
     {
         // return a clone of the attributes dictionary as we don't
         // want external code changing any.
-        var result = new Dictionary<string, object>();
+        var result = new Dictionary<string, object?>();
         foreach (var key in _attributes.Keys)
         {
             // ok so it's not strictly a clone for things like Lists
@@ -822,7 +823,7 @@ public class Fields
         return CloneStackAndDelete(input, null);
     }
 
-    private Stack<Element> CloneStackAndDelete(Stack<Element> input, Element elementToDelete)
+    private Stack<Element> CloneStackAndDelete(Stack<Element> input, Element? elementToDelete)
     {
         var result = new Stack<Element>();
         foreach (var item in input.Reverse())
@@ -931,36 +932,36 @@ public class Fields
         return result;
     }
 
-    private delegate string DebugFormatDelegate(object input);
+    private delegate string DebugFormatDelegate(object? input);
 
     private struct AttributeData
     {
-        public object Value;
-        public string Source;
+        public object? Value;
+        public string? Source;
         public bool IsInherited;
     }
 
     #region Indexed Properties
 
-    public string this[IField<string> field]
+    public string? this[IField<string> field]
     {
         get => GetAsType<string>(field.Property);
         set => Set(field.Property, value);
     }
 
-    public QuestList<string> this[IField<QuestList<string>> field]
+    public QuestList<string>? this[IField<QuestList<string>> field]
     {
         get => GetAsType<QuestList<string>>(field.Property);
         set => Set(field.Property, value);
     }
 
-    public IScript this[IField<IScript> field]
+    public IScript? this[IField<IScript> field]
     {
         get => GetAsType<IScript>(field.Property);
         set => Set(field.Property, value);
     }
 
-    public Element this[IField<Element> field]
+    public Element? this[IField<Element> field]
     {
         get => GetAsType<Element>(field.Property);
         set => Set(field.Property, value);
@@ -978,13 +979,13 @@ public class Fields
         set => Set(field.Property, value);
     }
 
-    public IFunction<string> this[IField<IFunction<string>> field]
+    public IFunction<string>? this[IField<IFunction<string>> field]
     {
         get => GetAsType<IFunction<string>>(field.Property);
         set => Set(field.Property, value);
     }
 
-    public QuestList<object> this[IField<QuestList<object>> field]
+    public QuestList<object>? this[IField<QuestList<object>> field]
     {
         get => GetAsType<QuestList<object>>(field.Property);
         set => Set(field.Property, value);
@@ -999,7 +1000,7 @@ public class LazyFields
     private readonly WorldModel _worldModel;
     private List<Action> _actions = new();
     private List<string> _defaultTypes = new();
-    private Dictionary<string, IDictionary<string, string>> _objectDictionaries = new();
+    private Dictionary<string, IDictionary<string, string?>> _objectDictionaries = new();
     private Dictionary<string, string> _objectFields = new();
     private Dictionary<string, IEnumerable<string>> _objectLists = new();
     private bool _resolved;
@@ -1025,7 +1026,8 @@ public class LazyFields
             }
         }
 
-        _defaultTypes = null;
+        // Each pending collection is released once resolved - CheckNotResolved stops any later use
+        _defaultTypes = null!;
         foreach (var typename in _types)
         {
             try
@@ -1040,7 +1042,7 @@ public class LazyFields
             }
         }
 
-        _types = null;
+        _types = null!;
         foreach (var property in _objectFields.Keys)
         {
             try
@@ -1055,7 +1057,7 @@ public class LazyFields
             }
         }
 
-        _objectFields = null;
+        _objectFields = null!;
         foreach (var property in _scripts.Keys)
         {
             try
@@ -1070,7 +1072,7 @@ public class LazyFields
             }
         }
 
-        _scripts = null;
+        _scripts = null!;
         foreach (var property in _scriptDictionaries.Keys)
         {
             try
@@ -1085,7 +1087,7 @@ public class LazyFields
             }
         }
 
-        _scriptDictionaries = null;
+        _scriptDictionaries = null!;
         foreach (var property in _objectLists.Keys)
         {
             try
@@ -1101,7 +1103,7 @@ public class LazyFields
             }
         }
 
-        _objectLists = null;
+        _objectLists = null!;
         foreach (var property in _objectDictionaries.Keys)
         {
             try
@@ -1116,13 +1118,13 @@ public class LazyFields
             }
         }
 
-        _objectDictionaries = null;
+        _objectDictionaries = null!;
         foreach (var action in _actions)
         {
             action();
         }
 
-        _actions = null;
+        _actions = null!;
         foreach (var field in _fields.FieldNames)
         {
             var attribute = _fields.Get(field);
@@ -1155,12 +1157,12 @@ public class LazyFields
         return newDictionary;
     }
 
-    private QuestDictionary<Element> ConvertToObjectDictionary(IDictionary<string, string> dictionary)
+    private QuestDictionary<Element> ConvertToObjectDictionary(IDictionary<string, string?> dictionary)
     {
         var newDictionary = new QuestDictionary<Element>();
         foreach (var item in dictionary)
         {
-            var element = _worldModel.Elements.Get(item.Value);
+            var element = _worldModel.Elements.Get(item.Value!);
             newDictionary.Add(item.Key, element);
         }
 
@@ -1203,7 +1205,7 @@ public class LazyFields
         _objectLists.Add(property, value);
     }
 
-    public void AddObjectDictionary(string property, IDictionary<string, string> value)
+    public void AddObjectDictionary(string property, IDictionary<string, string?> value)
     {
         CheckNotResolved();
         _objectDictionaries.Add(property, value);
@@ -1221,10 +1223,7 @@ public class LazyFields
         {
             var value = list[i];
 
-            object replacement;
-            var replace = ReplaceValue(value, scriptFactory, out replacement);
-
-            if (replace)
+            if (ReplaceValue(value, scriptFactory, out var replacement))
             {
                 list.RemoveAt(i);
                 list.Insert(i, replacement);
@@ -1238,17 +1237,14 @@ public class LazyFields
 
         foreach (var item in copy)
         {
-            object replacement;
-            var replace = ReplaceValue(item.Value, scriptFactory, out replacement);
-
-            if (replace)
+            if (ReplaceValue(item.Value, scriptFactory, out var replacement))
             {
                 dictionary[item.Key] = replacement;
             }
         }
     }
 
-    private bool ReplaceValue(object value, ScriptFactory scriptFactory, out object replacement)
+    private bool ReplaceValue(object? value, ScriptFactory scriptFactory, [NotNullWhen(true)] out object? replacement)
     {
         replacement = null;
 
@@ -1322,14 +1318,14 @@ public class LazyFields
 public class UndoFieldSet : UndoLogger.IUndoAction
 {
     private readonly bool _added;
-    private readonly object _newValue;
-    private readonly string _newValueElementName;
-    private readonly object _oldValue;
-    private readonly string _oldValueElementName;
+    private readonly object? _newValue;
+    private readonly string? _newValueElementName;
+    private readonly object? _oldValue;
+    private readonly string? _oldValueElementName;
     private readonly bool _useMetaFields;
     private readonly WorldModel _worldModel;
 
-    public UndoFieldSet(WorldModel worldModel, string appliesTo, string property, object oldValue, object newValue,
+    public UndoFieldSet(WorldModel worldModel, string appliesTo, string property, object? oldValue, object? newValue,
         bool added, bool useMetaFields)
     {
         Debug.Assert(!string.IsNullOrEmpty(appliesTo));
@@ -1365,7 +1361,7 @@ public class UndoFieldSet : UndoLogger.IUndoAction
 
     public string Property { get; }
 
-    public object OldValue
+    public object? OldValue
     {
         get
         {
@@ -1384,7 +1380,7 @@ public class UndoFieldSet : UndoLogger.IUndoAction
         }
     }
 
-    public object NewValue
+    public object? NewValue
     {
         get
         {
@@ -1412,7 +1408,8 @@ public class UndoFieldSet : UndoLogger.IUndoAction
 
     public void DoRedo(WorldModel worldModel)
     {
-        if (Property != "name" || OldValue == null)
+        var oldValue = OldValue;
+        if (Property != "name" || oldValue == null)
         {
             GetFields(AppliesTo).SetFromUndo(Property, NewValue);
         }
@@ -1422,7 +1419,7 @@ public class UndoFieldSet : UndoLogger.IUndoAction
             // So in this specific case we get the appliesTo name from the old property value.
             // (If OldValue is null then this is just setting the name property for a brand new object,
             // so the above comment doesn't apply, and this case is handled in the above "if")
-            GetFields((string) OldValue).SetFromUndo(Property, NewValue);
+            GetFields((string) oldValue).SetFromUndo(Property, NewValue);
         }
     }
 
@@ -1436,10 +1433,10 @@ public class UndoFieldSet : UndoLogger.IUndoAction
 public class UndoFieldRemove : UndoLogger.IUndoAction
 {
     private readonly string _appliesTo;
-    private readonly object _oldValue;
+    private readonly object? _oldValue;
     private readonly string _property;
 
-    public UndoFieldRemove(string appliesTo, string property, object oldValue)
+    public UndoFieldRemove(string appliesTo, string property, object? oldValue)
     {
         _appliesTo = appliesTo;
         _property = property;

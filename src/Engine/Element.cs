@@ -1,5 +1,4 @@
-﻿#nullable disable
-using QuestViva.Common;
+﻿using QuestViva.Common;
 using QuestViva.Engine.Scripts;
 
 namespace QuestViva.Engine;
@@ -53,11 +52,12 @@ public class Element : IComparable
     private static readonly Dictionary<ElementType, string> ElemTypeStrings;
     private static readonly Dictionary<string, ElementType> MapElemTypeStringsToElementType;
 
-    private string _name;
+    // Set from the "name" field as part of creating the element, so is never null once in use
+    private string _name = null!;
 
-    private Element _parent;
+    private Element? _parent;
 
-    private string _text;
+    private string? _text;
     private ElementType _elemType;
 
     private ObjectType _type;
@@ -82,7 +82,7 @@ public class Element : IComparable
         foreach (ElementType t in Enum.GetValues<ElementType>())
         {
             ElemTypeStrings.Add(t,
-                ((ElementTypeInfo) typeof(ElementType).GetField(t.ToString())
+                ((ElementTypeInfo) typeof(ElementType).GetField(t.ToString())!
                     .GetCustomAttributes(typeof(ElementTypeInfo), false)[0]).Name);
         }
 
@@ -98,7 +98,7 @@ public class Element : IComparable
     {
     }
 
-    internal Element(WorldModel worldModel, Element element)
+    internal Element(WorldModel worldModel, Element? element)
     {
         _worldModel = worldModel;
 
@@ -131,13 +131,13 @@ public class Element : IComparable
         set => Fields.Set("name", value);
     }
 
-    public Element Parent
+    public Element? Parent
     {
         get => _parent;
         set => Fields.Set("parent", value);
     }
 
-    public string Text
+    public string? Text
     {
         get => _text;
         set => Fields.Set("text", value);
@@ -171,7 +171,7 @@ public class Element : IComparable
 
     internal WorldModel WorldModel => _worldModel;
 
-    public int CompareTo(object obj)
+    public int CompareTo(object? obj)
     {
         return this == obj ? 0 : -1;
     }
@@ -196,7 +196,7 @@ public class Element : IComparable
         return TypeStrings[type];
     }
 
-    private void Fields_AttributeChangedSilent(object sender, AttributeChangedEventArgs e)
+    private void Fields_AttributeChangedSilent(object? sender, AttributeChangedEventArgs e)
     {
         // used by the Editor to receive notifications of updates when undoing
         if (e.InheritedTypesSet)
@@ -205,16 +205,16 @@ public class Element : IComparable
         }
         else
         {
-            _worldModel.NotifyElementFieldUpdate(this, e.Property, e.Value, true);
+            _worldModel.NotifyElementFieldUpdate(this, e.Property!, e.Value, true);
         }
     }
 
-    private void Fields_AttributeChanged(object sender, AttributeChangedEventArgs e)
+    private void Fields_AttributeChanged(object? sender, AttributeChangedEventArgs e)
     {
-        _worldModel.NotifyElementFieldUpdate(this, e.Property, e.Value, false);
+        _worldModel.NotifyElementFieldUpdate(this, e.Property!, e.Value, false);
     }
 
-    internal async Task SetFieldAsync(string fieldName, object value)
+    internal async Task SetFieldAsync(string fieldName, object? value)
     {
         var oldValue = Fields.Get(fieldName);
         var changed = value == null ? oldValue != null : !value.Equals(oldValue);
@@ -222,25 +222,26 @@ public class Element : IComparable
         if (changed && !_worldModel.EditMode)
         {
             var changedScriptName = "changed" + fieldName;
-            if (Fields.HasType<IScript>(changedScriptName))
+            if (Fields.GetAsType<IScript>(changedScriptName) is { } changedScript)
             {
                 var parameters = new Parameters("oldvalue", oldValue);
-                await _worldModel.RunScriptAsync(Fields.GetAsType<IScript>(changedScriptName), parameters, this);
+                await _worldModel.RunScriptAsync(changedScript, parameters, this);
             }
         }
     }
 
-    private void MetaFields_AttributeChanged(object sender, AttributeChangedEventArgs e)
+    private void MetaFields_AttributeChanged(object? sender, AttributeChangedEventArgs e)
     {
-        _worldModel.NotifyElementMetaFieldUpdate(this, e.Property, e.Value, false);
+        _worldModel.NotifyElementMetaFieldUpdate(this, e.Property!, e.Value, false);
     }
 
-    private void MetaFields_AttributeChangedSilent(object sender, AttributeChangedEventArgs e)
+    private void MetaFields_AttributeChangedSilent(object? sender, AttributeChangedEventArgs e)
     {
-        _worldModel.NotifyElementMetaFieldUpdate(this, e.Property, e.Value, true);
+        // Inherited types are only ever added to Fields, never MetaFields, so this is always a property change
+        _worldModel.NotifyElementMetaFieldUpdate(this, e.Property!, e.Value, true);
     }
 
-    public IScript GetAction(string action)
+    public IScript? GetAction(string action)
     {
         return Fields.GetAsType<IScript>(action);
     }
@@ -250,7 +251,7 @@ public class Element : IComparable
         _name = name;
     }
 
-    internal void SetParentFromFields(Element parent)
+    internal void SetParentFromFields(Element? parent)
     {
         if (parent == this)
         {
@@ -261,7 +262,7 @@ public class Element : IComparable
         _parent = parent;
     }
 
-    internal void SetTextFromFields(string text)
+    internal void SetTextFromFields(string? text)
     {
         _text = text;
     }

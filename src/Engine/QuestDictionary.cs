@@ -1,20 +1,20 @@
-﻿#nullable disable
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Specialized;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace QuestViva.Engine;
 
 public interface IQuestDictionary
 {
-    void Add(object key, object value, int index);
+    void Add(object key, object? value, int index);
     void Remove(object key);
 }
 
 public class QuestDictionaryUpdatedEventArgs<T> : EventArgs
 {
-    public string Key { get; set; }
-    public T Item { get; set; }
+    public required string Key { get; set; }
+    public required T Item { get; set; }
     public int Index { get; set; }
     public UpdateSource Source { get; set; }
 }
@@ -22,13 +22,13 @@ public class QuestDictionaryUpdatedEventArgs<T> : EventArgs
 public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableField, IQuestDictionary
 {
     private readonly OrderedDictionary<string, T> _dictionary = new();
-    private UndoLogger _undoLog;
+    private UndoLogger? _undoLog;
 
     public QuestDictionary()
     {
     }
 
-    public QuestDictionary(IDictionary<string, T> dictionary)
+    public QuestDictionary(IDictionary<string, T>? dictionary)
     {
         if (dictionary != null)
         {
@@ -57,15 +57,15 @@ public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableF
 
     #endregion
 
-    public event EventHandler<QuestDictionaryUpdatedEventArgs<T>> Added;
-    public event EventHandler<QuestDictionaryUpdatedEventArgs<T>> Removed;
+    public event EventHandler<QuestDictionaryUpdatedEventArgs<T>>? Added;
+    public event EventHandler<QuestDictionaryUpdatedEventArgs<T>>? Removed;
 
     private void UndoLogAdd(object key)
     {
         if (UndoLog != null)
         {
             // also set UndoLog property on added item, if it needs a reference to the undo logger
-            object value = _dictionary[(string) key];
+            object? value = _dictionary[(string) key];
             var mutableValue = value as IMutableField;
             if (mutableValue != null)
             {
@@ -106,10 +106,10 @@ public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableF
 
     internal string SaveString()
     {
-        return SaveString(v => v.ToString());
+        return SaveString(v => v!.ToString());
     }
 
-    internal string SaveString(Func<T, string> converter)
+    internal string SaveString(Func<T, string?> converter)
     {
         var result = string.Empty;
         var count = 0;
@@ -151,12 +151,12 @@ public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableF
 
     private class UndoDictionaryAdd : UndoLogger.IUndoAction
     {
-        private readonly object _addedItem;
+        private readonly object? _addedItem;
         private readonly object _addedKey;
         private readonly IQuestDictionary _appliesTo;
         private readonly int _index;
 
-        public UndoDictionaryAdd(IQuestDictionary appliesTo, object addedKey, object addedItem, int index)
+        public UndoDictionaryAdd(IQuestDictionary appliesTo, object addedKey, object? addedItem, int index)
         {
             _appliesTo = appliesTo;
             _addedKey = addedKey;
@@ -183,10 +183,10 @@ public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableF
     {
         private readonly IQuestDictionary _appliesTo;
         private readonly int _index;
-        private readonly object _removedItem;
+        private readonly object? _removedItem;
         private readonly object _removedKey;
 
-        public UndoDictionaryRemove(IQuestDictionary appliesTo, object removedKey, object removedItem, int index)
+        public UndoDictionaryRemove(IQuestDictionary appliesTo, object removedKey, object? removedItem, int index)
         {
             _appliesTo = appliesTo;
             _removedKey = removedKey;
@@ -211,9 +211,9 @@ public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableF
 
     #region IMutableField Members
 
-    public Element Owner { get; set; }
+    public Element? Owner { get; set; }
 
-    public UndoLogger UndoLog
+    public UndoLogger? UndoLog
     {
         get => _undoLog;
         set
@@ -302,7 +302,7 @@ public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableF
         return _dictionary.Remove(key);
     }
 
-    public bool TryGetValue(string key, out T value)
+    public bool TryGetValue(string key, [MaybeNullWhen(false)] out T value)
     {
         return _dictionary.TryGetValue(key, out value);
     }
@@ -366,24 +366,24 @@ public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableF
 
     #region IDictionary Members
 
-    public void Add(object key, object value)
+    public void Add(object key, object? value)
     {
         Add(key, value, _dictionary.Count);
     }
 
-    public void Add(object key, object value, int index)
+    public void Add(object key, object? value, int index)
     {
         CheckNotLocked();
         try
         {
-            _dictionary.Insert(index, (string) key, (T) value);
+            _dictionary.Insert(index, (string) key, (T) value!);
         }
         catch (Exception ex)
         {
             throw new Exception(string.Format("Error adding key '{0}' to dictionary: {1}", key, ex.Message), ex);
         }
 
-        ItemAdded((string) key, (T) value, UpdateSource.System, _dictionary.IndexOfKey((string) key));
+        ItemAdded((string) key, (T) value!, UpdateSource.System, _dictionary.IndexOfKey((string) key));
     }
 
     public bool Contains(object key)
@@ -410,10 +410,10 @@ public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableF
 
     ICollection IDictionary.Values => (ICollection) _dictionary.Values;
 
-    public object this[object key]
+    public object? this[object key]
     {
         get => this[(string) key];
-        set => this[(string) key] = (T) value;
+        set => this[(string) key] = (T) value!;
     }
 
     #endregion
@@ -438,6 +438,7 @@ public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableF
 // ****************************************************************************************************************
 
 public interface IOrderedDictionary<TKey, TValue> : IOrderedDictionary, IDictionary<TKey, TValue>
+    where TKey : notnull
 {
     /// <summary>
     ///     Gets or sets the value at the specified index.
@@ -482,18 +483,19 @@ public interface IOrderedDictionary<TKey, TValue> : IOrderedDictionary, IDiction
 }
 
 public sealed class OrderedDictionary<TKey, TValue> : IOrderedDictionary<TKey, TValue>
+    where TKey : notnull
 {
     private const int DefaultInitialCapacity = 0;
 
-    private static readonly string KeyTypeName = typeof(TKey).FullName;
-    private static readonly string ValueTypeName = typeof(TValue).FullName;
+    private static readonly string? KeyTypeName = typeof(TKey).FullName;
+    private static readonly string? ValueTypeName = typeof(TValue).FullName;
     private static readonly bool ValueTypeIsReferenceType = !typeof(ValueType).IsAssignableFrom(typeof(TValue));
-    private readonly IEqualityComparer<TKey> _comparer;
+    private readonly IEqualityComparer<TKey>? _comparer;
     private readonly int _initialCapacity;
 
-    private Dictionary<TKey, TValue> _dictionary;
-    private List<KeyValuePair<TKey, TValue>> _list;
-    private object _syncRoot;
+    private Dictionary<TKey, TValue>? _dictionary;
+    private List<KeyValuePair<TKey, TValue>>? _list;
+    private object? _syncRoot;
 
     /// <summary>
     ///     Initializes a new instance of the
@@ -529,7 +531,7 @@ public sealed class OrderedDictionary<TKey, TValue> : IOrderedDictionary<TKey, T
     ///     comparing keys, or <null /> to use the default
     ///     <see cref="EqualityComparer{TKey}">EqualityComparer&lt;TKey&gt;</see> for the type of the key.
     /// </param>
-    public OrderedDictionary(IEqualityComparer<TKey> comparer)
+    public OrderedDictionary(IEqualityComparer<TKey>? comparer)
         : this(DefaultInitialCapacity, comparer)
     {
     }
@@ -549,7 +551,7 @@ public sealed class OrderedDictionary<TKey, TValue> : IOrderedDictionary<TKey, T
     ///     <see cref="EqualityComparer{TKey}">EqualityComparer&lt;TKey&gt;</see> for the type of the key.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is less than 0</exception>
-    public OrderedDictionary(int capacity, IEqualityComparer<TKey> comparer)
+    public OrderedDictionary(int capacity, IEqualityComparer<TKey>? comparer)
     {
         if (0 > capacity)
         {
@@ -617,7 +619,7 @@ public sealed class OrderedDictionary<TKey, TValue> : IOrderedDictionary<TKey, T
     {
         public DictionaryEntry Entry => new(inner.Current.Key, inner.Current.Value);
         public object Key => inner.Current.Key;
-        public object Value => inner.Current.Value;
+        public object? Value => inner.Current.Value;
         public object Current => Entry;
         public bool MoveNext() => inner.MoveNext();
         public void Reset() => inner.Reset();
@@ -695,7 +697,7 @@ public sealed class OrderedDictionary<TKey, TValue> : IOrderedDictionary<TKey, T
     ///     An element with the same key already exists in the
     ///     <see cref="OrderedDictionary{TKey,TValue}">OrderedDictionary&lt;TKey,TValue&gt;</see>.
     /// </exception>
-    void IOrderedDictionary.Insert(int index, object key, object value)
+    void IOrderedDictionary.Insert(int index, object key, object? value)
     {
         Insert(index, ConvertToKeyType(key), ConvertToValueType(value));
     }
@@ -772,7 +774,7 @@ public sealed class OrderedDictionary<TKey, TValue> : IOrderedDictionary<TKey, T
     ///     <see cref="OrderedDictionary{TKey,TValue}">OrderedDictionary&lt;TKey,TValue&gt;</see> is not in the inheritance
     ///     hierarchy of <paramref name="valueObject" />.
     /// </exception>
-    object IOrderedDictionary.this[int index]
+    object? IOrderedDictionary.this[int index]
     {
         get => this[index];
 
@@ -860,7 +862,7 @@ public sealed class OrderedDictionary<TKey, TValue> : IOrderedDictionary<TKey, T
     ///     The value type of the <see cref="OrderedDictionary{TKey,TValue}">OrderedDictionary&lt;TKey,TValue&gt;</see> is not
     ///     in the inheritance hierarchy of <paramref name="value" />.
     /// </exception>
-    void IDictionary.Add(object key, object value)
+    void IDictionary.Add(object key, object? value)
     {
         Add(ConvertToKeyType(key), ConvertToValueType(value));
     }
@@ -1055,7 +1057,7 @@ public sealed class OrderedDictionary<TKey, TValue> : IOrderedDictionary<TKey, T
     ///     The value associated with the specified key. If the specified key is not found, attempting to get it returns
     ///     <null />, and attempting to set it creates a new element using the specified key.
     /// </value>
-    object IDictionary.this[object key]
+    object? IDictionary.this[object key]
     {
         get => this[ConvertToKeyType(key)];
         set => this[ConvertToKeyType(key)] = ConvertToValueType(value);
@@ -1116,7 +1118,7 @@ public sealed class OrderedDictionary<TKey, TValue> : IOrderedDictionary<TKey, T
                 Interlocked.CompareExchange(ref _syncRoot, new object(), null);
             }
 
-            return _syncRoot;
+            return _syncRoot!;
         }
     }
 
@@ -1151,7 +1153,7 @@ public sealed class OrderedDictionary<TKey, TValue> : IOrderedDictionary<TKey, T
     ///     <see cref="OrderedDictionary{TKey,TValue}">OrderedDictionary&lt;TKey,TValue&gt;</see> contains an element with the
     ///     specified key; otherwise, <see langword="false" />.
     /// </returns>
-    public bool TryGetValue(TKey key, out TValue value)
+    public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value)
     {
         return Dictionary.TryGetValue(key, out value);
     }
@@ -1281,13 +1283,13 @@ public sealed class OrderedDictionary<TKey, TValue> : IOrderedDictionary<TKey, T
     ///     <see cref="OrderedDictionary{TKey,TValue}">OrderedDictionary&lt;TKey,TValue&gt;</see> is not in the inheritance
     ///     hierarchy of <paramref name="valueObject" />.
     /// </exception>
-    private static TValue ConvertToValueType(object value)
+    private static TValue ConvertToValueType(object? value)
     {
         if (null == value)
         {
             if (ValueTypeIsReferenceType)
             {
-                return default;
+                return default!;
             }
 
             throw new ArgumentNullException("value");

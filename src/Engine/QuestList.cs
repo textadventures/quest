@@ -1,23 +1,22 @@
-﻿#nullable disable
-using System.Collections;
+﻿using System.Collections;
 
 namespace QuestViva.Engine;
 
 public interface IQuestList
 {
-    object this[int index] { get; }
+    object? this[int index] { get; }
     int Count { get; }
-    void Add(object item);
-    void Add(object item, UpdateSource source);
-    void Add(object item, UpdateSource source, int index);
-    bool Remove(object item);
-    void Remove(object item, UpdateSource source, int index);
-    bool Contains(object item);
+    void Add(object? item);
+    void Add(object? item, UpdateSource source);
+    void Add(object? item, UpdateSource source, int index);
+    bool Remove(object? item);
+    void Remove(object? item, UpdateSource source, int index);
+    bool Contains(object? item);
 }
 
 public class QuestListUpdatedEventArgs<T> : EventArgs
 {
-    public T UpdatedItem { get; set; }
+    public required T UpdatedItem { get; set; }
     public int Index { get; set; }
     public UpdateSource Source { get; set; }
 }
@@ -25,14 +24,14 @@ public class QuestListUpdatedEventArgs<T> : EventArgs
 public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollection, IExtendableField
 {
     private readonly List<T> _list;
-    private UndoLogger _undoLog;
+    private UndoLogger? _undoLog;
 
     public QuestList()
     {
         _list = new List<T>();
     }
 
-    public QuestList(IEnumerable<T> collection)
+    public QuestList(IEnumerable<T>? collection)
     {
         if (collection == null)
         {
@@ -44,7 +43,7 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
         }
     }
 
-    public QuestList(IEnumerable<T> collection, bool extended)
+    public QuestList(IEnumerable<T>? collection, bool extended)
         : this(collection)
     {
         Extended = extended;
@@ -54,8 +53,7 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
 
     public IExtendableField Merge(IExtendableField parent)
     {
-        var parentList = parent as QuestList<T>;
-        return parentList.MergeLists(this);
+        return ((QuestList<T>) parent).MergeLists(this);
     }
 
     public void Add(T item)
@@ -87,7 +85,7 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
 
     #endregion
 
-    public UndoLogger UndoLog
+    public UndoLogger? UndoLog
     {
         get => _undoLog;
         set
@@ -109,7 +107,7 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
         }
     }
 
-    public Element Owner { get; set; }
+    public Element? Owner { get; set; }
 
     public IMutableField Clone()
     {
@@ -120,39 +118,40 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
 
     public bool RequiresCloning => true;
 
-    public void Add(object item)
+    // Untyped IQuestList access: a null item is passed straight through when T is a reference type
+    public void Add(object? item)
     {
-        AddInternal((T) item, UpdateSource.System);
+        AddInternal((T) item!, UpdateSource.System);
     }
 
-    public void Add(object item, UpdateSource source)
+    public void Add(object? item, UpdateSource source)
     {
-        AddInternal((T) item, source);
+        AddInternal((T) item!, source);
     }
 
-    public void Add(object item, UpdateSource source, int index)
+    public void Add(object? item, UpdateSource source, int index)
     {
-        AddInternal((T) item, source, index);
+        AddInternal((T) item!, source, index);
     }
 
-    public bool Remove(object item)
+    public bool Remove(object? item)
     {
-        return RemoveInternal((T) item);
+        return RemoveInternal((T) item!);
     }
 
-    public void Remove(object item, UpdateSource source, int index)
+    public void Remove(object? item, UpdateSource source, int index)
     {
-        RemoveInternal((T) item, source, index);
+        RemoveInternal((T) item!, source, index);
     }
 
-    public bool Contains(object item)
+    public bool Contains(object? item)
     {
-        return _list.Contains((T) item);
+        return _list.Contains((T) item!);
     }
 
-    public object this[int index] => _list[index];
-    public event EventHandler<QuestListUpdatedEventArgs<T>> Added;
-    public event EventHandler<QuestListUpdatedEventArgs<T>> Removed;
+    public object? this[int index] => _list[index];
+    public event EventHandler<QuestListUpdatedEventArgs<T>>? Added;
+    public event EventHandler<QuestListUpdatedEventArgs<T>>? Removed;
 
     private void CheckNotLocked()
     {
@@ -219,7 +218,7 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
         RemoveInternal(_list[index], source, index);
     }
 
-    private void UndoLogAdd(object item, int index)
+    private void UndoLogAdd(object? item, int index)
     {
         if (UndoLog != null)
         {
@@ -234,7 +233,7 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
         }
     }
 
-    private void UndoLogRemove(object item, int index)
+    private void UndoLogRemove(object? item, int index)
     {
         if (UndoLog != null)
         {
@@ -266,7 +265,7 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
     /// <param name="list1"></param>
     /// <param name="list2"></param>
     /// <returns></returns>
-    public static QuestList<T> operator +(QuestList<T> list1, QuestList<T> list2)
+    public static QuestList<T> operator +(QuestList<T>? list1, QuestList<T> list2)
     {
         if (list1 == null)
         {
@@ -285,7 +284,7 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
 
     public QuestList<T> Exclude(T element)
     {
-        var enumerable = this.Where(x => !x.Equals(element));
+        var enumerable = this.Where(x => !x!.Equals(element));
         return new QuestList<T>(enumerable);
     }
 
@@ -371,11 +370,11 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
 
     private class UndoListAdd : UndoLogger.IUndoAction
     {
-        private readonly object _addedItem;
+        private readonly object? _addedItem;
         private readonly IQuestList _appliesTo;
         private readonly int _index;
 
-        public UndoListAdd(IQuestList appliesTo, object addedItem, int index)
+        public UndoListAdd(IQuestList appliesTo, object? addedItem, int index)
         {
             _appliesTo = appliesTo;
             _addedItem = addedItem;
@@ -401,9 +400,9 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
     {
         private readonly IQuestList _appliesTo;
         private readonly int _index;
-        private readonly object _removedItem;
+        private readonly object? _removedItem;
 
-        public UndoListRemove(IQuestList appliesTo, object removedItem, int index)
+        public UndoListRemove(IQuestList appliesTo, object? removedItem, int index)
         {
             _appliesTo = appliesTo;
             _removedItem = removedItem;
@@ -454,7 +453,7 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
 
     public void RemoveAt(int index)
     {
-        RemoveInternal((T) this[index], UpdateSource.System, index);
+        RemoveInternal(_list[index], UpdateSource.System, index);
     }
 
     T IList<T>.this[int index]

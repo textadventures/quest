@@ -443,7 +443,7 @@ internal partial class FieldSaver
         {
             var impl = (DelegateImplementation) value;
             WriteAttribute(writer, element, attribute, impl.Definition.Name,
-                GameSaver.SaveScript(writer, impl.Implementation.Fields[FieldDefinitions.Script], 1));
+                GameSaver.SaveScript(writer, impl.Implementation.Fields[FieldDefinitions.Script]!, 1));
         }
     }
 

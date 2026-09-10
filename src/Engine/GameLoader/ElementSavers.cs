@@ -13,10 +13,10 @@ internal partial class GameSaver
         {
             writer.WriteStartElement("function");
             writer.WriteAttributeString("name", e.Name);
-            if (e.Fields[FieldDefinitions.ParamNames] != null && e.Fields[FieldDefinitions.ParamNames].Count > 0)
+            if (e.Fields[FieldDefinitions.ParamNames] is { Count: > 0 } paramNames)
             {
                 writer.WriteAttributeString("parameters",
-                    string.Join(", ", e.Fields[FieldDefinitions.ParamNames].ToArray()));
+                    string.Join(", ", paramNames.ToArray()));
             }
 
             if (!string.IsNullOrEmpty(e.Fields[FieldDefinitions.ReturnType]))
@@ -29,9 +29,9 @@ internal partial class GameSaver
                 writer.WriteAttributeString("folder", e.Fields[FieldDefinitions.EditorFolder]);
             }
 
-            if (e.Fields[FieldDefinitions.Script] != null)
+            if (e.Fields[FieldDefinitions.Script] is { } script)
             {
-                writer.WriteString(GameSaver.SaveScript(writer, e.Fields[FieldDefinitions.Script], 0));
+                writer.WriteString(GameSaver.SaveScript(writer, script, 0));
             }
 
             writer.WriteEndElement();
@@ -66,7 +66,7 @@ internal partial class GameSaver
             writer.WriteStartElement("delegate");
             writer.WriteAttributeString("name", e.Name);
             writer.WriteAttributeString("parameters",
-                string.Join(", ", e.Fields[FieldDefinitions.ParamNames].ToArray()));
+                string.Join(", ", e.Fields[FieldDefinitions.ParamNames]!.ToArray()));
             writer.WriteAttributeString("type", e.Fields[FieldDefinitions.ReturnType]);
             writer.WriteEndElement();
         }
@@ -80,7 +80,7 @@ internal partial class GameSaver
         {
             writer.WriteStartElement("template");
             writer.WriteAttributeString("name", e.Fields[FieldDefinitions.TemplateName]);
-            writer.WriteString(e.Fields[FieldDefinitions.Text]);
+            writer.WriteString(e.Fields[FieldDefinitions.Text]!);
             writer.WriteEndElement();
         }
     }
@@ -95,8 +95,8 @@ internal partial class GameSaver
             writer.WriteAttributeString("name", e.Name);
 
             writer.WriteString(GameSaver._worldModel.EditMode
-                ? e.Fields[FieldDefinitions.Text]
-                : e.Fields[FieldDefinitions.Function].Save());
+                ? e.Fields[FieldDefinitions.Text]!
+                : e.Fields[FieldDefinitions.Function]!.Save());
             writer.WriteEndElement();
         }
     }
