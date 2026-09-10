@@ -1,4 +1,3 @@
-#nullable disable
 
 
 /*
@@ -51,12 +50,12 @@ public class RequestSaveScript : ScriptBase
         return "requestsave";
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         throw new ArgumentOutOfRangeException();
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
         throw new ArgumentOutOfRangeException();
     }

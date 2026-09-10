@@ -1,5 +1,4 @@
-﻿#nullable disable
-using QuestViva.Engine.Functions;
+﻿using QuestViva.Engine.Functions;
 
 namespace QuestViva.Engine.Scripts;
 
@@ -58,13 +57,13 @@ public class DestroyScript : ScriptBase
         return SaveScript("destroy", _expr.Save());
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         return _expr.Save();
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
-        _expr = new Expression<string>((string) value, _scriptContext);
+        _expr = new Expression<string>((string) value!, _scriptContext);
     }
 }

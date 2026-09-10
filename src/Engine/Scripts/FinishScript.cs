@@ -1,5 +1,4 @@
-﻿#nullable disable
-namespace QuestViva.Engine.Scripts;
+﻿namespace QuestViva.Engine.Scripts;
 
 public class FinishScriptConstructor : ScriptConstructorBase
 {
@@ -43,12 +42,12 @@ public class FinishScript : ScriptBase
         return "finish";
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         throw new ArgumentOutOfRangeException();
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
         throw new ArgumentOutOfRangeException();
     }

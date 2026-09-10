@@ -1,5 +1,4 @@
-﻿#nullable disable
-using QuestViva.Engine.Functions;
+﻿using QuestViva.Engine.Functions;
 
 namespace QuestViva.Engine.Scripts;
 
@@ -49,7 +48,7 @@ public class PictureScript : ScriptBase
         else
         {
             await _worldModel.PlayerUi.ShowPictureAsync(filename);
-            ((LegacyOutputLogger) _worldModel.OutputLogger).AddPicture(filename);
+            ((LegacyOutputLogger) _worldModel.OutputLogger!).AddPicture(filename);
         }
     }
 
@@ -58,13 +57,13 @@ public class PictureScript : ScriptBase
         return SaveScript("picture", _filename.Save());
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         return _filename.Save();
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
-        _filename = new Expression<string>((string) value, _scriptContext);
+        _filename = new Expression<string>((string) value!, _scriptContext);
     }
 }

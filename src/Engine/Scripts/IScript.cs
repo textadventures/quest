@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace QuestViva.Engine.Scripts;
+﻿namespace QuestViva.Engine.Scripts;
 
 public class ScriptUpdatedEventArgs : EventArgs
 {
@@ -8,7 +6,7 @@ public class ScriptUpdatedEventArgs : EventArgs
     {
     }
 
-    internal ScriptUpdatedEventArgs(IScript added, IScript removed)
+    internal ScriptUpdatedEventArgs(IScript? added, IScript? removed)
     {
         AddedScript = added;
         RemovedScript = removed;
@@ -20,14 +18,14 @@ public class ScriptUpdatedEventArgs : EventArgs
         Index = index;
     }
 
-    internal ScriptUpdatedEventArgs(int index, object newValue)
+    internal ScriptUpdatedEventArgs(int index, object? newValue)
     {
         Index = index;
         NewValue = newValue;
         IsParameterUpdate = true;
     }
 
-    internal ScriptUpdatedEventArgs(string id, object newValue)
+    internal ScriptUpdatedEventArgs(string id, object? newValue)
     {
         Id = id;
         NewValue = newValue;
@@ -53,32 +51,37 @@ public interface IScriptParent
 public interface IScript : IMutableField
 {
     string? Line { get; set; }
-    string Keyword { get; }
-    IScriptParent Parent { get; set; }
+    string? Keyword { get; }
+    IScriptParent? Parent { get; set; }
     Task ExecuteAsync(Context c);
     string Save();
-    void SetParameter(int index, object value);
-    void SetParameterSilent(int index, object value);
-    object GetParameter(int index);
+    void SetParameter(int index, object? value);
+    void SetParameterSilent(int index, object? value);
+    object? GetParameter(int index);
     event EventHandler<ScriptUpdatedEventArgs> ScriptUpdated;
     IEnumerable<string>? GetDefinedVariables();
 }
 
 public interface IFunctionCallScript : IScript
 {
-    object GetFunctionCallParameter(int index);
-    void SetFunctionCallParameter(int index, object value);
-    IScript GetFunctionCallParameterScript();
-    void SetFunctionCallParameterScript(IScript script);
+    object? GetFunctionCallParameter(int index);
+    void SetFunctionCallParameter(int index, object? value);
+    IScript? GetFunctionCallParameterScript();
+    void SetFunctionCallParameterScript(IScript? script);
     event EventHandler<ScriptUpdatedEventArgs> FunctionCallParametersUpdated;
 }
 
 public interface IScriptConstructor
 {
-    string Keyword { get; }
+    // Null for the function-call constructor, which ScriptFactory falls back to rather than matching by keyword
+    string? Keyword { get; }
+
+    // Both set by ScriptFactory straight after the constructor is created
     IScriptFactory ScriptFactory { set; }
     WorldModel WorldModel { get; set; }
-    IScript Create(string script, ScriptContext scriptContext);
+
+    // Returns null if the line isn't one this constructor handles, so ScriptFactory can try the next one
+    IScript? Create(string script, ScriptContext scriptContext);
 }
 
 public abstract class ScriptBase : IScript, IMutableField
@@ -97,27 +100,26 @@ public abstract class ScriptBase : IScript, IMutableField
         set => _line = value;
     }
 
-    public void SetParameter(int index, object value)
+    public void SetParameter(int index, object? value)
     {
         var oldValue = GetParameter(index);
         SetParameterSilent(index, value);
         UndoLog?.AddUndoAction(() => new UndoScriptChange(this, index, oldValue, value));
     }
 
-    public void SetParameterSilent(int index, object value)
+    public void SetParameterSilent(int index, object? value)
     {
         SetParameterInternal(index, value);
         NotifyUpdate(index, value);
     }
 
-    public abstract object GetParameter(int index);
+    public abstract object? GetParameter(int index);
 
-    public abstract string Keyword { get; }
+    public abstract string? Keyword { get; }
 
     public event EventHandler<ScriptUpdatedEventArgs>? ScriptUpdated;
 
-    [field: AllowNull, MaybeNull]
-    public IScriptParent Parent
+    public IScriptParent? Parent
     {
         get;
         set
@@ -154,12 +156,12 @@ public abstract class ScriptBase : IScript, IMutableField
         return result + " {" + Environment.NewLine + scriptString + Environment.NewLine + "}";
     }
 
-    protected void NotifyUpdate(int index, object newValue)
+    protected void NotifyUpdate(int index, object? newValue)
     {
         NotifyUpdate(new ScriptUpdatedEventArgs(index, newValue));
     }
 
-    protected void NotifyUpdate(IScript added, IScript removed)
+    protected void NotifyUpdate(IScript? added, IScript? removed)
     {
         NotifyUpdate(new ScriptUpdatedEventArgs(added, removed));
     }
@@ -169,7 +171,7 @@ public abstract class ScriptBase : IScript, IMutableField
         NotifyUpdate(new ScriptUpdatedEventArgs(inserted, index));
     }
 
-    protected void NotifyUpdate(string id, object newValue)
+    protected void NotifyUpdate(string id, object? newValue)
     {
         NotifyUpdate(new ScriptUpdatedEventArgs(id, newValue));
     }
@@ -184,13 +186,13 @@ public abstract class ScriptBase : IScript, IMutableField
 
     protected abstract ScriptBase CloneScript();
 
-    protected abstract void SetParameterInternal(int index, object value);
+    protected abstract void SetParameterInternal(int index, object? value);
 
     protected virtual void ParentUpdated()
     {
     }
 
-    private class UndoScriptChange(IScript appliesTo, int index, object oldValue, object newValue)
+    private class UndoScriptChange(IScript appliesTo, int index, object? oldValue, object? newValue)
         : UndoLogger.IUndoAction
     {
         public void DoUndo(WorldModel worldModel)

@@ -1,5 +1,4 @@
-﻿#nullable disable
-using System.Collections;
+﻿using System.Collections;
 using QuestViva.Engine.Functions;
 
 namespace QuestViva.Engine.Scripts;
@@ -13,7 +12,7 @@ public class InvokeScriptConstructor : ScriptConstructorBase
         get { return new[] {1, 2}; }
     }
 
-    protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
+    protected override IScript? CreateInt(List<string> parameters, ScriptContext scriptContext)
     {
         switch (parameters.Count)
         {
@@ -32,7 +31,7 @@ public class InvokeScript : ScriptBase
 {
     private readonly ScriptContext _scriptContext;
     private readonly WorldModel _worldModel;
-    private IFunction<IDictionary> _parameters;
+    private IFunction<IDictionary>? _parameters;
     private IFunction<IScript> _script;
 
     public InvokeScript(ScriptContext scriptContext, IFunction<IScript> script)
@@ -42,7 +41,7 @@ public class InvokeScript : ScriptBase
         _script = script;
     }
 
-    public InvokeScript(ScriptContext scriptContext, IFunction<IScript> script, IFunction<IDictionary> parameters)
+    public InvokeScript(ScriptContext scriptContext, IFunction<IScript> script, IFunction<IDictionary>? parameters)
         : this(scriptContext, script)
     {
         _parameters = parameters;
@@ -79,7 +78,7 @@ public class InvokeScript : ScriptBase
         return SaveScript("invoke", _script.Save(), parameters);
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         switch (index)
         {
@@ -92,15 +91,15 @@ public class InvokeScript : ScriptBase
         }
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
         switch (index)
         {
             case 0:
-                _script = new Expression<IScript>((string) value, _scriptContext);
+                _script = new Expression<IScript>((string) value!, _scriptContext);
                 break;
             case 1:
-                _parameters = new Expression<IDictionary>((string) value, _scriptContext);
+                _parameters = new Expression<IDictionary>((string) value!, _scriptContext);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

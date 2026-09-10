@@ -1,5 +1,4 @@
-﻿#nullable disable
-using QuestViva.Engine.Functions;
+﻿using QuestViva.Engine.Functions;
 
 namespace QuestViva.Engine.Scripts;
 
@@ -61,7 +60,7 @@ public class ListAddScript : ScriptBase
         return SaveScript("list add", _list.Save(), _value.Save());
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         switch (index)
         {
@@ -74,15 +73,15 @@ public class ListAddScript : ScriptBase
         }
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
         switch (index)
         {
             case 0:
-                _list = new ExpressionDynamic((string) value, _scriptContext);
+                _list = new ExpressionDynamic((string) value!, _scriptContext);
                 break;
             case 1:
-                _value = new Expression<object>((string) value, _scriptContext);
+                _value = new Expression<object>((string) value!, _scriptContext);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -148,7 +147,7 @@ public class ListRemoveScript : ScriptBase
         return SaveScript("list remove", _list.Save(), _value.Save());
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         switch (index)
         {
@@ -161,15 +160,15 @@ public class ListRemoveScript : ScriptBase
         }
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
         switch (index)
         {
             case 0:
-                _list = new ExpressionDynamic((string) value, _scriptContext);
+                _list = new ExpressionDynamic((string) value!, _scriptContext);
                 break;
             case 1:
-                _value = new Expression<object>((string) value, _scriptContext);
+                _value = new Expression<object>((string) value!, _scriptContext);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

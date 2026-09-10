@@ -1,5 +1,4 @@
-﻿#nullable disable
-using System.Collections;
+﻿using System.Collections;
 using QuestViva.Engine.Functions;
 
 namespace QuestViva.Engine.Scripts;
@@ -10,7 +9,7 @@ public class DoScriptConstructor : ScriptConstructorBase
 
     public override string Keyword => "do";
 
-    protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
+    protected override IScript? CreateInt(List<string> parameters, ScriptContext scriptContext)
     {
         switch (parameters.Count)
         {
@@ -40,7 +39,7 @@ public class DoActionScript : ScriptBase
     private readonly WorldModel _worldModel;
     private IFunction<string> _action;
     private IFunction<Element> _obj;
-    private IFunction<IDictionary> _parameters;
+    private IFunction<IDictionary>? _parameters;
 
     public DoActionScript(ScriptContext scriptContext, IFunction<Element> obj, IFunction<string> action)
     {
@@ -51,7 +50,7 @@ public class DoActionScript : ScriptBase
     }
 
     public DoActionScript(ScriptContext scriptContext, IFunction<Element> obj, IFunction<string> action,
-        IFunction<IDictionary> parameters)
+        IFunction<IDictionary>? parameters)
         : this(scriptContext, obj, action)
     {
         _parameters = parameters;
@@ -68,7 +67,7 @@ public class DoActionScript : ScriptBase
     public override async Task ExecuteAsync(Context c)
     {
         var obj = await _obj.ExecuteAsync(c);
-        var action = obj.GetAction(await _action.ExecuteAsync(c));
+        var action = obj.GetAction(await _action.ExecuteAsync(c))!;
         if (_parameters == null)
         {
             await _worldModel.RunScriptAsync(action, obj);
@@ -84,13 +83,13 @@ public class DoActionScript : ScriptBase
         var parameters = _parameters == null ? null : _parameters.Save();
         if (!string.IsNullOrEmpty(parameters))
         {
-            return SaveScript("do", _obj.Save(), _action.Save(), _parameters.Save());
+            return SaveScript("do", _obj.Save(), _action.Save(), parameters);
         }
 
         return SaveScript("do", _obj.Save(), _action.Save());
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         switch (index)
         {
@@ -105,18 +104,18 @@ public class DoActionScript : ScriptBase
         }
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
         switch (index)
         {
             case 0:
-                _obj = new Expression<Element>((string) value, _scriptContext);
+                _obj = new Expression<Element>((string) value!, _scriptContext);
                 break;
             case 1:
-                _action = new Expression<string>((string) value, _scriptContext);
+                _action = new Expression<string>((string) value!, _scriptContext);
                 break;
             case 2:
-                _parameters = new Expression<IDictionary>((string) value, _scriptContext);
+                _parameters = new Expression<IDictionary>((string) value!, _scriptContext);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

@@ -1,5 +1,4 @@
-﻿#nullable disable
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using QuestViva.Engine.Functions;
 
 namespace QuestViva.Engine.Scripts;
@@ -13,7 +12,7 @@ public class JSScriptConstructor : IScriptConstructor
     {
         var param = Utility.GetParameter(script);
 
-        List<IFunctionDynamic> expressions = null;
+        List<IFunctionDynamic>? expressions = null;
 
         if (param != null)
         {
@@ -35,18 +34,18 @@ public class JSScriptConstructor : IScriptConstructor
         return new JSScript(scriptContext, functionName, expressions);
     }
 
-    public IScriptFactory ScriptFactory { get; set; }
+    public IScriptFactory ScriptFactory { get; set; } = null!;
 
-    public WorldModel WorldModel { get; set; }
+    public WorldModel WorldModel { get; set; } = null!;
 }
 
 public class JSScript : ScriptBase
 {
     private readonly ScriptContext _scriptContext;
     private string _function;
-    private List<IFunctionDynamic> _parameters;
+    private List<IFunctionDynamic>? _parameters;
 
-    public JSScript(ScriptContext scriptContext, string function, List<IFunctionDynamic> parameters)
+    public JSScript(ScriptContext scriptContext, string function, List<IFunctionDynamic>? parameters)
     {
         _scriptContext = scriptContext;
         _function = function;
@@ -92,12 +91,12 @@ public class JSScript : ScriptBase
             _parameters == null ? new[] {string.Empty} : _parameters.Select(p => p.Save()).ToArray());
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
         var constuctor = new JSScriptConstructor();
         try
         {
-            var newScript = (JSScript) constuctor.Create("JS." + (string) value, _scriptContext);
+            var newScript = (JSScript) constuctor.Create("JS." + (string) value!, _scriptContext);
             _function = newScript._function;
             _parameters = newScript._parameters;
         }
@@ -107,7 +106,7 @@ public class JSScript : ScriptBase
         }
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         return Save().Substring(3);
     }

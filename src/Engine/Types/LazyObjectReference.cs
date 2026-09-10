@@ -1,5 +1,4 @@
-﻿#nullable disable
-namespace QuestViva.Engine.Types;
+﻿namespace QuestViva.Engine.Types;
 
 internal class LazyObjectReference
 {

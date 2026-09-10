@@ -1,5 +1,4 @@
-﻿#nullable disable
-using QuestViva.Engine.Functions;
+﻿using QuestViva.Engine.Functions;
 
 namespace QuestViva.Engine.Scripts;
 
@@ -85,7 +84,7 @@ public class PlaySoundScript : ScriptBase
         return SaveScript("play sound", _filename.Save(), _synchronous.Save(), _loop.Save());
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         switch (index)
         {
@@ -100,18 +99,18 @@ public class PlaySoundScript : ScriptBase
         }
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
         switch (index)
         {
             case 0:
-                _filename = new Expression<string>((string) value, _scriptContext);
+                _filename = new Expression<string>((string) value!, _scriptContext);
                 break;
             case 1:
-                _synchronous = new Expression<bool>((string) value, _scriptContext);
+                _synchronous = new Expression<bool>((string) value!, _scriptContext);
                 break;
             case 2:
-                _loop = new Expression<bool>((string) value, _scriptContext);
+                _loop = new Expression<bool>((string) value!, _scriptContext);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -161,12 +160,12 @@ public class StopSoundScript : ScriptBase
         return "stop sound";
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         throw new ArgumentOutOfRangeException();
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
         throw new ArgumentOutOfRangeException();
     }

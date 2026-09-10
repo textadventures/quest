@@ -1,5 +1,4 @@
-﻿#nullable disable
-using QuestViva.Engine.Functions;
+﻿using QuestViva.Engine.Functions;
 
 namespace QuestViva.Engine.Scripts;
 
@@ -35,9 +34,9 @@ public class ForScriptConstructor : IScriptConstructor
         throw new Exception(string.Format("'for' script should have 3 or 4 parameters: 'for ({0})'", param));
     }
 
-    public IScriptFactory ScriptFactory { get; set; }
+    public IScriptFactory ScriptFactory { get; set; } = null!;
 
-    public WorldModel WorldModel { get; set; }
+    public WorldModel WorldModel { get; set; } = null!;
 
     #endregion
 }
@@ -48,7 +47,7 @@ public class ForScript : ScriptBase
     private readonly ScriptContext _scriptContext;
     private readonly IScriptFactory _scriptFactory;
     private IFunction<int> _from;
-    private IFunction<int> _step;
+    private IFunction<int>? _step;
     private IFunction<int> _to;
     private string _variable;
     private WorldModel _worldModel;
@@ -66,7 +65,7 @@ public class ForScript : ScriptBase
     }
 
     public ForScript(ScriptContext scriptContext, IScriptFactory scriptFactory, string variable, IFunction<int> from,
-        IFunction<int> to, IFunction<int> step, IScript loopScript)
+        IFunction<int> to, IFunction<int>? step, IScript loopScript)
         : this(scriptContext, scriptFactory, variable, from, to, loopScript)
     {
         _step = step;
@@ -91,18 +90,18 @@ public class ForScript : ScriptBase
         var to = await _to.ExecuteAsync(c);
         var step = _step == null ? 1 : await _step.ExecuteAsync(c);
         int count;
-        c.Parameters[_variable] = 0;
+        c.Parameters![_variable] = 0;
 
         for (count = from; (step > 0 && count <= to) || (step < 0 && count >= to); count += step)
         {
-            c.Parameters[_variable] = count;
+            c.Parameters![_variable] = count;
             await _loopScript.ExecuteAsync(c);
             if (c.IsReturned)
             {
                 break;
             }
 
-            var newCount = c.Parameters[_variable];
+            var newCount = c.Parameters![_variable];
             if (newCount is int)
             {
                 count = (int) newCount;
@@ -125,7 +124,7 @@ public class ForScript : ScriptBase
         return SaveScript("for", _loopScript, _variable, _from.Save(), _to.Save(), _step.Save());
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         switch (index)
         {
@@ -144,21 +143,21 @@ public class ForScript : ScriptBase
         }
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
         switch (index)
         {
             case 0:
-                _variable = (string) value;
+                _variable = (string) value!;
                 break;
             case 1:
-                _from = new Expression<int>((string) value, _scriptContext);
+                _from = new Expression<int>((string) value!, _scriptContext);
                 break;
             case 2:
-                _to = new Expression<int>((string) value, _scriptContext);
+                _to = new Expression<int>((string) value!, _scriptContext);
                 break;
             case 3:
-                _step = new Expression<int>((string) value, _scriptContext);
+                _step = new Expression<int>((string) value!, _scriptContext);
                 break;
             case 4:
                 // any updates to the script should change the script itself - nothing should cause SetParameter to be triggered.

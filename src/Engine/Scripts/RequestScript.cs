@@ -1,5 +1,4 @@
-﻿#nullable disable
-using QuestViva.Engine.Functions;
+﻿using QuestViva.Engine.Functions;
 
 namespace QuestViva.Engine.Scripts;
 
@@ -84,7 +83,7 @@ public class RequestScript : ScriptBase
                 break;
             case Request.ClearScreen:
                 _worldModel.PlayerUi.ClearScreen();
-                _worldModel.OutputLogger.Clear();
+                _worldModel.OutputLogger!.Clear();
                 break;
             case Request.ShowPicture:
                 await _worldModel.PlayerUi.ShowPictureAsync(data);
@@ -148,7 +147,7 @@ public class RequestScript : ScriptBase
                 }
 
                 _worldModel.PlayerUi.SetFont(data);
-                ((LegacyOutputLogger) _worldModel.OutputLogger).SetFontName(data);
+                ((LegacyOutputLogger) _worldModel.OutputLogger!).SetFontName(data);
                 break;
             case Request.FontSize:
                 if (_worldModel.Version >= WorldModelVersion.v540)
@@ -158,7 +157,7 @@ public class RequestScript : ScriptBase
                 }
 
                 _worldModel.PlayerUi.SetFontSize(data);
-                ((LegacyOutputLogger) _worldModel.OutputLogger).SetFontSize(data);
+                ((LegacyOutputLogger) _worldModel.OutputLogger!).SetFontSize(data);
                 break;
             case Request.LinkForeground:
                 _worldModel.PlayerUi.SetLinkForeground(data);
@@ -224,7 +223,7 @@ public class RequestScript : ScriptBase
         return SaveScript("request", _request.ToString(), _data.Save());
     }
 
-    public override object GetParameter(int index)
+    public override object? GetParameter(int index)
     {
         switch (index)
         {
@@ -237,15 +236,15 @@ public class RequestScript : ScriptBase
         }
     }
 
-    protected override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object? value)
     {
         switch (index)
         {
             case 0:
-                _request = (Request) Enum.Parse(typeof(Request), (string) value);
+                _request = (Request) Enum.Parse(typeof(Request), (string) value!);
                 break;
             case 1:
-                _data = new Expression<string>((string) value, _scriptContext);
+                _data = new Expression<string>((string) value!, _scriptContext);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

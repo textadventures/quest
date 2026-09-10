@@ -239,7 +239,7 @@ public class Player : IPlayerHelperUI
         // Do nothing
     }
 
-    void IPlayer.RequestSave(string html)
+    void IPlayer.RequestSave(string? html)
     {
         AddJavaScriptToBuffer("saveGame");
     }
