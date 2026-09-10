@@ -42,7 +42,7 @@
     "toolbar.saveAs": "Save As…",
     "toolbar.backup": "Backup…",
     "toolbar.publish": "Publish…",
-    "toolbar.exportSingleFile": "Export as single file…",
+    "toolbar.exportHtml": "Export as HTML…",
 
     "editorStore.startingEditor": "Starting editor…",
     "editorStore.loadingGame": "Loading game…",
@@ -365,6 +365,16 @@
     "publishModal.publishing": "Publishing…",
     "publishModal.publishToServer": "Publish to textadventures.co.uk…",
     "publishModal.publishButton": "Publish…",
+
+    "exportHtmlModal.title": "Export as HTML",
+    "exportHtmlModal.description": "Playing a Quest game needs the Quest player.",
+    "exportHtmlModal.optionCdnTitle": "Small HTML file",
+    "exportHtmlModal.optionCdnDetail": "Downloads the player from the internet when someone plays. Smallest upload.",
+    "exportHtmlModal.optionZipTitle": "Zip with player included (~16 MB download, ~40 MB unzipped)",
+    "exportHtmlModal.optionZipDetail": "Upload the whole folder to your own site.",
+    "exportHtmlModal.footnote": "Opening the file by double-clicking won't work — it needs to be on a website.",
+    "exportHtmlModal.exporting": "Exporting…",
+    "exportHtmlModal.exportButton": "Export…",
 
     "downloadButton.titleWithLabel": "Download desktop app — {label}",
     "downloadButton.titleGeneric": "Download the desktop app",

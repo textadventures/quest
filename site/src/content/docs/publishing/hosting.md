@@ -32,17 +32,16 @@ This option should work on any web host, such as Netlify - you can try [Netlify 
 - Edit `quest-config.js` to point `defaultGameUrl` to your `.quest` file
 - Upload the entire folder to your web host
 
-### Publish a single file (no download)
+### Export as HTML
 
-If you don't need a fully offline copy, there's a much smaller option: a single HTML file with your game embedded in it, which loads the Quest Viva Player itself from a CDN rather than from your own hosting. Uploading one small file is all that's needed - no separate download, extraction or folder upload.
+From the editor's **File** menu, choose **Export as HTML…**. Playing needs the Quest player; the dialog asks how you want to handle that:
 
-In the editor, open the **File** menu and choose **Export as single file…**. This downloads one `.html` file - upload it to any web host (Netlify, GitHub Pages, your own site, etc.) and share the link.
+- **Small HTML file** — one small `.html` with your game embedded. Visitors load the player from a CDN when they play.
+  - The CDN ([jsDelivr](https://www.jsdelivr.com/)) has to be reachable for the "small HTML file" option to load. If jsDeliver is blocked for your audience, the same package is also on [unpkg](https://unpkg.com/): open the exported `.html`, find the `<base href="https://cdn.jsdelivr.net/npm/@textadventures/quest-viva-wasmplayer@...">` line, and change it to the same path under `https://unpkg.com/@textadventures/quest-viva-wasmplayer@...`.
+  - The small HTML file pins the exact Quest Viva version you exported with, rather than always using the latest. Re-export from the editor if you want to pick up a newer player release.
+- **Zip with player included** (~16 MB download, ~40 MB unzipped) — the full player plus your game (in `index.html`). Extract and upload the folder to any static web host. No CDN is required when using the zip.
 
-A couple of things to know about this option:
-
-- **It needs the CDN to be reachable.** The generated file loads the player from [jsDelivr](https://www.jsdelivr.com/) - if that's blocked on a visitor's network, the game won't load for them. Everything else (your game, its assets) is embedded directly in the file, so only the player itself depends on the CDN. If jsDelivr doesn't work for your audience, the same package is also published to [unpkg](https://unpkg.com/): open the exported `.html` file in a text editor, find the `<base href="https://cdn.jsdelivr.net/npm/@textadventures/quest-viva-wasmplayer@...">` line near the top, and change the URL to the same path under `https://unpkg.com/@textadventures/quest-viva-wasmplayer@...` instead.
-- **It's pinned to the Quest Viva version you exported with.** Your saved `.quest` file's own script behaviour is always preserved, however the player is updated - but the player's look and interface can still change between releases, so the export deliberately links to one exact version rather than "always the latest," to make sure it keeps looking and working the same way in the future. Re-export from the editor if you want to pick up a newer player release.
-- **This still doesn't enable double-click-from-disk play.** The file needs to be served over `http://`/`https://` (any host, or the CDN itself) - opening it directly from your computer's file system won't work, the same as every other WasmPlayer option on this page. You'll get a clear on-screen message if you try. If you need true offline play, see the [desktop app](/download/) instead.
+Neither option works if you open the file by double-clicking it on disk — it has to be on a website (or any simple local web host). You'll get a clear on-screen message if you try. For true offline play, see the [desktop app](/download/).
 
 ## Host WebPlayer yourself
 

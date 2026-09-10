@@ -4,7 +4,7 @@
     import { goto } from "$app/navigation";
     import { base } from "$app/paths";
     import { get } from "svelte/store";
-    import { isLoaded, isDirty, isEditingField, markFieldEditing, clearFieldEditing, saveGame, loadingStatus, addElementModal, addJavascriptModalOpen, addLibraryModalOpen, assetManagerOpen, publishModalOpen, codeViewPanelOpen, openGame, lastOpenGameError, lastFailedGameBytes, lastFailedGameFilename, createRoom, createObject, createPage, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType, createJavascript, createIncludedLibrary, moveElementModal, moveElement, moveToFolderModal, setFunctionFolder } from "$lib/editor-store";
+    import { isLoaded, isDirty, isEditingField, markFieldEditing, clearFieldEditing, saveGame, loadingStatus, addElementModal, addJavascriptModalOpen, addLibraryModalOpen, assetManagerOpen, publishModalOpen, exportHtmlModalOpen, codeViewPanelOpen, openGame, lastOpenGameError, lastFailedGameBytes, lastFailedGameFilename, createRoom, createObject, createPage, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType, createJavascript, createIncludedLibrary, moveElementModal, moveElement, moveToFolderModal, setFunctionFolder } from "$lib/editor-store";
     import { loadFromServer } from "$lib/filesystem/server-adapter";
     import Toolbar from "$components/Toolbar.svelte";
     import BackupBanner from "$components/BackupBanner.svelte";
@@ -22,6 +22,7 @@
     import MoveToFolderModal from "$components/MoveToFolderModal.svelte";
     import AssetManagerModal from "$components/AssetManagerModal.svelte";
     import PublishModal from "$components/PublishModal.svelte";
+    import ExportHtmlModal from "$components/ExportHtmlModal.svelte";
     import { t } from "$lib/i18n";
 
     let serverLoadError = $state<string | null>(null);
@@ -262,6 +263,10 @@
 
     {#if $publishModalOpen}
         <PublishModal oncancel={() => publishModalOpen.set(false)} />
+    {/if}
+
+    {#if $exportHtmlModalOpen}
+        <ExportHtmlModal oncancel={() => exportHtmlModalOpen.set(false)} />
     {/if}
 {:else if serverLoadError}
     <!-- loadGameFromServer's own fetch/parse threw before any bytes ever reached openGame() (e.g.

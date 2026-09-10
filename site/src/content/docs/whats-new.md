@@ -56,7 +56,7 @@ Because a game no longer needs a server to run it, you're no longer tied to text
 
 - upload your `.quest` file to your own website and link to it through the player
 - host the player itself alongside your game, on any static web host
-- export your whole game as a single HTML file and upload that one file anywhere
+- export your game as HTML — a small CDN-linked file, or a zip that includes the player for self-hosting
 
 See [Hosting your game](/publishing/hosting) for all the options.
 

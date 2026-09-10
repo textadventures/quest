@@ -42,7 +42,7 @@
     "toolbar.saveAs": "Speichern als…",
     "toolbar.backup": "Backup…",
     "toolbar.publish": "Veröffentlichen…",
-    "toolbar.exportSingleFile": "Export als einzelne Datei…",
+    "toolbar.exportHtml": "Als HTML exportieren…",
 
     "editorStore.startingEditor": "Editor wird gestartet…",
     "editorStore.loadingGame": "Spiel wird geladen…",
@@ -365,6 +365,16 @@
     "publishModal.publishing": "Veröffentlichen…",
     "publishModal.publishToServer": "Auf textadventures.co.uk veröffentlichen…",
     "publishModal.publishButton": "Veröffentlichen…",
+
+    "exportHtmlModal.title": "Als HTML exportieren",
+    "exportHtmlModal.description": "Zum Spielen eines Quest-Spiels wird der Quest-Player benötigt.",
+    "exportHtmlModal.optionCdnTitle": "Kleine HTML-Datei",
+    "exportHtmlModal.optionCdnDetail": "Lädt den Player aus dem Internet, wenn jemand spielt. Kleinster Upload.",
+    "exportHtmlModal.optionZipTitle": "Zip mit enthaltenem Player (~16 MB Download, ~40 MB entpackt)",
+    "exportHtmlModal.optionZipDetail": "Lade den gesamten Ordner auf deine eigene Website hoch.",
+    "exportHtmlModal.footnote": "Doppelklick auf die Datei funktioniert nicht — sie muss auf einer Website liegen.",
+    "exportHtmlModal.exporting": "Exportiere…",
+    "exportHtmlModal.exportButton": "Exportieren…",
 
     "downloadButton.titleWithLabel": "Desktop-App herunterladen — {label}",
     "downloadButton.titleGeneric": "Die Desktop-App herunterladen",

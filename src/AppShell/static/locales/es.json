@@ -42,7 +42,7 @@
     "toolbar.saveAs": "Guardar como…",
     "toolbar.backup": "Backup…",
     "toolbar.publish": "Publicar…",
-    "toolbar.exportSingleFile": "Exportar como archivo único…",
+    "toolbar.exportHtml": "Exportar como HTML…",
 
     "editorStore.startingEditor": "Iniciando editor…",
     "editorStore.loadingGame": "Cargando juego…",
@@ -365,6 +365,16 @@
     "publishModal.publishing": "Publicando…",
     "publishModal.publishToServer": "Publicar en textadventures.co.uk…",
     "publishModal.publishButton": "Publicar…",
+
+    "exportHtmlModal.title": "Exportar como HTML",
+    "exportHtmlModal.description": "Para jugar un juego de Quest se necesita el reproductor de Quest.",
+    "exportHtmlModal.optionCdnTitle": "Archivo HTML pequeño",
+    "exportHtmlModal.optionCdnDetail": "Descarga el reproductor de Internet cuando alguien juega. La subida más pequeña.",
+    "exportHtmlModal.optionZipTitle": "Zip con el reproductor incluido (~16 MB de descarga, ~40 MB descomprimido)",
+    "exportHtmlModal.optionZipDetail": "Sube toda la carpeta a tu propio sitio.",
+    "exportHtmlModal.footnote": "Abrir el archivo con doble clic no funciona: tiene que estar en un sitio web.",
+    "exportHtmlModal.exporting": "Exportando…",
+    "exportHtmlModal.exportButton": "Exportar…",
 
     "downloadButton.titleWithLabel": "Descargar la app de escritorio — {label}",
     "downloadButton.titleGeneric": "Descargar la app de escritorio",
