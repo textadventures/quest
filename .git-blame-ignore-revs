@@ -1,0 +1,20 @@
+# Bulk mechanical changes (reformatting, renames) to skip in `git blame`.
+# GitHub applies this automatically. Locally, opt in once with:
+#   git config blame.ignoreRevsFile .git-blame-ignore-revs
+#
+# PRs are squash-merged, so list the squash commit on main, not branch commits.
+
+# File-scoped namespace (WorldModel.cs)
+33e62a49cc7439def416ee43bca99b8c7933ef63
+
+# Reformat and Cleanup (Rider bulk cleanup: file-scoped namespaces across all projects)
+80f1c554719d58996d86ce01ce3cce2234007e10
+
+# chore(Engine): normalize whitespace/encoding in Core .aslx libraries (#2064)
+41bb38e54c8c97d8ed4a158a25182f52a0966db8
+
+# chore(Engine): fix script indentation depth across Core .aslx libraries (#2065)
+b6bae26e592fc44a0fc39230147720ea819d8e4e
+
+# chore: adopt Rider naming conventions for fields and enforce at build time (#2238)
+7f08ebdbb05d0b1c337e52ca71c8328b3b81ca71
