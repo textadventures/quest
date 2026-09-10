@@ -63,8 +63,8 @@ public class PlayerHelper
     public bool UseGameColours { get; set; }
     public bool UseGameFont { get; set; }
 
-    public string PlayerOverrideForeground { get; set; }
-    public string PlayerOverrideFontFamily { get; set; }
+    public string PlayerOverrideForeground { get; set; } = "";
+    public string PlayerOverrideFontFamily { get; set; } = "";
     public float PlayerOverrideFontSize { get; set; }
 
     public async Task<(bool, IEnumerable<string>)> Initialise(IPlayer player)
@@ -75,7 +75,7 @@ public class PlayerHelper
             return (false, Game.Errors);
         }
 
-        var errors = result ? null : new List<string> {"Unable to initialise game"};
+        IEnumerable<string> errors = result ? Array.Empty<string>() : new List<string> {"Unable to initialise game"};
         return (result, errors);
     }
 
@@ -92,7 +92,7 @@ public class PlayerHelper
         var currentCommand = "";
         var currentHref = "";
         var currentLinkColour = "";
-        string currentOnClick = null;
+        string? currentOnClick = null;
         var generatingLink = false;
         var settings = new XmlReaderSettings();
         settings.IgnoreWhitespace = false;
@@ -144,13 +144,13 @@ public class PlayerHelper
                             WriteText("<u>");
                             break;
                         case "color":
-                            _foregroundOverride = reader.GetAttribute("color");
+                            _foregroundOverride = reader.GetAttribute("color")!;
                             break;
                         case "font":
-                            _fontSizeOverride = reader.GetAttribute("size");
+                            _fontSizeOverride = reader.GetAttribute("size")!;
                             break;
                         case "align":
-                            _playerUI.SetAlignment(reader.GetAttribute("align"));
+                            _playerUI.SetAlignment(reader.GetAttribute("align")!);
                             break;
                         case "a":
                             generatingLink = true;
@@ -288,7 +288,7 @@ public class PlayerHelper
         return GetCurrentFormat(null);
     }
 
-    private string GetCurrentFormat(string linkForeground)
+    private string GetCurrentFormat(string? linkForeground)
     {
         var style = "";
         if (UseGameFont)
@@ -351,7 +351,7 @@ public class PlayerHelper
         return style;
     }
 
-    private void AddLink(string text, string command, string verbs, string colour, string elementId)
+    private void AddLink(string text, string? command, string? verbs, string? colour, string? elementId)
     {
         var onclick = string.Empty;
         _linkCount++;
@@ -359,7 +359,7 @@ public class PlayerHelper
 
         if (string.IsNullOrEmpty(verbs))
         {
-            onclick = string.Format(" onclick=\"sendCommand('{0}')\"", command.Replace("'", @"\'"));
+            onclick = string.Format(" onclick=\"sendCommand('{0}')\"", command!.Replace("'", @"\'"));
         }
 
         WriteText(string.Format("<a id=\"{0}\" style=\"{1}\" class=\"cmdlink\"{2}>{3}</a>",
@@ -374,11 +374,12 @@ public class PlayerHelper
         if (!string.IsNullOrEmpty(verbs))
         {
             _playerUI.OutputText(ClearBuffer());
-            _playerUI.BindMenu(linkid, verbs, text, elementId);
+            // Only object links have verbs, and they always carry an id
+            _playerUI.BindMenu(linkid, verbs, text, elementId!);
         }
     }
 
-    private void AddExternalLink(string text, string href, string colour, string onclick)
+    private void AddExternalLink(string text, string? href, string? colour, string? onclick)
     {
         WriteText(string.Format("<a style=\"{0}\" class=\"cmdlink\" onclick=\"{1}\">{2}</a>",
             GetCurrentFormat(colour ?? _linkForeground),
@@ -433,13 +434,13 @@ public class PlayerHelper
         WriteText(FormatText(text) + "<br />");
     }
 
-    private static Stream GetUiResource(string name)
+    private static Stream? GetUiResource(string name)
     {
         return Assembly.GetExecutingAssembly()
             .GetManifestResourceStream($"QuestViva.PlayerCore.Resources.{name}");
     }
 
-    public static string GetUiResourceString(string name)
+    public static string? GetUiResourceString(string name)
     {
         using var stream = GetUiResource(name);
         if (stream == null)
@@ -451,7 +452,7 @@ public class PlayerHelper
         return reader.ReadToEnd();
     }
 
-    public static byte[] GetUiResourceBytes(string name)
+    public static byte[]? GetUiResourceBytes(string name)
     {
         using var stream = GetUiResource(name);
         if (stream == null)
@@ -511,14 +512,14 @@ public class PlayerHelper
 
     public static string GetContentType(string filename)
     {
-        string result;
+        string? result;
         return MimeTypes.TryGetValue(Path.GetExtension(filename).ToLower(), out result) ? result : "";
     }
 
     public class CommandData
     {
-        public string Command { get; set; }
-        public IDictionary<string, string> Metadata { get; set; }
+        public string? Command { get; set; }
+        public IDictionary<string, string>? Metadata { get; set; }
     }
 }
 

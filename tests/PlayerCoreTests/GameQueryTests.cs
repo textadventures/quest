@@ -108,6 +108,7 @@ public class GameQueryTests
         Assert.IsTrue(resources.Contains("ta.png"));
 
         var stream = query.GetResource("aw.jpg");
+        Assert.IsNotNull(stream);
         using var ms = new MemoryStream();
         await stream.CopyToAsync(ms);
         var bytes = ms.ToArray();

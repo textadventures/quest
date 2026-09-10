@@ -8,16 +8,16 @@ namespace QuestViva.PlayerCore;
 // disk via FileGameDataProvider); WasmEditorBridge's cover-art lookup runs in-browser with no
 // filesystem access, so it passes the game's already-read bytes and gets a ByteArrayGameDataProvider
 // instead — same GameData shape either way, just a different source stream.
-public class GameQuery(string filename, byte[] bytes = null)
+public class GameQuery(string filename, byte[]? bytes = null)
 {
     private readonly GameQueryUi _dummyUi = new();
     private readonly List<string> _errors = [];
-    private IGame _game;
-    private PlayerHelper _helper;
-    private V4Game _v4Game;
-    private WorldModel _v5Game;
+    private IGame? _game;
+    private PlayerHelper? _helper;
+    private V4Game? _v4Game;
+    private WorldModel? _v5Game;
 
-    public string GameName => _dummyUi.GameName;
+    public string? GameName => _dummyUi.GameName;
 
     public int ASLVersion
     {
@@ -55,9 +55,9 @@ public class GameQuery(string filename, byte[] bytes = null)
         }
     }
 
-    public string GameId => _game.GameID;
+    public string? GameId => _game!.GameID;
 
-    public string Category
+    public string? Category
     {
         get
         {
@@ -75,7 +75,7 @@ public class GameQuery(string filename, byte[] bytes = null)
         }
     }
 
-    public string Description
+    public string? Description
     {
         get
         {
@@ -93,7 +93,7 @@ public class GameQuery(string filename, byte[] bytes = null)
         }
     }
 
-    public string CoverResourceName
+    public string? CoverResourceName
     {
         get
         {
@@ -116,7 +116,7 @@ public class GameQuery(string filename, byte[] bytes = null)
     ///     Returns null for V4 games and for V5 games that don't set the LanguageId template.
     ///     When null, callers can use <see cref="GameName" /> and <see cref="Description" /> for language detection.
     /// </summary>
-    public string LanguageId
+    public string? LanguageId
     {
         get
         {
@@ -139,7 +139,7 @@ public class GameQuery(string filename, byte[] bytes = null)
     ///     Intended for use with language detection when <see cref="LanguageId" /> is null.
     ///     Returns null for V4 games.
     /// </summary>
-    public string GameTextSample
+    public string? GameTextSample
     {
         get
         {
@@ -153,9 +153,9 @@ public class GameQuery(string filename, byte[] bytes = null)
                 var parts = new List<string>();
                 foreach (var obj in _v5Game.Objects)
                 {
-                    if (obj.Fields.HasString("description"))
+                    if (obj.Fields.GetString("description") is { } description)
                     {
-                        parts.Add(obj.Fields.GetString("description"));
+                        parts.Add(description);
                     }
                 }
 
@@ -170,7 +170,7 @@ public class GameQuery(string filename, byte[] bytes = null)
     ///     All rooms and objects defined in the game itself, excluding anything inherited from Core libraries.
     ///     Returns null for V4 games.
     /// </summary>
-    public IReadOnlyList<GameObjectInfo> GameObjects
+    public IReadOnlyList<GameObjectInfo>? GameObjects
     {
         get
         {
@@ -218,7 +218,7 @@ public class GameQuery(string filename, byte[] bytes = null)
         _game = gameLauncher.GetGame(gameData, null);
         _v4Game = _game as V4Game;
         _v5Game = _game as WorldModel;
-        _helper = new PlayerHelper(_game, _dummyUi);
+        _helper = new PlayerHelper(_game!, _dummyUi);
 
         try
         {
@@ -240,17 +240,17 @@ public class GameQuery(string filename, byte[] bytes = null)
 
     public IEnumerable<string> GetResourceNames()
     {
-        return _game.GetResourceNames();
+        return _game!.GetResourceNames();
     }
 
-    public Stream GetResource(string resourceName)
+    public Stream? GetResource(string resourceName)
     {
-        return _game.GetResourceStream(resourceName);
+        return _game!.GetResourceStream(resourceName);
     }
 
     private class GameQueryUi : IPlayerHelperUI
     {
-        public string GameName { get; private set; }
+        public string? GameName { get; private set; }
 
         public void OutputText(string text)
         {
@@ -344,7 +344,7 @@ public class GameQuery(string filename, byte[] bytes = null)
         {
         }
 
-        public Task RunScriptAsync(string function, object[] parameters)
+        public Task RunScriptAsync(string function, object?[]? parameters)
         {
             return Task.CompletedTask;
         }
@@ -361,7 +361,7 @@ public class GameQuery(string filename, byte[] bytes = null)
         {
         }
 
-        public void RequestSave(string html)
+        public void RequestSave(string? html)
         {
             throw new NotImplementedException();
         }
@@ -390,7 +390,7 @@ public class GameQuery(string filename, byte[] bytes = null)
         {
         }
 
-        public string GetUIOption(UIOption option)
+        public string? GetUIOption(UIOption option)
         {
             return null;
         }
