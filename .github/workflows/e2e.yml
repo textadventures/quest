@@ -374,6 +374,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-wasmplayer-debugger.mjs http://localhost:5175
         working-directory: tests/e2e
+      - run: node verify-wasmplayer-export-ifid.mjs
+        working-directory: tests/e2e
       - run: node verify-wasmplayer-save-disabled-during-wait-input.mjs http://localhost:5175
         working-directory: tests/e2e
       - run: node verify-wasmplayer-save-turn-pending.mjs http://localhost:5175
