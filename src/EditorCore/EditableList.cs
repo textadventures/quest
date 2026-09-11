@@ -112,13 +112,7 @@ public class EditableList<T> : IEditableList<T>, IDataWrapper, INotifyCollection
 
     public ValidationResult CanAdd(T item)
     {
-        // Commented this section out as it is valid to have the same item multiple times in a list,
-        // for example for walkthroughs.
-        //if (_source.Contains(item))
-        //{
-        //    return new ValidationResult { Valid = false, Message = ValidationMessage.ItemAlreadyExists };
-        //}
-
+        // Duplicates are allowed - a list can validly contain the same item more than once, e.g. walkthrough steps
         return new ValidationResult {Valid = true};
     }
 

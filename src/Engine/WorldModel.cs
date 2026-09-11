@@ -1028,12 +1028,7 @@ public partial class WorldModel : IGame, IGameDebug
 
     private void loader_FilenameUpdated(string filename)
     {
-        // TODO: This previously did this...
-        // // Update base ASLX filename to original filename if we're loading a saved game
-        // m_saveFilename = m_filename;
-        // m_filename = filename;
-
-        // ... but we now only need it to do this, which could be more explicit:
+        // Only raised for a saved game, whose root <asl> element names the original game file
         _loadedFromSaved = true;
     }
 
