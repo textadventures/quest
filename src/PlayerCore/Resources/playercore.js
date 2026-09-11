@@ -809,7 +809,11 @@ function setBackground(col) {
     colNameToHex = colourNameToHex(col);
     if (colNameToHex) col = colNameToHex;
     rgbCol = hexToRgb(col);
-    var cssBackground = "rgba(" + rgbCol.r + "," + rgbCol.g + "," + rgbCol.b + "," + _backgroundOpacity + ")";
+    /* Anything else CSS understands (rgb(...), a name missing from the table) can't take the
+       opacity, but should still apply rather than throw */
+    var cssBackground = rgbCol
+        ? "rgba(" + rgbCol.r + "," + rgbCol.g + "," + rgbCol.b + "," + _backgroundOpacity + ")"
+        : col;
     $("#gameBorder").css("background-color", cssBackground);
     $("#gamePanel").css("background-color", col);
     $("#gridPanel").css("background-color", col);
@@ -1537,6 +1541,7 @@ function colourNameToHex(colour) {
         "darkcyan": "#008b8b",
         "darkgoldenrod": "#b8860b",
         "darkgray": "#a9a9a9",
+        "darkgrey": "#a9a9a9",
         "darkgreen": "#006400",
         "darkkhaki": "#bdb76b",
         "darkmagenta": "#8b008b",
@@ -1548,11 +1553,13 @@ function colourNameToHex(colour) {
         "darkseagreen": "#8fbc8f",
         "darkslateblue": "#483d8b",
         "darkslategray": "#2f4f4f",
+        "darkslategrey": "#2f4f4f",
         "darkturquoise": "#00ced1",
         "darkviolet": "#9400d3",
         "deeppink": "#ff1493",
         "deepskyblue": "#00bfff",
         "dimgray": "#696969",
+        "dimgrey": "#696969",
         "dodgerblue": "#1e90ff",
         "firebrick": "#b22222",
         "floralwhite": "#fffaf0",
@@ -1563,6 +1570,7 @@ function colourNameToHex(colour) {
         "gold": "#ffd700",
         "goldenrod": "#daa520",
         "gray": "#808080",
+        "grey": "#808080",
         "green": "#008000",
         "greenyellow": "#adff2f",
         "honeydew": "#f0fff0",
@@ -1579,6 +1587,7 @@ function colourNameToHex(colour) {
         "lightcoral": "#f08080",
         "lightcyan": "#e0ffff",
         "lightgoldenrodyellow": "#fafad2",
+        "lightgray": "#d3d3d3",
         "lightgrey": "#d3d3d3",
         "lightgreen": "#90ee90",
         "lightpink": "#ffb6c1",
@@ -1586,6 +1595,7 @@ function colourNameToHex(colour) {
         "lightseagreen": "#20b2aa",
         "lightskyblue": "#87cefa",
         "lightslategray": "#778899",
+        "lightslategrey": "#778899",
         "lightsteelblue": "#b0c4de",
         "lightyellow": "#ffffe0",
         "lime": "#00ff00",
@@ -1638,6 +1648,7 @@ function colourNameToHex(colour) {
         "skyblue": "#87ceeb",
         "slateblue": "#6a5acd",
         "slategray": "#708090",
+        "slategrey": "#708090",
         "snow": "#fffafa",
         "springgreen": "#00ff7f",
         "steelblue": "#4682b4",

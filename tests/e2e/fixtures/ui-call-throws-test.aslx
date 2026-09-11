@@ -1,0 +1,53 @@
+<asl version="580">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <game name="UiCallThrowsTest">
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+  <!-- Games saved with Quest 5.6-era Core carry an inlined SetBackgroundColour that uses
+       `request (Background, ...)` - IPlayer.SetBackground, WasmPlayer's typed setBackground
+       import - rather than today's JS.setBackground, which goes through the try/catch-wrapped
+       runScript. Xanadu - In the Compound - Revenge calls it with "LightGray". -->
+  <command name="lightgray">
+    <pattern>lightgray</pattern>
+    <script>
+      msg ("Background is now light gray.")
+      request (Background, "LightGray")
+    </script>
+  </command>
+
+  <command name="rgbbackground">
+    <pattern>rgbbackground</pattern>
+    <script>
+      msg ("Background is now rgb.")
+      request (Background, "rgb(10, 20, 30)")
+    </script>
+  </command>
+
+  <!-- A UI function that genuinely throws, independent of playercore.js's colour handling. -->
+  <command name="throwui">
+    <pattern>throwui</pattern>
+    <script>
+      JS.eval ("window.setBackground = function () { throw new Error('ui-call-throws-test'); };")
+      msg ("Still accepting commands after a throwing UI call.")
+      request (Background, "white")
+    </script>
+  </command>
+
+  <command name="ping">
+    <pattern>ping</pattern>
+    <script>
+      msg ("pong")
+    </script>
+  </command>
+
+</asl>
