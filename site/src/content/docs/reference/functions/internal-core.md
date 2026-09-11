@@ -858,16 +858,6 @@ Does not return a value.
 Tsplit(splittext)
 ```
 
-## UIOptionUseGameColours
-```quest
-UIOptionUseGameColours()
-```
-
-## UIOptionUseGameFont
-```quest
-UIOptionUseGameFont()
-```
-
 ## UnescapeQuotes
 ```quest
 UnescapeQuotes(s)
