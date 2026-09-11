@@ -11,6 +11,5 @@ public interface IEditorTab
     /// </summary>
     string? HelpUrl { get; }
     IEnumerable<IEditorControl> Controls { get; }
-    bool IsTabVisibleInSimpleMode { get; }
     Task<bool> IsTabVisible(IEditorData data);
 }

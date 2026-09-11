@@ -39,15 +39,17 @@ Two conventions for the flags themselves, established by the audit:
 - **Tab-level `<advanced/>` is ignored.** Hiding or demoting whole tabs re-introduces
   the "where did X go" problem; the Features tab already gates the noisiest ones.
 
-## Dormant EditorCore plumbing — keep it
+## Quest 5's Simple Mode — removed
 
-EditorCore still carries the full v5 Simple Mode plumbing, all deliberately dormant:
-`SimpleMode` / `SimpleModeChanged` on `EditorController`, the `_advancedTypes` tree
-filtering, `IsTabVisibleInSimpleMode` (`EditorTab.cs`), `IsControlVisibleInSimpleMode`
-(`EditorControl.cs` — this one *is* consulted, inverted, by `WasmEditorBridge` to
-populate the `Advanced` flags above), `IsVisibleInSimpleMode`
-(`EditableScriptFactory.cs`), and `GetCategories(simpleModeOnly, showAll)`.
+Quest 5 had a global Simple Mode toggle that hid advanced tree sections, tabs, controls and
+script commands. The new editor never exposed it, and the per-control and per-command
+`<advanced/>` behaviour above replaced it, so its dormant EditorCore plumbing has been removed:
+`EditorController.SimpleMode` / `SimpleModeChanged`, the `_advancedTypes` tree filtering,
+`IsTabVisibleInSimpleMode`, and `GetCategories(simpleModeOnly, showAll)`.
 
-Don't remove it. If a locked-down classroom deployment is ever wanted, this makes a
-global toggle cheap to add later (a bridge property plus UI conditionals, defaulted
-per-deployment via query param rather than per-user). Wait for actual demand.
+What remains is the `<advanced/>` flag itself, exposed as `IsAdvanced` on `EditorControl` and
+`EditableScriptData`, which `WasmEditorBridge` uses to populate the `Advanced` flags above.
+
+If a locked-down classroom deployment is ever wanted, a global toggle would need adding back: a
+bridge property plus UI conditionals, defaulted per deployment via a query param rather than per
+user. The old implementation is in git history.
