@@ -59,7 +59,7 @@ internal class Packager(WorldModel worldModel)
 
         var gameEntry = zip.CreateEntry("game.aslx", CompressionLevel.Optimal);
         using (var entryStream = gameEntry.Open())
-        using (var writer = new StreamWriter(entryStream, Encoding.UTF8))
+        using (var writer = new StreamWriter(entryStream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false)))
         {
             writer.Write(data);
         }

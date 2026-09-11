@@ -88,6 +88,38 @@ public class PackagerTests
     }
 
     [TestMethod]
+    public async Task CreatePackage_WritesEntriesWithoutByteOrderMark()
+    {
+        var gameDataProvider = new FileGameDataProvider("savetest.aslx");
+        var gameData = await gameDataProvider.GetData();
+        var worldModel = Helpers.CreateWorldModel(gameData);
+        worldModel.LogError += ex => throw ex;
+
+        var player = new Mock<IPlayer>();
+        Assert.IsTrue(await worldModel.Initialise(player.Object), "Initialisation failed");
+
+        worldModel.Game.Fields.Set("gameid", "5d3c2a1b-0f9e-4d8c-b7a6-958473625140");
+
+        using var packageStream = new MemoryStream();
+        var success = worldModel.CreatePackage(null, includeWalkthrough: false, out var error,
+            Array.Empty<WorldModel.PackageIncludeFile>(), packageStream);
+        Assert.IsTrue(success, error);
+
+        packageStream.Position = 0;
+        using var zip = new ZipArchive(packageStream, ZipArchiveMode.Read, leaveOpen: true);
+        foreach (var name in (string[]) ["game.aslx", "metadata.iFiction"])
+        {
+            var entry = zip.GetEntry(name);
+            Assert.IsNotNull(entry, $"Published .quest should contain {name}");
+            using var entryStream = entry.Open();
+            using var entryBytes = new MemoryStream();
+            await entryStream.CopyToAsync(entryBytes);
+            Assert.IsFalse(entryBytes.ToArray().AsSpan().StartsWith(Encoding.UTF8.Preamble),
+                $"{name} should not start with a UTF-8 byte order mark");
+        }
+    }
+
+    [TestMethod]
     public async Task CreatePackage_EmbedsMetadataIFiction()
     {
         var gameDataProvider = new FileGameDataProvider("savetest.aslx");
