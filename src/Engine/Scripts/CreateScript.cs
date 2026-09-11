@@ -6,10 +6,7 @@ public class CreateScriptConstructor : ScriptConstructorBase
 {
     public override string Keyword => "create";
 
-    protected override int[] ExpectedParameters
-    {
-        get { return [1, 2]; }
-    }
+    protected override int[] ExpectedParameters => [1, 2];
 
     protected override IScript? CreateInt(List<string> parameters, ScriptContext scriptContext)
     {
@@ -114,10 +111,7 @@ public class CreateExitScriptConstructor : ScriptConstructorBase
 {
     public override string Keyword => "create exit";
 
-    protected override int[] ExpectedParameters
-    {
-        get { return [3, 4, 5]; }
-    }
+    protected override int[] ExpectedParameters => [3, 4, 5];
 
     protected override IScript? CreateInt(List<string> parameters, ScriptContext scriptContext)
     {
@@ -266,10 +260,7 @@ public class CreateTimerScriptConstructor : ScriptConstructorBase
 {
     public override string Keyword => "create timer";
 
-    protected override int[] ExpectedParameters
-    {
-        get { return [1]; }
-    }
+    protected override int[] ExpectedParameters => [1];
 
     protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
     {
@@ -323,10 +314,7 @@ public class CreateTurnScriptConstructor : ScriptConstructorBase
 {
     public override string Keyword => "create turnscript";
 
-    protected override int[] ExpectedParameters
-    {
-        get { return [1]; }
-    }
+    protected override int[] ExpectedParameters => [1];
 
     protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
     {

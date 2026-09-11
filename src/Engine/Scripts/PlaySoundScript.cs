@@ -6,10 +6,7 @@ public class PlaySoundScriptConstructor : ScriptConstructorBase
 {
     public override string Keyword => "play sound";
 
-    protected override int[] ExpectedParameters
-    {
-        get { return [3]; }
-    }
+    protected override int[] ExpectedParameters => [3];
 
     protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
     {
@@ -122,10 +119,7 @@ public class StopSoundScriptConstructor : ScriptConstructorBase
 {
     public override string Keyword => "stop sound";
 
-    protected override int[] ExpectedParameters
-    {
-        get { return [0]; }
-    }
+    protected override int[] ExpectedParameters => [0];
 
     protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
     {

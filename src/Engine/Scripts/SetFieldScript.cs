@@ -6,10 +6,7 @@ public class SetFieldScriptConstructor : ScriptConstructorBase
 {
     public override string Keyword => "set";
 
-    protected override int[] ExpectedParameters
-    {
-        get { return [3]; }
-    }
+    protected override int[] ExpectedParameters => [3];
 
     protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
     {

@@ -4,10 +4,7 @@ public class FinishScriptConstructor : ScriptConstructorBase
 {
     public override string Keyword => "finish";
 
-    protected override int[] ExpectedParameters
-    {
-        get { return [0]; }
-    }
+    protected override int[] ExpectedParameters => [0];
 
     protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
     {

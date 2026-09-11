@@ -7,10 +7,7 @@ public class DictionaryAddScriptConstructor : ScriptConstructorBase
 {
     public override string Keyword => "dictionary add";
 
-    protected override int[] ExpectedParameters
-    {
-        get { return [3]; }
-    }
+    protected override int[] ExpectedParameters => [3];
 
     protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
     {
@@ -101,10 +98,7 @@ public class DictionaryRemoveScriptConstructor : ScriptConstructorBase
 {
     public override string Keyword => "dictionary remove";
 
-    protected override int[] ExpectedParameters
-    {
-        get { return [2]; }
-    }
+    protected override int[] ExpectedParameters => [2];
 
     protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
     {
