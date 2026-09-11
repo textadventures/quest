@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // empty' | { read -r f; case \"$f\" in */tests/e2e/verify-*.mjs) out=$(node \"${f%/tests/e2e/*}/tests/e2e/check-workflow-manifest.mjs\" 2>&1) || { printf '%s\\n' \"$out\" >&2; exit 2; };; esac; }",
+            "statusMessage": "Checking e2e.yml wiring"
+          }
+        ]
+      }
+    ]
+  }
+}

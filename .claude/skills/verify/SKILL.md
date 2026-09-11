@@ -1,16 +1,25 @@
 ---
 name: verify
-description: How to runtime-verify changes in this repo (WasmPlayer/WebPlayer/AppShell/ElectronApp) via Playwright, no automated verify harness exists yet
+description: How to runtime-verify changes in this repo (WasmPlayer/WebPlayer/AppShell/ElectronApp) via Playwright scripts in tests/e2e, and wire new ones into the nightly e2e workflow
 ---
 
 # Verifying changes in Quest Viva
 
-No CI-integrated e2e suite. `tests/e2e/*.mjs` is a growing set of ad-hoc,
-hand-run Playwright scripts (`quest-e2e` package, `playwright` installed
-there) — one file per bug/feature, run directly with `node`, not via `npm
-test`. Follow that convention: write a new `verify-<topic>.mjs` there, run it
-with `node verify-<topic>.mjs`, leave it checked in for future regression
-reruns.
+`tests/e2e/verify-*.mjs` is a growing set of Playwright scripts (`quest-e2e`
+package, `playwright` installed there): one file per bug/feature, run directly
+with `node`, not via `npm test`. Follow that convention: write a new
+`verify-<topic>.mjs` there, run it with `node verify-<topic>.mjs`, and leave
+it checked in.
+
+**Every new script must also get a step in `.github/workflows/e2e.yml`**, in
+the job whose dev server it needs (`wasmplayer_chromium`, `appshell_chromium`,
+`webplayer_chromium`, `electron`, ...), copying a neighbouring step's `node
+verify-<topic>.mjs <baseUrl>` + `working-directory: tests/e2e` shape. The
+nightly run only runs listed scripts, and the required `check_e2e_manifest` PR
+check (`node tests/e2e/check-workflow-manifest.mjs`) fails otherwise. A
+`PostToolUse` hook in `.claude/settings.json` runs that check whenever you
+write a `verify-*.mjs` file, so its "Not wired into e2e.yml" message right
+after creating a script is expected: add the step, don't ignore it.
 
 ## Browser surface (WasmPlayer / WebPlayer / AppShell)
 

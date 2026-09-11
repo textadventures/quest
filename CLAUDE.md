@@ -42,6 +42,7 @@ Tests use MSTest with Moq (mocking) and Shouldly (assertions).
 
 Playwright scripts (`verify-*.mjs`) exercise AppShell/WasmPlayer/WebPlayer/Electron end-to-end against a running dev server.
 
+- **Wire every new script into `.github/workflows/e2e.yml`** in the same commit that adds it: a `node verify-<topic>.mjs <baseUrl>` step in the job whose dev server it needs (e.g. `wasmplayer_chromium` for a WasmPlayer script). The nightly run only runs scripts listed there, and `check_e2e_manifest` (`tests/e2e/check-workflow-manifest.mjs`, a required check on every PR) fails the PR if one is missing. A `PostToolUse` hook in `.claude/settings.json` runs that check whenever a `verify-*.mjs` file is written, so an unwired script is flagged as soon as it's created.
 - **Assert for real.** Wrap steps in a `try`/`catch`/`finally`, `throw new Error(...)` on any mismatch, and set `process.exitCode = 1` in the `catch` — matching the ~55 existing scripts' convention. A script that only `console.log`s the actual value next to an "(expect X)" comment never compares them, so a regression prints PASS-shaped output and the script still exits 0.
 - Install any tooling a script needs (e.g. Playwright) inside this repo, never by borrowing a sibling repo's `node_modules`.
 - A stale DOM-shape assumption (e.g. a locator matching `input[type=text]` when a control was later changed to a `<textarea>`) is a common, easy-to-miss cause of a previously-passing script suddenly failing after an unrelated UI PR — check what UI changed before assuming a real regression.
