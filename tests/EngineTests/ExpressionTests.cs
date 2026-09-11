@@ -722,6 +722,27 @@ public class ExpressionTests
     }
 
     [TestMethod]
+    public async Task TestRandomFunctionsDrawFromWorldModelRandom()
+    {
+        // Every expression used to construct its own ExpressionOwner, each with its own unseeded
+        // Random, so reseeding the WorldModel's (as the quest-e2e-tests harness does to make
+        // transcripts reproducible) never reached GetRandomInt in game scripts. Separate
+        // expressions must share one sequence.
+        const int seed = 1234;
+        typeof(ExpressionOwner)
+            .GetField("_random", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!
+            .SetValue(_worldModel.ExpressionOwner, new Random(seed));
+
+        var reference = new Random(seed);
+        for (var i = 0; i < 3; i++)
+        {
+            (await RunExpression<int>("GetRandomInt(1, 1000000)")).ShouldBe(reference.Next(1, 1000001));
+        }
+
+        (await RunExpressionGeneric("GetRandomDouble()")).ShouldBe(reference.NextDouble());
+    }
+
+    [TestMethod]
     public async Task TestStringEqualToObjectReturnsFalse()
     {
         // Cross-type equality (string vs Element) must return false, not throw IConvertible.
