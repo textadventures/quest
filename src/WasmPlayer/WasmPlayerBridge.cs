@@ -591,8 +591,22 @@ public partial class WasmPlayerBridge
             var actions = _uiBuffer.ToArray();
             _uiBuffer.Clear();
 
+            // Isolate each call, matching WebPlayer's runJs and Quest 5's one-call-at-a-time JS
+            // bridge: a single throwing UI function (e.g. setBackground given a colour name
+            // playercore.js doesn't know) must not skip every call queued after it - including
+            // the turn's scroll and timer request - which leaves the session unable to accept
+            // another command, with the exception lost inside a fire-and-forget turn task.
             foreach (var action in actions)
-                action();
+            {
+                try
+                {
+                    action();
+                }
+                catch (Exception ex)
+                {
+                    JsConsoleError(ex.Message);
+                }
+            }
 
             if (_pendingTimerTick.HasValue)
             {
