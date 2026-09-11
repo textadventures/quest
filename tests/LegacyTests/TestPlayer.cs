@@ -159,11 +159,6 @@ internal class TestPlayer : IPlayer
     {
     }
 
-    public string? GetUIOption(UIOption option)
-    {
-        return null;
-    }
-
     public void SetTurnPending(bool pending)
     {
     }

@@ -274,16 +274,6 @@ public class Player : IPlayerHelperUI
         AddJavaScriptToBuffer("console.log", text);
     }
 
-    string? IPlayer.GetUIOption(UIOption option)
-    {
-        if (option == UIOption.UseGameColours || option == UIOption.UseGameFont)
-        {
-            return "true";
-        }
-
-        return null;
-    }
-
     void IPlayer.SetTurnPending(bool pending)
     {
         AddJavaScriptToBuffer("setTurnPending", pending);

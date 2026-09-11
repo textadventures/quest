@@ -208,7 +208,7 @@
           optionText = GetDisplayAlias(option)
           optiontag = option.name
           colour = ""
-          if (HasString(option, "linkcolour") and GetUIOption("UseGameColours") = "true") {
+          if (HasString(option, "linkcolour")) {
             colour = option.linkcolour
           }
           else {

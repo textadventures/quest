@@ -390,11 +390,6 @@ public class GameQuery(string filename, byte[]? bytes = null)
         {
         }
 
-        public string? GetUIOption(UIOption option)
-        {
-            return null;
-        }
-
         public void SetTurnPending(bool pending)
         {
         }
