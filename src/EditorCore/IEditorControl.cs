@@ -9,7 +9,7 @@ public interface IEditorControl
     string? Attribute { get; }
     bool Expand { get; }
     IEditorDefinition? Parent { get; }
-    bool IsControlVisibleInSimpleMode { get; }
+    bool IsAdvanced { get; }
     string? Id { get; }
     string? GetString(string tag);
     IEnumerable<string>? GetListString(string tag);

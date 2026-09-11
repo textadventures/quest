@@ -95,18 +95,6 @@ public sealed class EditorController : IDisposable
         {ValidationMessage.MismatchingQuotes, "Missing quote character (\")"}
     };
 
-    private readonly List<ElementType> _advancedTypes =
-    [
-        ElementType.DynamicTemplate,
-        ElementType.Function,
-        ElementType.IncludedLibrary,
-        ElementType.Javascript,
-        ElementType.ObjectType,
-        ElementType.Template,
-        ElementType.Timer,
-        ElementType.Walkthrough
-    ];
-
     private readonly Dictionary<string, EditorDefinition> _editorDefinitions = [];
     private readonly Dictionary<string, EditorDefinition> _expressionDefinitions = [];
 
@@ -134,7 +122,6 @@ public sealed class EditorController : IDisposable
     private bool _lastelementscutout;
     // Set by Initialise
     private ScriptFactory _scriptFactory = null!;
-    private bool _simpleMode;
 
     public EditorController()
     {
@@ -157,20 +144,6 @@ public sealed class EditorController : IDisposable
 
     // Set by Initialise
     public string Filename { get; set; } = null!;
-
-    public bool SimpleMode
-    {
-        get => _simpleMode;
-        set
-        {
-            if (_simpleMode != value)
-            {
-                _simpleMode = value;
-                UpdateTree();
-                SimpleModeChanged?.Invoke(this, new EventArgs());
-            }
-        }
-    }
 
     public EditorStyle EditorStyle { get; private set; } = EditorStyle.TextAdventure;
 
@@ -200,8 +173,6 @@ public sealed class EditorController : IDisposable
     public event EventHandler<ElementMovedEventArgs>? ElementMoved;
 
     public event EventHandler<ScriptClipboardUpdateEventArgs>? ScriptClipboardUpdated;
-
-    public event EventHandler? SimpleModeChanged;
 
     public event EventHandler<ElementUpdatedEventArgs>? ElementUpdated;
     public event EventHandler<ElementRefreshedEventArgs>? ElementRefreshed;
@@ -460,45 +431,39 @@ public sealed class EditorController : IDisposable
     {
         _elementTreeStructure = [];
 
-        AddTreeHeader(EditorStyle.TextAdventure, ElementType.Object, "_objects", "Objects", null, false);
-        AddTreeHeader(EditorStyle.GameBook, ElementType.Object, "_objects", "Pages", null, false);
-        AddTreeHeader(null, null, "_advanced", "Advanced", null, false);
-        AddTreeHeader(null, ElementType.Function, "_functions", "Functions", "_advanced", false);
-        AddTreeHeader(EditorStyle.TextAdventure, ElementType.Timer, "_timers", "Timers", "_advanced", false);
-        AddTreeHeader(EditorStyle.TextAdventure, ElementType.Walkthrough, "_walkthrough", "Walkthrough", "_advanced",
-            false);
-        AddTreeHeader(null, ElementType.IncludedLibrary, "_include", "Included Libraries", "_advanced", false);
-        AddTreeHeader(EditorStyle.TextAdventure, ElementType.Template, "_template", "Templates", "_advanced", false);
+        AddTreeHeader(EditorStyle.TextAdventure, ElementType.Object, "_objects", "Objects", null);
+        AddTreeHeader(EditorStyle.GameBook, ElementType.Object, "_objects", "Pages", null);
+        AddTreeHeader(null, null, "_advanced", "Advanced", null);
+        AddTreeHeader(null, ElementType.Function, "_functions", "Functions", "_advanced");
+        AddTreeHeader(EditorStyle.TextAdventure, ElementType.Timer, "_timers", "Timers", "_advanced");
+        AddTreeHeader(EditorStyle.TextAdventure, ElementType.Walkthrough, "_walkthrough", "Walkthrough", "_advanced");
+        AddTreeHeader(null, ElementType.IncludedLibrary, "_include", "Included Libraries", "_advanced");
+        AddTreeHeader(EditorStyle.TextAdventure, ElementType.Template, "_template", "Templates", "_advanced");
         AddTreeHeader(EditorStyle.TextAdventure, ElementType.DynamicTemplate, "_dynamictemplate", "Dynamic Templates",
-            "_advanced", false);
-        AddTreeHeader(EditorStyle.TextAdventure, ElementType.ObjectType, "_objecttype", "Object Types", "_advanced",
-            false);
-        AddTreeHeader(null, ElementType.Javascript, "_javascript", "Javascript", "_advanced", false);
+            "_advanced");
+        AddTreeHeader(EditorStyle.TextAdventure, ElementType.ObjectType, "_objecttype", "Object Types", "_advanced");
+        AddTreeHeader(null, ElementType.Javascript, "_javascript", "Javascript", "_advanced");
     }
 
-    private void AddTreeHeader(EditorStyle? editorStyle, ElementType? type, string key, string title, string? parent,
-        bool simple)
+    private void AddTreeHeader(EditorStyle? editorStyle, ElementType? type, string key, string title, string? parent)
     {
         if (editorStyle.HasValue && EditorStyle != editorStyle)
         {
             return;
         }
 
-        if (simple || !SimpleMode)
+        var header = new TreeHeader {Key = key, Title = title};
+        if (type != null)
         {
-            var header = new TreeHeader {Key = key, Title = title};
-            if (type != null)
-            {
-                _elementTreeStructure.Add(type.Value, header);
-            }
-
-            AddedNode!(this,
-                new AddedNodeEventArgs
-                {
-                    Key = key, Text = title, Parent = parent, IsLibraryNode = false, Position = null,
-                    NodeType = "header"
-                });
+            _elementTreeStructure.Add(type.Value, header);
         }
+
+        AddedNode!(this,
+            new AddedNodeEventArgs
+            {
+                Key = key, Text = title, Parent = parent, IsLibraryNode = false, Position = null,
+                NodeType = "header"
+            });
     }
 
     public void UpdateTree()
@@ -577,7 +542,7 @@ public sealed class EditorController : IDisposable
                     NodeType = GetNodeType(o)
                 });
 
-            if (o.Name == "game" && !SimpleMode && EditorStyle == EditorStyle.TextAdventure)
+            if (o.Name == "game" && EditorStyle == EditorStyle.TextAdventure)
             {
                 AddedNode!(this,
                     new AddedNodeEventArgs
@@ -603,19 +568,6 @@ public sealed class EditorController : IDisposable
             return false;
         }
 
-        if (SimpleMode && _advancedTypes.Contains(e.ElemType))
-        {
-            return false;
-        }
-
-        if (SimpleMode)
-        {
-            if (e.ElemType == ElementType.Object && e.Type == ObjectType.Command)
-            {
-                return false;
-            }
-        }
-
         if (e.ElemType == ElementType.Template)
         {
             // Don't display verb templates (if the user wants to edit a verb's regex,
@@ -638,11 +590,6 @@ public sealed class EditorController : IDisposable
 
     private string? GetElementTreeParent(Element o)
     {
-        if (SimpleMode)
-        {
-            return o.Parent == null ? null : o.Parent.Name;
-        }
-
         if (o.Parent != null)
         {
             return o.Parent.Name;

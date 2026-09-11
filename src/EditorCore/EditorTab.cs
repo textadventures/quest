@@ -19,7 +19,6 @@ internal class EditorTab : IEditorTab
         HelpUrl = string.IsNullOrWhiteSpace(source.Fields.GetString("helpurl"))
             ? null
             : source.Fields.GetString("helpurl");
-        IsTabVisibleInSimpleMode = !source.Fields.GetAsType<bool>("advanced");
 
         foreach (var e in worldModel.Elements.GetElements(ElementType.EditorControl))
         {
@@ -43,6 +42,4 @@ internal class EditorTab : IEditorTab
     {
         return _visibilityHelper.IsVisible(data);
     }
-
-    public bool IsTabVisibleInSimpleMode { get; }
 }

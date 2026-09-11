@@ -2155,16 +2155,16 @@ public partial class WasmEditorBridge
                 // Non-advanced commands first (in declared order), then advanced ones
                 // (also in declared order) — keeps a mixed category's everyday commands
                 // together at the top instead of interleaved with advanced ones.
-                g.OrderBy(kv => !kv.Value.IsVisibleInSimpleMode).ThenBy(kv => kv.Value.Order)
+                g.OrderBy(kv => kv.Value.IsAdvanced).ThenBy(kv => kv.Value.Order)
                     .Select(kv => new ScriptCommandInfo(
                         kv.Key,
                         kv.Value.DisplayString ?? kv.Key,
                         kv.Value.AdderDisplayString ?? kv.Key,
                         kv.Value.CreateString!,
-                        !kv.Value.IsVisibleInSimpleMode,
+                        kv.Value.IsAdvanced,
                         kv.Value.CommonButton
                     )).ToList(),
-                g.All(kv => !kv.Value.IsVisibleInSimpleMode)
+                g.All(kv => kv.Value.IsAdvanced)
             ))
             .ToList();
         var data = new ScriptCommandCategoriesData(grouped);
@@ -4266,7 +4266,7 @@ public partial class WasmEditorBridge
             options = dict?.Select(kv => new ControlOption(kv.Key, kv.Value)).ToList();
 
             return new ControlInfo(ctrl.Id, "filter", ctrl.Caption, options, null,
-                ctrl.GetString("filtergroupname"), Advanced: !ctrl.IsControlVisibleInSimpleMode, Width: ctrl.Width);
+                ctrl.GetString("filtergroupname"), Advanced: ctrl.IsAdvanced, Width: ctrl.Width);
         }
         else if (ctrl.ControlType == "objects")
         {
@@ -4299,7 +4299,7 @@ public partial class WasmEditorBridge
 
             var caption = ctrl.Caption ?? ctrl.GetString("selfcaption");
             return new ControlInfo(ctrl.Id, ctrl.ControlType, caption, options, subEditors, ctrl.Attribute,
-                multiTpCommands, Source: ctrl.GetString("source"), Advanced: !ctrl.IsControlVisibleInSimpleMode, CheckboxCaption: ctrl.GetString("checkbox"));
+                multiTpCommands, Source: ctrl.GetString("source"), Advanced: ctrl.IsAdvanced, CheckboxCaption: ctrl.GetString("checkbox"));
         }
         else if (ctrl.ControlType == "elementslist")
         {
@@ -4307,7 +4307,7 @@ public partial class WasmEditorBridge
                 ctrl.GetString("elementtype"),
                 ctrl.GetString("objecttype"),
                 ctrl.GetString("listfilter"),
-                Advanced: !ctrl.IsControlVisibleInSimpleMode);
+                Advanced: ctrl.IsAdvanced);
         }
 
         List<TextProcessorCommand>? textProcessorCommands = null;
@@ -4346,7 +4346,7 @@ public partial class WasmEditorBridge
 
         return new ControlInfo(attribute, ctrl.ControlType!, ctrl.Caption ?? ctrl.GetString("selfcaption"), options,
             null, null, textProcessorCommands, addPrompt, Source: source,
-            Advanced: !ctrl.IsControlVisibleInSimpleMode,
+            Advanced: ctrl.IsAdvanced,
             KeyPrompt: keyPrompt, ValuePrompt: valuePrompt, SourceExclude: sourceExclude, SourceType: sourceType,
             IsWalkthrough: isWalkthrough, Href: href, NewFile: newFile, LockedAfterCreate: lockedAfterCreate,
             Freetext: freetext,

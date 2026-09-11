@@ -33,7 +33,7 @@ internal class EditorControl : IEditorControl
         }
 
         _visibilityHelper = new EditorVisibilityHelper(parent, worldModel, source);
-        IsControlVisibleInSimpleMode = !source.Fields.GetAsType<bool>("advanced");
+        IsAdvanced = source.Fields.GetAsType<bool>("advanced");
         Id = source.Name;
 
         if (source.Fields.GetString("filtergroup") is { } filterGroup)
@@ -107,7 +107,7 @@ internal class EditorControl : IEditorControl
 
     public IEditorDefinition Parent => _parent;
 
-    public bool IsControlVisibleInSimpleMode { get; }
+    public bool IsAdvanced { get; }
 
     public string Id { get; }
 }

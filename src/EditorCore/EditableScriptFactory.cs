@@ -16,7 +16,7 @@ public class EditableScriptData
         Category = editor.Fields.GetString("category")!;
         CreateString = editor.Fields.GetString("create");
         AdderDisplayString = editor.Fields.GetString("add");
-        IsVisibleInSimpleMode = !editor.Fields.GetAsType<bool>("advanced");
+        IsAdvanced = editor.Fields.GetAsType<bool>("advanced");
         CommonButton = editor.Fields.GetString("common");
         var expression = editor.Fields.GetString("onlydisplayif");
         if (expression != null)
@@ -30,7 +30,7 @@ public class EditableScriptData
     public string Category { get; }
     public string? CreateString { get; private set; }
     public string? AdderDisplayString { get; private set; }
-    public bool IsVisibleInSimpleMode { get; }
+    public bool IsAdvanced { get; }
     public string? CommonButton { get; private set; }
     public int Order { get; private set; }
 
