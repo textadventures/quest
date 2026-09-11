@@ -21,3 +21,6 @@ b6bae26e592fc44a0fc39230147720ea819d8e4e
 
 # refactor: enforce event invoke, collection expression and pattern matching style rules (#2262)
 c77270b362cca41d9305247d039cea0f24f79252
+
+# refactor: use expression bodies for single-line properties (#2266)
+53e15104c819fbe0aafe0493504436daedf9f323
