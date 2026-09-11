@@ -1,4 +1,4 @@
-﻿namespace QuestViva.Engine.Types;
+namespace QuestViva.Engine.Types;
 
 public class EditorCommandPattern
 {

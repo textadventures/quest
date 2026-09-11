@@ -1,4 +1,4 @@
-﻿namespace QuestViva.Common;
+namespace QuestViva.Common;
 
 public delegate void PrintTextHandler(string text);
 

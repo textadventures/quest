@@ -1,4 +1,4 @@
-﻿<!--Saved by Quest 5.6.5652.22093-->
+<!--Saved by Quest 5.6.5652.22093-->
 <asl version="550">
   <implied element="object" property="alt" type="simplestringlist" />
   <implied element="command" property="pattern" type="simplepattern" />

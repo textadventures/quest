@@ -1,4 +1,4 @@
-﻿using Moq;
+using Moq;
 using QuestViva.Engine;
 using QuestViva.Engine.Scripts;
 

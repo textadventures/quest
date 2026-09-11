@@ -1,4 +1,4 @@
-﻿var _allowMenuFontSizeChange = true;
+var _allowMenuFontSizeChange = true;
 var _showGrid = false;
 var _outputSections = new Array();
 var numCommands = 0;

@@ -1,4 +1,4 @@
-﻿namespace QuestViva.EditorCoreTests;
+namespace QuestViva.EditorCoreTests;
 
 [TestClass]
 public class EditorControllerTests : EditorControllerTestBase

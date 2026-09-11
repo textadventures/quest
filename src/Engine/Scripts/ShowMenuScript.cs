@@ -1,4 +1,4 @@
-﻿using QuestViva.Common;
+using QuestViva.Common;
 using QuestViva.Engine.Functions;
 
 namespace QuestViva.Engine.Scripts;

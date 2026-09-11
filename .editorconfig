@@ -1,5 +1,14 @@
 root = true
 
+# Every text file is UTF-8 without a BOM, with LF line endings (see also .gitattributes)
+[*]
+charset = utf-8
+end_of_line = lf
+
+# ...except these, which Visual Studio/Rider always rewrite with a BOM
+[*.{sln,DotSettings}]
+charset = utf-8-bom
+
 [*.cs]
 # Naming conventions, matching Rider's defaults. Enforced at build time via
 # EnforceCodeStyleInBuild (Directory.Build.props) + TreatWarningsAsErrors.

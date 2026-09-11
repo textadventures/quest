@@ -1,4 +1,4 @@
-﻿using QuestViva.Engine.Functions;
+using QuestViva.Engine.Functions;
 
 namespace QuestViva.Engine.Scripts;
 // We store the parameters internally as a QuestList<string>, so we can edit them in the Editor

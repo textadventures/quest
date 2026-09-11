@@ -1,4 +1,4 @@
-﻿namespace QuestViva.Engine;
+namespace QuestViva.Engine;
 
 public class UndoLogger
 {

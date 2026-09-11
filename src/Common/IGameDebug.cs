@@ -1,4 +1,4 @@
-﻿namespace QuestViva.Common;
+namespace QuestViva.Common;
 
 public class ObjectsUpdatedEventArgs : EventArgs
 {

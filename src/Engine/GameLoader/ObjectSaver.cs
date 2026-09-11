@@ -1,4 +1,4 @@
-﻿// ReSharper disable UnusedType.Local
+// ReSharper disable UnusedType.Local
 
 namespace QuestViva.Engine.GameLoader;
 

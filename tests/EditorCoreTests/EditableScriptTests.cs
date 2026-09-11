@@ -1,4 +1,4 @@
-﻿using QuestViva.EditorCore;
+using QuestViva.EditorCore;
 
 namespace QuestViva.EditorCoreTests;
 

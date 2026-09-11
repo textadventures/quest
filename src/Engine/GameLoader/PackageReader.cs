@@ -1,4 +1,4 @@
-﻿using System.IO.Compression;
+using System.IO.Compression;
 using QuestViva.Common;
 
 namespace QuestViva.Engine.GameLoader;
