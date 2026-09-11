@@ -5,13 +5,13 @@ namespace QuestViva.EditorCoreTests;
 [TestClass]
 public class EditableListTests : EditorControllerTestBase
 {
-    private IEditableList<string> _list;
-    private object _listattr;
+    private IEditableList<string> _list = null!;
+    private object _listattr = null!;
 
     public override void DoExtraInitialisation()
     {
-        _listattr = Controller.GetEditorData("testobj").GetAttribute("listattr");
-        _list = _listattr as IEditableList<string>;
+        _listattr = Controller.GetEditorData("testobj")!.GetAttribute("listattr")!;
+        _list = (IEditableList<string>) _listattr;
     }
 
     private string GetItemListString(IEditableList<string> list)

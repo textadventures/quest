@@ -7,10 +7,10 @@ namespace QuestViva.EngineTests;
 [TestClass]
 public class AsyncScriptTests
 {
-    private WorldModel _worldModel;
-    private ScriptContext _scriptContext;
-    private ScriptFactory _scriptFactory;
-    private Element _obj;
+    private WorldModel _worldModel = null!;
+    private ScriptContext _scriptContext = null!;
+    private ScriptFactory _scriptFactory = null!;
+    private Element _obj = null!;
 
     [TestInitialize]
     public void Setup()
@@ -29,7 +29,7 @@ public class AsyncScriptTests
         function.Fields[FieldDefinitions.Script] = _scriptFactory.CreateScript(script, _scriptContext);
     }
 
-    private async Task<object> CallAsync(string name, Parameters parameters = null)
+    private async Task<object?> CallAsync(string name, Parameters? parameters = null)
     {
         return await _worldModel.RunProcedureAsync(name, parameters, true);
     }

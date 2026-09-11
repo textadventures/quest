@@ -20,7 +20,7 @@ public class FieldExtensionTests
         obj.Fields.AddType(type1);
         obj.Fields.AddType(type2);
 
-        var result = obj.Fields.GetAsType<QuestList<string>>("listfield");
+        var result = obj.Fields.GetAsType<QuestList<string>>("listfield")!;
 
         Assert.AreEqual(2, result.Count);
         Assert.IsTrue(result.Contains("a"));
@@ -42,7 +42,7 @@ public class FieldExtensionTests
         var obj = worldModel.GetElementFactory(ElementType.Object).Create("object");
         obj.Fields.AddType(type2);
 
-        var result = obj.Fields.GetAsType<QuestList<string>>("listfield");
+        var result = obj.Fields.GetAsType<QuestList<string>>("listfield")!;
 
         Assert.AreEqual(2, result.Count);
         Assert.IsTrue(result.Contains("a"));
@@ -67,7 +67,7 @@ public class FieldExtensionTests
         var obj = worldModel.GetElementFactory(ElementType.Object).Create("object");
         obj.Fields.AddType(type3);
 
-        var result = obj.Fields.GetAsType<QuestList<string>>("listfield");
+        var result = obj.Fields.GetAsType<QuestList<string>>("listfield")!;
 
         Assert.AreEqual(2, result.Count);
         Assert.IsTrue(result.Contains("a"));

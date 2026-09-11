@@ -8,11 +8,11 @@ internal class TestPlayer : IPlayer
 
     public int BufferLength => _output.Count;
 
-    public MenuData LatestMenu { get; set; }
+    public MenuData? LatestMenu { get; set; }
 
     public bool IsWaiting { get; set; }
 
-    public string QuestionData { get; set; }
+    public string? QuestionData { get; set; }
 
     public string Location { get; private set; } = string.Empty;
 
@@ -99,7 +99,7 @@ internal class TestPlayer : IPlayer
         Foreground = colour;
     }
 
-    public Task RunScriptAsync(string function, object[] parameters)
+    public Task RunScriptAsync(string function, object?[]? parameters)
     {
         return Task.CompletedTask;
     }
@@ -118,7 +118,7 @@ internal class TestPlayer : IPlayer
     {
     }
 
-    public void RequestSave(string html)
+    public void RequestSave(string? html)
     {
     }
 
@@ -159,7 +159,7 @@ internal class TestPlayer : IPlayer
     {
     }
 
-    public string GetUIOption(UIOption option)
+    public string? GetUIOption(UIOption option)
     {
         return null;
     }

@@ -5,8 +5,8 @@ namespace QuestViva.EngineTests;
 [TestClass]
 public class ComplexTypesTests
 {
-    private Element _object;
-    private WorldModel _worldModel;
+    private Element _object = null!;
+    private WorldModel _worldModel = null!;
 
     [TestInitialize]
     public void Setup()
@@ -18,7 +18,7 @@ public class ComplexTypesTests
         var dictionary = new QuestDictionary<object> {{"key1", "nested string"}};
         list.Add(dictionary);
         _object.Fields.Set("list", list);
-        _object.Fields.Resolve(null);
+        _object.Fields.Resolve(null!);
     }
 
     [TestMethod]
@@ -39,7 +39,7 @@ public class ComplexTypesTests
     public void TestAddListItemUndoRedo()
     {
         var obj = _worldModel.Elements.Get("object");
-        var list = obj.Fields.GetAsType<QuestList<object>>("list");
+        var list = obj.Fields.GetAsType<QuestList<object>>("list")!;
         Assert.AreEqual(2, list.Count);
 
         _worldModel.UndoLogger.StartTransaction("Add list item");
@@ -56,8 +56,8 @@ public class ComplexTypesTests
     public void TestNestedDictionaryAddUndoRedo()
     {
         var obj = _worldModel.Elements.Get("object");
-        var list = obj.Fields.GetAsType<QuestList<object>>("list");
-        var dictionary = list[1] as QuestDictionary<object>;
+        var list = obj.Fields.GetAsType<QuestList<object>>("list")!;
+        var dictionary = (QuestDictionary<object>) list[1]!;
         Assert.AreEqual(1, dictionary.Count);
 
         _worldModel.UndoLogger.StartTransaction("Add dictionary item");

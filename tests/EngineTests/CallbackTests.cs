@@ -19,7 +19,7 @@ internal sealed class GameDriver
 {
     private readonly WorldModel _worldModel;
     private List<string> _batch = [];
-    private Exception _scriptError;
+    private Exception? _scriptError;
     public List<int> RequestedTimerTicks { get; } = [];
     public GameState State => _worldModel.State;
     public WorldModel Model => _worldModel;

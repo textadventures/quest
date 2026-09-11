@@ -32,7 +32,7 @@ public class TemplateTests
             controller.Uninitialise();
             continue;
 
-            void OnControllerOnShowMessage(object _, EditorController.ShowMessageEventArgs e)
+            void OnControllerOnShowMessage(object? _, EditorController.ShowMessageEventArgs e)
             {
                 errorsRaised += e.Message;
             }

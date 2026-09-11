@@ -7,7 +7,7 @@ namespace QuestViva.LegacyTests;
 public class V4GameTests
 {
     private readonly TestPlayer _player = new();
-    private IGame _game;
+    private IGame _game = null!;
 
     [TestInitialize]
     public async Task Init()
@@ -62,7 +62,7 @@ public class V4GameTests
         await _game.SendCommand("x twin");
         Assert.AreEqual("- <i>Please select which twin you mean:</i>", _player.Buffer(1));
         Assert.AreEqual(2, _player.BufferLength, "Expected nothing else in the output buffer after menu displayed");
-        Assert.AreNotEqual(null, _player.LatestMenu);
+        Assert.IsNotNull(_player.LatestMenu);
         Assert.AreEqual(2, _player.LatestMenu.Options.Count);
         Assert.AreEqual("Twin 1", _player.LatestMenu.Options.ElementAt(0).Value);
         Assert.AreEqual("Twin 2", _player.LatestMenu.Options.ElementAt(1).Value);

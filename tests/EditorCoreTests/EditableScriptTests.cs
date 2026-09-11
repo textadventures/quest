@@ -8,7 +8,7 @@ public class EditableScriptTests : EditorControllerTestBase
     private void TestUndoRedo(string initialScript, string initialDisplayString, string transactionDescription,
         Action<IEditableScript> changeValue, string newDisplayString)
     {
-        EditableScriptsUpdatedEventArgs updatedEventArgs = null;
+        EditableScriptsUpdatedEventArgs? updatedEventArgs = null;
 
         // Nothing in the undo/redo lists to start with
         Assert.AreEqual(0, UndoList.Count);
@@ -18,7 +18,7 @@ public class EditableScriptTests : EditorControllerTestBase
         var newScripts = Controller.CreateNewEditableScripts("game", "somescript", initialScript, true);
 
         // When the Updated event fires, store the event arguments locally
-        newScripts.Updated += delegate(object sender, EditableScriptsUpdatedEventArgs e) { updatedEventArgs = e; };
+        newScripts.Updated += delegate(object? sender, EditableScriptsUpdatedEventArgs e) { updatedEventArgs = e; };
 
         // We should now have one script, and the undo list should have one item
         Assert.AreEqual(1, newScripts.Scripts.Count());
@@ -110,7 +110,7 @@ public class EditableScriptTests : EditorControllerTestBase
         newElseIf.EditableScripts.AddNew("msg (\"test\")", "game");
 
         // Capture update events
-        EditableScriptsUpdatedEventArgs lastArgs = null;
+        EditableScriptsUpdatedEventArgs? lastArgs = null;
         newScripts.Updated += (sender, e) => { lastArgs = e; };
 
         // Check the initial display string is correct
@@ -127,7 +127,7 @@ public class EditableScriptTests : EditorControllerTestBase
         var newExpectedDisplayString =
             "If (someExpression) Then (Print \"Then script\"), Else If (newElseIfExpression) Then (Print \"test\")";
         Assert.AreEqual(newExpectedDisplayString, newScripts.DisplayString());
-        Assert.AreEqual("newElseIfExpression", lastArgs.UpdatedScriptEventArgs.NewValue);
+        Assert.AreEqual("newElseIfExpression", lastArgs!.UpdatedScriptEventArgs!.NewValue);
 
         // Now undo and redo, and check the display strings update correctly
         Controller.Undo();

@@ -52,7 +52,7 @@ public class IncludedLibraryTests
         var savedBytes = Encoding.UTF8.GetBytes(savedXml);
 
         var reloadController = new EditorController();
-        string errorMessage = null;
+        string? errorMessage = null;
         reloadController.ShowMessage += (_, e) => errorMessage = e.Message;
 
         var ok = await reloadController.Initialise(new ByteArrayGameDataProvider(savedBytes, "test.aslx"));
@@ -91,7 +91,7 @@ public class IncludedLibraryTests
     private static async Task AssertBuiltInLibrariesProtected(string templateName, params string[] libraryFilenames)
     {
         var keysByText = new Dictionary<string, string>();
-        void OnAddedNode(object sender, EditorController.AddedNodeEventArgs e) => keysByText[e.Text] = e.Key;
+        void OnAddedNode(object? sender, EditorController.AddedNodeEventArgs e) => keysByText[e.Text] = e.Key;
 
         var controller = await LoadTemplateController(templateName, c => c.AddedNode += OnAddedNode);
 
@@ -107,7 +107,7 @@ public class IncludedLibraryTests
     }
 
     private static async Task<EditorController> LoadTemplateController(string templateName,
-        Action<EditorController> attachExtraEvents = null)
+        Action<EditorController>? attachExtraEvents = null)
     {
         var templates = EditorController.GetAvailableTemplates();
         var template = templates.Values.Single(t => t.TemplateName == templateName);
