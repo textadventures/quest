@@ -1,5 +1,29 @@
 # Changelog
 
+## [6.0.0-beta.60](https://github.com/textadventures/quest/compare/v6.0.0-beta.59...v6.0.0-beta.60) (2026-09-11)
+
+
+### Features
+
+* add `UUID://...//` zip comment when publishing `.quest` file ([#2231](https://github.com/textadventures/quest/issues/2231)) ([f41f59a](https://github.com/textadventures/quest/commit/f41f59a8953423f530005945d38a63533b22eb5c))
+* add numeric `<versioncode>` field for games ([#2229](https://github.com/textadventures/quest/issues/2229)) ([c13b88b](https://github.com/textadventures/quest/commit/c13b88b61d39b1c60569ee703df7146b81936a2c))
+* **AppShell:** add contextual help links to element editor tabs ([#2221](https://github.com/textadventures/quest/issues/2221)) ([942809e](https://github.com/textadventures/quest/commit/942809e0eec1ac4aa9fcda04fba17962fe31f272))
+* **AppShell:** deep-link script commands into the documentation ([#2216](https://github.com/textadventures/quest/issues/2216)) ([4049fd6](https://github.com/textadventures/quest/commit/4049fd62fc3f5add2ea3765fc0b3b2c54b8d6a36))
+* **AppShell:** link to the documentation site from the editor and Home ([#2214](https://github.com/textadventures/quest/issues/2214)) ([d2dbb87](https://github.com/textadventures/quest/commit/d2dbb876c60d8cc8576b019d4de436fe425d25de))
+* embed `metadata.iFiction` in published `.quest` packages ([#2230](https://github.com/textadventures/quest/issues/2230)) ([a35e3ba](https://github.com/textadventures/quest/commit/a35e3bad4177fed02e80eb478d1706a99b2617b0))
+* Embed IFID in exported HTML ([#2237](https://github.com/textadventures/quest/issues/2237)) ([0dc61e6](https://github.com/textadventures/quest/commit/0dc61e66cfa7135fab2f620e07f6df368382b800))
+* support exporting a ZIP that includes the player ([#2236](https://github.com/textadventures/quest/issues/2236)) ([8784a10](https://github.com/textadventures/quest/commit/8784a10949fe683ec2e353bc88d873998683a015))
+
+
+### Bug Fixes
+
+* **Engine:** don't write a byte order mark into published packages' game.aslx ([#2269](https://github.com/textadventures/quest/issues/2269)) ([551830e](https://github.com/textadventures/quest/commit/551830ea64044f5494384de26fd00a1bcb844b6f))
+* **Engine:** share one Random per WorldModel across all expressions ([#2271](https://github.com/textadventures/quest/issues/2271)) ([132d49b](https://github.com/textadventures/quest/commit/132d49b18baa3a192debfdadc2f10095df06b9df))
+* fix "Export as single file" ([#2235](https://github.com/textadventures/quest/issues/2235)) ([6c6c6cf](https://github.com/textadventures/quest/commit/6c6c6cf359c49baf32434c6ffe5d514f82f3674b))
+* **Site:** move legacy redirects out of _redirects, which silently dropped 585 ([#2218](https://github.com/textadventures/quest/issues/2218)) ([3c259f8](https://github.com/textadventures/quest/commit/3c259f89f9daf313c87408e5a6cd1d05894e1f4c))
+* **Site:** move the function reference out of the reserved /functions/ path ([#2219](https://github.com/textadventures/quest/issues/2219)) ([76fd374](https://github.com/textadventures/quest/commit/76fd374f1dd679c740793cdade4c8d4960b22f53))
+* **WasmPlayer:** don't stop accepting commands when a UI call throws ([#2272](https://github.com/textadventures/quest/issues/2272)) ([7b034fc](https://github.com/textadventures/quest/commit/7b034fce920f0078d7f2e559810088bd0887d62a))
+
 ## [6.0.0-beta.59](https://github.com/textadventures/quest/compare/v6.0.0-beta.58...v6.0.0-beta.59) (2026-09-06)
 
 
