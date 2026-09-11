@@ -110,22 +110,6 @@ public class EditableList<T> : IEditableList<T>, IDataWrapper, INotifyCollection
         Update(_wrappedItemKeys.IndexOf(key), item);
     }
 
-    public IEnumerable<KeyValuePair<string, string>> DisplayItems
-    {
-        get
-        {
-            var result = new Dictionary<string, string>();
-
-            foreach (var item in _wrappedItems)
-            {
-                // TO DO: We will need some kind of projection function for non-string T's
-                result.Add(item.Key, (item.Value.Value as string)!);
-            }
-
-            return result;
-        }
-    }
-
     public ValidationResult CanAdd(T item)
     {
         // Commented this section out as it is valid to have the same item multiple times in a list,
@@ -138,33 +122,9 @@ public class EditableList<T> : IEditableList<T>, IDataWrapper, INotifyCollection
         return new ValidationResult {Valid = true};
     }
 
-    public bool Locked => _source.Locked;
-
-    public IEditableList<T> Clone(string parent, string attribute)
-    {
-        IEditableList<T> result;
-        _controller.WorldModel.UndoLogger.StartTransaction(string.Format("Copy '{0}' {1}", parent, attribute));
-        result = CloneInternal(_controller.WorldModel.Elements.Get(parent), attribute);
-        _controller.WorldModel.UndoLogger.EndTransaction();
-        return result;
-    }
-
     public IEnumerator GetEnumerator()
     {
         return _wrappedItemsList.GetEnumerator();
-    }
-
-    public string? Owner
-    {
-        get
-        {
-            if (_source.Owner == null)
-            {
-                return null;
-            }
-
-            return _source.Owner.Name;
-        }
     }
 
     public IEnumerable<IEditableListItem<T>> ItemsList => _wrappedItemsList;
@@ -241,15 +201,6 @@ public class EditableList<T> : IEditableList<T>, IDataWrapper, INotifyCollection
     private void OnSourceRemoved(object? sender, QuestListUpdatedEventArgs<T> e)
     {
         RemoveWrappedItem(_wrappedItems[_wrappedItemKeys[e.Index]], (EditorUpdateSource) e.Source, e.Index);
-    }
-
-    private IEditableList<T> CloneInternal(Element parent, string attribute)
-    {
-        var newSource = (QuestList<T>) _source.Clone();
-        newSource.Locked = false;
-        parent.Fields.Set(attribute, newSource);
-        newSource = (QuestList<T>) parent.Fields.Get(attribute)!;
-        return GetNewInstance(_controller, newSource);
     }
 
     #region Static DataWrapper

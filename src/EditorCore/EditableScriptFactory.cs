@@ -109,31 +109,6 @@ internal class EditableScriptFactory
         return CreateEditableScript(script);
     }
 
-    internal async Task<IEnumerable<string>> GetCategories(bool simpleModeOnly, bool showAll)
-    {
-        var result = new List<string>();
-        IEnumerable<EditableScriptData> values = ScriptData.Values;
-        if (simpleModeOnly)
-        {
-            values = values.Where(v => v.IsVisibleInSimpleMode);
-        }
-
-        foreach (var data in values)
-        {
-            if (!showAll && !await data.IsVisible())
-            {
-                continue;
-            }
-
-            if (!result.Contains(data.Category))
-            {
-                result.Add(data.Category);
-            }
-        }
-
-        return result;
-    }
-
     internal IScript Clone(IScript script)
     {
         return _scriptFactory.CreateSimpleScript(script.Save());

@@ -52,22 +52,6 @@ public class EditableDictionary<T> : IEditableDictionary<T>, IDataWrapper
 
     public IDictionary<string, IEditableListItem<T>> Items => _wrappedItems;
 
-    public IEnumerable<KeyValuePair<string, string>> DisplayItems
-    {
-        get
-        {
-            var result = new Dictionary<string, string>();
-
-            foreach (var item in _wrappedItems)
-            {
-                // TO DO: We will need some kind of projection function for non-string T's
-                result.Add(item.Key, (item.Value.Value as string)!);
-            }
-
-            return result;
-        }
-    }
-
     public void Add(string key, T value)
     {
         string? undoEntry = null;
@@ -118,37 +102,11 @@ public class EditableDictionary<T> : IEditableDictionary<T>, IDataWrapper
         return new ValidationResult {Valid = true};
     }
 
-    public T this[string key] => _source[key];
-
     public void Update(string key, T value)
     {
         var index = _source.IndexOfKey(key);
         _source.Remove(key, UpdateSource.User);
         _source.Add(key, value, UpdateSource.User, index);
-    }
-
-    public bool Locked => _source.Locked;
-
-    public IEditableDictionary<T> Clone(string parent, string attribute)
-    {
-        IEditableDictionary<T> result;
-        _controller.WorldModel.UndoLogger.StartTransaction(string.Format("Copy '{0}' {1}", parent, attribute));
-        result = CloneInternal(_controller.WorldModel.Elements.Get(parent), attribute);
-        _controller.WorldModel.UndoLogger.EndTransaction();
-        return result;
-    }
-
-    public string? Owner
-    {
-        get
-        {
-            if (_source.Owner == null)
-            {
-                return null;
-            }
-
-            return _source.Owner.Name;
-        }
     }
 
     public void ChangeKey(string oldKey, string newKey)
@@ -202,15 +160,6 @@ public class EditableDictionary<T> : IEditableDictionary<T>, IDataWrapper
     private void OnSourceRemoved(object? sender, QuestDictionaryUpdatedEventArgs<T> e)
     {
         RemoveWrappedItem(_wrappedItems[e.Key], (EditorUpdateSource) e.Source, e.Index);
-    }
-
-    private IEditableDictionary<T> CloneInternal(Element parent, string attribute)
-    {
-        var newSource = (QuestDictionary<T>) _source.Clone();
-        newSource.Locked = false;
-        parent.Fields.Set(attribute, newSource);
-        newSource = (QuestDictionary<T>) parent.Fields.Get(attribute)!;
-        return GetNewInstance(_controller, newSource);
     }
 
     #region Static DataWrapper

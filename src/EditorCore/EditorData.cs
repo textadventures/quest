@@ -101,18 +101,6 @@ internal class EditorData : IEditorDataExtendedAttributeInfo
         return new ValidationResult {Valid = true};
     }
 
-    // When the "anonymous" field is updated, that affects how the "name" attribute is displayed.
-
-    public IEnumerable<string>? GetAffectedRelatedAttributes(string attribute)
-    {
-        if (attribute == "anonymous")
-        {
-            return new List<string> {"name"};
-        }
-
-        return null;
-    }
-
     public string? GetSelectedFilter(string filterGroup)
     {
         _filters.TryGetValue(filterGroup, out var result);
@@ -132,12 +120,6 @@ internal class EditorData : IEditorDataExtendedAttributeInfo
     {
         var data = _controller.WorldModel.GetDebugData(_element.Name);
         return ConvertDebugDataToEditorAttributeData(data);
-    }
-
-    public IEditorAttributeData GetAttributeData(string attribute)
-    {
-        var data = _controller.WorldModel.GetDebugDataItem(_element.Name, attribute);
-        return new EditorAttributeData(attribute, data.IsInherited, data.Source, data.IsDefaultType);
     }
 
     public void RemoveAttribute(string attribute)
@@ -166,18 +148,10 @@ internal class EditorData : IEditorDataExtendedAttributeInfo
         _element.MetaFields[MetaFieldDefinitions.Filename] = null;
     }
 
-    public bool ReadOnly
-    {
-        get => IsLibraryElement;
-        set { }
-    }
-
     public IEnumerable<string>? GetVariablesInScope()
     {
         return null;
     }
-
-    public bool IsDirectlySaveable => true;
 
     private void Fields_AttributeChanged(object? sender, AttributeChangedEventArgs e)
     {

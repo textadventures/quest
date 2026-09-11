@@ -22,20 +22,3 @@ public class FilterOptions
         return _filters.Contains(filter);
     }
 }
-
-public class AvailableFilters
-{
-    private readonly Dictionary<string, string> _filterDefs = new();
-
-    public IEnumerable<string> AllFilters => _filterDefs.Keys;
-
-    internal void Add(string key, string desc)
-    {
-        _filterDefs.Add(key, desc);
-    }
-
-    public string Get(string key)
-    {
-        return _filterDefs[key];
-    }
-}

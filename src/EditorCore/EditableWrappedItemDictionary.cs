@@ -53,21 +53,6 @@ public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDiction
 
     public IDictionary<string, IEditableListItem<TWrapped>> Items => _wrappedItems;
 
-    public IEnumerable<KeyValuePair<string, string>> DisplayItems
-    {
-        get
-        {
-            var result = new Dictionary<string, string>();
-
-            foreach (var item in _wrappedItems)
-            {
-                result.Add(item.Key, item.Value.Value.DisplayString());
-            }
-
-            return result;
-        }
-    }
-
     // TO DO: Public methods shouldn't be starting/ending transactions here - that should be up to the caller
 
     public void Add(string key, TWrapped value)
@@ -102,8 +87,6 @@ public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDiction
         return new ValidationResult {Valid = true};
     }
 
-    public TWrapped this[string key] => WrapValue(_source[key]);
-
     public void Update(string key, TWrapped value)
     {
         var index = _source.IndexOfKey(key);
@@ -122,42 +105,6 @@ public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDiction
         _source.Remove(oldKey, UpdateSource.User);
         _source.Add(newKey, value, UpdateSource.User, index);
         //_controller.WorldModel.UndoLogger.EndTransaction();
-    }
-
-    public bool Locked => _source.Locked;
-
-    public IEditableDictionary<TWrapped> Clone(string parent, string attribute)
-    {
-        // TO DO: If this is required, then for example where TWrapped=IScript we will need to clone the scripts too
-        throw new NotImplementedException();
-
-        //IEditableDictionary<TWrapped> result;
-        //_controller.WorldModel.UndoLogger.StartTransaction(string.Format("Copy '{0}' {1}", parent, attribute));
-        //result = CloneInternal(_controller.WorldModel.Elements.Get(parent), attribute);
-        //_controller.WorldModel.UndoLogger.EndTransaction();
-        //return result;
-    }
-
-    //private IEditableDictionary<TWrapped> CloneInternal(Element parent, string attribute)
-    //{
-    //    QuestDictionary<TSource> newSource = (QuestDictionary<TSource>)_source.Clone();
-    //    newSource.Locked = false;
-    //    parent.Fields.Set(attribute, newSource);
-    //    newSource = (QuestDictionary<TSource>)parent.Fields.Get(attribute);
-    //    return EditableWrappedItemDictionary<TSource, TWrapped>.GetNewInstance(_controller, newSource);
-    //}
-
-    public string? Owner
-    {
-        get
-        {
-            if (_source.Owner == null)
-            {
-                return null;
-            }
-
-            return _source.Owner.Name;
-        }
     }
 
     public string Id { get; }

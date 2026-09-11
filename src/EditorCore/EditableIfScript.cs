@@ -111,11 +111,6 @@ public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
         return new ValidationResult {Valid = true};
     }
 
-    public IEnumerable<string>? GetAffectedRelatedAttributes(string attribute)
-    {
-        return null;
-    }
-
     public string? GetSelectedFilter(string filterGroup)
     {
         return null;
@@ -124,10 +119,6 @@ public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
     public void SetSelectedFilter(string filterGroup, string filter)
     {
     }
-
-    public bool ReadOnly { get; set; }
-
-    public bool IsDirectlySaveable => true;
 
     public event EventHandler? AddedElse;
     public event EventHandler? RemovedElse;
@@ -322,11 +313,6 @@ public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
             return new ValidationResult {Valid = true};
         }
 
-        public IEnumerable<string>? GetAffectedRelatedAttributes(string attribute)
-        {
-            return null;
-        }
-
         public string? GetSelectedFilter(string filterGroup)
         {
             return null;
@@ -336,86 +322,9 @@ public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
         {
         }
 
-        public bool ReadOnly { get; set; }
-
         public IEnumerable<string> GetVariablesInScope()
         {
             return _parent.GetVariablesInScope();
         }
-
-        public bool IsDirectlySaveable => true;
     }
-}
-
-public class IfExpressionControlDefinition : IEditorControl
-{
-    public static IfExpressionControlDefinition Instance => new();
-
-    public string ControlType => "textbox";
-
-    public string? Caption => null;
-
-    public int? Height => null;
-
-    public int? Width => null;
-
-    public string Attribute => "expression";
-
-    public bool Expand => false;
-
-    public string? GetString(string tag)
-    {
-        if (tag == "usetemplates")
-        {
-            return "if";
-        }
-
-        return null;
-    }
-
-    public IEnumerable<string> GetListString(string tag)
-    {
-        throw new NotImplementedException();
-    }
-
-    public IDictionary<string, string> GetDictionary(string tag)
-    {
-        throw new NotImplementedException();
-    }
-
-    public int? GetInt(string tag)
-    {
-        throw new NotImplementedException();
-    }
-
-    public double? GetDouble(string tag)
-    {
-        throw new NotImplementedException();
-    }
-
-    public bool GetBool(string tag)
-    {
-        if (tag == "nullable")
-        {
-            return false;
-        }
-
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> IsControlVisible(IEditorData data)
-    {
-        return Task.FromResult(true);
-    }
-
-    public bool IsControlVisibleSync(IEditorData data)
-    {
-        return true;
-    }
-
-    public IEditorDefinition? Parent => null;
-
-    public bool IsControlVisibleInSimpleMode => true;
-
-    public string? Id => null;
 }

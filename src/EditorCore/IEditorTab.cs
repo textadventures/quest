@@ -13,5 +13,4 @@ public interface IEditorTab
     IEnumerable<IEditorControl> Controls { get; }
     bool IsTabVisibleInSimpleMode { get; }
     Task<bool> IsTabVisible(IEditorData data);
-    bool GetBool(string tag);
 }

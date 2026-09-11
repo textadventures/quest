@@ -39,11 +39,6 @@ internal class ExpressionTemplateEditorData : IEditorData
         return new ValidationResult {Valid = true};
     }
 
-    public IEnumerable<string>? GetAffectedRelatedAttributes(string attribute)
-    {
-        throw new NotImplementedException();
-    }
-
     public string? GetSelectedFilter(string filterGroup)
     {
         throw new NotImplementedException();
@@ -54,28 +49,8 @@ internal class ExpressionTemplateEditorData : IEditorData
         throw new NotImplementedException();
     }
 
-    public bool ReadOnly { get; set; }
-
     public IEnumerable<string>? GetVariablesInScope()
     {
         return _parentData.GetVariablesInScope();
-    }
-
-    public bool IsDirectlySaveable => false;
-
-    public string SaveExpression(string changedAttribute, string changedValue)
-    {
-        // Take the original pattern (e.g. "Got(#myobject#)") and replace the parameter
-        // names with their values. If changedAttribute and changedValue are set, then
-        // we're in the middle of editing, so use the specified change in place of the
-        // currently saved values.
-        var result = _originalPattern;
-        foreach (var parameter in _parameters)
-        {
-            var value = parameter.Key == changedAttribute ? changedValue : parameter.Value;
-            result = result.Replace(string.Format("#{0}#", parameter.Key), value);
-        }
-
-        return result;
     }
 }
