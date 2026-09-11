@@ -24,3 +24,6 @@ c77270b362cca41d9305247d039cea0f24f79252
 
 # refactor: use expression bodies for single-line properties (#2266)
 53e15104c819fbe0aafe0493504436daedf9f323
+
+# chore: normalize line endings to LF and remove BOMs (#2268)
+26ff9c562936eaf4f67a5080ef942185b35dc97f
