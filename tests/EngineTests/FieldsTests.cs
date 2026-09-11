@@ -17,12 +17,12 @@ public class FieldsTests
     private const string AttributeDefinedByDefault2Name = "otherdefaultattribute";
     private const string AttributeDefinedByDefault2Value = "otherdefaultvalue";
     private const string AttributeDefinedByDefault2OverriddenValue = "overriddendefaultvalue";
-    private Element _defaultType;
-    private Element _object;
-    private Element _objectType;
-    private Element _subType;
+    private Element _defaultType = null!;
+    private Element _object = null!;
+    private Element _objectType = null!;
+    private Element _subType = null!;
 
-    private WorldModel _worldModel;
+    private WorldModel _worldModel = null!;
 
     [TestInitialize]
     public void Setup()
@@ -46,7 +46,7 @@ public class FieldsTests
         _objectType.Fields.AddType(_subType);
 
         _object = _worldModel.GetElementFactory(ElementType.Object).Create("object");
-        _object.Fields.Resolve(null);
+        _object.Fields.Resolve(null!);
         _object.Fields.AddType(_objectType);
     }
 
@@ -125,7 +125,7 @@ public class FieldsTests
         obj.Fields.AddType(type);
         obj.Fields.AddType(type2);
         obj.Fields.Set("attrfromobj", "fromobjvalue");
-        obj.Fields.Resolve(null);
+        obj.Fields.Resolve(null!);
 
         // Test initial values are correct first
         Assert.AreEqual("fromobjvalue", obj.Fields.GetString("attrfromobj"));

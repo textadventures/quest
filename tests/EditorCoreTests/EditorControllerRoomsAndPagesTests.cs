@@ -55,7 +55,7 @@ public class EditorControllerRoomsAndPagesTests
         controller.CreateNewObject("box", "game", "A Box");
         controller.CreateNewObject("innerThing", "box", "Inner Thing");
 
-        var parents = controller.GetPossibleNewObjectParentsForCurrentSelection("innerThing").ToArray();
+        var parents = controller.GetPossibleNewObjectParentsForCurrentSelection("innerThing")!.ToArray();
 
         CollectionAssert.AreEqual(new[] { "game", "box", "innerThing" }, parents);
 
@@ -74,7 +74,7 @@ public class EditorControllerRoomsAndPagesTests
 
         controller.CreateNewRoom("aRoom", "game", "A Room");
 
-        var parents = controller.GetPossibleNewObjectParentsForCurrentSelection("aRoom").ToArray();
+        var parents = controller.GetPossibleNewObjectParentsForCurrentSelection("aRoom")!.ToArray();
 
         CollectionAssert.AreEqual(new[] { "game", "aRoom" }, parents);
 

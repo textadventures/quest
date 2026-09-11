@@ -10,7 +10,7 @@ internal static class Helpers
         return new WorldModel();
     }
 
-    public static WorldModel CreateWorldModel(GameData gameData)
+    public static WorldModel CreateWorldModel(GameData? gameData)
     {
         return new WorldModel(gameData, null);
     }

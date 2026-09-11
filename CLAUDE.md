@@ -86,7 +86,7 @@ EditorCore ───────────────────────
 - **AppShell** (`src/AppShell/`) — SvelteKit SPA (adapter-static) frontend for the game editor; talks to WasmEditor over the JS/WASM boundary and to `FileAdapter` implementations (`src/lib/filesystem/`) for storage (FSA, OPFS local drafts, server, Electron). Also serves the Play/Create Home landing page at root when `PUBLIC_SHOW_HOME=true` (play.questviva.com, Electron) — root shows a game catalog (Play tab, fetched from textadventures.co.uk's `api/Catalog`) or the editor canvas once a game is loaded; `/open` (Create tab) is unchanged; `/play/[id]` is a new game-detail route. Unset (textadventures.co.uk) keeps the previous editor-only root behavior. See `docs/appshell-wasm-svelte.md` and `docs/deployment-domains.md`
 - **ElectronApp** (`src/ElectronApp/`) — Electron main-process shell (desktop app) wrapping the AppShell SPA over a local loopback HTTP server; no Svelte/UI code of its own. See `docs/electron-desktop-app.md`
 
-**Test projects in `tests/`:** EngineTests, PlayerCoreTests, EditorCoreTests, UtilityTests, LegacyTests
+**Test projects in `tests/`:** EngineTests, PlayerCoreTests, EditorCoreTests, LegacyTests, WebPlayerTests
 
 ## Core Library Semantics (Core.aslx and friends)
 

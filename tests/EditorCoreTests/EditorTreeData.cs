@@ -2,9 +2,9 @@
 
 public class EditorTreeItem
 {
-    public string Key;
-    public EditorTreeItem Parent;
-    public string Text;
+    public required string Key;
+    public EditorTreeItem? Parent;
+    public required string Text;
 }
 
 public class EditorTreeData
@@ -17,7 +17,7 @@ public class EditorTreeData
         _items.Clear();
     }
 
-    public void Add(string key, string text, string parent)
+    public void Add(string key, string text, string? parent)
     {
         var parentItem = parent == null ? null : _items[parent];
         var newItem = new EditorTreeItem {Key = key, Parent = parentItem, Text = text};

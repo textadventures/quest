@@ -31,12 +31,12 @@ public class ExpressionTests
     private const bool BoolAttributeValue = true;
 
     private const string DictAttributeName = "dictattribute";
-    private Element _child;
-    private Element _object;
-    private ScriptContext _scriptContext;
-    private ScriptFactory _scriptFactory;
+    private Element _child = null!;
+    private Element _object = null!;
+    private ScriptContext _scriptContext = null!;
+    private ScriptFactory _scriptFactory = null!;
 
-    private WorldModel _worldModel;
+    private WorldModel _worldModel = null!;
 
     [TestInitialize]
     public void Setup()
@@ -87,7 +87,7 @@ public class ExpressionTests
         return expr.ExecuteAsync(c);
     }
 
-    private Task<object> RunExpressionGeneric(string expression)
+    private Task<object?> RunExpressionGeneric(string expression)
     {
         var expr = new ExpressionDynamic(expression, _scriptContext);
         var c = new Context();
@@ -336,7 +336,7 @@ public class ExpressionTests
     public async Task TestGetDouble()
     {
         var result = await RunExpressionGeneric($"GetDouble({ObjectName}, \"{DoubleAttributeName}\")");
-        ((double)result).ShouldBe(DoubleAttributeValue, 0.000001);
+        ((double)result!).ShouldBe(DoubleAttributeValue, 0.000001);
     }
 
     [DataTestMethod]
@@ -366,7 +366,7 @@ public class ExpressionTests
     public async Task TestCallingNewStringListFunction()
     {
         var result = await RunExpressionGeneric("NewStringList()");
-        var resultList = result.ShouldBeAssignableTo<QuestList<string>>();
+        var resultList = result.ShouldBeAssignableTo<QuestList<string>>()!;
         resultList.Count.ShouldBe(0);
     }
 
@@ -374,7 +374,7 @@ public class ExpressionTests
     public async Task TestCustomStringListFunction()
     {
         var result = await RunExpressionGeneric("CustomStringListFunction(\"a\", \"b\")");
-        var resultList = result.ShouldBeAssignableTo<QuestList<string>>();
+        var resultList = result.ShouldBeAssignableTo<QuestList<string>>()!;
         resultList.Count.ShouldBe(2);
         resultList[0].ShouldBe("a");
         resultList[1].ShouldBe("b");
@@ -455,7 +455,7 @@ public class ExpressionTests
     public async Task TestSplitFunction()
     {
         var result = await RunExpressionGeneric("Split(\"a,b,c\", \",\")");
-        var resultList = result.ShouldBeAssignableTo<QuestList<string>>();
+        var resultList = result.ShouldBeAssignableTo<QuestList<string>>()!;
         resultList.Count.ShouldBe(3);
         resultList[0].ShouldBe("a");
         resultList[1].ShouldBe("b");
@@ -506,7 +506,7 @@ public class ExpressionTests
     public async Task TestCallingAllObjectsFunction()
     {
         var result = await RunExpressionGeneric("AllObjects()");
-        var resultList = result.ShouldBeAssignableTo<QuestList<Element>>();
+        var resultList = result.ShouldBeAssignableTo<QuestList<Element>>()!;
         resultList.Count.ShouldBe(3);
     }
 
@@ -595,7 +595,7 @@ public class ExpressionTests
         var list = new QuestList<Element>([_object, _child]);
         var expr = new ExpressionDynamic("mylist - myobj", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "mylist", list }, { "myobj", _object } } };
-        var result = (await expr.ExecuteAsync(c)).ShouldBeAssignableTo<QuestList<Element>>();
+        var result = (await expr.ExecuteAsync(c)).ShouldBeAssignableTo<QuestList<Element>>()!;
         result.Count.ShouldBe(1);
         result[0].ShouldBe(_child);
     }
@@ -606,7 +606,7 @@ public class ExpressionTests
         var list = new QuestList<Element>([_object]);
         var expr = new ExpressionDynamic("mylist + myobj", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "mylist", list }, { "myobj", _child } } };
-        var result = (await expr.ExecuteAsync(c)).ShouldBeAssignableTo<QuestList<Element>>();
+        var result = (await expr.ExecuteAsync(c)).ShouldBeAssignableTo<QuestList<Element>>()!;
         result.Count.ShouldBe(2);
     }
 
@@ -627,7 +627,7 @@ public class ExpressionTests
         var list = new QuestList<Element>([_child]);
         var expr = new ExpressionDynamic("myobj + mylist", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "mylist", list }, { "myobj", _object } } };
-        var result = (await expr.ExecuteAsync(c)).ShouldBeAssignableTo<QuestList<Element>>();
+        var result = (await expr.ExecuteAsync(c)).ShouldBeAssignableTo<QuestList<Element>>()!;
         result.Count.ShouldBe(2);
         result[0].ShouldBe(_object);
         result[1].ShouldBe(_child);

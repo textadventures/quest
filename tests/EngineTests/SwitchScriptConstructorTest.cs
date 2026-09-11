@@ -6,11 +6,11 @@ namespace QuestViva.EngineTests;
 [TestClass]
 public class SwitchScriptConstructorTest
 {
-    private SwitchScriptConstructor _constructor;
-    private ScriptFactory _scriptFactory;
-    private WorldModel _worldModel;
+    private SwitchScriptConstructor _constructor = null!;
+    private ScriptFactory _scriptFactory = null!;
+    private WorldModel _worldModel = null!;
 
-    private ScriptContext _scriptContext;
+    private ScriptContext _scriptContext = null!;
 
     [TestInitialize]
     public void Setup()
@@ -34,7 +34,7 @@ public class SwitchScriptConstructorTest
             }
             }";
         var script = _constructor.Create(text, _scriptContext);
-        var actualCases = (QuestDictionary<IScript>) script.GetParameter(1);
+        var actualCases = (QuestDictionary<IScript>) script.GetParameter(1)!;
 
         Assert.AreEqual(1, actualCases.Count);
         Assert.IsTrue(actualCases.Contains("1"));
@@ -45,7 +45,7 @@ public class SwitchScriptConstructorTest
             }
             }";
         script = _constructor.Create(text, _scriptContext);
-        actualCases = (QuestDictionary<IScript>) script.GetParameter(1);
+        actualCases = (QuestDictionary<IScript>) script.GetParameter(1)!;
 
         Assert.AreEqual(2, actualCases.Count);
         Assert.AreSame(actualCases["StringListItem(myStringList, 0)"],

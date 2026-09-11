@@ -9,9 +9,9 @@ public class CloneTests
     private const string AttributeValue = "attributevalue";
     private const string ListAttributeName = "listattribute";
     private readonly List<string> _listAttributeValue = new() {"one", "two", "three"};
-    private Element _original;
+    private Element _original = null!;
 
-    private WorldModel _worldModel;
+    private WorldModel _worldModel = null!;
 
     [TestInitialize]
     public void Setup()
@@ -21,9 +21,9 @@ public class CloneTests
         _original = _worldModel.GetElementFactory(ElementType.Object).Create("original");
         _original.Fields.Set(AttributeName, AttributeValue);
         _original.Fields.Set(ListAttributeName, new QuestList<string>(_listAttributeValue));
-        _original.Fields.Resolve(null);
+        _original.Fields.Resolve(null!);
         Assert.AreEqual(AttributeValue, _original.Fields.GetString(AttributeName));
-        Assert.AreEqual(3, _original.Fields.GetAsType<QuestList<string>>(ListAttributeName).Count);
+        Assert.AreEqual(3, _original.Fields.GetAsType<QuestList<string>>(ListAttributeName)!.Count);
     }
 
     [TestMethod]
@@ -36,7 +36,7 @@ public class CloneTests
 
         // Attribute values must be the same
         Assert.AreEqual(AttributeValue, clone.Fields.GetString(AttributeName));
-        Assert.AreEqual(3, clone.Fields.GetAsType<QuestList<string>>(ListAttributeName).Count);
+        Assert.AreEqual(3, clone.Fields.GetAsType<QuestList<string>>(ListAttributeName)!.Count);
 
         // Names must not match
         Assert.AreNotEqual(_original.Name, clone.Name);
@@ -99,19 +99,19 @@ public class CloneTests
         var clone = _original.Clone();
 
         _worldModel.UndoLogger.StartTransaction("Change attribute");
-        clone.Fields.GetAsType<QuestList<string>>(ListAttributeName).Add("newvalue");
+        clone.Fields.GetAsType<QuestList<string>>(ListAttributeName)!.Add("newvalue");
         _worldModel.UndoLogger.EndTransaction();
 
         // Cloned's field value is changed
-        Assert.AreEqual(4, clone.Fields.GetAsType<QuestList<string>>(ListAttributeName).Count);
+        Assert.AreEqual(4, clone.Fields.GetAsType<QuestList<string>>(ListAttributeName)!.Count);
 
         // Original's field value is not changed
-        Assert.AreEqual(3, _original.Fields.GetAsType<QuestList<string>>(ListAttributeName).Count);
+        Assert.AreEqual(3, _original.Fields.GetAsType<QuestList<string>>(ListAttributeName)!.Count);
 
         await _worldModel.UndoLogger.Undo();
 
         // Cloned's field value is back to original value
-        Assert.AreEqual(3, clone.Fields.GetAsType<QuestList<string>>(ListAttributeName).Count);
+        Assert.AreEqual(3, clone.Fields.GetAsType<QuestList<string>>(ListAttributeName)!.Count);
     }
 
     [TestMethod]

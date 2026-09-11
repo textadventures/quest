@@ -9,7 +9,7 @@ public abstract class EditorControllerTestBase
 {
     private readonly EditorTreeData _tree = new();
 
-    protected EditorController Controller { get; private set; }
+    protected EditorController Controller { get; private set; } = null!;
 
     protected List<string> UndoList { get; private set; } = new();
 
@@ -48,32 +48,32 @@ public abstract class EditorControllerTestBase
         Controller.Dispose();
     }
 
-    private void OnControllerClearTree(object sender, EventArgs e)
+    private void OnControllerClearTree(object? sender, EventArgs e)
     {
         _tree.Clear();
     }
 
-    private void OnControllerBeginTreeUpdate(object sender, EventArgs e)
+    private void OnControllerBeginTreeUpdate(object? sender, EventArgs e)
     {
         _tree.BeginUpdate();
     }
 
-    private void OnControllerEndTreeUpdate(object sender, EventArgs e)
+    private void OnControllerEndTreeUpdate(object? sender, EventArgs e)
     {
         _tree.EndUpdate();
     }
 
-    private void OnControllerAddedNode(object sender, EditorController.AddedNodeEventArgs e)
+    private void OnControllerAddedNode(object? sender, EditorController.AddedNodeEventArgs e)
     {
         _tree.Add(e.Key, e.Text, e.Parent);
     }
 
-    private void OnControllerUndoListUpdated(object sender, EditorController.UpdateUndoListEventArgs e)
+    private void OnControllerUndoListUpdated(object? sender, EditorController.UpdateUndoListEventArgs e)
     {
         UndoList = new List<string>(e.UndoList);
     }
 
-    private void OnControllerRedoListUpdated(object sender, EditorController.UpdateUndoListEventArgs e)
+    private void OnControllerRedoListUpdated(object? sender, EditorController.UpdateUndoListEventArgs e)
     {
         RedoList = new List<string>(e.UndoList);
     }

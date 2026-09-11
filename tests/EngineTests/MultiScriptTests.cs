@@ -7,7 +7,7 @@ namespace QuestViva.EngineTests;
 [TestClass]
 public class MultiScriptTests
 {
-    private WorldModel _worldModel;
+    private WorldModel _worldModel = null!;
 
     [TestInitialize]
     public void Setup()

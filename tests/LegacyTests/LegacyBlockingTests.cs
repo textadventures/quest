@@ -12,7 +12,7 @@ namespace QuestViva.LegacyTests;
 public class LegacyBlockingTests
 {
     private readonly TestPlayer _player = new();
-    private IGame _game;
+    private IGame _game = null!;
 
     [TestInitialize]
     public async Task Init()

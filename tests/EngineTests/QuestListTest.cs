@@ -5,8 +5,8 @@ namespace QuestViva.EngineTests;
 [TestClass]
 public class QuestListTest
 {
-    private Element _a, _b, _c;
-    private WorldModel _worldModel;
+    private Element _a = null!, _b = null!, _c = null!;
+    private WorldModel _worldModel = null!;
 
     [TestInitialize]
     public void Setup()

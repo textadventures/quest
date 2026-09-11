@@ -34,7 +34,7 @@ public class MakeScriptEditableTests
         controller.CreateNewRoom("aRoom", "game", "A Room");
 
         var undoCountBefore = controller.GetUndoItems().Count();
-        var scripts = (IEditableScripts) controller.GetEditorData("aRoom").GetAttribute(attribute);
+        var scripts = (IEditableScripts) controller.GetEditorData("aRoom")!.GetAttribute(attribute)!;
         Assert.AreEqual("defaultobject", scripts.Owner, $"'{attribute}' should start out inherited");
 
         controller.StartTransaction($"Copy {attribute} script to aRoom");
@@ -55,9 +55,9 @@ public class MakeScriptEditableTests
         controller.Uninitialise();
     }
 
-    private static string GetScriptOwner(EditorController controller, string attribute)
+    private static string? GetScriptOwner(EditorController controller, string attribute)
     {
-        return ((IEditableScripts) controller.GetEditorData("aRoom").GetAttribute(attribute)).Owner;
+        return ((IEditableScripts) controller.GetEditorData("aRoom")!.GetAttribute(attribute)!).Owner;
     }
 
     // Mirrors IncludedLibraryTests / EditorControllerRoomsAndPagesTests - the shared test.aslx

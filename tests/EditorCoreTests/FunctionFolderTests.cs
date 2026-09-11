@@ -359,7 +359,7 @@ public class FunctionFolderTests
         controller.Uninitialise();
     }
 
-    private static string GetFolder(EditorController controller, string key) =>
+    private static string? GetFolder(EditorController controller, string key) =>
         controller.WorldModel.Elements.Get(key).Fields[FieldDefinitions.EditorFolder];
 
     private static int GetSortIndex(EditorController controller, string key) =>
