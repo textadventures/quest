@@ -21,7 +21,7 @@ public class QuestDictionaryUpdatedEventArgs<T> : EventArgs
 
 public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableField, IQuestDictionary
 {
-    private readonly OrderedDictionary<string, T> _dictionary = new();
+    private readonly OrderedDictionary<string, T> _dictionary = [];
     private UndoLogger? _undoLog;
 
     public QuestDictionary()
@@ -66,8 +66,7 @@ public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableF
         {
             // also set UndoLog property on added item, if it needs a reference to the undo logger
             object? value = _dictionary[(string) key];
-            var mutableValue = value as IMutableField;
-            if (mutableValue != null)
+            if (value is IMutableField mutableValue)
             {
                 mutableValue.UndoLog = UndoLog;
             }
@@ -131,22 +130,16 @@ public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableF
     {
         UndoLogAdd(key);
 
-        if (Added != null)
-        {
-            Added(this,
-                new QuestDictionaryUpdatedEventArgs<T> {Key = key, Item = value, Index = index, Source = source});
-        }
+        Added?.Invoke(this,
+    new QuestDictionaryUpdatedEventArgs<T> { Key = key, Item = value, Index = index, Source = source });
     }
 
     private void ItemRemoved(string key, T value, UpdateSource source, int index)
     {
         UndoLogRemove(key);
 
-        if (Removed != null)
-        {
-            Removed(this,
-                new QuestDictionaryUpdatedEventArgs<T> {Key = key, Item = value, Index = index, Source = source});
-        }
+        Removed?.Invoke(this,
+    new QuestDictionaryUpdatedEventArgs<T> { Key = key, Item = value, Index = index, Source = source });
     }
 
     private class UndoDictionaryAdd : UndoLogger.IUndoAction
@@ -226,8 +219,7 @@ public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableF
             _undoLog = value;
             foreach (var item in Values)
             {
-                var mutableValue = item as IMutableField;
-                if (mutableValue != null)
+                if (item is IMutableField mutableValue)
                 {
                     mutableValue.UndoLog = value;
                 }
@@ -241,10 +233,9 @@ public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableF
         foreach (var kvp in _dictionary)
         {
             var newValue = kvp.Value;
-            var clonableValue = newValue as IMutableField;
-            if (clonableValue != null)
+            if (newValue is IMutableField clonableValue)
             {
-                newValue = (T) clonableValue.Clone();
+                newValue = (T)clonableValue.Clone();
             }
 
             result.Add(kvp.Key, newValue);

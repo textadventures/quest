@@ -4,7 +4,7 @@ namespace QuestViva.LegacyTests;
 
 internal class TestPlayer : IPlayer
 {
-    private readonly List<string> _output = new();
+    private readonly List<string> _output = [];
 
     public int BufferLength => _output.Count;
 

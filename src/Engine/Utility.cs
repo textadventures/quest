@@ -18,12 +18,12 @@ public static partial class Utility
     private const string SpaceReplacementString = "___SPACE___";
 
     public static readonly string[] DisallowedAttributes =
-        {"object", "command", "turnscript", "game", "exit", "type", "finish"};
+        ["object", "command", "turnscript", "game", "exit", "type", "finish"];
 
-    private static readonly List<string> Keywords = new() {"and", "or", "xor", "not", "if", "in"};
-    private static readonly HashSet<string> KeywordsSet = new(Keywords);
+    private static readonly List<string> Keywords = ["and", "or", "xor", "not", "if", "in"];
+    private static readonly HashSet<string> KeywordsSet = [.. Keywords];
 
-    private static readonly string[] ListSplitDelimiters = new[] {"; ", ";"};
+    private static readonly string[] ListSplitDelimiters = ["; ", ";"];
 
     public static IList<string> ExpressionKeywords => Keywords.AsReadOnly();
 
@@ -378,7 +378,7 @@ public static partial class Utility
     private static string RemoveCommentsMultiLine(string input, bool onlyRemoveMidLineComments)
     {
         var output = new List<string>();
-        foreach (var inputLine in input.Split(new[] {"\n"}, StringSplitOptions.None))
+        foreach (var inputLine in input.Split(["\n"], StringSplitOptions.None))
         {
             output.Add(RemoveComments(inputLine, onlyRemoveMidLineComments));
         }
@@ -388,7 +388,7 @@ public static partial class Utility
 
     public static List<string> SplitIntoLines(string text)
     {
-        var lines = new List<string>(text.Split(new[] {"\n"}, StringSplitOptions.RemoveEmptyEntries));
+        var lines = new List<string>(text.Split(["\n"], StringSplitOptions.RemoveEmptyEntries));
         var result = new List<string>();
         foreach (var line in lines)
         {

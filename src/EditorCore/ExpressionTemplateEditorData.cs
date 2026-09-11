@@ -31,10 +31,7 @@ internal class ExpressionTemplateEditorData : IEditorData
     public ValidationResult SetAttribute(string attribute, object? value)
     {
         _parameters[attribute] = (string) value!;
-        if (Changed != null)
-        {
-            Changed(this, new EventArgs());
-        }
+        Changed?.Invoke(this, new EventArgs());
 
         return new ValidationResult {Valid = true};
     }

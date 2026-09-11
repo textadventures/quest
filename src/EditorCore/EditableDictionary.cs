@@ -8,7 +8,7 @@ public class EditableDictionary<T> : IEditableDictionary<T>, IDataWrapper
     private readonly EditorController _controller;
 
     private readonly QuestDictionary<T> _source;
-    private readonly Dictionary<string, IEditableListItem<T>> _wrappedItems = new();
+    private readonly Dictionary<string, IEditableListItem<T>> _wrappedItems = [];
 
     public EditableDictionary(EditorController controller, QuestDictionary<T> source)
     {
@@ -136,20 +136,14 @@ public class EditableDictionary<T> : IEditableDictionary<T>, IDataWrapper
         IEditableListItem<T> wrappedValue = new EditableListItem<T>(key, value);
         _wrappedItems.Add(key, wrappedValue);
 
-        if (Added != null)
-        {
-            Added(this,
-                new EditableListUpdatedEventArgs<T> {UpdatedItem = wrappedValue, Index = index, Source = source});
-        }
+        Added?.Invoke(this,
+    new EditableListUpdatedEventArgs<T> { UpdatedItem = wrappedValue, Index = index, Source = source });
     }
 
     private void RemoveWrappedItem(IEditableListItem<T> item, EditorUpdateSource source, int index)
     {
         _wrappedItems.Remove(item.Key);
-        if (Removed != null)
-        {
-            Removed(this, new EditableListUpdatedEventArgs<T> {UpdatedItem = item, Index = index, Source = source});
-        }
+        Removed?.Invoke(this, new EditableListUpdatedEventArgs<T> { UpdatedItem = item, Index = index, Source = source });
     }
 
     private void OnSourceAdded(object? sender, QuestDictionaryUpdatedEventArgs<T> e)

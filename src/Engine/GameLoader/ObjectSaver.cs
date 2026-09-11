@@ -45,7 +45,7 @@ internal partial class GameSaver
 
     private class ObjectSaver : ElementSaverBase
     {
-        private readonly Dictionary<ObjectType, IObjectSaver> _savers = new();
+        private readonly Dictionary<ObjectType, IObjectSaver> _savers = [];
 
         public ObjectSaver()
         {

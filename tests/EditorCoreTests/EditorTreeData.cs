@@ -9,7 +9,7 @@ public class EditorTreeItem
 
 public class EditorTreeData
 {
-    private readonly Dictionary<string, EditorTreeItem> _items = new();
+    private readonly Dictionary<string, EditorTreeItem> _items = [];
     private bool _frozen = true;
 
     public void Clear()

@@ -30,13 +30,13 @@ public partial class WorldModel : IGame, IGameDebug
         {"list", typeof(QuestList<object>)}
     };
 
-    private static readonly Dictionary<Type, string> TypesToTypeNames = new();
+    private static readonly Dictionary<Type, string> TypesToTypeNames = [];
     private readonly List<string> _attributeNames = [];
-    private readonly Dictionary<string, ElementType> _debuggerElementTypes = new();
-    private readonly Dictionary<string, ObjectType> _debuggerObjectTypes = new();
-    private readonly Dictionary<ElementType, IElementFactory> _elementFactories = new();
+    private readonly Dictionary<string, ElementType> _debuggerElementTypes = [];
+    private readonly Dictionary<string, ObjectType> _debuggerObjectTypes = [];
+    private readonly Dictionary<ElementType, IElementFactory> _elementFactories = [];
     private readonly GameData? _gameData;
-    private readonly Dictionary<string, int> _nextUniqueId = new();
+    private readonly Dictionary<string, int> _nextUniqueId = [];
     private readonly Stream? _saveData;
 
     internal bool _commandOverride;
@@ -872,10 +872,7 @@ public partial class WorldModel : IGame, IGameDebug
     public void Print(string text, bool linebreak = true)
     {
         if (EditMode) return;
-        if (PrintText != null)
-        {
-            PrintText(linebreak ? "<output>" + text + "</output>" : "<output nobr=\"true\">" + text + "</output>");
-        }
+        PrintText?.Invoke(linebreak ? "<output>" + text + "</output>" : "<output nobr=\"true\">" + text + "</output>");
         _legacyOutputLogger?.AddText(text, linebreak);
     }
 
@@ -912,14 +909,14 @@ public partial class WorldModel : IGame, IGameDebug
 
     internal QuestList<Element> GetAllObjects()
     {
-        return new QuestList<Element>(Elements.Objects);
+        return [.. Elements.Objects];
     }
 
     private async Task<QuestList<Element>> GetObjectsInScopeAsync(string scopeFunction)
     {
         if (Elements.ContainsKey(ElementType.Function, scopeFunction))
         {
-            return (QuestList<Element>?) await RunProcedureAsync(scopeFunction, null, true) ?? new QuestList<Element>();
+            return (QuestList<Element>?) await RunProcedureAsync(scopeFunction, null, true) ?? [];
         }
 
         throw new Exception($"No function '{scopeFunction}'");
@@ -1085,7 +1082,7 @@ public partial class WorldModel : IGame, IGameDebug
 
         var visibleNotHeld = Elements.ContainsKey(ElementType.Function, "ScopeVisibleNotHeld")
             ? await GetObjectsInScopeAsync("ScopeVisibleNotHeld")
-            : new QuestList<Element>();
+            : [];
 
         var objects = new List<ListData>();
         var seen = new HashSet<Element>();
@@ -1157,10 +1154,7 @@ public partial class WorldModel : IGame, IGameDebug
 
     private async Task UpdateExitsListAsync()
     {
-        if (UpdateList != null)
-        {
-            UpdateList(ListType.ExitsList, await GetExitsListDataAsync());
-        }
+        UpdateList?.Invoke(ListType.ExitsList, await GetExitsListDataAsync());
     }
 
     private async Task<string> GetListDisplayAliasAsync(Element obj)
@@ -1324,7 +1318,7 @@ public partial class WorldModel : IGame, IGameDebug
         Element? thisElement = null)
     {
         var c = new Context();
-        parameters ??= new Parameters();
+        parameters ??= [];
         if (thisElement != null)
         {
             parameters.Add("this", thisElement);

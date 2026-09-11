@@ -167,7 +167,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         return (handled, result);
     }
 
-    private static readonly Dictionary<(Type, string), MethodBase[]?> MethodCache = new();
+    private static readonly Dictionary<(Type, string), MethodBase[]?> MethodCache = [];
 
     private static MethodBase[]? GetPublicMethodsByName([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)] Type type, string name)
     {
@@ -397,7 +397,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
 #pragma warning restore IL2072
             if (method != null)
             {
-                args.Result = method.Invoke(null, new[] { left, right });
+                args.Result = method.Invoke(null, [left, right]);
                 return;
             }
         }

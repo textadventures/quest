@@ -8,7 +8,7 @@ public class ListAddScriptConstructor : ScriptConstructorBase
 
     protected override int[] ExpectedParameters
     {
-        get { return new[] {2}; }
+        get { return [2]; }
     }
 
     protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
@@ -43,9 +43,7 @@ public class ListAddScript : ScriptBase
 
     public override async Task ExecuteAsync(Context c)
     {
-        var result = await _list.ExecuteAsync(c) as IQuestList;
-
-        if (result != null)
+        if (await _list.ExecuteAsync(c) is IQuestList result)
         {
             result.Add(await _value.ExecuteAsync(c));
         }
@@ -95,7 +93,7 @@ public class ListRemoveScriptConstructor : ScriptConstructorBase
 
     protected override int[] ExpectedParameters
     {
-        get { return new[] {2}; }
+        get { return [2]; }
     }
 
     protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
@@ -130,9 +128,7 @@ public class ListRemoveScript : ScriptBase
 
     public override async Task ExecuteAsync(Context c)
     {
-        var result = await _list.ExecuteAsync(c) as IQuestList;
-
-        if (result != null)
+        if (await _list.ExecuteAsync(c) is IQuestList result)
         {
             result.Remove(await _value.ExecuteAsync(c));
         }

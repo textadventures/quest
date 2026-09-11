@@ -72,7 +72,7 @@ public class DebugData
 {
     public static readonly DebugData Empty = new();
 
-    public Dictionary<string, DebugDataItem> Data { get; set; } = new();
+    public Dictionary<string, DebugDataItem> Data { get; set; } = [];
 }
 
 public interface IWalkthroughs

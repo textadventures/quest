@@ -4,7 +4,7 @@ namespace QuestViva.Engine;
 
 public sealed class Walkthroughs : IWalkthroughs
 {
-    private readonly Dictionary<string, IWalkthrough> _walkthroughs = new();
+    private readonly Dictionary<string, IWalkthrough> _walkthroughs = [];
 
     public Walkthroughs(WorldModel worldModel)
     {

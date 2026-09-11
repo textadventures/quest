@@ -9,11 +9,11 @@ namespace QuestViva.Engine.GameLoader;
 
 internal partial class GameLoader
 {
-    private readonly Dictionary<string, IXmlLoader> _xmlLoaders = new();
+    private readonly Dictionary<string, IXmlLoader> _xmlLoaders = [];
     private IXmlLoader _defaultXmlLoader = null!;
 
-    private Dictionary<string, IAttributeLoader> AttributeLoaders { get; } = new();
-    private Dictionary<string, IExtendedAttributeLoader> ExtendedAttributeLoaders { get; } = new();
+    private Dictionary<string, IAttributeLoader> AttributeLoaders { get; } = [];
+    private Dictionary<string, IExtendedAttributeLoader> ExtendedAttributeLoaders { get; } = [];
 
     private WorldModel WorldModel { get; }
     private ScriptFactory ScriptFactory { get; }
@@ -684,7 +684,7 @@ internal partial class GameLoader
                 }
             }
 
-            proc.Fields[FieldDefinitions.ParamNames] = new QuestList<string>(paramNames);
+            proc.Fields[FieldDefinitions.ParamNames] = [.. paramNames ?? []];
             if (returns != null)
             {
                 proc.Fields[FieldDefinitions.ReturnType] = WorldModel.ConvertTypeToTypeName(returns);

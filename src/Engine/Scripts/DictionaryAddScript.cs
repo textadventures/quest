@@ -9,7 +9,7 @@ public class DictionaryAddScriptConstructor : ScriptConstructorBase
 
     protected override int[] ExpectedParameters
     {
-        get { return new[] {3}; }
+        get { return [3]; }
     }
 
     protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
@@ -48,9 +48,7 @@ public class DictionaryAddScript : ScriptBase
 
     public override async Task ExecuteAsync(Context c)
     {
-        var result = await _dictionary.ExecuteAsync(c) as IDictionary;
-
-        if (result != null)
+        if (await _dictionary.ExecuteAsync(c) is IDictionary result)
         {
             result.Add(await _key.ExecuteAsync(c), await _value.ExecuteAsync(c));
         }
@@ -105,7 +103,7 @@ public class DictionaryRemoveScriptConstructor : ScriptConstructorBase
 
     protected override int[] ExpectedParameters
     {
-        get { return new[] {2}; }
+        get { return [2]; }
     }
 
     protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
@@ -140,9 +138,7 @@ public class DictionaryRemoveScript : ScriptBase
 
     public override async Task ExecuteAsync(Context c)
     {
-        var result = await _dictionary.ExecuteAsync(c) as IDictionary;
-
-        if (result != null)
+        if (await _dictionary.ExecuteAsync(c) is IDictionary result)
         {
             result.Remove(await _key.ExecuteAsync(c));
         }

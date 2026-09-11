@@ -26,7 +26,7 @@ internal class EditorData : IEditorDataExtendedAttributeInfo
 {
     private readonly EditorController _controller;
     private readonly Element _element;
-    private readonly Dictionary<string, string> _filters = new();
+    private readonly Dictionary<string, string> _filters = [];
 
     public EditorData(Element element, EditorController controller)
     {
@@ -79,8 +79,7 @@ internal class EditorData : IEditorDataExtendedAttributeInfo
             return new ValidationResult {Valid = false, Message = ValidationMessage.InvalidAttributeName};
         }
 
-        var wrapper = value as IDataWrapper;
-        if (wrapper != null)
+        if (value is IDataWrapper wrapper)
         {
             value = wrapper.GetUnderlyingValue();
         }
@@ -110,10 +109,7 @@ internal class EditorData : IEditorDataExtendedAttributeInfo
     public void SetSelectedFilter(string filterGroup, string filter)
     {
         _filters[filterGroup] = filter;
-        if (Changed != null)
-        {
-            Changed(this, new EventArgs());
-        }
+        Changed?.Invoke(this, new EventArgs());
     }
 
     public IEnumerable<IEditorAttributeData> GetAttributeData()
@@ -155,10 +151,7 @@ internal class EditorData : IEditorDataExtendedAttributeInfo
 
     private void Fields_AttributeChanged(object? sender, AttributeChangedEventArgs e)
     {
-        if (Changed != null)
-        {
-            Changed(this, new EventArgs());
-        }
+        Changed?.Invoke(this, new EventArgs());
     }
 
     private IEnumerable<IEditorAttributeData> ConvertDebugDataToEditorAttributeData(DebugData data)

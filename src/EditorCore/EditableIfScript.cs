@@ -5,7 +5,7 @@ namespace QuestViva.EditorCore;
 
 public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
 {
-    private readonly Dictionary<IScript, EditableElseIf> _elseIfScripts = new();
+    private readonly Dictionary<IScript, EditableElseIf> _elseIfScripts = [];
 
     private readonly IIfScript _ifScript;
     private readonly EditableScripts _thenScript;
@@ -132,19 +132,13 @@ public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
             case IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.AddedElse:
                 _elseScript = EditableScripts.GetInstance(Controller, _ifScript.ElseScript!);
                 _elseScript.Updated += nestedScript_Updated;
-                if (AddedElse != null)
-                {
-                    AddedElse(this, new EventArgs());
-                }
+                AddedElse?.Invoke(this, new EventArgs());
 
                 break;
             case IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.RemovedElse:
                 _elseScript!.Updated -= nestedScript_Updated;
                 _elseScript = null;
-                if (RemovedElse != null)
-                {
-                    RemovedElse(this, new EventArgs());
-                }
+                RemovedElse?.Invoke(this, new EventArgs());
 
                 break;
             case IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.AddedElseIf:
@@ -156,18 +150,12 @@ public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
                 _elseIfScripts.Add(e.Data.Script, newEditableElseIf);
 
                 // Raise the update to display in the UI
-                if (AddedElseIf != null)
-                {
-                    AddedElseIf(this, new ElseIfEventArgs(newEditableElseIf));
-                }
+                AddedElseIf?.Invoke(this, new ElseIfEventArgs(newEditableElseIf));
 
                 break;
             case IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.RemovedElseIf:
                 EditableScripts.GetInstance(Controller, e.Data!.Script).Updated -= nestedScript_Updated;
-                if (RemovedElseIf != null)
-                {
-                    RemovedElseIf(this, new ElseIfEventArgs(_elseIfScripts[e.Data.Script]));
-                }
+                RemovedElseIf?.Invoke(this, new ElseIfEventArgs(_elseIfScripts[e.Data.Script]));
 
                 _elseIfScripts.Remove(e.Data.Script);
                 break;

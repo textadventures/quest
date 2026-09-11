@@ -8,7 +8,7 @@ public class PlaySoundScriptConstructor : ScriptConstructorBase
 
     protected override int[] ExpectedParameters
     {
-        get { return new[] {3}; }
+        get { return [3]; }
     }
 
     protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
@@ -124,7 +124,7 @@ public class StopSoundScriptConstructor : ScriptConstructorBase
 
     protected override int[] ExpectedParameters
     {
-        get { return new[] {0}; }
+        get { return [0]; }
     }
 
     protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)

@@ -2,7 +2,7 @@
 
 public class FilterOptions
 {
-    private readonly List<string> _filters = new();
+    private readonly List<string> _filters = [];
 
     public void Set(string filter, bool value)
     {

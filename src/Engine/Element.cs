@@ -65,20 +65,22 @@ public class Element : IComparable
 
     static Element()
     {
-        TypeStrings = new Dictionary<ObjectType, string>();
-        TypeStrings.Add(ObjectType.Object, "object");
-        TypeStrings.Add(ObjectType.Exit, "exit");
-        TypeStrings.Add(ObjectType.Command, "command");
-        TypeStrings.Add(ObjectType.Game, "game");
-        TypeStrings.Add(ObjectType.TurnScript, "turnscript");
+        TypeStrings = new Dictionary<ObjectType, string>
+        {
+            { ObjectType.Object, "object" },
+            { ObjectType.Exit, "exit" },
+            { ObjectType.Command, "command" },
+            { ObjectType.Game, "game" },
+            { ObjectType.TurnScript, "turnscript" }
+        };
 
-        MapObjectTypeStringsToElementType = new Dictionary<string, ObjectType>();
+        MapObjectTypeStringsToElementType = [];
         foreach (var item in TypeStrings)
         {
             MapObjectTypeStringsToElementType.Add(item.Value, item.Key);
         }
 
-        ElemTypeStrings = new Dictionary<ElementType, string>();
+        ElemTypeStrings = [];
         foreach (ElementType t in Enum.GetValues<ElementType>())
         {
             ElemTypeStrings.Add(t,
@@ -86,7 +88,7 @@ public class Element : IComparable
                     .GetCustomAttributes(typeof(ElementTypeInfo), false)[0]).Name);
         }
 
-        MapElemTypeStringsToElementType = new Dictionary<string, ElementType>();
+        MapElemTypeStringsToElementType = [];
         foreach (var item in ElemTypeStrings)
         {
             MapElemTypeStringsToElementType.Add(item.Value, item.Key);

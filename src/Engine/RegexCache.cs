@@ -4,7 +4,7 @@ namespace QuestViva.Engine;
 
 internal class RegexCache
 {
-    private readonly Dictionary<string, Regex> _cache = new();
+    private readonly Dictionary<string, Regex> _cache = [];
 
     public Regex GetRegex(string regex, string cacheID)
     {

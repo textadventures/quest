@@ -103,10 +103,7 @@ public abstract class EditableScriptBase : IEditableScript
 
     protected void RaiseUpdated(EditableScriptUpdatedEventArgs e)
     {
-        if (Updated != null)
-        {
-            Updated(this, e);
-        }
+        Updated?.Invoke(this, e);
     }
 
     protected void RaiseUpdateForNestedScriptChange(EditableScriptsUpdatedEventArgs e)

@@ -63,7 +63,7 @@ public partial class WasmPlayerBridge
     // here, one at a time ([JSExport] can't marshal an array of blobs in one call — mirrors
     // WasmEditorBridge's identical AddAdjacentFile), before every Initialise/InitialiseWithSave
     // call (including a restart), which consumes and clears this regardless of outcome.
-    private static readonly Dictionary<string, byte[]> PendingAdjacentFiles = new();
+    private static readonly Dictionary<string, byte[]> PendingAdjacentFiles = [];
 
     [JSExport]
     public static void AddAdjacentFile(string filename, byte[] data)
@@ -217,9 +217,9 @@ public partial class WasmPlayerBridge
     {
         if (_game == null || _ui == null || _ui.IsFinished) return;
         IDictionary<string, string> metadata = string.IsNullOrEmpty(metadataJson)
-            ? new Dictionary<string, string>()
+            ? []
             : JsonSerializer.Deserialize(metadataJson, WasmJsonContext.Default.DictionaryStringString)
-              ?? new Dictionary<string, string>();
+              ?? [];
         await _game.SendCommand(command, tickCount, metadata);
         await _ui.FlushBufferAndYieldAsync();
     }
@@ -481,7 +481,7 @@ public partial class WasmPlayerBridge
         private PlayerHelper? _helper;
 
         // Buffered JS calls — flushed at turn end or before any interactive call.
-        private readonly List<Action> _uiBuffer = new();
+        private readonly List<Action> _uiBuffer = [];
         // Only the last requestNextTimerTick per turn matters; older ones are stale.
         private int? _pendingTimerTick = null;
 

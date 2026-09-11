@@ -11,8 +11,8 @@ internal class FontsManager
 {
     private static readonly HttpClient Client = new();
 
-    private readonly List<string> _basefonts = new()
-    {
+    private readonly List<string> _basefonts =
+    [
         "Georgia, serif",
         "'Palatino Linotype', 'Book Antiqua', Palatino, serif",
         "'Times New Roman', Times, serif",
@@ -26,9 +26,9 @@ internal class FontsManager
         "Verdana, Geneva, sans-serif",
         "'Courier New', Courier, monospace",
         "'Lucida Console', Monaco, monospace"
-    };
+    ];
 
-    private List<string> _webFonts = new() { string.Empty };
+    private List<string> _webFonts = [string.Empty];
 
     public FontsManager()
     {
@@ -44,7 +44,7 @@ internal class FontsManager
             var result = JsonSerializer.Deserialize(json, FontsManagerJsonContext.Default.WebFontsResult);
             if (result?.items != null)
             {
-                _webFonts = new List<string>(result.items.Select(i => i.family));
+                _webFonts = [.. result.items.Select(i => i.family)];
                 _webFonts.Insert(0, string.Empty);
             }
         }
@@ -59,13 +59,13 @@ internal class FontsManager
     {
         public string kind { get; set; } = string.Empty;
         public string family { get; set; } = string.Empty;
-        public List<string> variants { get; set; } = new();
-        public List<string> subsets { get; set; } = new();
+        public List<string> variants { get; set; } = [];
+        public List<string> subsets { get; set; } = [];
     }
 
     internal class WebFontsResult
     {
         public string kind { get; set; } = string.Empty;
-        public List<WebFontResult> items { get; set; } = new();
+        public List<WebFontResult> items { get; set; } = [];
     }
 }

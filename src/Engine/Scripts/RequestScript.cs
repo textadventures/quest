@@ -37,7 +37,7 @@ public class RequestScriptConstructor : ScriptConstructorBase
 
     protected override int[] ExpectedParameters
     {
-        get { return new[] {2}; }
+        get { return [2]; }
     }
 
     protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)

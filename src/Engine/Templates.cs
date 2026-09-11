@@ -7,7 +7,7 @@ namespace QuestViva.Engine;
 
 public partial class Template
 {
-    private readonly Dictionary<string, Element> _templateLookup = new();
+    private readonly Dictionary<string, Element> _templateLookup = [];
     private readonly WorldModel _worldModel;
 
     public Template(WorldModel worldModel)
@@ -78,7 +78,7 @@ public partial class Template
         }
         else
         {
-            parameters = new Parameters();
+            parameters = [];
             for (var i = 0; i < obj.Length; i++)
             {
                 parameters.Add("object" + (i + 1), obj[i]);

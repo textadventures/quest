@@ -15,7 +15,7 @@ public partial class ScriptFactory : IScriptFactory
     private readonly bool _lazyLoadingEnabled = true;
     private readonly FunctionCallScriptConstructor _procConstructor;
 
-    private readonly Dictionary<string, IScriptConstructor> _scriptConstructors = new();
+    private readonly Dictionary<string, IScriptConstructor> _scriptConstructors = [];
     private readonly SetScriptConstructor _setConstructor;
 
     public ScriptFactory(WorldModel worldModel)
@@ -332,10 +332,7 @@ public partial class ScriptFactory : IScriptFactory
 
     private void AddError(string error)
     {
-        if (ErrorHandler != null)
-        {
-            ErrorHandler(this, new AddErrorEventArgs {Error = error});
-        }
+        ErrorHandler?.Invoke(this, new AddErrorEventArgs { Error = error });
     }
 
     public class AddErrorEventArgs : EventArgs

@@ -4,7 +4,7 @@ namespace QuestViva.WebPlayer;
 
 public static class LocalResources
 {
-    private static readonly Dictionary<string, Func<string, Stream?>> ResourceStreamProviders = new();
+    private static readonly Dictionary<string, Func<string, Stream?>> ResourceStreamProviders = [];
 
     public static void AddResourceStreamProvider(string resourcesId, Func<string, Stream?> resourceStreamProvider)
     {

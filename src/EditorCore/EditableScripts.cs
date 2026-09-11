@@ -23,7 +23,7 @@ public class EditableScripts : IEditableScripts, IDataWrapper
     private EditableScripts(EditorController controller)
     {
         _controller = controller;
-        _scripts = new List<IEditableScript>();
+        _scripts = [];
     }
 
     private EditableScripts(EditorController controller, IScript script)
@@ -268,30 +268,18 @@ public class EditableScripts : IEditableScripts, IDataWrapper
             _replacingScripts = false;
         }
 
-        if (Updated != null)
-        {
-            Updated(this, new EditableScriptsUpdatedEventArgs());
-        }
+        Updated?.Invoke(this, new EditableScriptsUpdatedEventArgs());
 
-        if (UnderlyingValueUpdated != null)
-        {
-            UnderlyingValueUpdated(this, new DataWrapperUpdatedEventArgs());
-        }
+        UnderlyingValueUpdated?.Invoke(this, new DataWrapperUpdatedEventArgs());
 
         Debug.Assert(_underlyingScript.Scripts.Count() == _scripts.Count);
     }
 
     private void script_Updated(object? sender, EditableScriptUpdatedEventArgs e)
     {
-        if (Updated != null)
-        {
-            Updated(this, new EditableScriptsUpdatedEventArgs((IEditableScript) sender!, e));
-        }
+        Updated?.Invoke(this, new EditableScriptsUpdatedEventArgs((IEditableScript)sender!, e));
 
-        if (UnderlyingValueUpdated != null)
-        {
-            UnderlyingValueUpdated(this, new DataWrapperUpdatedEventArgs());
-        }
+        UnderlyingValueUpdated?.Invoke(this, new DataWrapperUpdatedEventArgs());
 
         Debug.Assert(_underlyingScript.Scripts.Count() == _scripts.Count);
     }

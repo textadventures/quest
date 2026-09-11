@@ -387,7 +387,7 @@ internal partial class GameLoader
     {
         public RequiredAttributes(params RequiredAttribute[] attribs)
         {
-            Attributes = new List<RequiredAttribute>(attribs);
+            Attributes = [.. attribs];
         }
 
         public RequiredAttributes(bool canUseTemplates, params string[] attribs)
@@ -404,7 +404,7 @@ internal partial class GameLoader
 
     private class ImplicitTypes
     {
-        private readonly Dictionary<string, string> _implicitTypes = new();
+        private readonly Dictionary<string, string> _implicitTypes = [];
 
         public void Add(string element, string property, string type)
         {

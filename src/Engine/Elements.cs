@@ -4,35 +4,35 @@ namespace QuestViva.Engine;
 
 public class Elements
 {
-    private readonly Dictionary<string, Element> _allElements = new();
-    private readonly Dictionary<ElementType, Dictionary<string, Element>> _elements = new();
-    private readonly Dictionary<ElementType, List<Element>> _elementsLists = new();
+    private readonly Dictionary<string, Element> _allElements = [];
+    private readonly Dictionary<ElementType, Dictionary<string, Element>> _elements = [];
+    private readonly Dictionary<ElementType, List<Element>> _elementsLists = [];
 
     // Index of parent -> direct children, kept in sync by Add/Remove/UpdateParentIndex so that
     // GetDirectChildren doesn't need to do a full scan of every element in the game.
-    private readonly List<Element> _rootElements = new();
-    private readonly Dictionary<Element, List<Element>> _childrenByParent = new();
+    private readonly List<Element> _rootElements = [];
+    private readonly Dictionary<Element, List<Element>> _childrenByParent = [];
 
     // Elements that have completed at least one Add() call, and so are eligible to have their
     // parent-index entry moved by UpdateParentIndex. Elements being cloned have "parent" copied
     // onto them (via Fields.Clone) before they've been added, so that early parent assignment
     // must not touch the index - Add() below performs the baseline registration instead.
-    private readonly HashSet<Element> _indexedElements = new();
+    private readonly HashSet<Element> _indexedElements = [];
 
     // Per-parent counters backing UpdateElementSortOrder, so assigning a new child's SortIndex
     // doesn't need to scan all existing siblings to find the current max. SortIndex is only ever
     // used for relative ordering (OrderBy) or pairwise swapping of two already-issued values, so
     // a monotonically increasing counter per parent is safe even though it doesn't reclaim gaps
     // left by removed elements.
-    private readonly Dictionary<Element, int> _nextSortIndexByParent = new();
+    private readonly Dictionary<Element, int> _nextSortIndexByParent = [];
     private int _nextRootSortIndex;
 
     internal Elements()
     {
         foreach (ElementType t in Enum.GetValues<ElementType>())
         {
-            _elements.Add(t, new Dictionary<string, Element>());
-            _elementsLists.Add(t, new List<Element>());
+            _elements.Add(t, []);
+            _elementsLists.Add(t, []);
         }
     }
 
@@ -99,10 +99,7 @@ public class Elements
         _allElements.Add(e.Element.Name, e.Element);
         _elements[e.Element.ElemType].Add(e.Element.Name, e.Element);
 
-        if (ElementRenamed != null)
-        {
-            ElementRenamed(this, e);
-        }
+        ElementRenamed?.Invoke(this, e);
     }
 
     internal void Remove(ElementType t, string key)
@@ -143,7 +140,7 @@ public class Elements
 
         if (!_childrenByParent.TryGetValue(parent, out var children))
         {
-            children = new List<Element>();
+            children = [];
             _childrenByParent[parent] = children;
         }
 

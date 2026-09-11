@@ -76,7 +76,7 @@ public class ExpressionTests
     {
         var function = _worldModel.GetElementFactory(ElementType.Function).Create(name);
         function.Fields[FieldDefinitions.ReturnType] = returnType;
-        function.Fields[FieldDefinitions.ParamNames] = new QuestList<string>(parameters);
+        function.Fields[FieldDefinitions.ParamNames] = [.. parameters];
         function.Fields[FieldDefinitions.Script] = _scriptFactory.CreateScript(script, _scriptContext);
     }
 
@@ -498,7 +498,7 @@ public class ExpressionTests
         var c = new Context { Parameters = new Parameters { { "myvar", 42 } } };
         (await expr.ExecuteAsync(c)).ShouldBeTrue();
 
-        var c2 = new Context { Parameters = new Parameters() };
+        var c2 = new Context { Parameters = [] };
         (await expr.ExecuteAsync(c2)).ShouldBeFalse();
     }
 

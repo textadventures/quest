@@ -35,7 +35,7 @@ public class FunctionCallScriptConstructor : IScriptConstructor
             {
                 var parameters = Utility.SplitParameter(param);
                 procName = script.Substring(0, script.IndexOf('(')).Trim();
-                paramExpressions = new List<IFunction<object>>();
+                paramExpressions = [];
                 if (param.Trim().Length > 0)
                 {
                     foreach (var s in parameters)
@@ -46,7 +46,7 @@ public class FunctionCallScriptConstructor : IScriptConstructor
             }
             else
             {
-                procName = script.Substring(0, script.IndexOfAny(new[] {'{', ' '}));
+                procName = script.Substring(0, script.IndexOfAny(['{', ' ']));
             }
         }
 

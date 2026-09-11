@@ -4,7 +4,7 @@ internal class EditableDataWrapper<TSource, TWrapped>
     where TSource : notnull
 {
     private readonly Func<EditorController, TSource, TWrapped> _getNewWrappedInstance;
-    private readonly Dictionary<TSource, TWrapped> _instances = new();
+    private readonly Dictionary<TSource, TWrapped> _instances = [];
 
     public EditableDataWrapper(Func<EditorController, TSource, TWrapped> instanceCreator)
     {

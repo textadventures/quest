@@ -12,8 +12,8 @@ public enum SaveMode
 
 internal partial class GameSaver
 {
-    private readonly Dictionary<ElementType, IElementSaver> _elementSavers = new();
-    private readonly Dictionary<ElementType, IElementsSaver> _elementsSavers = new();
+    private readonly Dictionary<ElementType, IElementSaver> _elementSavers = [];
+    private readonly Dictionary<ElementType, IElementsSaver> _elementsSavers = [];
     private readonly WorldModel _worldModel;
     private Dictionary<string, string>? _impliedTypes;
     private SaveMode _mode;
@@ -161,7 +161,7 @@ internal partial class GameSaver
 
     private void UpdateImpliedTypesCache()
     {
-        _impliedTypes = new Dictionary<string, string>();
+        _impliedTypes = [];
         foreach (var impliedType in _worldModel.Elements.GetElements(ElementType.ImpliedType))
         {
             var element = impliedType.Fields[FieldDefinitions.Element]!;

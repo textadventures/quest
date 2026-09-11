@@ -91,10 +91,7 @@ public abstract class ElementFactoryBase : IElementFactory
             newElement.Type = elementToClone.Type;
         }
 
-        if (extraInitialisation != null)
-        {
-            extraInitialisation.Invoke(newElement);
-        }
+        extraInitialisation?.Invoke(newElement);
 
         if (initialTypes != null)
         {
@@ -123,18 +120,12 @@ public abstract class ElementFactoryBase : IElementFactory
 
     protected void NotifyAddedElement(string elementName)
     {
-        if (ObjectsUpdated != null)
-        {
-            ObjectsUpdated(this, new ObjectsUpdatedEventArgs {Added = elementName});
-        }
+        ObjectsUpdated?.Invoke(this, new ObjectsUpdatedEventArgs { Added = elementName });
     }
 
     protected void NotifyRemovedElement(string elementName)
     {
-        if (ObjectsUpdated != null)
-        {
-            ObjectsUpdated(this, new ObjectsUpdatedEventArgs {Removed = elementName});
-        }
+        ObjectsUpdated?.Invoke(this, new ObjectsUpdatedEventArgs { Removed = elementName });
     }
 
     private void DestroyElement(string elementName, bool silent)
@@ -278,7 +269,7 @@ public class ObjectFactory : ElementFactoryBase
             {
                 if (initialTypes == null)
                 {
-                    initialTypes = new List<string>();
+                    initialTypes = [];
                 }
 
                 initialTypes.Insert(0, defaultType);
