@@ -21,7 +21,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
     public NcalcExpressionEvaluator(string expression, ScriptContext scriptContext)
     {
         _scriptContext = scriptContext;
-        _expressionOwner = new ExpressionOwner(scriptContext.WorldModel);
+        _expressionOwner = scriptContext.WorldModel.ExpressionOwner;
         _expression = Utility.ResolveElementName(expression);
 
         _nCalcExpression = new Expression(expression,
