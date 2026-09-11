@@ -151,7 +151,7 @@ internal class ExpressionOwner(WorldModel worldModel)
     {
         ArgumentNullException.ThrowIfNull(obj);
         var element = GetParameter<Element>(obj, "GetAttributeNames", "object");
-        return new QuestList<string>(element.Fields.GetAttributeNames(includeInheritedAttributes));
+        return [.. element.Fields.GetAttributeNames(includeInheritedAttributes)];
     }
 
     public string? GetExitByLink( /* Element */ object? from, /* Element */ object? to)
@@ -186,37 +186,37 @@ internal class ExpressionOwner(WorldModel worldModel)
 
     public QuestList<Element> NewObjectList()
     {
-        return new QuestList<Element>();
+        return [];
     }
 
     public QuestList<string> NewStringList()
     {
-        return new QuestList<string>();
+        return [];
     }
 
     public QuestList<object> NewList()
     {
-        return new QuestList<object>();
+        return [];
     }
 
     public QuestDictionary<string> NewStringDictionary()
     {
-        return new QuestDictionary<string>();
+        return [];
     }
 
     public QuestDictionary<Element> NewObjectDictionary()
     {
-        return new QuestDictionary<Element>();
+        return [];
     }
 
     public QuestDictionary<IScript> NewScriptDictionary()
     {
-        return new QuestDictionary<IScript>();
+        return [];
     }
 
     public QuestDictionary<object> NewDictionary()
     {
-        return new QuestDictionary<object>();
+        return [];
     }
 
     public bool ListContains( /* IQuestList */ object? list, object? item)
@@ -378,9 +378,8 @@ internal class ExpressionOwner(WorldModel worldModel)
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentNullException.ThrowIfNull(del);
         var element = GetParameter<Element>(obj, "RunDelegateFunction", "object");
-        var impl = element.Fields.Get(del) as DelegateImplementation;
 
-        if (impl == null)
+        if (element.Fields.Get(del) is not DelegateImplementation impl)
         {
             throw new Exception($"Object '{element.Name}' has no delegate implementation '{del}'");
         }
@@ -525,7 +524,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         ArgumentNullException.ThrowIfNull(caption);
         ArgumentNullException.ThrowIfNull(options);
         var optionsDict = options.ToDictionary(o => o);
-        return await ShowMenu(caption, new QuestDictionary<string>(optionsDict), allowCancel);
+        return await ShowMenu(caption, [.. optionsDict], allowCancel);
     }
 
     public bool DictionaryContains( /* IDictionary */ object? obj, string? key)
@@ -742,7 +741,7 @@ internal class ExpressionOwner(WorldModel worldModel)
 
     private QuestList<T> ListCombine<T>(QuestList<T>? list1, QuestList<T>? list2)
     {
-        return list1 == null ? new QuestList<T>(list2) : list1.MergeLists(list2!);
+        return list1 == null ? [.. list2 ?? []] : list1.MergeLists(list2!);
     }
 
     public QuestList<string> ListExclude(QuestList<string>? list, string? str)
@@ -819,9 +818,8 @@ internal class ExpressionOwner(WorldModel worldModel)
     {
         ArgumentNullException.ThrowIfNull(obj);
         var element = GetParameter<Element>(obj, "GetDirectChildren", "object");
-        return new QuestList<Element>(
-            worldModel.Elements.GetDirectChildren(element)
-                .Where(e => e.ElemType == ElementType.Object && e.Type == ObjectType.Object));
+        return [.. worldModel.Elements.GetDirectChildren(element)
+                .Where(e => e.ElemType == ElementType.Object && e.Type == ObjectType.Object)];
     }
 
     public bool IsGameRunning()
@@ -840,28 +838,28 @@ internal class ExpressionOwner(WorldModel worldModel)
             result = result.ThenBy(e => e.Fields.Get(attribute[idx]));
         }
 
-        return new QuestList<Element>(result);
+        return [.. result];
     }
 
     public QuestList<Element> ObjectListSortDescending( /* QuestList<Element> */ object? obj, params string[] attribute)
     {
         ArgumentNullException.ThrowIfNull(obj);
         var list = GetParameter<QuestList<Element>>(obj, "ObjectListSortDescending", "objectlist");
-        return new QuestList<Element>(ObjectListSort(list, attribute).Reverse());
+        return [.. ObjectListSort(list, attribute).Reverse()];
     }
 
     public QuestList<string> StringListSort( /* QuestList<string> */ object? obj)
     {
         ArgumentNullException.ThrowIfNull(obj);
         var list = GetParameter<QuestList<string>>(obj, "StringListSort", "objectlist");
-        return new QuestList<string>(list.OrderBy(item => item));
+        return [.. list.OrderBy(item => item)];
     }
 
     public QuestList<string> StringListSortDescending( /* QuestList<string> */ object? obj)
     {
         ArgumentNullException.ThrowIfNull(obj);
         var list = GetParameter<QuestList<string>>(obj, "StringListSortDescending", "objectlist");
-        return new QuestList<string>(StringListSort(list).Reverse());
+        return [.. StringListSort(list).Reverse()];
     }
 
     public string? GetUiOption(string? optionName)

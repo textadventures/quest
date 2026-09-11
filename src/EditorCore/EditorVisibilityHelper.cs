@@ -109,9 +109,7 @@ internal class EditorVisibilityHelper
             if (_notVisibleIfElementInheritsTypeElement == null)
             {
                 // convert "mustnotinherit" type names list into a list of type elements
-                _notVisibleIfElementInheritsTypeElement = new List<Element>(
-                    _notVisibleIfElementInheritsType.Select(t => _worldModel.Elements.Get(ElementType.ObjectType, t))
-                );
+                _notVisibleIfElementInheritsTypeElement = [.. _notVisibleIfElementInheritsType.Select(t => _worldModel.Elements.Get(ElementType.ObjectType, t))];
             }
 
             // if the element does inherit any of the "forbidden" types, then this control is not visible
@@ -155,9 +153,7 @@ internal class EditorVisibilityHelper
             if (_visibleIfElementInheritsTypeElement == null)
             {
                 // convert "mustinherit" type names list into a list of type elements
-                _visibleIfElementInheritsTypeElement = new List<Element>(
-                    _visibleIfElementInheritsType.Select(t => _worldModel.Elements.Get(ElementType.ObjectType, t))
-                );
+                _visibleIfElementInheritsTypeElement = [.. _visibleIfElementInheritsType.Select(t => _worldModel.Elements.Get(ElementType.ObjectType, t))];
             }
 
             // if the element does inherit any of the types, then this control is visible

@@ -41,7 +41,7 @@ public class CommentScript : ScriptBase
     public override string Save()
     {
         return "// " + string.Join(Environment.NewLine + "// ",
-            _comment.Split(new[] {"\n"}, StringSplitOptions.RemoveEmptyEntries));
+            _comment.Split(["\n"], StringSplitOptions.RemoveEmptyEntries));
     }
 
     public override object? GetParameter(int index)

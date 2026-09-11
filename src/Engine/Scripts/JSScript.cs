@@ -20,7 +20,7 @@ public class JSScriptConstructor : IScriptConstructor
             if (parameters.Count != 1 || parameters[0].Trim().Length != 0)
             {
                 expressions =
-                    new List<IFunctionDynamic>(parameters.Select(p => new ExpressionDynamic(p, scriptContext)));
+                    [.. parameters.Select(p => new ExpressionDynamic(p, scriptContext))];
             }
         }
 
@@ -57,7 +57,7 @@ public class JSScript : ScriptBase
     protected override ScriptBase CloneScript()
     {
         return new JSScript(_scriptContext, _function,
-            _parameters == null ? null : new List<IFunctionDynamic>(_parameters));
+            _parameters == null ? null : [.. _parameters]);
     }
 
     public override async Task ExecuteAsync(Context c)
@@ -88,7 +88,7 @@ public class JSScript : ScriptBase
         }
 
         return SaveScript("JS." + _function,
-            _parameters == null ? new[] {string.Empty} : _parameters.Select(p => p.Save()).ToArray());
+            _parameters == null ? [string.Empty] : _parameters.Select(p => p.Save()).ToArray());
     }
 
     protected override void SetParameterInternal(int index, object? value)

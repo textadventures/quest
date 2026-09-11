@@ -8,7 +8,7 @@ public class RunDelegateScriptConstructor : ScriptConstructorBase
 
     protected override int[] ExpectedParameters
     {
-        get { return new int[] { }; }
+        get { return []; }
     }
 
     protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
@@ -64,9 +64,8 @@ public class RunDelegateScript : ScriptBase
 
         var obj = await _appliesTo.ExecuteAsync(c);
         var delName = await _delegate.ExecuteAsync(c);
-        var impl = obj.Fields.Get(delName) as DelegateImplementation;
 
-        if (impl == null)
+        if (obj.Fields.Get(delName) is not DelegateImplementation impl)
         {
             throw new Exception(
                 string.Format("Object '{0}' has no delegate implementation '{1}'", obj.Name, _delegate));
@@ -86,9 +85,11 @@ public class RunDelegateScript : ScriptBase
 
     public override string Save()
     {
-        var saveParameters = new List<string>();
-        saveParameters.Add(_appliesTo.Save());
-        saveParameters.Add(_delegate.Save());
+        var saveParameters = new List<string>
+        {
+            _appliesTo.Save(),
+            _delegate.Save()
+        };
         foreach (var p in _parameters.ParametersAsQuestList)
         {
             saveParameters.Add(p);

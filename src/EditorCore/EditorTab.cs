@@ -10,7 +10,7 @@ internal class EditorTab : IEditorTab
 
     public EditorTab(EditorDefinition parent, WorldModel worldModel, Element source)
     {
-        _controls = new Dictionary<string, IEditorControl>();
+        _controls = [];
         Caption = source.Fields.GetString("caption");
         // Editor definitions live in <library type="editor">, which GameSaver
         // excludes from both package and editor saves - so unlike Core.aslx

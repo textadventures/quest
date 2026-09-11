@@ -179,7 +179,7 @@ public class SwitchScript : ScriptBase
     private class SwitchCases
     {
         private readonly SwitchScript _parent;
-        private Dictionary<string, IFunctionDynamic> _compiledExpressions = new();
+        private Dictionary<string, IFunctionDynamic> _compiledExpressions = [];
 
         public SwitchCases(SwitchScript parent, Dictionary<IFunctionDynamic, IScript> cases)
             : this(parent)
@@ -209,13 +209,13 @@ public class SwitchScript : ScriptBase
             }
         }
 
-        public QuestDictionary<IScript> CasesAsQuestDictionary { get; private set; } = new();
+        public QuestDictionary<IScript> CasesAsQuestDictionary { get; private set; } = [];
 
         internal SwitchCases Clone(SwitchScript newParent)
         {
             var clone = new SwitchCases(newParent);
             clone.CasesAsQuestDictionary = (QuestDictionary<IScript>) CasesAsQuestDictionary.Clone();
-            clone._compiledExpressions = new Dictionary<string, IFunctionDynamic>();
+            clone._compiledExpressions = [];
             foreach (var compiledExpression in _compiledExpressions)
             {
                 clone._compiledExpressions.Add(compiledExpression.Key, compiledExpression.Value);

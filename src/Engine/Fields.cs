@@ -160,20 +160,20 @@ public class Fields
     // dictionaries, scripts etc. have no simple literal syntax to write back,
     // so there's deliberately no entry for them here — an override textbox
     // for those would just be a dead end.
-    private static readonly HashSet<Type> OverridableValueTypes = new()
-    {
+    private static readonly HashSet<Type> OverridableValueTypes =
+    [
         typeof(bool), typeof(string), typeof(Element),
         typeof(int), typeof(double), typeof(long), typeof(float), typeof(decimal), typeof(short)
-    };
+    ];
 
     private static bool CanOverrideValue(object? value)
     {
         return value == null || OverridableValueTypes.Contains(value.GetType());
     }
 
-    private readonly Dictionary<string, object?> _attributes = new();
+    private readonly Dictionary<string, object?> _attributes = [];
     private readonly Element _element;
-    private readonly Dictionary<string, IExtendableField> _extendableFields = new();
+    private readonly Dictionary<string, IExtendableField> _extendableFields = [];
     private readonly bool _isMeta;
     private readonly WorldModel _worldModel;
     private Stack<Element> _types = new();
@@ -363,9 +363,7 @@ public class Fields
 
         if (changed && cloneClonableValues)
         {
-            var mutableOldValue = oldValue as IMutableField;
-            var mutableNewValue = value as IMutableField;
-            if (mutableOldValue != null)
+            if (oldValue is IMutableField mutableOldValue)
             {
                 if (_worldModel.EditMode || mutableOldValue.RequiresCloning)
                 {
@@ -373,7 +371,7 @@ public class Fields
                 }
             }
 
-            if (mutableNewValue != null)
+            if (value is IMutableField mutableNewValue)
             {
                 if (_worldModel.EditMode || mutableNewValue.RequiresCloning)
                 {
@@ -507,10 +505,9 @@ public class Fields
     private AttributeData GetMergedResult(string attribute, AttributeData baseField)
     {
         var source = new List<string>();
-        var extendableBaseField = baseField.Value as IExtendableField;
         var mergedResult = GetExtendableField(attribute, source);
 
-        if (extendableBaseField == null)
+        if (baseField.Value is not IExtendableField extendableBaseField)
         {
             return new AttributeData
             {
@@ -622,10 +619,7 @@ public class Fields
         AddType(addType);
         var newValue = CloneStack(_types);
         _worldModel.UndoLogger.AddUndoAction(() => new UndoAddRemoveType(_element.Name, oldValue, newValue));
-        if (AttributeChangedSilent != null)
-        {
-            AttributeChangedSilent(this, new AttributeChangedEventArgs(true));
-        }
+        AttributeChangedSilent?.Invoke(this, new AttributeChangedEventArgs(true));
     }
 
     public void RemoveTypeUndoable(Element removeType)
@@ -634,10 +628,7 @@ public class Fields
         _types = CloneStackAndDelete(_types, removeType);
         var newValue = CloneStack(_types);
         _worldModel.UndoLogger.AddUndoAction(() => new UndoAddRemoveType(_element.Name, oldValue, newValue));
-        if (AttributeChangedSilent != null)
-        {
-            AttributeChangedSilent(this, new AttributeChangedEventArgs(true));
-        }
+        AttributeChangedSilent?.Invoke(this, new AttributeChangedEventArgs(true));
     }
 
     private string FormatDebugData(object? value)
@@ -747,10 +738,7 @@ public class Fields
     internal void DoUndoAddRemoveType(Stack<Element> newValue)
     {
         _types = newValue;
-        if (AttributeChangedSilent != null)
-        {
-            AttributeChangedSilent(this, new AttributeChangedEventArgs(true));
-        }
+        AttributeChangedSilent?.Invoke(this, new AttributeChangedEventArgs(true));
     }
 
     private Stack<Element> CloneStack(Stack<Element> input)
@@ -806,8 +794,7 @@ public class Fields
 
         foreach (var attribute in _attributes)
         {
-            var elementValue = attribute.Value as Element;
-            if (elementValue != null)
+            if (attribute.Value is Element elementValue)
             {
                 if (elementValue == e)
                 {
@@ -817,8 +804,7 @@ public class Fields
                 continue;
             }
 
-            var listValue = attribute.Value as QuestList<Element>;
-            if (listValue != null)
+            if (attribute.Value is QuestList<Element> listValue)
             {
                 while (listValue.Contains(e))
                 {
@@ -828,8 +814,7 @@ public class Fields
                 continue;
             }
 
-            var dictionaryValue = attribute.Value as QuestDictionary<Element>;
-            if (dictionaryValue != null)
+            if (attribute.Value is QuestDictionary<Element> dictionaryValue)
             {
                 var keysToRemove = new List<string>();
                 foreach (var item in dictionaryValue)
@@ -927,15 +912,15 @@ public class LazyFields
 {
     private readonly Fields _fields;
     private readonly WorldModel _worldModel;
-    private List<Action> _actions = new();
-    private List<string> _defaultTypes = new();
-    private Dictionary<string, IDictionary<string, string?>> _objectDictionaries = new();
-    private Dictionary<string, string> _objectFields = new();
-    private Dictionary<string, IEnumerable<string>> _objectLists = new();
+    private List<Action> _actions = [];
+    private List<string> _defaultTypes = [];
+    private Dictionary<string, IDictionary<string, string?>> _objectDictionaries = [];
+    private Dictionary<string, string> _objectFields = [];
+    private Dictionary<string, IEnumerable<string>> _objectLists = [];
     private bool _resolved;
-    private Dictionary<string, IDictionary<string, string>> _scriptDictionaries = new();
-    private Dictionary<string, string> _scripts = new();
-    private List<string> _types = new();
+    private Dictionary<string, IDictionary<string, string>> _scriptDictionaries = [];
+    private Dictionary<string, string> _scripts = [];
+    private List<string> _types = [];
 
     internal LazyFields(WorldModel worldModel, Fields fields)
     {
@@ -1057,14 +1042,12 @@ public class LazyFields
         foreach (var field in _fields.FieldNames)
         {
             var attribute = _fields.Get(field);
-            var objectList = attribute as QuestList<object>;
-            if (objectList != null)
+            if (attribute is QuestList<object> objectList)
             {
                 ResolveObjectList(objectList, scriptFactory);
             }
 
-            var objectDictionary = attribute as QuestDictionary<object>;
-            if (objectDictionary != null)
+            if (attribute is QuestDictionary<object> objectDictionary)
             {
                 ResolveObjectDictionary(objectDictionary, scriptFactory);
             }
@@ -1177,36 +1160,31 @@ public class LazyFields
     {
         replacement = null;
 
-        var genericList = value as QuestList<object>;
-        if (genericList != null)
+        if (value is QuestList<object> genericList)
         {
             ResolveObjectList(genericList, scriptFactory);
             return false;
         }
 
-        var genericDictionary = value as QuestDictionary<object>;
-        if (genericDictionary != null)
+        if (value is QuestDictionary<object> genericDictionary)
         {
             ResolveObjectDictionary(genericDictionary, scriptFactory);
             return false;
         }
 
-        var objRef = value as LazyObjectReference;
-        if (objRef != null)
+        if (value is LazyObjectReference objRef)
         {
             replacement = _worldModel.Elements.Get(objRef.ObjectName);
             return true;
         }
 
-        var objList = value as LazyObjectList;
-        if (objList != null)
+        if (value is LazyObjectList objList)
         {
             replacement = new QuestList<Element>(objList.Objects.Select(o => _worldModel.Elements.Get(o)));
             return true;
         }
 
-        var objDictionary = value as LazyObjectDictionary;
-        if (objDictionary != null)
+        if (value is LazyObjectDictionary objDictionary)
         {
             var newDictionary = new QuestDictionary<Element>();
             foreach (var kvp in objDictionary.Dictionary)
@@ -1218,15 +1196,13 @@ public class LazyFields
             return true;
         }
 
-        var script = value as LazyScript;
-        if (script != null)
+        if (value is LazyScript script)
         {
             replacement = scriptFactory.CreateScript(script.Script);
             return true;
         }
 
-        var scriptDictionary = value as LazyScriptDictionary;
-        if (scriptDictionary != null)
+        if (value is LazyScriptDictionary scriptDictionary)
         {
             replacement = ConvertToScriptDictionary(scriptDictionary.Dictionary, scriptFactory);
             return true;

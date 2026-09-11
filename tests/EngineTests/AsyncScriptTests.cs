@@ -25,7 +25,7 @@ public class AsyncScriptTests
     private void AddFunction(string name, string script, params string[] paramNames)
     {
         var function = _worldModel.GetElementFactory(ElementType.Function).Create(name);
-        function.Fields[FieldDefinitions.ParamNames] = new QuestList<string>(paramNames);
+        function.Fields[FieldDefinitions.ParamNames] = [.. paramNames];
         function.Fields[FieldDefinitions.Script] = _scriptFactory.CreateScript(script, _scriptContext);
     }
 

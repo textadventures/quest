@@ -5,14 +5,14 @@ namespace QuestViva.EditorCore;
 internal class EditorDefinition : IEditorDefinition
 {
     private readonly Dictionary<string, IEditorControl> _controls;
-    private readonly Dictionary<string, FilterGroup> _filterGroups = new();
+    private readonly Dictionary<string, FilterGroup> _filterGroups = [];
 
     private readonly Dictionary<string, IEditorTab> _tabs;
 
     public EditorDefinition(WorldModel worldModel, Element source)
     {
-        _tabs = new Dictionary<string, IEditorTab>();
-        _controls = new Dictionary<string, IEditorControl>();
+        _tabs = [];
+        _controls = [];
         AppliesTo = source.Fields.GetString("appliesto");
         Pattern = source.Fields.GetString("pattern");
         OriginalPattern = source.Fields.GetString(FieldDefinitions.OriginalPattern.Property);
@@ -105,7 +105,7 @@ internal class EditorDefinition : IEditorDefinition
             Name = name;
         }
 
-        public List<string> Attributes { get; } = new();
+        public List<string> Attributes { get; } = [];
 
         public string Name { get; }
     }
@@ -117,7 +117,7 @@ internal class EditorDefinition : IEditorDefinition
             Name = name;
         }
 
-        public Dictionary<string, Filter> Filters { get; } = new();
+        public Dictionary<string, Filter> Filters { get; } = [];
 
         public string Name { get; }
     }

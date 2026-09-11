@@ -5,6 +5,30 @@ root = true
 # EnforceCodeStyleInBuild (Directory.Build.props) + TreatWarningsAsErrors.
 dotnet_diagnostic.IDE1006.severity = warning
 
+# Code style rules, also enforced at build time. Most can be auto-fixed with e.g.
+#   dotnet format style QuestViva.sln --diagnostics IDE0028 IDE1005
+# Raise events with ?.Invoke rather than an explicit null check
+csharp_style_conditional_delegate_call = true
+dotnet_diagnostic.IDE1005.severity = warning
+
+# Collection initializers and collection expressions ([]). Only when the declared type is the
+# type being created: for an interface target (IEnumerable<T> etc.) a collection expression can
+# produce a different runtime type, which would break code that casts it back and mutates it.
+dotnet_style_collection_initializer = true
+dotnet_style_prefer_collection_expression = when_types_exactly_match
+dotnet_diagnostic.IDE0028.severity = warning
+dotnet_diagnostic.IDE0300.severity = warning
+dotnet_diagnostic.IDE0301.severity = warning
+dotnet_diagnostic.IDE0302.severity = warning
+dotnet_diagnostic.IDE0303.severity = warning
+
+# Pattern matching instead of "as" + null check, or "is" + cast
+csharp_style_pattern_matching_over_as_with_null_check = true
+csharp_style_pattern_matching_over_is_with_cast_check = true
+dotnet_diagnostic.IDE0019.severity = warning
+dotnet_diagnostic.IDE0020.severity = warning
+dotnet_diagnostic.IDE0038.severity = warning
+
 dotnet_naming_style.pascal_case.capitalization = pascal_case
 dotnet_naming_style.camel_case.capitalization = camel_case
 dotnet_naming_style.underscore_camel_case.capitalization = camel_case
@@ -55,3 +79,16 @@ indent_style = space
 indent_size = 2
 trim_trailing_whitespace = true
 insert_final_newline = true
+
+[src/Legacy/**.cs]
+# Legacy is frozen Quest 4 compatibility code (see Legacy.csproj), so only the naming rules
+# above apply there, not the code style rules.
+dotnet_diagnostic.IDE1005.severity = none
+dotnet_diagnostic.IDE0028.severity = none
+dotnet_diagnostic.IDE0300.severity = none
+dotnet_diagnostic.IDE0301.severity = none
+dotnet_diagnostic.IDE0302.severity = none
+dotnet_diagnostic.IDE0303.severity = none
+dotnet_diagnostic.IDE0019.severity = none
+dotnet_diagnostic.IDE0020.severity = none
+dotnet_diagnostic.IDE0038.severity = none

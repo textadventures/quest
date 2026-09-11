@@ -8,7 +8,7 @@ public class CreateScriptConstructor : ScriptConstructorBase
 
     protected override int[] ExpectedParameters
     {
-        get { return new[] {1, 2}; }
+        get { return [1, 2]; }
     }
 
     protected override IScript? CreateInt(List<string> parameters, ScriptContext scriptContext)
@@ -67,7 +67,7 @@ public class CreateScript : ScriptBase
         else
         {
             _worldModel.ObjectFactory.CreateObject(await _expr.ExecuteAsync(c), ObjectType.Object, true,
-                new List<string> {await _type.ExecuteAsync(c)});
+                [await _type.ExecuteAsync(c)]);
         }
     }
 
@@ -116,7 +116,7 @@ public class CreateExitScriptConstructor : ScriptConstructorBase
 
     protected override int[] ExpectedParameters
     {
-        get { return new[] {3, 4, 5}; }
+        get { return [3, 4, 5]; }
     }
 
     protected override IScript? CreateInt(List<string> parameters, ScriptContext scriptContext)
@@ -268,7 +268,7 @@ public class CreateTimerScriptConstructor : ScriptConstructorBase
 
     protected override int[] ExpectedParameters
     {
-        get { return new[] {1}; }
+        get { return [1]; }
     }
 
     protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
@@ -325,7 +325,7 @@ public class CreateTurnScriptConstructor : ScriptConstructorBase
 
     protected override int[] ExpectedParameters
     {
-        get { return new[] {1}; }
+        get { return [1]; }
     }
 
     protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)

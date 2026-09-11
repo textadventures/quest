@@ -16,11 +16,13 @@ public class QuestDictionaryTests
     [TestMethod]
     public void Foreach_AfterRemoveAndReAdd_PreservesTrueInsertionOrder()
     {
-        var dict = new QuestDictionary<string>();
-        dict.Add("a", "1");
-        dict.Add("b", "2");
-        dict.Add("c", "3");
-        dict.Add("d", "4");
+        var dict = new QuestDictionary<string>
+        {
+            { "a", "1" },
+            { "b", "2" },
+            { "c", "3" },
+            { "d", "4" }
+        };
         dict.Remove("b");
         dict.Add("e", "5");
 

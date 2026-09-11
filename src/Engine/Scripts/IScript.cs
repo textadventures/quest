@@ -178,10 +178,7 @@ public abstract class ScriptBase : IScript, IMutableField
 
     protected void NotifyUpdate(ScriptUpdatedEventArgs args)
     {
-        if (ScriptUpdated != null)
-        {
-            ScriptUpdated(this, args);
-        }
+        ScriptUpdated?.Invoke(this, args);
     }
 
     protected abstract ScriptBase CloneScript();

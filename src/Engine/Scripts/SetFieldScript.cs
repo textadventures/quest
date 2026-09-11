@@ -8,7 +8,7 @@ public class SetFieldScriptConstructor : ScriptConstructorBase
 
     protected override int[] ExpectedParameters
     {
-        get { return new[] {3}; }
+        get { return [3]; }
     }
 
     protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)

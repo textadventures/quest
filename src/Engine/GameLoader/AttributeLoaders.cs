@@ -9,7 +9,7 @@ namespace QuestViva.Engine.GameLoader;
 
 internal partial class GameLoader
 {
-    private readonly Dictionary<string, IValueLoader> _valueLoaders = new();
+    private readonly Dictionary<string, IValueLoader> _valueLoaders = [];
 
     private void AddLoaders(LoadMode mode)
     {

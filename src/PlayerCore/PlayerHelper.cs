@@ -20,7 +20,7 @@ public interface IPlayerHelperUI : IPlayer
 /// </summary>
 public class PlayerHelper
 {
-    private static readonly Dictionary<string, string> MimeTypes = new();
+    private static readonly Dictionary<string, string> MimeTypes = [];
     private readonly IPlayerHelperUI _playerUI;
 
     private string _font = "";

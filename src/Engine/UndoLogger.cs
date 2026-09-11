@@ -62,10 +62,7 @@ public class UndoLogger
 
     private void OnTransactionsUpdated()
     {
-        if (TransactionsUpdated != null)
-        {
-            TransactionsUpdated(this, new EventArgs());
-        }
+        TransactionsUpdated?.Invoke(this, new EventArgs());
     }
 
     internal void AddUndoAction(Func<IUndoAction> getAction)
@@ -159,7 +156,7 @@ public class UndoLogger
 
     private class Transaction
     {
-        private readonly List<IUndoAction> _attributes = new();
+        private readonly List<IUndoAction> _attributes = [];
 
         public Transaction(string command)
         {

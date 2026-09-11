@@ -95,8 +95,8 @@ public sealed class EditorController : IDisposable
         {ValidationMessage.MismatchingQuotes, "Missing quote character (\")"}
     };
 
-    private readonly List<ElementType> _advancedTypes = new()
-    {
+    private readonly List<ElementType> _advancedTypes =
+    [
         ElementType.DynamicTemplate,
         ElementType.Function,
         ElementType.IncludedLibrary,
@@ -105,20 +105,20 @@ public sealed class EditorController : IDisposable
         ElementType.Template,
         ElementType.Timer,
         ElementType.Walkthrough
-    };
+    ];
 
-    private readonly Dictionary<string, EditorDefinition> _editorDefinitions = new();
-    private readonly Dictionary<string, EditorDefinition> _expressionDefinitions = new();
+    private readonly Dictionary<string, EditorDefinition> _editorDefinitions = [];
+    private readonly Dictionary<string, EditorDefinition> _expressionDefinitions = [];
 
-    private readonly List<ElementType> _ignoredTypes = new()
-    {
+    private readonly List<ElementType> _ignoredTypes =
+    [
         ElementType.ImpliedType,
         ElementType.Delegate,
         ElementType.Editor,
         ElementType.EditorTab,
         ElementType.EditorControl,
         ElementType.Resource
-    };
+    ];
 
     private readonly Regex _startsWithNumberRegex = new(@"^\d");
 
@@ -167,10 +167,7 @@ public sealed class EditorController : IDisposable
             {
                 _simpleMode = value;
                 UpdateTree();
-                if (SimpleModeChanged != null)
-                {
-                    SimpleModeChanged(this, new EventArgs());
-                }
+                SimpleModeChanged?.Invoke(this, new EventArgs());
             }
         }
     }
@@ -288,10 +285,7 @@ public sealed class EditorController : IDisposable
 
     private void OnWorldModelLoadStatus(object? sender, Engine.LoadStatusEventArgs e)
     {
-        if (LoadStatus != null)
-        {
-            LoadStatus(this, new LoadStatusEventArgs(e.Status));
-        }
+        LoadStatus?.Invoke(this, new LoadStatusEventArgs(e.Status));
     }
 
     private void Elements_ElementRenamed(object? sender, NameChangedEventArgs e)
@@ -300,23 +294,14 @@ public sealed class EditorController : IDisposable
         var newName = e.Element.Name;
 
         RenamedNode!(this, new RenamedNodeEventArgs {OldName = oldName, NewName = newName});
-        if (ElementsUpdated != null)
-        {
-            ElementsUpdated(this, EventArgs.Empty);
-        }
+        ElementsUpdated?.Invoke(this, EventArgs.Empty);
     }
 
     private void UndoLogger_TransactionsUpdated(object? sender, EventArgs e)
     {
-        if (UndoListUpdated != null)
-        {
-            UndoListUpdated(this, new UpdateUndoListEventArgs(WorldModel.UndoLogger.UndoList()));
-        }
+        UndoListUpdated?.Invoke(this, new UpdateUndoListEventArgs(WorldModel.UndoLogger.UndoList()));
 
-        if (RedoListUpdated != null)
-        {
-            RedoListUpdated(this, new UpdateUndoListEventArgs(WorldModel.UndoLogger.RedoList()));
-        }
+        RedoListUpdated?.Invoke(this, new UpdateUndoListEventArgs(WorldModel.UndoLogger.RedoList()));
     }
 
     private void OnWorldModelElementFieldUpdated(object? sender, ElementFieldUpdatedEventArgs e)
@@ -326,12 +311,9 @@ public sealed class EditorController : IDisposable
             return;
         }
 
-        if (ElementUpdated != null)
-        {
-            ElementUpdated(this,
-                new ElementUpdatedEventArgs(e.Element.Name, e.Attribute, WrapValue(e.NewValue, e.Element, e.Attribute),
-                    e.IsUndo));
-        }
+        ElementUpdated?.Invoke(this,
+    new ElementUpdatedEventArgs(e.Element.Name, e.Attribute, WrapValue(e.NewValue, e.Element, e.Attribute),
+        e.IsUndo));
 
         if (e.Attribute == "parent")
         {
@@ -339,10 +321,7 @@ public sealed class EditorController : IDisposable
             RemoveElementAndSubElementsFromTree(e.Element);
             AddElementAndSubElementsToTree(e.Element);
             EndTreeUpdate!(this, new EventArgs());
-            if (ElementsUpdated != null)
-            {
-                ElementsUpdated(this, new EventArgs());
-            }
+            ElementsUpdated?.Invoke(this, new EventArgs());
         }
 
         if (e.Attribute == "anonymous" || e.Attribute == "alias"
@@ -361,10 +340,7 @@ public sealed class EditorController : IDisposable
                 // element name might be null if we're undoing an element add
                 RetitledNode!(this,
                     new RetitledNodeEventArgs {Key = e.Element.Name, NewTitle = GetDisplayName(e.Element)});
-                if (ElementsUpdated != null)
-                {
-                    ElementsUpdated(this, EventArgs.Empty);
-                }
+                ElementsUpdated?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -383,10 +359,7 @@ public sealed class EditorController : IDisposable
 
         if (e.Element.ElemType == ElementType.IncludedLibrary && e.Attribute == "filename")
         {
-            if (LibrariesUpdated != null)
-            {
-                LibrariesUpdated(this, new LibrariesUpdatedEventArgs());
-            }
+            LibrariesUpdated?.Invoke(this, new LibrariesUpdatedEventArgs());
         }
     }
 
@@ -403,10 +376,7 @@ public sealed class EditorController : IDisposable
         {
             RemovedNode!(this, new RemovedNodeEventArgs {Key = e.Element.Name});
             AddElementAndSubElementsToTree(e.Element, GetElementPosition(e.Element));
-            if (ElementMoved != null)
-            {
-                ElementMoved(this, new ElementMovedEventArgs {Key = e.Element.Name});
-            }
+            ElementMoved?.Invoke(this, new ElementMovedEventArgs { Key = e.Element.Name });
         }
 
         if (e.Attribute == "library")
@@ -466,10 +436,7 @@ public sealed class EditorController : IDisposable
     {
         if (_initialised)
         {
-            if (ElementRefreshed != null)
-            {
-                ElementRefreshed(this, new ElementRefreshedEventArgs(e.Element.Name));
-            }
+            ElementRefreshed?.Invoke(this, new ElementRefreshedEventArgs(e.Element.Name));
         }
     }
 
@@ -486,15 +453,12 @@ public sealed class EditorController : IDisposable
             RemovedNode!(this, new RemovedNodeEventArgs {Key = args.Removed});
         }
 
-        if (ElementsUpdated != null)
-        {
-            ElementsUpdated(this, new EventArgs());
-        }
+        ElementsUpdated?.Invoke(this, new EventArgs());
     }
 
     private void InitialiseTreeStructure()
     {
-        _elementTreeStructure = new Dictionary<ElementType, TreeHeader>();
+        _elementTreeStructure = [];
 
         AddTreeHeader(EditorStyle.TextAdventure, ElementType.Object, "_objects", "Objects", null, false);
         AddTreeHeader(EditorStyle.GameBook, ElementType.Object, "_objects", "Pages", null, false);
@@ -1265,8 +1229,7 @@ public sealed class EditorController : IDisposable
             // verbElements only includes verbs with a property
             var verbProperty = verb.Fields[FieldDefinitions.Property]!;
             var pattern = verb.Fields.Get(FieldDefinitions.Pattern.Property);
-            var simplePattern = pattern as EditorCommandPattern;
-            var displayName = simplePattern != null ? simplePattern.Pattern : verbProperty;
+            var displayName = pattern is EditorCommandPattern simplePattern ? simplePattern.Pattern : verbProperty;
             result[verbProperty] = FriendlyVerbDisplayName(displayName);
         }
 
@@ -1275,7 +1238,7 @@ public sealed class EditorController : IDisposable
 
     private string FriendlyVerbDisplayName(string input)
     {
-        var verbs = input.Split(new[] {";", "; "}, StringSplitOptions.None);
+        var verbs = input.Split([";", "; "], StringSplitOptions.None);
         var result = string.Empty;
         foreach (var verb in verbs)
         {
@@ -1415,7 +1378,7 @@ public sealed class EditorController : IDisposable
     {
         if (to == null && lookonly)
         {
-            return CreateNewAnonymousObject(parent, "exit", ObjectType.Exit, new List<string> {type},
+            return CreateNewAnonymousObject(parent, "exit", ObjectType.Exit, [type],
                 new Dictionary<string, object>
                 {
                     {"to", WorldModel.Elements.Get(parent)},
@@ -1425,7 +1388,7 @@ public sealed class EditorController : IDisposable
                 }, useTransaction);
         }
 
-        return CreateNewAnonymousObject(parent, "exit", ObjectType.Exit, new List<string> {type},
+        return CreateNewAnonymousObject(parent, "exit", ObjectType.Exit, [type],
             new Dictionary<string, object>
             {
                 // Only a look-only exit can be created without a destination
@@ -1458,7 +1421,7 @@ public sealed class EditorController : IDisposable
     public string CreateNewVerb(string? parent, bool useTransaction)
     {
         return CreateNewAnonymousObject(parent, "command", ObjectType.Command,
-            new List<string> {"defaultverb"},
+            ["defaultverb"],
             new Dictionary<string, object> {{"isverb", true}},
             useTransaction);
     }
@@ -1713,8 +1676,10 @@ public sealed class EditorController : IDisposable
         if (elementType != ElementType.Object || currentSelection.Type == ObjectType.Object ||
             currentSelection.Type == ObjectType.Game)
         {
-            var result = new List<string>();
-            result.Add(elementKey);
+            var result = new List<string>
+            {
+                elementKey
+            };
 
             var thisElement = currentSelection;
             while (thisElement.Parent != null)
@@ -2075,11 +2040,8 @@ public sealed class EditorController : IDisposable
 
     internal void SetClipboardScript(IEnumerable<IScript> script)
     {
-        _clipboardScripts = new List<IScript>(script);
-        if (ScriptClipboardUpdated != null)
-        {
-            ScriptClipboardUpdated(this, new ScriptClipboardUpdateEventArgs {HasScript = _clipboardScripts.Count > 0});
-        }
+        _clipboardScripts = [.. script];
+        ScriptClipboardUpdated?.Invoke(this, new ScriptClipboardUpdateEventArgs { HasScript = _clipboardScripts.Count > 0 });
     }
 
     internal IEnumerable<IScript> GetClipboardScript()
@@ -2782,14 +2744,12 @@ public sealed class EditorController : IDisposable
                     if (element.Fields.Get(ctl.Attribute!) is IDictionary dictionary && dictionary.Contains(oldName))
                     {
                         var wrappedValue = WrapValue(dictionary);
-                        var editableStringDictionary = wrappedValue as IEditableDictionary<string>;
-                        var editableScriptDictionary = wrappedValue as IEditableDictionary<IEditableScripts>;
-                        if (editableStringDictionary != null)
+                        if (wrappedValue is IEditableDictionary<string> editableStringDictionary)
                         {
                             editableStringDictionary.ChangeKey(oldName, newName);
                         }
 
-                        if (editableScriptDictionary != null)
+                        if (wrappedValue is IEditableDictionary<IEditableScripts> editableScriptDictionary)
                         {
                             editableScriptDictionary.ChangeKey(oldName, newName);
                         }

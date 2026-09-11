@@ -86,13 +86,13 @@ public static class StringFunctions
     {
         ArgumentNullException.ThrowIfNull(input);
         ArgumentNullException.ThrowIfNull(splitChar);
-        return new QuestList<string>(input.Split([splitChar], StringSplitOptions.None));
+        return [.. input.Split([splitChar], StringSplitOptions.None)];
     }
 
     public static QuestList<string> Split(string? input)
     {
         ArgumentNullException.ThrowIfNull(input);
-        return new QuestList<string>(input.Split([";"], StringSplitOptions.None));
+        return [.. input.Split([";"], StringSplitOptions.None)];
     }
 
     public static string Join(IEnumerable<string>? input, string? joinChar)

@@ -20,7 +20,7 @@ public class MultiScript : ScriptBase, IScriptParent, IMultiScript
     public MultiScript(WorldModel worldModel, params IScript[] scripts)
         : this(worldModel)
     {
-        _scripts = new List<IScript>(scripts);
+        _scripts = [.. scripts];
     }
 
     private MultiScript(WorldModel worldModel)
@@ -200,7 +200,7 @@ public class MultiScript : ScriptBase, IScriptParent, IMultiScript
     protected override ScriptBase CloneScript()
     {
         var clone = new MultiScript(_worldModel);
-        clone._scripts = new List<IScript>();
+        clone._scripts = [];
         foreach (var script in _scripts)
         {
             var clonedScript = (IScript) script.Clone();

@@ -42,7 +42,7 @@ public class EditableScriptData
 
 internal class EditableScriptFactory
 {
-    private readonly Dictionary<IScript, EditableScriptBase> _cache = new();
+    private readonly Dictionary<IScript, EditableScriptBase> _cache = [];
     private readonly EditorController _controller;
     private readonly ScriptFactory _scriptFactory;
     private readonly WorldModel _worldModel;
@@ -62,7 +62,7 @@ internal class EditableScriptFactory
         }
     }
 
-    internal Dictionary<string, EditableScriptData> ScriptData { get; } = new();
+    internal Dictionary<string, EditableScriptData> ScriptData { get; } = [];
 
     private bool IsScriptEditor(Element editor)
     {

@@ -14,8 +14,8 @@ public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDiction
     private readonly EditorController _controller;
 
     private readonly QuestDictionary<TSource> _source;
-    private readonly Dictionary<string, IEditableListItem<TWrapped>> _wrappedItems = new();
-    private readonly Dictionary<TWrapped, IEditableListItem<TWrapped>> _wrappedItemsLookup = new();
+    private readonly Dictionary<string, IEditableListItem<TWrapped>> _wrappedItems = [];
+    private readonly Dictionary<TWrapped, IEditableListItem<TWrapped>> _wrappedItemsLookup = [];
 
     public EditableWrappedItemDictionary(EditorController controller, QuestDictionary<TSource> source)
     {
@@ -144,12 +144,9 @@ public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDiction
         _wrappedItemsLookup.Add(value, wrappedValue);
         value.UnderlyingValueUpdated += WrappedUnderlyingValueUpdated;
 
-        if (Added != null)
-        {
-            Added(this,
-                new EditableListUpdatedEventArgs<TWrapped>
-                    {UpdatedItem = wrappedValue, Index = index, Source = source});
-        }
+        Added?.Invoke(this,
+    new EditableListUpdatedEventArgs<TWrapped>
+    { UpdatedItem = wrappedValue, Index = index, Source = source });
     }
 
     private void RemoveWrappedItem(IEditableListItem<TWrapped> item, EditorUpdateSource source, int index)
@@ -157,11 +154,8 @@ public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDiction
         _wrappedItems[item.Key].Value.UnderlyingValueUpdated -= WrappedUnderlyingValueUpdated;
         _wrappedItemsLookup.Remove(_wrappedItems[item.Key].Value);
         _wrappedItems.Remove(item.Key);
-        if (Removed != null)
-        {
-            Removed(this,
-                new EditableListUpdatedEventArgs<TWrapped> {UpdatedItem = item, Index = index, Source = source});
-        }
+        Removed?.Invoke(this,
+    new EditableListUpdatedEventArgs<TWrapped> { UpdatedItem = item, Index = index, Source = source });
     }
 
     private void WrappedUnderlyingValueUpdated(object? sender, DataWrapperUpdatedEventArgs e)

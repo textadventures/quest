@@ -5,7 +5,7 @@ namespace QuestViva.PlayerCore;
 public class ListHandler(Action<string, object?[]?> addJavaScriptToBuffer)
 {
     private readonly ListDataComparer _comparer = new();
-    private readonly Dictionary<ListType, List<ListData>> _lists = new();
+    private readonly Dictionary<ListType, List<ListData>> _lists = [];
     private Action<string, object?[]?> AddJavaScriptToBuffer { get; } = addJavaScriptToBuffer;
 
     public void UpdateList(ListType listType, List<ListData> items)

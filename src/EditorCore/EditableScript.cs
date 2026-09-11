@@ -9,7 +9,7 @@ namespace QuestViva.EditorCore;
 public class EditableScript : EditableScriptBase, IEditableScript
 {
     private static readonly Regex AttributeRegex = new("#(?<attribute>\\d+)");
-    private readonly List<EditableScripts> _watchedNestedScripts = new();
+    private readonly List<EditableScripts> _watchedNestedScripts = [];
     private string _editorName;
 
     internal EditableScript(EditorController controller, IScript script, UndoLogger undoLogger)
@@ -55,21 +55,17 @@ public class EditableScript : EditableScriptBase, IEditableScript
                 value = ((IDataWrapper) value).GetUnderlyingValue();
             }
 
-            var scriptValue = value as IScript;
-            var stringValue = value as string;
-            var collectionValue = value as ICollection;
-
-            if (stringValue != null)
+            if (value is string stringValue)
             {
                 attributeValue = stringValue.Length == 0 ? "?" : stringValue;
             }
-            else if (scriptValue != null)
+            else if (value is IScript scriptValue)
             {
                 var editableScripts = EditableScripts.GetInstance(Controller, scriptValue);
                 RegisterNestedScriptForUpdates(editableScripts);
                 attributeValue = editableScripts.Count == 0 ? "(nothing)" : editableScripts.DisplayString();
             }
-            else if (collectionValue != null)
+            else if (value is ICollection collectionValue)
             {
                 attributeValue = collectionValue.Count.ToString();
             }
@@ -114,8 +110,7 @@ public class EditableScript : EditableScriptBase, IEditableScript
     public override void SetParameter(string index, object? value)
     {
         var valueToSet = value;
-        var wrappedValue = value as IDataWrapper;
-        if (wrappedValue != null)
+        if (value is IDataWrapper wrappedValue)
         {
             valueToSet = wrappedValue.GetUnderlyingValue();
         }

@@ -85,7 +85,7 @@ public class IfScriptConstructor : IScriptConstructor
 
 public class IfScript : ScriptBase, IIfScript
 {
-    private readonly List<IElseIfScript> _elseIfScript = new();
+    private readonly List<IElseIfScript> _elseIfScript = [];
     private readonly ScriptContext _scriptContext;
 
     private bool _hasElse;
@@ -227,24 +227,18 @@ public class IfScript : ScriptBase, IIfScript
     {
         _elseIfScript.Add(elseIfScript);
 
-        if (IfScriptUpdated != null)
-        {
-            IfScriptUpdated(this,
-                new IfScriptUpdatedEventArgs(IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.AddedElseIf,
-                    elseIfScript));
-        }
+        IfScriptUpdated?.Invoke(this,
+    new IfScriptUpdatedEventArgs(IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.AddedElseIf,
+        elseIfScript));
     }
 
     private void RemoveElseIfSilent(IElseIfScript elseIfScript)
     {
         _elseIfScript.Remove(elseIfScript);
 
-        if (IfScriptUpdated != null)
-        {
-            IfScriptUpdated(this,
-                new IfScriptUpdatedEventArgs(IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.RemovedElseIf,
-                    elseIfScript));
-        }
+        IfScriptUpdated?.Invoke(this,
+    new IfScriptUpdatedEventArgs(IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.RemovedElseIf,
+        elseIfScript));
     }
 
     private void SetExpressionSilent(string newValue)

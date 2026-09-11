@@ -11,9 +11,9 @@ public abstract class EditorControllerTestBase
 
     protected EditorController Controller { get; private set; } = null!;
 
-    protected List<string> UndoList { get; private set; } = new();
+    protected List<string> UndoList { get; private set; } = [];
 
-    protected List<string> RedoList { get; private set; } = new();
+    protected List<string> RedoList { get; private set; } = [];
 
     [TestInitialize]
     public async Task Init()
@@ -70,11 +70,11 @@ public abstract class EditorControllerTestBase
 
     private void OnControllerUndoListUpdated(object? sender, EditorController.UpdateUndoListEventArgs e)
     {
-        UndoList = new List<string>(e.UndoList);
+        UndoList = [.. e.UndoList];
     }
 
     private void OnControllerRedoListUpdated(object? sender, EditorController.UpdateUndoListEventArgs e)
     {
-        RedoList = new List<string>(e.UndoList);
+        RedoList = [.. e.UndoList];
     }
 }

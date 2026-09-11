@@ -10,7 +10,7 @@ namespace QuestViva.Engine.GameLoader;
 internal partial class FieldSaver
 {
     private readonly GameSaver _saver;
-    private readonly Dictionary<Type, IFieldSaver> _savers = new();
+    private readonly Dictionary<Type, IFieldSaver> _savers = [];
 
     public FieldSaver(GameSaver saver)
     {

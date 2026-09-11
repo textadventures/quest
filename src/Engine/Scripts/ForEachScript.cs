@@ -62,8 +62,7 @@ public class ForEachScript : ScriptBase
 
         if (_scriptContext.WorldModel.Version < WorldModelVersion.v530 || !(result is string))
         {
-            var resultDictionary = result as IDictionary;
-            if (resultDictionary != null)
+            if (result is IDictionary resultDictionary)
             {
                 resultList = resultDictionary.Keys;
             }

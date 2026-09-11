@@ -35,5 +35,5 @@ internal class FunctionCallParameters
 
     public IList<IFunction<object>>? Parameters { get; }
 
-    public QuestList<string> ParametersAsQuestList { get; } = new();
+    public QuestList<string> ParametersAsQuestList { get; } = [];
 }

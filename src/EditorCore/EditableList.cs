@@ -9,9 +9,9 @@ public class EditableList<T> : IEditableList<T>, IDataWrapper, INotifyCollection
     private readonly EditorController _controller;
 
     private readonly QuestList<T> _source;
-    private readonly List<string> _wrappedItemKeys = new();
-    private readonly Dictionary<string, IEditableListItem<T>> _wrappedItems = new();
-    private readonly List<IEditableListItem<T>> _wrappedItemsList = new();
+    private readonly List<string> _wrappedItemKeys = [];
+    private readonly Dictionary<string, IEditableListItem<T>> _wrappedItems = [];
+    private readonly List<IEditableListItem<T>> _wrappedItemsList = [];
     private int _nextId;
 
     public EditableList(EditorController controller, QuestList<T> source)
@@ -157,17 +157,11 @@ public class EditableList<T> : IEditableList<T>, IDataWrapper, INotifyCollection
         _wrappedItemsList.Insert(index, wrappedValue);
         _wrappedItemKeys.Insert(index, key);
 
-        if (Added != null)
-        {
-            Added(this,
-                new EditableListUpdatedEventArgs<T> {UpdatedItem = wrappedValue, Index = index, Source = source});
-        }
+        Added?.Invoke(this,
+    new EditableListUpdatedEventArgs<T> { UpdatedItem = wrappedValue, Index = index, Source = source });
 
-        if (CollectionChanged != null)
-        {
-            CollectionChanged(this,
-                new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, wrappedValue, index));
-        }
+        CollectionChanged?.Invoke(this,
+    new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, wrappedValue, index));
     }
 
     private string GetUniqueId()
@@ -181,16 +175,10 @@ public class EditableList<T> : IEditableList<T>, IDataWrapper, INotifyCollection
         _wrappedItems.Remove(item.Key);
         _wrappedItemsList.Remove(item);
         _wrappedItemKeys.Remove(item.Key);
-        if (Removed != null)
-        {
-            Removed(this, new EditableListUpdatedEventArgs<T> {UpdatedItem = item, Index = index, Source = source});
-        }
+        Removed?.Invoke(this, new EditableListUpdatedEventArgs<T> { UpdatedItem = item, Index = index, Source = source });
 
-        if (CollectionChanged != null)
-        {
-            CollectionChanged(this,
-                new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
-        }
+        CollectionChanged?.Invoke(this,
+    new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
     }
 
     private void OnSourceAdded(object? sender, QuestListUpdatedEventArgs<T> e)

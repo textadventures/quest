@@ -45,9 +45,6 @@ public class ScriptCommandEditorData : IEditorData
 
     private void OnScriptUpdated(object? sender, EditableScriptUpdatedEventArgs e)
     {
-        if (Changed != null)
-        {
-            Changed(this, new EventArgs());
-        }
+        Changed?.Invoke(this, new EventArgs());
     }
 }

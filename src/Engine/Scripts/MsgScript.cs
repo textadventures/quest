@@ -15,7 +15,7 @@ public class MsgScriptConstructor : ScriptConstructorBase
 
     protected override int[] ExpectedParameters
     {
-        get { return new[] {1}; }
+        get { return [1]; }
     }
 
     #endregion

@@ -28,18 +28,18 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
 
     public QuestList()
     {
-        _list = new List<T>();
+        _list = [];
     }
 
     public QuestList(IEnumerable<T>? collection)
     {
         if (collection == null)
         {
-            _list = new List<T>();
+            _list = [];
         }
         else
         {
-            _list = new List<T>(collection);
+            _list = [.. collection];
         }
     }
 
@@ -98,8 +98,7 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
             _undoLog = value;
             foreach (var item in this)
             {
-                var mutableValue = item as IMutableField;
-                if (mutableValue != null)
+                if (item is IMutableField mutableValue)
                 {
                     mutableValue.UndoLog = value;
                 }
@@ -223,8 +222,7 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
         if (UndoLog != null)
         {
             // also set UndoLog property on added item, if it needs a reference to the undo logger
-            var mutableValue = item as IMutableField;
-            if (mutableValue != null)
+            if (item is IMutableField mutableValue)
             {
                 mutableValue.UndoLog = UndoLog;
             }
@@ -245,18 +243,12 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
     {
         UndoLogAdd(item, index);
 
-        if (Added != null)
-        {
-            Added(this, new QuestListUpdatedEventArgs<T> {UpdatedItem = item, Index = index, Source = source});
-        }
+        Added?.Invoke(this, new QuestListUpdatedEventArgs<T> { UpdatedItem = item, Index = index, Source = source });
     }
 
     private void ItemRemoved(T item, UpdateSource source, int index)
     {
-        if (Removed != null)
-        {
-            Removed(this, new QuestListUpdatedEventArgs<T> {UpdatedItem = item, Index = index, Source = source});
-        }
+        Removed?.Invoke(this, new QuestListUpdatedEventArgs<T> { UpdatedItem = item, Index = index, Source = source });
     }
 
     /// <summary>
@@ -269,7 +261,7 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
     {
         if (list1 == null)
         {
-            return new QuestList<T>(list2);
+            return [.. list2];
         }
 
         return list1.MergeLists(list2);
@@ -285,13 +277,13 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
     public QuestList<T> Exclude(T element)
     {
         var enumerable = this.Where(x => !x!.Equals(element));
-        return new QuestList<T>(enumerable);
+        return [.. enumerable];
     }
 
     public QuestList<T> Exclude(QuestList<T> excludeList)
     {
         var enumerable = this.Where(x => !excludeList.Contains(x));
-        return new QuestList<T>(enumerable);
+        return [.. enumerable];
     }
 
     /// <summary>
@@ -302,8 +294,10 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
     /// <returns></returns>
     public static QuestList<T> operator +(QuestList<T> list, T element)
     {
-        var result = new QuestList<T>(list);
-        result.Add(element);
+        var result = new QuestList<T>(list)
+        {
+            element
+        };
         return result;
     }
 
@@ -315,8 +309,10 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
     /// <returns></returns>
     public static QuestList<T> operator +(T element, QuestList<T> list)
     {
-        var result = new QuestList<T>();
-        result.Add(element);
+        var result = new QuestList<T>
+        {
+            element
+        };
         result.AddRange(list);
         return result;
     }

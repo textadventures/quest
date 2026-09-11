@@ -8,7 +8,7 @@ public class CloneTests
     private const string AttributeName = "attribute";
     private const string AttributeValue = "attributevalue";
     private const string ListAttributeName = "listattribute";
-    private readonly List<string> _listAttributeValue = new() {"one", "two", "three"};
+    private readonly List<string> _listAttributeValue = ["one", "two", "three"];
     private Element _original = null!;
 
     private WorldModel _worldModel = null!;

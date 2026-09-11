@@ -6,7 +6,7 @@ public class FinishScriptConstructor : ScriptConstructorBase
 
     protected override int[] ExpectedParameters
     {
-        get { return new[] {0}; }
+        get { return [0]; }
     }
 
     protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)

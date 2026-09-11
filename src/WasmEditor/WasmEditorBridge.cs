@@ -828,7 +828,7 @@ public partial class WasmEditorBridge
     // AddPublishAsset/PendingPublishAssets stage assets for CreatePublishPackage below.
     // Initialise/SetGameXml consume and clear this before constructing their
     // ByteArrayGameDataProvider, regardless of whether the load succeeds.
-    private static readonly Dictionary<string, byte[]> PendingAdjacentFiles = new();
+    private static readonly Dictionary<string, byte[]> PendingAdjacentFiles = [];
 
     [JSExport]
     public static void AddAdjacentFile(string filename, byte[] data)
@@ -1041,8 +1041,7 @@ public partial class WasmEditorBridge
 
         try
         {
-            var existing = data.GetAttribute(attribute) as IEditableList<string>;
-            if (existing == null)
+            if (data.GetAttribute(attribute) is not IEditableList<string> existing)
             {
                 _controller.CreateNewEditableList(elementKey, attribute, value, true);
             }
@@ -1080,8 +1079,7 @@ public partial class WasmEditorBridge
             return "error";
         }
 
-        var list = data.GetAttribute(attribute) as IEditableList<string>;
-        if (list == null)
+        if (data.GetAttribute(attribute) is not IEditableList<string> list)
         {
             return "error";
         }
@@ -1112,8 +1110,7 @@ public partial class WasmEditorBridge
             return "error";
         }
 
-        var list = data.GetAttribute(attribute) as IEditableList<string>;
-        if (list == null)
+        if (data.GetAttribute(attribute) is not IEditableList<string> list)
         {
             return "error";
         }
@@ -3462,8 +3459,7 @@ public partial class WasmEditorBridge
         _controller.StartTransaction($"Set {attribute}");
         try
         {
-            var cmd = data.GetAttribute(attribute) as IEditableCommandPattern;
-            if (cmd != null)
+            if (data.GetAttribute(attribute) is IEditableCommandPattern cmd)
             {
                 cmd.Pattern = pattern;
             }
@@ -3500,8 +3496,7 @@ public partial class WasmEditorBridge
 
         try
         {
-            var existing = data.GetAttribute(attribute) as IEditableDictionary<string>;
-            if (existing == null)
+            if (data.GetAttribute(attribute) is not IEditableDictionary<string> existing)
             {
                 _controller.CreateNewEditableStringDictionary(elementKey, attribute, key, value, true);
             }
@@ -3539,8 +3534,7 @@ public partial class WasmEditorBridge
             return "error";
         }
 
-        var dict = data.GetAttribute(attribute) as IEditableDictionary<string>;
-        if (dict == null)
+        if (data.GetAttribute(attribute) is not IEditableDictionary<string> dict)
         {
             return "error";
         }
@@ -3571,8 +3565,7 @@ public partial class WasmEditorBridge
             return "error";
         }
 
-        var dict = data.GetAttribute(attribute) as IEditableDictionary<string>;
-        if (dict == null)
+        if (data.GetAttribute(attribute) is not IEditableDictionary<string> dict)
         {
             return "error";
         }
@@ -3665,8 +3658,7 @@ public partial class WasmEditorBridge
 
         try
         {
-            var existing = data.GetAttribute(attribute) as IEditableDictionary<IEditableScripts>;
-            if (existing == null)
+            if (data.GetAttribute(attribute) is not IEditableDictionary<IEditableScripts> existing)
             {
                 var emptyScript = _controller.CreateNewEditableScripts(null!, null!, null!, false);
                 _controller.CreateNewEditableScriptDictionary(elementKey, attribute, key, emptyScript, true);
@@ -3705,8 +3697,7 @@ public partial class WasmEditorBridge
             return "error";
         }
 
-        var dict = data.GetAttribute(attribute) as IEditableDictionary<IEditableScripts>;
-        if (dict == null)
+        if (data.GetAttribute(attribute) is not IEditableDictionary<IEditableScripts> dict)
         {
             return "error";
         }
@@ -3736,8 +3727,7 @@ public partial class WasmEditorBridge
             return "error";
         }
 
-        var dict = data.GetAttribute(attribute) as IEditableDictionary<IEditableScripts>;
-        if (dict == null)
+        if (data.GetAttribute(attribute) is not IEditableDictionary<IEditableScripts> dict)
         {
             return "error";
         }
@@ -3827,8 +3817,7 @@ public partial class WasmEditorBridge
         {
             var attrName = attribute[..bracketIdx];
             var key = attribute[(bracketIdx + 1)..^1];
-            var dict = data.GetAttribute(attrName) as IEditableDictionary<IEditableScripts>;
-            if (dict == null || !dict.Items.TryGetValue(key, out var item))
+            if (data.GetAttribute(attrName) is not IEditableDictionary<IEditableScripts> dict || !dict.Items.TryGetValue(key, out var item))
             {
                 return null;
             }
@@ -4199,9 +4188,7 @@ public partial class WasmEditorBridge
     {
         try
         {
-            var data =
-                _controller!.GetElementDataAttribute("_RichTextControl_TextProcessorCommands", "data") as IEnumerable;
-            if (data == null)
+            if (_controller!.GetElementDataAttribute("_RichTextControl_TextProcessorCommands", "data") is not IEnumerable data)
             {
                 return null;
             }
