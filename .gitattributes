@@ -1,2 +1,7 @@
-* text=auto
-*.sh text eol=lf
+# Normalise every text file to LF, in the repository and on checkout on every OS
+* text=auto eol=lf
+
+# Binary: packaged .quest games are zips; .cas/.qsg are compiled Quest 4 games and saves
+*.quest binary
+*.cas binary
+*.qsg binary

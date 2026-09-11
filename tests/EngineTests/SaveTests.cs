@@ -1,4 +1,4 @@
-﻿using Moq;
+using Moq;
 using QuestViva.Common;
 using QuestViva.Engine.GameLoader;
 

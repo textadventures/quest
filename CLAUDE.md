@@ -100,25 +100,7 @@ Implications when working on `Engine/Core/*.aslx`:
 - A fix/restoration to a Core.aslx function only affects games saved (in the Editor) or newly created *after* the change lands. It cannot retroactively repair or break anything already inlined into a previously published `.quest` file.
 - Conversely, current Core.aslx bugs *do* matter for anyone editing or creating a game right now (before it's published) — the Editor loads library functions live and only inlines them on save/publish. So "restore this broken current-Core.aslx function" is a real, valid fix for the authoring experience — just describe it as that, not as a bug affecting already-shipped games.
 
-**Editing `.aslx` files programmatically:** their encoding is **not uniform** — detect and preserve each file's own form rather than assuming one:
-
-- `src/Engine/Core/**` (the engine's own library sources): all 88 are **no-BOM + LF**
-- `examples/` and test fixtures: mixed — some **BOM + CRLF**, some `no-BOM + CRLF`, some `no-BOM + LF` (these are editor-saved *game* files, and Quest writes a BOM)
-
-So a text-mode write is unsafe in both directions: `open(path, 'w')` strips a BOM and converts CRLF to LF, while `encoding='utf-8-sig'` *adds* a BOM to the 88 Core files that don't have one. Read as bytes, remember what you found, and write it back the same way:
-
-```python
-raw = open(path, 'rb').read()
-bom = raw[:3] == b'\xef\xbb\xbf'
-body = raw[3:] if bom else raw
-crlf = b'\r\n' in body
-text = body.decode('utf-8').replace('\r\n', '\n')
-# ...edit text...
-out = text.replace('\n', '\r\n') if crlf else text
-open(path, 'wb').write((b'\xef\xbb\xbf' if bom else b'') + out.encode('utf-8'))
-```
-
-Worth verifying the round-trip on an untouched file first (read, write back unchanged, confirm the bytes are identical) before making real edits.
+**Encoding and line endings:** every text file in the repo is UTF-8 without a BOM, with LF line endings, enforced by `.gitattributes` (`* text=auto eol=lf`) and `.editorconfig` (`charset = utf-8`, `end_of_line = lf`). The exceptions are `.sln`/`.DotSettings`, which keep the BOM their tools always write. Plain text-mode reads and writes are fine. The one thing to watch is game files saved by Quest itself, which are written with a BOM: an editor-saved `.aslx` added to `examples/` or a test fixture should have its BOM stripped before committing (`git add --renormalize` fixes line endings, but not a BOM).
 
 **Progressive disclosure convention:** feature-gated content (`onlydisplayif game.feature_*`) is deliberately *not* also `<advanced/>`-flagged — the feature opt-in on the object/type is itself the disclosure mechanism (Player score/health/money commands are the model this follows).
 

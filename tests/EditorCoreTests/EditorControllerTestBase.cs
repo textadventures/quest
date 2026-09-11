@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using QuestViva.Common;
 using QuestViva.EditorCore;
 

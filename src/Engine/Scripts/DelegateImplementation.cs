@@ -1,4 +1,4 @@
-﻿namespace QuestViva.Engine.Scripts;
+namespace QuestViva.Engine.Scripts;
 
 internal class DelegateImplementation
 {

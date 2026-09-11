@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
 using QuestViva.Common;

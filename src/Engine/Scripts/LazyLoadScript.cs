@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using QuestViva.Engine.Functions;
 
 namespace QuestViva.Engine.Scripts;

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using QuestViva.Engine.Functions;
 
 namespace QuestViva.Engine.Scripts;

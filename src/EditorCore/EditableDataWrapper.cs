@@ -1,4 +1,4 @@
-﻿namespace QuestViva.EditorCore;
+namespace QuestViva.EditorCore;
 
 internal class EditableDataWrapper<TSource, TWrapped>
     where TSource : notnull

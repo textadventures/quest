@@ -1,4 +1,4 @@
-﻿using QuestViva.PlayerCore;
+using QuestViva.PlayerCore;
 
 namespace QuestViva.PlayerCoreTests;
 

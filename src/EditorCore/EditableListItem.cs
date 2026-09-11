@@ -1,4 +1,4 @@
-﻿namespace QuestViva.EditorCore;
+namespace QuestViva.EditorCore;
 
 public class EditableListItem<T> : IEditableListItem<T>
 {

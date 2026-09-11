@@ -1,4 +1,4 @@
-﻿using QuestViva.Engine.Expressions;
+using QuestViva.Engine.Expressions;
 using QuestViva.Engine.Scripts;
 
 namespace QuestViva.Engine.Functions;

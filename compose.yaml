@@ -1,4 +1,4 @@
-﻿services:
+services:
   webplayer:
     image: ghcr.io/textadventures/quest-viva-webplayer:latest
     build:

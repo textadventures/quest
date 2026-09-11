@@ -1,4 +1,4 @@
-﻿namespace QuestViva.EditorCore;
+namespace QuestViva.EditorCore;
 
 internal class ExpressionTemplateEditorData : IEditorData
 {

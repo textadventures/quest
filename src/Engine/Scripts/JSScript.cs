@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using QuestViva.Engine.Functions;
 
 namespace QuestViva.Engine.Scripts;

@@ -1,4 +1,4 @@
-﻿using QuestViva.Engine.Functions;
+using QuestViva.Engine.Functions;
 
 /*
  * This script command is an alternative to request (Speak, "some text"), and is added as part of deprecating

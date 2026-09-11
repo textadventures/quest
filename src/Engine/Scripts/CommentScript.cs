@@ -1,4 +1,4 @@
-﻿namespace QuestViva.Engine.Scripts;
+namespace QuestViva.Engine.Scripts;
 
 public class CommentScriptConstructor : IScriptConstructor
 {
