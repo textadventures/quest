@@ -6,10 +6,7 @@ public class UndoScriptConstructor : ScriptConstructorBase
 {
     public override string Keyword => "undo";
 
-    protected override int[] ExpectedParameters
-    {
-        get { return [0]; }
-    }
+    protected override int[] ExpectedParameters => [0];
 
     protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
     {
@@ -58,10 +55,7 @@ public class StartTransactionConstructor : ScriptConstructorBase
 {
     public override string Keyword => "start transaction";
 
-    protected override int[] ExpectedParameters
-    {
-        get { return [1]; }
-    }
+    protected override int[] ExpectedParameters => [1];
 
     protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
     {

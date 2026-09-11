@@ -25,10 +25,7 @@ public class DoScriptConstructor : ScriptConstructorBase
         return null;
     }
 
-    protected override int[] ExpectedParameters
-    {
-        get { return [2, 3]; }
-    }
+    protected override int[] ExpectedParameters => [2, 3];
 
     #endregion
 }

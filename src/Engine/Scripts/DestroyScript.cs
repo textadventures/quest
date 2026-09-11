@@ -6,10 +6,7 @@ public class DestroyScriptConstructor : ScriptConstructorBase
 {
     public override string Keyword => "destroy";
 
-    protected override int[] ExpectedParameters
-    {
-        get { return [1]; }
-    }
+    protected override int[] ExpectedParameters => [1];
 
     protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
     {

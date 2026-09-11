@@ -7,10 +7,7 @@ public class InvokeScriptConstructor : ScriptConstructorBase
 {
     public override string Keyword => "invoke";
 
-    protected override int[] ExpectedParameters
-    {
-        get { return [1, 2]; }
-    }
+    protected override int[] ExpectedParameters => [1, 2];
 
     protected override IScript? CreateInt(List<string> parameters, ScriptContext scriptContext)
     {

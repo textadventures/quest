@@ -22,21 +22,11 @@ internal class TimerRunner
         }
     }
 
-    private IEnumerable<Element> EnabledTimers
-    {
-        get
-        {
-            return _worldModel.Elements.GetElements(ElementType.Timer).Where(t => t.Fields[FieldDefinitions.Enabled]);
-        }
-    }
+    private IEnumerable<Element> EnabledTimers =>
+        _worldModel.Elements.GetElements(ElementType.Timer).Where(t => t.Fields[FieldDefinitions.Enabled]);
 
-    private IEnumerable<Element> DisabledTimers
-    {
-        get
-        {
-            return _worldModel.Elements.GetElements(ElementType.Timer).Where(t => !t.Fields[FieldDefinitions.Enabled]);
-        }
-    }
+    private IEnumerable<Element> DisabledTimers =>
+        _worldModel.Elements.GetElements(ElementType.Timer).Where(t => !t.Fields[FieldDefinitions.Enabled]);
 
     private Element GameElement
     {

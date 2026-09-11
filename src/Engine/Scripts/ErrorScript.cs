@@ -13,10 +13,7 @@ public class ErrorScriptConstructor : ScriptConstructorBase
         return new ErrorScript(scriptContext, new ExpressionDynamic(parameters[0], scriptContext));
     }
 
-    protected override int[] ExpectedParameters
-    {
-        get { return [1]; }
-    }
+    protected override int[] ExpectedParameters => [1];
 
     #endregion
 }

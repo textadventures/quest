@@ -6,10 +6,7 @@ public class PictureScriptConstructor : ScriptConstructorBase
 {
     public override string Keyword => "picture";
 
-    protected override int[] ExpectedParameters
-    {
-        get { return [1]; }
-    }
+    protected override int[] ExpectedParameters => [1];
 
     protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
     {

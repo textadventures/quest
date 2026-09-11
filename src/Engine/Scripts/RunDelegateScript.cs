@@ -6,10 +6,7 @@ public class RunDelegateScriptConstructor : ScriptConstructorBase
 {
     public override string Keyword => "rundelegate";
 
-    protected override int[] ExpectedParameters
-    {
-        get { return []; }
-    }
+    protected override int[] ExpectedParameters => [];
 
     protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
     {

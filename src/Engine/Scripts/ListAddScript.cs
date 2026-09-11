@@ -6,10 +6,7 @@ public class ListAddScriptConstructor : ScriptConstructorBase
 {
     public override string Keyword => "list add";
 
-    protected override int[] ExpectedParameters
-    {
-        get { return [2]; }
-    }
+    protected override int[] ExpectedParameters => [2];
 
     protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
     {
@@ -91,10 +88,7 @@ public class ListRemoveScriptConstructor : ScriptConstructorBase
 {
     public override string Keyword => "list remove";
 
-    protected override int[] ExpectedParameters
-    {
-        get { return [2]; }
-    }
+    protected override int[] ExpectedParameters => [2];
 
     protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
     {

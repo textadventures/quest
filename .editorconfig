@@ -29,6 +29,15 @@ dotnet_diagnostic.IDE0019.severity = warning
 dotnet_diagnostic.IDE0020.severity = warning
 dotnet_diagnostic.IDE0038.severity = warning
 
+# Expression bodies (=>) for properties, indexers and accessors that fit on a single line.
+# Methods and constructors are left to the author.
+csharp_style_expression_bodied_properties = when_on_single_line
+csharp_style_expression_bodied_indexers = when_on_single_line
+csharp_style_expression_bodied_accessors = when_on_single_line
+dotnet_diagnostic.IDE0025.severity = warning
+dotnet_diagnostic.IDE0026.severity = warning
+dotnet_diagnostic.IDE0027.severity = warning
+
 dotnet_naming_style.pascal_case.capitalization = pascal_case
 dotnet_naming_style.camel_case.capitalization = camel_case
 dotnet_naming_style.underscore_camel_case.capitalization = camel_case
@@ -92,3 +101,6 @@ dotnet_diagnostic.IDE0303.severity = none
 dotnet_diagnostic.IDE0019.severity = none
 dotnet_diagnostic.IDE0020.severity = none
 dotnet_diagnostic.IDE0038.severity = none
+dotnet_diagnostic.IDE0025.severity = none
+dotnet_diagnostic.IDE0026.severity = none
+dotnet_diagnostic.IDE0027.severity = none
