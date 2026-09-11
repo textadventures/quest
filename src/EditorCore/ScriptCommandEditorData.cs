@@ -29,11 +29,6 @@ public class ScriptCommandEditorData : IEditorData
         return new ValidationResult {Valid = true};
     }
 
-    public IEnumerable<string>? GetAffectedRelatedAttributes(string attribute)
-    {
-        return null;
-    }
-
     public string? GetSelectedFilter(string filterGroup)
     {
         return null;
@@ -43,14 +38,10 @@ public class ScriptCommandEditorData : IEditorData
     {
     }
 
-    public bool ReadOnly { get; set; }
-
     public IEnumerable<string>? GetVariablesInScope()
     {
         return _script.GetVariablesInScope();
     }
-
-    public bool IsDirectlySaveable => true;
 
     private void OnScriptUpdated(object? sender, EditableScriptUpdatedEventArgs e)
     {

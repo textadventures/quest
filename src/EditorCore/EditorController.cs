@@ -95,8 +95,6 @@ public sealed class EditorController : IDisposable
         {ValidationMessage.MismatchingQuotes, "Missing quote character (\")"}
     };
 
-    private static readonly List<string> InvalidChars = new() {"\\", "/", ":", "*", "?", "\"", "<", ">", "|"};
-
     private readonly List<ElementType> _advancedTypes = new()
     {
         ElementType.DynamicTemplate,
@@ -109,7 +107,6 @@ public sealed class EditorController : IDisposable
         ElementType.Walkthrough
     };
 
-    private readonly Dictionary<string, Type> _controlTypes = new();
     private readonly Dictionary<string, EditorDefinition> _editorDefinitions = new();
     private readonly Dictionary<string, EditorDefinition> _expressionDefinitions = new();
 
@@ -138,25 +135,15 @@ public sealed class EditorController : IDisposable
     // Set by Initialise
     private ScriptFactory _scriptFactory = null!;
     private bool _simpleMode;
-    // Set by InitialiseTreeStructure, as for _elementTreeStructure
-    private Dictionary<string, string> _treeTitles = null!;
 
     public EditorController()
     {
-        AvailableFilters = new AvailableFilters();
-        AvailableFilters.Add("libraries", "Show Library Elements");
-        // m_availableFilters.Add("libraries", L.T("EditorFilterShowLibraryElements"));
-
         _filterOptions = new FilterOptions();
         // set default filters here
 
         // FontsManager is initialized lazily to avoid firing the Google Fonts network request
         // until fonts are actually needed (e.g. not during test runs).
     }
-
-    public AvailableFilters AvailableFilters { get; }
-
-    public string? GameName => WorldModel.Game.Fields.GetString("gamename");
 
     public string? GameId => WorldModel.GameID;
 
@@ -195,9 +182,8 @@ public sealed class EditorController : IDisposable
         WorldModel?.FinishGame();
     }
 
-    // The tree events (ClearTree through RetitledNode), ShowMessage, RequestAddElement,
-    // RequestEdit and RequestRunWalkthrough are raised without a null check, so a host must
-    // subscribe to them; the rest are optional.
+    // The tree events (ClearTree through RetitledNode) and ShowMessage are raised without a null
+    // check, so a host must subscribe to them; the rest are optional.
     public event EventHandler? ClearTree;
     public event EventHandler? BeginTreeUpdate;
     public event EventHandler? EndTreeUpdate;
@@ -212,17 +198,11 @@ public sealed class EditorController : IDisposable
 
     public event EventHandler<ShowMessageEventArgs>? ShowMessage;
 
-    public event EventHandler<RequestAddElementEventArgs>? RequestAddElement;
-
-    public event EventHandler<RequestEditEventArgs>? RequestEdit;
-
     public event EventHandler? ElementsUpdated;
 
     public event EventHandler<ElementMovedEventArgs>? ElementMoved;
 
     public event EventHandler<ScriptClipboardUpdateEventArgs>? ScriptClipboardUpdated;
-
-    public event EventHandler<RequestRunWalkthroughEventArgs>? RequestRunWalkthrough;
 
     public event EventHandler? SimpleModeChanged;
 
@@ -233,18 +213,6 @@ public sealed class EditorController : IDisposable
     public event EventHandler? Dirty;
     public event EventHandler<LoadStatusEventArgs>? LoadStatus;
     public event EventHandler<LibrariesUpdatedEventArgs>? LibrariesUpdated;
-
-    // public event EventHandler<InitialiseResults> InitialiseFinished;
-
-    // public void StartInitialise(string filename)
-    // {
-    //     var newThread = new System.Threading.Thread(async () =>
-    //     {
-    //         bool result = await Initialise(filename);
-    //         if (InitialiseFinished != null) InitialiseFinished(this, new InitialiseResults(result));
-    //     });
-    //     newThread.Start();
-    // }
 
     public async Task<bool> Initialise(IGameDataProvider gameDataProvider, bool partialInit = false)
     {
@@ -526,7 +494,6 @@ public sealed class EditorController : IDisposable
 
     private void InitialiseTreeStructure()
     {
-        _treeTitles = new Dictionary<string, string> {{Commands, "Commands"}, {Verbs, "Verbs"}};
         _elementTreeStructure = new Dictionary<ElementType, TreeHeader>();
 
         AddTreeHeader(EditorStyle.TextAdventure, ElementType.Object, "_objects", "Objects", null, false);
@@ -555,7 +522,6 @@ public sealed class EditorController : IDisposable
 
         if (simple || !SimpleMode)
         {
-            _treeTitles.Add(key, title);
             var header = new TreeHeader {Key = key, Title = title};
             if (type != null)
             {
@@ -781,21 +747,6 @@ public sealed class EditorController : IDisposable
         return e.Name;
     }
 
-    public string? GetDisplayName(string element)
-    {
-        if (_treeTitles.ContainsKey(element))
-        {
-            return _treeTitles[element];
-        }
-
-        if (!WorldModel.Elements.ContainsKey(element))
-        {
-            return null;
-        }
-
-        return GetDisplayName(WorldModel.Elements.Get(element));
-    }
-
     // The node-type string is consumed directly by the frontend (AppShell's TreePanel.svelte)
     // both for behaviour (e.g. which "add" options a node offers) and for picking a tree icon —
     // keep this as the single source of truth rather than adding another translation layer.
@@ -888,19 +839,9 @@ public sealed class EditorController : IDisposable
         return null;
     }
 
-    public IEnumerable<string> GetAllEditorNames()
-    {
-        return _editorDefinitions.Keys;
-    }
-
     public Dictionary<string, EditableScriptData> GetScriptEditorData()
     {
         return ScriptFactory.ScriptData;
-    }
-
-    public Task<IEnumerable<string>> GetAllScriptEditorCategories(bool showAll = false)
-    {
-        return ScriptFactory.GetCategories(SimpleMode, showAll);
     }
 
     public IEditorDefinition GetEditorDefinition(IEditableScript script)
@@ -986,25 +927,9 @@ public sealed class EditorController : IDisposable
         return WorldModel.UndoLogger.Undo();
     }
 
-    public async Task Undo(int count)
-    {
-        for (var i = 0; i < count; i++)
-        {
-            await WorldModel.UndoLogger.Undo();
-        }
-    }
-
     public void Redo()
     {
         WorldModel.UndoLogger.Redo();
-    }
-
-    public void Redo(int count)
-    {
-        for (var i = 0; i < count; i++)
-        {
-            WorldModel.UndoLogger.Redo();
-        }
     }
 
     public IEnumerable<string> GetUndoItems()
@@ -1095,29 +1020,6 @@ public sealed class EditorController : IDisposable
             newValue = EditableScripts.GetInstance(this, element.Fields.GetAsType<IScript>(attribute)!);
         }
 
-        if (useTransaction)
-        {
-            WorldModel.UndoLogger.EndTransaction();
-        }
-
-        return newValue;
-    }
-
-    public EditableScripts CreateNewEditableScriptsChild(ScriptCommandEditorData parent, string attribute,
-        string keyword, bool useTransaction)
-    {
-        if (useTransaction)
-        {
-            WorldModel.UndoLogger.StartTransaction(string.Format("Add script '{0}'", keyword));
-        }
-
-        var newValue = EditableScripts.GetInstance(this, new MultiScript(WorldModel));
-        if (keyword != null)
-        {
-            newValue.AddNewInternal(keyword);
-        }
-
-        parent.SetAttribute(attribute, newValue);
         if (useTransaction)
         {
             WorldModel.UndoLogger.EndTransaction();
@@ -1282,38 +1184,6 @@ public sealed class EditorController : IDisposable
         return new EditableObjectReference(this, element, element, attribute);
     }
 
-    public IEditableCommandPattern CreateNewEditableCommandPattern(string parent, string attribute, string value,
-        bool useTransaction)
-    {
-        if (useTransaction)
-        {
-            WorldModel.UndoLogger.StartTransaction(string.Format("Set '{0}' {1} to {2}", parent, attribute, value));
-        }
-
-        var element = WorldModel.Elements.Get(parent);
-        var newPattern = new EditorCommandPattern(value);
-        var newRef = new EditableCommandPattern(this, newPattern, element, attribute);
-        element.Fields.Set(attribute, newPattern);
-
-        if (useTransaction)
-        {
-            WorldModel.UndoLogger.EndTransaction();
-        }
-
-        return newRef;
-    }
-
-    public void AddControlType(string name, Type type)
-    {
-        _controlTypes.Add(name, type);
-    }
-
-    public Type? GetControlType(string name)
-    {
-        _controlTypes.TryGetValue(name, out var controlType);
-        return controlType;
-    }
-
     private IEnumerable<Element> GetElements(string elementType)
     {
         var t = WorldModel.GetElementTypeForTypeString(elementType);
@@ -1323,26 +1193,6 @@ public sealed class EditorController : IDisposable
     public IEnumerable<string> GetElementNames(string elementType)
     {
         return GetElements(elementType).Select(e => e.Name);
-    }
-
-    public IEnumerable<string> GetElementNames(string elementType, bool includeLibraryObjects)
-    {
-        if (includeLibraryObjects)
-        {
-            return GetElementNames(elementType);
-        }
-
-        return GetElements(elementType).Where(e => !e.MetaFields[MetaFieldDefinitions.Library]).Select(e => e.Name);
-    }
-
-    public string? GetElementType(string element)
-    {
-        if (!WorldModel.Elements.ContainsKey(element))
-        {
-            return null;
-        }
-
-        return WorldModel.GetTypeStringForElementType(WorldModel.Elements.Get(element).ElemType);
     }
 
     public object? GetElementDataAttribute(string elementName, string attribute)
@@ -2033,36 +1883,9 @@ public sealed class EditorController : IDisposable
             e.Fields.GetAsType<bool>("isverb") && e.Fields.GetString("property") == attributeName);
     }
 
-    public void UIRequestAddElement(string elementType, string objectType, string filter)
-    {
-        RequestAddElement!(this,
-            new RequestAddElementEventArgs {ElementType = elementType, ObjectType = objectType, Filter = filter});
-    }
-
-    public void UIRequestEditElement(string key)
-    {
-        RequestEdit!(this, new RequestEditEventArgs {Key = key});
-    }
-
     public bool ElementExists(string elementKey)
     {
         return WorldModel.Elements.ContainsKey(elementKey);
-    }
-
-    public bool ElementIsVerb(string elementKey)
-    {
-        return WorldModel.Elements.Get(ElementType.Object, elementKey).Fields.GetAsType<bool>("isverb");
-    }
-
-    public IEnumerable<string> GetAvailableLibraries()
-    {
-        return WorldModel.GetAvailableLibraries();
-    }
-
-    public IEnumerable<string> GetAvailableExternalFiles(string searchPattern)
-    {
-        var baseFolder = Path.GetDirectoryName(WorldModel.Filename) ?? string.Empty;
-        return WorldModel.GetAvailableExternalFiles(searchPattern).Select(f => Path.Combine(baseFolder, f));
     }
 
     public void CopyElements(IEnumerable<string> elementNames)
@@ -2207,42 +2030,6 @@ public sealed class EditorController : IDisposable
         return null;
     }
 
-    public bool CanCopy(string elementName)
-    {
-        if (!ElementExists(elementName))
-        {
-            return false;
-        }
-
-        if (elementName == "game")
-        {
-            return false;
-        }
-
-        if (EditorStyle == EditorStyle.GameBook && elementName == "player")
-        {
-            return false;
-        }
-
-        var e = WorldModel.Elements.Get(elementName);
-        if (e.ElemType == ElementType.IncludedLibrary)
-        {
-            return false;
-        }
-
-        if (e.ElemType == ElementType.Javascript)
-        {
-            return false;
-        }
-
-        if (e.ElemType == ElementType.Template)
-        {
-            return false;
-        }
-
-        return true;
-    }
-
     public bool CanDelete(string elementName)
     {
         if (!ElementExists(elementName))
@@ -2312,11 +2099,6 @@ public sealed class EditorController : IDisposable
         return _expressionDefinitions.Values.Where(d => d.ExpressionType == expressionType).Select(d => d.Description!);
     }
 
-    public string? GetExpressionEditorDefinitionName(string expression, string expressionType)
-    {
-        return GetExpressionEditorDefinitionInternal(expression, expressionType)?.Description;
-    }
-
     public IEditorDefinition? GetExpressionEditorDefinition(string expression, string expressionType)
     {
         return GetExpressionEditorDefinitionInternal(expression, expressionType);
@@ -2365,42 +2147,6 @@ public sealed class EditorController : IDisposable
         return definition.Create;
     }
 
-    public string GetExpression(IEditorData data, string changedAttribute, string changedValue)
-    {
-        var expressionData = (ExpressionTemplateEditorData) data;
-        return expressionData.SaveExpression(changedAttribute, changedValue);
-    }
-
-    public string? GetDisplayVerbPatternForAttribute(string attribute)
-    {
-        // If the user adds a verb like "look in", it will have an attribute name like "lookin".
-        // Here we return the simple pattern for the corresponding verb, if it has one (library
-        // verbs use strings to contain regexes so will return null here)
-
-        var verbs = from element in WorldModel.Elements.GetElements(ElementType.Object)
-            where element.Type == ObjectType.Command
-            where element.Fields[FieldDefinitions.IsVerb]
-            where element.Fields[FieldDefinitions.Property] == attribute
-            select element;
-
-        var result = verbs.FirstOrDefault();
-
-        if (result == null)
-        {
-            return null;
-        }
-
-        var pattern = result.Fields.Get(FieldDefinitions.Pattern.Property);
-        var simplePattern = pattern as EditorCommandPattern;
-
-        if (simplePattern == null)
-        {
-            return null;
-        }
-
-        return FriendlyVerbDisplayName(simplePattern.Pattern);
-    }
-
     public ValidationResult Publish(string? filename, bool includeWalkthrough,
         IEnumerable<PackageIncludeFile>? includeFiles = null, Stream? outputStream = null)
     {
@@ -2417,11 +2163,6 @@ public sealed class EditorController : IDisposable
         }
 
         return new ValidationResult {Valid = false, Message = ValidationMessage.ExceptionOccurred, MessageData = error};
-    }
-
-    public IEnumerable<string> GetBuiltInFunctionNames()
-    {
-        return WorldModel.GetBuiltInFunctionNames();
     }
 
     // Feeds the editor's expression-insert helper: built-in engine functions plus every aslx
@@ -2870,11 +2611,6 @@ public sealed class EditorController : IDisposable
         return (start, end);
     }
 
-    public void BeginWalkthrough(string name, bool record)
-    {
-        RequestRunWalkthrough!(this, new RequestRunWalkthroughEventArgs {Name = name, Record = record});
-    }
-
     public void RecordWalkthrough(string name, IEnumerable<string> steps)
     {
         if (!steps.Any())
@@ -3024,36 +2760,6 @@ public sealed class EditorController : IDisposable
         return selectedAttribute;
     }
 
-    public static string GenerateSafeFilename(string gameName)
-    {
-        var result = gameName;
-        foreach (var invalidChar in InvalidChars)
-        {
-            result = result.Replace(invalidChar, "");
-        }
-
-        if (result.Length == 0)
-        {
-            return string.Empty;
-        }
-
-        result = result.TrimStart(new[] {'.'});
-        return result;
-    }
-
-    // TODO: Wire this up when creating new game from AppShell
-    public static bool IsReservedFilename(string gameName)
-    {
-        var safeFilename = GenerateSafeFilename(gameName);
-        if (string.IsNullOrEmpty(safeFilename))
-        {
-            return false;
-        }
-
-        return GetAvailableTemplates().Values
-            .Any(t => string.Equals(t.TemplateName, safeFilename, StringComparison.OrdinalIgnoreCase));
-    }
-
     internal void UpdateDictionariesReferencingRenamedObject(string oldName, string newName)
     {
         // This function is used so we can safely rename gamebook pages and have the corresponding links
@@ -3186,18 +2892,6 @@ public sealed class EditorController : IDisposable
         public required string Message { get; set; }
     }
 
-    public class RequestAddElementEventArgs : EventArgs
-    {
-        public required string ElementType { get; set; }
-        public required string ObjectType { get; set; }
-        public required string Filter { get; set; }
-    }
-
-    public class RequestEditEventArgs : EventArgs
-    {
-        public required string Key { get; set; }
-    }
-
     public class ElementMovedEventArgs : EventArgs
     {
         public required string Key { get; set; }
@@ -3206,12 +2900,6 @@ public sealed class EditorController : IDisposable
     public class ScriptClipboardUpdateEventArgs : EventArgs
     {
         public bool HasScript { get; set; }
-    }
-
-    public class RequestRunWalkthroughEventArgs : EventArgs
-    {
-        public required string Name { get; set; }
-        public bool Record { get; set; }
     }
 
     public class ElementUpdatedEventArgs : EventArgs
@@ -3268,16 +2956,6 @@ public sealed class EditorController : IDisposable
     {
         public required string Key;
         public required string Title;
-    }
-
-    public class InitialiseResults : EventArgs
-    {
-        internal InitialiseResults(bool success)
-        {
-            Success = success;
-        }
-
-        public bool Success { get; private set; }
     }
 
     public class PackageIncludeFile

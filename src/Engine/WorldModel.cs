@@ -1568,54 +1568,6 @@ public partial class WorldModel : IGame, IGameDebug
         return await PlayerUi.GetUrlAsync(file);
     }
 
-    public IEnumerable<string> GetAvailableLibraries()
-    {
-        // TODO
-        throw new NotImplementedException();
-
-        // List<string> result = new List<string>();
-        // AddFilesInPathToList(result, System.IO.Path.GetDirectoryName(Filename), false);
-        // AddFilesInPathToList(result, Environment.CurrentDirectory, false);
-        // if (m_libFolder != null) AddFilesInPathToList(result, m_libFolder, false);
-        // if (System.Reflection.Assembly.GetEntryAssembly() != null)
-        // {
-        //     AddFilesInPathToList(result, System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().CodeBase), true);
-        // }
-        // return result;
-    }
-
-    private void AddFilesInPathToList(List<string> list, string path, bool recurse, string searchPattern = "*.aslx")
-    {
-        if (path.StartsWith(@"file:\")) path = path[6..];
-        else if (path.StartsWith("file:")) path = path[5..];
-        var option = recurse ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
-        foreach (var result in Directory.GetFiles(path, searchPattern, option))
-        {
-            if (result == Filename)
-            {
-                continue;
-            }
-
-            var filename = Path.GetFileName(result);
-            if (!list.Contains(filename))
-            {
-                list.Add(filename);
-            }
-        }
-    }
-
-    public IEnumerable<string> GetAvailableExternalFiles(string searchPatterns)
-    {
-        var result = new List<string>();
-        var patterns = searchPatterns.Split(';');
-        foreach (var searchPattern in patterns)
-        {
-            AddFilesInPathToList(result, Path.GetDirectoryName(Filename)!, false, searchPattern);
-        }
-
-        return result;
-    }
-
     internal void NotifyElementFieldUpdate(Element element, string attribute, object? newValue, bool isUndo)
     {
         if (!element.Initialised)

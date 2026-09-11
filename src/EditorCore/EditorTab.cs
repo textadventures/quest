@@ -45,9 +45,4 @@ internal class EditorTab : IEditorTab
     }
 
     public bool IsTabVisibleInSimpleMode { get; }
-
-    public bool GetBool(string tag)
-    {
-        return _source.Fields.GetAsType<bool>(tag);
-    }
 }

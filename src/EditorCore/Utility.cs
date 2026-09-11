@@ -1,22 +1,10 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace QuestViva.EditorCore;
 
 public static class EditorUtility
 {
     private static readonly Regex ContainsUnescapedQuote = new("^\"|[^\\\\]\\\"");
-
-    [return: NotNullIfNotNull(nameof(input))]
-    public static string? FormatAsOneLine(string? input)
-    {
-        if (input == null)
-        {
-            return null;
-        }
-
-        return input.Replace(Environment.NewLine, " / ");
-    }
 
     public static bool IsSimpleStringExpression(string expression)
     {
@@ -59,96 +47,5 @@ public static class EditorUtility
 
         // surround with quotes
         return string.Format("\"{0}\"", result);
-    }
-
-    public static string GetUniqueFilename(string filename)
-    {
-        var i = 1;
-        var directory = Path.GetDirectoryName(filename);
-        var baseFilename = Path.GetFileNameWithoutExtension(filename);
-        var extension = Path.GetExtension(filename);
-        string newFilename;
-        do
-        {
-            i++;
-            newFilename = Path.Combine(directory!, baseFilename + " " + i + extension);
-        } while (File.Exists(newFilename));
-
-        return newFilename;
-    }
-
-    public static string GetDisplayString(object? value)
-    {
-        var scriptValue = value as IEditableScripts;
-        var listStringValue = value as IEditableList<string>;
-        var dictionaryStringValue = value as IEditableDictionary<string>;
-        var dictionaryScriptValue = value as IEditableDictionary<IEditableScripts>;
-        var wrappedValue = value as IDataWrapper;
-        string result;
-
-        if (scriptValue != null)
-        {
-            result = scriptValue.DisplayString();
-        }
-        else if (listStringValue != null)
-        {
-            result = GetListDisplayString(listStringValue.DisplayItems);
-        }
-        else if (dictionaryStringValue != null)
-        {
-            result = GetDictionaryDisplayString(dictionaryStringValue.DisplayItems);
-        }
-        else if (dictionaryScriptValue != null)
-        {
-            result = GetDictionaryDisplayString(dictionaryScriptValue.DisplayItems);
-        }
-        else if (wrappedValue != null)
-        {
-            result = wrappedValue.DisplayString();
-        }
-        else if (value == null)
-        {
-            result = "(null)";
-        }
-        else
-        {
-            result = value.ToString() ?? string.Empty;
-        }
-
-        return FormatAsOneLine(result);
-    }
-
-    private static string GetListDisplayString(IEnumerable<KeyValuePair<string, string>> items)
-    {
-        var result = string.Empty;
-
-        foreach (var item in items)
-        {
-            if (result.Length > 0)
-            {
-                result += ", ";
-            }
-
-            result += item.Value;
-        }
-
-        return result;
-    }
-
-    private static string GetDictionaryDisplayString(IEnumerable<KeyValuePair<string, string>> items)
-    {
-        var result = string.Empty;
-
-        foreach (var item in items)
-        {
-            if (result.Length > 0)
-            {
-                result += ", ";
-            }
-
-            result += item.Key + "=" + item.Value;
-        }
-
-        return result;
     }
 }
