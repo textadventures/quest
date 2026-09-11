@@ -865,11 +865,6 @@ internal class ExpressionOwner(WorldModel worldModel)
     public string? GetUiOption(string? optionName)
     {
         ArgumentNullException.ThrowIfNull(optionName);
-        if (Enum.TryParse(optionName, out UIOption option))
-        {
-            return worldModel.PlayerUi.GetUIOption(option);
-        }
-
-        throw new Exception($"Unrecognised UI option name '{optionName}'");
+        return optionName is "UseGameFont" or "UseGameColours" ? "true" : null;
     }
 }

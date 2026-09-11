@@ -3287,32 +3287,17 @@
   ]]></function>
   <function name="GetCurrentTextFormat" parameters="colour" type="string"><![CDATA[
     style = ""
-    if (UIOptionUseGameFont()) {
-      font = GetCurrentFontFamily()
-    }
-    else {
-      font = GetUIOption("OverrideFontName")
-    }
+    font = GetCurrentFontFamily()
     if (LengthOf(font) > 0) {
       style = style + "font-family:" + font + ";"
     }
     if (LengthOf(colour) = 0) {
-      if (UIOptionUseGameColours()) {
-        colour = game.defaultforeground
-      }
-      else {
-        colour = GetUIOption("OverrideForeground")
-      }
+      colour = game.defaultforeground
     }
     if (LengthOf(colour) > 0) {
       style = style + "color:" + colour + ";"
     }
-    if (UIOptionUseGameFont()) {
-      size = game.defaultfontsize
-    }
-    else {
-      size = ToDouble(GetUIOption("OverrideFontSize"))
-    }
+    size = game.defaultfontsize
     if (size > 0) {
       style = style + "font-size:" + ToString(size) + "pt;"
     }
@@ -3321,31 +3306,8 @@
   <function name="GetCurrentLinkTextFormat" type="string">
     return (GetCurrentTextFormat(GetLinkTextColour()))
   </function>
-  <function name="UIOptionUseGameFont" type="boolean">
-    value = GetUIOption("UseGameFont")
-    if (value = null or value = "true") {
-      return (true)
-    }
-    else {
-      return (false)
-    }
-  </function>
-  <function name="UIOptionUseGameColours" type="boolean">
-    value = GetUIOption("UseGameColours")
-    if (value = null or value = "true") {
-      return (true)
-    }
-    else {
-      return (false)
-    }
-  </function>
   <function name="GetLinkTextColour" type="string">
-    if (UIOptionUseGameColours()) {
-      return (game.defaultlinkforeground)
-    }
-    else {
-      return (GetUIOption("OverrideLinkForeground"))
-    }
+    return (game.defaultlinkforeground)
   </function>
   <function name="ProcessTextSection" parameters="text, data" type="string"><![CDATA[
     containsUnprocessedSection = false
@@ -3477,7 +3439,7 @@
       if (game.enablehyperlinks) {
         linkid = ProcessTextCommand_GetNextLinkId()
         colour = ""
-        if (HasString(object, "linkcolour") and GetUIOption("UseGameColours") = "true") {
+        if (HasString(object, "linkcolour")) {
           colour = object.linkcolour
         }
         else {

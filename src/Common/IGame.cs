@@ -79,7 +79,6 @@ public interface IPlayer
     void SetInterfaceString(string name, string text);
     void SetPanelContents(string html);
     void Log(string text);
-    string? GetUIOption(UIOption option);
     void SetTurnPending(bool pending);
 }
 
@@ -89,16 +88,6 @@ public enum ListType
     ExitsList,
     ObjectsList,
     ElementMenuVerbs
-}
-
-public enum UIOption
-{
-    UseGameColours,
-    UseGameFont,
-    OverrideForeground,
-    OverrideLinkForeground,
-    OverrideFontName,
-    OverrideFontSize
 }
 
 public class MenuData

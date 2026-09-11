@@ -871,9 +871,6 @@ public partial class WasmPlayerBridge
 
         void IPlayer.Log(string text) => JsConsoleLog(text);
 
-        string? IPlayer.GetUIOption(UIOption option) =>
-            option is UIOption.UseGameColours or UIOption.UseGameFont ? "true" : null;
-
         void IPlayer.SetTurnPending(bool pending) =>
             _uiBuffer.Add(() => JsSetTurnPending(pending));
     }
