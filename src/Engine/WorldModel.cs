@@ -31,8 +31,6 @@ public partial class WorldModel : IGame, IGameDebug
     };
 
     private static readonly Dictionary<Type, string> TypesToTypeNames = new();
-
-    private static List<string>? _functionNames;
     private readonly List<string> _attributeNames = [];
     private readonly Dictionary<string, ElementType> _debuggerElementTypes = new();
     private readonly Dictionary<string, ObjectType> _debuggerObjectTypes = new();
@@ -1227,11 +1225,6 @@ public partial class WorldModel : IGame, IGameDebug
         return Elements.Get(el).Fields.GetInheritedTypesDebugData();
     }
 
-    public DebugDataItem GetDebugDataItem(string el, string attribute)
-    {
-        return Elements.Get(el).Fields.GetDebugDataItem(attribute);
-    }
-
     internal void SignalTurnSuspended(bool scroll = true)
     {
         if (scroll && Version >= WorldModelVersion.v540)
@@ -1406,14 +1399,6 @@ public partial class WorldModel : IGame, IGameDebug
     public Element AddProcedure(string name)
     {
         var proc = GetElementFactory(ElementType.Function).Create(name);
-        return proc;
-    }
-
-    public Element AddProcedure(string name, IScript script, string[] parameters)
-    {
-        var proc = AddProcedure(name);
-        proc.Fields[FieldDefinitions.Script] = script;
-        proc.Fields[FieldDefinitions.ParamNames] = new QuestList<string>(parameters);
         return proc;
     }
 
@@ -1618,11 +1603,6 @@ public partial class WorldModel : IGame, IGameDebug
         return Element.GetObjectTypeForTypeString(typeString);
     }
 
-    public static string GetTypeStringForElementType(ElementType type)
-    {
-        return Element.GetTypeStringForElementType(type);
-    }
-
     public static string GetTypeStringForObjectType(ObjectType type)
     {
         return Element.GetTypeStringForObjectType(type);
@@ -1721,38 +1701,18 @@ public partial class WorldModel : IGame, IGameDebug
         return packager.CreatePackage(filename, includeWalkthrough, out error, includeFiles, outputStream);
     }
 
-    public IEnumerable<string> GetBuiltInFunctionNames()
-    {
-        if (_functionNames != null)
-        {
-            return _functionNames.AsReadOnly();
-        }
-
-        var methods = typeof(ExpressionOwner).GetMethods();
-        var stringMethods = typeof(StringFunctions).GetMethods();
-        var dateTimeMethods = typeof(DateTimeFunctions).GetMethods();
-
-        var allMethods = methods.Union(stringMethods).Union(dateTimeMethods);
-
-        _functionNames = new List<string>(allMethods.Select(m => m.Name));
-
-        return _functionNames.AsReadOnly();
-    }
-
     // Signatures (name + parameter names) for the built-in expression functions, reflected from
-    // the same classes GetBuiltInFunctionNames() draws from — used to power the editor's
+    // ExpressionOwner, StringFunctions and DateTimeFunctions — used to power the editor's
     // expression-insert helper. DeclaredOnly + !IsSpecialName excludes inherited object members
-    // (ToString/Equals/...) and property accessors, which GetBuiltInFunctionNames() above doesn't
-    // filter out (harmless there since only the name list is used, but would show up as bogus
-    // zero-arg "functions" here).
+    // (ToString/Equals/...) and property accessors, which would otherwise show up as bogus
+    // zero-arg "functions".
     public IEnumerable<(string Name, string[] Parameters)> GetBuiltInFunctionSignatures()
     {
         const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static |
                                     BindingFlags.DeclaredOnly;
 
         // Each GetMethods() call is made directly on a typeof(...) constant (rather than via a
-        // lambda over a Type variable) so the trimmer can see which type's members to preserve —
-        // matching GetBuiltInFunctionNames() above.
+        // lambda over a Type variable) so the trimmer can see which type's members to preserve.
         var methods = typeof(ExpressionOwner).GetMethods(flags)
             .Concat(typeof(StringFunctions).GetMethods(flags))
             .Concat(typeof(DateTimeFunctions).GetMethods(flags));

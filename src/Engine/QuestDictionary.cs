@@ -509,36 +509,6 @@ public sealed class OrderedDictionary<TKey, TValue> : IOrderedDictionary<TKey, T
     /// <summary>
     ///     Initializes a new instance of the
     ///     <see cref="OrderedDictionary{TKey,TValue}">OrderedDictionary&lt;TKey,TValue&gt;</see> class using the specified
-    ///     initial capacity.
-    /// </summary>
-    /// <param name="capacity">
-    ///     The initial number of elements that the
-    ///     <see cref="OrderedDictionary{TKey,TValue}">OrderedDictionary&lt;TKey,TValue&gt;</see> can contain.
-    /// </param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is less than 0</exception>
-    public OrderedDictionary(int capacity)
-        : this(capacity, null)
-    {
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the
-    ///     <see cref="OrderedDictionary{TKey,TValue}">OrderedDictionary&lt;TKey,TValue&gt;</see> class using the specified
-    ///     comparer.
-    /// </summary>
-    /// <param name="comparer">
-    ///     The <see cref="IEqualityComparer{TKey}">IEqualityComparer&lt;TKey&gt;</see> to use when
-    ///     comparing keys, or <null /> to use the default
-    ///     <see cref="EqualityComparer{TKey}">EqualityComparer&lt;TKey&gt;</see> for the type of the key.
-    /// </param>
-    public OrderedDictionary(IEqualityComparer<TKey>? comparer)
-        : this(DefaultInitialCapacity, comparer)
-    {
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the
-    ///     <see cref="OrderedDictionary{TKey,TValue}">OrderedDictionary&lt;TKey,TValue&gt;</see> class using the specified
     ///     initial capacity and comparer.
     /// </summary>
     /// <param name="capacity">

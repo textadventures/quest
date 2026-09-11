@@ -118,7 +118,6 @@ public static class FieldDefinitions
     public static IField<bool> IsBaseTemplate = new FieldDef<bool>("isbasetemplate");
     public static IField<string> DisplayVerb = new FieldDef<string>("displayverb");
     public static IField<string> Cover = new FieldDef<string>("cover");
-    public static IField<string> PublishFileExtensions = new FieldDef<string>("publishfileextensions");
     public static IField<string> EditorStyle = new FieldDef<string>("_editorstyle");
 }
 
@@ -459,17 +458,6 @@ public class Fields
         }
     }
 
-    public Type? GetCurrentType(string attribute)
-    {
-        var value = Get(attribute);
-        if (value == null)
-        {
-            return null;
-        }
-
-        return value.GetType();
-    }
-
     public object? Get(string attribute)
     {
         return Get(attribute, false).Value;
@@ -592,35 +580,6 @@ public class Fields
         }
 
         return field.Merge(parent);
-    }
-
-    internal DebugDataItem GetDebugDataItem(string attribute)
-    {
-        var result = new DebugDataItem(FormatDebugData(Get(attribute)));
-
-        string? source = null;
-        var isInherited = false;
-
-        if (_attributes.ContainsKey(attribute))
-        {
-            source = _element.Name;
-        }
-        else
-        {
-            foreach (var type in _types)
-            {
-                if (type.Fields.Exists(attribute, true))
-                {
-                    source = type.Name;
-                    isInherited = true;
-                    break;
-                }
-            }
-        }
-
-        result.IsInherited = isInherited;
-        result.Source = source;
-        return result;
     }
 
     internal bool Exists(string attribute, bool includeExtendableFields)
@@ -783,30 +742,6 @@ public class Fields
     public bool HasString(string attribute)
     {
         return HasType<string>(attribute);
-    }
-
-    public Element? GetObject(string attribute)
-    {
-        return GetAsType<Element>(attribute);
-    }
-
-    public bool HasObject(string attribute)
-    {
-        return HasType<Element>(attribute);
-    }
-
-    public Dictionary<string, object?> GetAllAttributes()
-    {
-        // return a clone of the attributes dictionary as we don't
-        // want external code changing any.
-        var result = new Dictionary<string, object?>();
-        foreach (var key in _attributes.Keys)
-        {
-            // ok so it's not strictly a clone for things like Lists
-            result.Add(key, _attributes[key]);
-        }
-
-        return result;
     }
 
     internal void DoUndoAddRemoveType(Stack<Element> newValue)
@@ -982,12 +917,6 @@ public class Fields
     public IFunction<string>? this[IField<IFunction<string>> field]
     {
         get => GetAsType<IFunction<string>>(field.Property);
-        set => Set(field.Property, value);
-    }
-
-    public QuestList<object>? this[IField<QuestList<object>> field]
-    {
-        get => GetAsType<QuestList<object>>(field.Property);
         set => Set(field.Property, value);
     }
 

@@ -11,7 +11,6 @@ public interface IElementFactory
     Element Create(string name);
     Element Create();
     void DestroyElement(string elementName);
-    void DestroyElementSilent(string elementName);
     Element CloneElement(Element elementToClone, string newElementName);
 }
 
@@ -51,11 +50,6 @@ public abstract class ElementFactoryBase : IElementFactory
     public void DestroyElement(string elementName)
     {
         DestroyElement(elementName, false);
-    }
-
-    public void DestroyElementSilent(string elementName)
-    {
-        DestroyElement(elementName, true);
     }
 
     protected Element CreateInternal(string name, bool addToUndoLog, Action<Element>? extraInitialisation,
@@ -309,12 +303,6 @@ public class ObjectFactory : ElementFactoryBase
         return newObject;
     }
 
-    public Element CreateCommand()
-    {
-        var id = WorldModel.GetUniqueId();
-        return CreateCommand(id);
-    }
-
     public Element CreateCommand(string id)
     {
         var newCommand = CreateObject(id, ObjectType.Command);
@@ -468,20 +456,6 @@ internal class TemplateFactory : ElementFactoryBase
 internal class DynamicTemplateFactory : ElementFactoryBase
 {
     public override ElementType CreateElementType => ElementType.DynamicTemplate;
-}
-
-internal abstract class SingleElementFactory : ElementFactoryBase
-{
-    public override Element Create(string name)
-    {
-        if (WorldModel.Elements.Count(CreateElementType) >= 1)
-        {
-            throw new InvalidOperationException(string.Format("There can only be one '{0}' element",
-                FriendlyElementTypeName));
-        }
-
-        return base.Create(name);
-    }
 }
 
 internal class WalkthroughFactory : ElementFactoryBase
