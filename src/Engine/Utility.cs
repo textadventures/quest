@@ -8,10 +8,6 @@ namespace QuestViva.Engine;
 [SuppressMessage("Microsoft.Usage", "CA2237:MarkISerializableTypesWithSerializable")]
 public class MismatchingQuotesException : Exception
 {
-    public MismatchingQuotesException() : base("Missing quote character (\")")
-    {
-    }
-
     public MismatchingQuotesException(string message) : base(message)
     {
     }

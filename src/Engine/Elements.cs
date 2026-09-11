@@ -229,11 +229,6 @@ public class Elements
         return _elements[t].Count;
     }
 
-    public int Count()
-    {
-        return _allElements.Count;
-    }
-
     public Element? GetSingle(ElementType t)
     {
         foreach (var e in _elements[t].Values)

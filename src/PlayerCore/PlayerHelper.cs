@@ -429,11 +429,6 @@ public class PlayerHelper
         _fontSize = fontSize;
     }
 
-    public void AppendText(string text)
-    {
-        WriteText(FormatText(text) + "<br />");
-    }
-
     private static Stream? GetUiResource(string name)
     {
         return Assembly.GetExecutingAssembly()
@@ -486,40 +481,10 @@ public class PlayerHelper
         return string.Join("/", verbs);
     }
 
-    public static CommandData GetCommandData(string data)
-    {
-        var result = new CommandData();
-
-        using var doc = JsonDocument.Parse(data);
-        var root = doc.RootElement;
-
-        if (root.TryGetProperty("command", out var commandEl))
-            result.Command = commandEl.GetString();
-
-        if (root.TryGetProperty("metadata", out var metadataEl))
-        {
-            var metadataString = metadataEl.GetString();
-            if (metadataString != null)
-            {
-                using var metaDoc = JsonDocument.Parse(metadataString);
-                result.Metadata = metaDoc.RootElement.EnumerateObject()
-                    .ToDictionary(p => p.Name, p => p.Value.GetString() ?? "");
-            }
-        }
-
-        return result;
-    }
-
     public static string GetContentType(string filename)
     {
         string? result;
         return MimeTypes.TryGetValue(Path.GetExtension(filename).ToLower(), out result) ? result : "";
-    }
-
-    public class CommandData
-    {
-        public string? Command { get; set; }
-        public IDictionary<string, string>? Metadata { get; set; }
     }
 }
 

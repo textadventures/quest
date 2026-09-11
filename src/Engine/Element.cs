@@ -186,11 +186,6 @@ public class Element : IComparable
         return MapObjectTypeStringsToElementType[typeString];
     }
 
-    internal static string GetTypeStringForElementType(ElementType type)
-    {
-        return ElemTypeStrings[type];
-    }
-
     internal static string GetTypeStringForObjectType(ObjectType type)
     {
         return TypeStrings[type];
@@ -265,11 +260,6 @@ public class Element : IComparable
     internal void SetTextFromFields(string? text)
     {
         _text = text;
-    }
-
-    internal void AddType(Element addType)
-    {
-        Fields.AddType(addType);
     }
 
     internal DebugData GetDebugData()

@@ -14,7 +14,6 @@ public class ElementFieldUpdatedEventArgs : EventArgs
     public string Attribute { get; private set; }
     public object? NewValue { get; private set; }
     public bool IsUndo { get; private set; }
-    public bool Refresh { get; private set; }
 }
 
 public class ElementRefreshEventArgs : EventArgs
