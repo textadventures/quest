@@ -102,9 +102,7 @@ When the player moves from one room to another, this is the order things happen 
 8. the new room's "after entering" script
 9. the new room is marked as visited
 
-Each script finishes before the next one starts, and a script that stops to ask the player something holds up everything after it — the room description and the remaining scripts all wait until the player has answered.
-
-The two ways of asking differ in where the asking script itself resumes, though. `GetInput()` suspends the script where it stands and carries on from the next statement once the player answers. The `get input` script command does not: it runs the rest of its own script straight away and defers only its callback block until the answer arrives. Neither lets the *next* script in the list start early, but with `get input` the tail of your own script runs before the player has typed anything, which is rarely what you want in a room-entering script.
+Each script finishes before the next one starts. A script that stops to ask the player something — with `GetInput()`, `Ask()` or `ShowMenu()` — suspends where it stands and holds up everything after it: the room description and the remaining scripts all wait until the player has answered, then the sequence carries on from where it left off.
 
 At the very start of the game there is no old room, so step 1 is skipped, and the whole sequence runs after the game's start script.
 
