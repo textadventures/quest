@@ -13,7 +13,7 @@ Script commands with blocks that wait: `ask, get input, on ready, show menu, wai
 
 Functions with scripts that wait: `Ask, ShowMenu, SetTimeout, SetTimeoutID, SetTurnTimeout, SetTurnTimeoutID`
 
-**Note:** Four of those waiting script commands - [ask](/scripts#ask), [get input](/scripts#get-input), [show menu](/scripts#show-menu) and [wait](/scripts#wait) - each now have a simpler alternative that avoids all of this, and are no longer offered when you add a new script command. Use [Ask](/reference/functions/user-interface#ask), [GetInput](/reference/functions/user-interface#getinput), [ShowMenu](/reference/functions/user-interface#showmenu) and [WaitForKeyPress](/reference/functions/user-interface#waitforkeypress) instead: those suspend the script where it is and carry on with the next line once the player has answered, so there is nothing to nest and no callback block to get caught out by. The rest of this page still matters for the callback forms that remain - `on ready`, the timeout functions, and the `Ask (...) { }` and `ShowMenu (...) { }` function forms, which print their options as links in the transcript - and for reading games that already use the four commands above.
+**Note:** Four of those waiting script commands - [ask](/scripts#ask), [get input](/scripts#get-input), [show menu](/scripts#show-menu) and [wait](/scripts#wait) - are no longer offered when you add a new script command. Use [Ask](/reference/functions/user-interface#ask), [GetInput](/reference/functions/user-interface#getinput), [ShowMenu](/reference/functions/user-interface#showmenu) and [WaitForKeyPress](/reference/functions/user-interface#waitforkeypress) instead: they suspend the script where they are and carry on at the next line, so there is nothing to nest. The rest of this page applies to the callback forms that remain - `on ready`, the timeout functions, and the `Ask (...) { }` and `ShowMenu (...) { }` function forms.
 
 
 ## Script commands and blocks
@@ -56,7 +56,7 @@ The player will be asked the question, but Quest Viva will print "You walk swift
 
 The `on ready` script command is there specifically to ensure Quest Viva waits for any outstanding block to end before running its own block.
 
-This is why the `ask` command is no longer offered when you add a script. The `Ask` function does the same job without the trap, because it hands back the answer rather than running a block with it:
+The `Ask` function does the same job without the trap, because it hands back the answer rather than running a block with it:
 
 ```quest
 msg ("A man steps out of the door way. 'You wanna a cheap watch?'")
@@ -69,7 +69,7 @@ else {
 msg ("You walk swiftly on.")
 ```
 
-Now "You walk swiftly on." really is printed last. The same goes for `get input`, `show menu` and `wait` - see the note at the top of this page.
+Now "You walk swiftly on." really is printed last.
 
 
 ## Functions with scripts

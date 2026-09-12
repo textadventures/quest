@@ -12,18 +12,18 @@ Often in a text adventure you want the game to ask an open-ended question of the
 
 ```quest
 msg ("What is your name?")
-player.alias = CapFirst(GetInput())
+player.alias = GetInput()
 ```
 
 The first line just asks the question. Then we see `GetInput()`. This suspends the script until the player has typed a response, and then hands back what they typed, as a string - so we can assign it straight to an attribute, and the next line of the script does not run until the answer is in.
 
-Note that we are setting the "alias" attribute; the "name" attribute cannot be changed during play as Quest Viva uses that to track each object. Note that it makes sure there is a capital at the start. You can then use the text processor to insert the character's name in text:
+Note that we are setting the "alias" attribute; the "name" attribute cannot be changed during play as Quest Viva uses that to track each object. You can then use the text processor to insert the character's name in text:
 
 ```quest
 'Hi, {player.alias},' says the oddly-shaped doll.
 ```
 
-**Note:** Games written for Quest 5 ask questions with the [get input](/scripts#get-input) script command instead, which runs a nested block once the player has answered. That still works, and you will still see it in the script editor if a game already contains it, but it is no longer offered when you add a new script command. Everything on this page is easier with `GetInput()`, so that is what we use throughout.
+**Note:** A game written for Quest 5 may use the [get input](/scripts#get-input) script command instead, which runs a nested block once the player has answered - that was the way to do this from Quest 5.4 onwards. It still works, and is still editable if a game already contains it, but it is no longer offered when you add a new script command.
 
 ## Multiple questions
 
@@ -33,27 +33,12 @@ Asking a second question is just a case of writing a second question:
 
 ```quest
 msg ("What is your name?")
-player.alias = CapFirst(GetInput())
+player.alias = GetInput()
 msg ("How old are you?")
 player.age = GetInput()
 ```
 
 The player is asked for her name, the game waits, she answers; only then is she asked her age. You can carry on like that for as many questions as you like.
-
-This is worth spelling out because it is the thing the old `get input { }` command got wrong. With that command, the game did *not* wait - it printed the question, carried straight on with the rest of the script, and only came back to the nested block once the player answered. So two `get input` commands one after the other asked both questions at once, and only the second one was actually listening. The way round it was to _nest_ the second question inside the first one's block:
-
-```quest
-msg ("What is your name?")
-get input {
-  player.alias = CapFirst(result)
-  msg ("How old are you?")
-  get input {
-    player.age = result
-  }
-}
-```
-
-If you are working on a game that does this, you can leave it alone - it still runs. But there is no reason to write anything new that way.
 
 
 ## Looking for a specific answer
@@ -151,8 +136,6 @@ JS.eval("$('#txtCommand').attr('placeholder', 'Type here...');")
 JS.panesVisible(true)
 ```
 
-Notice that the two lines putting the interface back to normal are just the last two lines of the script. With `get input { }` they would have had to go inside the block, because anything after the block ran immediately - before the player had answered.
-
 
 ## Dozens of questions
 
@@ -176,5 +159,3 @@ msg (" ")
 ```
 
 The loop takes each question in turn, prints it, waits for the answer, and adds that answer to the list. Once the list of questions has run out, the loop ends and the summary at the bottom is printed.
-
-Doing this with `get input { }` used to take a recursive function - a function that calls itself, with the next call made from inside the callback block, and a check to stop it once the list was empty. If you have a game that does that, it still works, but a loop is a lot easier to follow.

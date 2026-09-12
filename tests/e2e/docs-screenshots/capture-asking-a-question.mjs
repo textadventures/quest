@@ -4,11 +4,11 @@
 // The page used to teach "get input { }", which is intentionally no longer offered by the Add
 // Script Command picker (superseded by the synchronous GetInput() expression form - see
 // CoreEditorScriptsOutput.aslx's "Removed from adder" comments), so it now teaches GetInput()
-// throughout and these captures follow. GetInput() renders in the Visual editor as the
-// "player's typed input" value template on a Set variable row where it's the whole expression,
-// and as a plain expression field where it's wrapped in something else (CapFirst here). Each
-// state is built by typing raw quest-script into the Start script's Code view and switching
-// back to Visual editor, rather than via addScriptCommand.
+// throughout and these captures follow. A bare GetInput() renders in the Visual editor as the
+// "player's typed input" value template on a Set variable row (wrapping it in anything else
+// falls back to a raw expression field, which is why the page's examples assign it directly).
+// Each state is built by typing raw quest-script into the Start script's Code view and
+// switching back to Visual editor, rather than via addScriptCommand.
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { runCapture, createLocalDraft, selectTreeNode, openTab, setScriptCodeView, capture } from './lib.mjs';
@@ -26,13 +26,13 @@ await runCapture(async ({ page, baseUrl }) => {
 
     // --- Question1.png ---
     await setScriptCodeView(page, codeViewBtn(), `msg ("What is your name?")
-player.alias = CapFirst(GetInput())`);
+player.alias = GetInput()`);
     await page.waitForSelector('text=Set variable');
     await capture(page, out('Question1.png'), { untilLocator: lastAddScript(), padding: 40 });
 
     // --- Question2.png ---
     await setScriptCodeView(page, codeViewBtn(), `msg ("What is your name?")
-player.alias = CapFirst(GetInput())
+player.alias = GetInput()
 msg ("How old are you?")
 player.age = GetInput()`);
     await page.waitForSelector('text=Set variable');
