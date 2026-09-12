@@ -153,7 +153,7 @@ The usual `OutputTextRaw` adds an HTML "br" element to the end of the text, to i
 PrintCentered(string text)
 ```
 
-Prints the specified text centered.
+Prints the specified text the same way [msg](/scripts/#msg) does, just centered instead of left-aligned - the text can include HTML as usual.
 
 ## RemovePageLink
 ```quest

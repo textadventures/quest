@@ -37,10 +37,29 @@ const outPath = join(repoRoot, "src", "AppShell", "src", "lib", "docs-index.gene
 const FUNCTIONS_SECTION = "reference/functions";
 
 // Keywords that name a script command but have no useful reference entry:
-// syntax rather than a command (`=`, `//`, `@failed`), or internal
-// pseudo-elements the editor uses to group the tree (`_objects`, ...).
-// Applied to the bare name, after any "(function)" prefix has been stripped.
+// syntax rather than a command (`@failed`), or internal pseudo-elements the
+// editor uses to group the tree (`_objects`, ...). Applied to the bare name,
+// after any "(function)" prefix has been stripped. A handful of *real*,
+// author-facing commands also fail this letter check because they're pure
+// punctuation (`=`, `//`, ...) - those are listed in manualTargets below
+// instead of being excluded here.
 const isInternalName = (name) => name.startsWith("_") || !/^[A-Za-z]/.test(name);
+
+// Script keywords that are pure punctuation/operators, so they have no
+// readable name a "## " heading could carry - findPage() below matches a
+// keyword to a heading by name, which doesn't work for "()" or "=>". Two of
+// them also describe concepts that live outside the reference/functions +
+// scripts docs this file otherwise indexes (a howto guide, the JS binding
+// page), so they're pointed at a fixed target instead of being discovered.
+// Where the target *is* in readHeadings()'s scope, `heading` is checked
+// against it so a rename doesn't silently leave this pointing at nothing.
+const manualTargets = {
+  "=": { path: "/scripts/#setting-variables", slug: "scripts", heading: "Setting variables" },
+  "=>": { path: "/scripts/#setting-variables", slug: "scripts", heading: "Setting variables" },
+  "//": { path: "/scripts/#comments", slug: "scripts", heading: "Comments" },
+  "()": { path: "/howto/tasks/about-functions/#using-functions" },
+  "JS.": { path: "/js/#calling-js-functions" },
+};
 
 // Element-type editors (<editor name="object">, etc.) rather than script
 // commands - they belong to the element reference, not the function reference.
@@ -176,13 +195,30 @@ function readHelpPageTitles() {
   return titles;
 }
 
+// Below this length (chars of prose, same measure as explanationLength), an
+// entry is reported as worth fleshing out - informational only, unlike
+// unmatched/undocumented it never changes the generated file or fails
+// --check. Picked to match the ad-hoc measurement in issue #2220 that first
+// surfaced this tail.
+const THIN_EXPLANATION_CHARS = 60;
+
 function build() {
   const headingsBySlug = readHeadings();
   const entries = [];
   const unmatched = [];
   const undocumented = [];
+  const thin = [];
 
   for (const keyword of [...readScriptKeywords()].sort()) {
+    const manual = manualTargets[keyword];
+    if (manual) {
+      if (manual.slug && headingsBySlug.get(manual.slug)?.get(manual.heading) === undefined) {
+        throw new Error(`manualTargets["${keyword}"]: no "## ${manual.heading}" heading on ${manual.slug} - is it stale?`);
+      }
+      entries.push({ keyword, path: manual.path });
+      continue;
+    }
+
     const isFunction = keyword.startsWith("(function)");
     const name = isFunction ? keyword.slice("(function)".length) : keyword;
     if (isInternalName(name) || elementTypeKeywords.has(name)) continue;
@@ -199,9 +235,13 @@ function build() {
       continue;
     }
     const [slug, heading] = match;
-    if (headingsBySlug.get(slug).get(heading) === 0) {
+    const length = headingsBySlug.get(slug).get(heading);
+    if (length === 0) {
       undocumented.push(`${keyword} (${slug}#${anchorFor(heading)})`);
       continue;
+    }
+    if (length < THIN_EXPLANATION_CHARS) {
+      thin.push(`${keyword} (${length} chars) - ${slug}#${anchorFor(heading)}`);
     }
     const entry = { keyword, path: `/${slug}/#${anchorFor(heading)}` };
     if (dual) {
@@ -214,10 +254,10 @@ function build() {
     entries.push(entry);
   }
 
-  return { entries, unmatched, undocumented };
+  return { entries, unmatched, undocumented, thin };
 }
 
-const { entries, unmatched, undocumented } = build();
+const { entries, unmatched, undocumented, thin } = build();
 const helpPageTitles = readHelpPageTitles();
 
 const lines = [
@@ -286,5 +326,12 @@ if (process.argv.includes("--check")) {
       "explanation -\nadd a line of prose to give them a help link:"
     );
     for (const k of undocumented) console.log(`  - ${k}`);
+  }
+  if (thin.length > 0) {
+    console.log(
+      `\n${thin.length} keyword(s) are linked but have a short explanation (under ${THIN_EXPLANATION_CHARS} ` +
+      "chars) that may be worth fleshing out:"
+    );
+    for (const k of thin) console.log(`  - ${k}`);
   }
 }

@@ -186,10 +186,10 @@ player.parent = lounge
 
 ## RemoveObject
 ```quest
-RemoveObject(objectobject1)
+RemoveObject(object object1)
 ```
 
-Removes an object from its parent.
+Removes an object from its parent, by setting its `parent` attribute to null - the object still exists, it just isn't contained anywhere, so it won't appear in room contents, inventory, etc. This is different from [destroy](/scripts/#destroy), which deletes the object completely.
 
 ## UnlockExit
 ```quest

@@ -9,14 +9,14 @@ sidebar:
 DisableTimer (timer)
 ```
 
-Disables the specified timer.
+Disables the specified timer, by setting its `enabled` attribute to false. See [EnableTimer](#enabletimer) to turn it back on.
 
 ## DisableTurnScript
 ```quest
 DisableTurnScript (turn script)
 ```
 
-Disables the specified turn script.
+Disables the specified turnscript, by setting its `enabled` attribute to false. See [EnableTurnScript](#enableturnscript) to turn it back on.
 
 ## EnableTimer
 ```quest
@@ -30,7 +30,7 @@ Enables the specified timer. Note that this sets the `trigger` attribute as well
 EnableTurnScript (turn script)
 ```
 
-Enables the specified turn script.
+Enables the specified turnscript, by setting its `enabled` attribute to true. See [DisableTurnScript](#disableturnscript) to turn it off again.
 
 ## GetTimer
 ```quest
@@ -89,7 +89,7 @@ The name specifies the name of the timer to create. The anonymous version of thi
 SetTimerInterval (timer, interval)
 ```
 
-Sets the specified timer interval.
+Sets the specified timer's interval, in seconds, between each time it fires - equivalent to setting its `interval` attribute directly.
 
 ## SetTimerScript
 ```quest
