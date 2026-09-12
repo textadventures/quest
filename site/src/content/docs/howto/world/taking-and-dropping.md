@@ -58,7 +58,7 @@ MoveObject (this, destination)
 msg ("You put the vase down very carefully.")
 ```
 
-The "Run script after" script — the drop equivalent of "after taking" — is passed a Boolean telling you whether the object actually moved. The variable is called `successful` (the label above the script box calls it "success", but `successful` is the name to use):
+The "Run script after" script — the drop equivalent of "after taking" — is passed a Boolean telling you whether the object actually moved. The variable is called `successful`:
 
 ```quest
 if (successful) {
