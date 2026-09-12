@@ -59,7 +59,11 @@
         <Copy SourceFiles="@(_ImageAssets)" DestinationFolder="$(WasmAppDir)lib\images\"/>
         <Copy SourceFiles="@(_TranscriptViewerAssets)" DestinationFolder="$(WasmAppDir)TranscriptViewer\"/>
         <!-- Manifest of every non-_framework file for AppShell's zip HTML export —
-             keeps that list from drifting when assets are added/removed above. -->
-        <Exec Command="node scripts/write-export-manifest.mjs &quot;$(WasmAppDir)&quot;" WorkingDirectory="$(MSBuildThisFileDirectory)"/>
+             keeps that list from drifting when assets are added/removed above.
+             $(WasmAppDir) ends in a directory separator; trim it before quoting —
+             a quoted arg ending "\" is mis-parsed by Windows' argv escaping rules
+             (the backslash escapes the closing quote instead of terminating it),
+             which broke the windows-latest Electron build (Exec: ENOENT AppBundle"). -->
+        <Exec Command="node scripts/write-export-manifest.mjs &quot;$(WasmAppDir.TrimEnd('\').TrimEnd('/'))&quot;" WorkingDirectory="$(MSBuildThisFileDirectory)"/>
     </Target>
 </Project>
