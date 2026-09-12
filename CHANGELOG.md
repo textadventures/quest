@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.0.0-beta.61](https://github.com/textadventures/quest/compare/v6.0.0-beta.60...v6.0.0-beta.61) (2026-09-12)
+
+
+### Bug Fixes
+
+* **WasmPlayer:** fix Windows argv-quoting bug breaking Electron release build ([#2275](https://github.com/textadventures/quest/issues/2275)) ([8f38279](https://github.com/textadventures/quest/commit/8f382798387dbfd5784f49dc73fd6f086329b857))
+
 ## [6.0.0-beta.60](https://github.com/textadventures/quest/compare/v6.0.0-beta.59...v6.0.0-beta.60) (2026-09-11)
 
 
