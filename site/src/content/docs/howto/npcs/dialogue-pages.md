@@ -10,7 +10,9 @@ The [Tutorial](/tutorial/using-pages) covers the basics of setting up a Pages di
 
 Quest Viva has several ways to let the player talk to a character - see [Introduction to conversations](/howto/npcs/conversations) for an overview. Pages are the right choice when you want a structured, multi-step exchange where each reply leads to a fixed set of further choices - the Text Adventure equivalent of a gamebook's branching passages. For a one-off list of topics with no follow-up, a [ShowMenu](/reference/functions/user-interface#showmenu)-based menu (see [Handling SPEAK TO](/howto/npcs/speak-to)) is simpler. For a free-form "ask about anything" system, use [Ask/Tell](/howto/npcs/ask-about) instead.
 
-The main practical advantage of Pages over `ShowMenu` is that each choice is a complete, ordinary turn - the game is never "waiting" on a menu callback, so save, load and undo all work in the middle of a conversation.
+The main practical advantage of Pages over `ShowMenu` is that each choice is a complete, ordinary turn, recorded as its own undo point, and the conversation is described as a graph of linked page objects instead of a callback nested inside another callback for every level of the exchange. The dialogue's whole state lives in ordinary game attributes, so a save taken mid-conversation restores without depending on the saved transcript's own markup.
+
+(Saving itself works during a `ShowMenu` callback too - the turn has ended by the time the menu is on screen. It's the `ShowMenu` *expression* form, and the `show menu` script command, that suspend the script mid-turn and make saving unavailable until the player answers.)
 
 ## The page object
 
