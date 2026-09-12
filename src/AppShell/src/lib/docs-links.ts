@@ -49,7 +49,8 @@ export function scriptKeywordName(keyword: string): string {
 /**
  * Documentation URL for a script editor keyword (a script's <appliesto> value,
  * e.g. "msg" or "(function)OutputTextNoBr"), or null when that command has no
- * reference entry — syntax like `=` and `//`, and the `JS.` call prefix.
+ * reference entry at all (see build-docs-index.mjs's `unmatched`/`undocumented`
+ * reporting for why a given keyword might still be missing).
  *
  * isGamebook picks between the two same-named functions where the gamebook and
  * Text Adventure page APIs collide (AddPageLink and friends).

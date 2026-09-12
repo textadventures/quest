@@ -49,7 +49,7 @@ Returns a [boolean](/types#boolean) - **true** if the player can see through the
 ChangePOV (object)
 ```
 
-Switches the player object.
+Switches the current player object (point of view) to the given object, which must already have a parent (e.g. be placed somewhere in the game world). Triggers `OnEnterRoom` for the new POV's location. See [Changing the player object](/howto/tasks/changing-the-player-object/) for a full walkthrough.
 
 ## CheckDarkness
 ```quest

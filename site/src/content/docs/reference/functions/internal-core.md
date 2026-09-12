@@ -294,7 +294,7 @@ Grid_CalculateMapCoordinates(room)
 Grid_ClearCustomLayer ()
 ```
 
-Clears the custom grid drawing layer.
+Clears the custom grid drawing layer - everything drawn with [Grid_DrawLine](#grid_drawline), [Grid_DrawArrow](#grid_drawarrow), [Grid_DrawSquare](#grid_drawsquare) and similar - without affecting the auto-generated room/exit layout underneath it.
 
 ## Grid_DrawArrow
 ```quest
@@ -396,7 +396,7 @@ Grid_Redraw
 Grid_SetCentre (int x, int y)
 ```
 
-Centres the grid on the specified co-ordinates.
+Scrolls the grid map so that (x, y) is centred in the view, instead of automatically following the player.
 
 ## Grid_SetGridCoordinateForPlayer
 ```quest
@@ -419,7 +419,7 @@ Grid_SetScale(scale)
 Grid_ShowCustomLayer (boolean visible)
 ```
 
-Turn the custom grid drawing layer on or off.
+Shows or hides the custom grid drawing layer (see [Grid_ClearCustomLayer](#grid_clearcustomlayer)), independently of the auto-generated grid map layer underneath it.
 
 ## HandleCommand
 ```quest
@@ -477,6 +477,8 @@ HideOutputSection(name)
 ```quest
 HidePreviousTurnOutput()
 ```
+
+Hides the output that was shown for the previous turn, leaving only the current turn's text visible in the transcript.
 
 ## InitConjugation
 ```quest

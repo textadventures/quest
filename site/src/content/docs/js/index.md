@@ -4,6 +4,8 @@ sidebar:
   order: 27
 ---
 
+## Calling JS functions
+
 The `JS` object is how Quest Viva exposes the user interface. What this means is that we can use the JS object to call JavaScript functions that will modify what the player sees. The basic format is to append the JavaScript function name with a dot, so to call `addText` (the JavaScript function Quest Viva uses to show text on the screen), use something like this:
 
 ```quest

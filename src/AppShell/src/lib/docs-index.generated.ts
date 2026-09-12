@@ -13,6 +13,7 @@ export interface DocsIndexEntry {
 }
 
 export const DOCS_INDEX: Readonly<Record<string, DocsIndexEntry>> = {
+    "()": { path: "/howto/tasks/about-functions/#using-functions" },
     "(function)AddPageLink": { path: "/reference/functions/user-interface/#addpagelink", gamebookPath: "/reference/functions/gamebook/#addpagelink" },
     "(function)AddToInventory": { path: "/reference/functions/core/#addtoinventory" },
     "(function)Ask": { path: "/reference/functions/user-interface/#ask" },
@@ -49,6 +50,7 @@ export const DOCS_INDEX: Readonly<Record<string, DocsIndexEntry>> = {
     "(function)Grid_ShowCustomLayer": { path: "/reference/functions/internal-core/#grid_showcustomlayer" },
     "(function)HelperCloseObject": { path: "/reference/functions/core/#helpercloseobject" },
     "(function)HelperOpenObject": { path: "/reference/functions/core/#helperopenobject" },
+    "(function)HidePreviousTurnOutput": { path: "/reference/functions/internal-core/#hidepreviousturnoutput" },
     "(function)IncreaseCounter": { path: "/reference/functions/gamebook/#increasecounter" },
     "(function)IncreaseHealth": { path: "/reference/functions/attributes/#increasehealth" },
     "(function)IncreaseMoney": { path: "/reference/functions/attributes/#increasemoney" },
@@ -100,6 +102,10 @@ export const DOCS_INDEX: Readonly<Record<string, DocsIndexEntry>> = {
     "(function)TextFX_Unscramble": { path: "/reference/functions/user-interface/#textfx_unscramble" },
     "(function)UnlockExit": { path: "/reference/functions/objects/#unlockexit" },
     "(function)WaitForKeyPress": { path: "/reference/functions/user-interface/#waitforkeypress" },
+    "//": { path: "/scripts/#comments" },
+    "=": { path: "/scripts/#setting-variables" },
+    "=>": { path: "/scripts/#setting-variables" },
+    "JS.": { path: "/js/#calling-js-functions" },
     "ask": { path: "/scripts/#ask" },
     "create": { path: "/scripts/#create" },
     "create exit": { path: "/scripts/#create-exit" },

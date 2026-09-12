@@ -12,7 +12,9 @@ if (someVariable = 3) {
 }
 ```
 
-Comments are denoted by //
+## Comments
+
+Comments are denoted by `//` - anything after it on the same line is ignored:
 
 ```quest
 // this line will be ignored
@@ -199,7 +201,7 @@ Stops running the current script and raises the specified error message.
 finish
 ```
 
-Finish the game.
+Ends the game - no further commands are accepted, and any pending timers, menus or other prompts are cancelled.
 
 ## firsttime
 ```quest
@@ -377,7 +379,13 @@ See [Using Lists](/howto/scripting/using-lists)
 msg (string message)
 ```
 
-Prints the specified text.
+Prints the specified text to the transcript.
+
+```quest
+msg ("You open the door.")
+```
+
+The text is a normal string expression, so it can be built up with concatenation, e.g. `msg ("Score: " + game.score)`, and can include HTML for formatting.
 
 ## on ready
 ```quest
@@ -399,7 +407,7 @@ Note that this does not wait for scripts attached to functions to work (such as 
 picture (string filename)
 ```
 
-Outputs the specified picture file.
+Outputs the specified picture file. The file must already have been added to the game as a resource - reference it by filename only (e.g. `"cave.jpg"`), not a full path.
 
 ## play sound
 ```quest
@@ -538,7 +546,7 @@ For more, see [here](/howto/tasks/multiple-choices-using-a-switch-script)
 undo
 ```
 
-Moves the game state backwards one transaction.
+Reverts the game state to how it was before the current transaction - see [start transaction](#start-transaction) for how transaction boundaries are controlled. Without any explicit `start transaction` calls, this means `undo` undoes the whole of the previous turn (every attribute change and every line of output) in one go, not just a single script line.
 
 ## wait
 ```quest
@@ -562,4 +570,14 @@ wait {
 while (expression) { script }
 ```
 
-Run a script while the given expression returns true.
+Runs a script repeatedly for as long as the given expression evaluates to true, checking the condition again before each pass.
+
+```quest
+count = 1
+while (count <= 5) {
+  msg (count)
+  count = count + 1
+}
+```
+
+Make sure something inside the script eventually makes the expression false - otherwise the loop (and the game) never moves on. For a fixed number of iterations, [for](#for) is usually clearer.
