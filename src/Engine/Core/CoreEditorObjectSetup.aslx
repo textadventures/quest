@@ -2,6 +2,7 @@
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectSetupSetup]</caption>
+    <helpurl>/howto/world/objects-and-rooms/#the-setup-tab</helpurl>
     <mustnotinherit>dialoguepage</mustnotinherit>
 
     <control>

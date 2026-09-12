@@ -2,6 +2,7 @@
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectInventoryInventory]</caption>
+    <helpurl>/howto/world/taking-and-dropping/</helpurl>
     <mustnotinherit>editor_room; dialoguepage</mustnotinherit>
 
     <control>

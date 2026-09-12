@@ -49,16 +49,21 @@ async function run() {
     await page.click('button:has-text("Create local draft")');
     await page.waitForSelector('button[title="More"]', { timeout: 30000 });
 
-    // --- game element: the Script tab has a <helpurl>, Setup does not ---
+    // --- game element ---
     await page.click('text=game');
     await selectTab('Setup');
-    check('no help link on a tab without a <helpurl> (game > Setup)', await helpLink().count(), 0);
+    check('help link on game > Setup', await helpLink().getAttribute('href'),
+        'https://questviva.com/publishing/game-details/');
 
-    // game > Scripts is start/room-enter/turn scripts, which nothing documents;
-    // "Advanced game scripts" is about inituserinterface and friends, so it
-    // belongs to the Advanced Scripts tab and this one deliberately has no link.
+    // game > Scripts is start/room-enter/turn scripts. "Advanced game scripts"
+    // is about inituserinterface and friends, which live on the Advanced Scripts
+    // tab beside it - so this one is anchored at its own section instead.
     await selectTab('Scripts');
-    check('no help link on game > Scripts (nothing documents those scripts)', await helpLink().count(), 0);
+    check('help link on game > Scripts is anchored at its section',
+        await helpLink().getAttribute('href'),
+        'https://questviva.com/howto/scripting/when-scripts-run/#the-game-scripts-tab');
+    check('game > Scripts help link names the section',
+        (await helpLink().textContent()).trim(), 'Help: The game Scripts tab');
 
     // /howto/ux/ui-style/ has a section per tab, so the link is anchored and
     // names the section rather than the whole page.
@@ -82,14 +87,28 @@ async function run() {
         await helpLink().getAttribute('href'),
         'https://questviva.com/tutorial/custom-attributes/#the-attributes-tab');
 
-    // room > Scripts holds before/after-entering and turn scripts; nothing
-    // documents those, and "Using scripts" is a tutorial step about verbs.
+    // room > Scripts holds before/after-entering and turn scripts - a different
+    // set from the game object's, so it gets its own section of the same guide.
     await selectTab('Scripts');
-    check('no help link on room > Scripts', await helpLink().count(), 0);
+    check('help link on room > Scripts is anchored at its section',
+        await helpLink().getAttribute('href'),
+        'https://questviva.com/howto/scripting/when-scripts-run/#the-room-scripts-tab');
 
     // The link tracks the active tab rather than being fixed per element.
     await selectTab('Room');
-    check('no help link after switching to a tab without one (room > Room)', await helpLink().count(), 0);
+    check('help link follows the active tab (room > Room)', await helpLink().getAttribute('href'),
+        'https://questviva.com/howto/world/objects-and-rooms/#the-room-tab');
+
+    // Absence is still part of the contract: every tab of the object and game
+    // editors now carries a <helpurl>, but the Function editor has none, so its
+    // one tab shows no link at all.
+    const tree = page.locator('.overflow-y-auto.p-1.text-xs');
+    await tree.getByText('Advanced', { exact: true }).click();
+    await page.getByRole('button', { name: '+ Add Function', exact: true }).click();
+    await page.fill('#element-name', 'HelpLinkTestFunction');
+    await page.getByRole('button', { name: 'Add Function', exact: true }).click();
+    await page.waitForTimeout(300);
+    check('no help link on a tab without a <helpurl> (Function editor)', await helpLink().count(), 0);
 
     // The gamebook editor reuses two caption keys from the Text Adventure editor,
     // so a naive curation pass pointed its Page tab at the TA dialogue-pages

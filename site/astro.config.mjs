@@ -163,6 +163,14 @@ export default defineConfig({
                             "collapsed": true,
                             "items": [
                                 {
+                                    "label": "Objects and rooms",
+                                    "slug": "howto/world/objects-and-rooms"
+                                },
+                                {
+                                    "label": "Features",
+                                    "slug": "howto/world/features"
+                                },
+                                {
                                     "label": "Text processor",
                                     "slug": "howto/world/text-processor"
                                 },
@@ -193,6 +201,14 @@ export default defineConfig({
                                 {
                                     "label": "Wearable items",
                                     "slug": "howto/world/wearables"
+                                },
+                                {
+                                    "label": "Items that can be eaten",
+                                    "slug": "howto/world/edible"
+                                },
+                                {
+                                    "label": "Taking and dropping objects",
+                                    "slug": "howto/world/taking-and-dropping"
                                 },
                                 {
                                     "label": "Score, health and money",
@@ -269,6 +285,10 @@ export default defineConfig({
                                 {
                                     "label": "Attack of the Clones!",
                                     "slug": "howto/scripting/clones"
+                                },
+                                {
+                                    "label": "When scripts run",
+                                    "slug": "howto/scripting/when-scripts-run"
                                 },
                                 {
                                     "label": "Advanced game scripts",
@@ -755,6 +775,10 @@ export default defineConfig({
                         {
                             "label": "Overview",
                             "slug": "publishing/publishing"
+                        },
+                        {
+                            "label": "Your game's details",
+                            "slug": "publishing/game-details"
                         },
                         {
                             "label": "Hosting your game",

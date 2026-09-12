@@ -2,6 +2,7 @@
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectScriptsScripts]</caption>
+    <helpurl>/howto/scripting/when-scripts-run/#the-room-scripts-tab</helpurl>
     <mustnotinherit>editor_object</mustnotinherit>
     <advanced/>
 

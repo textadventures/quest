@@ -188,6 +188,7 @@
     <appliesto>game</appliesto>
     <tab>
       <caption>Setup</caption>
+      <helpurl>/publishing/game-details/</helpurl>
 
       <control>
         <controltype>textbox</controltype>
