@@ -6,7 +6,7 @@
       "release-type": "simple",
       "version-file": "VERSION",
       "versioning": "prerelease",
-      "prerelease-type": "beta",
+      "prerelease-type": "rc",
       "prerelease": true
     }
   }
