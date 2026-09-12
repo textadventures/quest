@@ -13,6 +13,8 @@ Script commands with blocks that wait: `ask, get input, on ready, show menu, wai
 
 Functions with scripts that wait: `Ask, ShowMenu, SetTimeout, SetTimeoutID, SetTurnTimeout, SetTurnTimeoutID`
 
+**Note:** Four of those waiting script commands - [ask](/scripts#ask), [get input](/scripts#get-input), [show menu](/scripts#show-menu) and [wait](/scripts#wait) - are no longer offered when you add a new script command. Use [Ask](/reference/functions/user-interface#ask), [GetInput](/reference/functions/user-interface#getinput), [ShowMenu](/reference/functions/user-interface#showmenu) and [WaitForKeyPress](/reference/functions/user-interface#waitforkeypress) instead: they suspend the script where they are and carry on at the next line, so there is nothing to nest. The rest of this page applies to the callback forms that remain - `on ready`, the timeout functions, and the `Ask (...) { }` and `ShowMenu (...) { }` function forms.
+
 
 ## Script commands and blocks
 
@@ -53,6 +55,21 @@ msg ("You walk swiftly on.")
 The player will be asked the question, but Quest Viva will print "You walk swiftly on." immediately, without waiting for the player to give a response.
 
 The `on ready` script command is there specifically to ensure Quest Viva waits for any outstanding block to end before running its own block.
+
+The `Ask` function does the same job without the trap, because it hands back the answer rather than running a block with it:
+
+```quest
+msg ("A man steps out of the door way. 'You wanna a cheap watch?'")
+if (Ask ("Buy dodgy watch?")) {
+  msg ("'Sure, I'm sure they're full guaranteed, right.' You hand over $50, and get a Rolox watch in return.")
+}
+else {
+  msg ("'No!'")
+}
+msg ("You walk swiftly on.")
+```
+
+Now "You walk swiftly on." really is printed last.
 
 
 ## Functions with scripts
@@ -156,4 +173,14 @@ ShowMenu ("What is your favourite colour?", options, false) {
 }
 ```
 
-The same applies for `wait` or whatever, or combinations. You can have as many nested as you like - though it will get increasing difficult for you to track what belongs were.
+The same applies to any other waiting block or script, or combinations of them. You can have as many nested as you like - though it will get increasing difficult for you to track what belongs were.
+
+If you do not need the inline-link rendering that the `ShowMenu (...) { }` function form gives you, the [ShowMenu](/reference/functions/user-interface#showmenu) expression form avoids the nesting entirely - it pops the menu up as a dialog and hands back the chosen option, so one menu after another is just one line after another:
+
+```quest
+colour = ShowMenu ("What is your favourite colour?", Split("Red;Green;Blue;Yellow", ";"), false)
+animal = ShowMenu ("Okay, and what is your favourite animal?", Split("Dog;Turtle;Duck;Newt;Trout", ";"), false)
+msg ("Really? A " + LCase(colour) + " " + LCase(animal) + " fan.")
+```
+
+Because that is an ordinary expression rather than a script, the local variable problem above does not apply to it either - `this`, `object`, `text` and function parameters are all still in scope after it returns.

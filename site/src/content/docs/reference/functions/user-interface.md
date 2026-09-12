@@ -15,14 +15,33 @@ Adds an option to the `dialoguepage` **source** linking to **destination**, disp
 
 ## Ask
 ```quest
-Ask (string question)  { script }
+Ask (string question)
 ```
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Shows an inline menu of the specified **question** and returns a [boolean](/types#boolean) variable **result** with **true** if the player answers "Yes" to the question.
+Asks the player the specified **question** as a Yes/No popup, and returns a [boolean](/types#boolean) - **true** if they answer "Yes". The script is suspended until they have answered, so the result can go straight into an `if`:
 
-Example:
+```quest
+if (Ask ("Are you sure?")) {
+  msg ("Yes, you are")
+}
+else {
+  msg ("Changed your mind, then")
+}
+```
+
+This replaces the [ask](/scripts#ask) script command, which is no longer offered when you add a script command.
+
+### The callback form
+
+There is a second form, which takes a script and shows the two options as links in the transcript rather than as a popup:
+
+```quest
+Ask (string question)  { script }
+```
+
+The script can read a [boolean](/types#boolean) variable **result**, **true** if the player answered "Yes".
 
 ```quest
 Ask ("Are you sure?") {
@@ -32,9 +51,9 @@ Ask ("Are you sure?") {
 }
 ```
 
-Use the [ask](/scripts#ask) script command for a popup menu.
+This form is still offered in the script editor, for when you want the inline links rather than a popup.
 
-**Note:** This function is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](/howto/scripting/blocks-and-scripts).
+**Note:** The callback form is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](/howto/scripting/blocks-and-scripts). Neither caveat applies to the plain `Ask (question)` form above, which simply returns a value.
 
 ## ClearFramePicture
 ```quest
@@ -81,8 +100,6 @@ GetCurrentFontFamily ()
 Returns the fonts currently in use - the [defaultwebfont](/attributes#defaultwebfont) and [defaultfont](/attributes#defaultfont).
 
 ## GetInput
-**Note:** This function is deprecated as of Quest 5.2, and unsupported as of Quest 5.4. Use the [get input(script command)](/scripts#get-input) script command instead.
-
 ```quest
 GetInput()
 ```
@@ -90,6 +107,18 @@ GetInput()
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Waits for the user to enter some text at the command prompt. Instead of handling the input as a command, it is returned as the result of the function, as a [string](/types#string).
+
+The script is suspended where it is, so the line after the `GetInput()` call does not run until the player has answered:
+
+```quest
+msg ("What is your name?")
+player.alias = GetInput()
+msg ("Hi, " + player.alias)
+```
+
+In the script editor, this is the "player's typed input" template on a "Set a variable or attribute" action. See [Asking a question](/howto/tasks/asking-a-question) for a fuller guide.
+
+**Note:** Quest 5.2 deprecated this function, and Quest 5.4 to 5.8 rejected it outright, in favour of the [get input](/scripts#get-input) script command - blocking the game to wait for an answer tied up a real thread in those versions. Quest Viva suspends the script instead, so the function is available again in games marked as ASL version 600, and is now the better of the two. It still raises an error in a game whose version is 540 to 580; change the game's version to 600 or later to use it.
 
 ## GoToPage
 ```quest
@@ -234,18 +263,41 @@ Sets the web font. Here you can see all available fonts: <https://fonts.google.c
 
 ## ShowMenu
 ```quest
-ShowMenu (string caption, stringdictionary or list options, boolean allow ignore)  { script }
+ShowMenu (string caption, stringdictionary or stringlist options, boolean allow cancel)
 ```
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Shows an inline menu of the specified options and returns a [string](/types#string) variable **result** containing the user input. If a dictionary of options is passed in, the values are displayed as options, the key is returned. If a list of options is passed in, the list item is returned if a string, or the name of the object.
+Shows the specified options as a popup menu and returns the player's choice, as a [string](/types#string). If a dictionary of options is passed in, the values are displayed as options and the key is returned; if a list of options is passed in, the list item is returned. The script is suspended until the player has chosen, so the result can go straight into a variable:
+
+```quest
+colour = ShowMenu ("What is your favourite colour?", Split("Red;Green;Blue;Yellow", ";"), false)
+msg ("You chose " + colour)
+```
+
+If the "allow cancel" parameter is set to **true**, the Cancel button is available, and cancelling returns an empty string. If it is set to **false**, the player must choose one entry of the menu.
+
+The [Split](/reference/functions/string#split) function can be useful to quickly get a list of options, whilst [switch](/scripts#switch) can be useful for dealing with the result. Because one call simply follows another, asking several questions in a row needs no nesting:
+
+```quest
+colour = ShowMenu ("What is your favourite colour?", Split("Red;Green;Blue;Yellow", ";"), false)
+animal = ShowMenu ("Okay, and what is your favourite animal?", Split("Dog;Turtle;Duck;Newt;Trout", ";"), false)
+msg ("Really? A " + LCase(colour) + " " + LCase(animal) + " fan.")
+```
+
+This replaces the [show menu](/scripts#show-menu) script command, which is no longer offered when you add a script command.
+
+### The callback form
+
+There is a second form, which takes a script and shows the options as numbered links in the transcript rather than as a popup:
+
+```quest
+ShowMenu (string caption, stringdictionary or list options, boolean allow ignore)  { script }
+```
+
+The script can read a [string](/types#string) variable **result** containing the player's choice. If a list of objects is passed in, **result** is the object's name, and an object with a link colour specified has that colour used for its link.
 
 If the "allow ignore" parameter is set to **true**, the player can ignore the menu and interact with other objects. The menu is just closed then. If the "allow ignore" parameter is set to **false**, the player must choose one entry of the menu.
-
-Use the [show menu](/scripts#show-menu) script command for a popup menu.
-
-The [Split](/reference/functions/string#split) function can be useful to quickly get a list of options, whilst [switch](/scripts#switch) can be useful for dealing with the result. For example:
 
 ```quest
 options = Split("Red;Green;Blue;Yellow", ";")
@@ -264,7 +316,9 @@ ShowMenu ("What is your favourite colour?", options, false) {
 }
 ```
 
-ShowMenu will also take an object list, or a list of objects and strings. If the object has a link colour specified, this will be used. Note that `result` will always be a string, in the case of an object, it will be the object's name.
+This form is still offered in the script editor, for when you want the inline links rather than a popup.
+
+The callback form will also take an object list, or a list of objects and strings. Note that `result` will always be a string - in the case of an object, it will be the object's name.
 
 ```quest
 ShowMenu ("Select", ScopeInventory(), true) {
@@ -274,7 +328,7 @@ ShowMenu ("Select", ScopeInventory(), true) {
 }
 ```
 
-**Note:** This function is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](/howto/scripting/blocks-and-scripts).
+**Note:** The callback form is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](/howto/scripting/blocks-and-scripts). Neither caveat applies to the plain `ShowMenu (caption, options, allow cancel)` form above, which simply returns a value.
 
 ## ShowPage
 ```quest
@@ -319,10 +373,16 @@ UpdateStatusAttributes ()
 Updates the status attributes box.
 
 ## WaitForKeyPress
-**Note:** This function is deprecated as of Quest 5.1 - use the [wait](/scripts#wait) script command instead.
-
 ```quest
 WaitForKeyPress ()
 ```
 
-Waits for a keypress.
+Waits for a keypress. As with [GetInput](#getinput), the script is suspended where it is, so there is no nested block and the next line runs once the player has pressed a key:
+
+```quest
+msg ("First bit")
+WaitForKeyPress
+msg ("Second bit")
+```
+
+**Note:** Quest 5.1 deprecated this function in favour of the [wait](/scripts#wait) script command, for the same reason as [GetInput](#getinput) above. Quest Viva suspends the script rather than blocking a thread, so it is available again - and preferred - in games marked as ASL version 600. It still raises an error in a game whose version is 540 to 580.

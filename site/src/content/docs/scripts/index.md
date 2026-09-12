@@ -51,6 +51,8 @@ variable => { script }
 ask (string question) {script}
 ```
 
+**Superseded:** this command is no longer offered when you add a script command - use the [Ask](/reference/functions/user-interface#ask) function instead, which asks the same question but hands the answer straight back, so it can go directly in an `if` and the script simply continues on the next line. `ask` still runs, and is still editable in games that already use it.
+
 Pops up a prompt for the user to choose Yes or No as the answer to the specified question, and then runs the nested script.
 
 The nested script can check the "result" boolean variable to see the user's response - true for "yes", false for "no".
@@ -268,6 +270,8 @@ For more on how and why to use `foreach`, see [Using Lists](/howto/scripting/usi
 get input {script}
 ```
 
+**Superseded:** this command is no longer offered when you add a script command - use the [GetInput](/reference/functions/user-interface#getinput) function instead, which waits for the player in the same way but returns what they typed, so the rest of the script can just carry on below it. `get input` still runs, and is still editable in games that already use it.
+
 Waits for the user to type some text, then runs the nested script.
 
 The nested script can evaluate the "result" string variable to work with the user's input.
@@ -452,7 +456,7 @@ Valid request names, what they do, and their modern alternative:
 | `Show` | Turns on an interface element ("Panes", "Location" or "Command"). | [JS.uiShow(...)](/js/#uishow) |
 | `ShowPicture` | Shows the specified picture file from the game directory. | [picture](#picture) |
 | `UpdateLocation` | Updates the location bar with the parameter text. | [JS.updateLocation(location)](/js/#updatelocation) |
-| `Wait` | Waits for the player to press a key. Parameter is ignored. | [wait](#wait) script command |
+| `Wait` | Waits for the player to press a key. Parameter is ignored. | [WaitForKeyPress](/reference/functions/user-interface#waitforkeypress) (which is just this request) |
 
 `FontName` and `FontSize` aren't listed above: they now raise an error rather than do anything, so use [SetFontName](/reference/functions/user-interface#setfontname) and [SetFontSize](/reference/functions/user-interface#setfontsize) instead.
 
@@ -494,11 +498,13 @@ You only need to use the "set" command if you are constructing the attribute nam
 show menu (string caption, stringdictionary or stringlist options, boolean allow cancel) {script}
 ```
 
+**Superseded:** this command is no longer offered when you add a script command - use the [ShowMenu](/reference/functions/user-interface#showmenu) function instead, which shows the same popup but returns the chosen option, so the rest of the script can just carry on below it. `show menu` still runs, and is still editable in games that already use it.
+
 Shows a popup menu of options and then runs the nested script. The script can access the variable "result" which contains the result of the user selection - if a dictionary of options is passed in, the key is returned. If a list of options is passed in, the list item is returned.
 
 If the "allow cancel" parameter is set to **true**, the Cancel button is available. If "cancel" is pressed, the variable "result" returns [null](/types#null).
 
-For an in-line menu, use the [ShowMenu](/reference/functions/user-interface#showmenu) function.
+For a menu shown as links in the transcript rather than a popup, use the [ShowMenu](/reference/functions/user-interface#showmenu) function's callback form, `ShowMenu (caption, options, allow cancel) { script }`.
 
 **example:**
 
@@ -553,6 +559,8 @@ Reverts the game state to how it was before the current transaction - see [start
 wait {script}
 ```
 
+**Superseded:** this command is no longer offered when you add a script command - use the [WaitForKeyPress](/reference/functions/user-interface#waitforkeypress) function instead (which is just `request (Wait, "")` under the hood), as that waits without needing a nested block at all. `wait` still runs, and is still editable in games that already use it.
+
 Waits for the user to press a key or click on a "Continue" link, and then runs the nested script. Each successive part needs to be nested inside the one before, like this:
 
 ```quest
@@ -563,6 +571,16 @@ wait {
     msg ("Third bit")
   }
 }
+```
+
+With `WaitForKeyPress` there is nothing to nest:
+
+```quest
+msg ("First bit")
+WaitForKeyPress
+msg ("Second bit")
+WaitForKeyPress
+msg ("Third bit")
 ```
 
 ## while
