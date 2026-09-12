@@ -500,10 +500,29 @@ internal class ExpressionOwner(WorldModel worldModel)
                 "The 'ShowMenu' function is not supported for games with WorldModel version 540–580. Use the 'show menu' script command instead, or set the game's WorldModel version to 600 or later.");
         }
 
-        await worldModel.PrintAsync(caption);
-        var menuData = new MenuData(caption, options, allowCancel);
-        worldModel.PlayerUi.ShowMenu(menuData);
+        var inline = worldModel.Version >= WorldModelVersion.v600;
+        if (inline && options.Count == 0)
+        {
+            // An inline menu with no options would leave nothing to click or type, and an
+            // uncancellable one swallows everything else - i.e. a wedged game. The 'show menu'
+            // script command has always rejected this; only the inline path is guarded here so
+            // pre-v600 games keep whatever the dialog did with it.
+            throw new Exception("No menu options specified");
+        }
+
+        var menuData = new MenuData(caption, options, allowCancel) {Inline = inline};
         var tcs = WorldModel.BeginPrompt(ref worldModel._menuTcs);
+        if (inline)
+        {
+            await worldModel.ShowInlinePromptAsync(caption, [.. options.Keys], [.. options.Values],
+                allowCancel, result => tcs.TrySetResult(result));
+        }
+        else
+        {
+            await worldModel.PrintAsync(caption);
+        }
+
+        worldModel.PlayerUi.ShowMenu(menuData);
         worldModel.BeginPendingCallback();
         worldModel.SignalTurnSuspended();
         try
@@ -514,6 +533,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         }
         finally
         {
+            await worldModel.EndInlinePromptAsync();
             await worldModel.EndPendingCallbackAsync();
             worldModel.SignalTurnSuspended();
         }
@@ -651,8 +671,14 @@ internal class ExpressionOwner(WorldModel worldModel)
                 "The 'Ask' function is not supported for games with WorldModel version 540–580. Use the 'ask' script command instead, or set the game's WorldModel version to 600 or later.");
         }
 
-        worldModel.PlayerUi.ShowQuestion(caption);
+        var inline = worldModel.Version >= WorldModelVersion.v600;
         var tcs = WorldModel.BeginPrompt(ref worldModel._questionTcs);
+        if (inline)
+        {
+            await worldModel.ShowInlineQuestionAsync(caption, result => tcs.TrySetResult(result));
+        }
+
+        worldModel.PlayerUi.ShowQuestion(caption, inline);
         worldModel.BeginPendingCallback();
         worldModel.SignalTurnSuspended();
         try
@@ -661,6 +687,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         }
         finally
         {
+            await worldModel.EndInlinePromptAsync();
             await worldModel.EndPendingCallbackAsync();
             worldModel.SignalTurnSuspended();
         }

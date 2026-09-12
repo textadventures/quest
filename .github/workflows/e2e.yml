@@ -392,6 +392,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-wasmplayer-showmenu-long-options.mjs http://localhost:5175
         working-directory: tests/e2e
+      - run: node verify-wasmplayer-inline-sync-prompts.mjs http://localhost:5175
+        working-directory: tests/e2e
       - run: node verify-game-load-error.mjs http://localhost:5175
         working-directory: tests/e2e
       - run: node verify-wasmplayer-autoscroll.mjs http://localhost:5175

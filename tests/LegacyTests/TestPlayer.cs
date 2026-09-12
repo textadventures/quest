@@ -38,7 +38,7 @@ internal class TestPlayer : IPlayer
         IsWaiting = true;
     }
 
-    public void ShowQuestion(string caption)
+    public void ShowQuestion(string caption, bool inline)
     {
         QuestionData = caption;
     }

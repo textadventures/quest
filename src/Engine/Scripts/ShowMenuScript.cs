@@ -83,11 +83,21 @@ public class ShowMenuScript : ScriptBase
             throw new Exception("Unknown menu options type");
         }
 
-        await _worldModel.PrintAsync(caption);
-        var menuData = new MenuData(caption, optionsDictionary, allowCancel);
+        var inline = _worldModel.Version >= WorldModelVersion.v600;
+        var menuData = new MenuData(caption, optionsDictionary, allowCancel) {Inline = inline};
+        var tcs = WorldModel.BeginPrompt(ref _worldModel._menuTcs);
+        if (inline)
+        {
+            await _worldModel.ShowInlinePromptAsync(caption, [.. optionsDictionary.Keys],
+                [.. optionsDictionary.Values], allowCancel, result => tcs.TrySetResult(result));
+        }
+        else
+        {
+            await _worldModel.PrintAsync(caption);
+        }
+
         _worldModel.PlayerUi.ShowMenu(menuData);
 
-        WorldModel.BeginPrompt(ref _worldModel._menuTcs);
         _worldModel.BeginDormantSuspension();
         _worldModel.SignalTurnSuspended();
         _ = AwaitResponseAndRunCallbackAsync(c, optionsDictionary);
@@ -111,6 +121,7 @@ public class ShowMenuScript : ScriptBase
         finally
         {
             if (!resolved) _worldModel.SignalCallbackResolving();
+            await _worldModel.EndInlinePromptAsync();
             await _worldModel.EndPendingCallbackAsync();
             _worldModel.SignalTurnSuspended();
         }

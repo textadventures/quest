@@ -20,7 +20,7 @@ Ask (string question)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Asks the player the specified **question** as a Yes/No popup, and returns a [boolean](/types#boolean) - **true** if they answer "Yes". The script is suspended until they have answered, so the result can go straight into an `if`:
+Asks the player the specified **question**, showing "Yes" and "No" as numbered links in the transcript, and returns a [boolean](/types#boolean) - **true** if they answer "Yes". The player can click a link or type its number. The script is suspended until they have answered, so the result can go straight into an `if`:
 
 ```quest
 if (Ask ("Are you sure?")) {
@@ -35,7 +35,7 @@ This replaces the [ask](/scripts#ask) script command, which is no longer offered
 
 ### The callback form
 
-There is a second form, which takes a script and shows the two options as links in the transcript rather than as a popup:
+There is a second form, which takes a script to run once the player has answered:
 
 ```quest
 Ask (string question)  { script }
@@ -51,7 +51,7 @@ Ask ("Are you sure?") {
 }
 ```
 
-This form is still offered in the script editor, for when you want the inline links rather than a popup.
+This form is still offered in the script editor. Both forms look the same to the player; the difference is that this one ends the turn before waiting, so the player can save, load and undo while choosing, whereas the plain `Ask (question)` form suspends the script mid-turn and save is unavailable until it is answered.
 
 **Note:** The callback form is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](/howto/scripting/blocks-and-scripts). Neither caveat applies to the plain `Ask (question)` form above, which simply returns a value.
 
@@ -268,14 +268,14 @@ ShowMenu (string caption, stringdictionary or stringlist options, boolean allow 
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Shows the specified options as a popup menu and returns the player's choice, as a [string](/types#string). If a dictionary of options is passed in, the values are displayed as options and the key is returned; if a list of options is passed in, the list item is returned. The script is suspended until the player has chosen, so the result can go straight into a variable:
+Shows the specified options as a numbered list of links in the transcript and returns the player's choice, as a [string](/types#string). The player can click an option or type its number. If a dictionary of options is passed in, the values are displayed as options and the key is returned; if a list of options is passed in, the list item is returned. The script is suspended until the player has chosen, so the result can go straight into a variable:
 
 ```quest
 colour = ShowMenu ("What is your favourite colour?", Split("Red;Green;Blue;Yellow", ";"), false)
 msg ("You chose " + colour)
 ```
 
-If the "allow cancel" parameter is set to **true**, the Cancel button is available, and cancelling returns an empty string. If it is set to **false**, the player must choose one entry of the menu.
+If the "allow cancel" parameter is set to **true**, entering any command other than one of the option numbers dismisses the menu, and `ShowMenu` returns an empty string (the dismissing command itself is discarded). If it is set to **false**, the player must choose one entry of the menu, and anything else they type is ignored.
 
 The [Split](/reference/functions/string#split) function can be useful to quickly get a list of options, whilst [switch](/scripts#switch) can be useful for dealing with the result. Because one call simply follows another, asking several questions in a row needs no nesting:
 
@@ -289,7 +289,7 @@ This replaces the [show menu](/scripts#show-menu) script command, which is no lo
 
 ### The callback form
 
-There is a second form, which takes a script and shows the options as numbered links in the transcript rather than as a popup:
+There is a second form, which takes a script to run once the player has chosen:
 
 ```quest
 ShowMenu (string caption, stringdictionary or list options, boolean allow ignore)  { script }
@@ -316,7 +316,7 @@ ShowMenu ("What is your favourite colour?", options, false) {
 }
 ```
 
-This form is still offered in the script editor, for when you want the inline links rather than a popup.
+This form is still offered in the script editor. Both forms look the same to the player; the difference is that this one ends the turn before waiting, so the player can save, load and undo while choosing, whereas the plain `ShowMenu (...)` form suspends the script mid-turn and save is unavailable until it is answered.
 
 The callback form will also take an object list, or a list of objects and strings. Note that `result` will always be a string - in the case of an object, it will be the object's name.
 
