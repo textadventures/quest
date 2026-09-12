@@ -1606,6 +1606,10 @@ export function validateName(name: string, elementType = ""): string {
     return _bridge?.ValidateName(name, elementType) ?? "error";
 }
 
+export function validateExpression(expression: string): string {
+    return _bridge?.ValidateExpression(expression) ?? "ok";
+}
+
 export function getUniqueName(baseName: string): string {
     return _bridge?.GetUniqueName(baseName) ?? baseName;
 }
