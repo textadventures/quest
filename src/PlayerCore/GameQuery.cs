@@ -279,7 +279,7 @@ public class GameQuery(string filename, byte[]? bytes = null)
             throw new NotImplementedException();
         }
 
-        public void ShowQuestion(string caption)
+        public void ShowQuestion(string caption, bool inline)
         {
             throw new NotImplementedException();
         }

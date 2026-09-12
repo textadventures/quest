@@ -1,0 +1,67 @@
+<asl version="600">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="inlineprompttest"/>
+  <object name="start">
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+  <!-- ExpressionOwner.ShowMenu(), not cancellable -->
+  <command name="cmd_menufn">
+    <pattern>menufn</pattern>
+    <script>
+      msg ("menu: " + ShowMenu("Pick one", Split("Red;Green;Blue", ";"), false))
+    </script>
+  </command>
+
+  <!-- ExpressionOwner.ShowMenu(), cancellable -->
+  <command name="cmd_menufncancel">
+    <pattern>menufncancel</pattern>
+    <script>
+      msg ("menu: " + ShowMenu("Pick one", Split("Red;Green;Blue", ";"), true))
+    </script>
+  </command>
+
+  <!-- ExpressionOwner.Ask() -->
+  <command name="cmd_askfn">
+    <pattern>askfn</pattern>
+    <script>
+      if (Ask("Some question?")) {
+        msg ("ask: yes")
+      }
+      else {
+        msg ("ask: no")
+      }
+    </script>
+  </command>
+
+  <!-- 'show menu' script command -->
+  <command name="cmd_menucmd">
+    <pattern>menucmd</pattern>
+    <script>
+      show menu ("Pick one", Split("Red;Green;Blue", ";"), false) {
+        msg ("menu: " + result)
+      }
+    </script>
+  </command>
+
+  <!-- 'ask' script command -->
+  <command name="cmd_askcmd">
+    <pattern>askcmd</pattern>
+    <script>
+      ask ("Some question?") {
+        msg ("ask: " + result)
+      }
+    </script>
+  </command>
+
+  <!-- An ordinary command, to check what a non-option response does while a prompt is open -->
+  <command name="cmd_ping">
+    <pattern>ping</pattern>
+    <script>
+      msg ("pong")
+    </script>
+  </command>
+</asl>

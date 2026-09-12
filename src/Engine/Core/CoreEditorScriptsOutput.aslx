@@ -579,13 +579,14 @@
 
   <editor>
     <!-- NOT superseded by the synchronous "ShowMenu(...)" expression form (reachable via the
-         "set variable" value field's "player's choice from a menu" template) - they render
-         differently, not just sync-vs-async. This "ShowMenu (...) { }" form calls the ASLX
-         ShowMenu function in CoreFunctions.aslx (the same one the parser's disambiguation
-         prompt uses), which prints numbered "cmdlink" hyperlinks inline in the transcript. The
-         expression form instead goes through ExpressionOwner.ShowMenu -> PlayerUi.ShowMenu,
-         a jQuery UI popup dialog - see docs/issue about modernising that popup. Kept addable so
-         authors can still reach the nicer inline-link rendering. -->
+         "set variable" value field's "player's choice from a menu" template). Since #2287 the
+         two render identically - numbered links in the transcript - but they still differ in
+         what the engine is doing while the menu is up. This "ShowMenu (...) { }" form calls the
+         ASLX ShowMenu function in CoreFunctions.aslx (the same one the parser's disambiguation
+         prompt uses), which prints its links and returns: the turn ends normally, so the player
+         can still save while choosing. The expression form suspends the script
+         mid-turn instead, which the players' turn-pending logic disables save around - the same
+         trade-off GetInput() makes. Kept addable for the form that stays saveable. -->
     <appliesto>(function)ShowMenu</appliesto>
     <display>Show a menu</display>
     <category>[EditorScriptsOutputOutput]</category>
@@ -663,9 +664,9 @@
     <!-- NOT superseded by the synchronous "Ask(...)" expression form (reachable via the
          if-condition builder's "player answers a yes/no question" template) - same reasoning as
          ShowMenu above (Ask's CoreFunctions.aslx implementation just calls ShowMenu internally
-         with Yes/No options): this "Ask (...) { }" form renders inline cmdlinks, the expression
-         form pops a jQuery UI dialog via ExpressionOwner.Ask -> PlayerUi.ShowQuestion. Kept
-         addable for the nicer inline rendering. -->
+         with Yes/No options): this "Ask (...) { }" form ends the turn before waiting, so the
+         game stays saveable, while the expression form suspends the script mid-turn. Kept
+         addable for the form that stays saveable. -->
     <appliesto>(function)Ask</appliesto>
     <display>Ask a question</display>
     <category>[EditorScriptsOutputOutput]</category>

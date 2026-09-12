@@ -175,7 +175,7 @@ ShowMenu ("What is your favourite colour?", options, false) {
 
 The same applies to any other waiting block or script, or combinations of them. You can have as many nested as you like - though it will get increasing difficult for you to track what belongs were.
 
-If you do not need the inline-link rendering that the `ShowMenu (...) { }` function form gives you, the [ShowMenu](/reference/functions/user-interface#showmenu) expression form avoids the nesting entirely - it pops the menu up as a dialog and hands back the chosen option, so one menu after another is just one line after another:
+The [ShowMenu](/reference/functions/user-interface#showmenu) expression form avoids the nesting entirely - it shows the same numbered links and hands back the chosen option, so one menu after another is just one line after another:
 
 ```quest
 colour = ShowMenu ("What is your favourite colour?", Split("Red;Green;Blue;Yellow", ";"), false)
@@ -184,3 +184,5 @@ msg ("Really? A " + LCase(colour) + " " + LCase(animal) + " fan.")
 ```
 
 Because that is an ordinary expression rather than a script, the local variable problem above does not apply to it either - `this`, `object`, `text` and function parameters are all still in scope after it returns.
+
+The trade-off is that the expression form suspends the script in the middle of the turn, so the player can't save while the menu is up (the same trade-off `GetInput()` makes). The `ShowMenu (...) { }` form ends the turn before waiting, so saving stays available while the player is choosing.

@@ -6,7 +6,7 @@ sidebar:
 
 Bob is alive, and thanks to Ask/Tell he'll tell you about his heart attack if you ask him directly. But Ask/Tell only works if the player already knows what to ask about. Sometimes you want to offer the player a menu of things to say, and have Bob's replies lead on to further choices - a proper branching conversation.
 
-You could build this with `ShowMenu` (see [Handling SPEAK TO](/howto/npcs/speak-to)), but a menu-based conversation has a drawback: while the menu is open, the game is waiting on that one callback, so the player can't save or undo until they've picked an option. **Pages** solve this by turning every choice into a normal, complete turn - the same mechanism gamebooks use for their branching passages (see [Creating a gamebook](/tutorial/creating-a-gamebook)), but usable in a Text Adventure room. Nothing is "pending" between choices, so save, load and undo all work mid-conversation.
+You could build this with `ShowMenu` (see [Handling SPEAK TO](/howto/npcs/speak-to)), but a menu-based conversation has a drawback: the whole exchange happens inside the single turn that opened the menu, so the player can't undo their way back through the choices they made, and each further set of choices means another nested callback. **Pages** turn every choice into a normal, complete turn - the same mechanism gamebooks use for their branching passages (see [Creating a gamebook](/tutorial/creating-a-gamebook)), but usable in a Text Adventure room. Each choice is its own undo point, and the whole conversation is described as linked page objects rather than nested scripts.
 
 ## Creating a page
 

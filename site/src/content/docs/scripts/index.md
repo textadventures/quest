@@ -51,9 +51,9 @@ variable => { script }
 ask (string question) {script}
 ```
 
-**Superseded:** this command is no longer offered when you add a script command - use the [Ask](/reference/functions/user-interface#ask) function instead, which asks the same question but hands the answer straight back, so it can go directly in an `if` and the script simply continues on the next line. `ask` still runs, and is still editable in games that already use it.
+**Superseded:** this command is no longer offered when you add a script command - use the [Ask](/reference/functions/user-interface#ask) function instead, which asks the same question the same way but hands the answer straight back, so it can go directly in an `if` and the script simply continues on the next line. `ask` still runs, and is still editable in games that already use it.
 
-Pops up a prompt for the user to choose Yes or No as the answer to the specified question, and then runs the nested script.
+Shows "Yes" and "No" as numbered links in the transcript for the user to answer the specified question, and then runs the nested script.
 
 The nested script can check the "result" boolean variable to see the user's response - true for "yes", false for "no".
 
@@ -498,13 +498,13 @@ You only need to use the "set" command if you are constructing the attribute nam
 show menu (string caption, stringdictionary or stringlist options, boolean allow cancel) {script}
 ```
 
-**Superseded:** this command is no longer offered when you add a script command - use the [ShowMenu](/reference/functions/user-interface#showmenu) function instead, which shows the same popup but returns the chosen option, so the rest of the script can just carry on below it. `show menu` still runs, and is still editable in games that already use it.
+**Superseded:** this command is no longer offered when you add a script command - use the [ShowMenu](/reference/functions/user-interface#showmenu) function instead, which shows the same menu but returns the chosen option, so the rest of the script can just carry on below it. `show menu` still runs, and is still editable in games that already use it.
 
-Shows a popup menu of options and then runs the nested script. The script can access the variable "result" which contains the result of the user selection - if a dictionary of options is passed in, the key is returned. If a list of options is passed in, the list item is returned.
+Shows the options as a numbered list of links in the transcript and then runs the nested script. The script can access the variable "result" which contains the result of the user selection - if a dictionary of options is passed in, the key is returned. If a list of options is passed in, the list item is returned.
 
-If the "allow cancel" parameter is set to **true**, the Cancel button is available. If "cancel" is pressed, the variable "result" returns [null](/types#null).
+If the "allow cancel" parameter is set to **true**, entering any command other than one of the option numbers dismisses the menu, and the variable "result" is [null](/types#null). If it is set to **false**, anything else the player types is ignored.
 
-For a menu shown as links in the transcript rather than a popup, use the [ShowMenu](/reference/functions/user-interface#showmenu) function's callback form, `ShowMenu (caption, options, allow cancel) { script }`.
+This command suspends the script mid-turn, so the player can't save while the menu is up. For a menu that ends the turn first, leaving saving available while the player chooses, use the [ShowMenu](/reference/functions/user-interface#showmenu) function's callback form, `ShowMenu (caption, options, allow cancel) { script }`.
 
 **example:**
 
