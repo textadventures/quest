@@ -60,12 +60,11 @@ list add(journal.entries, "You did something important!")
 We are going to do this three ways. Firstly, for `USE JOURNAL`. On the _Features_ tab, tick "Use/Give", then on the _Use/Give_ tab in the "Use (on its own)" section, set it to "Run script". Paste in this code:
 ```quest
 msg ("Please type the text to go in the journal")
-get input {
-  list add (journal.entries, result)
-  msg (result)
-}
+entry = GetInput()
+list add (journal.entries, entry)
+msg (entry)
 ```
-The `get input` command makes Quest Viva wait for the player to type something, and that goes into a special variable called `result`. That text then gets added to the journal entries.
+The [GetInput](/reference/functions/user-interface#getinput) function makes Quest Viva wait for the player to type something, and hands that text back so we can put it in a variable - `entry` here. That text then gets added to the journal entries, and printed back so the player can see it went in.
 
 
 ## The NOTE command
