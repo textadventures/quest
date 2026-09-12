@@ -8,10 +8,10 @@ public class AskScriptConstructor : IScriptConstructor
 
     public IScript Create(string script, ScriptContext scriptContext)
     {
-        var param = Utility.GetParameter(script, out var afterExpr);
+        var param = Utility.GetRequiredParameter(script, out var afterExpr);
         var callback = Utility.GetScript(afterExpr!);
 
-        var parameters = Utility.SplitParameter(param!).ToArray();
+        var parameters = Utility.SplitParameter(param).ToArray();
         if (parameters.Count() != 1)
         {
             throw new Exception($"'ask' script should have 1 parameter: 'ask ({param})'");

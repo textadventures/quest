@@ -741,7 +741,9 @@ internal class ExpressionOwner(WorldModel worldModel)
 
     private QuestList<T> ListCombine<T>(QuestList<T>? list1, QuestList<T>? list2)
     {
-        return list1 == null ? [.. list2 ?? []] : list1.MergeLists(list2!);
+        if (list1 == null) return [.. list2 ?? []];
+        if (list2 == null) return [.. list1];
+        return list1.MergeLists(list2);
     }
 
     public QuestList<string> ListExclude(QuestList<string>? list, string? str)

@@ -327,7 +327,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         {
             if (right is IDictionary dictionary)
             {
-                var contains = dictionary.Contains(left!);
+                var contains = left != null && dictionary.Contains(left);
                 args.Result = args.BinaryExpression.Type == BinaryExpressionType.In ? contains : !contains;
             }
 
@@ -531,7 +531,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
                 throw new Exception("IsDefined function expects 1 parameter");
             if (await args.Parameters.EvaluateAsync(0) is not string variableName)
                 throw new Exception("IsDefined function expects a string parameter");
-            return _context.Parameters!.ContainsKey(variableName);
+            return _context.Parameters?.ContainsKey(variableName) == true;
         }
 
         return await RunQuestProcedureAsync(name, args.Parameters.Count,

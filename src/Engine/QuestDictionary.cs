@@ -105,7 +105,7 @@ public class QuestDictionary<T> : IDictionary<string, T>, IDictionary, IMutableF
 
     internal string SaveString()
     {
-        return SaveString(v => v!.ToString());
+        return SaveString(v => v?.ToString() ?? string.Empty);
     }
 
     internal string SaveString(Func<T, string?> converter)

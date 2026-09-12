@@ -2308,14 +2308,17 @@ public partial class WasmEditorBridge
     // ── Element creation / deletion ───────────────────────────────────────────
 
     [JSExport]
-    public static string ValidateName(string name)
+    public static string ValidateName(string name, string elementType)
     {
         if (_controller == null)
         {
             return "Not initialised";
         }
 
-        var result = _controller.CanAdd(name);
+        // Templates don't get a name clash caught by CanAdd — a template's element key is
+        // auto-generated (e.g. "template12"), so the clash it needs to check for (matching an
+        // existing base template from the game file) is a different check. See #2255.
+        var result = elementType == "template" ? _controller.CanAddTemplate(name) : _controller.CanAdd(name);
         return result.Valid ? "ok" : EditorController.GetValidationError(result, name);
     }
 
@@ -2760,6 +2763,12 @@ public partial class WasmEditorBridge
         if (_controller == null)
         {
             return "error:Not initialised";
+        }
+
+        var validation = _controller.CanAddTemplate(name);
+        if (!validation.Valid)
+        {
+            return $"error:{EditorController.GetValidationError(validation, name)}";
         }
 
         try

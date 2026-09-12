@@ -9,11 +9,11 @@ public class SwitchScriptConstructor : IScriptConstructor
     public IScript Create(string script, ScriptContext scriptContext)
     {
         string? afterExpr;
-        var param = Utility.GetParameter(script, out afterExpr);
+        var param = Utility.GetRequiredParameter(script, out afterExpr);
         IScript? defaultScript;
         var cases = ProcessCases(Utility.GetScript(afterExpr!), out defaultScript, scriptContext);
 
-        return new SwitchScript(scriptContext, new ExpressionDynamic(param!, scriptContext), cases, defaultScript);
+        return new SwitchScript(scriptContext, new ExpressionDynamic(param, scriptContext), cases, defaultScript);
     }
 
     public IScriptFactory ScriptFactory { get; set; } = null!;
@@ -39,7 +39,7 @@ public class SwitchScriptConstructor : IScriptConstructor
             {
                 if (cases.StartsWith("case"))
                 {
-                    var expr = Utility.GetParameter(cases, out afterExpr)!;
+                    var expr = Utility.GetRequiredParameter(cases, out afterExpr);
                     var caseScript = Utility.GetScript(afterExpr!);
                     var script = ScriptFactory.CreateScript(caseScript, scriptContext);
 

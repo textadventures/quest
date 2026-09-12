@@ -332,7 +332,7 @@ internal partial class GameLoader
         public override object? Load(XmlReader reader, ref Element? current)
         {
             var filename = GameLoader.GetTemplateAttribute(reader, "ref");
-            if (filename!.Length == 0)
+            if (string.IsNullOrEmpty(filename))
             {
                 return null;
             }
@@ -729,7 +729,14 @@ internal partial class GameLoader
                 throw new Exception("Current element is not set");
             }
 
-            current.Fields.LazyFields.AddType(reader.GetAttribute("name")!);
+            var name = reader.GetAttribute("name");
+            if (string.IsNullOrEmpty(name))
+            {
+                RaiseError("Expected 'name' attribute in inherit");
+                return null;
+            }
+
+            current.Fields.LazyFields.AddType(name);
             return null;
         }
     }
@@ -869,7 +876,7 @@ internal partial class GameLoader
             var jsRef = WorldModel.GetElementFactory(ElementType.Javascript).Create();
             jsRef.Fields[FieldDefinitions.Anonymous] = true;
             var file = GameLoader.GetTemplateAttribute(reader, "src");
-            if (file!.Length == 0)
+            if (string.IsNullOrEmpty(file))
             {
                 return null;
             }

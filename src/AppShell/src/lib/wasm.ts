@@ -91,7 +91,7 @@ export interface WasmBridge {
   ChangeAttributeType(elementKey: string, attribute: string, newType: string): string
   SetPatternAttribute(elementKey: string, attribute: string, pattern: string): string
   // Element creation / deletion
-  ValidateName(name: string): string
+  ValidateName(name: string, elementType: string): string
   GetUniqueName(baseName: string): string
   CreateRoom(name: string, parent: string): string
   CreateObject(name: string, parent: string): string

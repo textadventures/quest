@@ -68,7 +68,7 @@
     let error = $state("");
 
     $effect(() => {
-        const result = name ? validateName(name) : "";
+        const result = name ? validateName(name, elementType) : "";
         error = result === "ok" ? "" : result;
     });
 
@@ -86,7 +86,7 @@
 
     function confirm() {
         if (!name || error) return;
-        const result = validateName(name);
+        const result = validateName(name, elementType);
         if (result !== "ok") { error = result; return; }
         const target = elementType === "function" ? folderTarget
             : (elementType === "object" || elementType === "room") && objectParentOptions.length > 0 ? objectParentTarget

@@ -36,4 +36,15 @@ public class QuestDictionaryTests
 
         viaForeach.ShouldBe(["a", "c", "d", "e"]);
     }
+
+    // Regression test for issue #2242: a string dictionary containing a null value used to throw
+    // a NullReferenceException when saved (SaveString/ToString called v!.ToString()).
+    [TestMethod]
+    public void SaveString_WithNullValue_DoesNotThrow()
+    {
+        var dict = new QuestDictionary<string> { { "a", "1" }, { "b", null! } };
+
+        dict.SaveString().ShouldBe("a = 1;b = ");
+        dict.ToString().ShouldBe("Dictionary: a = 1;b = ");
+    }
 }

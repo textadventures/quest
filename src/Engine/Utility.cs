@@ -37,6 +37,21 @@ public static partial class Utility
         return GetParameterInt(script, '(', ')', out afterParameter);
     }
 
+    /// <summary>
+    ///     Like <see cref="GetParameter(string, out string?)" />, but throws a clear error instead of
+    ///     returning null when the script has no parameter list at all (e.g. a bare 'for' or 'while').
+    /// </summary>
+    public static string GetRequiredParameter(string script, out string? afterParameter)
+    {
+        var param = GetParameter(script, out afterParameter);
+        if (param == null)
+        {
+            throw new Exception($"Expected a parameter list in '{script}'");
+        }
+
+        return param;
+    }
+
     public static string GetScript(string script)
     {
         return GetScript(script, out _);

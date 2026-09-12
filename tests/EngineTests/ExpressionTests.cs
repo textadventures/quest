@@ -371,6 +371,36 @@ public class ExpressionTests
     }
 
     [TestMethod]
+    public async Task TestListCombineWithNullSecondList()
+    {
+        // ListCombine(list, null) used to throw ArgumentNullException while
+        // ListCombine(null, list) worked - see issue #2240.
+        var list = new QuestList<string>(["a", "b"]);
+        var c = new Context { Parameters = new Parameters { { "mylist", list } } };
+
+        var result = await new ExpressionDynamic("ListCombine(mylist, null)", _scriptContext).ExecuteAsync(c);
+        var resultList = result.ShouldBeAssignableTo<QuestList<string>>()!;
+        resultList.Count.ShouldBe(2);
+        resultList[0].ShouldBe("a");
+        resultList[1].ShouldBe("b");
+    }
+
+    [TestMethod]
+    public async Task TestListExcludeWithNullItemInList()
+    {
+        // ListExclude used to throw NullReferenceException if the list contained a null item -
+        // see issue #2243.
+        var list = new QuestList<string>(["a", null!, "b"]);
+        var c = new Context { Parameters = new Parameters { { "mylist", list } } };
+
+        var result = await new ExpressionDynamic("ListExclude(mylist, \"a\")", _scriptContext).ExecuteAsync(c);
+        var resultList = result.ShouldBeAssignableTo<QuestList<string>>()!;
+        resultList.Count.ShouldBe(2);
+        resultList[0].ShouldBeNull();
+        resultList[1].ShouldBe("b");
+    }
+
+    [TestMethod]
     public async Task TestCustomStringListFunction()
     {
         var result = await RunExpressionGeneric("CustomStringListFunction(\"a\", \"b\")");
@@ -429,6 +459,18 @@ public class ExpressionTests
         (await new Expression<bool>("\"missing\" in mydict", _scriptContext).ExecuteAsync(c)).ShouldBe(false);
         (await new Expression<bool>("\"foo\" not in mydict", _scriptContext).ExecuteAsync(c)).ShouldBe(false);
         (await new Expression<bool>("\"missing\" not in mydict", _scriptContext).ExecuteAsync(c)).ShouldBe(true);
+    }
+
+    [TestMethod]
+    public async Task TestInOperatorOnDictionary_NullLeftOperand()
+    {
+        // A null left operand (e.g. an unset attribute or variable) should evaluate to "not
+        // contained" rather than throwing - see issue #2250.
+        var dict = new QuestDictionary<string> { { "foo", "bar" } };
+        var c = new Context { Parameters = new Parameters { { "mydict", dict }, { "nullvar", null } } };
+
+        (await new Expression<bool>("nullvar in mydict", _scriptContext).ExecuteAsync(c)).ShouldBe(false);
+        (await new Expression<bool>("nullvar not in mydict", _scriptContext).ExecuteAsync(c)).ShouldBe(true);
     }
 
     [TestMethod]
@@ -500,6 +542,11 @@ public class ExpressionTests
 
         var c2 = new Context { Parameters = [] };
         (await expr.ExecuteAsync(c2)).ShouldBeFalse();
+
+        // Parameters is null when an expression is evaluated outside a running script - see
+        // issue #2248. Should evaluate to false rather than throw.
+        var c3 = new Context();
+        (await expr.ExecuteAsync(c3)).ShouldBeFalse();
     }
 
     [TestMethod]
