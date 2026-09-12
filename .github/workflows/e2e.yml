@@ -128,6 +128,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-appshell-assetpicker-mobile-overflow.mjs http://localhost:5174
         working-directory: tests/e2e
+      - run: node verify-appshell-attributes-add-type-excludes-defaults.mjs http://localhost:5174
+        working-directory: tests/e2e
       - run: node verify-appshell-attributes-panel-pinned.mjs http://localhost:5174
         working-directory: tests/e2e
       - run: node verify-appshell-attributes-stack-scroll.mjs http://localhost:5174

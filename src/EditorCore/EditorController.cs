@@ -1106,6 +1106,11 @@ public sealed class EditorController : IDisposable
         return GetElements(elementType).Select(e => e.Name);
     }
 
+    public IEnumerable<string> GetAddableTypeNames()
+    {
+        return GetElementNames("type").Where(t => !IsDefaultTypeName(t));
+    }
+
     public object? GetElementDataAttribute(string elementName, string attribute)
     {
         var element = WorldModel.Elements.Get(elementName);

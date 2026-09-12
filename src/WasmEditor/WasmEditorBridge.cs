@@ -3392,7 +3392,7 @@ public partial class WasmEditorBridge
             return "[]";
         }
 
-        var names = _controller.GetElementNames("type").ToList();
+        var names = _controller.GetAddableTypeNames().ToList();
         return JsonSerializer.Serialize(names, WasmEditorJsonContext.Default.ListString);
     }
 
