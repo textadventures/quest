@@ -146,6 +146,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-appshell-exits-editor.mjs http://localhost:5174
         working-directory: tests/e2e
+      - run: node verify-appshell-expression-validation.mjs http://localhost:5174
+        working-directory: tests/e2e
       - run: node verify-appshell-game-status-attributes-scroll.mjs http://localhost:5174
         working-directory: tests/e2e
       - run: node verify-appshell-gamebook-mode.mjs http://localhost:5174

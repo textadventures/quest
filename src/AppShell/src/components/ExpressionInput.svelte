@@ -1,6 +1,6 @@
 <script lang="ts">
     import Wand2 from "@lucide/svelte/icons/wand-2";
-    import { getExpressionFunctions } from "$lib/editor-store";
+    import { getExpressionFunctions, validateExpression } from "$lib/editor-store";
     import { t } from "$lib/i18n";
     import { measureTextPx } from "$lib/text-measure";
     import type { ExpressionFunctionInfo } from "$lib/types";
@@ -30,6 +30,14 @@
     // it below overrides the mirrored value until `value` itself changes, at which point it
     // resets to that (e.g. undo, or switching to a different control).
     let liveText = $derived(value);
+
+    // Mirrors Quest 5's ExpressionControl/WebEditor Element.cs: mismatched brackets or quotes are
+    // flagged as the user types and the commit below is refused until they're fixed, rather than
+    // silently storing a broken expression that only fails when the script runs. See #2257.
+    let error = $derived.by(() => {
+        const result = validateExpression(liveText);
+        return result === "ok" ? "" : result;
+    });
 
     let inputEl = $state<HTMLInputElement | undefined>();
 
@@ -180,74 +188,87 @@
     });
 </script>
 
-<div class="flex items-center gap-1 min-w-0">
-    <input
-        bind:this={inputEl}
-        type="text"
-        autocapitalize="off"
-        class={className || "input text-xs py-0.5 px-1.5 w-full"}
-        style={widthStyle}
-        value={liveText}
-        aria-label={ariaLabel}
-        oninput={(e) => (liveText = (e.target as HTMLInputElement).value)}
-        onchange={(e) => onchange((e.target as HTMLInputElement).value)}
-    />
-    <button
-        bind:this={buttonEl}
-        type="button"
-        class="btn btn-sm preset-outlined-primary-500 px-1 py-0.5 flex-shrink-0"
-        title={t("expressionInput.insertTitle")}
-        onclick={toggle}
-    ><Wand2 size={13} aria-hidden="true" /></button>
-    {#if open}
-        <div
-            bind:this={popoverRootEl}
-            use:portal
-            style={popoverStyle}
-            class="z-50 w-64 max-h-72 flex flex-col rounded border border-surface-200-800 bg-white dark:bg-surface-800 shadow-lg"
-        >
-            <input
-                type="text"
-                autocapitalize="off"
-                placeholder={t("expressionInput.filterPlaceholder")}
-                class="input text-xs py-1 px-2 rounded-none border-0 border-b border-surface-200-800"
-                bind:value={filter}
-            />
-            <div class="overflow-y-auto flex-1">
-                {#if filteredObjects.length > 0}
-                    <div class="px-2 pt-1.5 pb-0.5 text-[10px] font-semibold uppercase text-surface-600-400 sticky top-0 bg-white dark:bg-surface-800">{t("expressionInput.objectsHeading")}</div>
-                    {#each filteredObjects as name (name)}
-                        <button
-                            type="button"
-                            class="block w-full text-left px-2 py-1 text-xs hover:bg-surface-100-900 truncate"
-                            onclick={() => insertAtCursor(name)}
-                        >{name}</button>
-                    {/each}
-                {/if}
-                {#if filteredGameFunctions.length > 0}
-                    <div class="px-2 pt-1.5 pb-0.5 text-[10px] font-semibold uppercase text-surface-600-400 sticky top-0 bg-white dark:bg-surface-800">{t("expressionInput.gameFunctionsHeading")}</div>
-                    {#each filteredGameFunctions as fn (fn.name)}
-                        <button
-                            type="button"
-                            class="block w-full text-left px-2 py-1 text-xs hover:bg-surface-100-900 truncate"
-                            onclick={() => insertFunction(fn)}
-                        >{fn.name}<span class="text-surface-600-400">({fn.parameters.join(", ")})</span></button>
-                    {/each}
-                {/if}
-                {#if filteredLibraryFunctions.length > 0}
-                    <div class="px-2 pt-1.5 pb-0.5 text-[10px] font-semibold uppercase text-surface-600-400 sticky top-0 bg-white dark:bg-surface-800">{t("expressionInput.libraryFunctionsHeading")}</div>
-                    {#each filteredLibraryFunctions as fn (fn.name)}
-                        <button
-                            type="button"
-                            class="block w-full text-left px-2 py-1 text-xs hover:bg-surface-100-900 truncate"
-                            onclick={() => insertFunction(fn)}
-                        >{fn.name}<span class="text-surface-600-400">({fn.parameters.join(", ")})</span></button>
-                    {/each}
-                {/if}
-                {#if filteredObjects.length === 0 && filteredFunctions.length === 0}
-                    <p class="px-2 py-2 text-xs text-surface-600-400 italic">{t("expressionInput.noMatches")}</p>
-                {/if}
+<div class="flex flex-col gap-0.5 min-w-0">
+    <div class="flex items-center gap-1 min-w-0">
+        <input
+            bind:this={inputEl}
+            type="text"
+            autocapitalize="off"
+            class={(className || "input text-xs py-0.5 px-1.5 w-full") + (error ? " !border-error-500" : "")}
+            style={widthStyle}
+            value={liveText}
+            aria-label={ariaLabel}
+            aria-invalid={error ? "true" : undefined}
+            oninput={(e) => (liveText = (e.target as HTMLInputElement).value)}
+            onchange={(e) => {
+                const newValue = (e.target as HTMLInputElement).value;
+                // Refuse to commit an invalid expression (mismatched brackets/quotes) - the field
+                // keeps showing what was typed (liveText already holds it from oninput above) so
+                // the error stays visible and the user can fix it, matching Quest 5's behaviour.
+                if (validateExpression(newValue) !== "ok") return;
+                onchange(newValue);
+            }}
+        />
+        <button
+            bind:this={buttonEl}
+            type="button"
+            class="btn btn-sm preset-outlined-primary-500 px-1 py-0.5 flex-shrink-0"
+            title={t("expressionInput.insertTitle")}
+            onclick={toggle}
+        ><Wand2 size={13} aria-hidden="true" /></button>
+        {#if open}
+            <div
+                bind:this={popoverRootEl}
+                use:portal
+                style={popoverStyle}
+                class="z-50 w-64 max-h-72 flex flex-col rounded border border-surface-200-800 bg-white dark:bg-surface-800 shadow-lg"
+            >
+                <input
+                    type="text"
+                    autocapitalize="off"
+                    placeholder={t("expressionInput.filterPlaceholder")}
+                    class="input text-xs py-1 px-2 rounded-none border-0 border-b border-surface-200-800"
+                    bind:value={filter}
+                />
+                <div class="overflow-y-auto flex-1">
+                    {#if filteredObjects.length > 0}
+                        <div class="px-2 pt-1.5 pb-0.5 text-[10px] font-semibold uppercase text-surface-600-400 sticky top-0 bg-white dark:bg-surface-800">{t("expressionInput.objectsHeading")}</div>
+                        {#each filteredObjects as name (name)}
+                            <button
+                                type="button"
+                                class="block w-full text-left px-2 py-1 text-xs hover:bg-surface-100-900 truncate"
+                                onclick={() => insertAtCursor(name)}
+                            >{name}</button>
+                        {/each}
+                    {/if}
+                    {#if filteredGameFunctions.length > 0}
+                        <div class="px-2 pt-1.5 pb-0.5 text-[10px] font-semibold uppercase text-surface-600-400 sticky top-0 bg-white dark:bg-surface-800">{t("expressionInput.gameFunctionsHeading")}</div>
+                        {#each filteredGameFunctions as fn (fn.name)}
+                            <button
+                                type="button"
+                                class="block w-full text-left px-2 py-1 text-xs hover:bg-surface-100-900 truncate"
+                                onclick={() => insertFunction(fn)}
+                            >{fn.name}<span class="text-surface-600-400">({fn.parameters.join(", ")})</span></button>
+                        {/each}
+                    {/if}
+                    {#if filteredLibraryFunctions.length > 0}
+                        <div class="px-2 pt-1.5 pb-0.5 text-[10px] font-semibold uppercase text-surface-600-400 sticky top-0 bg-white dark:bg-surface-800">{t("expressionInput.libraryFunctionsHeading")}</div>
+                        {#each filteredLibraryFunctions as fn (fn.name)}
+                            <button
+                                type="button"
+                                class="block w-full text-left px-2 py-1 text-xs hover:bg-surface-100-900 truncate"
+                                onclick={() => insertFunction(fn)}
+                            >{fn.name}<span class="text-surface-600-400">({fn.parameters.join(", ")})</span></button>
+                        {/each}
+                    {/if}
+                    {#if filteredObjects.length === 0 && filteredFunctions.length === 0}
+                        <p class="px-2 py-2 text-xs text-surface-600-400 italic">{t("expressionInput.noMatches")}</p>
+                    {/if}
+                </div>
             </div>
-        </div>
+        {/if}
+    </div>
+    {#if error}
+        <p class="text-xs text-error-500" role="alert">{error}</p>
     {/if}
 </div>

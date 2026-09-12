@@ -2323,6 +2323,18 @@ public partial class WasmEditorBridge
     }
 
     [JSExport]
+    public static string ValidateExpression(string expression)
+    {
+        if (_controller == null)
+        {
+            return "Not initialised";
+        }
+
+        var result = _controller.ValidateExpression(expression);
+        return result.Valid ? "ok" : EditorController.GetValidationError(result, expression);
+    }
+
+    [JSExport]
     public static string GetUniqueName(string baseName)
     {
         if (_controller == null)
