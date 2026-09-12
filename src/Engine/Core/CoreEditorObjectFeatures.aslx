@@ -2,6 +2,7 @@
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectFeaturesFeatures]</caption>
+    <helpurl>/howto/world/features/#object-features</helpurl>
     <mustnotinherit>editor_room; dialoguepage</mustnotinherit>
 
     <control>

@@ -78,6 +78,7 @@
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectOptionsEdible]</caption>
+    <helpurl>/howto/world/edible/</helpurl>
     <mustnotinherit>editor_room</mustnotinherit>
     <onlydisplayif>this.feature_edible</onlydisplayif>
 

@@ -2,6 +2,7 @@
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectAnnotationAnnotation]</caption>
+    <helpurl>/howto/world/features/#annotations</helpurl>
     <mustnotinherit>editor_object</mustnotinherit>
     <onlydisplayif>game.feature_annotations</onlydisplayif>
 
@@ -16,6 +17,7 @@
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectStartscriptStartscript]</caption>
+    <helpurl>/howto/scripting/when-scripts-run/#object-initialisation-scripts</helpurl>
     <onlydisplayif>this.feature_startscript</onlydisplayif>
 
     <control>

@@ -2,6 +2,7 @@
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectChildrenObjects]</caption>
+    <helpurl>/howto/world/objects-and-rooms/#the-objects-tab</helpurl>
     <mustnotinherit>dialoguepage</mustnotinherit>
 
     <control>

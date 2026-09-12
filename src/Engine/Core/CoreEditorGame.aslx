@@ -3,6 +3,7 @@
     <appliesto>game</appliesto>
     <tab>
       <caption>[EditorGameSetup]</caption>
+      <helpurl>/publishing/game-details/</helpurl>
 
       <control>
         <controltype>textbox</controltype>
@@ -95,6 +96,7 @@
 
     <tab>
       <caption>[EditorGameFeatures]</caption>
+      <helpurl>/howto/world/features/#game-features</helpurl>
 
       <control>
         <controltype>checkbox</controltype>
@@ -718,6 +720,7 @@
 
     <tab>
       <caption>[EditorGameScript]</caption>
+      <helpurl>/howto/scripting/when-scripts-run/#the-game-scripts-tab</helpurl>
       <advanced/>
 
       <control>
