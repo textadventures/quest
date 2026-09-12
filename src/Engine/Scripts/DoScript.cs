@@ -64,7 +64,13 @@ public class DoActionScript : ScriptBase
     public override async Task ExecuteAsync(Context c)
     {
         var obj = await _obj.ExecuteAsync(c);
-        var action = obj.GetAction(await _action.ExecuteAsync(c))!;
+        var actionName = await _action.ExecuteAsync(c);
+        var action = obj.GetAction(actionName);
+        if (action == null)
+        {
+            throw new Exception($"'{obj.Name}' has no action called '{actionName}'");
+        }
+
         if (_parameters == null)
         {
             await _worldModel.RunScriptAsync(action, obj);

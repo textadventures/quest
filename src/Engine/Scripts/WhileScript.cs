@@ -9,11 +9,11 @@ public class WhileScriptConstructor : IScriptConstructor
     public IScript Create(string script, ScriptContext scriptContext)
     {
         string? afterExpr;
-        var param = Utility.GetParameter(script, out afterExpr);
+        var param = Utility.GetRequiredParameter(script, out afterExpr);
         var loop = Utility.GetScript(afterExpr!);
         var loopScript = ScriptFactory.CreateScript(loop);
 
-        return new WhileScript(scriptContext, ScriptFactory, new Expression<bool>(param!, scriptContext), loopScript);
+        return new WhileScript(scriptContext, ScriptFactory, new Expression<bool>(param, scriptContext), loopScript);
     }
 
     public IScriptFactory ScriptFactory { get; set; } = null!;

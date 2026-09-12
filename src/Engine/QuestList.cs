@@ -276,7 +276,7 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
 
     public QuestList<T> Exclude(T element)
     {
-        var enumerable = this.Where(x => !x!.Equals(element));
+        var enumerable = this.Where(x => !Equals(x, element));
         return [.. enumerable];
     }
 

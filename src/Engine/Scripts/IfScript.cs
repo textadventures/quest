@@ -61,7 +61,7 @@ public class IfScriptConstructor : IScriptConstructor
     public IScript Create(string script, ScriptContext scriptContext)
     {
         string? afterExpr;
-        var expr = Utility.GetParameter(script, out afterExpr);
+        var expr = Utility.GetRequiredParameter(script, out afterExpr);
 
         if (afterExpr!.StartsWith(")"))
         {
@@ -73,7 +73,7 @@ public class IfScriptConstructor : IScriptConstructor
 
         var thenScript = ScriptFactory.CreateScript(then, scriptContext);
 
-        return new IfScript(new Expression<bool>(expr!, scriptContext), thenScript, scriptContext);
+        return new IfScript(new Expression<bool>(expr, scriptContext), thenScript, scriptContext);
     }
 
     public IScriptFactory ScriptFactory { get; set; } = null!;

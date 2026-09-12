@@ -1602,8 +1602,8 @@ function refreshTree() {
 
 // ── Element creation / deletion ─────────────────────────────────────────────
 
-export function validateName(name: string): string {
-    return _bridge?.ValidateName(name) ?? "error";
+export function validateName(name: string, elementType = ""): string {
+    return _bridge?.ValidateName(name, elementType) ?? "error";
 }
 
 export function getUniqueName(baseName: string): string {

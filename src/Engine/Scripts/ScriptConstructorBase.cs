@@ -23,19 +23,9 @@ public abstract class ScriptConstructorBase : IScriptConstructor
 
     public IScript? Create(string script, ScriptContext scriptContext)
     {
-        List<string>? parameters = null;
         var param = Utility.GetParameter(script);
-
-        int numParams;
-        if (param == null)
-        {
-            numParams = 0;
-        }
-        else
-        {
-            parameters = Utility.SplitParameter(param);
-            numParams = parameters.Count;
-        }
+        List<string> parameters = param == null ? [] : Utility.SplitParameter(param);
+        var numParams = parameters.Count;
 
         if (ExpectedParameters.Count() > 0)
         {
@@ -46,8 +36,7 @@ public abstract class ScriptConstructorBase : IScriptConstructor
             }
         }
 
-        // Only null if the script had no parameter list at all, which ExpectedParameters has to allow
-        return CreateInt(parameters!, scriptContext);
+        return CreateInt(parameters, scriptContext);
     }
 
     public IScriptFactory ScriptFactory { get; set; } = null!;

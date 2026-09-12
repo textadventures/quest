@@ -11,10 +11,10 @@ public class ForScriptConstructor : IScriptConstructor
     public IScript Create(string script, ScriptContext scriptContext)
     {
         string? afterExpr;
-        var param = Utility.GetParameter(script, out afterExpr);
+        var param = Utility.GetRequiredParameter(script, out afterExpr);
         var loop = Utility.GetScript(afterExpr!);
 
-        var parameters = Utility.SplitParameter(param!).ToArray();
+        var parameters = Utility.SplitParameter(param).ToArray();
         var loopScript = ScriptFactory.CreateScript(loop);
 
         if (parameters.Count() == 3)
