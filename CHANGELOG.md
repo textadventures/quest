@@ -1,5 +1,20 @@
 # Changelog
 
+## [6.0.0-rc.1](https://github.com/textadventures/quest/compare/v6.0.0-beta.61...v6.0.0-rc.1) (2026-09-12)
+
+
+### Bug Fixes
+
+* **AppShell:** hide built-in default types from attributes editor's add-type list ([#2282](https://github.com/textadventures/quest/issues/2282)) ([ec601a0](https://github.com/textadventures/quest/commit/ec601a0b73f91e99653da3c80ed694ae0ae2562a))
+* **AppShell:** validate expressions for mismatched brackets/quotes before saving ([#2281](https://github.com/textadventures/quest/issues/2281)) ([0221329](https://github.com/textadventures/quest/commit/0221329e642c90ed3b59b5b0242abde02ccd4406))
+* **Engine:** name the drop script's "successful" parameter correctly in the editor label ([#2285](https://github.com/textadventures/quest/issues/2285)) ([38b99ee](https://github.com/textadventures/quest/commit/38b99ee8bae3e2110b464b3f58a9b7c852c47948))
+* harden Engine/EditorCore against null-input edge cases found by nullable audit ([#2278](https://github.com/textadventures/quest/issues/2278)) ([3abdb53](https://github.com/textadventures/quest/commit/3abdb5361509656c3f493f373ee7252506cd291e))
+
+
+### Documentation
+
+* note that prerelease-type config changes need a Release-As seed ([fb2bef2](https://github.com/textadventures/quest/commit/fb2bef20e74101a57e60dd6cd61252a91932adde))
+
 ## [6.0.0-beta.61](https://github.com/textadventures/quest/compare/v6.0.0-beta.60...v6.0.0-beta.61) (2026-09-12)
 
 
