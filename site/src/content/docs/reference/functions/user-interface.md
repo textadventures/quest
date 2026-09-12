@@ -51,7 +51,7 @@ Ask ("Are you sure?") {
 }
 ```
 
-This form is still offered in the script editor. Both forms look the same to the player; the difference is that this one ends the turn before waiting, so the player can save, load and undo while choosing, whereas the plain `Ask (question)` form suspends the script mid-turn and save is unavailable until it is answered.
+This form is still offered in the script editor. Both forms look the same to the player; the difference is that this one ends the turn before waiting, so the player can save or load while choosing, whereas the plain `Ask (question)` form suspends the script mid-turn and saving is unavailable until it is answered.
 
 **Note:** The callback form is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](/howto/scripting/blocks-and-scripts). Neither caveat applies to the plain `Ask (question)` form above, which simply returns a value.
 
@@ -316,7 +316,9 @@ ShowMenu ("What is your favourite colour?", options, false) {
 }
 ```
 
-This form is still offered in the script editor. Both forms look the same to the player; the difference is that this one ends the turn before waiting, so the player can save, load and undo while choosing, whereas the plain `ShowMenu (...)` form suspends the script mid-turn and save is unavailable until it is answered.
+This form is still offered in the script editor. Both forms look the same to the player; the difference is that this one ends the turn before waiting, so the player can save or load while choosing, whereas the plain `ShowMenu (...)` form suspends the script mid-turn and saving is unavailable until it is answered.
+
+(Note that "save" here means saving is *available* - `undo` and any other command typed while the menu is open are still subject to the "allow cancel" rule above, so on an uncancellable menu they are ignored.)
 
 The callback form will also take an object list, or a list of objects and strings. Note that `result` will always be a string - in the case of an object, it will be the object's name.
 

@@ -504,7 +504,7 @@ Shows the options as a numbered list of links in the transcript and then runs th
 
 If the "allow cancel" parameter is set to **true**, entering any command other than one of the option numbers dismisses the menu, and the variable "result" is [null](/types#null). If it is set to **false**, anything else the player types is ignored.
 
-This command suspends the script mid-turn, so the player can't save while the menu is up. For a menu that ends the turn first, leaving save, load and undo available while the player chooses, use the [ShowMenu](/reference/functions/user-interface#showmenu) function's callback form, `ShowMenu (caption, options, allow cancel) { script }`.
+This command suspends the script mid-turn, so the player can't save while the menu is up. For a menu that ends the turn first, leaving saving available while the player chooses, use the [ShowMenu](/reference/functions/user-interface#showmenu) function's callback form, `ShowMenu (caption, options, allow cancel) { script }`.
 
 **example:**
 

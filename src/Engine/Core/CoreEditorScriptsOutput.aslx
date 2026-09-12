@@ -584,7 +584,7 @@
          what the engine is doing while the menu is up. This "ShowMenu (...) { }" form calls the
          ASLX ShowMenu function in CoreFunctions.aslx (the same one the parser's disambiguation
          prompt uses), which prints its links and returns: the turn ends normally, so the player
-         can save, load and undo while choosing. The expression form suspends the script
+         can still save while choosing. The expression form suspends the script
          mid-turn instead, which the players' turn-pending logic disables save around - the same
          trade-off GetInput() makes. Kept addable for the form that stays saveable. -->
     <appliesto>(function)ShowMenu</appliesto>

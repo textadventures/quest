@@ -185,4 +185,4 @@ msg ("Really? A " + LCase(colour) + " " + LCase(animal) + " fan.")
 
 Because that is an ordinary expression rather than a script, the local variable problem above does not apply to it either - `this`, `object`, `text` and function parameters are all still in scope after it returns.
 
-The trade-off is that the expression form suspends the script in the middle of the turn, so the player can't save while the menu is up (the same trade-off `GetInput()` makes). The `ShowMenu (...) { }` form ends the turn before waiting, so save, load and undo stay available while the player is choosing.
+The trade-off is that the expression form suspends the script in the middle of the turn, so the player can't save while the menu is up (the same trade-off `GetInput()` makes). The `ShowMenu (...) { }` form ends the turn before waiting, so saving stays available while the player is choosing.
