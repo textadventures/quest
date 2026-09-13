@@ -62,7 +62,7 @@ dotnet build src/WasmPlayer/WasmPlayer.csproj
 node src/WasmPlayer/dev-server.mjs
 ```
 
-Then open `http://localhost:5175/?url=/examples/simple.aslx`. For a faster AOT-compiled build closer to what actually ships, add `--configuration Release` to the build command and `--release` to the dev server command instead.
+Then open `http://localhost:5175/?url=/examples/simple.aslx`. To run the smaller, trimmed Release build that actually ships, use `dotnet publish src/WasmPlayer/WasmPlayer.csproj -c Release` instead, and add `--release` to the dev server command.
 
 
 ## Running the editor (AppShell)

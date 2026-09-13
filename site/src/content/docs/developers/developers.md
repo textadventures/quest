@@ -42,7 +42,7 @@ Here are the main projects you'll find in `QuestViva.sln`:
 - **PlayerCore** - Game player runtime shared by both players, wrapping Engine.
 - **EditorCore** - Game editor logic (non-UI).
 - **WebPlayer** - ASP.NET Core + Blazor Server web app for playing games server-side.
-- **WasmPlayer** - Pure browser-WASM player, AOT-compiled, no server required. This is what powers "play online" today.
+- **WasmPlayer** - Pure browser-WASM player, no server required. This is what powers "play online" today.
 - **WasmEditor** - Browser-WASM bridge exposing EditorCore to the AppShell frontend.
 - **AppShell** (`src/AppShell/`) - The SvelteKit SPA that is the actual game editor UI, talking to WasmEditor across the JS/WASM boundary.
 - **ElectronApp** - Desktop app shell wrapping AppShell, for offline use.

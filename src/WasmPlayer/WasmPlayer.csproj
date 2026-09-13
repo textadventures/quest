@@ -7,7 +7,20 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <Nullable>enable</Nullable>
         <LangVersion>default</LangVersion>
-        <RunAOTCompilation>true</RunAOTCompilation>
+        <!-- Shipped via `dotnet publish -c Release`, which IL-trims the unused .NET framework out of
+             the AppBundle (~190 files / 7.9 MB brotli down to ~50 / 3.3 MB); `dotnet build` never
+             trims. No AOT: RunAOTCompilation likewise only applies on publish, so while it was set
+             here every shipped bundle (always from `dotnet build`) still ran the interpreter, and
+             really turning it on roughly doubles the download. Pass -p:RunAOTCompilation=true to
+             publish an AOT build for profiling. -->
+        <!-- IL2104 is the one-line summary the trimmer emits per third-party assembly with trim
+             warnings - here Parlot, NCalc's parser library. All but one are in compiled-parser mode
+             (Parser.Compile), which Engine only uses when the NCalc.EnableParlotParserCompilation
+             AppContext switch is set, and nothing sets it; the other is NumberLiteral<T> looking up
+             its numeric type's parse method, which every numeric literal in a game script exercises.
+             Our own projects' trim warnings are still reported individually, and
+             TreatWarningsAsErrors fails the publish on them. -->
+        <NoWarn>$(NoWarn);IL2104</NoWarn>
         <!-- Release is what ships (Electron, static hosting, often offline). Shipping .pdb files
              embeds SourceLink metadata pointing at raw.githubusercontent.com, which Chrome DevTools'
              WASM debugger fetches from when attached — undesirable for an offline-capable app.
@@ -15,6 +28,10 @@
              on GitHub. Debug builds keep both for local dev-server debugging. -->
         <WasmDebugLevel Condition="'$(Configuration)' == 'Release'">0</WasmDebugLevel>
         <WasmEmitSourceMap Condition="'$(Configuration)' == 'Release'">false</WasmEmitSourceMap>
+        <!-- Publish otherwise lists dotnet.native.js.symbols (~720 KB) in the boot manifest, which
+             the runtime then fetches on every load - and without the ?v= cache key, so it would be
+             served `immutable` with nothing to bust it on the next deploy. -->
+        <WasmEmitSymbolMap Condition="'$(Configuration)' == 'Release'">false</WasmEmitSymbolMap>
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\PlayerCore\PlayerCore.csproj"/>

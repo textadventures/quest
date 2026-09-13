@@ -32,7 +32,7 @@ Both deployments run the **same** WasmEditor/WasmPlayer app build. Which storage
 
 ## Why a subdomain, not a path
 
-`site/` builds via Astro/npm; WasmEditor/WasmPlayer builds via `dotnet build` (browser-wasm AOT AppBundle). These are separate pipelines, so a subdomain backed by its own Cloudflare Pages project is simpler than path-based routing within one project (which would mean running both build systems and merging outputs). `questviva.com` itself is unaffected.
+`site/` builds via Astro/npm; WasmEditor/WasmPlayer builds via `dotnet publish` (trimmed browser-wasm AppBundle). These are separate pipelines, so a subdomain backed by its own Cloudflare Pages project is simpler than path-based routing within one project (which would mean running both build systems and merging outputs). `questviva.com` itself is unaffected.
 
 ## Why textadventures.co.uk keeps hosting the app too
 

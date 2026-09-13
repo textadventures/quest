@@ -295,8 +295,9 @@ public partial class WasmEditorBridge
     // Returns "ok" on success, or "error:{message}" — mirrors SetGameXml's convention. A raw
     // exception (e.g. a NullReferenceException from code that assumes Core.aslx's elements are
     // present, which isn't guaranteed if its <include> was deleted from the game) must never
-    // cross the WASM boundary uncaught: AOT trimming strips exception message resources, so the
-    // caller would otherwise see a bare "Arg_NullReferenceException" with no useful information.
+    // cross the WASM boundary uncaught: the runtime's UseSystemResourceKeys switch strips exception
+    // message resources, so the caller would otherwise see a bare "Arg_NullReferenceException" with
+    // no useful information.
     [JSExport]
     public static async Task<string> Initialise(byte[] gameFileBytes, string filename)
     {
