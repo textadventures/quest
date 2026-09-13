@@ -40,6 +40,24 @@ async function sendCommand(command) {
     await page.press('#txtCommand', 'Enter');
 }
 
+async function waitForText(label, text) {
+    try {
+        await page.waitForFunction(
+            expected => document.getElementById('divOutput').textContent.includes(expected),
+            text, { timeout: 15000 });
+    } catch {
+        const tail = (await page.$eval('#divOutput', el => el.textContent)).slice(-200);
+        throw new Error(`${label}: timed out waiting for "${text}", got tail: ${tail}`);
+    }
+}
+
+// Inline Ask()/ShowMenu() options are transcript links that send their number
+// as a command. Links from an already-answered prompt fade out before removal,
+// so only match visible ones.
+async function clickOptionLink(text) {
+    await page.locator('#divOutput a.commandlink:visible', { hasText: text }).first().click();
+}
+
 async function run() {
     // save-turn-pending-test.aslx's StartGame chains two nested wait{} blocks
     // before the game is genuinely idle - this is the "several waits at the
@@ -90,11 +108,15 @@ async function run() {
     await assertSaveDisabled(false, 'Save enabled after GetInput() answered');
 
     // Ask() expression function form (ExpressionOwner.Ask) - same class of gap
-    // as GetInput(), found and fixed at the same time.
+    // as GetInput(), found and fixed at the same time. The fixture is v600, so
+    // the options are drawn as numbered links in the transcript rather than a
+    // dialog (see verify-wasmplayer-inline-sync-prompts.mjs).
     await sendCommand('askfn');
+    await waitForText('Ask()', '1: Yes');
     await page.waitForTimeout(300);
-    await assertSaveDisabled(true, 'Save disabled while Ask() dialog is showing');
-    await page.click('button:has-text("Yes")');
+    await assertSaveDisabled(true, 'Save disabled while Ask() prompt is showing');
+    await clickOptionLink('Yes');
+    await waitForText('Ask() answered', 'Ask() got: yes');
     await page.waitForTimeout(300);
     await assertSaveDisabled(false, 'Save enabled after Ask() answered');
 
@@ -103,15 +125,11 @@ async function run() {
     // form, ShowMenuScript, already had BeginPendingCallback - only this
     // function-call form was missing it.)
     await sendCommand('menufn');
+    await waitForText('ShowMenu()', '1: optiona');
     await page.waitForTimeout(300);
-    await assertSaveDisabled(true, 'Save disabled while ShowMenu() dialog is showing');
-    // dialogSelect() in player.js reads $("#dialogOptions").val(), which jQuery
-    // returns as null (not the visually-shown first option) unless an <option>
-    // was explicitly selected - a separate, pre-existing bug independent of this
-    // change (fixed in #1951) - select explicitly to exercise this path the way
-    // a real player would (clicking an option before "Select").
-    await page.selectOption('#dialogOptions', { index: 0 });
-    await page.click('button:has-text("Select")');
+    await assertSaveDisabled(true, 'Save disabled while ShowMenu() prompt is showing');
+    await clickOptionLink('optiona');
+    await waitForText('ShowMenu() answered', 'ShowMenu() got: optiona');
     await page.waitForTimeout(300);
     await assertSaveDisabled(false, 'Save enabled after ShowMenu() answered');
 
