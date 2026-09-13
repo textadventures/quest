@@ -1342,6 +1342,14 @@ export function changeAttributeType(elementKey: string, attribute: string, newTy
 export function setPatternAttribute(elementKey: string, attribute: string, pattern: string): string {
     if (!_bridge) return "error";
     const result = _bridge.SetPatternAttribute(elementKey, attribute, pattern);
+    if (result === "retitled") {
+        // Pattern changed the command's display title (it has no explicit name) — the
+        // tree label needs refreshing, but selection/history stay put.
+        refreshTree();
+        refreshSelectedData();
+        refreshUndoRedo();
+        return "ok";
+    }
     if (result === "ok") refreshSelectedData();
     refreshUndoRedo();
     return result;
