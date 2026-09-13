@@ -15,7 +15,7 @@ public partial class V4Game : IGame, IGameDebug
     private readonly List<string> _log = new();
     private readonly int _numSkipCheckFiles;
     private readonly string[] _playerErrorMessageString = new string[39];
-    private readonly Random _random = new();
+    private Random _random = new();
     private readonly Stream _saveData;
     private readonly string[] _skipCheckFile;
     private readonly TextFormatter _textFormatter = new();

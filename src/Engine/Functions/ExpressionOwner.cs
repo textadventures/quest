@@ -11,7 +11,7 @@ namespace QuestViva.Engine.Functions;
 [SuppressMessage("ReSharper", "UnusedMember.Global")]
 internal class ExpressionOwner(WorldModel worldModel)
 {
-    private readonly Random _random = new();
+    private Random _random = new();
 
     private static T GetParameter<T>(object? parameter, string caller, string expectedType) where T : class
     {
@@ -705,6 +705,8 @@ internal class ExpressionOwner(WorldModel worldModel)
     {
         return _random.NextDouble();
     }
+
+    internal void SetRandomSeed(int seed) => _random = new Random(seed);
 
     public Task<object?> Eval(string? expression)
     {

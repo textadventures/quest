@@ -116,6 +116,30 @@ public partial class WasmPlayerBridge
         return source.Contains("play sound", StringComparison.OrdinalIgnoreCase);
     }
 
+    // Test hooks (wasm-player.js's ?seed= and ?transcript= parameters) so a browser run of a
+    // walkthrough can be diffed against the headless quest-e2e-tests harness's goldens.
+    private static int? _randomSeed;
+    private static List<TranscriptChunk>? _transcript;
+
+    [JSExport]
+    public static void SetRandomSeed(int seed) => _randomSeed = seed;
+
+    [JSExport]
+    public static void StartTranscriptCapture() => _transcript = [];
+
+    [JSExport]
+    public static string TakeTranscriptJson()
+    {
+        var chunks = _transcript?.ToArray() ?? [];
+        _transcript?.Clear();
+        return JsonSerializer.Serialize(chunks, WasmJsonContext.Default.TranscriptChunkArray);
+    }
+
+    // Records what the engine emitted, before any player-side formatting, matching what the
+    // headless harness's IPlayer sees.
+    private static void CaptureTranscript(string type, string text) =>
+        _transcript?.Add(new TranscriptChunk(type, text));
+
     private static async Task<bool> InitialiseCore(GameData gameData, Stream? saveData)
     {
         _game?.Finish();
@@ -124,12 +148,16 @@ public partial class WasmPlayerBridge
         _game = launcher.GetGame(gameData, saveData);
         if (_game == null) return false;
 
+        if (_randomSeed is { } seed) _game.SetRandomSeed(seed);
+
         _ui = new WasmPlayerUi(gameData.GameId, _game);
         _helper = new PlayerHelper(_game, _ui);
         _ui.SetHelper(_helper);
 
+        _game.PrintText += text => CaptureTranscript("text", text);
         _game.LogError += ex =>
         {
+            CaptureTranscript("error", ex.Message);
             _ui.OutputText("[Sorry, an error occurred]");
             JsConsoleError(ex.Message);
         };
@@ -753,7 +781,11 @@ public partial class WasmPlayerBridge
 
         void IPlayer.StopSound() => JsStopSound();
 
-        void IPlayer.WriteHTML(string html) => OutputText(html);
+        void IPlayer.WriteHTML(string html)
+        {
+            CaptureTranscript("text", html);
+            OutputText(html);
+        }
 
         Task<string> IPlayer.GetUrlAsync(string filename) => GetUrlAsync(filename);
 
@@ -805,6 +837,10 @@ public partial class WasmPlayerBridge
         // entire walkthrough finished.
         async Task IPlayer.RunScriptAsync(string function, object?[]? parameters)
         {
+            // Game text arrives here as JS.addText(html) for v540+ games.
+            if (function == "addText" && parameters is { Length: > 0 })
+                CaptureTranscript("text", parameters[0]?.ToString() ?? "");
+
             // Strip newlines from string parameters — some games depend on this (matching WebPlayer behaviour)
             var processedParams = parameters?.Select(p =>
                 p is string s ? (object)s.Replace("\r", "").Replace("\n", "") : p).ToArray();
@@ -886,4 +922,9 @@ public partial class WasmPlayerBridge
 [JsonSerializable(typeof(string[]))]
 [JsonSerializable(typeof(string))]
 [JsonSerializable(typeof(DebugData))]
+[JsonSerializable(typeof(TranscriptChunk[]))]
 internal partial class WasmJsonContext : JsonSerializerContext { }
+
+internal record TranscriptChunk(
+    [property: JsonPropertyName("type")] string Type,
+    [property: JsonPropertyName("text")] string Text);

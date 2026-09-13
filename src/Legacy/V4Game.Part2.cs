@@ -81,6 +81,8 @@ public partial class V4Game
         return Task.CompletedTask;
     }
 
+    public void SetRandomSeed(int seed) => _random = new Random(seed);
+
     public event UpdateListHandler UpdateList;
 
     public async Task<bool> Initialise(IPlayer player)

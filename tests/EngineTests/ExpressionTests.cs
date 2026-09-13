@@ -771,14 +771,10 @@ public class ExpressionTests
     [TestMethod]
     public async Task TestRandomFunctionsDrawFromWorldModelRandom()
     {
-        // Every expression used to construct its own ExpressionOwner, each with its own unseeded
-        // Random, so reseeding the WorldModel's (as the quest-e2e-tests harness does to make
-        // transcripts reproducible) never reached GetRandomInt in game scripts. Separate
-        // expressions must share one sequence.
+        // Separate expressions must share one sequence, or SetRandomSeed can't make a game's
+        // transcript reproducible: each expression used to build its own unseeded ExpressionOwner.
         const int seed = 1234;
-        typeof(ExpressionOwner)
-            .GetField("_random", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!
-            .SetValue(_worldModel.ExpressionOwner, new Random(seed));
+        _worldModel.SetRandomSeed(seed);
 
         var reference = new Random(seed);
         for (var i = 0; i < 3; i++)
