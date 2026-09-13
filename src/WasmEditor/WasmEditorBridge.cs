@@ -1716,7 +1716,7 @@ public partial class WasmEditorBridge
             return "error";
         }
 
-        var container = ResolveContainer(scripts, containerPath);
+        var container = ResolveContainer(scripts, containerPath, createIfMissing: true);
         if (container == null)
         {
             return "error";
@@ -1896,7 +1896,7 @@ public partial class WasmEditorBridge
             return "error";
         }
 
-        var container = ResolveContainer(scripts, containerPath);
+        var container = ResolveContainer(scripts, containerPath, createIfMissing: true);
         if (container == null)
         {
             return "error";
@@ -3850,7 +3850,8 @@ public partial class WasmEditorBridge
         return data.GetAttribute(attribute) as IEditableScripts;
     }
 
-    private static IEditableScripts? ResolveContainer(IEditableScripts root, string containerPath)
+    private static IEditableScripts? ResolveContainer(IEditableScripts root, string containerPath,
+        bool createIfMissing = false)
     {
         if (string.IsNullOrEmpty(containerPath))
         {
@@ -3932,9 +3933,27 @@ public partial class WasmEditorBridge
 
                     var paramAttr = parts[i++];
                     var scriptEditorData = _controller!.GetScriptEditorData(script);
-                    if (scriptEditorData.GetAttribute(paramAttr) is not IEditableScripts nestedScripts)
+                    var paramValue = scriptEditorData.GetAttribute(paramAttr);
+                    if (paramValue is not IEditableScripts nestedScripts)
                     {
-                        return null;
+                        // A script command's own nested-script parameter (e.g. firsttime's
+                        // "otherwise" branch) can be genuinely unset rather than an empty
+                        // container - unlike an object's top-level script attribute, there's no
+                        // separate "create the container" step surfaced in the UI, so the first
+                        // add into it has to materialize the container itself.
+                        if (!createIfMissing || paramValue != null)
+                        {
+                            return null;
+                        }
+
+                        var newScripts = _controller.CreateNewEditableScripts(null!, null!, null!, false);
+                        scriptEditorData.SetAttribute(paramAttr, newScripts);
+                        if (scriptEditorData.GetAttribute(paramAttr) is not IEditableScripts createdScripts)
+                        {
+                            return null;
+                        }
+
+                        nestedScripts = createdScripts;
                     }
 
                     current = nestedScripts;
