@@ -3478,6 +3478,7 @@ public partial class WasmEditorBridge
             return "error";
         }
 
+        _pendingRetitle = false;
         _controller.StartTransaction($"Set {attribute}");
         try
         {
@@ -3490,7 +3491,7 @@ public partial class WasmEditorBridge
                 data.SetAttribute(attribute, new EditorCommandPattern(pattern));
             }
 
-            return "ok";
+            return _pendingRetitle ? "retitled" : "ok";
         }
         catch (Exception ex)
         {
