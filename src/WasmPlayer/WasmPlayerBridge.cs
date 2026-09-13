@@ -135,6 +135,45 @@ public partial class WasmPlayerBridge
         return JsonSerializer.Serialize(chunks, WasmJsonContext.Default.TranscriptChunkArray);
     }
 
+    [JSExport]
+    public static async Task<string> EvaluateExpression(string expression)
+    {
+        var value = await RequireWorldModel().EvaluateAsync(expression);
+        return Convert.ToString(value, CultureInfo.InvariantCulture) ?? "";
+    }
+
+    [JSExport]
+    public static Task<bool> AssertExpression(string expression) => RequireWorldModel().AssertAsync(expression);
+
+    private static WorldModel RequireWorldModel() =>
+        _game as WorldModel
+        ?? throw new InvalidOperationException("Expression evaluation needs a Quest 5 (.aslx or .quest) game");
+
+    // Manual clock (?clock=manual) mirrors the headless harness, which only advances game time for a
+    // walkthrough's tick:N lines and to fire SetTimeout timers after each step, instead of on
+    // player.js's real 1-second interval.
+    private static int _lastTimerRequest;
+
+    [JSExport]
+    public static async Task TickClock(int seconds)
+    {
+        _lastTimerRequest = 0;
+        await Tick(seconds);
+    }
+
+    // SetTimeout creates timers named "timeout" + N. Returns false once none is pending, so the
+    // caller can click through any wait a timer opened before firing the next one.
+    [JSExport]
+    public static async Task<bool> FireNextTimeout()
+    {
+        if (_game is not WorldModel world || world.State == GameState.Finished) return false;
+        var pending = world.Elements.GetElements(ElementType.Timer)
+            .Any(t => t.Name.StartsWith("timeout", StringComparison.Ordinal) && t.Fields.GetAsType<bool>("enabled"));
+        if (!pending) return false;
+        await TickClock(_lastTimerRequest > 0 ? _lastTimerRequest : 1);
+        return true;
+    }
+
     // Records what the engine emitted, before any player-side formatting, matching what the
     // headless harness's IPlayer sees.
     private static void CaptureTranscript(string type, string text) =>
@@ -163,7 +202,12 @@ public partial class WasmPlayerBridge
         };
         _game.UpdateList += (listType, items) => _ui.HandleUpdateList(listType, items);
         _game.Finished += () => _ui.HandleFinished();
-        _game.RequestNextTimerTick += seconds => _ui.SetPendingTimerTick(seconds);
+        _lastTimerRequest = 0;
+        _game.RequestNextTimerTick += seconds =>
+        {
+            _lastTimerRequest = seconds;
+            _ui.SetPendingTimerTick(seconds);
+        };
         // A script can open its *next* suspension (e.g. a puzzle loop's next get input) before
         // the one currently resolving has finished draining deferred on-ready work (map redraws,
         // JS.updateLocation, etc.) - _turnSuspendedTcs only resolves once per command, on the

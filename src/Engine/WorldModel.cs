@@ -777,6 +777,12 @@ public partial class WorldModel : IGame, IGameDebug
         return expression.ExecuteAsync(c);
     }
 
+    public async Task<object?> EvaluateAsync(string expr)
+    {
+        var expression = new ExpressionDynamic(expr, new ScriptContext(this));
+        return await expression.ExecuteAsync(new Context());
+    }
+
     public async Task<string?> SetAttributeAsync(string element, string attribute, string valueExpression)
     {
         try

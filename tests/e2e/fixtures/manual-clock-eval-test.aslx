@@ -1,0 +1,45 @@
+<asl version="580">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <game name="Manual clock test">
+    <counter type="int">7</counter>
+    <beeps type="int">0</beeps>
+  </game>
+
+  <command name="delayed">
+    <pattern>delayed</pattern>
+    <script>
+      msg ("Timeout set.")
+      SetTimeout (2) {
+        msg ("Timeout fired.")
+        SetTimeout (3) {
+          msg ("Second timeout fired.")
+        }
+      }
+    </script>
+  </command>
+
+  <command name="startbeeper">
+    <pattern>start beeper</pattern>
+    <script>
+      EnableTimer (beeper)
+      msg ("Beeper started.")
+    </script>
+  </command>
+
+  <timer name="beeper">
+    <interval>2</interval>
+    <script>
+      game.beeps = game.beeps + 1
+      msg ("Beep " + game.beeps)
+    </script>
+  </timer>
+
+  <object name="room">
+    <object name="player">
+    </object>
+  </object>
+
+</asl>

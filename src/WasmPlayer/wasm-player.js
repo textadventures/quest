@@ -636,8 +636,16 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
     const seed = Number.parseInt(testParams.get('seed') ?? '', 10);
     if (Number.isInteger(seed)) Bridge.SetRandomSeed(seed);
     if (testParams.has('transcript')) Bridge.StartTranscriptCapture();
+    if (testParams.get('clock') === 'manual') {
+        // Stops player.js's 1-second interval, so game time only advances via tick/fireNextTimeout.
+        window.startTimer = () => {};
+    }
     window.QuestVivaTest = {
         takeTranscript: () => JSON.parse(Bridge.TakeTranscriptJson()),
+        evaluate: (expression) => Bridge.EvaluateExpression(expression),
+        assert: (expression) => Bridge.AssertExpression(expression),
+        tick: (seconds) => Bridge.TickClock(seconds),
+        fireNextTimeout: () => Bridge.FireNextTimeout(),
     };
 
     if (bc) {
