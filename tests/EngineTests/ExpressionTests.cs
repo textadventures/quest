@@ -786,6 +786,13 @@ public class ExpressionTests
     }
 
     [TestMethod]
+    public async Task TestEvaluateAsyncReturnsExpressionValue()
+    {
+        (await _worldModel.EvaluateAsync("1 + 2")).ShouldBe(3);
+        (await _worldModel.EvaluateAsync("\"a\" + \"b\"")).ShouldBe("ab");
+    }
+
+    [TestMethod]
     public async Task TestStringEqualToObjectReturnsFalse()
     {
         // Cross-type equality (string vs Element) must return false, not throw IConvertible.
