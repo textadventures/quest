@@ -70,6 +70,11 @@ public partial class WorldModel : IGame, IGameDebug
     internal TaskCompletionSource? _pauseTcs;
     private TaskCompletionSource _turnSuspendedTcs = new();
 
+    // The menu/question currently rendered inline in the transcript, if any - see
+    // ShowInlinePromptAsync. Only ever set for v600+ games; earlier ones keep going through
+    // PlayerUi.ShowMenu/ShowQuestion's dialog, where the player has no way to type at all.
+    private InlinePrompt? _inlinePrompt;
+
     // Every prompt (wait/menu/ask/get input) reuses a single TCS field, replacing it each time
     // it's shown. If a new prompt is triggered before a previous one resolves (e.g. via 'on ready'
     // reentrancy), the old field gets silently overwritten and whatever was awaiting it - along
@@ -433,7 +438,38 @@ public partial class WorldModel : IGame, IGameDebug
         var commandWasOverridden = false;
         try
         {
-            if (!_commandOverride)
+            if (_inlinePrompt != null)
+            {
+                // The same intercept CoreParser.aslx's HandleCommand does for game.menucallback,
+                // for the C#-side equivalent: a valid option number picks that option, and
+                // anything else either dismisses a cancellable prompt or is swallowed.
+                //
+                // Unlike the ASLX one, a cancelled prompt does not then run the typed command as
+                // an ordinary turn. It can't: resolving the prompt resumes a suspended script
+                // that may run for the rest of the turn (or suspend again on another prompt),
+                // and there is no safe point to start a second command in the middle of that.
+                // The prompt is dismissed and the command discarded - retyping it works.
+                var prompt = _inlinePrompt;
+                var index = int.TryParse(command, out var number) ? number : 0;
+                var chosen = index >= 1 && index <= prompt.Keys.Count ? prompt.Keys[index - 1] : null;
+                if (chosen != null || prompt.AllowCancel)
+                {
+                    commandWasOverridden = true;
+                    // Take the links away before resolving, not after: resolving resumes the
+                    // suspended script synchronously, and anything it goes on to print should
+                    // appear below the menu it replaces, not above it. ClearMenu-before-invoke in
+                    // CoreFunctions.aslx's ShowMenuResponse does the same thing for the same
+                    // reason. This also clears _inlinePrompt, so a second command arriving before
+                    // the resumed script settles is handled as an ordinary command rather than
+                    // being swallowed by a prompt that has already been answered.
+                    await EndInlinePromptAsync();
+                    prompt.Resolve(chosen);
+                }
+
+                // Anything else falls through to the finally with commandWasOverridden still
+                // false: the prompt stays up and the command is ignored, matching the ASLX form.
+            }
+            else if (!_commandOverride)
             {
                 if (Version < WorldModelVersion.v520)
                 {
@@ -1245,6 +1281,90 @@ public partial class WorldModel : IGame, IGameDebug
         // command reaches.
         TurnSuspended?.Invoke();
         _turnSuspendedTcs.TrySetResult();
+    }
+
+    // A menu or yes/no question drawn as numbered links in the transcript rather than as a
+    // player-UI dialog. Keys are the values the awaiting caller expects back, in the same order
+    // as the links the player sees, so a typed "2" resolves to Keys[1].
+    private sealed record InlinePrompt(
+        IReadOnlyList<string> Keys,
+        bool AllowCancel,
+        string? OutputSection,
+        Action<string?> Resolve);
+
+    // Renders a menu inline: the caption, then one numbered {command:N:text} link per option,
+    // wrapped in an output section so the links can be taken away again once a choice is made.
+    // This is deliberately the same shape as CoreFunctions.aslx's ShowMenu and CorePages.aslx's
+    // option list - printing through PrintAsync means it goes via the game's own OutputText, so
+    // the text processor, link colours, templates and transcript all behave exactly as they do
+    // for those, which is the whole point: the synchronous forms should be indistinguishable
+    // from the callback forms they sit alongside (#2287).
+    //
+    // A {command:} link sends its command as if the player had typed it, so clicking an option
+    // and typing its number are the same path - both land in the intercept at the top of
+    // HandleCommandAsyncInternal. That mirrors how CoreParser.aslx intercepts game.menucallback
+    // and game.currentpage, except that this prompt's state lives in C# because what it has to
+    // resolve is a TaskCompletionSource, not an ASLX callback script.
+    internal async Task ShowInlinePromptAsync(string? caption, IReadOnlyList<string> keys,
+        IReadOnlyList<string> optionTexts, bool allowCancel, Action<string?> resolve)
+    {
+        if (caption != null) await PrintAsync(caption);
+
+        var section = await StartOutputSectionAsync();
+        for (var i = 0; i < keys.Count; i++)
+        {
+            // The option text is the {command:} directive's own last segment, so a colon in it
+            // is harmless (everything after the first colon is the text). Braces would be
+            // reprocessed as a nested directive - exactly as they already are for the callback
+            // forms, which print their options through msg() the same way.
+            await PrintAsync($"{i + 1}: {{command:{i + 1}:{optionTexts[i]}}}");
+        }
+
+        await EndOutputSectionAsync(section);
+        _inlinePrompt = new InlinePrompt(keys, allowCancel, section, resolve);
+    }
+
+    // Ask()'s inline form. CoreFunctions.aslx's Ask is literally ShowMenu with Yes/No options, so
+    // this renders the same two numbered links - but it resolves _questionTcs rather than
+    // _menuTcs, so SetQuestionResponse (and a walkthrough's "answer:yes" step) still works.
+    // The template lookups are done here rather than printed as "[Yes]"/"[No]": template
+    // references in ASLX text are substituted at load time by GameLoader, not by the output
+    // pipeline, so text built at runtime has to resolve its own.
+    internal Task ShowInlineQuestionAsync(string caption, Action<bool> resolve)
+    {
+        return ShowInlinePromptAsync(caption, ["yes", "no"],
+            [Template.GetText("Yes", false) ?? "Yes", Template.GetText("No", false) ?? "No"],
+            false, result => resolve(result == "yes"));
+    }
+
+    // Takes the option links away again, whichever way the prompt was resolved - a click, a typed
+    // number, a cancel, SetMenuResponse/SetQuestionResponse from a walkthrough, or the whole
+    // prompt being cancelled by FinishGame. Callers pair this with ShowInlinePromptAsync in a
+    // finally, so there is no path that leaves dead links in the transcript.
+    internal async Task EndInlinePromptAsync()
+    {
+        var prompt = _inlinePrompt;
+        if (prompt == null) return;
+        _inlinePrompt = null;
+        if (prompt.OutputSection != null && State != GameState.Finished &&
+            Elements.ContainsKey(ElementType.Function, "HideOutputSection"))
+        {
+            await RunProcedureAsync("HideOutputSection",
+                new Parameters(new Dictionary<string, object> {{"name", prompt.OutputSection}}), false);
+        }
+    }
+
+    private async Task<string?> StartOutputSectionAsync()
+    {
+        if (!Elements.ContainsKey(ElementType.Function, "StartNewOutputSection")) return null;
+        return await RunProcedureAsync("StartNewOutputSection", null, true) as string;
+    }
+
+    private async Task EndOutputSectionAsync(string? section)
+    {
+        if (section == null || !Elements.ContainsKey(ElementType.Function, "EndOutputSection")) return;
+        await RunProcedureAsync("EndOutputSection",
+            new Parameters(new Dictionary<string, object> {{"name", section}}), false);
     }
 
     internal async Task DoWaitAsync()

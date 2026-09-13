@@ -48,8 +48,14 @@ public class AskScript(
     public override async Task ExecuteAsync(Context c)
     {
         var caption = await _caption.ExecuteAsync(c);
-        _worldModel.PlayerUi.ShowQuestion(caption);
-        WorldModel.BeginPrompt(ref _worldModel._questionTcs);
+        var inline = _worldModel.Version >= WorldModelVersion.v600;
+        var tcs = WorldModel.BeginPrompt(ref _worldModel._questionTcs);
+        if (inline)
+        {
+            await _worldModel.ShowInlineQuestionAsync(caption, result => tcs.TrySetResult(result));
+        }
+
+        _worldModel.PlayerUi.ShowQuestion(caption, inline);
         _worldModel.BeginDormantSuspension();
         _worldModel.SignalTurnSuspended();
         _ = AwaitResponseAndRunCallbackAsync(c);
@@ -71,6 +77,7 @@ public class AskScript(
         finally
         {
             if (!resolved) _worldModel.SignalCallbackResolving();
+            await _worldModel.EndInlinePromptAsync();
             await _worldModel.EndPendingCallbackAsync();
             _worldModel.SignalTurnSuspended();
         }

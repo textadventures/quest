@@ -59,7 +59,7 @@ For a more structured exchange - where the player picks from a fixed set of repl
     2: Ask about the Queen
     > 1
 
-Unlike a `ShowMenu`-based conversation, each choice is a complete, ordinary turn, so save, load and undo all keep working in the middle of a conversation.
+Unlike a `ShowMenu`-based conversation, each choice is a complete, ordinary turn with its own undo point, rather than the whole exchange happening inside the turn that opened the menu.
 
 [More here](/howto/npcs/dialogue-pages)
 

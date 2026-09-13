@@ -4,13 +4,22 @@
   Gamebook-style "Pages" for Text Adventure games: inline branching choices, primarily
   for NPC dialogue trees. This deliberately mirrors GamebookCore.aslx's DoPage /
   HandleCommand mechanism rather than being built on ShowMenu: a ShowMenu-based dialogue
-  parks a callback in game.menucallback, which leaves the game in an intercepted state
-  that the players' turn-pending logic disables save around. Here each option is just a
-  CommandLink that runs as an ordinary complete turn, so between choices the game is
-  fully idle and all dialogue state is plain game attributes - save, load and undo work
-  mid-dialogue for free. The one substitution from gamebook: a Text Adventure player
-  stays in their room, so the current page is tracked in game.currentpage instead of
-  player.parent.
+  runs the whole exchange inside the single turn that opened the menu, parking a callback
+  in game.menucallback and nesting another callback for every further level of choices.
+  Here each option is just a CommandLink that runs as an ordinary complete turn, so each
+  choice gets its own undo transaction (see HandlePageTextResponse), the dialogue is
+  described as linked page objects rather than nested scripts, and all dialogue state is
+  plain game attributes - so a save taken mid-dialogue restores without depending on the
+  saved transcript's own markup the way ShowMenu's ASLEvent links do.
+
+  Note that saving is *not* the difference: the ASLX ShowMenu callback form prints its
+  links and returns, so nothing is pending and the save button stays enabled there too
+  (game.menucallback serialises as a script attribute and does restore correctly). It is
+  ShowMenu's expression form and the 'show menu' script command that suspend the script
+  mid-turn and make saving unavailable.
+
+  The one substitution from gamebook: a Text Adventure player stays in their room, so the
+  current page is tracked in game.currentpage instead of player.parent.
   -->
 
   <type name="dialoguepage">

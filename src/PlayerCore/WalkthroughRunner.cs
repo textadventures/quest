@@ -140,7 +140,7 @@ public class WalkthroughRunner(IGameDebug game, string walkthrough)
         }
     }
 
-    public void ShowQuestion(string question)
+    public void ShowQuestion(string question, bool inline)
     {
         _showingQuestion = true;
         WriteLine("Question: " + question);

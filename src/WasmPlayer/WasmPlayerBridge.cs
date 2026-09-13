@@ -687,6 +687,10 @@ public partial class WasmPlayerBridge
                 return;
             }
 
+            // v600+ games have already had their options drawn into the transcript by the engine
+            // (WorldModel.ShowInlinePromptAsync), so there is no dialog to open here.
+            if (menuData.Inline) return;
+
             FlushBeforeInteraction();
             JsShowMenu(menuData.Caption,
                 JsonSerializer.Serialize(
@@ -719,13 +723,15 @@ public partial class WasmPlayerBridge
             JsBeginPause(ms);
         }
 
-        void IPlayer.ShowQuestion(string caption)
+        void IPlayer.ShowQuestion(string caption, bool inline)
         {
             if (Runner != null)
             {
-                Runner.ShowQuestion(caption);
+                Runner.ShowQuestion(caption, inline);
                 return;
             }
+
+            if (inline) return;
 
             FlushBeforeInteraction();
             JsShowQuestion(caption);

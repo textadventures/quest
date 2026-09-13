@@ -4,11 +4,11 @@ sidebar:
   order: 22
 ---
 
-There are two ways to show a menu. To have a dialogue box pop-up, use the [show menu](/scripts#show-menu) script command. If you prefer to have an in-line menu with hyperlinks, use the [ShowMenu](/reference/functions/user-interface#showmenu) function. How you implement them is virtually the same.
+A menu is shown in the transcript as a numbered list of links - the player can click one or type its number. There are two ways to show one: the [ShowMenu](/reference/functions/user-interface#showmenu) function, which hands the chosen option straight back so the rest of your script carries on below it, and the older [show menu](/scripts#show-menu) script command, which runs a nested script instead. How you implement them is virtually the same.
 
 First, you need to create a string list of options - see [Using Lists](/howto/scripting/using-lists). Then call the "show menu" command or "ShowMenu" function to display the list to the user and run a nested script after the user has made their selection.
 
-Here is an example how to create a menu (in this case a pop-up menu). A new list is created, and then the entries 'female' and 'male' are added. If the player chooses an entry from the menu, that value goes into a variable called "result", and from that the variables playername and gender are set.
+Here is an example of how to create a menu. A new list is created, and then the entries 'female' and 'male' are added. If the player chooses an entry from the menu, that value goes into a variable called "result", and from that the variables playername and gender are set.
 
 ![](/images/ShowMenu.png)
 

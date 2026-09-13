@@ -53,7 +53,8 @@ public interface IPlayer
     void ShowMenu(MenuData menuData);
     void DoWait();
     void DoPause(int ms);
-    void ShowQuestion(string caption);
+    // inline: as MenuData.Inline - the engine has already drawn the Yes/No links itself.
+    void ShowQuestion(string caption, bool inline);
     void SetWindowMenu(MenuData menuData);
     Task PlaySoundAsync(string filename, bool synchronous, bool looped);
     void StopSound();
@@ -104,6 +105,12 @@ public class MenuData
     public IDictionary<string, string> Options { get; }
 
     public bool AllowCancel { get; }
+
+    // True when the engine has already drawn this menu as numbered links in the transcript
+    // (v600+ games - see WorldModel.ShowInlinePromptAsync). The call is then purely a
+    // notification that a menu is awaiting a response, which is what a headless IPlayer such as
+    // the walkthrough runner needs; players that draw their own UI should show nothing.
+    public bool Inline { get; init; }
 }
 
 public class ListData

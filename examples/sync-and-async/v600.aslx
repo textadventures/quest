@@ -1,0 +1,97 @@
+<asl version="600">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="v600">
+    <gameid>9f3e0f4a-2b57-4c41-9f22-6f5a1e7c1d03</gameid>
+    <version>1.0</version>
+    <description>Synchronous and callback input forms, side by side, at WorldModel version 600.</description>
+  </game>
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="editor_object" />
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+  <!-- The synchronous expression forms. Re-enabled for v600 (they throw for v540-v580), and
+       since #2287 they draw their choices as numbered links in the transcript rather than
+       opening a dialog - so they look the same as the callback forms below. -->
+  <command>
+    <pattern>askfn</pattern>
+    <script><![CDATA[
+      if (Ask ("Buy dodgy watch?")) {
+        msg ("You hand over $50.")
+      }
+      else {
+        msg ("No thanks.")
+      }
+    ]]></script>
+  </command>
+
+  <command>
+    <pattern>menufn</pattern>
+    <script><![CDATA[
+      colour = ShowMenu ("What is your favourite colour?", Split("Red;Green;Blue;Yellow", ";"), false)
+      msg ("You chose " + colour)
+    ]]></script>
+  </command>
+
+  <!-- Cancellable: typing anything that isn't one of the option numbers dismisses the menu, and
+       ShowMenu returns an empty string. -->
+  <command>
+    <pattern>menufncancel</pattern>
+    <script><![CDATA[
+      colour = ShowMenu ("What is your favourite colour?", Split("Red;Green;Blue;Yellow", ";"), true)
+      if (colour = "") {
+        msg ("You didn't choose.")
+      }
+      else {
+        msg ("You chose " + colour)
+      }
+    ]]></script>
+  </command>
+
+  <!-- The callback forms, for comparison. -->
+  <command>
+    <pattern>ask</pattern>
+    <script><![CDATA[
+      Ask ("Buy dodgy watch?") {
+        if (result) {
+          msg ("You hand over $50.")
+        }
+        else {
+          msg ("No thanks.")
+        }
+      }
+    ]]></script>
+  </command>
+
+  <command>
+    <pattern>menu</pattern>
+    <script><![CDATA[
+      ShowMenu ("What is your favourite colour?", Split("Red;Green;Blue;Yellow", ";"), false) {
+        msg ("You chose " + result)
+      }
+    ]]></script>
+  </command>
+
+  <!-- The script-command forms, which take a callback but render through the same code as the
+       expression forms above. -->
+  <command>
+    <pattern>menucmd</pattern>
+    <script><![CDATA[
+      show menu ("What is your favourite colour?", Split("Red;Green;Blue;Yellow", ";"), false) {
+        msg ("You chose " + result)
+      }
+    ]]></script>
+  </command>
+
+  <command>
+    <pattern>inputfn</pattern>
+    <script><![CDATA[
+      name = GetInput()
+      msg ("Hello " + name)
+    ]]></script>
+  </command>
+</asl>

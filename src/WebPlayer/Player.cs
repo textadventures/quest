@@ -87,7 +87,7 @@ public class Player : IPlayerHelperUI
         {
             Runner.ShowMenu(menuData);
         }
-        else
+        else if (!menuData.Inline)
         {
             AddJavaScriptToBuffer("showMenu", menuData.Caption, menuData.Options, menuData.AllowCancel);
         }
@@ -117,13 +117,13 @@ public class Player : IPlayerHelperUI
         }
     }
 
-    void IPlayer.ShowQuestion(string caption)
+    void IPlayer.ShowQuestion(string caption, bool inline)
     {
         if (Runner != null)
         {
-            Runner.ShowQuestion(caption);
+            Runner.ShowQuestion(caption, inline);
         }
-        else
+        else if (!inline)
         {
             AddJavaScriptToBuffer("showQuestion", caption);
         }

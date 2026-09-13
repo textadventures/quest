@@ -7356,7 +7356,8 @@ public partial class V4Game : IGame, IGameDebug
 
     private async Task<bool> ExecuteIfAskAsync(string question)
     {
-        _player.ShowQuestion(question);
+        // Quest 4 games have no WorldModel version, so never the v600 inline rendering.
+        _player.ShowQuestion(question, false);
         _waitTcs = new TaskCompletionSource();
         SignalTurnSuspended();
         await _waitTcs.Task;
