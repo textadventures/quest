@@ -120,7 +120,7 @@ jobs:
         run: dotnet workload install wasm-tools
 
       # Debug builds are enough to prove the Electron build pipeline (and its
-      # static-asset assembly step) works — Release/AOT is a packaging-time
+      # static-asset assembly step) works — the trimmed Release publish is a packaging-time
       # concern, not a per-PR one.
       - name: Build WasmEditor
         run: dotnet build src/WasmEditor/WasmEditor.csproj -c Debug

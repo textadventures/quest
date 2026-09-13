@@ -241,7 +241,7 @@ jobs:
 
   # OPFS local-drafts behavior on non-FSA browsers, against a Release
   # WasmEditor build — createSyncAccessHandle (Safari's write path) needs the
-  # AOT build's real dotnet runtime bits present.
+  # Release build's real dotnet runtime bits present.
   #
   # Firefox only, not WebKit: Playwright's Linux WebKit build doesn't
   # implement OPFS at all (navigator.storage.getDirectory is undefined there,
@@ -260,7 +260,7 @@ jobs:
           dotnet-version: '10.0.x'
       - run: dotnet workload install wasm-tools
 
-      - run: dotnet build src/WasmEditor/WasmEditor.csproj -c Release
+      - run: dotnet publish src/WasmEditor/WasmEditor.csproj -c Release
 
       - uses: actions/setup-node@v6
         with:
@@ -350,7 +350,10 @@ jobs:
         with:
           dotnet-version: '10.0.x'
       - run: dotnet workload install wasm-tools
-      - run: dotnet build src/WasmPlayer/WasmPlayer.csproj -c Debug
+      # The trimmed Release publish that actually ships, not Debug: Debug is
+      # untrimmed, so a game script reaching a .NET method the trimmer removed
+      # would only ever fail in production.
+      - run: dotnet publish src/WasmPlayer/WasmPlayer.csproj -c Release
 
       - uses: actions/setup-node@v6
         with:
@@ -363,8 +366,8 @@ jobs:
       - run: npx playwright install --with-deps chromium
         working-directory: tests/e2e
 
-      - name: Start WasmPlayer dev server (5175)
-        run: node src/WasmPlayer/dev-server.mjs &
+      - name: Start WasmPlayer dev server (5175, Release)
+        run: node src/WasmPlayer/dev-server.mjs --release &
 
       - name: Wait for dev server
         run: |

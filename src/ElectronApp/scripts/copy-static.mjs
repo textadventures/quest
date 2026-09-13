@@ -4,13 +4,14 @@
 // play.questviva.com, just copied locally instead of deployed behind nginx.
 //
 // Prerequisites (build these first):
-//   dotnet build -c ${WASM_CONFIG:-Debug} src/WasmEditor
-//   dotnet build -c ${WASM_CONFIG:-Debug} src/WasmPlayer
+//   dotnet build -c Debug src/WasmEditor        (Release: dotnet publish -c Release)
+//   dotnet build -c Debug src/WasmPlayer        (Release: dotnet publish -c Release)
 //   npm run build   (in src/AppShell)
 //
 // WASM_CONFIG follows the same convention as src/AppShell/vite.config.ts —
-// defaults to Debug (fast interpreter build) for local iteration; set
-// WASM_CONFIG=Release to bundle the AOT build instead.
+// defaults to Debug (fast untrimmed build) for local iteration; set
+// WASM_CONFIG=Release to bundle the trimmed Release publish that ships instead.
+// Release needs `publish`: a plain `dotnet build -c Release` never trims.
 
 import fs from "node:fs";
 import path from "node:path";

@@ -6,8 +6,9 @@ import { join, extname } from 'node:path'
 import { readFile } from 'node:fs/promises'
 import { readFileSync } from 'node:fs'
 
-// Set WASM_CONFIG=Release to serve the AOT-compiled AppBundle instead of the Debug/interpreter one
-// (e.g. for profiling, where AOT gives per-method native frames instead of one opaque interpreter loop).
+// Set WASM_CONFIG=Release to serve the trimmed Release AppBundle that ships (built with
+// `dotnet publish -c Release src/WasmEditor`) instead of the Debug one. For profiling with
+// per-method native frames instead of one opaque interpreter loop, add -p:RunAOTCompilation=true.
 const wasmConfig = process.env.WASM_CONFIG === 'Release' ? 'Release' : 'Debug'
 const appBundleDir = fileURLToPath(
   new URL(`../WasmEditor/bin/${wasmConfig}/net10.0/browser-wasm/AppBundle`, import.meta.url)
