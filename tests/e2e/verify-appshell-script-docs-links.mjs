@@ -79,17 +79,15 @@ async function run() {
         throw new Error('the Add Script modal closed - Enter on the link added the command instead of following it');
     }
 
-
-    // A command with no reference entry must show no link at all. "=" (set a
-    // variable) is syntax, deliberately absent from the generated index.
-    await page.fill('input[placeholder="Filter commands..."]', 'Set a variable or attribute');
-    const setRow = page.locator('[role="option"]:has-text("Set a variable or attribute")').first();
-    if (await setRow.count() !== 1) {
-        throw new Error('could not find the "Set a variable or attribute" command to check the no-docs case');
-    }
-    await setRow.click();
-    check('no "Learn more" link for a command with no docs entry (=)',
-        await page.locator('a:has-text("Learn more")').count(), 0);
+    // docsUrlForScriptKeyword()'s "no reference entry" branch (returns null,
+    // so AddScriptModal renders no "Learn more" link at all) has no live
+    // command left to exercise it against: build-docs-index.mjs's own
+    // completeness audit (`node site/scripts/build-docs-index.mjs`, the
+    // unmatched/undocumented report) currently reports every one of the 130
+    // indexed keywords as documented - "=" and "//" used to be the gap this
+    // checked, until docs PR #2283 filled them in via manualTargets. Picking
+    // another keyword here would just be one PR away from the same false
+    // failure. If a real gap reappears, re-add a case here naming it.
 
     await page.locator('button:has-text("Cancel")').click();
 
