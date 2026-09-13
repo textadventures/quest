@@ -7,8 +7,24 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <Nullable>enable</Nullable>
         <LangVersion>default</LangVersion>
-        <RunAOTCompilation>true</RunAOTCompilation>
-        <WasmEmitSymbolMap>true</WasmEmitSymbolMap>
+        <!-- Shipped via `dotnet publish -c Release`, which IL-trims the unused .NET framework out of
+             the AppBundle (~194 files / 8.5 MB brotli down to ~50 / 3.4 MB); `dotnet build` never
+             trims. No AOT: RunAOTCompilation likewise only applies on publish, so while it was set
+             here every shipped bundle (always from `dotnet build`) still ran the interpreter, and
+             really turning it on roughly doubles the download. Pass -p:RunAOTCompilation=true to
+             publish an AOT build for profiling. -->
+        <!-- IL2104 is the one-line summary the trimmer emits per third-party assembly with trim
+             warnings - here Parlot, NCalc's parser library. All but one are in compiled-parser mode
+             (Parser.Compile), which Engine only uses when the NCalc.EnableParlotParserCompilation
+             AppContext switch is set, and nothing sets it; the other is NumberLiteral<T> looking up
+             its numeric type's parse method, which every numeric literal in a game script exercises.
+             Our own projects' trim warnings are still reported individually, and
+             TreatWarningsAsErrors fails the publish on them. -->
+        <NoWarn>$(NoWarn);IL2104</NoWarn>
+        <!-- Debug only: in a Release publish dotnet.native.js.symbols (~720 KB) is listed in the boot
+             manifest and fetched on every load. -->
+        <WasmEmitSymbolMap Condition="'$(Configuration)' != 'Release'">true</WasmEmitSymbolMap>
+        <WasmEmitSymbolMap Condition="'$(Configuration)' == 'Release'">false</WasmEmitSymbolMap>
         <!-- Release is what ships (Electron, static hosting, often offline). Shipping .pdb files
              embeds SourceLink metadata pointing at raw.githubusercontent.com, which Chrome DevTools'
              WASM debugger fetches from when attached — undesirable for an offline-capable app.

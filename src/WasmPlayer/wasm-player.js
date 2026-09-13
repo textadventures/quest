@@ -35,7 +35,7 @@ const wasmPlayerScriptUrl = document.currentScript?.src;
 // serve them `immutable` rather than revalidating ~210 files on each load.
 //
 // For _framework/ specifically the version is also what makes `immutable`
-// *safe*. None of those filenames are content-hashed and AOT output isn't
+// *safe*. None of those filenames are content-hashed and the build output isn't
 // byte-reproducible, so a browser holding dotnet.boot.js (the manifest of
 // per-file SHA-256 hashes) from one deploy alongside a binary from the next
 // gets an SRI mismatch and the resource is blocked. Stamping manifest and
@@ -300,7 +300,7 @@ function finishSync(showCommandDiv) {
 // activation". A click through to this page (e.g. a target=_blank Play
 // button) does transfer that activation across the navigation, but it
 // doesn't reliably survive WasmPlayer's boot sequence (fetching the game,
-// booting the AOT WASM runtime) for a slow-enough load — by the time the
+// booting the WASM runtime) for a slow-enough load — by the time the
 // game's start logic tries to play a sound, the activation can already be
 // gone, and the browser silently rejects it. Only relevant for games that
 // might play a sound before the player has had any chance to interact with

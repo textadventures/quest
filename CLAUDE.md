@@ -27,12 +27,12 @@ docker compose up --build    # WebPlayer on http://localhost:8080
 # Build WasmPlayer (Debug — fast interpreter mode)
 dotnet build src/WasmPlayer/WasmPlayer.csproj
 
-# Build WasmPlayer (Release — AOT compiled, ~15s)
-dotnet build --configuration Release src/WasmPlayer/WasmPlayer.csproj
+# Publish WasmPlayer (Release — IL-trimmed, what ships; `dotnet build -c Release` does NOT trim)
+dotnet publish --configuration Release src/WasmPlayer/WasmPlayer.csproj
 
 # Run WasmPlayer dev server
 node src/WasmPlayer/dev-server.mjs              # Debug build
-node src/WasmPlayer/dev-server.mjs --release    # Release/AOT build
+node src/WasmPlayer/dev-server.mjs --release    # Release (trimmed) build
 # Open: http://localhost:5175/?url=/examples/simple.aslx
 ```
 
@@ -68,7 +68,7 @@ The solution (`QuestViva.sln`) has a layered architecture:
 
 ```
 WebPlayer (ASP.NET Core + Blazor Server)  ─┐
-WasmPlayer (browser-wasm, AOT)             ─┤
+WasmPlayer (browser-wasm)                  ─┤
                                             ├─► PlayerCore ─► Engine ─► Common
 EditorCore ─────────────────────────────────┘        │
                                                      └─► Legacy
@@ -82,7 +82,7 @@ EditorCore ───────────────────────
 - **EditorCore** — Game editor logic (non-UI)
 - **Legacy** — Quest 4 (and earlier) backward-compatibility layer with embedded `.lib`/`.dat` files. Nullable reference types are deliberately left disabled (see the comment in `Legacy.csproj`)
 - **WebPlayer** — ASP.NET Core web app with Blazor Razor components (`Game.razor`, `Slots.razor`, debugger)
-- **WasmPlayer** — Pure browser-WASM player (`browser-wasm` target, AOT-compiled). Uses `JSImport`/`JSExport` for JS interop. Serves as a static site with no server-side .NET required. IL trimming is enabled; `WasmPlayer.linker.xml` preserves the Engine assembly (which uses reflection-based type discovery).
+- **WasmPlayer** — Pure browser-WASM player (`browser-wasm` target, interpreted — not AOT). Uses `JSImport`/`JSExport` for JS interop. Serves as a static site with no server-side .NET required. Shipped (like WasmEditor) via `dotnet publish -c Release`, which IL-trims the framework — **`dotnet build` never trims and `RunAOTCompilation` only applies on publish**, so a Release *build* is untrimmed (~190 files, ~7.9 MB brotli vs ~50 files, ~3.3 MB published). Game scripts can call .NET methods by reflection (`"x".StartsWith("y")`, `list.Count`); types they reach are rooted in `ScriptDispatchRoots.cs`, so a `Method '...' not found` that only happens in the Release build means a type or member needs adding there. Invariant globalization was measured and rejected: it changes `StringListSort` order and string `<` comparisons.
 - **WasmEditor** — Browser-WASM bridge (`browser-wasm` target) exposing `EditorCore` to the AppShell SvelteKit frontend via `[JSExport]` (see `WasmEditorBridge.cs`)
 - **AppShell** (`src/AppShell/`) — SvelteKit SPA (adapter-static) frontend for the game editor; talks to WasmEditor over the JS/WASM boundary and to `FileAdapter` implementations (`src/lib/filesystem/`) for storage (FSA, OPFS local drafts, server, Electron). Also serves the Play/Create Home landing page at root when `PUBLIC_SHOW_HOME=true` (play.questviva.com, Electron) — root shows a game catalog (Play tab, fetched from textadventures.co.uk's `api/Catalog`) or the editor canvas once a game is loaded; `/open` (Create tab) is unchanged; `/play/[id]` is a new game-detail route. Unset (textadventures.co.uk) keeps the previous editor-only root behavior. See `docs/appshell-wasm-svelte.md` and `docs/deployment-domains.md`
 - **ElectronApp** (`src/ElectronApp/`) — Electron main-process shell (desktop app) wrapping the AppShell SPA over a local loopback HTTP server; no Svelte/UI code of its own. See `docs/electron-desktop-app.md`

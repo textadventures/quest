@@ -20,6 +20,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
 
     public NcalcExpressionEvaluator(string expression, ScriptContext scriptContext)
     {
+        ScriptDispatchRoots.EnsureRooted();
         _scriptContext = scriptContext;
         _expressionOwner = scriptContext.WorldModel.ExpressionOwner;
         _expression = Utility.ResolveElementName(expression);
@@ -337,6 +338,9 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         HandleBinaryResult(args, isEquality, operatorName, left, right, leftNullDescription, rightNullDescription);
     }
 
+    // An attribute rather than #pragma: a pragma only silences the Roslyn analyzer, not the IL
+    // trimmer that runs on publish.
+    [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types exposed to scripts are rooted in ScriptDispatchRoots.cs")]
     private static void HandleBinaryResult(BinaryEventArgs args, bool isEquality, string? operatorName, object? left,
         object? right, string? leftNullDescription, string? rightNullDescription)
     {
@@ -390,11 +394,8 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
 
         foreach (var declaringType in new[] { leftType, rightType }.Where(t => t != null).Distinct())
         {
-            // types exposed to scripts are rooted in ScriptDispatchRoots.cs
-#pragma warning disable IL2072
             // operatorName is only null for equality, which is always handled above
             var method = TryFindOperatorOverload(declaringType!, operatorName!, leftType, rightType);
-#pragma warning restore IL2072
             if (method != null)
             {
                 args.Result = method.Invoke(null, [left, right]);
@@ -557,11 +558,12 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         return await _scriptContext.WorldModel.RunProcedureAsync(name, parameters, true);
     }
 
+    // An attribute rather than #pragma: a pragma only silences the Roslyn analyzer, not the IL
+    // trimmer that runs on publish.
+    [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Script-accessible types are explicitly rooted in ScriptDispatchRoots.cs")]
     private static object? DispatchMethodCall(object? receiver, string methodName, object?[] methodArgs)
     {
         var argTypes = methodArgs.Select(a => a?.GetType() ?? typeof(object)).ToArray();
-        // script-accessible types are explicitly rooted in ScriptDispatchRoots.cs
-#pragma warning disable IL2075
         var method = receiver?.GetType().GetMethod(methodName, argTypes);
 
         if (method == null && methodArgs.Any(a => a == null))
@@ -586,7 +588,6 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
                     return true;
                 });
         }
-#pragma warning restore IL2075
 
         if (method == null)
             throw new Exception($"Method '{methodName}' not found on '{receiver?.GetType().Name}'");

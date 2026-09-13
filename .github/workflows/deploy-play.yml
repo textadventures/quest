@@ -42,11 +42,14 @@ jobs:
       - name: Install .NET WASM workload
         run: dotnet workload install wasm-tools
 
-      - name: Build WasmEditor
-        run: dotnet build src/WasmEditor/WasmEditor.csproj -c Release
+      # `publish`, not `build`: only publish IL-trims the unused .NET framework
+      # out of the AppBundle (~190 files down to ~50, less than half the
+      # download). It still writes to bin/Release/net10.0/browser-wasm/AppBundle.
+      - name: Publish WasmEditor
+        run: dotnet publish src/WasmEditor/WasmEditor.csproj -c Release
 
-      - name: Build WasmPlayer
-        run: dotnet build src/WasmPlayer/WasmPlayer.csproj -c Release
+      - name: Publish WasmPlayer
+        run: dotnet publish src/WasmPlayer/WasmPlayer.csproj -c Release
 
       # BASE_PATH is unset (defaults to root) and PUBLIC_SHOW_HOME=true — this
       # build serves the Play/Create Home content at root and /open, plus the
@@ -80,7 +83,7 @@ jobs:
           #
           # For _framework/* the version is also what makes this *safe*, and it
           # replaces the blanket `Cache-Control: no-cache` that used to sit
-          # here: those filenames aren't content-hashed and AOT output isn't
+          # here: those filenames aren't content-hashed and the build output isn't
           # byte-reproducible, so a browser pairing a cached dotnet.boot.js
           # (the manifest of per-file SHA-256 hashes) with a binary from a
           # later deploy got an SRI failure. Stamping both with the same

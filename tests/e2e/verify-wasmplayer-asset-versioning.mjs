@@ -11,7 +11,7 @@
 // here rather than in production.
 //
 // The _framework/ half matters twice over: those filenames aren't
-// content-hashed and AOT output isn't byte-reproducible, so pairing a cached
+// content-hashed and the build output isn't byte-reproducible, so pairing a cached
 // dotnet.boot.js (the manifest of per-file SHA-256 hashes) with a binary from a
 // different deploy fails the SRI integrity check and blocks the resource.
 //
@@ -47,8 +47,23 @@ try {
         .filter(u => new URL(u).pathname !== '/');
 
     const framework = assets.filter(u => u.includes('/_framework/'));
-    if (framework.length < 100) {
-        throw new Error(`expected the whole runtime to be downloaded, saw only ${framework.length} _framework requests`);
+
+    // Every assembly and the native runtime in the boot manifest must actually have been
+    // fetched — otherwise the stamping checks below would pass vacuously on a partial load. The
+    // manifest rather than a fixed count, since a trimmed Release publish ships ~50 files and an
+    // untrimmed Debug build ~200.
+    const manifestNames = await page.evaluate(() => {
+        const r = globalThis.getDotnetRuntime?.(0)?.getConfig?.()?.resources ?? {};
+        return [...(r.coreAssembly ?? []), ...(r.assembly ?? []), ...(r.wasmNative ?? [])].map(a => a.name);
+    });
+    if (manifestNames.length === 0) {
+        throw new Error('could not read the assembly list from the runtime config');
+    }
+    const fetchedNames = new Set(framework.map(u => new URL(u).pathname.split('/').pop()));
+    const notFetched = manifestNames.filter(n => !fetchedNames.has(n));
+    if (notFetched.length) {
+        throw new Error(`expected the whole runtime to be downloaded, but ${notFetched.length} of ${manifestNames.length} manifest files were never requested:\n  `
+            + notFetched.slice(0, 10).join('\n  '));
     }
 
     // lib/images/* are referenced by relative URL from inside jquery-ui.min.css,

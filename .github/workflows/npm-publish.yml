@@ -48,8 +48,10 @@ jobs:
           fi
           echo "VERSION=$FILE_VERSION" >> $GITHUB_ENV
 
-      - name: Build WasmPlayer
-        run: dotnet build src/WasmPlayer/WasmPlayer.csproj -c Release
+      # `publish`, not `build`: only publish IL-trims the unused .NET framework
+      # out of the AppBundle — see deploy-play.yml.
+      - name: Publish WasmPlayer
+        run: dotnet publish src/WasmPlayer/WasmPlayer.csproj -c Release
 
       # No package.json exists in the AppBundle output today — stamped here at
       # publish time (analogous to how nuget-publish.yml injects -p:Version=

@@ -46,7 +46,7 @@ PLAYER_PORT=$((APPSHELL_PORT + 1))
 
 echo "Building WasmEditor..."
 if [[ "$RELEASE" == true ]]; then
-    dotnet build src/WasmEditor/WasmEditor.csproj --configuration Release
+    dotnet publish src/WasmEditor/WasmEditor.csproj --configuration Release
 else
     dotnet build src/WasmEditor/WasmEditor.csproj
 fi
@@ -54,7 +54,7 @@ fi
 echo ""
 echo "Building WasmPlayer..."
 if [[ "$RELEASE" == true ]]; then
-    dotnet build src/WasmPlayer/WasmPlayer.csproj --configuration Release
+    dotnet publish src/WasmPlayer/WasmPlayer.csproj --configuration Release
 else
     dotnet build src/WasmPlayer/WasmPlayer.csproj
 fi
