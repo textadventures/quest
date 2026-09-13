@@ -32,6 +32,10 @@
              the runtime then fetches on every load - and without the ?v= cache key, so it would be
              served `immutable` with nothing to bust it on the next deploy. -->
         <WasmEmitSymbolMap Condition="'$(Configuration)' == 'Release'">false</WasmEmitSymbolMap>
+        <!-- The WebAssembly SDK strips .NET's exception message strings by default, so a game script
+             error read "Arg_KeyNotFoundWithKey, x" instead of "The given key 'x' was not present in
+             the dictionary." Players and authors see these messages in the transcript. -->
+        <UseSystemResourceKeys>false</UseSystemResourceKeys>
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\PlayerCore\PlayerCore.csproj"/>

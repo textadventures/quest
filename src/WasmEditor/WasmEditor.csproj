@@ -32,6 +32,9 @@
              on GitHub. Debug builds keep both for local dev-server debugging. -->
         <WasmDebugLevel Condition="'$(Configuration)' == 'Release'">0</WasmDebugLevel>
         <WasmEmitSourceMap Condition="'$(Configuration)' == 'Release'">false</WasmEmitSourceMap>
+        <!-- The WebAssembly SDK strips .NET's exception message strings by default, so script and
+             load errors read like "Arg_KeyNotFoundWithKey, x" instead of the actual message. -->
+        <UseSystemResourceKeys>false</UseSystemResourceKeys>
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\EditorCore\EditorCore.csproj"/>
