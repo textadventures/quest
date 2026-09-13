@@ -259,6 +259,8 @@ public partial class WorldModel : IGame, IGameDebug
 
     internal ExpressionOwner ExpressionOwner { get; }
 
+    public void SetRandomSeed(int seed) => ExpressionOwner.SetRandomSeed(seed);
+
     internal IPlayer PlayerUi
     {
         get

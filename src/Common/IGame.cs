@@ -41,6 +41,8 @@ public interface IGame
     event Action<int>? RequestNextTimerTick;
     Task Tick(int elapsedTime);
 
+    void SetRandomSeed(int seed);
+
     IEnumerable<string>? GetExternalScripts();
     IEnumerable<string>? GetExternalStylesheets();
 

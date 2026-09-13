@@ -631,6 +631,15 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
     const exports = await getAssemblyExports(config.mainAssemblyName);
     Bridge = exports.QuestViva.WasmPlayer.WasmPlayerBridge;
 
+    // Test hooks for replaying a walkthrough reproducibly: see WasmPlayerBridge.SetRandomSeed.
+    const testParams = new URLSearchParams(window.location.search);
+    const seed = Number.parseInt(testParams.get('seed') ?? '', 10);
+    if (Number.isInteger(seed)) Bridge.SetRandomSeed(seed);
+    if (testParams.has('transcript')) Bridge.StartTranscriptCapture();
+    window.QuestVivaTest = {
+        takeTranscript: () => JSON.parse(Bridge.TakeTranscriptJson()),
+    };
+
     if (bc) {
         editorChannel = bc;
         bc.onmessage = ({ data }) => {

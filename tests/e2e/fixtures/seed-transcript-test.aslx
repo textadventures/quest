@@ -1,0 +1,31 @@
+<asl version="580">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <game name="Seed transcript test">
+    <start type="script">
+      msg ("Start roll: " + GetRandomInt(1, 1000000))
+    </start>
+  </game>
+
+  <command name="roll">
+    <pattern>roll</pattern>
+    <script>
+      msg ("Roll: " + GetRandomInt(1, 1000000) + " " + GetRandomInt(1, 1000000))
+    </script>
+  </command>
+
+  <command name="broken">
+    <pattern>broken</pattern>
+    <script>
+      msg (nosuchobject.nosuchattribute)
+    </script>
+  </command>
+
+  <object name="room">
+    <object name="player">
+    </object>
+  </object>
+
+</asl>
