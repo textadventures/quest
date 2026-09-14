@@ -72,6 +72,7 @@ try {
     if (html.includes('<base href=')) throw new Error('zip index.html must not set <base href>');
     if (!html.includes('QuestVivaEmbeddedGame')) throw new Error('zip index.html missing embedded game');
     if (!/\bqv-booting\b/.test(html)) throw new Error('zip index.html missing qv-booting');
+    if (html.includes('<!--')) throw new Error('zip index.html should not carry the shell\'s dev comments');
     console.log(`PASS: zip has ${names.length} files, embedded game, no CDN base`);
 
     // <title> should be the game's own name, not the shared shell's "Quest Viva".
