@@ -210,6 +210,10 @@ for (const file of ['lib/jquery-ui.min.css', 'playercore.css', 'chrome.css']) {
         `the ${file} stylesheet link`);
 }
 
+// 6. Dev-facing implementation notes about the WasmPlayer shell itself are dead weight in a
+//    downloaded game file — strip them rather than ship them to every player.
+html = html.replace(/[ \t]*<!--[\s\S]*?-->\r?\n?/g, '');
+
 const outFile = outFileArg
     ? path.resolve(outFileArg)
     : path.join(path.dirname(gameFile), path.basename(gameFile, path.extname(gameFile)) + '.html');

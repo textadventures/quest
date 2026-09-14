@@ -906,6 +906,9 @@ function buildEmbeddedPlayerHtml(template: string, packageBytes: Uint8Array, emb
                 `the ${file} stylesheet link`);
         }
     }
+    // Dev-facing implementation notes about the WasmPlayer shell itself are dead weight in a
+    // downloaded game file — strip them rather than ship them to every player.
+    html = html.replace(/[ \t]*<!--[\s\S]*?-->\r?\n?/g, "");
     return html;
 }
 
