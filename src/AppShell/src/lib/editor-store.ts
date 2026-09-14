@@ -834,7 +834,7 @@ function playerBaseUrl(): string {
     return base.endsWith("/") ? base : base + "/";
 }
 
-async function buildPublishPackageBytes(): Promise<{ packageBytes: Uint8Array; baseName: string; embeddedFilename: string }> {
+async function buildPublishPackageBytes(): Promise<{ packageBytes: Uint8Array; baseName: string; embeddedFilename: string; gameTitle: string }> {
     if (!_bridge || !_adapter) throw new Error("No game loaded.");
     for (const asset of await _adapter.listAssets()) {
         const blob = await _adapter.getAsset(asset.key);
@@ -843,7 +843,8 @@ async function buildPublishPackageBytes(): Promise<{ packageBytes: Uint8Array; b
     const packageBytes = _bridge.CreatePublishPackage(false);
     if (packageBytes.length === 0) throw new Error("Failed to build the .quest package.");
     const baseName = _adapter.filename.replace(/\.aslx$/i, "");
-    return { packageBytes, baseName, embeddedFilename: baseName + ".quest" };
+    const gameTitle = _bridge.GetGameName().trim() || baseName;
+    return { packageBytes, baseName, embeddedFilename: baseName + ".quest", gameTitle };
 }
 
 // Same transforms as export-embedded.mjs — see that file's comments for why each is needed.
@@ -853,7 +854,7 @@ async function buildPublishPackageBytes(): Promise<{ packageBytes: Uint8Array; b
 //
 // cdnBase: when set, insert <base href> + crossorigin on stylesheets (CDN-linked small HTML).
 // when unset, leave relative URLs alone (zip that includes the player next to index.html).
-function buildEmbeddedPlayerHtml(template: string, packageBytes: Uint8Array, embeddedFilename: string, cdnBase: string | null): string {
+function buildEmbeddedPlayerHtml(template: string, packageBytes: Uint8Array, embeddedFilename: string, cdnBase: string | null, gameTitle: string): string {
     const scriptLine = (file: string) => new RegExp(
         `^[ \\t]*<script type="text/javascript" src="${file.replace(/\./g, "\\.")}(?:\\?[^"]*)?"></script>\\r?\\n`,
         "m");
@@ -868,6 +869,11 @@ function buildEmbeddedPlayerHtml(template: string, packageBytes: Uint8Array, emb
 
     let html = template;
     html = html.replace('<html lang="en">', '<html lang="en" class="qv-booting">');
+    // Retitle from the shared shell's "Quest Viva" to the game's own name.
+    if (gameTitle) {
+        const escapedTitle = gameTitle.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        html = replaceOrFail(html, /<title>[^<]*<\/title>/, () => `<title>${escapedTitle}</title>`, "the <title> tag");
+    }
     // Babel Treaty §"The IFID for an HTML story file": expose <gameid> as an
     // ifiction:ifid meta so IFDB/babel/etc. can identify the export without
     // unpacking the embedded .quest. Uppercase matches the UUID:// form the
@@ -914,7 +920,7 @@ async function exportHtmlCdn(): Promise<void> {
     const version = PUBLIC_APPSHELL_VERSION?.replace(/^v/, "");
     if (!version) throw new Error("No release version available to pin the CDN runtime to — the small HTML export only works in a deployed build.");
 
-    const { packageBytes, baseName, embeddedFilename } = await buildPublishPackageBytes();
+    const { packageBytes, baseName, embeddedFilename, gameTitle } = await buildPublishPackageBytes();
     const templateResponse = await fetch(`${playerBaseUrl()}index.html`);
     if (!templateResponse.ok) throw new Error(`Failed to fetch WasmPlayer template: HTTP ${templateResponse.status}`);
     const html = buildEmbeddedPlayerHtml(
@@ -922,6 +928,7 @@ async function exportHtmlCdn(): Promise<void> {
         packageBytes,
         embeddedFilename,
         `https://cdn.jsdelivr.net/npm/@textadventures/quest-viva-wasmplayer@${version}/`,
+        gameTitle,
     );
     triggerDownload(html, baseName + ".html");
 }
@@ -975,13 +982,13 @@ async function fetchPlayerFiles(playerBase: string, paths: string[]): Promise<Re
 // WasmPlayer.zip from a GitHub Release, ready to upload to any static host. Uses the
 // /player/ copy already deployed alongside AppShell (no CDN, works offline once hosted).
 async function exportHtmlZip(): Promise<void> {
-    const { packageBytes, baseName, embeddedFilename } = await buildPublishPackageBytes();
+    const { packageBytes, baseName, embeddedFilename, gameTitle } = await buildPublishPackageBytes();
     const playerBase = playerBaseUrl();
 
     const templateResponse = await fetch(`${playerBase}index.html`);
     if (!templateResponse.ok) throw new Error(`Failed to fetch WasmPlayer template: HTTP ${templateResponse.status}`);
     const template = await templateResponse.text();
-    const html = buildEmbeddedPlayerHtml(template, packageBytes, embeddedFilename, null);
+    const html = buildEmbeddedPlayerHtml(template, packageBytes, embeddedFilename, null, gameTitle);
 
     // Shell file list is generated into the AppBundle at WasmPlayer build time
     // (scripts/write-export-manifest.mjs) so it can't drift from the layout.

@@ -69,6 +69,30 @@ function parseGameIdFromXml(xml) {
     return match?.[1]?.trim() || null;
 }
 
+// The game's display name is saved as the `name` attribute of the <game>
+// element itself (see GameElementSaver in ObjectSaver.cs), not a child tag.
+function extractGameName(bytes, filename) {
+    const ext = path.extname(filename).toLowerCase();
+    if (ext === '.aslx' || ext === '.asl') {
+        return parseGameNameFromXml(bytes.toString('utf8'));
+    }
+    if (ext === '.quest') {
+        const aslx = readZipEntry(bytes, 'game.aslx');
+        return aslx ? parseGameNameFromXml(aslx.toString('utf8')) : null;
+    }
+    return null;
+}
+
+function parseGameNameFromXml(xml) {
+    const match = /<game\s+name="([^"]*)"/i.exec(xml);
+    if (!match) return null;
+    const name = match[1]
+        .replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, '&')
+        .trim();
+    return name || null;
+}
+
 // Minimal ZIP local-file-header walk — enough to pull game.aslx without adding
 // a dependency. Stored (method 0) and deflated (method 8) only.
 function readZipEntry(buf, entryName) {
@@ -101,6 +125,7 @@ function readZipEntry(buf, entryName) {
 
 const gameId = extractGameId(gameBytes, gameFilename);
 const ifid = gameId ? gameId.toUpperCase() : null;
+const gameName = extractGameName(gameBytes, gameFilename);
 
 const cdnBase = `https://cdn.jsdelivr.net/npm/@textadventures/quest-viva-wasmplayer@${version}/`;
 
@@ -144,6 +169,12 @@ const headOpen = ifid
     : `<head>\n    <base href="${cdnBase}" />`;
 html = html.replace('<head>', headOpen);
 
+// 2b. Retitle from the shared shell's "Quest Viva" to the game's own name.
+if (gameName) {
+    const escapedTitle = gameName.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    html = replaceOrFail(html, /<title>[^<]*<\/title>/, () => `<title>${escapedTitle}</title>`, 'the <title> tag');
+}
+
 // 3. quest-config.js is local-hosting config (API root, defaultGameUrl) —
 //    nothing in this flavor is local, so drop the tag entirely rather than
 //    let it resolve to the CDN's own (unused) copy.
@@ -186,4 +217,5 @@ const outFile = outFileArg
 fs.writeFileSync(outFile, html);
 const sizeKb = (fs.statSync(outFile).size / 1024).toFixed(1);
 const ifidNote = ifid ? `, ifid: ${ifid}` : '';
-console.log(`Wrote ${outFile} (${sizeKb} KB) — game: ${gameFilename}, runtime: ${cdnBase}${ifidNote}`);
+const titleNote = gameName ? `, title: ${gameName}` : '';
+console.log(`Wrote ${outFile} (${sizeKb} KB) — game: ${gameFilename}, runtime: ${cdnBase}${ifidNote}${titleNote}`);

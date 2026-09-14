@@ -736,6 +736,8 @@ public partial class WorldModel : IGame, IGameDebug
 
     public string? GameID => Game.Fields[FieldDefinitions.GameID];
 
+    public string? GameName => Game.Fields[FieldDefinitions.GameName];
+
     IEnumerable<string> IGame.GetResourceNames()
     {
         return GetResourceNames == null ? [] : GetResourceNames();
