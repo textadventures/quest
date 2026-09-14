@@ -1,5 +1,38 @@
 # Changelog
 
+## [6.0.0-rc.1](https://github.com/textadventures/quest/compare/v6.0.0-beta.61...v6.0.0-rc.1) (2026-09-14)
+
+
+### Features
+
+* **Engine:** render Ask/ShowMenu inline in the transcript for v600 games ([#2288](https://github.com/textadventures/quest/issues/2288)) ([945ccb6](https://github.com/textadventures/quest/commit/945ccb66f5af59668be34756c58b61f2c6b4c622))
+* **WasmPlayer:** add expression evaluation and a manual clock for replaying walkthroughs ([#2295](https://github.com/textadventures/quest/issues/2295)) ([3cbfdc5](https://github.com/textadventures/quest/commit/3cbfdc564871e6b68bf05a1919dcb60438206df0))
+* **WasmPlayer:** add seed and transcript-capture hooks for replaying walkthroughs ([#2294](https://github.com/textadventures/quest/issues/2294)) ([f2c711b](https://github.com/textadventures/quest/commit/f2c711bd557e41cb647fd3d5d16fdd65a4697dbf))
+
+
+### Bug Fixes
+
+* **AppShell:** hide built-in default types from attributes editor's add-type list ([#2282](https://github.com/textadventures/quest/issues/2282)) ([ec601a0](https://github.com/textadventures/quest/commit/ec601a0b73f91e99653da3c80ed694ae0ae2562a))
+* **AppShell:** validate expressions for mismatched brackets/quotes before saving ([#2281](https://github.com/textadventures/quest/issues/2281)) ([0221329](https://github.com/textadventures/quest/commit/0221329e642c90ed3b59b5b0242abde02ccd4406))
+* **Engine:** name the drop script's "successful" parameter correctly in the editor label ([#2285](https://github.com/textadventures/quest/issues/2285)) ([38b99ee](https://github.com/textadventures/quest/commit/38b99ee8bae3e2110b464b3f58a9b7c852c47948))
+* harden Engine/EditorCore against null-input edge cases found by nullable audit ([#2278](https://github.com/textadventures/quest/issues/2278)) ([3abdb53](https://github.com/textadventures/quest/commit/3abdb5361509656c3f493f373ee7252506cd291e))
+* materialize firsttime's otherwise branch on first add ([#2292](https://github.com/textadventures/quest/issues/2292)) ([20b0f4a](https://github.com/textadventures/quest/commit/20b0f4a60871bbccbbcafd401e9db8d8f4537a29))
+* refresh tree title live when editing a Command's pattern ([#2293](https://github.com/textadventures/quest/issues/2293)) ([7dc8949](https://github.com/textadventures/quest/commit/7dc89499a101444aea46951ed12b9cd7e974e13d))
+* stop homepage title tag rendering as duplicate "Quest Viva | Quest Viva" ([#2290](https://github.com/textadventures/quest/issues/2290)) ([aae7417](https://github.com/textadventures/quest/commit/aae7417fee8d491b814f768eaf47c9a369d6a4f0))
+* strip dev-facing HTML comments from exported game HTML ([#2299](https://github.com/textadventures/quest/issues/2299)) ([2b17804](https://github.com/textadventures/quest/commit/2b17804872442a774de355a6e5e273ec1969a517))
+* title exported HTML games with their own name ([#2298](https://github.com/textadventures/quest/issues/2298)) ([73345d0](https://github.com/textadventures/quest/commit/73345d02c1e505268e1d0a09fb6439fa0f13aaa4))
+* **WasmPlayer:** show real .NET exception messages instead of resource keys ([#2296](https://github.com/textadventures/quest/issues/2296)) ([67d5e94](https://github.com/textadventures/quest/commit/67d5e94c5357f32e6a28ceee93cc6d5ef84d9acb))
+
+
+### Performance Improvements
+
+* ship IL-trimmed WASM bundles via dotnet publish ([#2291](https://github.com/textadventures/quest/issues/2291)) ([0b4d4cf](https://github.com/textadventures/quest/commit/0b4d4cfb787170d344aa657a993ae157f007dc17))
+
+
+### Documentation
+
+* note that prerelease-type config changes need a Release-As seed ([fb2bef2](https://github.com/textadventures/quest/commit/fb2bef20e74101a57e60dd6cd61252a91932adde))
+
 ## [6.0.0-beta.61](https://github.com/textadventures/quest/compare/v6.0.0-beta.60...v6.0.0-beta.61) (2026-09-12)
 
 
