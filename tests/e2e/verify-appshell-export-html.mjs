@@ -21,9 +21,10 @@ try {
     page.on('pageerror', err => console.log('[pageerror]', err.message));
     page.on('console', msg => { if (msg.type() === 'error') console.log('[console.error]', msg.text()); });
 
+    const gameName = `Export HTML ${Date.now()}`;
     await page.goto(`${baseUrl}/open`);
     await page.waitForSelector('button:has-text("Create local draft")', { timeout: 30000 });
-    await page.fill('input[placeholder="Game name"]', `Export HTML ${Date.now()}`);
+    await page.fill('input[placeholder="Game name"]', gameName);
     await page.waitForSelector('text=Text adventure', { timeout: 10000 });
     await page.click('button:has-text("Create local draft")');
     await page.waitForSelector('button[title="Preview game"]', { timeout: 60000 });
@@ -72,6 +73,12 @@ try {
     if (!html.includes('QuestVivaEmbeddedGame')) throw new Error('zip index.html missing embedded game');
     if (!/\bqv-booting\b/.test(html)) throw new Error('zip index.html missing qv-booting');
     console.log(`PASS: zip has ${names.length} files, embedded game, no CDN base`);
+
+    // <title> should be the game's own name, not the shared shell's "Quest Viva".
+    const titleMatch = /<title>([^<]*)<\/title>/.exec(html);
+    if (!titleMatch) throw new Error('zip index.html missing <title>');
+    if (titleMatch[1] !== gameName) throw new Error(`expected <title>${gameName}</title>, got <title>${titleMatch[1]}</title>`);
+    console.log('PASS: exported <title> matches game name');
 
     // Modal should close after a successful export.
     await page.waitForSelector('div[role="dialog"]', { state: 'detached', timeout: 10000 });
