@@ -1,0 +1,41 @@
+<asl version="600">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <game name="GridExitVisibilityTest">
+    <gridmap />
+  </game>
+
+  <object name="RoomA">
+    <inherit name="editor_room" />
+    <attr name="grid_width" type="int">2</attr>
+    <attr name="grid_length" type="int">2</attr>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <exit name="exit_a_east" alias="east" to="RoomB">
+      <inherit name="eastdirection" />
+      <visible type="boolean">false</visible>
+    </exit>
+  </object>
+
+  <object name="RoomB">
+    <inherit name="editor_room" />
+    <attr name="grid_width" type="int">2</attr>
+    <attr name="grid_length" type="int">2</attr>
+    <exit alias="west" to="RoomA">
+      <inherit name="westdirection" />
+    </exit>
+  </object>
+
+  <!-- Mirrors the "poster hides an exit" pattern reported against issue #2189: the exit stays
+       invisible until this command reveals it, at which point the player can walk through it. -->
+  <command name="cmd_reveal">
+    <pattern>reveal</pattern>
+    <script>
+      MakeExitVisible (exit_a_east)
+    </script>
+  </command>
+
+</asl>
