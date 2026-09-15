@@ -16,7 +16,7 @@ You can record and play back walkthroughs from the Editor, or you can also play 
 
 To add a walkthrough, you can right-click the tree and choose "Add Walkthrough", or you can go via the "Add" menu. Give the walkthrough a name to describe it, for example "win game".
 
-Now you'll see the walkthrough editor. Here you can add, edit and delete steps manually, and you can also click the Play and Record buttons. If you click Record, any existing steps in your walkthrough will be run, and then any new moves that you make will be added to the end. Click the Record button now and make a few moves. When you're done, click File, then Stop Game.
+Now you'll see the walkthrough editor. Here you can add, edit and delete steps manually, and you can also click the Play and Record buttons. If you click Record, any existing steps in your walkthrough will be run, and then any new moves that you make will be added to the end. Click the Record button now and make a few moves. When you're done, click the stop button on the "Recording…" banner.
 
 You'll see that the walkthrough editor has now been updated with the moves you made in the game. The walkthrough will also record any selections you made from menus which appeared.
 

@@ -70,6 +70,8 @@ In Quest 5, saving an online game meant having a textadventures.co.uk account. Q
 
 The editor was rebuilt for Quest Viva. Most of it does what it always did - here's what's different:
 
+- **Autosave** - your changes are saved as you make them, so there's no Save button to forget
+- **A better debugger** - you can change attribute values as well as read them, search and sort the attribute list, and leave it open while you play. See [Debugging your game](/howto/scripting/debugging-your-game)
 - **Light and dark themes**, or match your system setting
 - **Syntax highlighting and autocompletion** in Code View
 - **An asset picker** for images and sounds you've already added to your game
