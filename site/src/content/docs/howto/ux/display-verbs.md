@@ -15,7 +15,7 @@ By the way, you can add anything you like here, even if it makes no sense to Que
 
 Changing the object type on the _Setup_ tab will also change the verbs. Changing it to a male character, for example, will change the display verbs to "Look at" and "Speak to", rather than "Look at" and "Take".
 
-When you add a verb to an object via the _Verbs_ tab, Quest Viva will automatically add that verb to both the display verbs and the inventory verb. You can stop it doing that by unticking the "Automatically generate object display verbs list" box on the _Room Descriptions_ tab (I do not know why either) of the game object. I prefer to do this, as it gives you full control over the verbs that will be shown. You can also stop verbs being generated automatically for a specific item by ticking the box on the _Object_ tab for that object.
+When you add a verb to an object via the _Verbs_ tab, Quest Viva will automatically add that verb to both the display verbs and the inventory verb. You can stop it doing that by unticking the "Automatically generate object display verbs list" box on the _Room Descriptions_ tab of the game object. Doing this gives you full control over the verbs that will be shown. You can also stop verbs being generated automatically for a specific item by ticking the box on the _Object_ tab for that object.
 
 
 ## Adding and removing verbs on the fly

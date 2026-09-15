@@ -24,13 +24,13 @@ We will use these properties a lot as we want several elements of the page to ha
 backandborder = "border: chocolate ridge 6px;background:sandybrown"
 ```
 
-I want to include a command panel, and to have the buttons stand out a bit, so here is the CSS for the buttons, assigned to a second local variable:
+We want to include a command panel, and to have the buttons stand out a bit, so here is the CSS for the buttons, assigned to a second local variable:
 
 ```quest
 button = "padding:5px;background:BurlyWood;border:ridge chocolate 1px;"
 ```
 
-I want the text in a certain colour and font.
+We want the text in a certain colour and font.
 
 ```quest
 text = "color:black;font-family:georgia, serif"
@@ -44,7 +44,7 @@ JS.setCss ("#qv-status", backandborder)
 
 `JS.setCss` is a Quest Viva function that takes two parameters; the HTML element and the CSS styling. The HTML element in this case is "#qv-status". The hash at the start indicates this is the ID of an element by the way.
 
-To set the panes on the right, we can modify to classes, one used for the header and one for the content. As these are classes they start with a full stop (period). I also want square corners, so will be adding to the CSS. Oh, and the content should not have a border at the top because it has the one from the bottom of the header.
+To set the panes on the right, we can modify to classes, one used for the header and one for the content. As these are classes they start with a full stop (period). We also want square corners, so will be adding to the CSS. Oh, and the content should not have a border at the top because it has the one from the bottom of the header.
 
 ```quest
 JS.setCss (".ui-accordion-header", "border-radius: 0px;" + backandborder)
@@ -100,7 +100,7 @@ JS.setCss ("#gamePanes", "margin-top: 16px")
 JS.eval ("$('#gamePanes').width(227);")
 ```
 
-## Actually I would prefer...
+## Trying a different look
 
 Because we set up strings at the start, we can change the first two lines to see some dramatic differences...
 

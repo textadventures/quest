@@ -144,7 +144,7 @@ And <b><i>combinations</i></b> too, but remember they have to nest!
 
 HTML ignores line breaks and collapses all white space (spaces, tabs and returns) into a single space. If you want to have a line break, use the `<br/>` element. As with XML, the slash indicates this is an empty element (no content, no end tag). In fact HTML is not as strict as XML, and `<br>` will work too.
 
-That said, where possible I would recommend breaking paragraphs into separate `msg` statement in your code, and let Quest Viva add the line breaks for you.
+That said, where possible it is better to break paragraphs into separate `msg` statements in your code, and let Quest Viva add the line breaks for you.
 
 ### More style options
 

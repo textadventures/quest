@@ -6,14 +6,14 @@ sidebar:
 
 
 
-Some years ago I release a library for a simple transit system. Due to changes in Quest, the library no longer works and I never got around to updating it. So instead, here it is as a tutorial.
+This tutorial shows how to build a simple transit system.
 
-In this systyem, the player can go to any one of a set of locations (stations, spaceports, teleportation booths, magic gateway etc.), and at that location type in a certain command. She will then be presented with a list of destinations, and if she selects one, she will go directly there.
+In this system, the player can go to any one of a set of locations (stations, spaceports, teleportation booths, magic gateway etc.), and at that location type in a certain command. She will then be presented with a list of destinations, and if she selects one, she will go directly there.
 
 
 ## On the buses
 
-I am going to build a bus system in this example, so there will be certain locations that are bus stops. Each of them will have a Boolean attribute, "busstop", set to true. We also need an object dictionary to store the destinations. 
+We will build a bus system in this example, so there will be certain locations that are bus stops. Each of them will have a Boolean attribute, "busstop", set to true. We also need an object dictionary to store the destinations. 
 
 Let's limit the player at the start so she can only travel to your house and to the mall. Later we will add more destinations, an office building and the docks. The code to do this needs to be run at the start of the game, so go to the _Scripts_ tab of the game object. At the top is a script that runs at the start of the game.
 
@@ -40,7 +40,7 @@ You will have noticed we are only adding two bus stops - we only want the player
 
 ## Catching a bus
 
-Then we need a new command. What this is will depend on the type of transport. as this is for a bus stop, I will be doing CATCH BUS, so create a new command and put in "catch bus" as the pattern.
+Then we need a new command. What this is will depend on the type of transport. as this is for a bus stop, we will use CATCH BUS, so create a new command and put in "catch bus" as the pattern.
 
 Paste in this code:
 

@@ -20,7 +20,7 @@ msg ("You push " + object.article + " " + exit.alias + ".")
 object.parent = exit.to
 ```
 
-You might also want the player to end up in the other room - I am not sure what the player would expect. If so, then just add an extra line.
+You might also want the player to end up in the other room - it depends what the player would expect. If so, then just add an extra line.
 
 ```quest
 msg ("You push " + object.article + " " + exit.alias + ".")
@@ -28,7 +28,7 @@ object.parent = exit.to
 game.pov.parent = exit.to
 ```
 
-For the rest of this page, I will be moving the player as well. If you do not want that to happen, just delete that line from your code.
+For the rest of this page, we will be moving the player as well. If you do not want that to happen, just delete that line from your code.
 
 
 ## Limiting objects

@@ -5,7 +5,7 @@ sidebar:
 ---
 
 
-I am assuming you at least know how to copy-and-paste code, and that you know what the game start script is. If you do not, I would respectfully suggest you start with something simpler, and come back to this when you have more experience.
+This guide assumes you at least know how to copy-and-paste code, and that you know what the game start script is. If you do not, it is a good idea to start with something simpler, and come back to this when you have more experience.
 
 
 ## Zombies
@@ -57,7 +57,7 @@ create ("critter" + game.crittercount)
 obj = GetObject("critter" + game.crittercount)
 ```
 
-This is the creation process. This creates a new object, with the given name. That name has to be unique, so the first six lines track how many zombies have already been created, and if this is the first, we also need to add the count to the game object. So, first, does the "crittercount" attribute already exist? If so, increment it by one, otherwise create it and set it to 1. Now we can create the zombie with its unique name, critter1, critter2, etc. Then we can get that object and assign it to the local variable `obj` (I am keeping it general as you might not be doing zombies).
+This is the creation process. This creates a new object, with the given name. That name has to be unique, so the first six lines track how many zombies have already been created, and if this is the first, we also need to add the count to the game object. So, first, does the "crittercount" attribute already exist? If so, increment it by one, otherwise create it and set it to 1. Now we can create the zombie with its unique name, critter1, critter2, etc. Then we can get that object and assign it to the local variable `obj` (keeping it general, as you might not be doing zombies).
 
 ```quest
 obj.parent = room
@@ -262,7 +262,7 @@ this.damage = "1d6"
 this.attack = 3
 ```
 
-By the way, `this` refers to the object the script belongs to. I am using it here because later on you might want to create more weapons, and the easiest way is to copy the spade object (use the copy button at the top of the screen). If we used the item name in the script, we would have to change that in each copy.
+By the way, `this` refers to the object the script belongs to. It is used here because later on you might want to create more weapons, and the easiest way is to copy the spade object (use the copy button at the top of the screen). If we used the item name in the script, we would have to change that in each copy.
 
 The player will equip and unequip weapons to use them, and the best way to do that is with commands, as we can set two commands to handle all weapons. Create a new command, with the pattern:
 

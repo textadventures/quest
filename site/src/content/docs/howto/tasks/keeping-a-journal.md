@@ -92,7 +92,7 @@ Probably worth pointing out to the player that she has this option.
 
 ## Fancy display
 
-Quest Viva has a huge scope for showing text in different ways, and this is discussed else, so will not be covered here. However, I will say where to make the changes. What we want to display differently is the actual text written in the journal, so it is the "read" verb of the journal that needs updating. here is an example:
+Quest Viva has a huge scope for showing text in different ways, and this is discussed else, so will not be covered here. However, here is where to make the changes. What we want to display differently is the actual text written in the journal, so it is the "read" verb of the journal that needs updating. here is an example:
 ```quest
 if (ListCount(this.entries) = 0) {
   msg ("You have nothing written in your journal.")

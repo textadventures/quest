@@ -60,7 +60,7 @@ Trying to use any of these as the name of an attribute will confuse the editor. 
 
 ### Attribute names with spaces
 
-You can use attribute names with spaces in them for strings, number, objects and scripts, but not for lists or dictionaries. I have no idea why...
+You can use attribute names with spaces in them for strings, number, objects and scripts, but not for lists or dictionaries - a game with a list or dictionary attribute like that can't currently be saved. This is a known bug ([#2309](https://github.com/textadventures/quest/issues/2309)).
 
 ### Other attributes
 

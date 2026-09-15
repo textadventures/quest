@@ -17,7 +17,7 @@ http://www.ifwiki.org/index.php/Spells
 
 The second problem is that spells can be cast on anything, and we need the game to be able to handle that. If we start with "frotz", which will cause something to give light, we need to create the spell so it can be cast on any object in the game, from a zombie, to your trusty spade or even yourself.
 
-We also need to think about how spells are cast. By this I mean, what does the player need to do to be able to cast a spell. Perhaps the player must learn the spell from a wizard, or by absorbing a glyph from a scroll or just picking it up off the ground. Can she cast the spell as often as she likes, or can she only cast it once, or maybe she has to use magic points to cast it. For this tutorial, we shall say a spell needs to be learnt from a scroll, and the player has to spend magic points. Hopefully you will be able to adapt these to your own game.
+We also need to think about how spells are cast. That is, what does the player need to do to be able to cast a spell. Perhaps the player must learn the spell from a wizard, or by absorbing a glyph from a scroll or just picking it up off the ground. Can she cast the spell as often as she likes, or can she only cast it once, or maybe she has to use magic points to cast it. For this tutorial, we shall say a spell needs to be learnt from a scroll, and the player has to spend magic points. Hopefully you will be able to adapt these to your own game.
 
 You could create a "spell" type, and have each spell as an object of that type. Instead, we will do it quite differently here, and have each spell as a separate command.
 
@@ -106,7 +106,7 @@ otherwise {
 
 ### The Lleps spell
 
-The Lleps spell reverses any known spell. As spells are not objects (okay, I just said commands are, but when Quest Viva tries to match text the player has typed, it only looks at _object_ objects), we will need to use "text" in the command pattern:
+The Lleps spell reverses any known spell. As spells are not objects (okay, we just said commands are, but when Quest Viva tries to match text the player has typed, it only looks at _object_ objects), we will need to use "text" in the command pattern:
 
     lleps #text#;cast lleps at #text#;cast lleps at #text#
 
@@ -138,7 +138,7 @@ else {
 }
 ```
 
-I just said all our spells would start with the same six lines - this is an exception, as we have to first convert the `text` to `object`. In this case the first six lines in this case are trying to find the right spell, by searching through all commands, and looking for one that matches and that the player has learnt, and the next three lines give a message if no match was found.
+We just said all our spells would start with the same six lines - this is an exception, as we have to first convert the `text` to `object`. In this case the first six lines in this case are trying to find the right spell, by searching through all commands, and looking for one that matches and that the player has learnt, and the next three lines give a message if no match was found.
 
 At this point we have an `object` and can proceed as before. As with "Frotz" we check other conditions, including that the player is not trying to cast this on itself.
 

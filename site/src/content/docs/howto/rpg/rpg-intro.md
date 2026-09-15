@@ -29,7 +29,7 @@ The very first thing to do is to realise it is a lot of work. RPG games are both
 
 Before you start doing anything in Quest Viva, you need to think about how your game will play. Forget about how we will code it, just think about what the player will experience.
 
-The decisions you make here will affect how complicated your game is. I tried to keep combat as simple as possible in Deeper, and it is still a huge amount of code! For example, there are no ranged attacks at all, there is no consideration of position, damage is the total hits rather than by location.
+The decisions you make here will affect how complicated your game is. Combat in Deeper, the example game above, was kept as simple as possible, and it is still a huge amount of code! For example, there are no ranged attacks at all, there is no consideration of position, damage is the total hits rather than by location.
 
 To be fun, your game must offer real choices to the player. If the sword does more damage than the dagger, the sword is the better option, and there is no strategy in choosing the sword. If the dagger is better against some enemies, but not other, the player gets a meaningful choice.
 

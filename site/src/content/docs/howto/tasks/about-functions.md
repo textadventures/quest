@@ -66,7 +66,7 @@ As another example, let us say you have a room with a bench and another room wit
 
 So how do we create a function? Click Advanced at the bottom of the tree and click "Add Function" - or, if your game already has functions, click the "⋯" button next to Functions and select "Add Function". Your new function will appear. Set the return type; in this case the function will not return anything, so we can leave it as "None". Then you can add the parameters.
 
-You can use any names you like here; there is no need for them to correspond to the names in the commands or verbs - however the order IS important! In this case there is only one parameter, and I am going to call it "seat".
+You can use any names you like here; there is no need for them to correspond to the names in the commands or verbs - however the order IS important! In this case there is only one parameter, and we will call it "seat".
 
 Then put in your script. In this example, all it does is print a message. Whatever values are sent as parameters will automatically go into the variables in the same order. In this function we are expecting to be sent some kind of seat, and whatever it is will be held in the "seat" variable. If this function is called by the "siton" verb of the bench, then the "seat" variable will contain the bench object.
 
@@ -75,7 +75,7 @@ Then put in your script. In this example, all it does is print a message. Whatev
 
 You need to think about what will happen if the function is sent the wrong sort of variable. Or more specifically, what assumptions are you making about the values the function receives?
 
-In the example we are expecting an object, we are expecting it to be something that can be sat on and we are expecting it to be there. You might assume it has a certain attribute, such as "alias" (I used the GetDisplayAlias function to avoid that assumption). It is important to think carefully about those assumptions - and I would recommend putting a comment in your code so they are explicitly stated. Just because we called it seat is no guarantee it really is a seat.
+In the example we are expecting an object, we are expecting it to be something that can be sat on and we are expecting it to be there. You might assume it has a certain attribute, such as "alias" (the example uses the GetDisplayAlias function to avoid that assumption). It is important to think carefully about those assumptions - and it is a good idea to put a comment in your code so they are explicitly stated. Just because we called it seat is no guarantee it really is a seat.
 
 If we cannot be sure, then it may be a good idea to test what the thing is before doing anything else; otherwise you can end up with some obscure bugs. In this case, the assumptions are fair. There are four places the function is called, and in each case we can be sure the assumptions are sound. No need to do unnecessary testing.
 
@@ -100,7 +100,7 @@ For more detail on creating functions with return values, see [Creating Function
 
 ### Overriding functions
 
-Did I mention that the power of Quest Viva is that it lets you do so much? Not only can you create your own functions, you can replace the existing ones (though not the script commands or some of the more fundamental functions).
+As mentioned above, the power of Quest Viva is that it lets you do so much. Not only can you create your own functions, you can replace the existing ones (though not the script commands or some of the more fundamental functions).
 
 Let us suppose you want you want room descriptions to have some novel formatting (perhaps the letter 'A' in blue, to pick a common example). Click the tree view options button, above the tree, and select "Show Library Elements". In the left pane you will see all the built in functions, commands and so in, all in grey. Find the one you want, in this case ShowRoomDescription (at the top of the pane is a filtering function, which makes the search easier). The function will appear in the right pane, with a banner explaining it comes from a library and can't be edited directly. Click "Copy into your game" on that banner to get the function copied into your game, and then edit it as you see fit.
 

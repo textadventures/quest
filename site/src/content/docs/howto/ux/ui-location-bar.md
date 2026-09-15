@@ -34,7 +34,7 @@ if (HasAttribute(game, "pov")) {
 }
 ```
 
-I find it easiest to build up the string in steps so I can see it all, so the first four lines do that, the fifth line just replaces the "location" element.
+It is easiest to build up the string in steps so you can see it all, so the first four lines do that, the fifth line just replaces the "location" element.
 
 The last three lines update the display to the current values. At the start of the game, those attributes do not exist, and we do not want this code to run (we only need it when the player reloads a saved game). So we check if the "pov" attribute of the game object has been set. If it has, we are loading a saved game, and need to update.
 

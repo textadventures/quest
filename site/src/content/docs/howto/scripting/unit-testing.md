@@ -120,7 +120,7 @@ Assert ("nothing", FormatList(list, ",", "and", "nothing"))
 Assert (-1, IndexOf(list, "one"))
 ```
 
-The tests start with a line calling `Testing`, which gives this section a title and will make it easier to find which test is failing. The next line sets up a variable that can be used in the test, and the next four lines that use `Assert` are the actual tests. Each `Assert` has two parameters; the expected value and the actual value returned from the function. In this example, list is then set to a new value, and a further test done. It is important that unit tests cover all the possibilities, so here I am testing what happens if the list is empty.
+The tests start with a line calling `Testing`, which gives this section a title and will make it easier to find which test is failing. The next line sets up a variable that can be used in the test, and the next four lines that use `Assert` are the actual tests. Each `Assert` has two parameters; the expected value and the actual value returned from the function. In this example, list is then set to a new value, and a further test done. It is important that unit tests cover all the possibilities, so here we test what happens if the list is empty.
 
 Run it and you will see this:
 
@@ -216,7 +216,7 @@ You can use `AssertCommandMatch` to match against the output of a command.
 
 ## In use
 
-I suggest adding no more than 5 new tests at a time. If you have a failure, you will know it is one of those, and it will not be too tricky to find. If you have a lot of tests and one starts to fail, and you cannot work out which one, add some commands like this in you tests, and you will see "@1" in the output. Where the "F" is in relation to "@1" will help you identify the failure.
+Try to add no more than 5 new tests at a time. If you have a failure, you will know it is one of those, and it will not be too tricky to find. If you have a lot of tests and one starts to fail, and you cannot work out which one, add some commands like this in you tests, and you will see "@1" in the output. Where the "F" is in relation to "@1" will help you identify the failure.
 
 ```quest
 Assert ("You are in the room", ProcessText("You are in the {=player.parent.name}"))

@@ -33,7 +33,7 @@ The first step is to create a snippet of HTML with all the widgets (a widget is 
 </div>
 ```      
 
-I have chosen to set out the widgets in a table, as this helps keep things neatly aligned. I have a single text field, and two radio buttons. How to code HTML tables and widgets is beyond the scope of this article, but there are plenty of resources on the internet.
+This example sets out the widgets in a table, as this helps keep things neatly aligned. There is a single text field, and two radio buttons. How to code HTML tables and widgets is beyond the scope of this article, but there are plenty of resources on the internet.
 
 It is a good idea to always give default values as it will stop the player leaving anything blank. This is complicated enough without checking for empty fields and then re-showing the dialogue panel!
 
@@ -65,7 +65,7 @@ If you start the game, you will see your widgets, but they are embedded in the p
 ```
 There are two parts to this. The first part of that defines a function called `setValues`. At the  moment it just closes the dialogue box.
 
-The other part puts the HTML into a dialogue box. I am not going deeply into JavaScript, but briefly the first line says we are defining a function that will be called when the document is loaded. The second line puts out HTML into a jQuery dialogue, using the `dialog` method. The next two lines obvious set the width and height of the dialogue (and you may well need to make these bigger for your dialogue panel). The next three lines define a block that adds buttons to it. Just one button here, called "Done", which will call the `setValues` function we defined before. The next line removes the "Close" button from the dialogue, ensuring the only way to get passed the dialogue is clicking the "Done" button (try deleting the line and see what it looks like to see the difference).
+The other part puts the HTML into a dialogue box. We will not go deeply into JavaScript, but briefly the first line says we are defining a function that will be called when the document is loaded. The second line puts out HTML into a jQuery dialogue, using the `dialog` method. The next two lines obvious set the width and height of the dialogue (and you may well need to make these bigger for your dialogue panel). The next three lines define a block that adds buttons to it. Just one button here, called "Done", which will call the `setValues` function we defined before. The next line removes the "Close" button from the dialogue, ensuring the only way to get passed the dialogue is clicking the "Done" button (try deleting the line and see what it looks like to see the difference).
 
 Save the file. Now if you go into the game, you will see the dialogue panel, and it will disappear when you click "Done".
 
@@ -94,7 +94,7 @@ For the radio buttons, a bit more complicated:
 gender = $("input:radio[name='sex_input']:checked").val();
 ```
 
-Both values need to be combined into a single string, separated by some obscure character; I use |. The new code looks like this:
+Both values need to be combined into a single string, separated by some obscure character; this example uses |. The new code looks like this:
 
 ```js
 function setValues() {

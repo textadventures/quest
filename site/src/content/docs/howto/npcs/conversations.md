@@ -67,7 +67,7 @@ Unlike a `ShowMenu`-based conversation, each choice is a complete, ordinary turn
 
 ## How it is displayed
 
-You should also consider whether you want both sides of the conversation in the output. Which you choose is up to you, but it will look better if you are consistent, so I suggest deciding now, before you start typing.
+You should also consider whether you want both sides of the conversation in the output. Which you choose is up to you, but it will look better if you are consistent, so it is best to decide now, before you start typing.
 
 ```
 > TALK TO BORIS

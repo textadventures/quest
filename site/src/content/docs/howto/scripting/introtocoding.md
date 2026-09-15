@@ -4,9 +4,9 @@ sidebar:
   order: 2
 ---
 
-Writing code is not trivial, and I cannot hope to make you an expert here. However, it is not as difficult as you might think, and hopefully this will get you started.
+Writing code is not trivial, and this page cannot hope to make you an expert. However, it is not as difficult as you might think, and hopefully this will get you started.
 
-Quest Viva uses four languages, including XML. If you open the raw XML code view in the editor toolbar you will see the XML. Writing XML is a pain in the neck; let Quest Viva do that for you. The only time I ever look at this code view is when I have spotted a typo when playing my game and want to quickly find it to correct it.
+Quest Viva uses four languages, including XML. If you open the raw XML code view in the editor toolbar you will see the XML. Writing XML is a pain in the neck; let Quest Viva do that for you. About the only time you will need this code view is when you have spotted a typo while playing your game and want to quickly find it to correct it.
 
 Quest Viva also uses Javascript, but unless you want to do fancy stuff with the interface, you can ignore that. This is not about JavaScript.
 
@@ -17,12 +17,12 @@ The important one is the one used in scripts, ASL, and that is unique to Quest V
 
 ### A note about objects
 
-Note: The word "object" has two distinct meanings in Quest Viva. Firstly it can mean something that the player can interact with, perhaps pick up, examine, etc. However, in the programming world, an object is sort of data structure, and in that sense Quest Viva uses it to include rooms, exits, commands, the game object and indeed everything in the game world. When I use the word "object", I mean it in this second sense. I will use the word "item" to indicate the first meaning (however, if I am quoting a label or dialogue box, "object" will probably mean item).
+Note: The word "object" has two distinct meanings in Quest Viva. Firstly it can mean something that the player can interact with, perhaps pick up, examine, etc. However, in the programming world, an object is sort of data structure, and in that sense Quest Viva uses it to include rooms, exits, commands, the game object and indeed everything in the game world. On this page, "object" is used in this second sense, and "item" is used for the first meaning (however, when quoting a label or dialogue box, "object" will probably mean item).
 
 
 ## Code view versus the GUI
 
-I am going to assume you have made it to the end of the tutorial, and now you are ready to jump into the deep end!
+This page assumes you have made it to the end of the tutorial, and now you are ready to jump into the deep end!
 
 Well, the first thing to say is you are already splashing around in the shallow end. If you completed the tutorial, you have already written code! Let us take a look at the "saying" command. This is the script:
 
@@ -103,7 +103,7 @@ In code, you can access an attribute using the dot operator. The above example a
 
 ### What is "this"?
 
-In Quest Viva code, "this" has a special meaning, it refers to the object that this script belongs to. In the example, then, "this" refers to the exit itself. I could have used the name of the exit instead, but generally it is better to use "this", as it allows your code to be reused more easily.
+In Quest Viva code, "this" has a special meaning, it refers to the object that this script belongs to. In the example, then, "this" refers to the exit itself. We could have used the name of the exit instead, but generally it is better to use "this", as it allows your code to be reused more easily.
 
 
 ### What is "to"?
@@ -128,7 +128,7 @@ my_item.parent = player.parent
 
 ### Aside: about "player"
 
-Just be aware that Quest Viva has the capability for changing the point of view (i.e. swapping from one player character to another) built-in. To handle that, Quest Viva has an attribute of the game object called "pov", and that refers to the current player. To be able to change the player's point of view, we should use "game.pov" rather than "player". I mention this for completeness; I am going to continue to use "player" to keep things simple, but if you look at code in a library it will probably use "game.pov".
+Just be aware that Quest Viva has the capability for changing the point of view (i.e. swapping from one player character to another) built-in. To handle that, Quest Viva has an attribute of the game object called "pov", and that refers to the current player. To be able to change the player's point of view, we should use "game.pov" rather than "player". This is mentioned for completeness; this page will continue to use "player" to keep things simple, but if you look at code in a library it will probably use "game.pov".
 
 
 ### Computers are fussy
@@ -169,7 +169,7 @@ See here for how to use them and how to write your own:
 
 A control structure allows code to break out of the simple recipe. Instead of just doing each line in turn, we can get Quest Viva to perform some lines repeatedly or to only do certain lines if specific conditions are met.
 
-Control structures have the same general format. First there is the script command, then the values, then the instructions. The values all go inside a set of brackets, and separated by commas. The instructions all go on separate lines (just like normal code), and inside a set of curly braces. To help make it easier to read, the instructions are indented. Quest Viva will do this for you, but I recommend getting in the habit of doing it yourself anyway.
+Control structures have the same general format. First there is the script command, then the values, then the instructions. The values all go inside a set of brackets, and separated by commas. The instructions all go on separate lines (just like normal code), and inside a set of curly braces. To help make it easier to read, the instructions are indented. Quest Viva will do this for you, but it is a good habit to do it yourself anyway.
 
 Let us have a look at a couple:
 

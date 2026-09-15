@@ -34,7 +34,7 @@ In English, we can just put a verb with a noun to get a command, and the verbs i
 
 ## Making a translation
 
-To translate Quest Viva, make a copy of English.aslx and rename it for your language. Open the file in a text editor, we recommend [NotePad++](https://notepad-plus-plus.org/).
+To translate Quest Viva, make a copy of English.aslx and rename it for your language. Open the file in a text editor.
 
 At the top you will see this:
 
@@ -83,7 +83,7 @@ Your translation should also be an expression, but you're not forced to use the 
 
 Some functions that appear within dynamic templates are defined in English.aslx - for example the [GetDefaultPrefix](/reference/functions/internal-core#getdefaultprefix) and [Conjugate](/reference/functions/string#conjugate) functions. You can add, edit, or remove these functions in your template as required.
 
-If you want to know where a template is used, search through the Core library files. Notepad++ has a good "Find in Files" feature that lets you search across all files in a folder.
+If you want to know where a template is used, search through the Core library files. A code editor with a "find in files" feature, which searches every file in a folder at once, makes this much easier.
 
 
 ## Translating commands

@@ -58,7 +58,7 @@ In code view it will look like this:
 </start>
 ```
 
-I am using the "show menu" command this time, to limit the player's choices, in the first instance to either "Male" or "Female". A menu needs a string list containing the options, and Split gives a quick way to create one:
+We are using the "show menu" command this time, to limit the player's choices, in the first instance to either "Male" or "Female". A menu needs a string list containing the options, and Split gives a quick way to create one:
 
 ```quest
 Split ("Male;Female", ";")
@@ -73,7 +73,7 @@ After also asking for the character class, the screen is cleared. The "wait" com
 
 If you want to ask a series of questions, you are better off breaking the process up into functions, one question per function.
 
-As an example, we will ask the same three questions. I suggest naming each function "CharacterCreation" followed by the question name, so we start with "CharacterCreationName". No parameters or return type.
+As an example, we will ask the same three questions. A good convention is to name each function "CharacterCreation" followed by the question name, so we start with "CharacterCreationName". No parameters or return type.
 
 
 ```quest
@@ -170,6 +170,6 @@ At the end of the creation process, move the player to the start room. This will
 
 ## A note about random stats
 
-You may be tempted to generate stats randomly. This is more in keeping with traditional tabletop RPGs, though I think most are moving away from that nowadays, and in any case they still offered a way to reject the worst values or to assign them to attributes as you choose.
+You may be tempted to generate stats randomly. This is more in keeping with traditional tabletop RPGs, though many have moved away from that nowadays, and in any case they still offered a way to reject the worst values or to assign them to attributes as you choose.
 
 There are two big problems with random stats. The first is the player may end up with a terrible character who dies at the first encounter, barely able to swing a sword. The second is the player may end up with an incredible character, able to sweep past any hurdle without breaking a sweat. Then there is the very real temptation for a player to keep generating new characters until she gets one that is great at everything.

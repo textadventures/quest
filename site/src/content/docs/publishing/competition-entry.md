@@ -18,7 +18,7 @@ IFComp requires that games can be played in two hours. This is a practical neces
 
 ### Originality
 
-Try to create a game that stands out from the crowd, something with a novel hook to it. Perhaps easier said than done, but take a look at previous winners to see what I mean. Talking of which...
+Try to create a game that stands out from the crowd, something with a novel hook to it. Perhaps easier said than done, but take a look at previous winners for inspiration. Talking of which...
 
 ### Easy puzzles
 

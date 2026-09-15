@@ -81,7 +81,7 @@ No torch lasts forever; let us put a limit on this one. First create a new attri
 torch.battery = 5
 ```
 
-We now need a turn script. We could do this two ways: have the turn script enabled and disabled when the torch is turned on and off, or have it running all the time, but only use the battery when turned on. I am going to do the former.
+We now need a turn script. We could do this two ways: have the turn script enabled and disabled when the torch is turned on and off, or have it running all the time, but only use the battery when turned on. We will do the former.
 
 Create a turn script, and make sure it is under the Object object (i.e., it is vertically aligned with your rooms, not the stuff in the rooms). Give the turn script a name, torchturnscript, and paste in this code:
 
@@ -96,7 +96,7 @@ if (torch.battery < 1) {
 }
 ```
 
-The first line reduces the life of the battery. If it gets to zero the rest of the script kicks in (I am checking for less than one rather than zero in case something odd happens, and it jumps to -1; I still want the torch to fail then). Once the battery fails, we need the torch to be switched off, to not be a light source and for this turn script to stop. We also need a message to the player.
+The first line reduces the life of the battery. If it gets to zero the rest of the script kicks in (it checks for less than one rather than zero in case something odd happens and it jumps to -1; the torch should still fail then). Once the battery fails, we need the torch to be switched off, to not be a light source and for this turn script to stop. We also need a message to the player.
 
 The last line sets a special attribute that Quest Viva will check before switching the object on; if the attribute is a string, the string is displayed, rather than turning on the item.
 

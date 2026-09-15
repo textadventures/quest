@@ -23,7 +23,7 @@ else {
 
 All it does is checks if the time is already set, if not it sets it to a value, if so, it adds 1 to the value.
 
-Note that the time is set to `60 * 10 + 23`; that will be 623 minutes past midnight. I could have set it to 623, but doing it this way makes it clear that the game starts at 10:23. You can, of course, put in your own time here.
+Note that the time is set to `60 * 10 + 23`; that will be 623 minutes past midnight. It could have been set to 623, but doing it this way makes it clear that the game starts at 10:23. You can, of course, put in your own time here.
 
 
 ## A better turn script

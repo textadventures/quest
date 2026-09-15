@@ -40,7 +40,7 @@ Note that Subtitle, Regions and Room shapes will not be exported to Quest Viva.
 
 ## Exits
 
-To create an exit, make sure no room is selected (just click outside a room). Now if you hover your cursor over a room the circular exit ports will appear. Drag the port from one room to another. Ports line up to the normal compass directions. Trizbort actually supports sixteen compass directions; I am not aware of _any_ text adventure that uses that many and Quest Viva certainly does not. Just use the standard eight (you might want to use the others for up/down and in/out).
+To create an exit, make sure no room is selected (just click outside a room). Now if you hover your cursor over a room the circular exit ports will appear. Drag the port from one room to another. Ports line up to the normal compass directions. Trizbort actually supports sixteen compass directions; few, if any, text adventures use that many, and Quest Viva certainly does not. Just use the standard eight (you might want to use the others for up/down and in/out).
 
 ![](/images/triz02.png)
 
@@ -147,7 +147,7 @@ Close the code view to go back to the normal editor.
 
 ## Adding to an existing game
 
-Another way to use Trizbort is to create a new region in an existing game. You will need to be careful to make sure every room and object has a unique room, as Trizbort will not be able to check against rooms and objects already in your game. I recommend backing up your Quest Viva game before doing this!
+Another way to use Trizbort is to create a new region in an existing game. You will need to be careful to make sure every room and object has a unique room, as Trizbort will not be able to check against rooms and objects already in your game. Back up your Quest Viva game before doing this!
 
 After creating the new region, go to _File – Export_ to export your game, and select _Quest to clipboard (no header)_. All the new rooms and objects will be copied to the clipboard. In the editor, open the raw XML code view. You will see the code behind your game. Right at the bottom, you will see this line:
 

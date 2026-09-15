@@ -137,9 +137,7 @@ Displays the given text in strike-through.
 
 
 {colour:**colour**:**text**}
-Displays the given text in the colour specified (you can also used "color", by the way).
-
-There may be an issue with using the hexadecimal form for colours (eg `#dedede`) causing the editor to crash; I would recommend using named colours, a list of which can be found [here](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value).
+Displays the given text in the colour specified (you can also use "color", by the way). The colour can be a named colour, a list of which can be found [here](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value), or a hexadecimal value such as `#dedede`.
 
 {back:**colour**:**text**}
 Displays the given text with the colour specified as the background. To show text as white on black, you can combine these like this: {colour:white:{back:black:some highlighted text}}.

@@ -61,7 +61,7 @@ The `StealObject` function has no return type, and one parameter, "obj". It will
 msg ("You can't just steal stuff!")
 ```
 
-You might want to modify that to allow shop-lifting, but I am not going to condone that sort of thing!
+You might want to modify that to allow shop-lifting, but we are not going to condone that sort of thing!
 
 
 The `SetUpMerchandise` function has no return type, and one parameter, "obj". It will be called at the start for each object in the shop, but also when an object is sold. Paste in this code:

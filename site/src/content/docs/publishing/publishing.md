@@ -67,7 +67,7 @@ Once your game is live, tell people about it! You can post on:
 
 Your browser's built-in spell-checker will generally underline mistakes as you type into the editor's text fields, as long as you're using a browser that supports it.
 
-Another technique is to open the source code in a text editor that has a spell-checker, such as _Notepad++_ (which can be downloaded for free). The source code can look intimidating, and you need to be careful only to correct text that will be seen, not code or XML. With Notepad++ you can set the language to XML, which will help.
+Another technique is to open the source code in a code editor that has a spell-checker, either built in or as an extension. The source code can look intimidating, and you need to be careful only to correct text that will be seen, not code or XML. Setting the editor's language to XML will help.
 
 Before doing this, it is best to save and close the game in the editor first, and to create a back-up of your file.
 
