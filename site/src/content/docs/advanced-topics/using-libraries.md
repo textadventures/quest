@@ -7,7 +7,7 @@ sidebar:
 Libraries allow you to reuse elements in multiple games. That might be [object types](/advanced-topics/using-inherited-types), [functions](/howto/scripting/creating-functions-which-return-a-value), or even common objects. In fact, libraries are the basis of how Quest Viva works - Core.aslx is a library, included by default in all Quest Viva games. It handles much of the standard text adventure game functionality - working out which objects the player can see, handling player commands, implementing containers, and much more. This means that Quest Viva's built-in functionality is extensible and indeed replaceable.
 
 
-To see what these libraries add to your game, go to the bottom left of the Quest Viva GUI, click on Filter, and select Show Library Elements. You will see that a shed load of stuff appears in the hierarchy on the left. Everything in grey has come from a library, and if you click on it, Quest Viva will tell you what library in a yellow banner across the top. Core.aslx adds most of the functions, all the types, commands and verbs, while English.aslx adds the templates (some of the more fundamental functions and all script commands are built-in).
+To see what these libraries add to your game, click the tree view options button above the tree, and select Show Library Elements. You will see that a shed load of stuff appears in the tree. Everything in grey has come from a library, and if you click on it, a banner across the top tells you which library it came from. Core.aslx adds most of the functions, all the types, commands and verbs, while English.aslx adds the templates (some of the more fundamental functions and all script commands are built-in).
 
 ![](/images/Showlibraryelements.png)
 
@@ -23,7 +23,16 @@ You can find libraries:
 
 ## How to add a library to your game
 
-To add a library to your game, go the bottom of the left pane in the GUI, and expand Advanced, then click on Included Libraries. Click Add, and navigate to the library. Quest Viva will copy the file to your game folder, and add a line of code to your game so the library is part of it. You will see a message at the top of the screen asking you to save your game, and then reload it; this will ensure the library is incorporated into the editor session.
+To add a library to your game, click Advanced at the bottom of the tree, then click "Add Library". (Once your game has a library, Included Libraries also appears under Advanced, and its "⋯" button has "Add Library" too.) Choose the library file (`.aslx` or `.xml`). Quest Viva stores a copy of the file with your game, and adds a line of code to your game so the library is part of it. A banner then asks you to reload the editor - click "Reload" so the library's contents are loaded into the editor session.
+
+
+## Editing a library
+
+Click an included library in the tree to see its contents. If it's one of your own libraries, you can edit it right there. When you click away, your change is checked first: if the XML isn't valid, the edit is refused and the file keeps its last working version, so a mistake can't leave your game unable to load. A library is read when the game loads, so after a successful edit a banner asks you to reload the editor to apply it.
+
+You can also edit a library in the raw XML code view: choose the library from the file list at the top instead of your game file, make your changes, then click Apply.
+
+The built-in libraries that ship with Quest Viva, such as Core.aslx and English.aslx, are shown read-only, because they aren't part of your game file. To change something from one of those, copy it into your game instead - see [Overriding](/advanced-topics/overriding).
 
 
 ## Publishing your game
@@ -54,7 +63,7 @@ If you've created some functionality in your game that you think would be useful
 
 So you want to create your own library...
 
-It is pretty easy. Library files are just text files, so you need a text editor; I recommend Notepad++. Quest Viva itself cannot handle them unfortunately. Like Quest Viva itself, library files must be in XML, and a simple understanding of XML is useful.
+It is pretty easy. Library files are just text files, so you can start one in any text editor. Once you have added it to your game, you can carry on editing it in Quest Viva itself (see [Editing a library](#editing-a-library)). Like Quest Viva itself, library files must be in XML, and a simple understanding of XML is useful.
 
 The root element of a library file is `library`. This means that the first line of the file should be this:
 ```xml
@@ -78,7 +87,7 @@ And ends
 ```
 And make sure you get whole lines.
 
-In both the Quest Viva full code view and Notepad++ you will see minus signs in boxes down the left side. If you click on these, the XML element will be collapsed into a single line. Now you just need to copy-and-paste that one line, and you can be sure you have the whole element.
+In the Quest Viva raw XML code view, and in most code editors, you will see fold markers down the left side. If you click on one, the XML element will be collapsed into a single line. Now you just need to copy-and-paste that one line, and you can be sure you have the whole element.
 
 Personally, I like to move all turn scripts, functions, verbs, commands and types into libraries, and leave objects (rooms and items) in the main game. For one thing, objects are a lot easier to edit in the proper editor, while functions and commands not so much. An important point here is that you do not need to plan to use libraries from the start. In fact, there is not much point until you have a fair number of functions in your game.
 
@@ -105,7 +114,7 @@ When the game is published, Quest Viva will get the code from the library in tha
 
 ## Tips for large games
 
-If your game is big, you might find it convenient to break it up across several libraries, so it is easier to find things. Arrange the contents of libraries systematically. For example, put commands in one library, functions in another. Notepad++ allows you to search all files in a folder, which is a big help.
+If your game is big, you might find it convenient to break it up across several libraries, so it is easier to find things. Arrange the contents of libraries systematically. For example, put commands in one library, functions in another. If your game is kept in a folder, a code editor that can search every file in it is a big help.
 
 You can have library files invoked from other library files by the way, just as they are from the main game file.
 

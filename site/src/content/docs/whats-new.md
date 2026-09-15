@@ -60,6 +60,8 @@ Because a game no longer needs a server to run it, you're no longer tied to text
 
 See [Hosting your game](/publishing/hosting) for all the options.
 
+Published `.quest` files now also follow the [Treaty of Babel](https://babel.ifarchive.org/babel.html), a standard that interactive fiction catalogues and tools use to identify games. Each one carries your game's IFID - a unique ID for your game, which is the Game ID on the Setup tab - and an iFiction record of its title, author, cover and other details. Exported HTML includes the IFID too. There's also a new version code on the Setup tab, a number you increase with each release - see [Version and Game ID](/publishing/game-details#version-and-game-id).
+
 WebPlayer, the server-based player, has been rewritten for Quest Viva - Quest 5's needed Windows, and this one runs on cross-platform .NET, so you can host it wherever you like. WasmPlayer has rather overtaken it since, though, so it's a specialist choice now: worth it if you specifically don't want players to be able to download your `.quest` file, for a treasure hunt or a competition say. See the [WebPlayer guide](/publishing/webplayer).
 
 ## Players can save without an account
@@ -71,14 +73,19 @@ In Quest 5, saving an online game meant having a textadventures.co.uk account. Q
 The editor was rebuilt for Quest Viva. Most of it does what it always did - here's what's different:
 
 - **Autosave** - your changes are saved as you make them, so there's no Save button to forget
+- **Works on phones and tablets** - the layout adapts to the screen, so on a phone the element tree and its properties each get the full screen, with a back button to switch between them, and the toolbar and dialogs are sized for touch
 - **A better debugger** - you can change attribute values as well as read them, search and sort the attribute list, and leave it open while you play. See [Debugging your game](/howto/scripting/debugging-your-game)
 - **Light and dark themes**, or match your system setting
 - **Syntax highlighting and autocompletion** in Code View
 - **An asset picker** for images and sounds you've already added to your game
+- **Folders for functions**, so a game with lots of functions doesn't have to be one long list. See [Organising functions into folders](/howto/tasks/about-functions#organising-functions-into-folders)
 - **Safe Mode**, a raw XML editor that opens if a game file fails to load, so a broken file is recoverable instead of lost
 - **Advanced options hidden by default**, not only in Simple Mode
 - **Keyboard and screen reader support**, throughout the editor and the player
 - **A translated interface** - English, German and Spanish, in the browser as well as on the desktop
+- **Help where you need it** - most editor tabs link to the guide for that tab, and script commands have a "?" button that opens their reference page
+- **Editable included libraries** - you can edit your own libraries from the tree, instead of in a separate text editor. Changes are checked before they're saved, so a mistake can't leave your game unable to load
+- **Small tweaks** - library functions are grouped by the file they come from, the tree remembers which parts you had expanded for each game and can expand or collapse everything at once, Code View can fold sections of a script, and a setting opens scripts in Code View by default
 
 ## New in the engine
 
@@ -86,6 +93,7 @@ Most of the scripting language is unchanged, but there are some additions:
 
 - **Pages in text adventures.** Quest 5 only had pages in gamebooks. Quest Viva lets a text adventure switch into a page - a set of links the player chooses from - which is a much easier way to write conversations and dialogue trees. See [Using Pages](/tutorial/using-pages).
 - **Asking the player something, without callbacks.** A script can now pause for the player and carry on at the next line: `GetInput()` for typed input, `Ask()` for a yes/no question, `ShowMenu()` for a menu, and `request (Wait, "")` to wait for a keypress. These were in Quest 5 from the start, but were deprecated part-way through its life - in 5.4, and 5.5 for pausing - because they held a real thread while they waited. Quest Viva suspends the script instead, so they work properly, and they are what the script editor now offers. The older forms that took a nested callback block - the `get input`, `ask`, `show menu` and `wait` script commands - still run, so games using them are unaffected, but they are no longer in the list of commands you can add. They were always the harder way to write anything that asks more than one question.
+- **Questions and menus in the game text.** In games saved in Quest Viva, a question or menu now appears as numbered links in the game text instead of a pop-up window. Players can click an option or type its number.
 - Plenty of smaller additions and fixes besides - the [changelog](https://github.com/textadventures/quest/blob/main/CHANGELOG.md) lists these from 6.0.0-beta.36 onwards.
 
 A game saved in the Quest Viva editor is marked as ASL version 600 - `<asl version="600">` at the top of the file. Older games load and run unchanged - the version number just tells the engine which behaviour to use where something has been fixed in a way that would otherwise change an existing game.

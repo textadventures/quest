@@ -22,7 +22,7 @@ Most of it can be left until you are ready to publish, but the game name and aut
 
 **Version code** is a number, for machines. Increase it every time you release an update, so that two builds can always be told apart in the right order even when their version labels cannot be compared. Both are shown together when the player types `VERSION`, and at the head of a [transcript](/howto/world/transcript).
 
-**Game ID** uniquely identifies your game, and is generated for you when the game is created. It is your game's IFID, the identifier used across interactive fiction to refer to one specific work, and it is shown by the `VERSION` command. You should never normally change it. The one time you should is if you made this game by copying an existing one: both would otherwise claim the same identity, and a player's saved games could end up attached to the wrong game. Generate a new ID in that case, and only that case.
+**Game ID** uniquely identifies your game, and is generated for you when the game is created. It is also your game's IFID - the ID that interactive fiction catalogues and tools use to tell games apart, as defined by the [Treaty of Babel](https://babel.ifarchive.org/babel.html) - and it is shown by the `VERSION` command. You should never normally change it. The one time you should is if you made this game by copying an existing one: both would otherwise claim the same identity, and a player's saved games could end up attached to the wrong game. Generate a new ID in that case, and only that case.
 
 ## Category, year and cover art
 
