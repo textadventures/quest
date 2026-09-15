@@ -293,7 +293,7 @@ Sets the height for the grid map. Setting this to zero turns the map off, settin
 JS.showPopup(title, text)
 ```
 
-Shows a pop up, with an okay button, which the player can click to close. This version has a fixed width (of 300 px when I checked), and the height will expand up to the full Quest Viva windows size to accommodate the text.
+Shows a pop up, with an okay button, which the player can click to close. This version has a fixed width (of 300 px at the time of writing), and the height will expand up to the full Quest Viva windows size to accommodate the text.
 
 ```quest
 JS.showPopup("Hi!", "This is where it all begins")

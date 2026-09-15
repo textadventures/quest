@@ -12,7 +12,7 @@ You are in a rather grubby lounge, with a tatty settee in the centre. Mary is he
 
 However, we will look at doing something a bit more involved, allowing the NPCs to move from one room to another (and in a later tutorial, to interact with objects in each room).
 
-I am going to describe a turn-based system, which means that each time the player does something, the NPCs get a chance to act too, but it could potentially be adapted to a time-based system. In either case, the under-lying system is the same; each NPC will have a script, called "takeaturn", and we run that each time.
+This page describes a turn-based system, which means that each time the player does something, the NPCs get a chance to act too, but it could potentially be adapted to a time-based system. In either case, the under-lying system is the same; each NPC will have a script, called "takeaturn", and we run that each time.
 
 ## A turnscript
 

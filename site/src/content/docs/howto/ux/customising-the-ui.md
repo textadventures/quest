@@ -206,7 +206,7 @@ Most of the interesting elements are of the type "div", and each is identified b
 
 ## CSS properties and values
 
-There are a large number of CSS properties, to get a full list, use the internet. I will mention just some of the interesting ones. You do need to be careful that you supply the right type of value, but we will look at that too. Also, be aware that CSS uses America spelling for "center" and "color" (but you can use both "grey" and "gray").
+There are a large number of CSS properties, to get a full list, use the internet. Here are just some of the interesting ones. You do need to be careful that you supply the right type of value, but we will look at that too. Also, be aware that CSS uses America spelling for "center" and "color" (but you can use both "grey" and "gray").
 
 
 ### color
@@ -300,7 +300,7 @@ However, there is a way around. If you go into full code view (press F9), you ca
 ]]></css>
 ```
 
-Be careful how you do that; I would suggest pasting it below this line:
+Be careful how you do that; it is best to paste it below this line:
 
 ```xml
 <firstpublished>2016</firstpublished>
@@ -361,7 +361,7 @@ Note that the first parameter is identifying an `a` element (an HTML anchor, whi
 
 The message that says the game is saved is also odd, in that is has no ID so cannot be changed through JQuery/CSS.
 
-The solution is to change the style of a container element, however, even that is problematic as they may not exist yet when 'InitUserInterface' fires, so I suggest setting style properties on the body element (this is not an id, so has no # before it.
+The solution is to change the style of a container element, however, even that is problematic as they may not exist yet when 'InitUserInterface' fires, so it is better to set style properties on the body element (this is not an id, so has no # before it.
 
 ```quest
 JS.setCss ("body", "color:orange;font-family:georgia,serif;")
@@ -375,9 +375,9 @@ The `finish` script command terminates the game, and replaces the panes on the r
 JS.setCss ("#gamePanesFinished", "font-family:Berkshire Swash;")
 ```
 
-You can also change what gets displayed, using the JQuery html method. In this example, I am modifying the text (using the `html` method of JQuery), and adding an image (and we have to use GetFileURL to do that). I am also building the string first, and then calling JS.eval.
+You can also change what gets displayed, using the JQuery html method. This example modifies the text (using the `html` method of JQuery), and adds an image (and we have to use GetFileURL to do that). It also builds the string first, and then calls JS.eval.
 
-This is the HTML I want to add:
+This is the HTML we want to add:
 
 ```xml
 <h2>Game Over</h2>
@@ -403,7 +403,7 @@ The arrows in the compass rose and the triangles to the left of the panes are ic
 You can get an image file with the right colours, from here:
 [http://download.jqueryui.com/themeroller/images/ui-icons_800080_256x240.png](http://download.jqueryui.com/themeroller/images/ui-icons_800080_256x240.png)
 
-You can change the number 800080 to the RGB colour what you want (I guess the file server creates the images on the fly, and will accept any value, but that may not be the case), this is a dark purple I was trying. Save the file in your game folder.
+You can change the number 800080 to the RGB colour what you want (the file server appears to create the images on the fly, so it should accept any value, but that may not be the case); this one is a dark purple. Save the file in your game folder.
 
 Then you just need to do this to get the new icons in your game (again, modifying the number for your downloaded file):
 

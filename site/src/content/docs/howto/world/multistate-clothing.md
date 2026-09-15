@@ -4,7 +4,7 @@ sidebar:
   order: 8
 ---
 
-A multi-state [garment](/howto/world/wearables) is something that can be worn in more than one way. I am going to use a jacket as an example; it can be worn fastened up, or it can be worn open, or worn half-buttoned. This just has three states, but you can have as many as you want.
+A multi-state [garment](/howto/world/wearables) is something that can be worn in more than one way. We will use a jacket as an example; it can be worn fastened up, or it can be worn open, or worn half-buttoned. This just has three states, but you can have as many as you want.
 
 Create the jacket as normal, setting it up as wearable. Then tick the "Multistate?" box, and a whole bunch of new stuff will appear (it is easy to untick the box by mistake, and have it all disappears; do not worry, it will all reappear with the data, when you tick it again).
 

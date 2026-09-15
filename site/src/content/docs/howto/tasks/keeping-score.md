@@ -6,7 +6,7 @@ sidebar:
 
 Quest Viva has a simple built-in score system you can enable on the _Features_ tab of the game object — see [Score, Health and Money](/howto/world/score-health-money). This tutorial shows how to build a more flexible custom scoring system with achievements, rankings, and a SCORE command.
 
-Many years ago I wrote a library to help track the player's score. It was pretty simple, but worked well, and five years later on I cannot think of any way to improve. So, I am going to drop it altogether! You do not need a library to do this, instead, I present a tutorial. The advantage of a tutorial is that you will learn more of Quest Viva coding whilst following it.
+You do not need a library for this, and following the tutorial is a good way to learn more Quest Viva coding along the way.
 
 This system will not just keep score, it will also allow the player to see a list of achievements, and give her a rank. The on-going score will appear in the status panel.
 
@@ -18,7 +18,7 @@ msg("You jump into the air. Hurrah!")
 ```
 The plan is to have the player get 1 point for jumping, using this command.
 
-By the way, quest does have a "score", which will do some of this for us. I am not going to use that because I want to show how status attributes are used.
+By the way, quest does have a "score", which will do some of this for us. We will not use that here, because the point is to show how status attributes are used.
 
 ## Status attributes
 

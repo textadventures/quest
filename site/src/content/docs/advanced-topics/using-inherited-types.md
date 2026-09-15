@@ -15,7 +15,7 @@ if (DoesInherit (fireball_spell, "spell")) {
   // do stuff
 }
 ```
-Here, "fireball_spell" is the thing we are testing, and we want to know if it is of the spell type. I am guessing it is.
+Here, "fireball_spell" is the thing we are testing, and we want to know if it is of the spell type. Let's assume it is.
 
 As mentioned, an object can have several types, and this function will tell you about all of them, even the ones that would appear in grey on the _Attributes_ tab.
 
@@ -121,4 +121,4 @@ When you are creating types yourself, you may not want all the attributes in you
 
 ### A note about lists and dictionaries
 
-It is worth noting that attributes on types are not mutable - they cannot be changed. You might never notice this, because if you have an object and you attempt to assign a value to an attribute that is set in the object’s type, it works fine - behind the scenes when you assign it, the attribute stops being on the type, and is now on the object, and as far as the game is concerned the attribute value has changed. The problem only arises if you try to change the content of a list or dictionary, so unless you are sure a list or dictionary will not change during a game, I would advise against having them in types.
+It is worth noting that attributes on types are not mutable - they cannot be changed. You might never notice this, because if you have an object and you attempt to assign a value to an attribute that is set in the object’s type, it works fine - behind the scenes when you assign it, the attribute stops being on the type, and is now on the object, and as far as the game is concerned the attribute value has changed. The problem only arises if you try to change the content of a list or dictionary, so unless you are sure a list or dictionary will not change during a game, avoid having them in types.

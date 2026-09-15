@@ -163,7 +163,7 @@ All commands automatically inherit a "defaultcommand" type if it exists.
 
 ### Name
 
-If a name is not specified, a unique name will be created. Using the first syntax allows Quest Viva to try and create a user-friendly name by taking the first word(s) of the specified pattern; otherwise the name will be something like "k1". I recommend you always specify a name, as it will make debugging easier - the Debugger will show you a sensible name for your command. It will also let you easily change the behaviour of the command by setting its attributes when the game is in progress.
+If a name is not specified, a unique name will be created. Using the first syntax allows Quest Viva to try and create a user-friendly name by taking the first word(s) of the specified pattern; otherwise the name will be something like "k1". It is best to always specify a name, as it will make debugging easier - the Debugger will show you a sensible name for your command. It will also let you easily change the behaviour of the command by setting its attributes when the game is in progress.
 
 ### Pattern
 

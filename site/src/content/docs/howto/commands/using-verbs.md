@@ -9,7 +9,7 @@ Verbs are an alternative to commands that can be simpler to use, but do seem to 
 
 Verbs are always used in conjunction with an object, so `ROTATE KNOB` could be set up as a verb, but `STAND UP` or `JUMP` will require commands. You could use a command for `ROTATE KNOB`, but using a verb is probably simpler. If the player will only try to do this with one or two objects, use a verb. If she could potentially do it with anything, and the outcome will be broadly similar (such as a `SELL` command - the player could try to sell any object, and you would handle them all the same), a command might be better; however there is no hard and fast rule.
 
-To create a verb, select the appropriate object, and go to the _Verbs_ tab. Click add, and type in your verb. Your verb will appear in the upper box, and the response can be set in the section below, either "Print a message" or "Run a script". Let us suppose we set this up with a script to make things happen when the dial is turned (how to do scripts is not something I will be dealing with here).
+To create a verb, select the appropriate object, and go to the _Verbs_ tab. Click add, and type in your verb. Your verb will appear in the upper box, and the response can be set in the section below, either "Print a message" or "Run a script". Let us suppose we set this up with a script to make things happen when the dial is turned (how to write scripts is not covered here).
 
 
 

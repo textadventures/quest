@@ -101,7 +101,7 @@ msg("Mary shrugs, and says, 'I know nothing about " + text + ".'")
 
 It can be frustrating for the player to have to guess what topics are available, so an option is to provide a `TOPICS` command, which simply lists the topics the player can ask about. The best way to do this is to set up a string with some initial entries, and then to add to it as the game progresses. In the investigation of the murder of Dr Black, new topics could be added as new evidence comes to light, for instance.
 
-Note that this assumes all NPCs will have the same topics available. I think it likely that the player will assume that if she can ask Mary about Dr Black, she can ask any other character too. This does mean you will need to add all these topics to all the NPCs, even if they only say that they know nothing. This should be done anyway!
+Note that this assumes all NPCs will have the same topics available. The player is likely to assume that if she can ask Mary about Dr Black, she can ask any other character too. This does mean you will need to add all these topics to all the NPCs, even if they only say that they know nothing. This should be done anyway!
 
 The first step, then, is to create our string list. You can go to the _Attributes_ tab of the game object, and create a new attribute called "topics". Set it to be a string list, and add names of any topics that will be available from the start.
 

@@ -100,7 +100,7 @@ s = s + "</div>"
 msg (s)
 ```
 
-Using this sort of positioning puts the images outside the normal flow of elements on the page, and getting the text to go around the images would be very difficult. I have dodged that by putting the images outside the text altogether.
+Using this sort of positioning puts the images outside the normal flow of elements on the page, and getting the text to go around the images would be very difficult. This example dodges that by putting the images outside the text altogether.
 
 What you can then do is have the images appear in response to how the game progresses.
 

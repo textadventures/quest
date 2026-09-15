@@ -22,7 +22,7 @@ This page discusses how to set up commands that use two (or more) objects. For s
 
 First, remember that `GIVE` and `USE` are already built in; if you want to use them, tick the feature on one of the items, and go to the Use/give tab. What about the others? 
 
-As an example, I am going to implement `TIE CORD TO HOOK`.
+As an example, we will implement `TIE CORD TO HOOK`.
 
 
 ## Command pattern
@@ -169,7 +169,7 @@ else {
 
 ## Burn, baby, burn!
 
-Let's look at another example. Suppose you want to have fire in your game, to allow the player to burn certain items. There are several ways you could do this; I will offer a relatively simple approach.
+Let's look at another example. Suppose you want to have fire in your game, to allow the player to burn certain items. There are several ways you could do this; here is a relatively simple approach.
 
 We will do this with two commands, one to handle BURN PAPER IN FIREPLACE and one to handle BURN PAPER. The trick is that we will call the code in the first command from the second.
 

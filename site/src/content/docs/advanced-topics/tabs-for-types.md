@@ -13,11 +13,11 @@ This is great if you want to share your library as it makes it much easier for o
 
 ## Use a library
 
-If we are going to get serious, it is better to put your types in another file (and personally, I would put verbs, commands, functions, turnscripts and templates all in there too), so we will do that first.
+If we are going to get serious, it is better to put your types in another file (and verbs, commands, functions, turn scripts and templates can go in there too), so we will do that first.
 
 One reason to use a library is that Quest Viva will not save your tabs, so if you add them to the main game they will disappear!
 
-Quest Viva cannot edit library files, so open up in a text editor like Notepad++. Your basic library has a start tag and an end tag. I also put in an XML directive first, so I can use an online XML validator on it (such as [this](http://validator.w3.org/#validate_by_input)), in case I have messed up the code so much Quest Viva cannot handle it. The basic framework looks like this:
+Start the library in any text editor - once it has been added to your game, you can carry on editing it in Quest Viva (see [Editing a library](/advanced-topics/using-libraries#editing-a-library)). Your basic library has a start tag and an end tag. It is also worth putting an XML declaration first, so that you can check the file with an online XML validator (such as [this](http://validator.w3.org/#validate_by_input)) if the code ever gets so broken that Quest Viva cannot handle it. The basic framework looks like this:
 
 ```xml
 <?xml version="1.0"?>
@@ -25,7 +25,7 @@ Quest Viva cannot edit library files, so open up in a text editor like Notepad++
 </library>
 ```
 
-Go into the code in Quest Viva, and cut the type from there, and paste it into your library (if you are following this as a tutorial from the previous page, you will see that I have improved the text here a little).
+Go into the code in Quest Viva, and cut the type from there, and paste it into your library (if you are following this as a tutorial from the previous page, you will see that the text here has been improved a little).
 
 ```xml
 <?xml version="1.0"?>
@@ -103,7 +103,7 @@ Here is the basic code (paste this in before the </library> tag).
 </tab>
 ```
 
-So what do we see here? It starts and ends with `<tab>` and `</tab>`, so Quest Viva knows this is a tab. The `parent` element tells Quest Viva this is an editor for an object (I think they all are). The `caption` is the name on the tab, and `mustnotinherit` stops this tab appearing for rooms and the player (note these types are separated by semi-colons).
+So what do we see here? It starts and ends with `<tab>` and `</tab>`, so Quest Viva knows this is a tab. The `parent` element tells Quest Viva this is an editor for an object. The `caption` is the name on the tab, and `mustnotinherit` stops this tab appearing for rooms and the player (note these types are separated by semi-colons).
 
 Then there is our control, and you can have several of these. This one gives a dropdown menu, allowing the user to select whether this is not spell, is a non-attack spell, or is an attack spell. The asterisk indicates the null choice, by the way.
 
@@ -348,7 +348,7 @@ Sometimes you want to allow the user to decide what type the attribute will be. 
 </control>
 ```
 
-The types here are "null" (no attribute to be set), "string" and "script". Note that for the string option an editor is specified. I think "textbox" is actually the default, so is not required here; "richtext" is an alternative.
+The types here are "null" (no attribute to be set), "string" and "script". Note that for the string option an editor is specified. "textbox" is actually the default, so is not strictly required here; "richtext" is an alternative.
 
 Here is another example, this has boolean as one type, and the associated checkbox is set up as well.
 

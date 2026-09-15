@@ -33,7 +33,7 @@ In addition, you can use text processor commands to add your own link. Text proc
 
 > Perhaps you could {command:PUT BALL IN SACK:put the ball in the sack} 
 
-The text processor command in this case is called "command", so that is the first section. The next part I put it in capitals, but it does not have to be; this is the actual command, what the player would type into the command bar. This can be as complicated as you like - just as long as Quest Viva can understand it. The last bit is the text the player sees.
+The text processor command in this case is called "command", so that is the first section. The next part is in capitals here, but it does not have to be; this is the actual command, what the player would type into the command bar. This can be as complicated as you like - just as long as Quest Viva can understand it. The last bit is the text the player sees.
 
 Hyperlinks can be turned off and customised from the _Display_ tab. You can give objects their own individual hyperlink colour on their _Object_ tab.
 

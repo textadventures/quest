@@ -35,7 +35,7 @@ You would need to think about how a player could do several patches.
 
 Quest Viva does not currently expose a way to convert a string into an executable script at the `.aslx` level, so all your scripts would need to be in your original game (but you can add them to new objects).
 
-I am not aware of anyone attempting this. Test well before release.
+This is rarely attempted, so test well before release.
 
 
 ### Alternative saving

@@ -8,7 +8,7 @@ What exactly is a "regular expression"? It is a sort of string that can be used 
 
 Quest Viva has three functions that can use a regex. All three functions takes the regex and a string to compare against it as parameters and differ only in what they return.
 
-To investigate what the three functions do, I am going to set up a regex and two strings.
+To investigate what the three functions do, we will set up a regex and two strings.
 ```quest
 regex = "put (?<object1>.*) on (?<object2>.*)"
 s1 = "put hat on table"
@@ -90,7 +90,7 @@ pattern "put #object1# on #object2#"
 
 ## What about object matching?
 
-None of the above has paid any attention to what objects are present in the game or are within reach. All these functions do is match text. I could have used this as the regex, the result would be the same (except the dictionary returned from `Populate` would contain different keys of course).
+None of the above has paid any attention to what objects are present in the game or are within reach. All these functions do is match text. We could have used this as the regex, the result would be the same (except the dictionary returned from `Populate` would contain different keys of course).
 ```quest
 regex = "put (?<bill>.*) on (?<ben>.*)"
 ```

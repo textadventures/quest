@@ -52,7 +52,7 @@ The only complicated bit is the locked door to the north of the foyer. Quest Viv
 
 For the objects, on the _Object_ tab, add any synonyms ("peg" for hook; "cape", "mantle", "robe" for cloak; "note", "writing" for message).
 
-On the _Inventory_ tab of the cloak, tick that it can be taken. You need to make sure the cloak is inside the player; if it is not, use "Move to..." to move it there. We could set up the cloak as clothing, but there is nothing in the specification about putting it on and taking it off (which is a bit odd, perhaps), so I am not going to bother.
+On the _Inventory_ tab of the cloak, tick that it can be taken. You need to make sure the cloak is inside the player; if it is not, use "Move to..." to move it there. We could set up the cloak as clothing, but there is nothing in the specification about putting it on and taking it off (which is a bit odd, perhaps), so we will not bother.
 
 Give the cloak and the hook descriptions. Generally you would be adding descriptions for all the items and locations, but these are going to depend on the various systems, so we will leave that for now.
 
@@ -89,7 +89,7 @@ else {
 }
 ```
 
-I am using "object.article" so Quest Viva will use "it", "them, "him" as appropriate. The `GetDefiniteAlias` function will return the alias of the object if it exists, or the name otherwise, and will prepend "the" if appropriate. This is good practice that you should adopt, as it keeps the language flowing and natural.
+We are using "object.article" so Quest Viva will use "it", "them, "him" as appropriate. The `GetDefiniteAlias` function will return the alias of the object if it exists, or the name otherwise, and will prepend "the" if appropriate. This is good practice that you should adopt, as it keeps the language flowing and natural.
 
 
 ### Handling HANG CLOAK ON HOOK
@@ -100,7 +100,7 @@ Our command pattern will be this:
 
 Why not do this as "hang #object1# on hook"? It is better practice to always use a general object, as this allows Quest Viva to match the synonyms for the objects. The above will also match `HANG CAPE ON PEG`. If we later think of another synonym for hook, we can just add it to hook, and all the commands will handle it fine.
 
-Quest Viva will only match against objects present (unless we tell it otherwise for a specific command), so we know the hook must be present; so rather than checking we are in the right room, we need to check `object2` is the hook object. For a bigger game, we might want to have an attribute on the hook that flags it as something we can hang stuff on, and then check that flag on `object2`; I have written the messages to keep them general. Note that `GetDisplayName` prepends "a" or "some" to the name, as appropriate.
+Quest Viva will only match against objects present (unless we tell it otherwise for a specific command), so we know the hook must be present; so rather than checking we are in the right room, we need to check `object2` is the hook object. For a bigger game, we might want to have an attribute on the hook that flags it as something we can hang stuff on, and then check that flag on `object2`; the messages here are written to keep them general. Note that `GetDisplayName` prepends "a" or "some" to the name, as appropriate.
 
 ```quest
 if (not object1.parent = player) {
@@ -136,7 +136,7 @@ else {
 msg (s + " The only way out is back to the east. "
 ```
 
-The first line is the general description, which is used for all descriptions. It is assigned to a local variable `s`. We add that to a specific message, depending on where the cloak is. This means we only need to write the text one time, instead of repeating it for each option. I wanted the comment about the exit at the end of the paragraph, so the last line adds that to the string, and prints the whole thing.
+The first line is the general description, which is used for all descriptions. It is assigned to a local variable `s`. We add that to a specific message, depending on where the cloak is. This means we only need to write the text one time, instead of repeating it for each option. We want the comment about the exit at the end of the paragraph, so the last line adds that to the string, and prints the whole thing.
 
 Now go to the _Setup_ tab of the hook, and tick it to be scenery. This will stop it appearing in the list of objects.
 
@@ -249,7 +249,7 @@ Create a function, call it "CloakHere", set it to return a Boolean, and paste in
 return (cloak.parent = player.parent or cloak.parent.parent = player.parent)
 ```
 
-If you are not familiar with Boolean algebra, that might not mean anything to you, so I will quickly break it down. Firstly, is the cloak in the same room as the player? That is, do they have the same parent?
+If you are not familiar with Boolean algebra, that might not mean anything to you, so let's quickly break it down. Firstly, is the cloak in the same room as the player? That is, do they have the same parent?
 
 > Does cloak.parent = player.parent?
 
@@ -338,11 +338,11 @@ You should now have a working game that fits the required specification.
 
 So the last step is the aesthetics. We want this to look good, to fit the mood of the game. This is all done on the game object.
 
-The puzzle in Cloak of Darkness is to realise it is something you are carrying that is causing the darkness, and my feeling is that having an inventory pane that tells the player she is wearing a cloak is giving it away. So I am going to go for an Old School feel, with no hyperlinks (_Display_ tab) and no panes (_Interface_ tab). I am going to have a cursor for the command bar (_Interface_ tab), and no location bar (_Interface_ tab).
+The puzzle in Cloak of Darkness is to realise it is something you are carrying that is causing the darkness, and an inventory pane that tells the player she is wearing a cloak would give it away. So we will go for an Old School feel, with no hyperlinks (_Display_ tab) and no panes (_Interface_ tab). We will have a cursor for the command bar (_Interface_ tab), and no location bar (_Interface_ tab).
 
-We can then select colours and fonts. When picking a font, make sure it is easily readable! I am going to use Kavivanar, which is a handwriting font, but still legible. For colours, I chose Pink on #444, which is a very dark grey (I think it looks better than black). You can type any colour into the boxes, as long as you know its hex value, as either three figures or six; it must start with a #.
+We can then select colours and fonts. When picking a font, make sure it is easily readable! This example uses Kavivanar, which is a handwriting font, but still legible. For colours, it uses Pink on #444, which is a very dark grey (softer than pure black). You can type any colour into the boxes, as long as you know its hex value, as either three figures or six; it must start with a #.
 
-On the _Room descriptions_ tab we can change the text displayed. I am going to turn off using "You are in", and the list of exits (set it to zero). I want the objects after the description, so will swap their numbers.
+On the _Room descriptions_ tab we can change the text displayed. We will turn off using "You are in", and the list of exits (set it to zero). We want the objects after the description, so we will swap their numbers.
 
 
 ## Next steps
@@ -354,7 +354,7 @@ Now we have a complete game, that looks good too. We can add some finishing touc
 
 It is usually a good idea to give the player some introductory text that sets the scene. You want this to appear before the first room description, and you want to write it so that the room description will follow naturally.
 
-You can put the text in the start script of the game object, but that can get pretty long with other stuff and I prefer to put it in the room. Go to the _Scripts_ tab of the foyer; the fourth one is "Before entering the room for the first time". We just want it to print a message (with a blank line at the end):
+You can put the text in the start script of the game object, but that can get pretty long with other stuff, so here we will put it in the room. Go to the _Scripts_ tab of the foyer; the fourth one is "Before entering the room for the first time". We just want it to print a message (with a blank line at the end):
 
 ```quest
 msg ("You hurry through the night, keen to get out of the rain. ...")
@@ -607,7 +607,7 @@ else {
 }
 ```
 
-This version creates two lists, one of worn items, one of carried items, and prints a message depending on whether there is anything is each list. I am using a local variable, `s`, primarily so the code will fit the page, by the way.
+This version creates two lists, one of worn items, one of carried items, and prints a message depending on whether there is anything is each list. It uses a local variable, `s`, primarily so the code will fit the page, by the way.
 
 
 ## Walkthrough
@@ -628,7 +628,7 @@ So you think the game is ready for release... Not yet!
 
 _Save._ Go into the game, and try to save it. For some reason, saving the game during play checks your game code more thoroughly than anything else, and if you cannot save, you have a problem somewhere.
 
-_Spellcheck._ Hopefully you are using a browser with a spell-checker, and have been checking as you go along. You can also back-up the game file, then open it in an editor with a spell-check facility (I like Notepad++). All the stuff inside angle brackets (i.e., < and >) can be ignored (and indeed should not be touched). Hopefully you will recognise the text you typed, and the editor will tell you if there are mistakes in it. You could use a word processor like LibraOffice or MS Word to find errors, but be very careful saving the game from a word processor, as they are likely to make changes that will stop Quest Viva loading your game.
+_Spellcheck._ Hopefully you are using a browser with a spell-checker, and have been checking as you go along. You can also back-up the game file, then open it in an editor with a spell-check facility. All the stuff inside angle brackets (i.e., < and >) can be ignored (and indeed should not be touched). Hopefully you will recognise the text you typed, and the editor will tell you if there are mistakes in it. You could use a word processor like LibraOffice or MS Word to find errors, but be very careful saving the game from a word processor, as they are likely to make changes that will stop Quest Viva loading your game.
 
 _Beta-test._ Get some people to beta-test your game. They will find problems you have not. Remember to thank them somewhere in your game (the ABOUT command is usual). You can upload/publish your game as unlisted for beta-testing.
 

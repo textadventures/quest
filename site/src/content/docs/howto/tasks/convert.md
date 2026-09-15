@@ -53,7 +53,7 @@ else {
 }
 ```
 
-For any toxophilites out there, I appreciate there is more to bows that tying string to a branch!
+For any toxophilites out there: yes, there is more to bows than tying string to a branch!
 
 
 ### USE STRING WITH BRANCH
@@ -106,15 +106,15 @@ else {
 
 Let's look at an entirely different system. There was, way back in the mists of time, a game called _Leather Goddesses of Phobos_, and this game featured a machine called the "T-remover". The player could put an item in a compartment, press a button, and the item would be changed into something else. If you put a tray into the machine, it would convert it to a guy called Ray. Put a rabbit it, you get a rabbi (it does have an actual point to it too). There are some gameplay issues here - you will have to design your game so that every item the player picks up with a T in its name can be changed, and the game can still be completed after doing so (something they did not always worry about back then).
 
-I am going to change it around a bit so we create an item, rather than two people (though the item is an ape, but we will say it is a small, passive ape that can be picked up).
+We will change it around a bit so we create an item, rather than two people (though the item is an ape, but we will say it is a small, passive ape that can be picked up).
 
-Note: _The scripts we will use are longer than before, and Quest Viva will not display the whole of them on the screen at once (not on my PC anyway), so I am just giving the code. If you do not like code, just click on "Code view" for the script in your game, copy-and-paste the code into the text area, and exit "Code view". Now you can see it in the normal GUI view!_
+Note: _The scripts we will use are longer than before, and Quest Viva will not display the whole of them on the screen at once (at least, not on a typical screen), so just the code is given here. If you do not like code, just click on "Code view" for the script in your game, copy-and-paste the code into the text area, and exit "Code view". Now you can see it in the normal GUI view!_
 
 First, on the _Features_ tab of the game object, turn on inventory limits. Then create four items; a tray, Ray, a tape and an ape. The ape and Ray need to go into the "nowhere" room. Make sure the tray, the tape and the ape can be picked up (_Inventory_ tab).
 
 We now need to create the t-remover. We will need to call it "t_remover" and then give it an alias as Quest Viva only allows numbers, letters, spaces and underscores in names.
 
-The item to convert will be put inside the machine, so on the _Features_ tab, tick "Container", then on the _Container_ tab, set it to be a "Limited container". Take a look at the _Container_ tab, and see if you want to change anything (I suggest have it start closed and not transparent), but you can leave all the defaults (it is already limited to a single item, which we want).
+The item to convert will be put inside the machine, so on the _Features_ tab, tick "Container", then on the _Container_ tab, set it to be a "Limited container". Take a look at the _Container_ tab, and see if you want to change anything (having it start closed and not transparent works well), but you can leave all the defaults (it is already limited to a single item, which we want).
 
 Now to get it to do something. Turn on "Use/Give" on the _Features_ tab, and then go to the _Use/Give_ tab and in the "Use (on its own)" section, set the action to run a script, and paste in this code:
 

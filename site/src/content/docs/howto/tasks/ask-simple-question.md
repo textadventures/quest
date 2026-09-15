@@ -7,7 +7,7 @@ sidebar:
 
 You will often find you want to ask the player a question. You might want to ask if the player wants to play as a man or a woman, or perhaps there is a point in the game where a character asks a question.
 
-We will look at asking simple questions here, and by that I mean a question with a limited number of responses that are presented as a menu. Such questions are simple because we know how the player will respond. Handling a question where the player can type in anything is more complicated and discussed [elsewhere](/howto/tasks/asking-a-question).
+We will look at asking simple questions here, that is, a question with a limited number of responses that are presented as a menu. Such questions are simple because we know how the player will respond. Handling a question where the player can type in anything is more complicated and discussed [elsewhere](/howto/tasks/asking-a-question).
 
 There are four parts to the process. First we have to decide what will prompt the question, then we need to get the options for the menu, then we show the menu, and finally we need to handle the response.
 
@@ -66,11 +66,11 @@ You will see you have yet another "Add new script" - this one specifically for t
 
 ![](/images/menu3.png)
 
-You need to do that for each option. Below you can see it has been done for two, I still need to do the third!
+You need to do that for each option. Below you can see it has been done for two; the third still needs doing!
 
 ![](/images/menu4.png)
 
-If you have variable options (for example, the option to buy orchids is only there if the flower seller has them in stick), that is no problem. You just need to make sure there is a `case` for all of them. You do not need to check the condition again or check that the option was in the list. The player will only be able to make that choice if it was in the list, and it will only be in the list if it is allowed. Below I have added both lilies and orchids, and also move the relevant object to the player. It is starting to get long, so only the lower half of the script is shown:
+If you have variable options (for example, the option to buy orchids is only there if the flower seller has them in stick), that is no problem. You just need to make sure there is a `case` for all of them. You do not need to check the condition again or check that the option was in the list. The player will only be able to make that choice if it was in the list, and it will only be in the list if it is allowed. Below, both lilies and orchids have been added, and the relevant object is also moved to the player. It is starting to get long, so only the lower half of the script is shown:
 
 ![](/images/menu4a.png)
 

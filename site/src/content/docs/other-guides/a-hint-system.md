@@ -49,7 +49,7 @@ Note: Do not put anything else in the hints object - it will be taken as a hint
 
 ## Naming hints
 
-Personally I like to prefix hints with h\_, so the names are unique and it is obvious what it is.
+It is a good idea to prefix hints with h\_, so the names are unique and it is obvious what they are.
 
 
 ## Stage-gates?

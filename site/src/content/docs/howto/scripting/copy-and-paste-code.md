@@ -55,7 +55,7 @@ That said, there are various helper functions that are designed to make the GUI 
 ```quest
 MoveObjectHere (hat)
 ```
-If I was writing that if code, I would do this:
+If we were writing that if code, we would do this:
 ```quest
 hat.parent = player.parent
 ```

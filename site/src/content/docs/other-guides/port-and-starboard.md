@@ -6,7 +6,7 @@ sidebar:
 
 So you have this plan for a game, but it is set on a ship or a starship, and north and south do not make any sense. The standard for marine ships is to use forward, starboard, aft and port, so why not implement that for your game? This is actually pretty easy to do using Quest Viva's built-in language support.
 
-One limitation of the shipwise directions is that you lose four directions. While "northeast" is well established, I think people will find "forwardport" rather odd. Remember that when adding exits to your game!
+One limitation of the shipwise directions is that you lose four directions. While "northeast" is well established, players are likely to find "forwardport" rather odd. Remember that when adding exits to your game!
 
 So what do we need to do? All that is needed is to change about a dozen templates. Each of the templates below already exists in the English language library, so the simplest way to change them is to [override](/advanced-topics/overriding) each one individually through the GUI. Alternatively, you can paste them straight into code view as shown below; template overrides are matched by name, so it does not matter exactly whereabouts in the file you add them.
 
@@ -101,4 +101,4 @@ It might be a good idea to implement a command so your game responds to NORTH, E
 </command>
 ```
 
-Note that this will not work if included in the library above. I suspect it has to be after the core library is loaded. Put it in the main file or a library that appears after Core.aslx in the list.
+Note that this command will not work if you put it in the library above, which is included before Core.aslx. When two commands match what the player typed equally well, Quest Viva uses the one defined later - that is what lets your game override a library's commands - and Core.aslx has its own commands that match directions like "n" and "north". So this command needs to be defined after Core.aslx: put it in the main game file, or in a library that appears after Core.aslx in the list.
