@@ -1,5 +1,17 @@
 # Changelog
 
+## [6.0.0-rc.2](https://github.com/textadventures/quest/compare/v6.0.0-rc.1...v6.0.0-rc.2) (2026-09-15)
+
+
+### Bug Fixes
+
+* **Engine:** calculate map coordinates for invisible exits, not just visible ones ([#2300](https://github.com/textadventures/quest/issues/2300)) ([a48828b](https://github.com/textadventures/quest/commit/a48828b693b43edfd87add11623c2b2bd9d8c72d))
+
+
+### Performance Improvements
+
+* **PlayerCore:** move player UI resources out of PlayerCore into WebPlayer ([#2302](https://github.com/textadventures/quest/issues/2302)) ([b4e3522](https://github.com/textadventures/quest/commit/b4e35226347bc1a2361b02b972d17470453ae1b6))
+
 ## [6.0.0-rc.1](https://github.com/textadventures/quest/compare/v6.0.0-beta.61...v6.0.0-rc.1) (2026-09-14)
 
 
