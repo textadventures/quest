@@ -19,6 +19,13 @@
         <ProjectReference Include="..\PlayerCore\PlayerCore.csproj"/>
     </ItemGroup>
 
+    <!-- Player UI assets live in PlayerCore/Resources because WasmPlayer also copies them into its
+         AppBundle as plain files. Only WebPlayer embeds them (served via the /res/ routes), so they
+         don't bloat PlayerCore.wasm in the WasmPlayer/WasmEditor bundles. -->
+    <ItemGroup>
+        <EmbeddedResource Include="..\PlayerCore\Resources\**\*" Link="Resources\%(RecursiveDir)%(Filename)%(Extension)"/>
+    </ItemGroup>
+
     <ItemGroup>
         <Content Include="..\..\.dockerignore">
             <Link>.dockerignore</Link>
