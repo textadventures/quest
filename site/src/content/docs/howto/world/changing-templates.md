@@ -8,7 +8,7 @@ When a player types in a command that Quest Viva doesn't recognise, it will by d
 
 The standard responses are all defined by **templates**, and these all exist in the **standard libraries**. These libraries contain standard game text, most of the standard behaviour in a game, all of the Editor screens - in fact a lot of Quest Viva's functionality comes from the libraries. The libraries are .aslx files, just like your game file - a lot of Quest Viva is written in Quest Viva itself.
 
-Everything in the libraries is included in your game, but the Editor usually hides all this from you, so you can focus on your game itself. You can view library elements by clicking the Filter button at the bottom of the editor tree, and selecting "Show Library Elements".
+Everything in the libraries is included in your game, but the Editor usually hides all this from you, so you can focus on your game itself. You can view library elements by clicking the tree view options button above the editor tree, and selecting "Show Library Elements".
 
 ![](/images/Showlibraryelements.png)
 

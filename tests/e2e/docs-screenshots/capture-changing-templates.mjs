@@ -1,6 +1,6 @@
 // Regenerates 1 of the 2 editor screenshots embedded in
 // site/src/content/docs/changing_templates.md (Templates.png). Showlibraryelements.png
-// already shows the current AppShell UI correctly and doesn't need regenerating.
+// is captured by capture-using-libraries.mjs instead.
 // See .claude/skills/docs-screenshots/SKILL.md.
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
