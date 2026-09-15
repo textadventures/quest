@@ -57,7 +57,7 @@
     [Parameter] public required Func<GameData, IResourceUrlProvider> ResourceUrlProvider { get; set; }
     [Parameter] public required bool EnableDebug { get; set; }
     [Parameter] public bool EnableSave { get; set; } = true;
-    private static MarkupString UiHtml => (MarkupString) PlayerHelper.GetUiResourceString("playercore.htm")!;
+    private static MarkupString UiHtml => (MarkupString) UiResources.GetUiResourceString("playercore.htm")!;
     private Player? Player { get; set; }
     private GameData? gameData;
     private IGame? game;
@@ -260,7 +260,7 @@
             // resetOutput to clear the JS-side output-tracking state
             // (_currentDiv/_divCount in playercore.js) that innerHTML alone
             // doesn't touch.
-            await JS.InvokeVoidAsync("WebPlayer.resetPlayerUi", PlayerHelper.GetUiResourceString("playercore.htm"));
+            await JS.InvokeVoidAsync("WebPlayer.resetPlayerUi", UiResources.GetUiResourceString("playercore.htm"));
             await JS.InvokeVoidAsync("WebPlayer.resetOutput");
             game.Finish();
             GameSessionTracker.GameEnded();

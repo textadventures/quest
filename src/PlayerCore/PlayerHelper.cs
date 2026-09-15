@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Xml;
@@ -427,37 +426,6 @@ public class PlayerHelper
     public void SetFontSize(string fontSize)
     {
         _fontSize = fontSize;
-    }
-
-    private static Stream? GetUiResource(string name)
-    {
-        return Assembly.GetExecutingAssembly()
-            .GetManifestResourceStream($"QuestViva.PlayerCore.Resources.{name}");
-    }
-
-    public static string? GetUiResourceString(string name)
-    {
-        using var stream = GetUiResource(name);
-        if (stream == null)
-        {
-            return null;
-        }
-
-        using var reader = new StreamReader(stream);
-        return reader.ReadToEnd();
-    }
-
-    public static byte[]? GetUiResourceBytes(string name)
-    {
-        using var stream = GetUiResource(name);
-        if (stream == null)
-        {
-            return null;
-        }
-
-        using var ms = new MemoryStream();
-        stream.CopyTo(ms);
-        return ms.ToArray();
     }
 
     public static Dictionary<string, string> ListDataParameter(List<ListData> list)
