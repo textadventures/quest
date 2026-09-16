@@ -518,17 +518,12 @@ public static class QuestNCalcLogicalExpressionParser
             .Or(bitwiseOr.Then<Func<LogicalExpression, LogicalExpression, LogicalExpression>>(
                 _ => (a, b) => new BinaryExpression(BinaryExpressionType.BitwiseOr, a, b)));
 
-        // "xor" text keyword → logical XOR: (a or b) and not (a and b), to avoid type issues
-        // with BitwiseXOr which returns UInt64 when applied to booleans.
+        // "xor" text keyword → BitwiseXOr node. NcalcExpressionEvaluator intercepts it (along with
+        // And/Or) so that, as in FLEE, it's logical for booleans and bitwise for integers - NCalc's
+        // own BitwiseXOr would return UInt64 for booleans.
         // Note: "^" is exponentiation (FLEE compat), not XOR.
         var xorParser = Terms.Text("XOR", true).Then<Func<LogicalExpression, LogicalExpression, LogicalExpression>>(
-            _ => (a, b) =>
-            {
-                var aOrB = new BinaryExpression(BinaryExpressionType.Or, a, b);
-                var aAndB = new BinaryExpression(BinaryExpressionType.And, a, b);
-                return new BinaryExpression(BinaryExpressionType.And, aOrB,
-                    new UnaryExpression(UnaryExpressionType.Not, aAndB));
-            });
+            _ => (a, b) => new BinaryExpression(BinaryExpressionType.BitwiseXOr, a, b));
 
         // logical => equality ( ( "and" | "or" | "xor" ) equality )* ;
         var logical = notOperator.And(ZeroOrMany(OneOf(andParser, orParser, xorParser).And(notOperator)))
