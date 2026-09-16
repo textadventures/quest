@@ -1,5 +1,25 @@
 # Changelog
 
+## [6.0.0-rc.2](https://github.com/textadventures/quest/compare/v6.0.0-rc.1...v6.0.0-rc.2) (2026-09-16)
+
+
+### Features
+
+* **AppShell:** merge Publish and Export as HTML into one dialog ([#2313](https://github.com/textadventures/quest/issues/2313)) ([e3b0e6d](https://github.com/textadventures/quest/commit/e3b0e6d6f964bc75cfa14a9d0fdd787f3e6a71e6))
+
+
+### Bug Fixes
+
+* **Engine:** allow list and dictionary attribute names with spaces ([#2312](https://github.com/textadventures/quest/issues/2312)) ([7d5ffb8](https://github.com/textadventures/quest/commit/7d5ffb8665754392fd72906d020dd40123f6c5c9))
+* **Engine:** calculate map coordinates for invisible exits, not just visible ones ([#2300](https://github.com/textadventures/quest/issues/2300)) ([a48828b](https://github.com/textadventures/quest/commit/a48828b693b43edfd87add11623c2b2bd9d8c72d))
+* **Engine:** match FLEE precedence for and/or/xor and integer not ([#2316](https://github.com/textadventures/quest/issues/2316)) ([8ddbe3a](https://github.com/textadventures/quest/commit/8ddbe3a3ecad88a690f5bc6dbffa991bac463c0a))
+* **Engine:** treat and/or/xor as bitwise operators on integers ([#2315](https://github.com/textadventures/quest/issues/2315)) ([ee9e3c7](https://github.com/textadventures/quest/commit/ee9e3c781ea7e039f872335de8cc95d28c381214))
+
+
+### Performance Improvements
+
+* **PlayerCore:** move player UI resources out of PlayerCore into WebPlayer ([#2302](https://github.com/textadventures/quest/issues/2302)) ([b4e3522](https://github.com/textadventures/quest/commit/b4e35226347bc1a2361b02b972d17470453ae1b6))
+
 ## [6.0.0-rc.1](https://github.com/textadventures/quest/compare/v6.0.0-beta.61...v6.0.0-rc.1) (2026-09-14)
 
 
