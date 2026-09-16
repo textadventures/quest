@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Reflection;
 using NCalc;
 using NCalc.Cache;
@@ -297,6 +298,13 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
     // so we intercept binary operations on non-standard types and dispatch via reflection.
     private async Task EvaluateBinaryAsync(BinaryEventArgs args)
     {
+        if (args.BinaryExpression.Type is BinaryExpressionType.And or BinaryExpressionType.Or
+            or BinaryExpressionType.BitwiseXOr)
+        {
+            await EvaluateAndOrXorAsync(args);
+            return;
+        }
+
         var isEquality = args.BinaryExpression.Type is BinaryExpressionType.Equal or BinaryExpressionType.NotEqual;
         var isInOperator = args.BinaryExpression.Type is BinaryExpressionType.In or BinaryExpressionType.NotIn;
 
@@ -337,6 +345,55 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
 
         HandleBinaryResult(args, isEquality, operatorName, left, right, leftNullDescription, rightNullDescription);
     }
+
+    // In FLEE, "and", "or" and "xor" are logical operators for booleans but bitwise operators for
+    // integers (e.g. "seed and 0x7FFF"), whereas NCalc's And/Or always convert both sides to
+    // booleans. The "xor" keyword is parsed as BitwiseXOr, so it arrives here too.
+    private static async Task EvaluateAndOrXorAsync(BinaryEventArgs args)
+    {
+        var type = args.BinaryExpression.Type;
+        var left = await args.LeftValueAsync();
+
+        object? right = null;
+        var rightEvaluated = false;
+        if (IsIntegerType(left))
+        {
+            right = await args.RightValueAsync();
+            rightEvaluated = true;
+            if (IsIntegerType(right))
+            {
+                var l = Convert.ToInt64(left);
+                var r = Convert.ToInt64(right);
+                args.Result = type switch
+                {
+                    BinaryExpressionType.And => l & r,
+                    BinaryExpressionType.Or => l | r,
+                    _ => l ^ r
+                };
+                return;
+            }
+        }
+
+        // Logical: "and"/"or" short-circuit, so the right side is only evaluated when needed.
+        var leftBool = ToBoolean(left);
+        if (type == BinaryExpressionType.And && !leftBool)
+        {
+            args.Result = false;
+            return;
+        }
+
+        if (type == BinaryExpressionType.Or && leftBool)
+        {
+            args.Result = true;
+            return;
+        }
+
+        if (!rightEvaluated) right = await args.RightValueAsync();
+        var rightBool = ToBoolean(right);
+        args.Result = type == BinaryExpressionType.BitwiseXOr ? leftBool != rightBool : rightBool;
+    }
+
+    private static bool ToBoolean(object? value) => Convert.ToBoolean(value, CultureInfo.InvariantCulture);
 
     // An attribute rather than #pragma: a pragma only silences the Roslyn analyzer, not the IL
     // trimmer that runs on publish.

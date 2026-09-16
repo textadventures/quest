@@ -168,6 +168,13 @@ public class ExpressionTests
     [DataRow($"{ObjectName}.{IntAttributeName} + 3", IntAttributeValue + 3)]
     [DataRow("ListCount(AllObjects())", 3)]
     [DataRow("CustomIntFunction(1, 2)", 3)]
+    // FLEE treats and/or/xor as bitwise operators on integers (issue #2314)
+    [DataRow("12 and 10", 8)]
+    [DataRow("12 or 10", 14)]
+    [DataRow("12 xor 10", 6)]
+    [DataRow($"{ObjectName}.{IntAttributeName} and 0x7FFF", IntAttributeValue & 0x7FFF)]
+    [DataRow("(0x8D0E >> 1 xor 0x9F81 >> 1) and 0x7FFF", 2375)]
+    [DataRow("((0x8D0E >> 1 xor 0x9F81 >> 1) and 0x7FFF) % 100", 75)]
     public async Task TestIntExpressions(string expression, int expectedResult)
     {
         var result = await RunExpression<int>(expression);
@@ -212,6 +219,10 @@ public class ExpressionTests
     [DataRow("true xor false", true)]
     [DataRow("false xor true", true)]
     [DataRow("false xor false", false)]
+    [DataRow("true and true xor true", false)]
+    // and/or short-circuit, so the right-hand side (which would throw) is never evaluated
+    [DataRow("false and 1 / 0 = 1", false)]
+    [DataRow("true or 1 / 0 = 1", true)]
     [DataRow($"{ObjectName}.{BoolAttributeName}", BoolAttributeValue)]
     [DataRow($"not {ObjectName}.{BoolAttributeName}", !BoolAttributeValue)]
     [DataRow("1 = 1", true)]
