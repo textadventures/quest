@@ -144,8 +144,11 @@ internal partial class FieldSaver
         [GeneratedRegex("^[A-Za-z0-9]*$")]
         private static partial Regex OnlyLettersAndNumbers();
 
-        protected void WriteAttribute(GameXmlWriter writer, Element? element, string attribute, string type,
-            string value)
+        // Shared by every saver (including ones that don't derive from this base class, e.g.
+        // ScriptDictionarySaver) that needs to write the start element for an attribute - list and
+        // dictionary savers write their own nested XML rather than going through WriteAttribute below,
+        // but still need the same <attr name="..."> fallback for names XML element names can't hold.
+        public static void WriteStartElementForAttribute(GameXmlWriter writer, string attribute)
         {
             if (!OnlyLettersAndNumbers().IsMatch(attribute))
             {
@@ -160,6 +163,12 @@ internal partial class FieldSaver
                 //      <myattribute ... />
                 writer.WriteStartElement(attribute);
             }
+        }
+
+        protected void WriteAttribute(GameXmlWriter writer, Element? element, string attribute, string type,
+            string value)
+        {
+            WriteStartElementForAttribute(writer, attribute);
 
             if (element == null || !GameSaver.IsImpliedType(element, attribute, type) || value.Length == 0)
             {
@@ -229,7 +238,7 @@ internal partial class FieldSaver
 
         public override void Save(GameXmlWriter writer, Element? element, string attribute, object value)
         {
-            writer.WriteStartElement(attribute);
+            FieldSaverBase.WriteStartElementForAttribute(writer, attribute);
             if (element == null || !GameSaver.IsImpliedType(element, attribute, "stringlist"))
             {
                 writer.WriteAttributeString("type", "stringlist");
@@ -254,7 +263,7 @@ internal partial class FieldSaver
 
         public override void Save(GameXmlWriter writer, Element? element, string attribute, object value)
         {
-            writer.WriteStartElement(attribute);
+            FieldSaverBase.WriteStartElementForAttribute(writer, attribute);
             if (element == null || !GameSaver.IsImpliedType(element, attribute, "list"))
             {
                 writer.WriteAttributeString("type", "list");
@@ -319,7 +328,7 @@ internal partial class FieldSaver
 
         public override void Save(GameXmlWriter writer, Element? element, string attribute, object value)
         {
-            writer.WriteStartElement(attribute);
+            FieldSaverBase.WriteStartElementForAttribute(writer, attribute);
             if (element == null || !GameSaver.IsImpliedType(element, attribute, TypeName))
             {
                 writer.WriteAttributeString("type", TypeName);
@@ -466,7 +475,7 @@ internal partial class FieldSaver
 
         public void Save(GameXmlWriter writer, Element? element, string attribute, object value)
         {
-            writer.WriteStartElement(attribute);
+            FieldSaverBase.WriteStartElementForAttribute(writer, attribute);
             if (element == null || !GameSaver.IsImpliedType(element, attribute, "scriptdictionary"))
             {
                 writer.WriteAttributeString("type", "scriptdictionary");

@@ -40,7 +40,7 @@ internal partial class GameLoader
     {
         string AppliesTo { get; }
         GameLoader GameLoader { set; }
-        void Load(XmlReader reader, Element current);
+        void Load(XmlReader reader, Element current, string attributeName);
         bool SupportsMode(LoadMode mode);
     }
 
@@ -48,7 +48,7 @@ internal partial class GameLoader
     {
         public abstract string AppliesTo { get; }
 
-        public abstract void Load(XmlReader reader, Element current);
+        public abstract void Load(XmlReader reader, Element current, string attributeName);
 
         public GameLoader GameLoader { get; set; } = null!;
 
@@ -72,11 +72,11 @@ internal partial class GameLoader
             return new LazyScriptDictionary(LoadScriptDictionary(xmlReader, null, "value"));
         }
 
-        public override void Load(XmlReader reader, Element current)
+        public override void Load(XmlReader reader, Element current, string attributeName)
         {
             var currentXmlElementName = reader.Name;
             var result = LoadScriptDictionary(reader, current, currentXmlElementName);
-            current.Fields.LazyFields.AddScriptDictionary(currentXmlElementName, result);
+            current.Fields.LazyFields.AddScriptDictionary(attributeName, result);
         }
 
         private Dictionary<string, string> LoadScriptDictionary(XmlReader reader, Element? current,
@@ -152,11 +152,11 @@ internal partial class GameLoader
             return new QuestList<string>(xml.Elements("value").Select(e => e.Value));
         }
 
-        public override void Load(XmlReader reader, Element current)
+        public override void Load(XmlReader reader, Element current, string attributeName)
         {
             var xml = XElement.Load(reader.ReadSubtree());
             var values = xml.Elements("value").Select(e => e.Value);
-            current.Fields.Set(reader.Name, new QuestList<string>(values));
+            current.Fields.Set(attributeName, new QuestList<string>(values));
         }
     }
 
@@ -169,11 +169,11 @@ internal partial class GameLoader
             return LoadQuestList(xml);
         }
 
-        public override void Load(XmlReader reader, Element current)
+        public override void Load(XmlReader reader, Element current, string attributeName)
         {
             var xml = XElement.Load(reader.ReadSubtree());
             var result = LoadQuestList(xml);
-            current.Fields.Set(reader.Name, result);
+            current.Fields.Set(attributeName, result);
         }
 
         private QuestList<object> LoadQuestList(XElement xml)
@@ -255,10 +255,10 @@ internal partial class GameLoader
             return new QuestDictionary<string?>(LoadDictionaryFromXElement(xml, "(nested stringdictionary)"));
         }
 
-        public override void Load(XmlReader reader, Element current)
+        public override void Load(XmlReader reader, Element current, string attributeName)
         {
             var result = LoadDictionary(reader, current.Name);
-            current.Fields.Set(reader.Name, new QuestDictionary<string?>(result));
+            current.Fields.Set(attributeName, new QuestDictionary<string?>(result));
         }
 
         protected override void AddResultToDictionary(IDictionary<string, string?> dictionary, string key,
@@ -278,10 +278,10 @@ internal partial class GameLoader
             return new LazyObjectDictionary(LoadDictionaryFromXElement(xml, "(nested objectdictionary)"));
         }
 
-        public override void Load(XmlReader reader, Element current)
+        public override void Load(XmlReader reader, Element current, string attributeName)
         {
             var result = LoadDictionary(reader, current.Name);
-            current.Fields.LazyFields.AddObjectDictionary(reader.Name, result);
+            current.Fields.LazyFields.AddObjectDictionary(attributeName, result);
         }
 
         protected override void AddResultToDictionary(IDictionary<string, string?> dictionary, string key,
@@ -300,10 +300,10 @@ internal partial class GameLoader
             return new QuestDictionary<object?>(LoadDictionaryFromXElement(xml, "(nested dictionary)"));
         }
 
-        public override void Load(XmlReader reader, Element current)
+        public override void Load(XmlReader reader, Element current, string attributeName)
         {
             var result = LoadDictionary(reader, current.Name);
-            current.Fields.Set(reader.Name, new QuestDictionary<object?>(result));
+            current.Fields.Set(attributeName, new QuestDictionary<object?>(result));
         }
 
         protected override void AddResultToDictionary(IDictionary<string, object?> dictionary, string key,

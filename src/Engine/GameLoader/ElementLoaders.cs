@@ -467,7 +467,7 @@ internal partial class GameLoader
 
             if (type != null && GameLoader.ExtendedAttributeLoaders.TryGetValue(type, out var extendedAttributeLoader))
             {
-                extendedAttributeLoader.Load(reader, current);
+                extendedAttributeLoader.Load(reader, current, attribute);
             }
             else
             {
