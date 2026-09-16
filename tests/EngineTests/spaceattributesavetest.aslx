@@ -1,0 +1,25 @@
+<asl version="580">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="spaceattributesavetest"/>
+  <object name="start">
+    <object name="player">
+      <inherit name="defaultplayer" />
+      <attr name="my list" type="simplestringlist">a;b</attr>
+      <attr name="my string dictionary" type="simplestringdictionary">key1=value1; key2=value2</attr>
+    </object>
+  </object>
+  <command>
+    <pattern>addruntimeattributes</pattern>
+    <script>
+      runtimelist = NewStringList()
+      list add (runtimelist, "x")
+      list add (runtimelist, "y")
+      list add (runtimelist, "z")
+      set (player, "my runtime list", runtimelist)
+      runtimedict = NewStringDictionary()
+      dictionary add (runtimedict, "rkey1", "rvalue1")
+      set (player, "my runtime dictionary", runtimedict)
+    </script>
+  </command>
+</asl>
