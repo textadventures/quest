@@ -7,6 +7,7 @@ import { isLibraryFilename, type AssetInfo, type FileAdapter } from "./filesyste
 import { LocalDraftAdapter, shouldShowBackupBanner, markBackupBannerResolved } from "./filesystem/local-adapter";
 import { ServerFileAdapter } from "./filesystem/server-adapter";
 import { triggerDownload } from "./filesystem/download";
+import { savePublishTarget, type PublishTarget } from "./publish-target";
 import { confirmDialog } from "./confirm";
 import { showToast } from "./toast";
 import { t } from "./i18n";
@@ -163,7 +164,6 @@ export const scriptClipboardHasContent = writable(false);
 export const assets = writable<AssetInfo[]>([]);
 export const assetManagerOpen = writable(false);
 export const publishModalOpen = writable(false);
-export const exportHtmlModalOpen = writable(false);
 export const codeViewPanelOpen = writable(false);
 // Bumped by Toolbar's toggle button when the panel is already open, asking CodeViewPanel to
 // attempt closing — rather than the toolbar forcing codeViewPanelOpen to false directly, which
@@ -785,6 +785,35 @@ export async function dismissBackupBanner(): Promise<void> {
     if (_adapter instanceof LocalDraftAdapter) await markBackupBannerResolved(_adapter.gameId);
 }
 
+// What a publish will include besides the game itself: every asset the adapter lists — for a
+// game opened from a real folder, that's every file in the folder. size is null where the
+// adapter can't report it cheaply (server mode).
+export type PublishFile = { name: string; size: number | null };
+
+export async function listPublishFiles(): Promise<{ files: PublishFile[]; folder: string | null }> {
+    if (!_adapter) return { files: [], folder: null };
+    const assets = await _adapter.listAssets();
+    return {
+        files: assets.map(a => ({ name: a.key, size: a.size ?? null })),
+        folder: _adapter.assetFolderName ?? null,
+    };
+}
+
+// Which step a running publish is on, for the Publish dialog. The .quest build (and the HTML
+// export's zip) are single synchronous calls on the one UI thread, so each is preceded by a
+// paint yield — otherwise the label for that step would never actually appear.
+export type PublishProgress =
+    | { step: "reading"; done: number; total: number }
+    | { step: "building" }
+    | { step: "uploading" }
+    | { step: "fetchingPlayer" }
+    | { step: "zipping" };
+export const publishProgress = writable<PublishProgress | null>(null);
+
+async function yieldToPaint(): Promise<void> {
+    await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
+}
+
 // Builds a .quest package (game.aslx with included libraries inlined, plus every
 // known asset) — the same package format the v5 desktop editor called "Publish to
 // file". Works identically for local and server-mode games while staging, since
@@ -794,16 +823,12 @@ export async function dismissBackupBanner(): Promise<void> {
 //     there to complete the submission (category/tags/visibility form).
 //   - local mode: trigger a browser download; the user can use the site's classic
 //     manual "submit a game" upload page with the downloaded file.
-export async function publishGame(includeWalkthrough: boolean): Promise<void> {
-    if (!_bridge || !_adapter) return;
-    for (const asset of await _adapter.listAssets()) {
-        const blob = await _adapter.getAsset(asset.key);
-        if (blob) _bridge.AddPublishAsset(asset.key, new Uint8Array(await blob.arrayBuffer()));
-    }
-    const packageBytes = _bridge.CreatePublishPackage(includeWalkthrough);
-    if (packageBytes.length === 0) throw new Error("Failed to build the .quest package.");
+async function publishQuestPackage(signal: AbortSignal): Promise<void> {
+    if (!_adapter) return;
+    const { packageBytes, embeddedFilename } = await buildPublishPackageBytes(signal);
 
     if (_adapter instanceof ServerFileAdapter) {
+        publishProgress.set({ step: "uploading" });
         const resp = await fetch(`/api/editor/games/${_adapter.gameId}/publish`, {
             method: "POST",
             headers: { "Content-Type": "application/octet-stream" },
@@ -814,8 +839,7 @@ export async function publishGame(includeWalkthrough: boolean): Promise<void> {
         return;
     }
 
-    const publishName = _adapter.filename.replace(/\.aslx$/i, "") + ".quest";
-    triggerDownload(packageBytes, publishName);
+    triggerDownload(packageBytes, embeddedFilename);
 }
 
 function bytesToBase64(bytes: Uint8Array): string {
@@ -827,20 +851,29 @@ function bytesToBase64(bytes: Uint8Array): string {
     return btoa(binary);
 }
 
-export type ExportHtmlMode = "cdn" | "zip";
 
 function playerBaseUrl(): string {
     const base = PUBLIC_WASM_PLAYER_URL || "/player/";
     return base.endsWith("/") ? base : base + "/";
 }
 
-async function buildPublishPackageBytes(): Promise<{ packageBytes: Uint8Array; baseName: string; embeddedFilename: string; gameTitle: string }> {
+async function buildPublishPackageBytes(signal: AbortSignal): Promise<{ packageBytes: Uint8Array; baseName: string; embeddedFilename: string; gameTitle: string }> {
     if (!_bridge || !_adapter) throw new Error("No game loaded.");
-    for (const asset of await _adapter.listAssets()) {
+    // Read everything before staging anything, so cancelling mid-read leaves nothing half-staged
+    // in the bridge for the next publish to pick up.
+    const assets = await _adapter.listAssets();
+    const files: { key: string; bytes: Uint8Array }[] = [];
+    for (const [i, asset] of assets.entries()) {
+        signal.throwIfAborted();
+        publishProgress.set({ step: "reading", done: i, total: assets.length });
         const blob = await _adapter.getAsset(asset.key);
-        if (blob) _bridge.AddPublishAsset(asset.key, new Uint8Array(await blob.arrayBuffer()));
+        if (blob) files.push({ key: asset.key, bytes: new Uint8Array(await blob.arrayBuffer()) });
     }
-    const packageBytes = _bridge.CreatePublishPackage(false);
+    signal.throwIfAborted();
+    publishProgress.set({ step: "building" });
+    await yieldToPaint();
+    for (const file of files) _bridge.AddPublishAsset(file.key, file.bytes);
+    const packageBytes = _bridge.CreatePublishPackage();
     if (packageBytes.length === 0) throw new Error("Failed to build the .quest package.");
     const baseName = _adapter.filename.replace(/\.aslx$/i, "");
     const gameTitle = _bridge.GetGameName().trim() || baseName;
@@ -863,7 +896,7 @@ function buildEmbeddedPlayerHtml(template: string, packageBytes: Uint8Array, emb
         "m");
     function replaceOrFail(haystack: string, pattern: RegExp, replacement: (matched: string) => string, what: string): string {
         const match = pattern.exec(haystack);
-        if (!match) throw new Error(`Export as HTML: could not find ${what} in WasmPlayer template`);
+        if (!match) throw new Error(`HTML export: could not find ${what} in WasmPlayer template`);
         return haystack.slice(0, match.index) + replacement(match[0]) + haystack.slice(match.index + match[0].length);
     }
 
@@ -915,7 +948,7 @@ function buildEmbeddedPlayerHtml(template: string, packageBytes: Uint8Array, emb
 // Small HTML that embeds the game and loads the WasmPlayer runtime from jsDelivr —
 // see docs/wasmplayer-single-file-export.md. Only works in a deployed build (needs a
 // published npm version to pin).
-async function exportHtmlCdn(): Promise<void> {
+async function exportHtmlCdn(signal: AbortSignal): Promise<void> {
     // PUBLIC_APPSHELL_VERSION is the release tag (e.g. "v6.0.0-beta.49") in a real deployed
     // build (see deploy-play.yml) — only there is there a matching published npm version to pin
     // to, so this deliberately doesn't fall back to "latest" (see hosting.md's pinned-version
@@ -923,7 +956,8 @@ async function exportHtmlCdn(): Promise<void> {
     const version = PUBLIC_APPSHELL_VERSION?.replace(/^v/, "");
     if (!version) throw new Error("No release version available to pin the CDN runtime to — the small HTML export only works in a deployed build.");
 
-    const { packageBytes, baseName, embeddedFilename, gameTitle } = await buildPublishPackageBytes();
+    const { packageBytes, baseName, embeddedFilename, gameTitle } = await buildPublishPackageBytes(signal);
+    publishProgress.set({ step: "fetchingPlayer" });
     const templateResponse = await fetch(`${playerBaseUrl()}index.html`);
     if (!templateResponse.ok) throw new Error(`Failed to fetch WasmPlayer template: HTTP ${templateResponse.status}`);
     const html = buildEmbeddedPlayerHtml(
@@ -941,7 +975,7 @@ function frameworkPathsFromBoot(bootJs: string): string[] {
     const endMarker = "/*json-end*/";
     const start = bootJs.indexOf(startMarker);
     const end = bootJs.indexOf(endMarker);
-    if (start < 0 || end < 0) throw new Error("Export as HTML: could not parse WasmPlayer boot manifest.");
+    if (start < 0 || end < 0) throw new Error("HTML export: could not parse WasmPlayer boot manifest.");
     const config = JSON.parse(bootJs.slice(start + startMarker.length, end)) as {
         resources: Record<string, unknown>;
     };
@@ -984,9 +1018,10 @@ async function fetchPlayerFiles(playerBase: string, paths: string[]): Promise<Re
 // Zip of the WasmPlayer AppBundle with the game embedded in index.html — same layout as
 // WasmPlayer.zip from a GitHub Release, ready to upload to any static host. Uses the
 // /player/ copy already deployed alongside AppShell (no CDN, works offline once hosted).
-async function exportHtmlZip(): Promise<void> {
-    const { packageBytes, baseName, embeddedFilename, gameTitle } = await buildPublishPackageBytes();
+async function exportHtmlZip(signal: AbortSignal): Promise<void> {
+    const { packageBytes, baseName, embeddedFilename, gameTitle } = await buildPublishPackageBytes(signal);
     const playerBase = playerBaseUrl();
+    publishProgress.set({ step: "fetchingPlayer" });
 
     const templateResponse = await fetch(`${playerBase}index.html`);
     if (!templateResponse.ok) throw new Error(`Failed to fetch WasmPlayer template: HTTP ${templateResponse.status}`);
@@ -997,37 +1032,53 @@ async function exportHtmlZip(): Promise<void> {
     // (scripts/write-export-manifest.mjs) so it can't drift from the layout.
     const manifestResponse = await fetch(`${playerBase}export-manifest.json`);
     if (!manifestResponse.ok) {
-        throw new Error(`Export as HTML: player export manifest missing (HTTP ${manifestResponse.status}).`);
+        throw new Error(`HTML export: player export manifest missing (HTTP ${manifestResponse.status}).`);
     }
     const shellFiles = await manifestResponse.json() as unknown;
     if (!Array.isArray(shellFiles) || shellFiles.some(p => typeof p !== "string")) {
-        throw new Error("Export as HTML: invalid player export manifest.");
+        throw new Error("HTML export: invalid player export manifest.");
     }
     // quest-config.js is local-hosting config; the embedded export drops its <script>
     // tag, so omit it from the zip rather than shipping an unused file.
     const shellPaths = (shellFiles as string[]).filter(p => p !== "quest-config.js");
 
     const bootBytes = await fetchPlayerFile(playerBase, "_framework/dotnet.boot.js");
-    if (!bootBytes) throw new Error("Export as HTML: WasmPlayer boot manifest missing from /player/.");
+    if (!bootBytes) throw new Error("HTML export: WasmPlayer boot manifest missing from /player/.");
     const frameworkPaths = frameworkPathsFromBoot(new TextDecoder().decode(bootBytes));
 
     const paths = [...new Set([...shellPaths, ...frameworkPaths])];
     const zipEntries = await fetchPlayerFiles(playerBase, paths);
+    signal.throwIfAborted();
 
     for (const path of shellPaths) {
-        if (!zipEntries[path]) throw new Error(`Export as HTML: required player file missing: ${path}`);
+        if (!zipEntries[path]) throw new Error(`HTML export: required player file missing: ${path}`);
     }
     // Embedded index replaces the stock start-screen template.
     zipEntries["index.html"] = new TextEncoder().encode(html);
 
+    publishProgress.set({ step: "zipping" });
+    await yieldToPaint();
     const zipBytes = zipSync(zipEntries);
     triggerDownload(zipBytes, baseName + "-html.zip");
 }
 
-export async function exportHtml(mode: ExportHtmlMode): Promise<void> {
+// signal can cancel a publish while it's still reading files or fetching the player; the
+// synchronous build/zip steps themselves can't be interrupted.
+export async function publishGame(target: PublishTarget, signal: AbortSignal): Promise<void> {
     if (!_bridge || !_adapter) return;
-    if (mode === "cdn") await exportHtmlCdn();
-    else await exportHtmlZip();
+    const gameId = _loadedGameId;
+    try {
+        if (target === "quest") await publishQuestPackage(signal);
+        else if (target === "cdn") await exportHtmlCdn(signal);
+        else await exportHtmlZip(signal);
+    } finally {
+        publishProgress.set(null);
+    }
+    // Remembered only once the publish has succeeded, so a failed attempt (e.g. the small
+    // HTML file in a non-release build) doesn't become the dialog's next default. The
+    // server-mode .quest path has set location.href by now, but the page doesn't unload
+    // until this task finishes, so the (synchronous, in the browser) save still lands.
+    if (gameId) savePublishTarget(gameId, target);
 }
 
 // Keys of every Javascript/Included Library element currently in the tree — undo()/redo() diff

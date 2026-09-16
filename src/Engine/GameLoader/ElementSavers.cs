@@ -227,7 +227,9 @@ internal partial class GameSaver
 
         public void Save(GameXmlWriter writer, WorldModel worldModel)
         {
-            if (!writer.Options.IncludeWalkthrough)
+            // Walkthroughs are an authoring/testing tool that no player surfaces, so a published
+            // package never carries them.
+            if (writer.Mode == SaveMode.Package)
             {
                 return;
             }

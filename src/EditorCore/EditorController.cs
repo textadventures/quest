@@ -2063,11 +2063,11 @@ public sealed class EditorController : IDisposable
         return definition.Create;
     }
 
-    public ValidationResult Publish(string? filename, bool includeWalkthrough,
+    public ValidationResult Publish(string? filename,
         IEnumerable<PackageIncludeFile>? includeFiles = null, Stream? outputStream = null)
     {
         string error;
-        if (WorldModel.CreatePackage(filename, includeWalkthrough, out error, includeFiles == null
+        if (WorldModel.CreatePackage(filename, out error, includeFiles == null
                 ? null
                 : includeFiles.Select(f => new WorldModel.PackageIncludeFile
                 {

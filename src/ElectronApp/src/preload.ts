@@ -51,7 +51,7 @@ contextBridge.exposeInMainWorld("electronApp", {
     fs: {
         readFile: (path: string): Promise<Uint8Array> => ipcRenderer.invoke("fs:readFile", path),
         writeFile: (path: string, data: Uint8Array | string): Promise<void> => ipcRenderer.invoke("fs:writeFile", path, data),
-        readDir: (path: string): Promise<{ name: string; isFile: boolean }[]> => ipcRenderer.invoke("fs:readDir", path),
+        readDir: (path: string): Promise<{ name: string; isFile: boolean; size: number | null }[]> => ipcRenderer.invoke("fs:readDir", path),
         exists: (path: string): Promise<boolean> => ipcRenderer.invoke("fs:exists", path),
         mkdir: (path: string): Promise<void> => ipcRenderer.invoke("fs:mkdir", path),
         unlink: (path: string): Promise<void> => ipcRenderer.invoke("fs:unlink", path),
@@ -174,6 +174,13 @@ contextBridge.exposeInMainWorld("electronApp", {
         // ElectronApp's default-code-view-store.ts for why this can't be localStorage.
         get: (): Promise<boolean | null> => ipcRenderer.invoke("defaultCodeView:get"),
         set: (enabled: boolean): Promise<void> => ipcRenderer.invoke("defaultCodeView:set", enabled),
+    },
+    publishTarget: {
+        // Per-game last-used Publish dialog target, keyed by the game's
+        // <gameid> — see ElectronApp's publish-target-store.ts for why this
+        // can't be localStorage.
+        get: (gameId: string): Promise<string | null> => ipcRenderer.invoke("publishTarget:get", gameId),
+        set: (gameId: string, target: string): Promise<void> => ipcRenderer.invoke("publishTarget:set", gameId, target),
     },
     uiState: {
         // Per-game editor UI state (currently the tree's expanded-node ids),

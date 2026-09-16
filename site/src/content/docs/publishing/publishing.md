@@ -13,7 +13,7 @@ Moderation can take a few days; please be patient.
 
 ## Publishing your game
 
-In the editor, open the **File** menu in the toolbar and choose **Publish…**. This builds a `.quest` package (your game file plus its assets) and downloads it.
+In the editor, open the **File** menu in the toolbar and choose **Publish…**, then pick **.quest file**. This builds a `.quest` package (your game file plus its assets) and downloads it.
 
 On textadventures.co.uk, click on _Create_ at the top, then _Submit_ below that. Then follow the instructions to upload the `.quest` file you just downloaded.
 
@@ -24,24 +24,16 @@ What gets included in the `.quest` file, when you publish?  Broadly two things.
 
 Firstly the game code. This is all the code from all the libraries, including the built-in libraries, from whatever folders on your PC, assembled into one big file. This means that if, in a few years, Quest Viva's built-in libraries get radically updated, your game will not be affected.
 
-Secondly, any supporting files. This is any file Quest Viva can find in your game folder with a certain name format, whether they are used in your game or not. Images and sounds that are not in this folder will not be included, images and sounds that are in it, but not used will be included. Note that when you select images and sounds through the Quest Viva GUI, it will copy the file into the game folder, so in theory all these files should already be there.
+Secondly, any supporting files. This is every file in your game folder (apart from other `.aslx` files), whether your game uses it or not. Images and sounds that are not in this folder will not be included. Note that when you select images and sounds through the Quest Viva GUI, it will copy the file into the game folder, so in theory all these files should already be there.
 
-Quest Viva grabs any file with a name that matches one of these formats
-
-    *.jpg;*.jpeg;*.png;*.gif;*.js;*.wav;*.mp3;*.htm;*.html;*.svg;*.ogg;*.ogv
-
-However, you can modify that by changing `game.publishfileextensions`; despite the name, it is not restricted to file extensions. If you have a text file you want included, but others you do not, you could set it like this:
-
-```quest
-*.jpg;*.jpeg;*.png;*.gif;*.js;*.wav;*.mp3;*.htm;*.html;*.svg;*.ogg;*.ogv;includeme.txt
-```
+The **Publish** dialog shows how many files will be included and their total size. Click **Show files** to see the list, largest first. If your game's `.aslx` file is in a folder with lots of other things in it, such as your Downloads folder, move the game into a folder of its own first.
 
 The single code file plus all the supporting files are then compressed in a single archive file.
 
 
 ## Size limitations
 
-textadventures.co.uk has a 50 Mb upload limit. This is the size of the published `.quest` file, and if your game is larger than that, the editor will give you a warning when you try to publish. In terms of game, that is a huge amount, and you will be doing well to build a game that is even 1 Mb. However, images, videos and sounds can seriously inflate the file size.
+textadventures.co.uk has a 50 Mb upload limit. This is the size of the published `.quest` file, and if the files your game includes add up to more than that, the **Publish** dialog warns you before you publish. In terms of game, that is a huge amount, and you will be doing well to build a game that is even 1 Mb. However, images, videos and sounds can seriously inflate the file size.
 
 If your game is too large, you can try:
 

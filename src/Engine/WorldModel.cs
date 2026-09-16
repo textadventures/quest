@@ -1578,14 +1578,14 @@ public partial class WorldModel : IGame, IGameDebug
         return Elements.Get(ElementType.ObjectType, name);
     }
 
-    public string Save(SaveMode mode, bool? includeWalkthrough = null, string? html = null)
+    public string Save(SaveMode mode, string? html = null)
     {
         if (_saver == null)
         {
             throw new Exception("Game not initialised");
         }
 
-        return _saver.Save(mode, includeWalkthrough, html);
+        return _saver.Save(mode, html);
     }
 
     public static Type? ConvertTypeNameToType(string name)
@@ -1813,11 +1813,11 @@ public partial class WorldModel : IGame, IGameDebug
         return Task.CompletedTask;
     }
 
-    public bool CreatePackage(string? filename, bool includeWalkthrough, out string error,
+    public bool CreatePackage(string? filename, out string error,
         IEnumerable<PackageIncludeFile>? includeFiles, Stream? outputStream)
     {
         var packager = new Packager(this);
-        return packager.CreatePackage(filename, includeWalkthrough, out error, includeFiles, outputStream);
+        return packager.CreatePackage(filename, out error, includeFiles, outputStream);
     }
 
     // Signatures (name + parameter names) for the built-in expression functions, reflected from

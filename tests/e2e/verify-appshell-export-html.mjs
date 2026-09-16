@@ -1,6 +1,7 @@
-// Verifies File > Export as HTML…: modal radios, zip export embeds the game with
-// relative player assets (no CDN <base href>), includes _framework + shell files,
-// and boots when served locally with the CDN blocked (issue #2234).
+// Verifies File > Publish…: modal radios, the .quest download, and the zip HTML
+// target — zip export embeds the game with relative player assets (no CDN
+// <base href>), includes _framework + shell files, and boots when served locally
+// with the CDN blocked (issue #2234).
 // Requires AppShell + WasmPlayer: ./dev.sh (or AppShell on :5174 with player proxied).
 import { chromium } from './lib/tracked-chromium.mjs';
 import { unzipSync } from 'fflate';
@@ -33,23 +34,65 @@ try {
     // File menu (see Toolbar.svelte) — prefer label over fragile button index.
     await page.click('button:has-text("File")');
     await page.waitForSelector('.absolute button', { timeout: 10000 });
-    await page.locator('.absolute button', { hasText: 'Export as HTML' }).click();
+    await page.locator('.absolute button', { hasText: 'Publish' }).click();
     await page.waitForSelector('div[role="dialog"]', { timeout: 10000 });
 
     const dialog = page.locator('div[role="dialog"]');
     const title = await dialog.locator('h2').textContent();
-    if (!title?.includes('Export as HTML')) throw new Error(`unexpected modal title: ${title}`);
-    const cdnRadio = dialog.locator('input[type="radio"][value="cdn"]');
+    if (!title?.includes('Publish')) throw new Error(`unexpected modal title: ${title}`);
+    const radios = dialog.locator('input[type="radio"]');
+    const values = await radios.evaluateAll(els => els.map(el => el.value));
+    if (values.join(',') !== 'quest,cdn,zip') throw new Error(`unexpected publish targets: ${values.join(',')}`);
+    const questRadio = dialog.locator('input[type="radio"][value="quest"]');
     const zipRadio = dialog.locator('input[type="radio"][value="zip"]');
-    if (!(await cdnRadio.isChecked())) throw new Error('expected CDN option checked by default');
-    console.log('PASS: Export as HTML modal opens with small-HTML default');
+    if (!(await questRadio.isChecked())) throw new Error('expected .quest option checked by default');
+    if (await dialog.locator('input[type="checkbox"]').count() !== 0) throw new Error('unexpected checkbox (walkthrough option should be gone)');
+    if (await dialog.locator('.publish-footnote').count() !== 0) throw new Error('HTML footnote should be hidden for the .quest target');
+    console.log('PASS: Publish modal offers quest/cdn/zip with .quest default');
+
+    // Each radio should sit on the visual centre of its caption's first line: midway between
+    // the centres of a capital and a lowercase letter, measured from the real baseline (a
+    // zero-size inline-block probe) — the line box's own centre sits noticeably higher.
+    const offsets = await dialog.locator('label').evaluateAll(labels => labels.map(label => {
+        const radio = label.querySelector('input[type="radio"]').getBoundingClientRect();
+        const title = label.querySelector('.font-medium');
+        const probe = document.createElement('span');
+        probe.style.cssText = 'display:inline-block;width:0;height:0';
+        title.prepend(probe);
+        const baseline = probe.getBoundingClientRect().bottom;
+        probe.remove();
+        const style = getComputedStyle(title);
+        const ctx = document.createElement('canvas').getContext('2d');
+        ctx.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+        const capHeight = ctx.measureText('H').actualBoundingBoxAscent;
+        const xHeight = ctx.measureText('x').actualBoundingBoxAscent;
+        return (radio.top + radio.height / 2) - (baseline - (capHeight + xHeight) / 4);
+    }));
+    if (offsets.some(o => Math.abs(o) > 0.75)) throw new Error(`radio not centred on caption's first line (offsets ${offsets.map(o => o.toFixed(2)).join(', ')}px; negative = too high)`);
+    console.log('PASS: radios centred on caption first lines');
+
+    const [questDownload] = await Promise.all([
+        page.waitForEvent('download', { timeout: 120000 }),
+        dialog.locator('button', { hasText: 'Publish' }).click(),
+    ]);
+    if (!questDownload.suggestedFilename().endsWith('.quest')) throw new Error(`expected *.quest, got ${questDownload.suggestedFilename()}`);
+    const questEntries = unzipSync(readFileSync(await questDownload.path()));
+    if (!questEntries['game.aslx']) throw new Error('.quest package missing game.aslx');
+    await page.waitForSelector('div[role="dialog"]', { state: 'detached', timeout: 10000 });
+    console.log('PASS: .quest target downloads a package:', questDownload.suggestedFilename());
+
+    await page.click('button:has-text("File")');
+    await page.waitForSelector('.absolute button', { timeout: 10000 });
+    await page.locator('.absolute button', { hasText: 'Publish' }).click();
+    await page.waitForSelector('div[role="dialog"]', { timeout: 10000 });
 
     await zipRadio.check();
     if (!(await zipRadio.isChecked())) throw new Error('zip radio did not stay checked');
+    if (await dialog.locator('.publish-footnote').count() !== 1) throw new Error('HTML footnote should show for the zip target');
 
     const [download] = await Promise.all([
         page.waitForEvent('download', { timeout: 120000 }),
-        dialog.locator('button', { hasText: 'Export' }).click(),
+        dialog.locator('button', { hasText: 'Publish' }).click(),
     ]);
     const suggested = download.suggestedFilename();
     if (!suggested.endsWith('-html.zip')) throw new Error(`expected *-html.zip, got ${suggested}`);
@@ -84,6 +127,27 @@ try {
     // Modal should close after a successful export.
     await page.waitForSelector('div[role="dialog"]', { state: 'detached', timeout: 10000 });
     console.log('PASS: modal closed after export');
+
+    // The dialog should reopen on the target this game was last published to — also after
+    // reopening the game in a fresh page load. A bare reload redirects to /open (isLoaded is
+    // in-memory SPA state), so reopen the draft by name, as verify-appshell-autosave.mjs does.
+    for (const when of ['reopen', 'reload']) {
+        if (when === 'reload') {
+            await page.goto(`${baseUrl}/open`);
+            await page.waitForSelector('text=Your local drafts', { timeout: 10000 });
+            await page.click(`button:has-text("${gameName}.aslx")`);
+            await page.waitForSelector('button[title="Preview game"]', { timeout: 60000 });
+        }
+        await page.click('button:has-text("File")');
+        await page.waitForSelector('.absolute button', { timeout: 10000 });
+        await page.locator('.absolute button', { hasText: 'Publish' }).click();
+        await page.waitForSelector('div[role="dialog"]', { timeout: 10000 });
+        await page.waitForFunction(() => document.querySelector('div[role="dialog"] input[value="zip"]')?.checked, null, { timeout: 5000 })
+            .catch(() => { throw new Error(`expected zip target remembered after ${when}`); });
+        await dialog.locator('button', { hasText: 'Close' }).click();
+        await page.waitForSelector('div[role="dialog"]', { state: 'detached', timeout: 10000 });
+    }
+    console.log('PASS: last-used target remembered on reopen and after reload');
 
     outDir = join(tmpdir(), `export-html-offline-${Date.now()}`);
     mkdirSync(outDir);

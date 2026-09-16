@@ -12,7 +12,7 @@ interface ElectronFileFilter {
 interface ElectronFsApi {
     readFile(path: string): Promise<Uint8Array>;
     writeFile(path: string, data: Uint8Array | string): Promise<void>;
-    readDir(path: string): Promise<{ name: string; isFile: boolean }[]>;
+    readDir(path: string): Promise<{ name: string; isFile: boolean; size: number | null }[]>;
     exists(path: string): Promise<boolean>;
     mkdir(path: string): Promise<void>;
     unlink(path: string): Promise<void>;
@@ -135,6 +135,14 @@ interface ElectronUiStateApi {
     set(gameId: string, state: string[]): Promise<void>;
 }
 
+// Per-game last-used Publish dialog target — persisted to a userData file
+// (ElectronApp's publish-target-store.ts), not localStorage — see
+// publish-target.ts for why.
+interface ElectronPublishTargetApi {
+    get(gameId: string): Promise<string | null>;
+    set(gameId: string, target: string): Promise<void>;
+}
+
 // Whether ScriptEditor instances default to raw code view — persisted to a
 // userData file (ElectronApp's default-code-view-store.ts), not localStorage
 // — see code-view-store.ts for why.
@@ -170,6 +178,7 @@ interface ElectronApi {
     updateDismiss: ElectronUpdateDismissApi;
     uiState: ElectronUiStateApi;
     defaultCodeView: ElectronDefaultCodeViewApi;
+    publishTarget: ElectronPublishTargetApi;
     fileWatch: ElectronFileWatchApi;
     menu: ElectronMenuApi;
     player: ElectronPlayerApi;

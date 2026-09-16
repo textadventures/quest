@@ -146,6 +146,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-appshell-export-html.mjs http://localhost:5174
         working-directory: tests/e2e
+      - run: node verify-appshell-publish-dialog.mjs http://localhost:5174
+        working-directory: tests/e2e
       - run: node verify-appshell-exits-editor.mjs http://localhost:5174
         working-directory: tests/e2e
       - run: node verify-appshell-expression-validation.mjs http://localhost:5174

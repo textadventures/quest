@@ -66,16 +66,10 @@ internal partial class GameSaver
         _elementsSavers.Add(saver.AppliesTo, saver);
     }
 
-    public string Save(SaveMode mode, bool? includeWalkthrough = null, string? html = null)
+    public string Save(SaveMode mode, string? html = null)
     {
         _mode = mode;
-        GameXmlWriter.GameXmlWriterOptions? options = null;
-        if (includeWalkthrough.HasValue)
-        {
-            options = new GameXmlWriter.GameXmlWriterOptions {IncludeWalkthrough = includeWalkthrough.Value};
-        }
-
-        var writer = new GameXmlWriter(mode, options);
+        var writer = new GameXmlWriter(mode);
 
         UpdateImpliedTypesCache();
 

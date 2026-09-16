@@ -865,7 +865,7 @@ public partial class WasmEditorBridge
     // Returns the .quest package bytes, or an empty array on failure — a real package
     // is never empty since it always contains at least the game.aslx entry.
     [JSExport]
-    public static byte[] CreatePublishPackage(bool includeWalkthrough)
+    public static byte[] CreatePublishPackage()
     {
         var assets = PendingPublishAssets.ToArray();
         PendingPublishAssets.Clear();
@@ -875,7 +875,7 @@ public partial class WasmEditorBridge
         }
 
         using var stream = new MemoryStream();
-        var result = _controller.Publish(null, includeWalkthrough, assets, stream);
+        var result = _controller.Publish(null, assets, stream);
         return result.Valid ? stream.ToArray() : [];
     }
 

@@ -1,6 +1,8 @@
 export interface AssetInfo {
     key: string;
     url: string;
+    // Byte size, when the adapter can get it without reading the file (the Publish dialog's summary).
+    size?: number;
 }
 
 export interface FileAdapter {
@@ -12,6 +14,10 @@ export interface FileAdapter {
     putAsset(key: string, data: Blob): Promise<void>;
     getAsset(key: string): Promise<Blob | null>;
     listAssets(): Promise<AssetInfo[]>;
+    // The real folder listAssets() scans, for adapters over an arbitrary user folder — every
+    // file in it gets published, so the Publish dialog names it. Unset for storage that only
+    // ever holds this game's own uploaded assets (OPFS drafts, server).
+    readonly assetFolderName?: string;
     deleteAsset(key: string): Promise<void>;
     // Every .aslx sibling of this game's own main file — i.e. every candidate Included Library
     // editor-store.ts's preloadAdjacentLibraryAssets needs to stage via AddAdjacentFile before a

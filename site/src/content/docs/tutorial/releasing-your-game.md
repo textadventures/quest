@@ -35,7 +35,7 @@ Here are some things to think about before unleashing your game on an unsuspecti
 
 By default your game will be unlisted; leave it like that for now.
 
-In the editor, open the **File** menu in the toolbar and choose **Publish…**. This builds a `.quest` package (your game file plus its assets) and downloads it.
+In the editor, open the **File** menu in the toolbar and choose **Publish…**, then pick **.quest file**. This builds a `.quest` package (your game file plus its assets) and downloads it.
 
 On textadventures.co.uk, click on _Create_ at the top, then _Upload_ game below that. Then follow the instructions.
 

@@ -33,7 +33,7 @@ export interface WasmBridge {
   GetLibraryXml(filename: string): string | null
   SetLibraryXml(filename: string, xml: string): Promise<string>
   AddPublishAsset(filename: string, data: Uint8Array): void
-  CreatePublishPackage(includeWalkthrough: boolean): Uint8Array
+  CreatePublishPackage(): Uint8Array
   CanUndo(): boolean
   CanRedo(): boolean
   Undo(): Promise<void>
