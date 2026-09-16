@@ -12,6 +12,7 @@ import { registerGameSaveHandlers } from "./ipc/gamesave";
 import { registerCatalogPlaysHandlers } from "./ipc/catalog-plays";
 import { registerUpdateDismissHandlers } from "./ipc/update-dismiss";
 import { registerDefaultCodeViewHandlers } from "./ipc/default-code-view";
+import { registerPublishTargetHandlers } from "./ipc/publish-target";
 import { registerFileWatchHandlers } from "./ipc/file-watch";
 import { registerLocaleHandlers } from "./ipc/locale";
 import { registerThemeHandlers } from "./ipc/theme";
@@ -608,6 +609,7 @@ if (!gotLock) {
         registerCatalogPlaysHandlers();
         registerUpdateDismissHandlers();
         registerDefaultCodeViewHandlers();
+        registerPublishTargetHandlers();
         // Renderer-armed (see electron-adapter.ts's arm calls) — this only ever
         // notifies about whatever file(s) the renderer last asked to watch.
         registerFileWatchHandlers((filenames) => {

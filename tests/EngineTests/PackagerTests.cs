@@ -3,6 +3,7 @@ using System.Text;
 using Moq;
 using QuestViva.Common;
 using QuestViva.Engine;
+using QuestViva.Engine.GameLoader;
 
 namespace QuestViva.EngineTests;
 
@@ -34,7 +35,7 @@ public class PackagerTests
         };
 
         using var packageStream = new MemoryStream();
-        var success = worldModel.CreatePackage(null, includeWalkthrough: true, out var error, includeFiles, packageStream);
+        var success = worldModel.CreatePackage(null, out var error, includeFiles, packageStream);
         Assert.IsTrue(success, error);
 
         var packageBytes = packageStream.ToArray();
@@ -74,7 +75,7 @@ public class PackagerTests
         worldModel.Game.Fields.Set("gameid", "1974a053-7db0-4103-93a1-767c1382c0b7");
 
         using var packageStream = new MemoryStream();
-        var success = worldModel.CreatePackage(null, includeWalkthrough: false, out var error,
+        var success = worldModel.CreatePackage(null, out var error,
             Array.Empty<WorldModel.PackageIncludeFile>(), packageStream);
         Assert.IsTrue(success, error);
 
@@ -85,6 +86,35 @@ public class PackagerTests
         packageStream.Position = 0;
         using var zip = new ZipArchive(packageStream, ZipArchiveMode.Read, leaveOpen: true);
         Assert.AreEqual(expected, zip.Comment);
+    }
+
+    [TestMethod]
+    public async Task CreatePackage_OmitsWalkthroughs()
+    {
+        var gameDataProvider = new FileGameDataProvider("savetest.aslx");
+        var gameData = await gameDataProvider.GetData();
+        var worldModel = Helpers.CreateWorldModel(gameData);
+        worldModel.LogError += ex => throw ex;
+
+        var player = new Mock<IPlayer>();
+        Assert.IsTrue(await worldModel.Initialise(player.Object), "Initialisation failed");
+        Assert.IsTrue(worldModel.Walkthroughs.Walkthroughs.Count > 0, "savetest.aslx should define a walkthrough");
+        StringAssert.Contains(worldModel.Save(SaveMode.Editor), "<walkthrough");
+
+        worldModel.Game.Fields.Set("gameid", "0b7c4d2e-1f3a-4b5c-8d6e-7f8091a2b3c4");
+
+        using var packageStream = new MemoryStream();
+        var success = worldModel.CreatePackage(null, out var error,
+            Array.Empty<WorldModel.PackageIncludeFile>(), packageStream);
+        Assert.IsTrue(success, error);
+
+        packageStream.Position = 0;
+        using var zip = new ZipArchive(packageStream, ZipArchiveMode.Read, leaveOpen: true);
+        var entry = zip.GetEntry("game.aslx");
+        Assert.IsNotNull(entry);
+        using var reader = new StreamReader(entry.Open());
+        var packagedXml = await reader.ReadToEndAsync();
+        Assert.IsFalse(packagedXml.Contains("<walkthrough"), "Published .quest should not contain walkthroughs");
     }
 
     [TestMethod]
@@ -101,7 +131,7 @@ public class PackagerTests
         worldModel.Game.Fields.Set("gameid", "5d3c2a1b-0f9e-4d8c-b7a6-958473625140");
 
         using var packageStream = new MemoryStream();
-        var success = worldModel.CreatePackage(null, includeWalkthrough: false, out var error,
+        var success = worldModel.CreatePackage(null, out var error,
             Array.Empty<WorldModel.PackageIncludeFile>(), packageStream);
         Assert.IsTrue(success, error);
 
@@ -153,7 +183,7 @@ public class PackagerTests
         };
 
         using var packageStream = new MemoryStream();
-        var success = worldModel.CreatePackage(null, includeWalkthrough: false, out var error, includeFiles, packageStream);
+        var success = worldModel.CreatePackage(null, out var error, includeFiles, packageStream);
         Assert.IsTrue(success, error);
 
         packageStream.Position = 0;

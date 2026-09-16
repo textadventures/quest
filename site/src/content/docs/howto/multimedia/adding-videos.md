@@ -201,7 +201,7 @@ msg("<video src='"+src+"' autoplay width='90%' />")
 
 This example sets the width to 90%, but **you will need to adjust the width according to each video's size!**
 
-The file "spinning_compass.ogv" is in my game's main folder. The current engine's default `game.publishfileextensions` already includes `*.ogv`, so you shouldn't normally need to add it yourself - you'd only need to add an extension manually if it isn't already in that default list. For more on the file extensions included in your game, see [A Note on The Publish Process](/tutorial/releasing-your-game).
+The file "spinning_compass.ogv" is in my game's main folder. Every file in that folder is included when you publish, so the video is packaged with your game. For more, see [The publish process](/publishing/publishing#the-publish-process).
 
 To simulate the “Wait for sound to finish before continuing” option when adding videos to a game via HTML video elements, follow the link at the end of this document.
 

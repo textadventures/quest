@@ -119,9 +119,7 @@ msg ("<audio src='" + src + "' autoplay/>")
 
 The file "snd effect.ogg" is in my game's main folder.
 
-The current engine's default `game.publishfileextensions` already includes `*.ogg`, so this step usually isn't necessary - you'd only need to add an extension manually if it isn't already in that default list.
-
-For more on the file extensions included in your game, see [A Note on The Publish Process](/tutorial/releasing-your-game).
+Every file in that folder is included when you publish, so the sound is packaged with your game. For more, see [The publish process](/publishing/publishing#the-publish-process).
 
 To simulate the “Wait for sound to finish before continuing” option when adding sounds to your game via HTML audio elements, follow the link at the end of this document.
 

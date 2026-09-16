@@ -6,7 +6,7 @@
     import { PUBLIC_WASM_PLAYER_URL, PUBLIC_SHOW_HOME } from "$env/static/public";
     import {
         gameFilename, isLoaded, isDirty, isSaving, isEditingField, getLastEditedElement, saveError, retrySave, saveGame, saveGameAs, canSaveAs, backupGame, canBackup,
-        publishModalOpen, exportHtmlModalOpen,
+        publishModalOpen,
         previewInWasmPlayer,
         undo, redo, canUndo, canRedo,
         navigateBack, navigateForward, canGoBack, canGoForward,
@@ -33,7 +33,6 @@
     import Save from "@lucide/svelte/icons/save";
     import Download from "@lucide/svelte/icons/download";
     import Package from "@lucide/svelte/icons/package";
-    import Globe from "@lucide/svelte/icons/globe";
     import Play from "@lucide/svelte/icons/play";
     import Check from "@lucide/svelte/icons/check";
     import LoaderCircle from "@lucide/svelte/icons/loader-circle";
@@ -176,7 +175,6 @@
         if ($canSaveAs) items.push({ label: t("toolbar.saveAs"), action: handleSaveAs, icon: Save, disabled: saving });
         if ($canBackup) items.push({ label: t("toolbar.backup"), action: handleBackup, icon: Download, disabled: saving });
         if ($gameFilename) items.push({ label: t("toolbar.publish"), action: () => publishModalOpen.set(true), icon: Package });
-        if ($gameFilename) items.push({ label: t("toolbar.exportHtml"), action: () => exportHtmlModalOpen.set(true), icon: Globe });
         return items;
     });
 

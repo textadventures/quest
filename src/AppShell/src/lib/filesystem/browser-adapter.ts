@@ -101,6 +101,7 @@ export class BrowserFileAdapter implements FileAdapter {
     ) {}
 
     get filename() { return this._filename; }
+    get assetFolderName() { return this._dir.name; }
     readonly canSaveAs = true;
 
     async saveFile(data: Uint8Array | string): Promise<void> {
@@ -150,7 +151,8 @@ export class BrowserFileAdapter implements FileAdapter {
             const assets: AssetInfo[] = [];
             for await (const [name, handle] of this._dir) {
                 if (handle.kind === "file" && !isLibraryFilename(name) && !isJunkAssetName(name)) {
-                    assets.push({ key: name, url: "" });
+                    const size = (await (handle as FileSystemFileHandle).getFile()).size;
+                    assets.push({ key: name, url: "", size });
                 }
             }
             return assets;

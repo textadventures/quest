@@ -7,7 +7,7 @@ internal class Packager(WorldModel worldModel)
 {
     private readonly WorldModel _worldModel = worldModel;
 
-    public bool CreatePackage(string? filename, bool includeWalkthrough, out string error,
+    public bool CreatePackage(string? filename, out string error,
         IEnumerable<WorldModel.PackageIncludeFile>? includeFiles, Stream? outputStream)
     {
         error = string.Empty;
@@ -20,7 +20,7 @@ internal class Packager(WorldModel worldModel)
                 _worldModel.Game.Fields.Set("gameid", Guid.NewGuid().ToString());
             }
 
-            var data = _worldModel.Save(SaveMode.Package, includeWalkthrough);
+            var data = _worldModel.Save(SaveMode.Package);
             // Babel "other file formats": literal ASCII UUID://…// somewhere in the file.
             // ZIP archive comment is written at the end of the archive as raw bytes.
             // Trailing newline to workaround https://github.com/iftechfoundation/babel-tool/issues/43

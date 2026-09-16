@@ -10,7 +10,7 @@ internal class GameXmlWriter
     private readonly StringBuilder _output;
     private readonly XmlWriter _writer;
 
-    public GameXmlWriter(SaveMode mode, GameXmlWriterOptions? options = null)
+    public GameXmlWriter(SaveMode mode)
     {
         Mode = mode;
         _output = new StringBuilder();
@@ -21,18 +21,11 @@ internal class GameXmlWriter
             OmitXmlDeclaration = true
         };
         _writer = XmlWriter.Create(_output, settings);
-        options ??= new GameXmlWriterOptions
-        {
-            IncludeWalkthrough = mode != SaveMode.Package
-        };
-        Options = options;
     }
 
     public int IndentLevel { get; private set; }
 
     public SaveMode Mode { get; }
-
-    public GameXmlWriterOptions Options { get; }
 
     public void WriteComment(string text)
     {
@@ -97,10 +90,5 @@ internal class GameXmlWriter
     public override string ToString()
     {
         return _output.ToString();
-    }
-
-    internal class GameXmlWriterOptions
-    {
-        public bool IncludeWalkthrough { get; init; }
     }
 }

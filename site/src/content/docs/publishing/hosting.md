@@ -32,9 +32,9 @@ This option should work on any web host, such as Netlify - you can try [Netlify 
 - Edit `quest-config.js` to point `defaultGameUrl` to your `.quest` file
 - Upload the entire folder to your web host
 
-### Export as HTML
+### Publish as HTML
 
-From the editor's **File** menu, choose **Export as HTML…**. Playing needs the Quest player; the dialog asks how you want to handle that:
+From the editor's **File** menu, choose **Publish…**. Besides the `.quest` file, the dialog offers two HTML options, which bundle your game with the Quest player:
 
 - **Small HTML file** — one small `.html` with your game embedded. Visitors load the player from a CDN when they play.
   - The CDN ([jsDelivr](https://www.jsdelivr.com/)) has to be reachable for the "small HTML file" option to load. If jsDeliver is blocked for your audience, the same package is also on [unpkg](https://unpkg.com/): open the exported `.html`, find the `<base href="https://cdn.jsdelivr.net/npm/@textadventures/quest-viva-wasmplayer@...">` line, and change it to the same path under `https://unpkg.com/@textadventures/quest-viva-wasmplayer@...`.
