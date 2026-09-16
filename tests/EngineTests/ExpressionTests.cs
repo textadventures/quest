@@ -175,6 +175,20 @@ public class ExpressionTests
     [DataRow($"{ObjectName}.{IntAttributeName} and 0x7FFF", IntAttributeValue & 0x7FFF)]
     [DataRow("(0x8D0E >> 1 xor 0x9F81 >> 1) and 0x7FFF", 2375)]
     [DataRow("((0x8D0E >> 1 xor 0x9F81 >> 1) and 0x7FFF) % 100", 75)]
+    // FLEE precedence is and > or > xor for integers too
+    [DataRow("1 or 6 and 3", 3)]
+    [DataRow("6 and 3 or 1", 3)]
+    [DataRow("1 xor 3 or 4", 6)]
+    [DataRow("4 or 1 xor 3", 6)]
+    [DataRow("7 xor 6 and 3", 5)]
+    // FLEE treats not as a bitwise complement on integers
+    [DataRow("not 5", -6)]
+    [DataRow("not 0", -1)]
+    [DataRow("not -1", 0)]
+    [DataRow($"not {ObjectName}.{IntAttributeName}", ~IntAttributeValue)]
+    [DataRow("not 5 and 0xFF", 250)]
+    [DataRow("12 and not 4", 8)]
+    [DataRow("not not 5", 5)]
     public async Task TestIntExpressions(string expression, int expectedResult)
     {
         var result = await RunExpression<int>(expression);
@@ -220,6 +234,28 @@ public class ExpressionTests
     [DataRow("false xor true", true)]
     [DataRow("false xor false", false)]
     [DataRow("true and true xor true", false)]
+    // FLEE precedence, tightest first: not > and > or > xor
+    [DataRow("true or false and false", true)]
+    [DataRow("false and false or true", true)]
+    [DataRow("false and false xor true", true)]
+    [DataRow("true xor true and false", true)]
+    [DataRow("true xor false or true", false)]
+    [DataRow("true or true xor true", false)]
+    [DataRow("true xor true or true", false)]
+    [DataRow("(true xor true) or true", true)]
+    [DataRow("true or false xor true or false", false)]
+    [DataRow("not false or true and false", true)]
+    [DataRow("not true or true and true", true)]
+    [DataRow("not (true or true) and true", false)]
+    [DataRow("1 = 1 or 1 = 2 and 1 = 2", true)]
+    [DataRow("true || false && false", true)]
+    [DataRow("not 0 = 0", false)]
+    [DataRow("not 5 = 3", true)]
+    [DataRow("(not 5) = 3", false)]
+    [DataRow("(not 5) = -6", true)]
+    [DataRow("false or true and not false", true)]
+    // "true or (false and ...)" short-circuits; "(true or false) and ..." would divide by zero
+    [DataRow("true or false and 1 / 0 = 1", true)]
     // and/or short-circuit, so the right-hand side (which would throw) is never evaluated
     [DataRow("false and 1 / 0 = 1", false)]
     [DataRow("true or 1 / 0 = 1", true)]

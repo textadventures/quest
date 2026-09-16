@@ -27,7 +27,10 @@ public static class QuestNCalcLogicalExpressionParser
          * Grammar:
          * expression     => ternary ( ( "-" | "+" ) ternary )* ;
          * ternary        => logical ( "?" logical ":" logical)?
-         * logical        => equality ( ( "and" | "or" | "xor" ) equality )* ;
+         * logical        => or ( "xor" or )* ;
+         * or             => and ( ( "or" | "|" ) and )* ;
+         * and            => not ( ( "and" | "&" ) not )* ;
+         * not            => ( "not" | "!" ) not | equality ;
          * equality       => relational ( ( "=" | "!=" | ... ) relational )* ;
          * relational     => shift ( ( ">=" | ">" | ... ) shift )* ;
          * shift          => additive ( ( "<<" | ">>" ) additive )* ;
@@ -173,6 +176,7 @@ public static class QuestNCalcLogicalExpressionParser
             Terms.Text("!"));
         var and = OneOf(Terms.Text("AND", true), Terms.Text("&&"));
         var or = OneOf(Terms.Text("OR", true), Terms.Text("||"));
+        var xor = Terms.Text("XOR", true);
 
         var bitwiseAnd = Terms.Text("&");
         var bitwiseOr = Terms.Text("|");
@@ -508,35 +512,27 @@ public static class QuestNCalcLogicalExpressionParser
             (not, value => new UnaryExpression(UnaryExpressionType.Not, value))
         );
 
-        var andParser = and.Then<Func<LogicalExpression, LogicalExpression, LogicalExpression>>(
-                _ => (a, b) => new BinaryExpression(BinaryExpressionType.And, a, b))
-            .Or(bitwiseAnd.Then<Func<LogicalExpression, LogicalExpression, LogicalExpression>>(
-                _ => (a, b) => new BinaryExpression(BinaryExpressionType.BitwiseAnd, a, b)));
+        // FLEE's precedence, tightest first: and > or > xor, so "a or b and c" is "a or (b and c)".
+        // and => not ( ( "and" | "&" ) not )* ;
+        var andExpression = notOperator.LeftAssociative(
+            (and, static (a, b) => new BinaryExpression(BinaryExpressionType.And, a, b)),
+            (bitwiseAnd, static (a, b) => new BinaryExpression(BinaryExpressionType.BitwiseAnd, a, b))
+        );
 
-        var orParser = or.Then<Func<LogicalExpression, LogicalExpression, LogicalExpression>>(
-                _ => (a, b) => new BinaryExpression(BinaryExpressionType.Or, a, b))
-            .Or(bitwiseOr.Then<Func<LogicalExpression, LogicalExpression, LogicalExpression>>(
-                _ => (a, b) => new BinaryExpression(BinaryExpressionType.BitwiseOr, a, b)));
+        // or => and ( ( "or" | "|" ) and )* ;
+        var orExpression = andExpression.LeftAssociative(
+            (or, static (a, b) => new BinaryExpression(BinaryExpressionType.Or, a, b)),
+            (bitwiseOr, static (a, b) => new BinaryExpression(BinaryExpressionType.BitwiseOr, a, b))
+        );
 
         // "xor" text keyword → BitwiseXOr node. NcalcExpressionEvaluator intercepts it (along with
         // And/Or) so that, as in FLEE, it's logical for booleans and bitwise for integers - NCalc's
         // own BitwiseXOr would return UInt64 for booleans.
         // Note: "^" is exponentiation (FLEE compat), not XOR.
-        var xorParser = Terms.Text("XOR", true).Then<Func<LogicalExpression, LogicalExpression, LogicalExpression>>(
-            _ => (a, b) => new BinaryExpression(BinaryExpressionType.BitwiseXOr, a, b));
-
-        // logical => equality ( ( "and" | "or" | "xor" ) equality )* ;
-        var logical = notOperator.And(ZeroOrMany(OneOf(andParser, orParser, xorParser).And(notOperator)))
-            .Then(x =>
-            {
-                var result = x.Item1;
-                foreach (var (combiner, right) in x.Item2)
-                {
-                    result = combiner(result, right);
-                }
-
-                return result;
-            });
+        // logical => or ( "xor" or )* ;
+        var logical = orExpression.LeftAssociative(
+            (xor, static (a, b) => new BinaryExpression(BinaryExpressionType.BitwiseXOr, a, b))
+        );
 
         // ternary => logical("?" logical ":" logical) ?
         var ternary = logical.And(ZeroOrOne(questionMark.SkipAnd(logical).AndSkip(colon).And(logical)))

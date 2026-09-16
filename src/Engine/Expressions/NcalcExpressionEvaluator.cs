@@ -26,7 +26,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         _expressionOwner = scriptContext.WorldModel.ExpressionOwner;
         _expression = Utility.ResolveElementName(expression);
 
-        _nCalcExpression = new Expression(expression,
+        _nCalcExpression = new QuestNCalcExpression(expression,
             new ExpressionContext { Options = ExpressionOptions.NoStringTypeCoercion },
             QuestNCalcExpressionFactory.GetInstance(),
             LogicalExpressionCache.GetInstance());
