@@ -25,6 +25,11 @@ internal sealed class GameDriver
     public WorldModel Model => _worldModel;
     public Mock<IPlayer> PlayerMock { get; private set; }
 
+    // What BeginAsync printed, and any script error it raised - LoadAsync clears both so that
+    // the first step's output starts empty.
+    public IReadOnlyList<string> StartOutput { get; private set; } = [];
+    public Exception? StartError { get; private set; }
+
     private static readonly Regex StripTags = new(@"<[^>]+>", RegexOptions.Compiled);
 
     private GameDriver(WorldModel worldModel, Mock<IPlayer> playerMock)
@@ -57,7 +62,9 @@ internal sealed class GameDriver
         if (!success)
             throw new Exception($"Game failed to load: {string.Join("; ", model.Errors)}");
         await model.BeginAsync();
-        driver._batch.Clear();
+        driver.StartOutput = driver._batch;
+        driver.StartError = driver._scriptError;
+        driver._batch = [];
         driver._scriptError = null;
         return driver;
     }

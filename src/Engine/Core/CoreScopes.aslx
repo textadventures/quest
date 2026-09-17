@@ -192,12 +192,19 @@
   <function name="ScopeCommands" type="objectlist">
     result = NewObjectList()
     foreach (command, AllCommands()) {
-      if (command.parent = null or command.parent = game.pov.parent) {
+      if (command.parent = null) {
         list add (result, command)
       }
-      if (not game.pov.parent.parent = null) {
-        if (command.parent = game.pov.parent.parent) {
+      // game.pov is still null while InitInterface runs the inituserinterface script, which can
+      // already print {command:} links - e.g. an inline ask or show menu
+      else if (not game.pov = null) {
+        if (command.parent = game.pov.parent) {
           list add (result, command)
+        }
+        else if (not game.pov.parent = null) {
+          if (command.parent = game.pov.parent.parent) {
+            list add (result, command)
+          }
         }
       }
     }

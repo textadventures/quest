@@ -1,0 +1,32 @@
+<asl version="600">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="inlinepromptinittest">
+    <!-- Runs before game.pov is set, so the option links are printed with no player yet -->
+    <inituserinterface type="script">
+      ask ("Sound effects on?") {
+        msg ("ask: " + result)
+      }
+    </inituserinterface>
+  </game>
+  <object name="start">
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+  <!-- A command with a parent, which ScopeCommands can only match against game.pov's location -->
+  <command name="cmd_ping">
+    <pattern>ping</pattern>
+    <script>
+      msg ("pong")
+    </script>
+  </command>
+  <object name="elsewhere">
+    <command name="cmd_elsewhere">
+      <pattern>elsewhere</pattern>
+      <script>
+        msg ("here")
+      </script>
+    </command>
+  </object>
+</asl>
