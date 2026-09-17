@@ -2,9 +2,9 @@ name: release-please
 
 # Maintains an up-to-date "release PR" that bumps VERSION and CHANGELOG.md
 # from Conventional Commits-formatted PR titles merged to main. Merging that
-# release PR is the release: this job tags it directly (v6.0.0-beta.N), which
-# in turn triggers docker-publish.yml, nuget-publish.yml, and deploy-play.yml
-# — no manual release.sh run needed.
+# release PR is the release: this job tags it directly (e.g. v6.0.0-rc.N), which
+# in turn triggers docker-publish.yml, nuget-publish.yml, deploy-play.yml, and
+# the other tag-triggered workflows — no manual release.sh run needed.
 on:
   push:
     branches: [main]
@@ -22,22 +22,38 @@ jobs:
         with:
           token: ${{ secrets.RELEASE_PAT }}
 
+      - uses: actions/checkout@v7
+        if: ${{ steps.release.outputs.release_created }}
+        with:
+          sparse-checkout: .github/scripts
+
       # release-please-config.json sets prerelease: true so the "prerelease"
-      # versioning strategy keeps bumping the trailing beta.N instead of
+      # versioning strategy keeps bumping the trailing beta.N/rc.N instead of
       # graduating out of it (that config key drives both the version-bump
-      # logic and the GitHub Release's prerelease flag). Un-flag the release
-      # itself here so it isn't structurally excluded from ever holding
-      # "Latest" — but draft it rather than publish it: deploy-play.yml and
+      # logic and the GitHub Release's prerelease flag). For a stable-channel
+      # release (see docs/release-channels.md), un-flag the release itself here
+      # so it isn't structurally excluded from ever holding "Latest". A
+      # prerelease-channel release keeps the flag, which is what stops
+      # releases/latest — and so the download buttons and the desktop update
+      # banner — from ever offering it to stable users.
+      #
+      # Either way, draft it rather than publish it: deploy-play.yml and
       # electron-publish.yml (triggered by the tag push, already fired by
       # release-please-action's creation of this release above — drafting
       # afterward doesn't affect that) still need to attach their installers,
       # and electron-publish.yml's macOS leg (code signing + notarization)
-      # can take 15+ minutes. A public visitor hitting releases/latest during
+      # can take 15+ minutes. A public visitor browsing releases during
       # that window would otherwise see a release missing some/all installers.
-      # finalize-release.yml un-drafts (and marks --latest) once both
-      # deploy-play.yml and electron-publish.yml have succeeded.
-      - name: Un-prerelease and draft the release
+      # finalize-release.yml un-drafts it once both deploy-play.yml and
+      # electron-publish.yml have succeeded.
+      - name: Draft the release, and un-prerelease it if it's stable
         if: ${{ steps.release.outputs.release_created }}
         env:
           GH_TOKEN: ${{ secrets.RELEASE_PAT }}
-        run: gh release edit "${{ steps.release.outputs.tag_name }}" --prerelease=false --draft=true --repo ${{ github.repository }}
+          TAG: ${{ steps.release.outputs.tag_name }}
+        run: |
+          if [ "$(.github/scripts/release-channel.sh "$TAG")" == "stable" ]; then
+            gh release edit "$TAG" --prerelease=false --draft=true --repo ${{ github.repository }}
+          else
+            gh release edit "$TAG" --prerelease=true --draft=true --repo ${{ github.repository }}
+          fi

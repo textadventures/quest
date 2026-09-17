@@ -79,6 +79,18 @@ jobs:
           echo "sha=$SHA" >> "$GITHUB_OUTPUT"
           echo "proceed=true" >> "$GITHUB_OUTPUT"
 
+      - uses: actions/checkout@v7
+        if: steps.ref.outputs.proceed == 'true'
+        with:
+          sparse-checkout: .github/scripts
+
+      - name: Determine the release channel
+        id: channel
+        if: steps.ref.outputs.proceed == 'true'
+        env:
+          TAG: ${{ steps.ref.outputs.tag }}
+        run: echo "channel=$(.github/scripts/release-channel.sh "$TAG")" >> "$GITHUB_OUTPUT"
+
       - name: Check whether both workflows have succeeded for this commit
         id: check
         if: steps.ref.outputs.proceed == 'true'
@@ -103,12 +115,22 @@ jobs:
             echo "Already published (the other workflow's completion already triggered this) — nothing to do."
             echo "just_published=false" >> "$GITHUB_OUTPUT"
           else
-            gh release edit "$TAG" --repo ${{ github.repository }} --draft=false --latest
+            # Only a stable release is marked Latest. A prerelease keeps its
+            # prerelease flag (see release-please.yml), which GitHub never
+            # lets hold Latest anyway, so stable users keep being pointed at
+            # the last stable release.
+            if [ "${{ steps.channel.outputs.channel }}" == "stable" ]; then
+              gh release edit "$TAG" --repo ${{ github.repository }} --draft=false --latest
+            else
+              gh release edit "$TAG" --repo ${{ github.repository }} --draft=false
+            fi
             echo "just_published=true" >> "$GITHUB_OUTPUT"
           fi
 
+      # textadventures.co.uk only ever gets stable releases — see
+      # docs/release-channels.md.
       - name: Pin WebEditor version in textadventures.co.uk
-        if: steps.publish.outputs.just_published == 'true'
+        if: steps.publish.outputs.just_published == 'true' && steps.channel.outputs.channel == 'stable'
         run: |
           curl -s -o /dev/null -w "%{http_code}" -X PATCH \
             -H "Authorization: token ${{ secrets.TA_DEPLOY_PAT }}" \
@@ -117,7 +139,7 @@ jobs:
             -d "{\"name\":\"WEBEDITOR_VERSION\",\"value\":\"${{ steps.ref.outputs.tag }}\"}"
 
       - name: Trigger textadventures.co.uk deployment
-        if: steps.publish.outputs.just_published == 'true'
+        if: steps.publish.outputs.just_published == 'true' && steps.channel.outputs.channel == 'stable'
         uses: peter-evans/repository-dispatch@v4
         with:
           token: ${{ secrets.TA_DEPLOY_PAT }}
