@@ -16,7 +16,7 @@ Until 6.0.0 ships, that script also treats `v6.0.0-rc.*` as stable, since those 
 | Docker image (`docker-publish.yml`) | `:<version>` and `:latest` (what play.textadventures.co.uk's prod compose file pulls) | `:<version>` and `:beta` |
 | npm package (`npm-publish.yml`) | dist-tag `latest` | dist-tag `beta` |
 | NuGet packages | Stable version | Prerelease version (NuGet handles this from the version string alone) |
-| Electron installers | Attached to the release | Attached to the (prerelease) release; see the open items for side-by-side installs |
+| Electron installers (`electron-publish.yml`) | "Quest Viva" | "Quest Viva Beta", a separate app that installs alongside the stable one |
 
 A manual `workflow_dispatch` run of `deploy-play.yml` from a branch always deploys to the beta site, because `main` holds the next release's development work.
 
@@ -32,7 +32,7 @@ Because `releases/latest` skips prereleases, the download buttons (AppShell's `d
 ## Keeping 6.0 users safe from betas
 
 - **Browser storage:** play-beta.questviva.com is a separate origin, so it has its own OPFS drafts, IndexedDB saves and localStorage. A beta can't migrate or damage data that 6.0 needs to read. The flip side is that beta users don't see their stable drafts, so the beta site should say so.
-- **Electron:** the app ID (`com.questviva.desktop`) and product name are the same for every build, so a beta install would replace the stable app and share its user-data directory. Betas need their own identity ("Quest Viva Beta", a separate app ID) before the first 6.1 beta ships.
+- **Electron:** prerelease builds are packaged as a separate app, "Quest Viva Beta", with its own app ID, install location and user-data directory, so a beta never replaces the stable app or touches its data. See "Beta builds" in [electron-desktop-app.md](./electron-desktop-app.md).
 - **ASL version:** if 6.1 introduces a new ASL version, games saved with the beta editor won't open in 6.0 players, including textadventures.co.uk's. The catalog's `maxAslVersion` filter covers the reading side, not authors uploading such games. Only raise the ASL version when a feature actually needs it, and warn authors about this when they publish from the beta editor.
 
 ## Docs site
@@ -56,6 +56,7 @@ There's one docs site, questviva.com, deployed from `main`, with no per-version 
 
 - [ ] Create the `play-questviva-beta` Cloudflare Pages project with the same settings as `play-questviva`, and add the play-beta.questviva.com custom domain.
 - [ ] textadventures.co.uk repo: add `https://play-beta.questviva.com` to `CorsUtility.IsAllowedGamesApiOrigin`.
-- [ ] textadventures.co.uk repo: make `LatestVersionService` channel-aware, so a beta Electron client (identified by the prerelease suffix in `ClientInfo.version`) is told about newer betas as well as newer stable releases.
-- [ ] Separate identity for beta Electron builds (see above).
+- [ ] textadventures.co.uk repo: make `LatestVersionService` channel-aware, so a beta Electron client (identified by the prerelease suffix in `ClientInfo.version`) is told about newer betas as well as newer stable releases. Beta installers are named `Quest Viva Beta-<version>-...`, so any asset matching there needs to allow for that.
+- [x] Separate identity for beta Electron builds (see above).
+- [ ] Optional: a distinct icon for Quest Viva Beta, so the two apps are easy to tell apart in the dock or taskbar.
 - [ ] A banner on the beta site saying it's a beta, that its data is separate from play.questviva.com's, and linking back to the stable site.

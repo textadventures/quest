@@ -1,5 +1,6 @@
 {
   "name": "quest-viva-desktop",
+  "productName": "Quest Viva",
   "version": "0.0.1",
   "private": true,
   "description": "Quest Viva desktop app — create and play text adventure games",
@@ -22,7 +23,6 @@
   },
   "build": {
     "appId": "com.questviva.desktop",
-    "productName": "Quest Viva",
     "directories": {
       "output": "release"
     },

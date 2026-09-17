@@ -1,6 +1,6 @@
 name: Publish Electron desktop app
 
-# Runs when a version tag is pushed (e.g. v6.0.0-beta.30, normally via
+# Runs when a version tag is pushed (e.g. v6.0.0-rc.3, normally via
 # release-please merging its release PR), same trigger as docker-publish.yml,
 # nuget-publish.yml, and deploy-play.yml — builds on all three OSes and
 # attaches the unsigned installers/AppImage to the GitHub Release
@@ -47,6 +47,21 @@ jobs:
             echo "❌ Tag $GITHUB_REF_NAME does not match VERSION file ($FILE_VERSION)"
             exit 1
           fi
+
+      # Prereleases are packaged as a separate "Quest Viva Beta" app (see
+      # src/ElectronApp/scripts/dist.mjs) so they install side by side with
+      # the stable app. A manual (non-tag) run builds the beta variant too,
+      # matching deploy-play.yml. See docs/release-channels.md.
+      - name: Determine the release channel
+        shell: bash
+        run: |
+          if [ "$GITHUB_REF_TYPE" == "tag" ]; then
+            CHANNEL="$(.github/scripts/release-channel.sh "$GITHUB_REF_NAME")"
+          else
+            CHANNEL=prerelease
+          fi
+          echo "RELEASE_CHANNEL=$CHANNEL" >> "$GITHUB_ENV"
+          echo "Channel: $CHANNEL"
 
       - uses: actions/setup-dotnet@v5
         with:
@@ -170,6 +185,8 @@ jobs:
           # Set via env (not inline `VAR=value` shell syntax) since the
           # windows-latest runner in this matrix defaults to pwsh, not bash.
           WASM_CONFIG: Release
+          # RELEASE_CHANNEL is also read by dist.mjs; it comes from the
+          # channel step above via GITHUB_ENV.
           # Developer ID signing + notarization, macOS only. CSC_KEYCHAIN comes
           # from the step above (via GITHUB_ENV, so it's only ever set on the
           # macOS leg); CSC_LINK/CSC_KEY_PASSWORD are deliberately NOT set —
