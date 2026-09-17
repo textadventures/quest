@@ -229,7 +229,7 @@ All three built and published by `electron-publish.yml` (see Releasing below) â€
 
 ### Beta builds
 
-Prerelease tags are packaged as a separate app, **Quest Viva Beta**, so a beta installs alongside the stable app instead of replacing it, and keeps its own settings, saves, recent games and single-instance lock. `electron-publish.yml` sets `RELEASE_CHANNEL` from `.github/scripts/release-channel.sh`, and `dist.mjs` then overrides the identity in four places:
+Prerelease tags are packaged as a separate app, **Quest Viva Beta**, so a beta installs alongside the stable app instead of replacing it, and keeps its own settings, saves, recent games and single-instance lock. `electron-publish.yml` sets `RELEASE_CHANNEL` from `.github/scripts/release-channel.sh`, and `dist.mjs` then overrides the app's identity and icons:
 
 | Setting | Stable | Beta | What it controls |
 |---|---|---|---|
@@ -237,10 +237,11 @@ Prerelease tags are packaged as a separate app, **Quest Viva Beta**, so a beta i
 | `name` | `quest-viva-desktop` | `quest-viva-desktop-beta` | Windows install directory, `.deb` package name, Linux executable |
 | `productName` | `Quest Viva` | `Quest Viva Beta` | App bundle, shortcut and artifact names; runtime app name and so the `userData` directory |
 | `desktopName` | `quest-viva.desktop` | `quest-viva-beta.desktop` | Linux `.desktop` file and WM_CLASS (see `build/README.md`) |
+| Icons | `build/` | `build/beta/` | App, installer, About panel and Linux window icons |
 
 The runtime name comes from `productName` at the top level of `package.json`, which is why `main.ts` reads `app.getName()` rather than hardcoding a name. The stable app's `userData` directory has always been `Quest Viva`, and keeping `productName` at that value keeps it there.
 
-To build the beta variant locally, run `RELEASE_CHANNEL=prerelease npm run dist`. Both variants currently use the same icon.
+Beta builds also use their own icon, a purple version with a "BETA" band, from `build/beta/` (see `build/README.md`). To build the beta variant locally, run `RELEASE_CHANNEL=prerelease npm run dist`.
 
 See [release-channels.md](./release-channels.md) for how channels work across every release surface.
 

@@ -27,6 +27,22 @@ This directory is electron-builder's default `build resources` location
 it picks up `icon.icns`/`icon.ico` automatically, no explicit `icon` config
 needed for those two, unlike Linux's `icons/`.
 
+## Beta icon (`beta/`)
+
+Prerelease builds ("Quest Viva Beta", see "Beta builds" in
+`docs/electron-desktop-app.md`) use the icon set in `beta/`. Its source,
+`beta/icon-source.svg`, is `icon-source.svg` with two changes: a medium-purple
+background, which still tells the apps apart at taskbar sizes where the label
+can't be read, and a yellow "BETA" band along the bottom, with the monogram
+shrunk and raised to make room. `scripts/dist.mjs` points electron-builder at
+these files for prerelease builds, and stages the matching 512px PNG as the
+`icon.png` extraResource.
+
+The "BETA" label is live SVG text in Helvetica Neue (falling back to Arial),
+so it renders with whatever fonts the generating machine has. The committed
+files were generated on macOS. Regenerate them with the same commands as
+below, run from inside `beta/`.
+
 ## Linux taskbar icon (separate from the icon files above)
 
 Even with a correct `icons/` set and the `BrowserWindow` `icon` option (see

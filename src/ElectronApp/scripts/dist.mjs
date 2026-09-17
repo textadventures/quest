@@ -7,7 +7,7 @@
 // build({ config: {...} }) merges with package.json's "build" field the same
 // way the CLI's -c/--config dot-path flags do (same underlying function).
 
-import { readFileSync } from "node:fs";
+import { copyFileSync, mkdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { build } from "electron-builder";
@@ -29,17 +29,31 @@ const version = readFileSync(path.join(repoRoot, "VERSION"), "utf8").trim();
 //   runtime app name, which also picks the userData directory (see main.ts).
 // - desktopName: the Linux .desktop file and WM_CLASS, which must match each
 //   other (see build/README.md), and must differ from the stable app's.
-const channelConfig =
-    process.env.RELEASE_CHANNEL === "prerelease"
-        ? {
-              appId: "com.questviva.desktop.beta",
-              extraMetadata: {
-                  name: "quest-viva-desktop-beta",
-                  productName: "Quest Viva Beta",
-                  desktopName: "quest-viva-beta.desktop",
-              },
-          }
-        : { extraMetadata: {} };
+// - mac/win/linux icon: the purple "BETA" icon set in build/beta.
+const isBeta = process.env.RELEASE_CHANNEL === "prerelease";
+const channelConfig = isBeta
+    ? {
+          appId: "com.questviva.desktop.beta",
+          mac: { icon: "build/beta/icon.icns" },
+          win: { icon: "build/beta/icon.ico" },
+          linux: { icon: "build/beta/icons" },
+          extraMetadata: {
+              name: "quest-viva-desktop-beta",
+              productName: "Quest Viva Beta",
+              desktopName: "quest-viva-beta.desktop",
+          },
+      }
+    : { extraMetadata: {} };
+
+// The About panel (and, on Linux, the window) icon ships as an extraResource
+// (see aboutIconPath() in main.ts). electron-builder concatenates array
+// settings like extraResources when merging config rather than replacing them,
+// so the beta can't swap that entry out here. Instead, package.json points it
+// at this staging copy, and we fill it with the right channel's icon.
+const iconDir = path.join(__dirname, "..", "build", ...(isBeta ? ["beta"] : []), "icons");
+const stagedIconDir = path.join(__dirname, "..", "resources", "app-icon");
+mkdirSync(stagedIconDir, { recursive: true });
+copyFileSync(path.join(iconDir, "512x512.png"), path.join(stagedIconDir, "icon.png"));
 
 try {
     // electron-builder defaults to implicit publishing when it detects CI

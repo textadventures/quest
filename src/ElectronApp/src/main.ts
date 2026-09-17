@@ -73,9 +73,10 @@ function staticRoot(): string {
         : path.join(__dirname, "..", "resources", "app-static");
 }
 
-// build/icons/512x512.png ships via extraResources (as icon.png) for the
-// packaged app; dev runs against the source file directly since there's no
-// resourcesPath yet.
+// The packaged app ships its channel's build/icons/512x512.png (stable, or
+// the beta set in build/beta) as an extraResource named icon.png — see
+// scripts/dist.mjs. Dev runs against the stable source file directly since
+// there's no resourcesPath yet.
 function aboutIconPath(): string {
     return app.isPackaged
         ? path.join(process.resourcesPath, "icon.png")

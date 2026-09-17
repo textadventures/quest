@@ -35,7 +35,7 @@
         "to": "app-static"
       },
       {
-        "from": "build/icons/512x512.png",
+        "from": "resources/app-icon/icon.png",
         "to": "icon.png"
       }
     ],

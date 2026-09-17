@@ -58,5 +58,5 @@ There's one docs site, questviva.com, deployed from `main`, with no per-version 
 - [ ] textadventures.co.uk repo: add `https://play-beta.questviva.com` to `CorsUtility.IsAllowedGamesApiOrigin`.
 - [ ] textadventures.co.uk repo: make `LatestVersionService` channel-aware, so a beta Electron client (identified by the prerelease suffix in `ClientInfo.version`) is told about newer betas as well as newer stable releases. Beta installers are named `Quest Viva Beta-<version>-...`, so any asset matching there needs to allow for that.
 - [x] Separate identity for beta Electron builds (see above).
-- [ ] Optional: a distinct icon for Quest Viva Beta, so the two apps are easy to tell apart in the dock or taskbar.
+- [x] A distinct icon for Quest Viva Beta (purple, with a "BETA" band).
 - [ ] A banner on the beta site saying it's a beta, that its data is separate from play.questviva.com's, and linking back to the stable site.
