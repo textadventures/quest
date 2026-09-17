@@ -57,10 +57,12 @@ app.on("open-file", (event, filePath) => {
     else pendingOpenPath = filePath;
 });
 
-// Without this, Electron's default macOS menu ("About "/"Quit ") falls back
-// to package.json's "name" ("quest-viva-desktop") in dev — set as early as
-// possible so it's correct whether packaged or run via `electron .`.
-app.setName("Quest Viva");
+// Electron names the app after package.json's "productName" at startup, and
+// that name also picks the userData directory (so the installed stable app's
+// data lives under "Quest Viva"). Beta builds override productName (see
+// scripts/dist.mjs), which is what gives them their own name, menus, window
+// titles and userData — so read the name back rather than hardcoding it.
+const appName = app.getName();
 
 // Packaged: resources/app-static ships via electron-builder's extraResources.
 // Dev: `npm run build` copies the same three directories here directly (see
@@ -71,9 +73,10 @@ function staticRoot(): string {
         : path.join(__dirname, "..", "resources", "app-static");
 }
 
-// build/icons/512x512.png ships via extraResources (as icon.png) for the
-// packaged app; dev runs against the source file directly since there's no
-// resourcesPath yet.
+// The packaged app ships its channel's build/icons/512x512.png (stable, or
+// the beta set in build/beta) as an extraResource named icon.png — see
+// scripts/dist.mjs. Dev runs against the stable source file directly since
+// there's no resourcesPath yet.
 function aboutIconPath(): string {
     return app.isPackaged
         ? path.join(process.resourcesPath, "icon.png")
@@ -93,7 +96,7 @@ if (process.platform === "darwin") {
     // any field left unset renders blank rather than falling back to the app's
     // own name/icon/version, so all three have to be provided explicitly.
     app.setAboutPanelOptions({
-        applicationName: "Quest Viva",
+        applicationName: appName,
         applicationVersion: app.getVersion(),
         iconPath: aboutIconPath(),
     });
@@ -416,7 +419,7 @@ async function refreshMenu(): Promise<void> {
 
 function createEditorWindow(port: number, initialPath?: string | null, initialRoute?: string): void {
     editorWindow = new BrowserWindow({
-        title: "Quest Viva",
+        title: appName,
         width: 1280,
         height: 860,
         // BrowserWindow's `icon` option is only implemented on Linux and
@@ -456,7 +459,7 @@ function createEditorWindow(port: number, initialPath?: string | null, initialRo
 
     // AppShell's own <title> ("Quest Viva Editor") is correct for the
     // browser build, where it's the only app; the desktop app covers editing
-    // and playing, so it's just "Quest Viva" here — override the page's title
+    // and playing, so it's just the app's name here — override the page's title
     // instead of changing the shared app.html tag.
     editorWindow.on("page-title-updated", (event) => event.preventDefault());
 
