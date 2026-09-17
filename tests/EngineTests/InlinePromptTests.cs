@@ -171,4 +171,25 @@ public class InlinePromptTests
         output.ShouldNotContain("1: Yes");
         driver.PlayerMock.Verify(p => p.ShowQuestion(It.IsAny<string>(), false), Times.Once);
     }
+
+    [TestMethod]
+    public async Task AskScriptCommand_V600_InInitUserInterface_RendersBeforeGamePovIsSet()
+    {
+        // inituserinterface runs before InitInterface sets game.pov, and each option's {command:}
+        // link looks up ScopeCommands(), which used to dereference game.pov.parent (#2317).
+        var driver = await GameDriver.LoadAsync("inlinepromptinittest.aslx");
+
+        driver.StartError.ShouldBeNull();
+        driver.StartOutput.ShouldContain("Sound effects on?");
+        driver.StartOutput.ShouldContain("1: Yes");
+        driver.StartOutput.ShouldContain("2: No");
+        driver.StartOutput.ShouldNotContain(line => line.Contains("error"));
+
+        var output = await driver.SendCommandAsync("1");
+        output.ShouldContain("ask: True");
+
+        // Once game.pov is set, a command whose parent isn't the player's location stays out of scope.
+        (await driver.SendCommandAsync("ping")).ShouldContain("pong");
+        (await driver.SendCommandAsync("elsewhere")).ShouldNotContain("here");
+    }
 }

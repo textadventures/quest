@@ -52,6 +52,9 @@
         <None Update="inlineprompttest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="inlinepromptinittest.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="dialoguepagetest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
