@@ -1,12 +1,13 @@
 name: Deploy play.questviva.com and AppShell
 
-# Runs when a version tag is pushed (e.g. v6.0.0-beta.30, normally via
-# release-please merging its release PR), keeping play.questviva.com on the
-# same release cadence as the WebPlayer Docker image. Tag pushes also attach
+# Runs when a version tag is pushed (e.g. v6.0.0-rc.3, normally via
+# release-please merging its release PR), keeping play.questviva.com (stable
+# releases) and play-beta.questviva.com (prereleases) on the same release
+# cadence as the WebPlayer Docker image. Tag pushes also attach
 # WasmPlayer/AppBundle/AppShell build artifacts to the GitHub Release
-# release-please already created and dispatch a deploy to
-# textadventures.co.uk, so a single release cadence drives both
-# play.questviva.com and AppShell on textadventures.co.uk.
+# release-please already created, which finalize-release.yml then uses to
+# redeploy textadventures.co.uk (stable releases only), so a single release
+# cadence drives both play.questviva.com and AppShell on textadventures.co.uk.
 on:
   push:
     tags: ['v*']
@@ -30,6 +31,26 @@ jobs:
             echo "❌ Tag $GITHUB_REF_NAME does not match VERSION file ($FILE_VERSION)"
             exit 1
           fi
+
+      # Stable releases deploy to play.questviva.com, prereleases to
+      # play-beta.questviva.com — see docs/release-channels.md. A manual
+      # (non-tag) run always goes to the beta site: main is where the next
+      # release's development happens, so it must never overwrite the stable
+      # site.
+      - name: Determine the release channel
+        id: channel
+        run: |
+          if [ "$GITHUB_REF_TYPE" == "tag" ]; then
+            CHANNEL="$(.github/scripts/release-channel.sh "$GITHUB_REF_NAME")"
+          else
+            CHANNEL=prerelease
+          fi
+          if [ "$CHANNEL" == "stable" ]; then
+            echo "pages_project=play-questviva" >> "$GITHUB_OUTPUT"
+          else
+            echo "pages_project=play-questviva-beta" >> "$GITHUB_OUTPUT"
+          fi
+          echo "Channel: $CHANNEL"
 
       - uses: actions/setup-dotnet@v5
         with:
@@ -148,7 +169,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy deploy --project-name=play-questviva --branch=main
+          command: pages deploy deploy --project-name=${{ steps.channel.outputs.pages_project }} --branch=main
 
       - name: Package WasmPlayer artifact
         run: (cd src/WasmPlayer/bin/Release/net10.0/browser-wasm/AppBundle && zip -r $GITHUB_WORKSPACE/WasmPlayer.zip .)
