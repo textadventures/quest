@@ -27,7 +27,7 @@ The solution is to avoid moving the player on any of the built-in room scripts. 
 Occasionally you may see this error:
 
 ```quest
-Error running script: Error evaluating expression '(not GetBoolean(game.pov.parent, "visited")) and HasScript(game.pov.parent, "beforefirstenter")': GetBoolean function expected object parameter but was passed 'null'
+Error running script: Error evaluating expression '(not GetBoolean(game.pov.parent, "visited")) and HasScript(game.pov.parent, "beforefirstenter")': Value cannot be null. (Parameter 'obj')
 ```
 
 This happens when the player's "parent" attribute is set to null, and can happen if you try to move the player to a variable that has not been set (and Quest Viva will think an object name you have mis-spelled to be a variable).
@@ -69,7 +69,7 @@ Various attributes are already used by Quest Viva. Do not do anything with "type
 Runtime errors occur when playing the game. Quest Viva has tried to run a script, and realised there is an issue. You will get an error in the game output that will usually consist of two parts. Here is an example:
 
 ```quest
-Error running script: Error compiling expression 'game.myflag': RootExpressionElement: Cannot convert type 'Object' to expression result of 'Boolean'
+Error running script: Error evaluating expression 'game.count + 1': 'game.count' is null (it has not been set) and cannot be used in this calculation.
 ```
 
 It will generally not be obvious what it means, but it does give important clues about the issue.
@@ -80,7 +80,7 @@ It will generally not be obvious what it means, but it does give important clues
 The first part is in this format:
 
 ```
-Error running script: Error compiling expression '[whatever]':
+Error running script: Error evaluating expression '[whatever]':
 ```
 
 The `[whatever]` is the important part, as that is the code that Quest Viva cannot understand.
@@ -95,16 +95,23 @@ It may also be easier to check any scripts you have changed recently, and see if
 The second part of the message indicates what the error actually is.
 
 ```
-RootExpressionElement: Cannot convert type '[something]' to expression result of 'Boolean'
+Object reference not set to an instance of an object.
+Unable to cast object of type 'System.String' to type 'System.Boolean'.
 ```
 
-This occurs when the text inside an `if` condition, does not work out to a Boolean. If `[something]` is "Object", then the code has resulted in `null`, and may be because an attribute does not exist (or has been spelled wrongly).
+These occur when the text inside an `if` condition does not work out to a Boolean. The first means the code has resulted in `null`, which is usually because an attribute does not exist (or has been spelled wrongly). The second means it resulted in something else - here a string, but it could be another type.
 
 ```
-ArithmeticElement: Operation 'Add' is not defined for types 'Int32' and 'Object'
+'[something]' is null (it has not been set) and cannot be used in this calculation.
 ```
 
-This could be 'Subtract' or whatever, and the types may be different. Again "Object" indicates `null`, and this is telling you that you are trying to add (or whatever) a number and null. Again, this is probably because an attribute does not exist or has been misspelled.
+This is telling you that you are trying to add (or subtract, or whatever) a number and null. Again, this is probably because an attribute does not exist or has been misspelled.
+
+```
+Cannot convert this value to a string because it has not been set - check whether an attribute or variable has been assigned a value before using it.
+```
+
+This is the same problem again, but when printing the value, for example with `msg`.
 
 ```
 Unknown object or variable '[something]'
@@ -119,8 +126,10 @@ In this case, Quest Viva has found `[something]` in a script, but has no idea wh
 If the function name is wrong, you will get something like this:
 
 ```quest
-Error running script: Error compiling expression 'msg2("some text")': FunctionCallElement: Could find not function 'msg2(String)'
+Error running script: Error evaluating expression 'msg2("some text")': Unknown function 'msg2'
 ```
+
+If the misspelled function is called on a line of its own, rather than inside an expression, the game will not load at all, and you will instead see an error like the `Function not found` one below.
 
 If you have the wrong number of arguments, you might see one of these (first is for hard-coded functions):
 
@@ -132,14 +141,16 @@ Error running script: Too many parameters passed to OutputText function - 2 pass
 If you try to set a value from a function that does not return a type, you might see one of these:
 
 ```quest
-Error running script: Error compiling expression 'msg("some text")': FunctionCallElement: Could find not function 'msg(String)'
-Error running script: Error compiling expression 'OutputText("some text")': Value cannot be null.Parameter name: key
+Error running script: Error evaluating expression 'msg("some text")': Unknown function 'msg'
+Error running script: Function did not return a value
 ```
+
+The first is for a script command such as `msg`; the second is for a function such as `OutputText` (note that the function will already have run by then).
 
 For hard-coded functions, you will get an error if you do not set a value and it has a return type, and if you send it the wrong type in the parameters:
 
 ```quest
-The following errors occurred: Error: Error adding script attribute 'start' to element 'game': Function not found: 'GetBoolean'
+Error: Error adding script attribute 'start' to element 'game': Function not found: 'GetBoolean'
 Error running script: Error evaluating expression 'GetBoolean("other text", "some text")': GetBoolean function expected object parameter but was passed 'other text'
 ```
 
@@ -171,10 +182,8 @@ sword.inventoryverbs = Split("Look at;Take;Equip", ";")
 
 ### Error using the `do` command
 
-If the attribute is missing or not a script, this rather misleading error message will be given:
+If the attribute is missing or not a script, you will see an error like this:
 
 ```
-Error running script: Object reference not set to an instance of an object.
+Error running script: 'hat' has no action called 'flatten'
 ```
-
-Note that there may be other issues that will also cause this error.

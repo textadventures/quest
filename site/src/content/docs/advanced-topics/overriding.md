@@ -10,9 +10,9 @@ A great feature of Quest Viva is that you can create your own version of most of
 
 So let us suppose we want to override `InitUserInterface`. This is an empty function that is designed to be overridden; all your custom formatting should go in this function.
 
-At the bottom left of the editor, click on "Filter"and select "Show Library Elements". All the functions, commands, etc. will appear in the pane above (the ones from libraries will be in grey). Select the one you want to modify (type part of its name in the search box at the top to find it quickly).
+Click the tree view options button above the tree (next to the "Filter..." box), and select "Show Library Elements". All the functions, commands, etc. will appear in the tree (the ones from libraries will be in grey). Select the one you want to modify (type part of its name in the "Filter..." box to find it quickly).
 
-The yellow strip across the top is because it in a library, not your main game, and it tells you which one. To the right of that is a button, "Copy". Click that and a copy of the game will be in your game.
+The banner across the top is because it is in a library, not your main game, and it tells you which one. Click "Copy into your game" in the banner, and a copy of the function will be in your game.
 
 Now you can do with it whatever you like.
 

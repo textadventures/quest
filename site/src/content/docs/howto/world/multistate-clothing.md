@@ -113,7 +113,9 @@ else {
   if (this.multistate_status = 1) {
     this.removeable = true
   }
-  this.removeable = false
+  else {
+    this.removeable = false
+  }
   SetVerbs
 }
 ```

@@ -10,7 +10,7 @@ Quest Viva has been designed to be language neutral, so you can write games that
 
 There are numerous translations that are built in, donated by the community over the years. This does mean that some of them are out of date, and do not include the more recent additions. 
 
-You can even use the editor in your own language, but that will obviously involve more translations. As of March 2018, the editor can only be used in German and, to a degree, Spanish.
+You can even use the editor in your own language, but that will obviously involve more translations. Currently the editor can be used in English, German and Spanish.
 
 
 ## Using non-Latin alphabets
@@ -191,4 +191,4 @@ Quest Viva is continually improving, and as new features are added, new template
 
 If you include English.aslx in your language file, as recommended, you won't see errors, but it does mean that there is a chance players will see some English text. To avoid this, you will need to keep your language file up to date to reflect changes made in English.aslx.
 
-The easiest way to do this is to see what changes have been made to English.aslx by [browsing the source code](https://github.com/textadventures/quest). Navigate to WorldModel/WorldModel/Core/Languages/English.aslx, then you can use the "Compare to other versions" list in the top right. If you select "Older versions" from the list, you'll be able to see the changes made since a particular date.
+The easiest way to do this is to see what changes have been made to English.aslx by [browsing the source code](https://github.com/textadventures/quest). Navigate to `src/Engine/Core/Languages/English.aslx`, then click "History" to see the changes that have been made to it, and when.

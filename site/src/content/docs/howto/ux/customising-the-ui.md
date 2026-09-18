@@ -287,7 +287,7 @@ JS.setCss("#qv-status", "border:none;")
 
 Some attributes are difficult to change, and the usual technique just does not work. A good example is the border of the command bar. The element's ID is `txtCommand`, and it has `border` and `outline` properties, but if you set them to "none", it does not work. Why not? No idea.
 
-However, there is a way around. If you go into full code view (press F9), you can add an attribute to the XML of the game object that includes CSS.
+However, there is a way around. If you open the raw XML code view in the editor toolbar, you can add an attribute to the XML of the game object that includes CSS.
 
 ```xml
 <css><![CDATA[
@@ -300,16 +300,12 @@ However, there is a way around. If you go into full code view (press F9), you ca
 ]]></css>
 ```
 
-Be careful how you do that; it is best to paste it below this line:
+Be careful how you do that; it must go inside the game object, so paste it on a new line just above the closing `</game>` tag, then click Apply.
 
-```xml
-<firstpublished>2016</firstpublished>
-```
-
-You can output that in game.start, and it should now make the required change.
+You can then add it to the page in the "inituserinterface" script, and it should now make the required change.
 
 ```quest
-JS.addText (game.css)
+JS.addScript (game.css)
 ```
 
 You can turn off the border on the _Interface_ tab of the game object, but there may well be other elements that need to be handled like this, for example....

@@ -79,8 +79,8 @@ It is tempting to get the game to testers fast, but you are really just wasting 
 
 ### Running beta-testing
 
-You can upload a game to Text Adventures in the normal way for beta-testing, but keep its visibility to private. There is an "Upload a new file" link on the _Edit_ page, so you can publish updates during the testing process by downloading a fresh `.quest` package and uploading it there.
+You can upload a game to Text Adventures in the normal way for beta-testing, but keep it unlisted by setting "Who can access this game?" to "Only people I give the link to". There is an "Upload an updated game file" option in the _Edit_ menu on your game's page, so you can publish updates during the testing process by downloading a fresh `.quest` package and uploading it there.
 
 You should assume you will be releasing a few beta versions, each improving on the previous, and it may be a good idea to get new testers at each round.
 
-When it is ready for release, go to "View/Edit Game Listing", and change the visibility to public. Remember to thank your beta-testers - it's common to do this with an "about" command in the game itself.
+When it is ready for release, choose "Edit this listing" from the same _Edit_ menu, and set who can access the game to "Everybody". Remember to thank your beta-testers - it's common to do this with an "about" command in the game itself.

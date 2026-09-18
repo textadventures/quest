@@ -288,7 +288,7 @@ else {
 }
 ```
 
-Finally, you need to [override](/advanced-topics/overriding) the `TestGarment` function.
+Finally, you need to [override](/advanced-topics/overriding) the `TestRemove` function.
 
 ```quest
 if (GetBoolean(player.parent, "private")) {
@@ -297,9 +297,10 @@ if (GetBoolean(player.parent, "private")) {
 }
 // Hypothetically, what would it be like without the item?
 object.worn = false
-if (IsDecent()) {
-  // Player would be decent, reset the flag and return true
-  object.worn = true
+decent = IsDecent()
+// Reset the flag either way; actually removing the item is done later
+object.worn = true
+if (decent) {
   return (true)
 }
 else {

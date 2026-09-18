@@ -285,7 +285,7 @@ get input {
 }
 ```
 
-For more information see [here](/howto/tasks/asking-a-question).
+For more information see [Asking the player](/howto/scripting/asking-the-player).
 
 ## if
 ```quest
@@ -543,9 +543,43 @@ Stops playing sounds.
 switch (any type value) { case (any type value) { script } [ default { script } ] }
 ```
 
-Switch is used with one or more `case` statements and an optional `default` statement. It is used to test a variable or object attribute against 2 or more possible values; a shortcut instead of writing many `if` statements. 
+Switch is used with one or more `case` statements and an optional `default` statement. It is used to test a variable or object attribute against 2 or more possible values; a shortcut instead of writing many `if` statements.
 
-For more, see [here](/howto/tasks/multiple-choices-using-a-switch-script)
+```quest
+switch (LCase(answer)) {
+  case ("north", "n") {
+    msg ("You head north.")
+  }
+  case ("south", "s") {
+    msg ("You head south.")
+  }
+  default {
+    msg ("That's not a direction.")
+  }
+}
+```
+
+The cases are checked in order, and only the first one that matches runs. A `case` can list several values, separated by commas, and it matches if any of them does. If no case matches, the `default` script runs, if there is one.
+
+Each case must match exactly, but you can check ranges by switching on `true` and giving each case a condition:
+
+```quest
+switch (true) {
+  case (player.strength > 20) {
+    msg ("You are strong!")
+  }
+  case (player.strength > 10) {
+    msg ("More training required!")
+  }
+  default {
+    msg ("Weakling!")
+  }
+}
+```
+
+A strength of 25 matches the first case only - once a case has matched, the rest are skipped.
+
+For using `switch` with a menu, see [Asking the player](/howto/scripting/asking-the-player#menus).
 
 ## undo
 ```quest

@@ -8,7 +8,7 @@ sidebar:
 
 "Types" let you share sets of attributes between objects. Instead of copying the attributes to the object, the object just references the underlying the type if it doesn't have its own override for a attribute.
 
-You can view all the attributes of an object using the Debugger, which is accessed via the Tools menu. Attributes from an inherited type are shown in grey.
+You can view all the attributes of an object using the Debugger, which you open by clicking the "Debug" button at the top of the player while you preview your game (see [Debugging your game](/howto/scripting/debugging-your-game)). Attributes from an inherited type are shown in grey.
 
 ![](/images/Debugger.png)
 

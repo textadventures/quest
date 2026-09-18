@@ -6,17 +6,24 @@ sidebar:
 
 We've been using verbs since the very first section - "watch" on the TV, "sit on" on the sofa, "read" on the newspaper. Each is a "doing word" attached to one object, giving a single, specific response. Now that we also know how to build commands, it's worth looking at how the two fit together, and going a bit deeper on what a verb actually is.
 
-## Verbs are just script attributes
+## Verbs are attributes
 
-When you add a verb to an object, Quest Viva stores its response as a script attribute on that object, named after the verb. You can run that same script from anywhere - not just when the player types the verb directly - using `do (object, "attributename")`.
+When you add a verb to an object, Quest Viva stores its response as an attribute on that object, named after the verb. What kind of attribute depends on the verb's Behaviour setting on the Verbs tab:
 
-If your verb is more than one word, Quest Viva usually squashes it into one word for the attribute name - "look under" would become `lookunder`, for example. Built-in verbs sometimes use a shorter name instead: our sofa's "sit on" verb is one of these. Even though we typed "sit on" into the Add Verb box, the script is actually stored in an attribute called `sit`. If you're ever not sure what a verb's real attribute is called, check the object's Attributes tab.
+- **Print a message** stores the text as a string attribute.
+- **Run a script** stores a script attribute.
+
+A script attribute can be run from anywhere - not just when the player types the verb directly - using `do (object, "attributename")`. `do` only runs scripts, though. Use it on a verb that prints a message and you'll get an error saying the object "has no action" with that name.
+
+If your verb is more than one word, Quest Viva usually squashes it into one word for the attribute name - "look under" would become `lookunder`, for example. Built-in verbs sometimes use a shorter name instead: our sofa's "sit on" verb is one of these. Even though we typed "sit on" into the Add Verb box, it's actually stored in an attribute called `sit`. If you're ever not sure what a verb's real attribute is called, check the object's Attributes tab.
 
 ## Combining verbs and commands
 
 Right now, if the player types `SIT ON SOFA`, they get our custom response - but if they just type `SIT`, they get Quest Viva's own generic reply, even with the sofa right there in the room. Let's use what we learned about commands to fix that.
 
-Select "Commands" in the tree (underneath "game"), click "+ Add", and choose "Add Command". For the command pattern, enter:
+First, we need the sofa's "sit on" verb to be a script, so that we can run it from our command. Select the sofa, go to the Verbs tab and select "sit on". Change its Behaviour from "Print a message" to "Run a script", then add a "Print a message" command to the script with the same text as before - "There's no time for lounging about now." The game behaves exactly the same as it did, but the response is now a script we can call.
+
+Next, select "Commands" in the tree (underneath "game"), click "+ Add", and choose "Add Command". For the command pattern, enter:
 
     sit
 

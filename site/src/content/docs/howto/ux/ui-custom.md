@@ -76,10 +76,9 @@ Finally, because the borders are much wider, we need to space things out a bit m
 
 ```quest
 JS.setCss ("#gamePanes", "margin-top: 16px")
-JS.eval ("$('#gamePanes').width(227);")
 ```
 
-Note that we have to use JS.eval for the width as it is not a CSS property.
+Don't be tempted to set a fixed width on `#gamePanes` as well. The player sizes the panes itself, and on a narrow screen such as a phone it moves them into a drawer that opens from the menu button. A fixed width overrides that and breaks the phone layout. Whenever you restyle the interface, check how your game looks in a narrow browser window as well as a wide one.
 
 Here is the whole thing (which should go in the interface script at the top of the _Advanced Scripts_ tab of the game object):
 
@@ -97,7 +96,6 @@ JS.setCss ("#commandPane", text + ";" + backandborder)
 JS.setCss ("#verblinkwait", button)
 JS.setCss ("#verblinklook", button)
 JS.setCss ("#gamePanes", "margin-top: 16px")
-JS.eval ("$('#gamePanes').width(227);")
 ```
 
 ## Trying a different look

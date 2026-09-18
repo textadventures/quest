@@ -5,7 +5,7 @@ sidebar:
 ---
 
 
-## Using Quest Viva's built-in script commands to add MP3 or WAV files
+## Using Quest Viva's built-in script commands
 
 
 ### Adding sounds
@@ -15,7 +15,7 @@ You can add sounds to your game using the [`play sound`](/scripts#play-sound) sc
 ![](/images/play_a_sound.jpg)
 
 
-This script supports both WAV and MP3 files, but it is recommended that you use MP3 files because these are more widely supported by web browsers on different platforms.
+This script will play any audio format the player's web browser supports, such as MP3, WAV or OGG. MP3 is recommended, because it is the most widely supported by web browsers on different platforms.
 
 ![](/images/play_a_sound_GUI.jpg)
 
@@ -90,9 +90,7 @@ View the example game's code:
 ## Using HTML audio elements
 
 
-Playing .ogg files requires a bit more coding, but it can be done.
-
-Using an HTML audio tag is the easiest way to handle this, and it will allow you to use whatever file format you like.
+If you need more control than `play sound` gives you - for example, to show playback controls, or to play more than one sound at once - you can use an HTML audio tag instead.
 
 
 The most basic example of an audio tag:
@@ -210,30 +208,11 @@ JS.eval("$('#html-audio').remove();")
 ```
 
 
-### Mobile browsers
+### Autoplay
 
-For things to work in a mobile browser, we MUST include the `controls` option! The `autoplay` option will do nothing in a mobile browser, by the way.  The player must actually press 'play' on a mobile device.
+Web browsers - on phones and desktops alike - won't let a page start playing sound until the player has interacted with it (by clicking or typing, for example). If your game tries to `autoplay` a sound before then, the browser will silently block it.
 
-
-There is a way to check for the mobile player using Javascript. Add this to the `game.inituserinterface` script:
-
-```quest
-js = "function isMobilePlayer(){"
-js = js + "if (typeof(currentTab) === 'string'){return true;}return false;};"
-JS.eval (js)
-```
-
-With that JS function now included, you can add the audio to your script like this:
-
-```quest
-src = GetFileURL("snd effect.ogg")
-JS.eval ("var controlsOpt = '';if(isMobilePlayer()){controlsOpt = 'controls';}")
-JS.eval ("addText (\"<audio autoplay \" + controlsOpt + \" src='" + src + "' />\");")
-```
-
-If the game is loaded in the mobile player, the JS variable `currentTab` will be a string, and the controls will be displayed.  If `currentTab` is not a string, the controls will not be displayed.
-
-You can see this in action in the example game to which there is a link in the next section.
+If a sound might play before the player has done anything, include the `controls` option, so the player can press 'play' themselves.
 
 **IMPORTANT NOTE:  The sound will cease to exist if the screen is cleared when using HTML tags.**
 

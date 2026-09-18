@@ -69,9 +69,9 @@ The important message here is to think about the UI, and make a choice for what 
 
 ## Testing
 
-Beta-testing is especially important for a competition entry, since you only get one shot at a good first impression from the judges. See [Beta-testing](/publishing/publishing#beta-testing) for the general process - before-testing checklist, how to publish a private test version, and crediting testers. A few things are specific to a competition entry:
+Beta-testing is especially important for a competition entry, since you only get one shot at a good first impression from the judges. See [Beta-testing](/publishing/publishing#beta-testing) for the general process - before-testing checklist, how to publish an unlisted test version, and crediting testers. A few things are specific to a competition entry:
 
-**Keep it "Unlisted", not just private.** The rules of IfComp mean your game will be disqualified if it is released publicly before the competition, so double-check its visibility stays "Unlisted" throughout testing.
+**Keep it unlisted.** The rules of IfComp mean your game will be disqualified if it is released publicly before the competition, so double-check that "Who can access this game?" stays set to "Only people I give the link to" throughout testing.
 
 **Explain that it's a beta.** Have a statement at the start of your game explaining that this is a beta version, what version it is, and how testers can send you comments - update the text with each new version so testers can tell you which one they were looking at. Remember to remove or update this text before the real release.
 

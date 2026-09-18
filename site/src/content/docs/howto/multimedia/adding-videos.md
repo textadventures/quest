@@ -165,7 +165,7 @@ function AddYouTube(id) {
 ```
 
 
-We can see that Quest Viva sets the height of every video to `425` and the width to `344`.  This is the best part of the script.  If were we to simply copy YouTube's embed code into a `msg`, almost everything would work, but one problem we'd have would be that the video would be too wide in this case.
+We can see that Quest Viva sets the width of every video to `425` and the height to `344`.  This is the best part of the script.  If were we to simply copy YouTube's embed code into a `msg`, almost everything would work, but one problem we'd have would be that the video would be too wide in this case.
 
 Another important thing the script adds is the bit of text which makes the video play automatically: **"?autoplay=1&rel=0"**.  This is what we need to add to end of the `src` in our new function!
 

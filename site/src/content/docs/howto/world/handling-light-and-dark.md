@@ -13,7 +13,7 @@ The first step is to go to the features tab of the game object and tick the box 
 
 By default rooms are lit. We will create a dark room, called "darkroom". Create the room as normal, make exits to and from it, and give is a description. Now go to the Light/Dark tab, and tick the "Room is initially dark" checkbox.
 
-Try the game, and you will find two things. The first is that there is no default dark room description; it is just blank. The second is that you are trapped in the dark room - there is no way to use the exit if it is too dark to see it!
+Try the game, and you will find two things. The first is that you just get the default dark room description, "It is too dark to make anything out." The second is that you are trapped in the dark room - there is no way to use the exit if it is too dark to see it!
 
 
 ## A light from the door
@@ -150,13 +150,13 @@ If you have set the room description to be a script, then Quest Viva will again 
 
 For objects, however, the Quest Viva will run the script, whatever the illumination. Note that this is only an issue when they are in the inventory - objects in the room are not reachable if the player cannot see them. You may want to check in each script, then, whether there is enough light to see the object. On the other hand, you might reason that since the player has picked the object up, it is reasonable to assume she can remember what it looks like or can feel it, and so it does not matter. Or you could give different descriptions depending on the lighting.
 
-To get you started, this script will check if it is dark, and if it is, give the standard response; otherwise if gives the proper description.
+To get you started, this script will check if it is dark, and if it is, give the standard response; otherwise it gives the proper description (replace the text with your own).
 
 ```quest
 if (CheckDarkness()) {
   msg(DynamicTemplate("LookAtDarkness", this))
 }
 else {
-  msg("You search but find nothing of interest.")
+  msg("A sturdy metal torch, with a switch on the side.")
 }
 ```
