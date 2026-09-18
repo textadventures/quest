@@ -525,7 +525,7 @@
         <caption>[EditorGBPlaySoundWhenEnterPage]</caption>
         <controltype>file</controltype>
         <attribute>sound</attribute>
-        <source>*.mp3;*.wav</source>
+        <source>*.mp3;*.wav;*.ogg</source>
       </control>
 
       <control>
