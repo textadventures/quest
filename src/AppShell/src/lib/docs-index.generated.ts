@@ -152,7 +152,7 @@ export const HELP_PAGE_TITLES: Readonly<Record<string, string>> = {
     "/howto/npcs/ask-about/": "Building an Ask/Tell system",
     "/howto/npcs/dialogue-pages/": "Building a conversation with Pages",
     "/howto/scripting/advanced-game-scripts/": "Advanced game scripts",
-    "/howto/scripting/using-turnscripts/": "Using turnscripts",
+    "/howto/scripting/using-turnscripts/": "Time, turns and timers",
     "/howto/scripting/when-scripts-run/#object-initialisation-scripts": "Object initialisation scripts",
     "/howto/scripting/when-scripts-run/#the-game-scripts-tab": "The game Scripts tab",
     "/howto/scripting/when-scripts-run/#the-room-scripts-tab": "The room Scripts tab",

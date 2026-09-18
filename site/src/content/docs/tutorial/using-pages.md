@@ -6,7 +6,7 @@ sidebar:
 
 Bob is alive, and thanks to Ask/Tell he'll tell you about his heart attack if you ask him directly. But Ask/Tell only works if the player already knows what to ask about. Sometimes you want to offer the player a menu of things to say, and have Bob's replies lead on to further choices - a proper branching conversation.
 
-You could build this with `ShowMenu` (see [Handling SPEAK TO](/howto/npcs/speak-to)), but a menu-based conversation has a drawback: the whole exchange happens inside the single turn that opened the menu, so the player can't undo their way back through the choices they made, and each further set of choices means another nested callback. **Pages** turn every choice into a normal, complete turn - the same mechanism gamebooks use for their branching passages (see [Creating a gamebook](/tutorial/creating-a-gamebook)), but usable in a Text Adventure room. Each choice is its own undo point, and the whole conversation is described as linked page objects rather than nested scripts.
+You could build this with a menu (see [Talking to characters](/howto/npcs/conversations#a-menu-of-topics)), but every further set of choices would mean another menu nested inside the last one. **Pages** turn every choice into a normal, complete turn - the same mechanism gamebooks use for their branching passages (see [Creating a gamebook](/tutorial/creating-a-gamebook)), but usable in a Text Adventure room. The player can save at any point in the conversation, `UNDO` steps back one choice at a time, and the whole conversation is described as linked page objects rather than nested scripts.
 
 ## Creating a page
 
@@ -25,7 +25,7 @@ A page with no options automatically ends the conversation once it's shown - tha
 
 ## Starting the conversation
 
-Pages need something to kick them off. Go to Bob's Verbs tab and add a "speak" verb (Quest Viva will match `TALK TO BOB` and `SPEAK TO BOB` to it - see [Handling SPEAK TO](/howto/npcs/speak-to) for more on this). For its script, switch to Code View and enter:
+Pages need something to kick them off. Go to Bob's Verbs tab and add a "speak" verb (Quest Viva will match `TALK TO BOB` and `SPEAK TO BOB` to it - see [Talking to characters](/howto/npcs/conversations#responding-to-speak-to) for more on this). For its script, switch to Code View and enter:
 
 ```quest
 ShowPage (bob_chat, true, false)

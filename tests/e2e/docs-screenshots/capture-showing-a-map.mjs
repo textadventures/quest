@@ -49,7 +49,7 @@ async function createExit(page, roomName, direction, destName, { length } = {}) 
 
 // Sets the grid length on a specific exit, selected via its own TREE ROW ("Exit: <destName>"),
 // not the "direction → destName" summary link on the Exits tab - that link selects the
-// *destination room*, not the exit itself (see capture-exits.mjs's Lockedexit.png note). The
+// *destination room*, not the exit itself (selecting the exit needs its "Exit: ..." tree row). The
 // tree row lookup is scoped to `roomName`'s own treeitem (via a `has:` filter on its
 // [data-value] node), confirmed live via read_page that the tree really does nest each room's
 // exits as DOM descendants of that room's own treeitem/group - a page-wide text search breaks

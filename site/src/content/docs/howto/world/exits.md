@@ -41,7 +41,7 @@ If you are using names instead of directions, you might want to have a prefix li
 
 ## Name
 
-A name is optional for an exit (if you do not give the exit a room, Quest Viva will when the game starts). However, if you want to change any attribute of the exit during play (say to unlock it), you will need a name to refer to it by.
+A name is optional for an exit (if you do not give the exit a name, Quest Viva will when the game starts). However, if you want to change any attribute of the exit during play (say to [unlock it](/howto/world/doors#locking-an-exit)), you will need a name to refer to it by.
 
 
 ## Locked vs visible vs scenery
@@ -57,35 +57,7 @@ An exit flagged as **scenery** will not be listed in the room description, and w
 If you have a flight of stairs heading up to the east, the player might type `UP` or `EAST`, so you need to be able to handle both. However, if the room description lists both up and east as exits, the player will think they are different exits. The solution is to flag one as scenery.
 
 
-### Example: a locked door
-
-You can create an exit which is impassable until something else happens in your game. This could be a locked door, or perhaps something like a guard blocking the way.
-
-Let's create a locked door in the kitchen of the [tutorial](/tutorial/tutorial-introduction) game, leading to a back garden. Create the following three elements:
-
--   a new room, "garden"
--   an object in the kitchen, "door"
--   an exit leading south from the kitchen to the garden
-
-Select "Exit: garden" in the tree and tick the "Locked" box. You should see a warning message that we need to give the exit a name. This is because, to unlock the exit during the game, we will need to use a script command. The script command will need some way of referring to this particular exit, which is why we need to give it a name here. Call it something like "garden exit".
-
-![](/images/Lockedexit.png)
-
-Go to the door object, and on the Verbs tab add a verb "unlock". Set it to "Run a script", and then add a command to print a message (such as "You unlock the door"). Add an "unlock exit" command, and choose "garden exit" from the list.
-
-Run the game and verify that the exit now works correctly:
-
-     > south
-     That way is locked.
-     
-     > unlock door
-     You unlock the door.
-     
-     > south
-     You are in a garden.
-     You can go north.
-
-For a guide on setting up a door that is accessible from both sides — using lockable exits as described above — see [Setting Up a Door](/howto/tasks/setting-up-door).
+For locked exits that open later, keys, doors that open and close from both sides, and combination locks, see [Doors, locks and keys](/howto/world/doors).
 
 
 ## Print message when used
@@ -138,7 +110,7 @@ else {
 
 The basic principle is that we test the condition. If the condition passes, then we print a message, and move the player (it is important to do the message first, as moving the player will cause the room description to get printed, and you want the message before that). If the condition fails, just give a message.
 
-This is very much like having the exit locked, so when would you use this, rather than unlocked? This technique is best for checking an on-going situation, so in fact whether the player is carrying a key is actually better done this way. The "locked" attribute is better for specific events, such as the player using the `UNLOCK` command...  Hmm, turns out setting up a locked door is pretty involved, but is discussed in detail [here](/howto/tasks/setting-up-door).
+This is very much like having the exit locked, so when would you use this, rather than unlocked? This technique is best for checking an on-going situation, so in fact whether the player is carrying a key is actually better done this way. The "locked" attribute is better for specific events, such as the player using the `UNLOCK` command - see [Doors, locks and keys](/howto/world/doors).
 
 
 ### Move and...
@@ -169,17 +141,7 @@ It is worth briefly mentioning room scripts. Rooms have a number of scripts that
 
 So what if you want to trap the player in a room with several exits?
 
-The best way is to set all the exits to be either locked or invisible. In this example, we will set all the exits in the current room to be locked, using a `foreach` command. To unlock them all again, just set the attribute to `false`.
-
-![](/images/exitscript3.png)
-
-```quest
-foreach (ext, ScopeExits ()) {
-  ext.locked = true
-}
-```
-
-Note that `ext` is a local variable. Do not be tempted to use `e` as a local variable for an exit (or anything else); this is a built-in constant and cannot be set to anything (though Quest Viva will fail to tell you that!).
+The easiest way is to set the player's `notallowedtoexit` attribute to the message you want them to see - see [Stopping the player leaving](/howto/world/doors#stopping-the-player-leaving).
 
 
 ## Useful functions
