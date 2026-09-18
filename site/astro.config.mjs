@@ -43,119 +43,89 @@ export default defineConfig({
                         {
                             "label": "Download the app",
                             "slug": "download"
-                        },
-                        {
-                            "label": "Tutorial",
-                            "collapsed": true,
-                            "items": [
-                                {
-                                    "label": "Tutorial introduction",
-                                    "slug": "tutorial/tutorial-introduction"
-                                },
-                                {
-                                    "label": "Creating a simple game",
-                                    "slug": "tutorial/creating-a-simple-game"
-                                },
-                                {
-                                    "label": "Interacting with objects",
-                                    "slug": "tutorial/interacting-with-objects"
-                                },
-                                {
-                                    "label": "Anatomy of a Quest Viva game",
-                                    "slug": "tutorial/anatomy-of-a-quest-viva-game"
-                                },
-                                {
-                                    "label": "Using scripts",
-                                    "slug": "tutorial/using-scripts"
-                                },
-                                {
-                                    "label": "Custom attributes",
-                                    "slug": "tutorial/custom-attributes"
-                                },
-                                {
-                                    "label": "Custom commands",
-                                    "slug": "tutorial/custom-commands"
-                                },
-                                {
-                                    "label": "Verbs in depth",
-                                    "slug": "tutorial/verbs-in-depth"
-                                },
-                                {
-                                    "label": "More things to do with objects",
-                                    "slug": "tutorial/more-things-to-do-with-objects"
-                                },
-                                {
-                                    "label": "Using Pages",
-                                    "slug": "tutorial/using-pages"
-                                },
-                                {
-                                    "label": "Using containers",
-                                    "slug": "tutorial/using-containers"
-                                },
-                                {
-                                    "label": "Moving objects during the game",
-                                    "slug": "tutorial/moving-objects-during-the-game"
-                                },
-                                {
-                                    "label": "Status attributes",
-                                    "slug": "tutorial/status-attributes"
-                                },
-                                {
-                                    "label": "Using timers and turn scripts",
-                                    "slug": "tutorial/using-timers-and-turn-scripts"
-                                },
-                                {
-                                    "label": "Releasing your game",
-                                    "slug": "tutorial/releasing-your-game"
-                                },
-                                {
-                                    "label": "Creating a gamebook",
-                                    "slug": "tutorial/creating-a-gamebook"
-                                }
-                            ]
-                        },
+                        }
                     ]
                 },
                 {
-                    "label": "Guides",
+                    "label": "Tutorial",
+                    "collapsed": false,
+                    "items": [
+                        {
+                            "label": "Tutorial introduction",
+                            "slug": "tutorial/tutorial-introduction"
+                        },
+                        {
+                            "label": "Creating a simple game",
+                            "slug": "tutorial/creating-a-simple-game"
+                        },
+                        {
+                            "label": "Interacting with objects",
+                            "slug": "tutorial/interacting-with-objects"
+                        },
+                        {
+                            "label": "Anatomy of a Quest Viva game",
+                            "slug": "tutorial/anatomy-of-a-quest-viva-game"
+                        },
+                        {
+                            "label": "Using scripts",
+                            "slug": "tutorial/using-scripts"
+                        },
+                        {
+                            "label": "Custom attributes",
+                            "slug": "tutorial/custom-attributes"
+                        },
+                        {
+                            "label": "Custom commands",
+                            "slug": "tutorial/custom-commands"
+                        },
+                        {
+                            "label": "Verbs in depth",
+                            "slug": "tutorial/verbs-in-depth"
+                        },
+                        {
+                            "label": "More things to do with objects",
+                            "slug": "tutorial/more-things-to-do-with-objects"
+                        },
+                        {
+                            "label": "Using Pages",
+                            "slug": "tutorial/using-pages"
+                        },
+                        {
+                            "label": "Using containers",
+                            "slug": "tutorial/using-containers"
+                        },
+                        {
+                            "label": "Moving objects during the game",
+                            "slug": "tutorial/moving-objects-during-the-game"
+                        },
+                        {
+                            "label": "Status attributes",
+                            "slug": "tutorial/status-attributes"
+                        },
+                        {
+                            "label": "Using timers and turn scripts",
+                            "slug": "tutorial/using-timers-and-turn-scripts"
+                        },
+                        {
+                            "label": "Releasing your game",
+                            "slug": "tutorial/releasing-your-game"
+                        },
+                        {
+                            "label": "Creating a gamebook",
+                            "slug": "tutorial/creating-a-gamebook"
+                        }
+                    ]
+                },
+                {
+                    "label": "Build Your Game",
                     "collapsed": true,
                     "items": [
                         {
-                            "label": "Commands & Parser",
-                            "collapsed": true,
-                            "items": [
-                                {
-                                    "label": "Overview",
-                                    "slug": "howto/commands/commands"
-                                },
-                                {
-                                    "label": "Commands specific to a room",
-                                    "slug": "howto/commands/commands-for-room"
-                                },
-                                {
-                                    "label": "How to use verbs",
-                                    "slug": "howto/commands/using-verbs"
-                                },
-                                {
-                                    "label": "Complex commands",
-                                    "slug": "howto/commands/complex-commands"
-                                },
-                                {
-                                    "label": "Handling multiple items (and all)",
-                                    "slug": "howto/commands/handling-multiple"
-                                },
-                                {
-                                    "label": "Pattern matching with regular expressions",
-                                    "slug": "howto/commands/pattern-matching"
-                                },
-                                {
-                                    "label": "Advanced scope for items",
-                                    "slug": "howto/commands/advanced-scope"
-                                }
-                            ]
+                            "label": "Overview",
+                            "slug": "howto"
                         },
                         {
-                            "label": "World & Objects",
+                            "label": "Rooms and exits",
                             "collapsed": true,
                             "items": [
                                 {
@@ -163,259 +133,113 @@ export default defineConfig({
                                     "slug": "howto/world/objects-and-rooms"
                                 },
                                 {
-                                    "label": "Features",
-                                    "slug": "howto/world/features"
-                                },
-                                {
-                                    "label": "Text processor",
-                                    "slug": "howto/world/text-processor"
-                                },
-                                {
-                                    "label": "Changing templates",
-                                    "slug": "howto/world/changing-templates"
-                                },
-                                {
                                     "label": "Exits",
                                     "slug": "howto/world/exits"
                                 },
                                 {
-                                    "label": "Creating with Trizbort and Quest Viva",
-                                    "slug": "howto/world/trizbort"
+                                    "label": "Doors",
+                                    "slug": "howto/tasks/setting-up-door"
                                 },
                                 {
-                                    "label": "Using containers",
-                                    "slug": "howto/world/containers"
+                                    "label": "Locks with a combination",
+                                    "slug": "other-guides/unlockdoor"
                                 },
                                 {
-                                    "label": "Items that can be switched on and off",
-                                    "slug": "howto/world/switchable"
+                                    "label": "Stopping the player leaving",
+                                    "slug": "other-guides/immobilise-the-player"
                                 },
                                 {
-                                    "label": "Handling light and dark",
+                                    "label": "Light and darkness",
                                     "slug": "howto/world/handling-light-and-dark"
                                 },
                                 {
-                                    "label": "Wearable items",
-                                    "slug": "howto/world/wearables"
+                                    "label": "The map",
+                                    "slug": "howto/tasks/showing-a-map"
                                 },
                                 {
-                                    "label": "Items that can be eaten",
-                                    "slug": "howto/world/edible"
+                                    "label": "Mapping with Trizbort",
+                                    "slug": "howto/world/trizbort"
+                                },
+                                {
+                                    "label": "Fast travel",
+                                    "slug": "howto/tasks/transit-system"
+                                }
+                            ]
+                        },
+                        {
+                            "label": "Objects",
+                            "collapsed": true,
+                            "items": [
+                                {
+                                    "label": "Object and game features",
+                                    "slug": "howto/world/features"
                                 },
                                 {
                                     "label": "Taking and dropping objects",
                                     "slug": "howto/world/taking-and-dropping"
                                 },
                                 {
-                                    "label": "Score, health and money",
-                                    "slug": "howto/world/score-health-money"
+                                    "label": "Containers",
+                                    "slug": "howto/world/containers"
                                 },
                                 {
-                                    "label": "Multi-state wearable items",
+                                    "label": "Parts of an object",
+                                    "slug": "other-guides/implementing-components-of-an-object"
+                                },
+                                {
+                                    "label": "Switchable objects",
+                                    "slug": "howto/world/switchable"
+                                },
+                                {
+                                    "label": "Clothing",
+                                    "slug": "howto/world/wearables"
+                                },
+                                {
+                                    "label": "Clothing with several states",
                                     "slug": "howto/world/multistate-clothing"
                                 },
                                 {
-                                    "label": "Transcripts",
-                                    "slug": "howto/world/transcript"
+                                    "label": "Food",
+                                    "slug": "howto/world/edible"
                                 },
                                 {
-                                    "label": "When the player saves a game",
-                                    "slug": "howto/world/about-save"
+                                    "label": "Liquids",
+                                    "slug": "howto/tasks/handling-water"
+                                },
+                                {
+                                    "label": "Turning one thing into another",
+                                    "slug": "howto/tasks/convert"
+                                },
+                                {
+                                    "label": "Pushing objects between rooms",
+                                    "slug": "howto/tasks/move-object"
+                                },
+                                {
+                                    "label": "Starting inventory",
+                                    "slug": "other-guides/starting-inventory"
                                 }
                             ]
                         },
                         {
-                            "label": "Multimedia",
+                            "label": "The player",
                             "collapsed": true,
                             "items": [
-                                {
-                                    "label": "Overview",
-                                    "slug": "howto/multimedia/multimedia"
-                                },
-                                {
-                                    "label": "Images in Quest Viva",
-                                    "slug": "howto/multimedia/images"
-                                },
-                                {
-                                    "label": "Creating images on the fly",
-                                    "slug": "howto/multimedia/images-on-the-fly"
-                                },
-                                {
-                                    "label": "Adding sounds to your game",
-                                    "slug": "howto/multimedia/adding-sounds"
-                                },
-                                {
-                                    "label": "Adding videos",
-                                    "slug": "howto/multimedia/adding-videos"
-                                }
-                            ]
-                        },
-                        {
-                            "label": "Scripting",
-                            "collapsed": true,
-                            "items": [
-                                {
-                                    "label": "Introduction to coding",
-                                    "slug": "howto/scripting/introtocoding"
-                                },
-                                {
-                                    "label": "Asking the player",
-                                    "slug": "howto/scripting/asking-the-player"
-                                },
-                                {
-                                    "label": "Creating functions",
-                                    "slug": "howto/scripting/creating-functions-which-return-a-value"
-                                },
-                                {
-                                    "label": "Using lists",
-                                    "slug": "howto/scripting/using-lists"
-                                },
-                                {
-                                    "label": "Using dictionaries",
-                                    "slug": "howto/scripting/using-dictionaries"
-                                },
-                                {
-                                    "label": "Using turnscripts",
-                                    "slug": "howto/scripting/using-turnscripts"
-                                },
-                                {
-                                    "label": "Scopes",
-                                    "slug": "howto/scripting/scopes"
-                                },
-                                {
-                                    "label": "Attack of the Clones!",
-                                    "slug": "howto/scripting/clones"
-                                },
-                                {
-                                    "label": "When scripts run",
-                                    "slug": "howto/scripting/when-scripts-run"
-                                },
-                                {
-                                    "label": "Advanced game scripts",
-                                    "slug": "howto/scripting/advanced-game-scripts"
-                                },
-                                {
-                                    "label": "Blocks and scripts",
-                                    "slug": "howto/scripting/blocks-and-scripts"
-                                },
-                                {
-                                    "label": "Expressions",
-                                    "slug": "howto/scripting/expressions"
-                                },
-                                {
-                                    "label": "Editing in full code view",
-                                    "slug": "howto/scripting/codeview"
-                                },
-                                {
-                                    "label": "Much Ado About Nothing",
-                                    "slug": "howto/scripting/null"
-                                },
-                                {
-                                    "label": "Using \"doubles\"",
-                                    "slug": "howto/scripting/using-doubles"
-                                },
-                                {
-                                    "label": "Unit testing",
-                                    "slug": "howto/scripting/unit-testing"
-                                },
-                                {
-                                    "label": "How to copy-and-paste code",
-                                    "slug": "howto/scripting/copy-and-paste-code"
-                                },
-                                {
-                                    "label": "Using walkthroughs",
-                                    "slug": "howto/scripting/using-walkthroughs"
-                                },
-                                {
-                                    "label": "Debugging your game",
-                                    "slug": "howto/scripting/debugging-your-game"
-                                }
-                            ]
-                        },
-                        {
-                            "label": "Task Recipes",
-                            "collapsed": true,
-                            "items": [
-                                {
-                                    "label": "How to use functions",
-                                    "slug": "howto/tasks/about-functions"
-                                },
                                 {
                                     "label": "Changing the player object",
                                     "slug": "howto/tasks/changing-the-player-object"
                                 },
                                 {
-                                    "label": "Handling water",
-                                    "slug": "howto/tasks/handling-water"
-                                },
-                                {
-                                    "label": "Showing a map",
-                                    "slug": "howto/tasks/showing-a-map"
-                                },
-                                {
-                                    "label": "Keeping a journal",
-                                    "slug": "howto/tasks/keeping-a-journal"
-                                },
-                                {
-                                    "label": "How to keep score",
-                                    "slug": "howto/tasks/keeping-score"
-                                },
-                                {
-                                    "label": "How to build a transit system",
-                                    "slug": "howto/tasks/transit-system"
-                                },
-                                {
-                                    "label": "Converting one thing into another",
-                                    "slug": "howto/tasks/convert"
-                                },
-                                {
-                                    "label": "Tracking time",
-                                    "slug": "howto/tasks/time"
-                                },
-                                {
-                                    "label": "Setting up a shop",
-                                    "slug": "howto/tasks/shop"
-                                },
-                                {
-                                    "label": "Setting up a door",
-                                    "slug": "howto/tasks/setting-up-door"
-                                },
-                                {
-                                    "label": "Give the player character memory or wiki",
-                                    "slug": "howto/tasks/memory-or-wiki"
-                                },
-                                {
-                                    "label": "Move an object in a direction",
-                                    "slug": "howto/tasks/move-object"
-                                },
-                                {
-                                    "label": "Using neutral language",
-                                    "slug": "howto/tasks/neutral-language"
-                                },
-                                {
-                                    "label": "Randomisation",
-                                    "slug": "howto/tasks/random"
-                                },
-                                {
-                                    "label": "Use maths functionality",
-                                    "slug": "howto/tasks/use-maths-functionality"
-                                },
-                                {
-                                    "label": "Resolving common problems",
-                                    "slug": "howto/tasks/problems"
+                                    "label": "Character creation",
+                                    "slug": "howto/rpg/character-creation"
                                 }
                             ]
                         },
                         {
-                            "label": "NPCs & Dialogue",
+                            "label": "Characters and conversation",
                             "collapsed": true,
                             "items": [
                                 {
-                                    "label": "Followers",
-                                    "slug": "howto/npcs/follower"
-                                },
-                                {
-                                    "label": "Introduction to conversations",
+                                    "label": "Talking to characters",
                                     "slug": "howto/npcs/conversations"
                                 },
                                 {
@@ -423,12 +247,16 @@ export default defineConfig({
                                     "slug": "howto/npcs/speak-to"
                                 },
                                 {
-                                    "label": "Building an Ask/Tell system",
+                                    "label": "Ask/Tell topics",
                                     "slug": "howto/npcs/ask-about"
                                 },
                                 {
-                                    "label": "Building a conversation with Pages",
+                                    "label": "Conversations with Pages",
                                     "slug": "howto/npcs/dialogue-pages"
+                                },
+                                {
+                                    "label": "Followers",
+                                    "slug": "howto/npcs/follower"
                                 },
                                 {
                                     "label": "Making NPCs patrol",
@@ -441,70 +269,86 @@ export default defineConfig({
                             ]
                         },
                         {
-                            "label": "UI & Presentation",
+                            "label": "Commands and verbs",
                             "collapsed": true,
                             "items": [
                                 {
-                                    "label": "The UI and game-play",
-                                    "slug": "howto/ux/ui-game-play"
+                                    "label": "How commands work",
+                                    "slug": "howto/commands/commands"
                                 },
                                 {
-                                    "label": "The UI style",
-                                    "slug": "howto/ux/ui-style"
+                                    "label": "Commands specific to a room",
+                                    "slug": "howto/commands/commands-for-room"
                                 },
                                 {
-                                    "label": "Using display verbs",
-                                    "slug": "howto/ux/display-verbs"
+                                    "label": "Verbs",
+                                    "slug": "howto/commands/using-verbs"
                                 },
                                 {
-                                    "label": "Custom command panes",
-                                    "slug": "howto/ux/command-pane"
+                                    "label": "Commands with two objects",
+                                    "slug": "howto/commands/complex-commands"
                                 },
                                 {
-                                    "label": "Modifying the status and game panes",
-                                    "slug": "howto/ux/ui-custom"
+                                    "label": "Handling multiple items (and all)",
+                                    "slug": "howto/commands/handling-multiple"
                                 },
                                 {
-                                    "label": "Fonts",
-                                    "slug": "howto/ux/ui-fonts"
+                                    "label": "Scope for commands",
+                                    "slug": "howto/commands/advanced-scope"
                                 },
                                 {
-                                    "label": "Messing with the location bar",
-                                    "slug": "howto/ux/ui-location-bar"
-                                },
-                                {
-                                    "label": "Custom status pane",
-                                    "slug": "howto/ux/custom-panes"
-                                },
-                                {
-                                    "label": "JavaScript to Quest Viva with ASLEvent",
-                                    "slug": "howto/ux/ui-callback"
-                                },
-                                {
-                                    "label": "Adding a dialogue panel",
-                                    "slug": "howto/ux/ui-dialogue"
-                                },
-                                {
-                                    "label": "Adding a dialogue panel that assigns points",
-                                    "slug": "howto/ux/ui-dialogue-points"
-                                },
-                                {
-                                    "label": "Customising the UI",
-                                    "slug": "howto/ux/customising-the-ui"
+                                    "label": "Regular expressions in commands",
+                                    "slug": "howto/commands/pattern-matching"
                                 }
                             ]
                         },
                         {
-                            "label": "RPG Mechanics",
+                            "label": "Time and events",
                             "collapsed": true,
                             "items": [
                                 {
-                                    "label": "Overview",
-                                    "slug": "howto/rpg/rpg-intro"
+                                    "label": "Turn scripts",
+                                    "slug": "howto/scripting/using-turnscripts"
                                 },
                                 {
-                                    "label": "Character creation",
-                                    "slug": "howto/rpg/character-creation"
+                                    "label": "Turn-based events",
+                                    "slug": "other-guides/turn-based-events"
+                                },
+                                {
+                                    "label": "Time-limited puzzles",
+                                    "slug": "other-guides/timelimitedpuzzles"
+                                },
+                                {
+                                    "label": "Tracking time",
+                                    "slug": "howto/tasks/time"
+                                }
+                            ]
+                        },
+                        {
+                            "label": "Score, health and money",
+                            "collapsed": true,
+                            "items": [
+                                {
+                                    "label": "Score, health and money",
+                                    "slug": "howto/world/score-health-money"
+                                },
+                                {
+                                    "label": "Keeping score",
+                                    "slug": "howto/tasks/keeping-score"
+                                },
+                                {
+                                    "label": "Setting up a shop",
+                                    "slug": "howto/tasks/shop"
+                                }
+                            ]
+                        },
+                        {
+                            "label": "RPGs and combat",
+                            "collapsed": true,
+                            "items": [
+                                {
+                                    "label": "Designing an RPG",
+                                    "slug": "howto/rpg/rpg-intro"
                                 },
                                 {
                                     "label": "Zombie Apocalypse (Part 1)",
@@ -521,56 +365,168 @@ export default defineConfig({
                             ]
                         },
                         {
-                            "label": "Community Recipes",
+                            "label": "Text and messages",
+                            "collapsed": true,
+                            "items": [
+                                {
+                                    "label": "Text processor",
+                                    "slug": "howto/world/text-processor"
+                                },
+                                {
+                                    "label": "Links",
+                                    "slug": "other-guides/hyperlinks"
+                                },
+                                {
+                                    "label": "Changing the game's messages",
+                                    "slug": "howto/world/changing-templates"
+                                },
+                                {
+                                    "label": "Varying default responses",
+                                    "slug": "other-guides/random-default-answers"
+                                },
+                                {
+                                    "label": "Custom directions",
+                                    "slug": "other-guides/port-and-starboard"
+                                },
+                                {
+                                    "label": "Using neutral language",
+                                    "slug": "howto/tasks/neutral-language"
+                                }
+                            ]
+                        },
+                        {
+                            "label": "Pictures, sound and video",
                             "collapsed": true,
                             "items": [
                                 {
                                     "label": "Overview",
-                                    "slug": "other-guides/community-guides"
+                                    "slug": "howto/multimedia/multimedia"
                                 },
                                 {
-                                    "label": "Time-limited puzzles",
-                                    "slug": "other-guides/timelimitedpuzzles"
+                                    "label": "Pictures",
+                                    "slug": "howto/multimedia/images"
                                 },
                                 {
-                                    "label": "Unlock with combination",
-                                    "slug": "other-guides/unlockdoor"
+                                    "label": "Creating images on the fly",
+                                    "slug": "howto/multimedia/images-on-the-fly"
                                 },
                                 {
-                                    "label": "Starting inventory",
-                                    "slug": "other-guides/starting-inventory"
+                                    "label": "Sound",
+                                    "slug": "howto/multimedia/adding-sounds"
                                 },
                                 {
-                                    "label": "Immobilise the player",
-                                    "slug": "other-guides/immobilise-the-player"
-                                },
-                                {
-                                    "label": "Help with InvisiClues",
-                                    "slug": "other-guides/invisiclues"
-                                },
-                                {
-                                    "label": "Random default answers",
-                                    "slug": "other-guides/random-default-answers"
-                                },
-                                {
-                                    "label": "Port and starboard",
-                                    "slug": "other-guides/port-and-starboard"
-                                },
+                                    "label": "Video",
+                                    "slug": "howto/multimedia/adding-videos"
+                                }
+                            ]
+                        },
+                        {
+                            "label": "Hints and extras",
+                            "collapsed": true,
+                            "items": [
                                 {
                                     "label": "A hint system",
                                     "slug": "other-guides/a-hint-system"
                                 },
                                 {
-                                    "label": "Turn-based events",
-                                    "slug": "other-guides/turn-based-events"
+                                    "label": "InvisiClues-style hints",
+                                    "slug": "other-guides/invisiclues"
                                 },
                                 {
-                                    "label": "Hyperlinks",
-                                    "slug": "other-guides/hyperlinks"
+                                    "label": "Keeping a journal",
+                                    "slug": "howto/tasks/keeping-a-journal"
                                 },
                                 {
-                                    "label": "Implementing components of an object",
-                                    "slug": "other-guides/implementing-components-of-an-object"
+                                    "label": "Player memory or wiki",
+                                    "slug": "howto/tasks/memory-or-wiki"
+                                }
+                            ]
+                        },
+                        {
+                            "label": "Scripting",
+                            "collapsed": true,
+                            "items": [
+                                {
+                                    "label": "Introduction to coding",
+                                    "slug": "howto/scripting/introtocoding"
+                                },
+                                {
+                                    "label": "Asking the player",
+                                    "slug": "howto/scripting/asking-the-player"
+                                },
+                                {
+                                    "label": "Using functions",
+                                    "slug": "howto/tasks/about-functions"
+                                },
+                                {
+                                    "label": "Creating functions",
+                                    "slug": "howto/scripting/creating-functions-which-return-a-value"
+                                },
+                                {
+                                    "label": "Using lists",
+                                    "slug": "howto/scripting/using-lists"
+                                },
+                                {
+                                    "label": "Using dictionaries",
+                                    "slug": "howto/scripting/using-dictionaries"
+                                },
+                                {
+                                    "label": "Randomness",
+                                    "slug": "howto/tasks/random"
+                                },
+                                {
+                                    "label": "Maths",
+                                    "slug": "howto/tasks/use-maths-functionality"
+                                },
+                                {
+                                    "label": "Decimal numbers",
+                                    "slug": "howto/scripting/using-doubles"
+                                },
+                                {
+                                    "label": "Clones",
+                                    "slug": "howto/scripting/clones"
+                                },
+                                {
+                                    "label": "Blocks and scripts",
+                                    "slug": "howto/scripting/blocks-and-scripts"
+                                },
+                                {
+                                    "label": "Advanced game scripts",
+                                    "slug": "howto/scripting/advanced-game-scripts"
+                                },
+                                {
+                                    "label": "Copying and pasting code",
+                                    "slug": "howto/scripting/copy-and-paste-code"
+                                },
+                                {
+                                    "label": "Editing the raw XML",
+                                    "slug": "howto/scripting/codeview"
+                                }
+                            ]
+                        },
+                        {
+                            "label": "Testing and debugging",
+                            "collapsed": true,
+                            "items": [
+                                {
+                                    "label": "Debugging your game",
+                                    "slug": "howto/scripting/debugging-your-game"
+                                },
+                                {
+                                    "label": "Walkthroughs",
+                                    "slug": "howto/scripting/using-walkthroughs"
+                                },
+                                {
+                                    "label": "Transcripts",
+                                    "slug": "howto/world/transcript"
+                                },
+                                {
+                                    "label": "Unit testing",
+                                    "slug": "howto/scripting/unit-testing"
+                                },
+                                {
+                                    "label": "Common problems",
+                                    "slug": "howto/tasks/problems"
                                 }
                             ]
                         },
@@ -581,44 +537,156 @@ export default defineConfig({
                     ]
                 },
                 {
-                    "label": "Advanced Topics",
+                    "label": "Understanding Quest Viva",
                     "collapsed": true,
                     "items": [
                         {
-                            "label": "Overriding functions",
-                            "slug": "advanced-topics/overriding"
+                            "label": "When scripts run",
+                            "slug": "howto/scripting/when-scripts-run"
                         },
                         {
-                            "label": "Using inherited types",
-                            "slug": "advanced-topics/using-inherited-types"
+                            "label": "Scope: what the player can see and reach",
+                            "slug": "howto/scripting/scopes"
                         },
                         {
-                            "label": "Types",
+                            "label": "Expressions",
+                            "slug": "howto/scripting/expressions"
+                        },
+                        {
+                            "label": "Null and unset values",
+                            "slug": "howto/scripting/null"
+                        },
+                        {
+                            "label": "Object types",
                             "slug": "advanced-topics/about-types"
                         },
                         {
-                            "label": "Using delegates",
-                            "slug": "advanced-topics/using-delegates"
+                            "label": "Undo",
+                            "slug": "advanced-topics/undo-support"
+                        }
+                    ]
+                },
+                {
+                    "label": "Customise and Extend",
+                    "collapsed": true,
+                    "items": [
+                        {
+                            "label": "The player interface",
+                            "collapsed": true,
+                            "items": [
+                                {
+                                    "label": "How players interact",
+                                    "slug": "howto/ux/ui-game-play"
+                                },
+                                {
+                                    "label": "Look and feel",
+                                    "slug": "howto/ux/ui-style"
+                                },
+                                {
+                                    "label": "Fonts",
+                                    "slug": "howto/ux/ui-fonts"
+                                },
+                                {
+                                    "label": "Object verb menus",
+                                    "slug": "howto/ux/display-verbs"
+                                },
+                                {
+                                    "label": "Custom command panes",
+                                    "slug": "howto/ux/command-pane"
+                                },
+                                {
+                                    "label": "Custom status pane",
+                                    "slug": "howto/ux/custom-panes"
+                                },
+                                {
+                                    "label": "Modifying the status and game panes",
+                                    "slug": "howto/ux/ui-custom"
+                                },
+                                {
+                                    "label": "The location bar",
+                                    "slug": "howto/ux/ui-location-bar"
+                                },
+                                {
+                                    "label": "Custom CSS and HTML",
+                                    "slug": "howto/ux/customising-the-ui"
+                                },
+                                {
+                                    "label": "JavaScript to Quest Viva with ASLEvent",
+                                    "slug": "howto/ux/ui-callback"
+                                },
+                                {
+                                    "label": "Adding a dialogue panel",
+                                    "slug": "howto/ux/ui-dialogue"
+                                },
+                                {
+                                    "label": "Adding a dialogue panel that assigns points",
+                                    "slug": "howto/ux/ui-dialogue-points"
+                                }
+                            ]
+                        },
+                        {
+                            "label": "Types and libraries",
+                            "collapsed": true,
+                            "items": [
+                                {
+                                    "label": "Creating your own types",
+                                    "slug": "advanced-topics/using-inherited-types"
+                                },
+                                {
+                                    "label": "Using and creating libraries",
+                                    "slug": "advanced-topics/using-libraries"
+                                },
+                                {
+                                    "label": "Editor tabs for types",
+                                    "slug": "advanced-topics/tabs-for-types"
+                                },
+                                {
+                                    "label": "Editor user interface elements",
+                                    "slug": "advanced-topics/editor-user-interface-elements"
+                                },
+                                {
+                                    "label": "Overriding built-in functions",
+                                    "slug": "advanced-topics/overriding"
+                                },
+                                {
+                                    "label": "Using delegates",
+                                    "slug": "advanced-topics/using-delegates"
+                                }
+                            ]
                         },
                         {
                             "label": "Translating Quest Viva",
                             "slug": "advanced-topics/translation"
+                        }
+                    ]
+                },
+                {
+                    "label": "Publishing",
+                    "collapsed": true,
+                    "items": [
+                        {
+                            "label": "Overview",
+                            "slug": "publishing/publishing"
                         },
                         {
-                            "label": "Using and creating libraries",
-                            "slug": "advanced-topics/using-libraries"
+                            "label": "Your game's details",
+                            "slug": "publishing/game-details"
                         },
                         {
-                            "label": "Undo support",
-                            "slug": "advanced-topics/undo-support"
+                            "label": "Hosting your game",
+                            "slug": "publishing/hosting"
                         },
                         {
-                            "label": "Using tabs for types",
-                            "slug": "advanced-topics/tabs-for-types"
+                            "label": "Competition entry",
+                            "slug": "publishing/competition-entry"
                         },
                         {
-                            "label": "Editor user interface elements",
-                            "slug": "advanced-topics/editor-user-interface-elements"
+                            "label": "Updating a released game",
+                            "slug": "howto/world/about-save"
+                        },
+                        {
+                            "label": "WebPlayer",
+                            "slug": "publishing/webplayer"
                         }
                     ]
                 },
@@ -761,33 +829,7 @@ export default defineConfig({
                     ]
                 },
                 {
-                    "label": "Publishing",
-                    "collapsed": true,
-                    "items": [
-                        {
-                            "label": "Overview",
-                            "slug": "publishing/publishing"
-                        },
-                        {
-                            "label": "Your game's details",
-                            "slug": "publishing/game-details"
-                        },
-                        {
-                            "label": "Hosting your game",
-                            "slug": "publishing/hosting"
-                        },
-                        {
-                            "label": "WebPlayer",
-                            "slug": "publishing/webplayer"
-                        },
-                        {
-                            "label": "Competition entry",
-                            "slug": "publishing/competition-entry"
-                        }
-                    ]
-                },
-                {
-                    "label": "Developers",
+                    "label": "Contribute",
                     "collapsed": true,
                     "items": [
                         {
