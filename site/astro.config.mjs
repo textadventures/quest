@@ -137,16 +137,8 @@ export default defineConfig({
                                     "slug": "howto/world/exits"
                                 },
                                 {
-                                    "label": "Doors",
-                                    "slug": "howto/tasks/setting-up-door"
-                                },
-                                {
-                                    "label": "Locks with a combination",
-                                    "slug": "other-guides/unlockdoor"
-                                },
-                                {
-                                    "label": "Stopping the player leaving",
-                                    "slug": "other-guides/immobilise-the-player"
+                                    "label": "Doors, locks and keys",
+                                    "slug": "howto/world/doors"
                                 },
                                 {
                                     "label": "Light and darkness",
@@ -243,10 +235,6 @@ export default defineConfig({
                                     "slug": "howto/npcs/conversations"
                                 },
                                 {
-                                    "label": "Handling SPEAK TO",
-                                    "slug": "howto/npcs/speak-to"
-                                },
-                                {
                                     "label": "Ask/Tell topics",
                                     "slug": "howto/npcs/ask-about"
                                 },
@@ -303,26 +291,8 @@ export default defineConfig({
                             ]
                         },
                         {
-                            "label": "Time and events",
-                            "collapsed": true,
-                            "items": [
-                                {
-                                    "label": "Turn scripts",
-                                    "slug": "howto/scripting/using-turnscripts"
-                                },
-                                {
-                                    "label": "Turn-based events",
-                                    "slug": "other-guides/turn-based-events"
-                                },
-                                {
-                                    "label": "Time-limited puzzles",
-                                    "slug": "other-guides/timelimitedpuzzles"
-                                },
-                                {
-                                    "label": "Tracking time",
-                                    "slug": "howto/tasks/time"
-                                }
-                            ]
+                            "label": "Time, turns and timers",
+                            "slug": "howto/scripting/using-turnscripts"
                         },
                         {
                             "label": "Score, health and money",

@@ -7,7 +7,7 @@ Once you've worked through the [tutorial](/tutorial/tutorial-introduction), thes
 
 ## Rooms and exits
 
-Laying out your world: [rooms and objects](/howto/world/objects-and-rooms), [exits](/howto/world/exits) (including locked exits and exits that run a script), [doors](/howto/tasks/setting-up-door), [dark rooms](/howto/world/handling-light-and-dark), and [the map](/howto/tasks/showing-a-map).
+Laying out your world: [rooms and objects](/howto/world/objects-and-rooms), [exits](/howto/world/exits) (including locked exits and exits that run a script), [doors, locks and keys](/howto/world/doors), [dark rooms](/howto/world/handling-light-and-dark), and [the map](/howto/tasks/showing-a-map).
 
 ## Objects
 
@@ -19,7 +19,7 @@ What the player can do with things: [features](/howto/world/features) that give 
 
 ## Characters and conversation
 
-Start with [Talking to characters](/howto/npcs/conversations), which compares the ways to write conversations: [Ask/Tell topics](/howto/npcs/ask-about), [SPEAK TO](/howto/npcs/speak-to), and [conversations with Pages](/howto/npcs/dialogue-pages). There are also guides to characters that [follow the player](/howto/npcs/follower), [patrol](/howto/npcs/patrolling-npcs) or [act on their own](/howto/npcs/independent-npcs).
+Start with [Talking to characters](/howto/npcs/conversations), which compares the ways to write conversations: [Ask/Tell topics](/howto/npcs/ask-about), [SPEAK TO](/howto/npcs/conversations#responding-to-speak-to), and [conversations with Pages](/howto/npcs/dialogue-pages). There are also guides to characters that [follow the player](/howto/npcs/follower), [patrol](/howto/npcs/patrolling-npcs) or [act on their own](/howto/npcs/independent-npcs).
 
 ## Commands and verbs
 
@@ -27,7 +27,7 @@ How the player's typing is understood: [how commands work](/howto/commands/comma
 
 ## Time and events
 
-Making things happen as the game goes on: [turn scripts](/howto/scripting/using-turnscripts), [events a few turns later](/other-guides/turn-based-events), [time-limited puzzles](/other-guides/timelimitedpuzzles) and [keeping track of the time of day](/howto/tasks/time).
+Making things happen as the game goes on: [turn scripts](/howto/scripting/using-turnscripts), [events a few turns later](/howto/scripting/using-turnscripts#something-happening-a-number-of-turns-later), [time-limited puzzles](/howto/scripting/using-turnscripts#a-time-limited-puzzle) and [keeping track of the time of day](/howto/scripting/using-turnscripts#a-game-clock).
 
 ## Score, health and money
 

@@ -34,7 +34,7 @@ See also [gender](#gender).
 
 "ask" is a [scriptdictionary](/types#scriptdictionary). Keys are topics, and values are the scripts to run when the object is asked about that topic.
 
-See also [Tutorial: Ask and Tell](/tutorial/more-things-to-do-with-objects#Ask_and_Tell), [askdefault](#askdefault), [tell](#tell).
+See also [Tutorial: Ask and Tell](/tutorial/more-things-to-do-with-objects#ask-and-tell), [askdefault](#askdefault), [tell](#tell).
 
 ## askdefault
 
@@ -759,7 +759,7 @@ See also [drop](#drop), [takemsg](#takemsg).
 
 "tell" is a [scriptdictionary](/types#scriptdictionary). Keys are topics, and values are the scripts to run when the object is told about that topic.
 
-See also [Tutorial: Ask and Tell](/tutorial/more-things-to-do-with-objects#Ask_and_Tell), [telldefault](#telldefault), [ask](#ask).
+See also [Tutorial: Ask and Tell](/tutorial/more-things-to-do-with-objects#ask-and-tell), [telldefault](#telldefault), [ask](#ask).
 
 ## telldefault
 

@@ -6,7 +6,7 @@ sidebar:
 
 If you find you have several places in the game where you have script (or bits of scripts) doing essentially the same thing, you are probably better creating a function to do it just one. The basic idea is that you put the code in just one place, and then anywhere that needs to use the code, you send to the place. This page walks through one worked example in depth; for the broader picture (built-in vs custom functions, overriding, and more) see [How to use functions](/howto/tasks/about-functions).
 
-If you did the tutorial, you will already have encountered functions [here](/tutorial/more-things-to-do-with-objects#Using_Functions).
+If you did the tutorial, you will already have encountered functions [here](/tutorial/more-things-to-do-with-objects#using-functions).
 
 A typical use of a function in Quest Viva is when you have several ways the player can do something. Perhaps there is a chair the player can sit on, and she might type SIT, SIT ON CHAIR or USE CHAIR. You could handle SIT as a command, SIT ON CHAIR as a verb or a command and USE CHAIR via the Use/Give feature... but they all do the same thing, so we will use a function.
 

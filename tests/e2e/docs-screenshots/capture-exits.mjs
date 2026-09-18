@@ -1,4 +1,4 @@
-// Regenerates the 4 editor screenshots embedded in site/src/content/docs/exits.md. See
+// Regenerates the 2 editor screenshots embedded in site/src/content/docs/howto/world/exits.md. See
 // .claude/skills/docs-screenshots/SKILL.md.
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -42,20 +42,17 @@ await runCapture(async ({ page, baseUrl }) => {
     await page.click('button:has-text("Create exit")');
     await page.waitForSelector('text=south → garden', { timeout: 10000 });
 
-    // --- Lockedexit.png: named + locked, on the Exit tab ---
+    // --- Name the exit (the doc's Name section); no screenshot here any more - the locked-door
+    // example moved to howto/world/doors.md ---
     // Select the newly created (still auto-named "Exit: garden") exit via its tree row, not
     // the "south → garden" summary link on the Exits tab — that link selects the destination
     // room ("garden"), not the exit itself.
     await page.getByText('Exit: garden', { exact: true }).click();
     await page.waitForSelector('button:has-text("Exit")', { timeout: 10000 });
     await setLabeledField(page, 'Name:', 'garden exit');
-    await page.getByText('Locked', { exact: true }).locator('..').locator('input[type="checkbox"]').check();
-    const lockedField = page.getByText('Print message when locked:', { exact: true });
-    await capture(page, out('Lockedexit.png'), { untilLocator: lockedField, padding: 60 });
 
-    // --- Exit script examples: uncheck Locked (independent narrative section), enable
+    // --- Exit script examples: enable
     // "Run a script" and type each example directly into the script's Code view ---
-    await page.getByText('Locked', { exact: true }).locator('..').locator('input[type="checkbox"]').uncheck();
     await page.getByText('Run a script (instead of moving the player automatically)', { exact: true })
         .locator('..').locator('input[type="checkbox"]').check();
     await page.waitForSelector('text=Script to run:', { timeout: 5000 });
@@ -81,17 +78,4 @@ MoveObject (player, room2)`);
     await page.waitForSelector('text=The first time,', { timeout: 5000 });
     const lastScript2Row = page.locator('button:has-text("+ Add script")').last();
     await capture(page, out('exitscript2.png'), { untilLocator: lastScript2Row, padding: 40 });
-
-    // --- exitscript3.png: room script locking every exit via foreach/ScopeExits ---
-    // Placed on the kitchen room's own "Before entering the room" script, the natural home for
-    // "trap the player in a room" logic the doc's Room Scripts section describes.
-    await selectTreeNode(page, 'kitchen');
-    await openTab(page, 'Scripts');
-    await page.waitForSelector('text=Before entering the room:', { timeout: 10000 });
-    await setScriptCodeView(page, page.locator('button:has-text("Code view")').first(), `foreach (ext, ScopeExits ()) {
-ext.locked = true
-}`);
-    await page.waitForSelector('text=Set variable', { timeout: 5000 });
-    const foreachRow = page.locator('button:has-text("+ Add script")').last();
-    await capture(page, out('exitscript3.png'), { untilLocator: foreachRow, padding: 40 });
 });
