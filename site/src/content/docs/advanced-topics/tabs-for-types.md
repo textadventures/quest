@@ -60,8 +60,8 @@ It is vital that you cut-and-paste everything from the start tag to the end tag,
 In your game file in Quest Viva, you need an extra line at the top of the code, telling Quest Viva to include your library. The top five lines will be like this, with your library after the two standard libraries (the numbers in the first two lines may be different if you are using a different version).
 
 ```xml
-<!--Saved by Quest 5.7.6404.15496-->
-<asl version="550">
+<!--Saved by Quest Viva 6.0.0-->
+<asl version="600">
   <include ref="English.aslx" />
   <include ref="Core.aslx" />
   <include ref="Library.aslx" />

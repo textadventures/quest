@@ -4,13 +4,13 @@ sidebar:
   order: 3
 ---
 
-<div class="alert alert-info">
-Note: Delegates can currently only be edited in full code view. There is no dedicated editor support for delegates.
-</div>
+:::note
+Delegates can currently only be edited in the raw XML code view. There is no dedicated editor support for delegates.
+:::
 
 It is easy to create a [script](/types#script) attribute to run at a particular point in the game, but what if you want to create a script attribute that returns a value? It would look a lot like a function. The answer is to use **delegates**.
 
-Note: Delegates also offer a way to pass parameters to a script, but this is arguably better done by passing a dictionary to a script (if only because it is supposed by the editors).
+Note: Delegates also offer a way to pass parameters to a script, but this is arguably better done by passing a dictionary to a script (if only because it is supported by the editors).
 
 First you need to define the delegate, using a [delegate](/elements#delegate) XML tag. This accepts the same attributes as the [function](/elements#function) tag, so you can specify parameters and/or a return value type.
 
@@ -27,8 +27,8 @@ Let us see this in action. First, a bit of terminology. In "object-orientated pr
 Here is a very simple game where you can hit a goblin.
 
 ```xml
-<!--Saved by Quest 5.4.4873.16527-->
-<asl version="540">
+<!--Saved by Quest Viva 6.0.0-->
+<asl version="600">
   <include ref="English.aslx" />
   <include ref="Core.aslx" />
   <game name="test">
@@ -66,8 +66,8 @@ We will now set up a new method, which will return the percentage of the goblin'
 This has to appear in your code before the delegate is used - just after the library includes seems best to me. Here is the modified game:
 
 ```xml
-<!--Saved by Quest 5.4.4873.16527-->
-<asl version="540">
+<!--Saved by Quest Viva 6.0.0-->
+<asl version="600">
   <include ref="English.aslx" />
   <include ref="Core.aslx" />
   <delegate name="script_returns_int" type="int" />
@@ -110,8 +110,8 @@ Suppose we want to kick that goblin too. We do not want to have to repeat code, 
 The game now looks like this:
 
 ```xml
-<!--Saved by Quest 5.4.4873.16527-->
-<asl version="540">
+<!--Saved by Quest Viva 6.0.0-->
+<asl version="600">
   <include ref="English.aslx" />
   <include ref="Core.aslx" />
   <delegate name="script_returns_int" parameters="" type="int" />
@@ -163,8 +163,8 @@ We use "rundelegate" to invoke the new method, as it does not return a value. Th
 NOTE: For sending parameters to a script, an alternative is to put the parameters into a dictionary. Whether this is preferable is a matter of choice, but it is at least supported by the editor.
 
 ```xml
-<!--Saved by Quest 5.4.4873.16527-->
-<asl version="540">
+<!--Saved by Quest Viva 6.0.0-->
+<asl version="600">
   <include ref="English.aslx" />
   <include ref="Core.aslx" />
   <delegate name="script_returns_int" parameters="" type="int" />

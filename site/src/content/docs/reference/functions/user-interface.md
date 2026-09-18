@@ -116,7 +116,7 @@ player.alias = GetInput()
 msg ("Hi, " + player.alias)
 ```
 
-In the script editor, this is the "player's typed input" template on a "Set a variable or attribute" action. See [Asking a question](/howto/tasks/asking-a-question) for a fuller guide.
+In the script editor, this is the "player's typed input" template on a "Set a variable or attribute" action. See [Asking the player](/howto/scripting/asking-the-player) for a fuller guide.
 
 **Note:** Quest 5.2 deprecated this function, and Quest 5.4 to 5.8 rejected it outright, in favour of the [get input](/scripts#get-input) script command - blocking the game to wait for an answer tied up a real thread in those versions. Quest Viva suspends the script instead, so the function is available again in games marked as ASL version 600, and is now the better of the two. It still raises an error in a game whose version is 540 to 580; change the game's version to 600 or later to use it.
 

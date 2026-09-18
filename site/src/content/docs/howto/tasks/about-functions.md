@@ -91,9 +91,9 @@ For how to do proper unit testing, see [Unit Testing](/howto/scripting/unit-test
 
 ### Returning values
 
-A function can return a value. You need to specify what type the returned value will be (boolean, string, object, etc.). In the script, you set the return value by calling the `Return` function.
+A function can return a value. You need to specify what type the returned value will be (boolean, string, object, etc.). In the script, you set the return value with the `return` script command.
 
-Be aware that the script will continue to run even after the `Return`. It only sets the result of the function; it does not stop the script from executing.
+`return` also stops the function straight away: any script after it does not run. (Games made with Quest 5.4 or earlier are the exception - there, `return` only sets the result and the script carries on.)
 
 For more detail on creating functions with return values, see [Creating Functions](/howto/scripting/creating-functions-which-return-a-value).
 

@@ -202,7 +202,7 @@
     <pattern>hang up #object#;hang #object#</pattern>
     <script>
       if (not object.parent = player) {
-        msg ("You aren't carry it " + object.article + ".")
+        msg ("You aren't carrying " + object.article + ".")
       }
       else if (not player.parent = cloakroom) {
         msg ("Hang " + object.article + " where, exactly?")
@@ -217,7 +217,7 @@
     <pattern>hang #object1# on #object2#</pattern>
     <script>
       if (not object1.parent = player) {
-        msg ("You aren't carry it " + object.article + ".")
+        msg ("You aren't carrying " + object1.article + ".")
       }
       else if (not object2 = hook) {
         msg ("You can't hang stuff on " + GetDisplayName(object2) + ".")

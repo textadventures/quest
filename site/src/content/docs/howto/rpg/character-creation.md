@@ -30,7 +30,7 @@ In code view it will look like this:
 
 The important part is the `GetInput()` function, which suspends the game until the player types something, then returns what they typed as a string. There's no need to wrap the rest of the script in a block waiting for a callback - execution just continues on the next line once the player has answered, same as any other function call.
 
-If you want to ask several questions, you can just keep adding more lines the same way, for as long as each one is a plain text answer. Where it starts to need blocks within blocks is once you bring in `show menu`, which - unlike `GetInput()` - has to wait for the player to click an option, so the code that handles the answer has to go inside its callback block. This is perfectly possible in the GUI view, but starts to get a bit messy once you chain several menus together, so seriously consider doing this in code view.
+You can keep adding more questions the same way. When you want to limit the player to a set of choices, use a menu instead - add another "Set a variable or attribute" action and pick "player's choice from a menu" (`ShowMenu` in code view). Like `GetInput()`, it waits for the player to choose, then carries on with the next line:
 
 ![](/images/Creation2.png)
 
@@ -42,122 +42,67 @@ In code view it will look like this:
   msg ("First, what is your name?")
   player.alias = GetInput()
   msg ("Hi, " + player.alias)
-  show menu ("Your gender?", Split ("Male;Female", ";"), false) {
-    player.gender = result
-    show menu ("Your character class?", Split ("Warrior;Wizard;Priest;Thief", ";"), false) {
-      player.class = result
-      msg (" ")
-      msg (player.alias + " was a " + LCase (player.gender) + " " + LCase (player.class) + ".")
-      msg (" ")
-      msg ("Now press a key to begin...")
-      wait {
-        ClearScreen
-      }
-    }
-  }
+  classes = Split("Warrior;Wizard;Priest;Thief", ";")
+  player.class = ShowMenu("Your character class?", classes, false)
+  msg (player.alias + " is a " + LCase(player.class) + ".")
+  msg ("Now press a key to begin...")
+  WaitForKeyPress
+  ClearScreen
 </start>
 ```
 
-We are using the "show menu" command this time, to limit the player's choices, in the first instance to either "Male" or "Female". A menu needs a string list containing the options, and Split gives a quick way to create one:
+A menu needs a list of options, and `Split` gives a quick way to create one from a string - here we put it in a variable called `classes` first. The last parameter says whether the player can ignore the menu, which we don't want here. `WaitForKeyPress` pauses until the player presses a key, so they can read the summary before the screen is cleared.
+
+See [Asking the player](/howto/scripting/asking-the-player) for more about `GetInput`, `ShowMenu` and the other ways to ask questions.
+
+
+## Setting up the character
+
+Once you know the answers, you can set up the player. A `switch` is a tidy way to do something different for each class:
 
 ```quest
-Split ("Male;Female", ";")
-```
-
-The "show menu" command also takes a string, the prompt for the menu, and a Boolean signaling if the player is allowed to click cancel (which we do not want in this case). As before, the result goes into a string variable called "result".
-
-After also asking for the character class, the screen is cleared. The "wait" command waits until the player presses a key before running its block.
-
-
-## Many questions
-
-If you want to ask a series of questions, you are better off breaking the process up into functions, one question per function.
-
-As an example, we will ask the same three questions. A good convention is to name each function "CharacterCreation" followed by the question name, so we start with "CharacterCreationName". No parameters or return type.
-
-
-```quest
-msg ("Let's generate a character...")
-msg ("First, what is your name?")
-player.alias = GetInput()
-CharacterCreationGender
-```
-
-Then "CharacterCreationGender" - note that the next question depends on the answer given here:
-
-```quest
-msg ("Hi, " + player.alias)
-show menu ("Your gender?", Split ("Male;Female", ";"), false) {
-  player.gender = result
-  if (result = "Female") {
-    CharacterCreationClassFemale
+switch (player.class) {
+  case ("Warrior") {
+    player.strength = 4
+    player.agility = 1
+    player.magic = 0
+    sword.parent = player
   }
-  else {
-    CharacterCreationClassMale
+  case ("Wizard") {
+    player.strength = 0
+    player.agility = 1
+    player.magic = 4
+    black_robes.parent = player
+  }
+  case ("Priest") {
+    player.strength = 2
+    player.agility = 0
+    player.magic = 2
+    white_robes.parent = player
+  }
+  case ("Thief") {
+    player.strength = 1
+    player.agility = 4
+    player.magic = 0
+    black_catsuit.parent = player
   }
 }
 ```
 
-Then "CharacterCreationClassFemale". We can use the result to set attributes of the player and give some clothing too. Note that an attribute you never assign stays completely unset rather than defaulting to zero - it isn't even blank; using it directly (printing it, doing arithmetic with it, anything beyond comparing it to `null`) will throw a script error. So give every class a baseline value for each attribute you plan to use, rather than leaving any of them unset:
+Give every class a value for every attribute you plan to use, even if it's zero. An attribute you never set doesn't default to zero - it doesn't exist at all, and doing arithmetic with it causes an error.
+
+Because each question simply waits for its answer, a later question can depend on an earlier one - just ask it inside an `if`:
 
 ```quest
-show menu ("Your character class?", Split ("Amazon;Witch;Priestess;Thief", ";"), false) {
-  player.class = result
-  switch (result) {
-    case ("Amazon") {
-      player.strength = 3
-      player.agility = 1
-      fur_bikini.parent = player
-    }
-    case ("Witch") {
-      player.magic = 4
-      black_robes.parent = player
-    }
-    case ("Priestess") {
-      player.magic = 2
-      player.agility = 2
-      white_robes.parent = player
-    }
-    case ("Thief") {
-      player.agility = 4
-      black_catsuit.parent = player
-    }
-  }
-  CharacterCreationBackground
+if (player.class = "Wizard") {
+  schools = Split("Fire;Ice;Illusion", ";")
+  player.school = ShowMenu("Which school of magic?", schools, false)
 }
 ```
 
-Then "CharacterCreationClassMale":
+If the start script gets long, you can move parts of it into functions - say, `CharacterCreationClass` - and call them one after another from the start script.
 
-```quest
-show menu ("Your character class?", Split ("Barbarian;Wizard;Priest;Thief", ";"), false) {
-  player.class = result
-  switch (result) {
-    case ("Barbarian") {
-      player.strength = 4
-      fur_thong.parent = player
-    }
-    case ("Wizard") {
-      player.magic = 4
-      black_robes.parent = player
-    }
-    case ("Priest") {
-      player.magic = 2
-      player.strength = 2
-      brown_robes.parent = player
-    }
-    case ("Thief") {
-      player.agility = 4
-      black_catsuit.parent = player
-    }
-  }
-  CharacterCreationBackground
-}
-```
-
-You can easily add further questions in the same manner. Or indeed to insert a new question between two existing one. Just make the previous one point to the new, and have the new one point to the next.
-
-You should consider carefully if you want the player to know what bonuses she will get for each choice. If you decide to do so, she is likely to pick choices that maximise one attribute. On the other hand, if you choose not, she may end up with a mediocre character that is not good at anything.
+You should consider carefully if you want the player to know what bonuses they will get for each choice. If you decide to do so, they are likely to pick choices that maximise one attribute. On the other hand, if you choose not, they may end up with a mediocre character that is not good at anything.
 
 
 

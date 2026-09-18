@@ -7,7 +7,7 @@ sidebar:
 Libraries allow you to reuse elements in multiple games. That might be [object types](/advanced-topics/using-inherited-types), [functions](/howto/scripting/creating-functions-which-return-a-value), or even common objects. In fact, libraries are the basis of how Quest Viva works - Core.aslx is a library, included by default in all Quest Viva games. It handles much of the standard text adventure game functionality - working out which objects the player can see, handling player commands, implementing containers, and much more. This means that Quest Viva's built-in functionality is extensible and indeed replaceable.
 
 
-To see what these libraries add to your game, click the tree view options button above the tree, and select Show Library Elements. You will see that a shed load of stuff appears in the tree. Everything in grey has come from a library, and if you click on it, a banner across the top tells you which library it came from. Core.aslx adds most of the functions, all the types, commands and verbs, while English.aslx adds the templates (some of the more fundamental functions and all script commands are built-in).
+To see what these libraries add to your game, click the tree view options button above the tree (next to the "Filter..." box), and select "Show Library Elements". You will see that a shed load of stuff appears in the tree. Everything in grey has come from a library, and if you click on it, a banner across the top tells you which library it came from. Core.aslx adds most of the functions, all the types, commands and verbs, while English.aslx adds the templates (some of the more fundamental functions and all script commands are built-in).
 
 ![](/images/Showlibraryelements.png)
 

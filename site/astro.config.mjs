@@ -30,7 +30,7 @@ export default defineConfig({
             sidebar: [
                 {
                     "label": "Start Here",
-                    "collapsed": true,
+                    "collapsed": false,
                     "items": [
                         {
                             "label": "Introduction",
@@ -120,10 +120,6 @@ export default defineConfig({
                     "label": "Guides",
                     "collapsed": true,
                     "items": [
-                        {
-                            "label": "The Cloak of Darkness",
-                            "slug": "cloak-of-darkness"
-                        },
                         {
                             "label": "Commands & Parser",
                             "collapsed": true,
@@ -263,6 +259,10 @@ export default defineConfig({
                                     "slug": "howto/scripting/introtocoding"
                                 },
                                 {
+                                    "label": "Asking the player",
+                                    "slug": "howto/scripting/asking-the-player"
+                                },
+                                {
                                     "label": "Creating functions",
                                     "slug": "howto/scripting/creating-functions-which-return-a-value"
                                 },
@@ -341,10 +341,6 @@ export default defineConfig({
                                     "slug": "howto/tasks/about-functions"
                                 },
                                 {
-                                    "label": "Multiple choices - using a switch script",
-                                    "slug": "howto/tasks/multiple-choices-using-a-switch-script"
-                                },
-                                {
                                     "label": "Changing the player object",
                                     "slug": "howto/tasks/changing-the-player-object"
                                 },
@@ -355,14 +351,6 @@ export default defineConfig({
                                 {
                                     "label": "Showing a map",
                                     "slug": "howto/tasks/showing-a-map"
-                                },
-                                {
-                                    "label": "Asking a simple question",
-                                    "slug": "howto/tasks/ask-simple-question"
-                                },
-                                {
-                                    "label": "Asking a question",
-                                    "slug": "howto/tasks/asking-a-question"
                                 },
                                 {
                                     "label": "Keeping a journal",
@@ -407,10 +395,6 @@ export default defineConfig({
                                 {
                                     "label": "Randomisation",
                                     "slug": "howto/tasks/random"
-                                },
-                                {
-                                    "label": "Showing a menu",
-                                    "slug": "howto/tasks/showing-a-menu"
                                 },
                                 {
                                     "label": "Use maths functionality",
@@ -589,6 +573,10 @@ export default defineConfig({
                                     "slug": "other-guides/implementing-components-of-an-object"
                                 }
                             ]
+                        },
+                        {
+                            "label": "Worked example: Cloak of Darkness",
+                            "slug": "cloak-of-darkness"
                         }
                     ]
                 },
@@ -709,6 +697,10 @@ export default defineConfig({
                                 {
                                     "label": "Mathematical functions",
                                     "slug": "reference/functions/maths"
+                                },
+                                {
+                                    "label": "Gamebook functions",
+                                    "slug": "reference/functions/gamebook"
                                 }
                             ]
                         },

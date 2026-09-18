@@ -1,5 +1,5 @@
 // Regenerates the 2 editor screenshots embedded in
-// site/src/content/docs/howto/rpg/character_creation.md. See .claude/skills/docs-screenshots/SKILL.md.
+// site/src/content/docs/howto/rpg/character-creation.md. See .claude/skills/docs-screenshots/SKILL.md.
 //
 // "get input" is intentionally no longer offered by the Add Script Command picker (superseded
 // by the synchronous GetInput() expression form, rendered in the Visual editor as the
@@ -31,19 +31,12 @@ msg ("Hi, " + player.alias)`);
 msg ("First, what is your name?")
 player.alias = GetInput()
 msg ("Hi, " + player.alias)
-show menu ("Your gender?", Split ("Male;Female", ";"), false) {
-  player.gender = result
-  show menu ("Your character class?", Split ("Warrior;Wizard;Priest;Thief", ";"), false) {
-    player.class = result
-    msg (" ")
-    msg (player.alias + " was a " + LCase (player.gender) + " " + LCase (player.class) + ".")
-    msg (" ")
-    msg ("Now press a key to begin...")
-    wait {
-      ClearScreen
-    }
-  }
-}`);
+classes = Split("Warrior;Wizard;Priest;Thief", ";")
+player.class = ShowMenu("Your character class?", classes, false)
+msg (player.alias + " is a " + LCase(player.class) + ".")
+msg ("Now press a key to begin...")
+WaitForKeyPress
+ClearScreen`);
     await page.waitForSelector('text=Set variable');
     const lastRow2 = page.locator('button:has-text("+ Add script")').last();
     await capture(page, out('Creation2.png'), { untilLocator: lastRow2, padding: 40 });

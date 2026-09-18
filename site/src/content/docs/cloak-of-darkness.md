@@ -85,11 +85,11 @@ else if (not player.parent = cloakroom) {
 }
 else {
   object.parent = hook
-  msg ("You hang " + GetDefiniteAlias(object) + " on the hook.")
+  msg ("You hang " + GetDefiniteName(object) + " on the hook.")
 }
 ```
 
-We are using "object.article" so Quest Viva will use "it", "them, "him" as appropriate. The `GetDefiniteAlias` function will return the alias of the object if it exists, or the name otherwise, and will prepend "the" if appropriate. This is good practice that you should adopt, as it keeps the language flowing and natural.
+We are using "object.article" so Quest Viva will use "it", "them, "him" as appropriate. The `GetDefiniteName` function will return the alias of the object if it exists, or the name otherwise, and will prepend "the" if appropriate. This is good practice that you should adopt, as it keeps the language flowing and natural.
 
 
 ### Handling HANG CLOAK ON HOOK
@@ -104,14 +104,14 @@ Quest Viva will only match against objects present (unless we tell it otherwise 
 
 ```quest
 if (not object1.parent = player) {
-  msg ("You aren't carry it " + object.article + ".")
+  msg ("You aren't carrying " + object1.article + ".")
 }
 else if (not object2 = hook) {
   msg ("You can't hang stuff on " + GetDisplayName(object2) + ".")
 }
 else {
   object1.parent = object2
-  msg ("You hang " + GetDefiniteAlias(object1) + " on " + GetDefiniteAlias(object2) + ".")
+  msg ("You hang " + GetDefiniteName(object1) + " on " + GetDefiniteName(object2) + ".")
 }
 ```
 
@@ -133,7 +133,7 @@ else if (cloak.parent = this) {
 else {
   s = s + "There is a single hook, which strikes you as strange for a cloakroom."
 }
-msg (s + " The only way out is back to the east. "
+msg (s + " The only way out is back to the east.")
 ```
 
 The first line is the general description, which is used for all descriptions. It is assigned to a local variable `s`. We add that to a specific message, depending on where the cloak is. This means we only need to write the text one time, instead of repeating it for each option. We want the comment about the exit at the end of the paragraph, so the last line adds that to the string, and prints the whole thing.
@@ -211,7 +211,7 @@ All it will do is run the "look" script, exactly the same as `LOOK AT MESSAGE`. 
 
 The second thing we can do is stop turnscripts running in some situations. If the player mistypes a command, it is not really fair to count that as a turn. Typing `HELP` should also not count as a turn. There may be other examples you can think of.
 
-Go to the _Features_ tab of the game object, and tick "Show advanced scrips...", then go to the _Advanced scripts_ tab. The middle script is for unresolved commands. We want to have it print a message, and to tell Quest Viva to skip turnscripts this turn.
+Go to the _Features_ tab of the game object, and tick "Advanced scripts", then go to the _Advanced scripts_ tab. The middle script is for unresolved commands. We want to have it print a message, and to tell Quest Viva to skip turnscripts this turn.
 
 ```quest
 msg ("Sorry, I do not understand '" + command + "'.")
@@ -285,7 +285,7 @@ This uses the `either` text processor directive, which then uses `CloakHere` as 
 {either CloakHere():dark|dingy}
 ```
 
-At the start of the game there is an introductory text saying how the player has arrived at the foyer. It reads better if this description then avoids the word "foyer". However, any other time the player enters the room, we do need the word. To handle this, we use the `once` directive which only uses the text the first time, and `notonce` which only uses the given text when it is not the first time.
+At the start of the game there is an introductory text saying how the player has arrived at the foyer. It reads better if this description then avoids the word "foyer". However, any other time the player enters the room, we do need the word. To handle this, we use the `once` directive which only uses the text the first time, and `notfirst` which only uses the given text when it is not the first time.
 
 ```quest
 {once:room}{notfirst:foyer}
