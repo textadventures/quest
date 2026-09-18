@@ -305,7 +305,7 @@
       <attribute>0</attribute>
       <simple>filename</simple>
       <simpleeditor>file</simpleeditor>
-      <source>*.wav;*.mp3</source>
+      <source>*.wav;*.mp3;*.ogg</source>
     </control>
 
     <control>

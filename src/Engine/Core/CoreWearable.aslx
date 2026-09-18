@@ -656,7 +656,7 @@
   -->
   <function name="TestGarment" type="boolean" parameters="object"><![CDATA[
       if (HasString(game.pov, "notallowedtodress")) {
-        msg(game.pov.notallowedtotake)
+        msg(game.pov.notallowedtodress)
         return (false)
       }
       else {
@@ -669,7 +669,7 @@
   -->
   <function name="TestRemove" type="boolean" parameters="object"><![CDATA[
       if (HasString(game.pov, "notallowedtoundress")) {
-        msg(game.pov.notallowedtotake)
+        msg(game.pov.notallowedtoundress)
         return (false)
       }
       else {

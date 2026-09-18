@@ -62,42 +62,42 @@
 
   <function name="IncreaseScore" parameters="amount">
     if (not HasInt(game, "score")) {
-      error ("Score is not configured. To enable score, go to 'game' and tick 'Show score' on the Player tab.")
+      error ("Score is not configured. To enable score, go to 'game' and tick 'Score' on the Features tab.")
     }
     game.score = game.score + amount
   </function>
 
   <function name="DecreaseScore" parameters="amount">
     if (not HasInt(game, "score")) {
-      error ("Score is not configured. To enable score, go to 'game' and tick 'Show score' on the Player tab.")
+      error ("Score is not configured. To enable score, go to 'game' and tick 'Score' on the Features tab.")
     }
     game.score = game.score - amount
   </function>
 
   <function name="IncreaseHealth" parameters="amount">
     if (not HasInt(game.pov, "health")) {
-      error ("Health is not configured. To enable health, go to 'game' and tick 'Show health' on the Player tab.")
+      error ("Health is not configured. To enable health, go to 'game' and tick 'Health' on the Features tab.")
     }
     game.pov.health = game.pov.health + amount
   </function>
 
   <function name="DecreaseHealth" parameters="amount">
     if (not HasInt(game.pov, "health")) {
-      error ("Health is not configured. To enable health, go to 'game' and tick 'Show health' on the Player tab.")
+      error ("Health is not configured. To enable health, go to 'game' and tick 'Health' on the Features tab.")
     }
     game.pov.health = game.pov.health - amount
   </function>
 
   <function name="IncreaseMoney" parameters="amount">
     if (not HasInt(game.pov, "money")) {
-      error ("Money is not configured. To enable money, go to 'game' and tick 'Show money' on the Player tab.")
+      error ("Money is not configured. To enable money, go to 'game' and tick 'Money' on the Features tab.")
     }
     game.pov.money = game.pov.money + amount
   </function>
 
   <function name="DecreaseMoney" parameters="amount">
     if (not HasInt(game.pov, "money")) {
-      error ("Money is not configured. To enable money, go to 'game' and tick 'Show money' on the Player tab.")
+      error ("Money is not configured. To enable money, go to 'game' and tick 'Money' on the Features tab.")
     }
     game.pov.money = game.pov.money - amount
   </function>
