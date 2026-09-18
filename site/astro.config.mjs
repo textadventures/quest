@@ -291,8 +291,14 @@ export default defineConfig({
                             ]
                         },
                         {
-                            "label": "Time, turns and timers",
-                            "slug": "howto/scripting/using-turnscripts"
+                            "label": "Time and events",
+                            "collapsed": true,
+                            "items": [
+                                {
+                                    "label": "Time, turns and timers",
+                                    "slug": "howto/scripting/using-turnscripts"
+                                }
+                            ]
                         },
                         {
                             "label": "Score, health and money",
