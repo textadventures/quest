@@ -1,164 +1,128 @@
 ---
-title: Move an object in a direction
-sidebar:
-  order: 18
+title: Pushing objects between rooms
+description: Let the player push a heavy object through an exit, such as PUSH CRATE NORTH, and use it in the next room
 ---
 
+Some objects are too heavy to carry but can still be moved - a crate the player pushes into the next room, then stands on to reach a trapdoor. This page shows you how to add a PUSH command that takes an object and a direction, and moves both the object and the player through that exit.
 
-Occasionally you might want to have the player move an object from one room to another by pushing or pulling it, rather than carrying it. Let us suppose there is a heavy crate; the player cannot lift it, but she could push it into the room to the west, then climb up it to get to a trapdoor in the ceiling.
+## The PUSH command
 
-## Basic command
+Select "Commands" in the tree (underneath "game"), click "+ Add" and choose "Add Command". Enter this pattern:
 
-This is pretty easy to do in its simplest form. We need a new command, with this pattern:
-
-    push #object# #exit#
-
-The script will only run if both the object and exit have a match, so all the script has to do is move the object to the destination of the exit (which is set in its "to" attribute), and tell the player:
-
-```quest
-msg ("You push " + object.article + " " + exit.alias + ".")
-object.parent = exit.to
+```
+push #object# #exit#;shove #object# #exit#
 ```
 
-You might also want the player to end up in the other room - it depends what the player would expect. If so, then just add an extra line.
+`#object#` matches any object the player can see, and `#exit#` matches any exit from the current room, so PUSH CRATE NORTH and SHOVE CRATE N both work. If the player names an object that isn't there, or a direction with no exit, the script doesn't run and Quest Viva replies "I can't see that."
+
+Then add this script. In the editor, the moves are "Move object" from the Objects category - choose "player" as the object to move the player - but it's quicker to paste it into code view:
 
 ```quest
-msg ("You push " + object.article + " " + exit.alias + ".")
-object.parent = exit.to
-game.pov.parent = exit.to
-```
-
-For the rest of this page, we will be moving the player as well. If you do not want that to happen, just delete that line from your code.
-
-
-## Limiting objects
-
-It is likely you will not want the player to move any object in this way. There will be some that cannot be moved, and some that are too small (the player can just pick them up). We will therefore flag objects that can be pushed as "shiftable".
-
-Go to the _Attributes_ tab of the crate, and add a new attribute, "shiftable". Set it to be a Boolean, and tick it so it is true.
-
-We then need to adjust the code for the command to check for that flag:
-
-```quest
-if (not GetBoolean(object, "shiftable")) {
+if (not GetBoolean(object, "pushable")) {
   if (GetBoolean(object, "take")) {
-    msg ("Just pick " + object.article + " up!")
+    msg ("You can just pick " + object.article + " up.")
   }
   else {
-    msg ("Push all you like, you can't move " + object.article + ".")
+    msg (DynamicTemplate("DefaultPush", object))
   }
+}
+else if (exit.locked) {
+  msg (exit.lockmessage)
+}
+else if (not TestExitGlobal(exit)) {
+  // The player isn't allowed to leave, and has already been told why
+}
+else if (exit.runscript or exit.lookonly or DoesInherit(exit, "updowndirection")) {
+  msg ("You can't push " + object.article + " that way.")
 }
 else {
-  msg ("You push " + object.article + " " + exit.alias + ".")
-  object.parent = exit.to
-  game.pov.parent = exit.to
+  msg ("You push " + GetDefiniteName(object) + " " + exit.alias + ".")
+  MoveObject (object, exit.to)
+  MoveObject (game.pov, exit.to)
 }
 ```
 
-We use `GetBoolean` because most objects will not have a "shiftable" attribute. `GetBoolean` will return false if the "shiftable" attribute is false or if it is absent altogether.
+Most objects shouldn't move this way, so the command only works on objects you've marked as pushable. On the crate's _Attributes_ tab, add an attribute called `pushable`, make it a Boolean, and tick it.
 
-We also check the value of the "take" attribute to give a different error message when the player tries to push a hat, compared to trying to push a wall.
+The script then checks each reason the push might fail, in turn:
 
+- **The object isn't pushable.** `GetBoolean` returns false when the attribute is false or missing altogether, so you only need to add it to the objects that can be pushed. Something the player could just carry gets a hint to pick it up. Anything else gets the standard reply to PUSH, "You can't push it."
+- **The exit is locked.** The player sees the exit's own "Print message when locked" text, or "That way is locked." if you left it empty. Without this check, the player could push the crate through a door they can't open themselves.
+- **The player isn't allowed to leave.** `TestExitGlobal` is the check the built-in GO command makes. If you've set the player's `notallowedtoexit` attribute - see [Stopping the player leaving](/howto/world/doors#stopping-the-player-leaving) - it prints that message and returns false.
+- **The exit is one you can't push through.** Up and down exits both inherit the `updowndirection` type, which is simpler and more reliable than checking the alias for "up" and "down" - it works whatever the exit's alias says. Exits that "Run a script (instead of moving the player automatically)", such as the doors on [Doors, locks and keys](/howto/world/doors#a-door-between-two-rooms), are refused too, because the script decides where the player goes, not the exit's "To" room. So are look-only exits, which don't lead anywhere.
 
-## Limiting directions
+If all is well, the script prints the message, moves the object to the exit's destination (its `to` attribute) and moves the player after it. Moving the player shows them the new room, just as if they had walked there:
 
-We can stop the player pushing the object up or down (you may feel objects can be pushed downwards, just delete those three lines):
+```
+> push crate north
+You push the crate north.
+
+You are in a barn.
+You can see a crate.
+You can go south or up.
+```
+
+We use `game.pov` rather than `player`, so the command still works if the player changes to a different character during the game.
+
+If the object should move but the player should stay where they are - a barrel rolled down a corridor, say - delete the last `MoveObject` line.
+
+### Blocking a single exit
+
+To stop the crate going through one particular exit, such as a doorway with a step, add a string attribute called `nopushing` on that exit's _Attributes_ tab containing the message to show, like "The step is too high to push the crate over." Then add this check straight after the `exit.locked` one:
 
 ```quest
-if (not GetBoolean(object, "shiftable")) {
-  if (GetBoolean(object, "take")) {
-    msg ("Just pick " + object.article + " up!")
-  }
-  else {
-    msg ("Push all you like, you can't move " + object.article + ".")
-  }
+else if (HasString(exit, "nopushing")) {
+  msg (exit.nopushing)
 }
-else if (exit.alias = "up") {
-  msg ("You can't push " + object.article + " up there.")
-}
-else if (exit.alias = "down") {
-  msg ("You can't push " + object.article + " down there.")
+```
+
+### Pull and drag
+
+To let the player PULL or DRAG the object as well, add those to the pattern, separated with semicolons:
+
+```
+push #object# #exit#;shove #object# #exit#;pull #object# #exit#;drag #object# #exit#
+```
+
+The messages say "push" whichever word the player used. If that matters, make a separate command for PULL with its own messages - the script is otherwise the same.
+
+## Using the object in the next room
+
+Once the crate is in the barn, you usually want it to do something there. Checking whether the crate is in the same room as the player is enough for most puzzles - you don't need the player to be standing on it.
+
+Here, the barn has an "up" exit to the loft through a trapdoor that's too high to reach without the crate. On the exit's _Exit_ tab, tick "Run a script (instead of moving the player automatically)", and add this "Script to run":
+
+```quest
+if (crate.parent = this.parent) {
+  msg ("You climb on to the crate and pull yourself up through the trapdoor.")
+  MoveObject (game.pov, this.to)
 }
 else {
-  msg ("You push " + object.article + " " + exit.alias + ".")
-  object.parent = exit.to
-  game.pov.parent = exit.to
+  msg ("The trapdoor is too high to reach.")
 }
 ```
 
-You can also limit specific exits. 
+In an exit's script, `this` is the exit, so `this.parent` is the room the exit is in and `this.to` is the room it leads to. In the editor, add an "If", leave its condition set to "expression", and type `crate.parent = this.parent`.
 
-Go to the _Attributes_ tab of the exit, give it a new attribute, "noshifting", and type in a suitable message, such as "There is a step stopping you.".
+```
+> up
+The trapdoor is too high to reach.
 
-Then update the code:
+> south
+...
+> push crate north
+You push the crate north.
+...
+> up
+You climb on to the crate and pull yourself up through the trapdoor.
 
-```quest
-if (not GetBoolean(object, "shiftable")) {
-  if (GetBoolean(object, "take")) {
-    msg ("Just pick " + object.article + " up!")
-  }
-  else {
-    msg ("Push all you like, you can't move " + object.article + ".")
-  }
-}
-else if (HasString(exit, "noshifting")) {
-  msg (exit.noshifting)
-}
-else if (exit.alias = "up") {
-  msg ("You can't push " + object.article + " up there.")
-}
-else if (exit.alias = "down") {
-  msg ("You can't push " + object.article + " down there.")
-}
-else {
-  msg ("You push " + object.article + " " + exit.alias + ".")
-  object.parent = exit.to
-  game.pov.parent = exit.to
-}
+You are in a loft.
 ```
 
-## Other commands
+Because the up exit is still an ordinary exit, the player sees "up" in the list of exits and on the compass, which hints that there's a way up to be found.
 
-You might also want to create commands for `PULL` (which definitely should move the player too), `SHIFT` and `MOVE`. The code will be the same, except the messages should be modified as appropriate.
+## See also
 
-
-## Finally
-
-This is outside the topic of the page, but is included for completeness.
-
-So the player can get the crate to the other room, how do we handle climbing on the crate to get to the trapdoor? Here is one approach.
-
-Set the crate to be a room as well as an object (_Setup_ tab). On the _Room_ tab, set the description to be a script, and paste this in.
-
-```quest
-msg("You are stood on a crate in " + GetDisplayName(this.parent) + ".")
-```
-
-Give it a "climb" verb, and add this code:
-
-```quest
-msg("You climb on to the crate.")
-game.pov.parent = this
-```
-
-On the _Exits_ tab, give it a "down" exit (to any room, but make sure it is one way). For the exit, tick the "Run a script" checkbox, and paste in this script:
-
-```quest
-game.pov.parent = this.parent.parent
-```
-
-Here, `this` is the exit, `this.parent` is the crate (since the crate is also a room), and `this.parent.parent` is the real room the crate stands in - so this moves the player off the crate and back into that room.
-
-You should now be able to CLIMB the crate, and use the DOWN direction to get off it.
-
-Create a second exit from the crate, to the room above the trapdoor. Tick it to be scenery, and to run a script. This code assumes the room with the trapdoor is "other room":
-
-```quest
-if (this.parent.parent = other room) {
-  msg ("From the crate you can just reach the trapdoor. You pull yourself through.")
-  game.pov.parent = this.to
-}
-else {
-  msg ("Nowhere to go up to from here.")
-}
-```
+- [Exits](/howto/world/exits) - exit scripts, `this.to` and other exit attributes
+- [Doors, locks and keys](/howto/world/doors) - locking and unlocking exits
+- [Custom commands](/tutorial/custom-commands) - more on command patterns

@@ -1,113 +1,179 @@
 ---
-title: How to build a transit system
-sidebar:
-  order: 12
+title: Fast travel
+description: Let the player choose a destination from a menu - a bus route, a train line, teleport booths, or any room they've already visited - and optionally charge a fare
 ---
 
+Once a game world gets large, walking everywhere gets tedious. This page shows you how to let the player jump straight to a destination they choose from a menu, in two ways:
 
+| You want | Use |
+|---|---|
+| Travel between set places, like bus stops, stations or teleport booths, with new destinations opened up during the game | A [flag on each stop](#a-bus-route), and a CATCH BUS command |
+| Travel to anywhere the player has already been | The built-in [`visited` attribute](#fast-travel-to-visited-rooms) |
 
-This tutorial shows how to build a simple transit system.
+Both can [charge a fare](#charging-a-fare) using the built-in money feature.
 
-In this system, the player can go to any one of a set of locations (stations, spaceports, teleportation booths, magic gateway etc.), and at that location type in a certain command. She will then be presented with a list of destinations, and if she selects one, she will go directly there.
+## A bus route
 
+Each room that's a bus stop gets a flag. Select the room, and on its _Attributes_ tab add an attribute called `busstop`, make it a Boolean, and tick it. Do this for every stop the player can use from the start of the game.
 
-## On the buses
-
-We will build a bus system in this example, so there will be certain locations that are bus stops. Each of them will have a Boolean attribute, "busstop", set to true. We also need an object dictionary to store the destinations. 
-
-Let's limit the player at the start so she can only travel to your house and to the mall. Later we will add more destinations, an office building and the docks. The code to do this needs to be run at the start of the game, so go to the _Scripts_ tab of the game object. At the top is a script that runs at the start of the game.
-
-Here is some example code that could be pasted in there (if you have rooms appropiately named!).
-
-```quest
-Bus stop near your house.busstop = true
-Bus stop near mall.busstop = true
-Bus stop near Fenton Industries.busstop = true
-Bus stop near docks.busstop = true
-game.destinations = NewObjectDictionary()
-dictionary add(game.destinations, "Your house", Bus stop near your house)
-dictionary add(game.destinations, "The Mall", Bus stop near mall)
-```
-
-So what does that all mean? The first four lines set up the four bus stops in the game, one for each location (the first room is called `Bus stop near your house` and so on).
-
-The fifth line sets up the dictionary. An object dictionary is a way to store information. Dictionaries allow you to retrieve an entry using a string, called a key, and in an object dictionary, all the entries are objects (which can include rooms in Quest Viva). so what we have is a string - the name of the destination - connected to a room - the destination itself.
-
-The last two lines, then, add entries to the dictionary. Note that when adding entries, the first parameter is the dictionary, `game.destinations`, the second is a string (the name that will shown in the list of destinations) and the third is an object (the destination itself).
-
-You will have noticed we are only adding two bus stops - we only want the player to be able to travel to the mall and back at first.
-
-
-## Catching a bus
-
-Then we need a new command. What this is will depend on the type of transport. as this is for a bus stop, we will use CATCH BUS, so create a new command and put in "catch bus" as the pattern.
-
-Paste in this code:
+Then add the command. Select "Commands" in the tree (underneath "game"), click "+ Add" and choose "Add Command". Enter the pattern `catch bus;take bus`, and paste this script into code view:
 
 ```quest
-if (not GetBoolean(player.parent, "busstop")) {
+if (not GetBoolean(game.pov.parent, "busstop")) {
   msg ("No buses stop here.")
 }
 else {
-  sl = NewStringList()
-  foreach (key, game.destinations) {
-    if (not ObjectDictionaryItem(game.destinations, key) = player.parent) {
-      list add (sl, key)
+  options = NewStringDictionary()
+  foreach (stop, FilterByAttribute(AllObjects(), "busstop", true)) {
+    if (stop <> game.pov.parent) {
+      dictionary add (options, stop.name, GetDisplayAlias(stop))
     }
   }
-  ShowMenu ("Where do you want to go?", sl, true) {
-    dest = ObjectDictionaryItem(game.destinations, result)
-    msg ("You take the bus to " + result)
-    player.parent = dest
+  if (DictionaryCount(options) = 0) {
+    msg ("The bus doesn't go anywhere else yet.")
+  }
+  else {
+    choice = ShowMenu("Where do you want to go?", options, true)
+    if (choice <> "") {
+      msg ("The bus drops you off.")
+      MoveObject (game.pov, GetObject(choice))
+    }
   }
 }
 ```
 
-The first three lines are checking the player is at a bus stop. This is why we set the "busstop" flag earlier; so we can check if bus travel is allowed from the room.
+Here's what happens when the player types CATCH BUS at the high street stop:
 
-Then (if this is a bus stop) the command creates a new string list, and puts in it all the destination names, except the current location. The `ShowMenu` function displays the menu, with that string list as the options displayed. The selection goes into a variable called `result`, and this is used to get the destination from the dictionary. A message is displayed, and the player moved.
-
-
-## Adding destinations
-
-As the player progresses through the game, you can give her access to new areas by adding new destinations. Exactly where you do that will depend on your game, and what it was that opened up the new area, but the code to make it happen is very simple.
-
-```quest
-dictionary add (game.destinations, "Downtown", Bus stop for downtown)
+```
+> catch bus
+Where do you want to go?
+1: market square
 ```
 
+The player clicks "market square" or types 1, and is taken there:
 
-## Paying a fare
+```
+The bus drops you off.
 
-If money is important in your game, you might want to charge the player for travelling (but consider if the player can get in an unwinnable situation by wasting all her money).
-
-This needs to be updated in three places to charge the player a flat rate for each journey. First you need to give the player an integer attribute, called "money" - either directly on the _Attributes_ tab, or in the start script of the game object by adding this line (set the amount to whatever):
-
-```quest
-player.money = 17
+You are in a market square.
 ```
 
-In the command we need to check the player has enough money, and if he does use the system, we need to deduct that from his money. The command will need to be updated to this (the fare is 5; you will need to modify it in two places if you want to change the fare):
+How the script works:
+
+- **Is this a bus stop?** "object has flag" (`GetBoolean`) checks the current room's `busstop` flag. It's false for any room that doesn't have the attribute at all, so you only need to add it to the stops.
+- **Where can the bus go?** `FilterByAttribute(AllObjects(), "busstop", true)` finds every room with the flag ticked. The loop skips the room the player is already in, so they're never offered a trip to where they're standing.
+- **What does the player see?** Each destination goes into a string dictionary, with the room's name as the key and its display alias as the text the player sees. `ShowMenu` returns the key of the option the player picks, and `GetObject` turns that name back into the room. Using a dictionary like this means you can change a room's alias without breaking the menu. See [Showing different text from what you check](/howto/scripting/asking-the-player#showing-different-text-from-what-you-check).
+- **Nowhere to go.** `ShowMenu` needs at least one option, so if the player is at the only stop, the script says so instead of showing an empty menu.
+- **Changing their mind.** The third parameter of `ShowMenu` is `true`, so the player doesn't have to choose. If they type something else instead, the menu goes away, `ShowMenu` returns an empty string, and they stay where they are. The command they typed isn't run, so they'll need to type it again.
+
+In the editor, the menu step is "Set a variable or attribute", then "player's choice from a menu", and the move is "Move object" from the Objects category. We use `game.pov` rather than `player`, so the bus still works if the player changes to a different character.
+
+### Which kind of menu?
+
+This page uses `choice = ShowMenu(...)`, which waits for the player's choice and carries on from the next line. That keeps the whole command in one readable script, and the `options` dictionary is still available after the player has chosen.
+
+The player can't save while that menu is on screen. For a travel menu, that doesn't matter - it's only up for a moment. If you'd rather the player could save in front of it, use the block form described in [Saving while a question is waiting](/howto/scripting/asking-the-player#saving-while-a-question-is-waiting), and keep anything the block needs in attributes rather than local variables.
+
+### Opening up new destinations
+
+As the player progresses, give them new places to go by setting the flag on more rooms. Wherever it makes sense in your game - when they buy a ticket, say, or when the harbour reopens - add "Set object flag" from the Variables category, choose the room and enter the flag name `busstop`. In code:
 
 ```quest
-if (not GetBoolean(player.parent, "busstop")) {
+SetObjectFlagOn (harbour, "busstop")
+```
+
+The harbour now appears in the menu at every other stop, and the player can catch the bus from there too.
+
+For a different kind of transport, change the flag, the pattern and the messages: a `station` flag and BOARD TRAIN, or a `booth` flag and USE TELEPORTER. To give a game two separate networks, such as a bus route and a train line, use a different flag for each.
+
+## Charging a fare
+
+To make each journey cost money, first turn on the money feature. Select "game", and on the _Features_ tab tick "Money". Give the player their starting money in "Starting money" on the player object's _Player_ tab. The player's money is then shown in the status pane, and is stored in the `money` attribute of the player object.
+
+Then check the player can afford the fare before showing the menu, and only take the money once they've chosen a destination:
+
+```quest
+fare = 5
+if (not GetBoolean(game.pov.parent, "busstop")) {
   msg ("No buses stop here.")
 }
-else if (player.money < 5) {
-  msg ("You don't have enough cash for a bus.")
+else if (game.pov.money < fare) {
+  msg ("The fare is " + DisplayMoney(fare) + ", and you don't have enough.")
 }
 else {
-  sl = NewStringList()
-  foreach (key, game.destinations) {
-    if (not ObjectDictionaryItem(game.destinations, key) = player.parent) {
-      list add (sl, key)
+  options = NewStringDictionary()
+  foreach (stop, FilterByAttribute(AllObjects(), "busstop", true)) {
+    if (stop <> game.pov.parent) {
+      dictionary add (options, stop.name, GetDisplayAlias(stop))
     }
   }
-  ShowMenu ("Where do you want to go?", sl, true) {
-    dest = ObjectDictionaryItem(game.destinations, result)
-    player.money = player.money - 5
-    msg ("You take the bus to " + result)
-    player.parent = dest
+  if (DictionaryCount(options) = 0) {
+    msg ("The bus doesn't go anywhere else yet.")
+  }
+  else {
+    choice = ShowMenu("Where do you want to go? The fare is " + DisplayMoney(fare) + ".", options, true)
+    if (choice <> "") {
+      DecreaseMoney (fare)
+      msg ("The bus drops you off.")
+      MoveObject (game.pov, GetObject(choice))
+    }
   }
 }
 ```
+
+Because the money check comes first and nothing else can change the player's money before they choose, the fare never takes their money below zero. If they change their mind and don't choose, they aren't charged.
+
+`DisplayMoney` shows the fare in the game's money format ("$5" by default - change it in "Format for money" on the game's _Player_ tab). `DecreaseMoney` is "Decrease money" in the Player category of the script editor. It only appears in the editor once "Money" is ticked. Without the money feature the player has no `money` attribute, so the check doesn't stop them, and `DecreaseMoney` shows an error when they travel.
+
+Keeping the fare in a local variable, `fare`, means you only have to change it in one place. That works because `ShowMenu` waits for the choice - with the block form, you'd need to store it in an attribute instead.
+
+Think about whether the player could strand themselves by spending all their money on fares. If they could, make sure there's always some other way to get where they need to go, or a way to earn more.
+
+## Fast travel to visited rooms
+
+Every room has a `visited` attribute, which Quest Viva sets to `true` when the player first enters it - including the room the game starts in. You can use it to let the player return to anywhere they've already been, which is how fast travel works in many games.
+
+Add a command with the pattern `travel`, or put this in the script for a map, a spell or a magic ring:
+
+```quest
+options = NewStringDictionary()
+foreach (room, FilterByAttribute(AllObjects(), "visited", true)) {
+  if (room <> game.pov.parent) {
+    dictionary add (options, room.name, GetDisplayAlias(room))
+  }
+}
+if (DictionaryCount(options) = 0) {
+  msg ("You haven't been anywhere else yet.")
+}
+else {
+  choice = ShowMenu("Where do you want to travel to?", options, true)
+  if (choice <> "") {
+    MoveObject (game.pov, GetObject(choice))
+  }
+}
+```
+
+This works in the same way as the bus, but the list grows by itself as the player explores:
+
+```
+> travel
+Where do you want to travel to?
+1: high street
+2: market square
+3: harbour
+```
+
+To leave some rooms out - somewhere you only pass through once, or a room the player shouldn't be able to come back to - give them a Boolean attribute called `nofasttravel`, ticked, and change the `if` inside the loop to:
+
+```quest
+if (room <> game.pov.parent and not GetBoolean(room, "nofasttravel")) {
+```
+
+To add a room the player hasn't visited yet - somewhere they've read about, perhaps - set its `visited` attribute to `true` with "Set a variable or attribute" (`harbour.visited = true`). Bear in mind that also stops any "After entering the room for the first time" script on that room from running.
+
+If your game shows a map, see [Teleporting](/howto/tasks/showing-a-map#teleporting) on the map page too.
+
+## See also
+
+- [Asking the player](/howto/scripting/asking-the-player) - more on `ShowMenu`
+- [Score, health and money](/howto/world/score-health-money#money) - the money feature

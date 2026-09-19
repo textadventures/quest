@@ -1,207 +1,203 @@
 ---
-title: Converting one thing into another
-sidebar:
-  order: 13
+title: Turning one thing into another
+description: Combine objects into something new, or have a machine transform one object into another
 ---
 
+Sometimes the player needs to make something - tie a string to a branch to make a bow, or put a tray in a machine and get something else out. This page shows how to do both.
 
-In your game, you might want to have the player use one or more things to make or otherwise convert into one or more other things. For example:
+Quest Viva can't turn an object into a different object. Instead, you create every object you need at the start and keep the ones that don't exist yet out of the game. When the change happens, you remove the old objects and bring in the new one. To the player, it looks like one thing has turned into another.
 
-- Make a bow from some string and a branch
+Changes of amount are different. Filling a cup with water or drinking some of it changes a number on the cup, not which objects exist - see [Liquids](/howto/tasks/handling-water).
 
-- Use machine to convert objects from one thing to another
+## Keeping objects out of the game
 
-The best way to do these transformations is to quietly move the original parts elsewhere and to bring the new objects (which you created earlier) here.
+Create a room called `nowhere`, with no exits to or from it, and put the objects that don't exist yet inside it. The player can never get there, so they can't see or use those objects until you move them.
 
-By the way, you might also want to do something like use a tap to fill cup. Transformations like that are better handled using attribute; in this case an attribute on the cup tracks how much water is in it. That sort of system is described in the section on [handling water](/howto/tasks/handling-water).
+When you get rid of the parts, use the "Remove object" script command (`RemoveObject`). It takes the object out of the game altogether.
 
+## Making a bow
 
-## The bow
+Create a `string` and a `branch` that the player can take, and a `bow` in the `nowhere` room. Make the bow takeable too.
 
-### MAKE BOW
-
-So let's implement a command for making a bow.
-
-First create three objects, the string, the branch and the bow. The bow should be put in a room the player cannot get to (no exits going to it); let's say it is called "nowhere". Remember to set them all so they can be taken.
-
-Now the command. Generally when implementing a command, we would use `#object#` in the pattern, telling Quest Viva to match any object present. We cannot do that here, as the bow is not present, so instead we will just use straight text:
-
-> make bow;construct bow
-
-Give the command a name. This is not required by Quest Viva, but will be useful later.
-
-> CmdMakeBow
-
-The code for this has to check the player has the parts, and if so then it does four things. It has to move the string away, it has to move the branch elsewhere, it has to bring he bow here, and it has to tell the player that it worked.
-
-![](/images/make1.png)
-
-This is the underlying code; these are two ways of looking at the same thing. It is the same script in both views:
+The bow can be made in several ways - MAKE BOW, TIE STRING TO BRANCH, USE STRING ON BRANCH - so put the work in a [function](/howto/tasks/about-functions) and call it from each one. Add a function called `MakeBow`, with no parameters:
 
 ```quest
 if (not Got(branch)) {
-  msg ("You need some wood to make a bow.")
+  msg ("You need something to make the bow from.")
 }
 else if (not Got(string)) {
-  msg ("You need some string to make a bow.")
+  msg ("You need some string.")
 }
 else {
-  MoveObject(bow, player)
-  MoveObject(string, nowhere)
-  MoveObject(branch, nowhere)
-  msg("You fasten the string to each end of the branch. Now you have a bow! Of sorts...")
+  RemoveObject (string)
+  RemoveObject (branch)
+  MoveObject (bow, game.pov)
+  msg ("You tie the string to each end of the branch. Now you have a bow - of sorts.")
 }
 ```
 
-For any toxophilites out there: yes, there is more to bows than tying string to a branch!
+In the editor, the checks are "If" with the condition "player is not carrying object", and the rest is "Remove object", "Move object" and "Print a message".
 
+### MAKE BOW
 
-### USE STRING WITH BRANCH
+Add a command with the pattern:
 
-A general problem with text adventures is that player can type all sorts of things and hope the game will understand. This is one instance where there are a lot of possibilities.
-
-On the string object, turn on "Use/Give" on the _Features_ tab, and then on the _Use/Give_ tab go to the "Use (other object) on this" section. Set the action to handle objects individually, and then click "Add" and select the branch. For the script, we will just use the code on the command (this is why we gave the command a name):
-
-![](/images/make2.png)
-
-In code it looks like this:
-
-```quest
-do (CmdMakeBow, "script")
+```
+make bow;make a bow
 ```
 
-Close the dialogue box, and do exactly the same in the "Use this on (other object)" section. It should now look like this:
-
-![](/images/make1.png)
-
-
-### TIE STRING TO BOW
-
-Can we handle other commands too? The difference with these commands is that they reference the objects that are present. The command pattern will be this (the string will be object1, the branch object2):
-
-> tie #object1# to #object2;fasten #object1# to #object2
-
-The command needs to check that object1 really is the string, and object2 really is the branch. If both are right, we can call the code on the first command again.
-
-Here is what it looks like:
-
-![](/images/make1.png)
-
-And the code:
+We can't use `#object#` in the pattern here, because the bow isn't in scope yet - it's in `nowhere`. For the script, use "Call function" to call `MakeBow`:
 
 ```quest
-if (not object1 = string) {
-  msg ("That's not going to work.")
+MakeBow
+```
+
+### USE STRING ON BRANCH
+
+Players may also try USE STRING ON BRANCH, or USE BRANCH ON STRING. The Use/Give feature handles both.
+
+On the string, tick _Use/Give_ on the _Features_ tab. On the _Use/Give_ tab, under "Use (other object) on this", set the action to "Handle objects individually", add the branch, and give it a script that calls `MakeBow`. Then do the same under "Use this on (other object)".
+
+The first handles USE BRANCH ON STRING, and the second handles USE STRING ON BRANCH. You only need to set this up on one of the two objects.
+
+### TIE STRING TO BRANCH
+
+This command refers to two objects that are both in scope, so it can use `#object1#` and `#object2#` in its pattern:
+
+```
+tie #object1# to #object2#;fasten #object1# to #object2#
+```
+
+"tie" is one of Quest Viva's built-in verbs, but a command with more fixed words, like "tie ... to ...", takes priority when it matches. The script checks the player named the right two objects, in either order:
+
+```quest
+if (object1 = string and object2 = branch) {
+  MakeBow
 }
-else if (not object2 = branch) {
-  msg ("That's not going to work.")
+else if (object1 = branch and object2 = string) {
+  MakeBow
 }
 else {
-  do (CmdMakeBow, "script")
+  msg ("That's not going to work.")
 }
 ```
 
+```
+> tie string to spoon
+That's not going to work.
 
-## The machine
+> tie string to branch
+You tie the string to each end of the branch. Now you have a bow - of sorts.
+```
 
-Let's look at an entirely different system. There was, way back in the mists of time, a game called _Leather Goddesses of Phobos_, and this game featured a machine called the "T-remover". The player could put an item in a compartment, press a button, and the item would be changed into something else. If you put a tray into the machine, it would convert it to a guy called Ray. Put a rabbit it, you get a rabbi (it does have an actual point to it too). There are some gameplay issues here - you will have to design your game so that every item the player picks up with a T in its name can be changed, and the game can still be completed after doing so (something they did not always worry about back then).
+## A machine that transforms things
 
-We will change it around a bit so we create an item, rather than two people (though the item is an ape, but we will say it is a small, passive ape that can be picked up).
+This example is a T-remover: the player puts an object in its compartment, closes it and presses the button, and the object comes out without its letter T - a tray becomes Ray, a tape becomes an ape.
 
-Note: _The scripts we will use are longer than before, and Quest Viva will not display the whole of them on the screen at once (at least, not on a typical screen), so just the code is given here. If you do not like code, just click on "Code view" for the script in your game, copy-and-paste the code into the text area, and exit "Code view". Now you can see it in the normal GUI view!_
+### Setting up the objects
 
-First, on the _Features_ tab of the game object, turn on inventory limits. Then create four items; a tray, Ray, a tape and an ape. The ape and Ray need to go into the "nowhere" room. Make sure the tray, the tape and the ape can be picked up (_Inventory_ tab).
+Create a `tray` and a `tape` the player can take. In the `nowhere` room, create `ray` (set its type on the _Setup_ tab to "Male character (named)", so the game says "Ray" rather than "a Ray") and a takeable `ape`.
 
-We now need to create the t-remover. We will need to call it "t_remover" and then give it an alias as Quest Viva only allows numbers, letters, spaces and underscores in names.
+Each object that the machine can change needs to know what it changes into. On the tray's _Attributes_ tab, add an attribute called `convertsto`, choose "Object" as its type, and pick `ray`. Give the tape a `convertsto` of `ape`. Objects without a `convertsto` attribute come out unchanged.
 
-The item to convert will be put inside the machine, so on the _Features_ tab, tick "Container", then on the _Container_ tab, set it to be a "Limited container". Take a look at the _Container_ tab, and see if you want to change anything (having it start closed and not transparent works well), but you can leave all the defaults (it is already limited to a single item, which we want).
+### The machine
 
-Now to get it to do something. Turn on "Use/Give" on the _Features_ tab, and then go to the _Use/Give_ tab and in the "Use (on its own)" section, set the action to run a script, and paste in this code:
+Create an object called `t_remover`, with the alias "T-remover" - object names can't contain a hyphen. On its _Object_ tab, add the other names "machine", "compartment", "button" and "red button", so the player can refer to any of them.
 
+On the game's _Features_ tab, tick _Inventory limits_ - the editor only allows limited containers when it's on. Then, on the machine's _Features_ tab, tick _Container_, and on the _Container_ tab:
+
+- set the container type to "Limited container" - it holds one object by default, which is what we want
+- untick "Is open", so the compartment starts closed
+- under "Advanced", tick "List children when object is looked at or opened", so the player can see what's inside
+
+Tick _Use/Give_ on the machine's _Features_ tab, and on the _Use/Give_ tab set "Use (on its own)" to "Run script":
 
 ```quest
+contents = GetDirectChildren(this)
 if (this.isopen) {
-  msg ("You press the button, but nothing happens. Perhaps it needs to be closed?")
+  msg ("You press the button, but nothing happens. Perhaps the compartment needs to be closed?")
+}
+else if (ListCount(contents) = 0) {
+  msg ("The machine hums for a moment, then stops. Perhaps it needs something in the compartment?")
 }
 else {
-  content = GetDirectChildren(this)
-  if (ListCount(content) = 0) {
-    msg ("You press the button, but nothing happens. Perhaps it needs something in the compartment?")
+  oldobj = ObjectListItem(contents, 0)
+  if (HasObject(oldobj, "convertsto")) {
+    msg ("The machine rattles and shakes, there is a loud pop, and then it is quiet again.")
+    MoveObject (oldobj.convertsto, this)
+    RemoveObject (oldobj)
   }
   else {
-    msg ("The machine starts to rattle and shaken, there is a loud pop, and then it is quiet again.")
-    oldobj = ObjectListItem(content, 0)
-    newname = Replace(oldobj.name, "t", "")
-    newobj = GetObject(newname)
-    if (newobj = null) {
-      error ("Oh, dear. I did not think anyone would put that in it!")
-    }
-    else if (not newobj = oldobj) {
-      newobj.parent = this
-      oldobj.parent = nowhere
-    }
+    msg ("The machine clanks unhappily for a moment, then falls silent.")
   }
 }
 ```
 
-What does that do? Well first we check if the door is closed. If so, we check it anything is in the machine (`GetDirectChildren(this)` gets a list of the objects inside `this`, i.e., the owner of the script). The container is limited to one item, so if the list count is not zero, it must be one, so now the machine does something!
+`GetDirectChildren(this)` is a list of the objects directly inside the machine. The machine only holds one object, so we take the first. Its `convertsto` attribute tells us what to put in its place.
 
-Now we get the new name, which is the name of the item in the compartment, `oldobj`, with every "t" replaced by "", i.e., each "t" stripped out. Once we have a name, we can use `GetObject` to get the object with that name, `newobj`. Hopefully we have implemented something for every object that can possibly go in the machine (and has a "t" in the name), but just in case we have not, we issue an error to acknowledge we made a mistake (it will make finding the bug in six months time much easier).
+The machine doesn't need any attributes of its own to track what state it's in. `isopen` and what's inside it are already known to Quest Viva, so the script just asks.
 
-Now we have the new object, we put it inside the machine, and move the old one away.
-
-### Description
-
-Let's modify the description so the player can see the state of the machine. This is important, because we are requiring the player to open and close the compartment, and the player needs to be informed of its current state. Because we want to say what is in the device, this is a bit beyond the text processor, so instead we build up a string, `s`, with all the bits we want, before printing it at the end.
+To let the player PRESS BUTTON, add a "press" verb on the _Verbs_ tab, set to "Run a script":
 
 ```quest
-s = "This strange machine has a compartment in it, which is currently "
+do (this, "use")
+```
+
+This runs the "Use (on its own)" script, so the machine behaves the same whichever way the player starts it.
+
+### Describing it
+
+Because the compartment has to be opened and closed, the description should say which it is. Set the _"Look at" object description_ on the _Setup_ tab to "Run script":
+
+```quest
+s = "This strange machine has a compartment, which is "
 if (this.isopen) {
   s = s + "open."
 }
 else {
   s = s + "closed."
 }
-content = GetDirectChildren(this)
-if (this.isopen and ListCount(content) > 0) {
-  s = s + " You can see " + GetDisplayName(ObjectListItem(content, 0)) + " inside it."
-}
 s = s + " There is a big red button on the top."
 msg (s)
 ```
 
-Note that we are not adding any new attributes to the machine. Quest Viva has a comprehensive world model that will track the state of objects in it very well. Let Quest Viva do its job, and ask it what the current state is when we need to know.
+The "List children" option adds "It contains a tray." after the description when the compartment is open.
 
-So now we have a working t-removing machine! Go into the game and confirm it works.
+### Letting Ray out
 
-### Also...
-
-It is a good idea to think about other ways the player may try to use things in your game. For a start, she might refer to the t-remover as "machine" or "device", so these should be added to the list of alternative names on the _Object_ tab. She might also want to PUT TAPE IN COMPARTMENT or PRESS RED BUTTON. We could implement the compartment and button as items, but that will get messy as this is a limited container, so let's cheat, and just add "compartment" and "big red button" to the list of synonyms.
-
-We still need to handle PRESS RED BUTTON. Go to the _Verbs_ tab, and add "press". Set it to run a script:
-
-```quest
-do (this, "use")
-```
-
-Now PRESS RED BUTTON will cause the "use" script to run.
-
-The player might also want to SWITCH ON T-REMOVER. On the _Features_ tab, set it to be "Switchable", and on the _Switchable_ tab, set it so it can be switched on and off. We need to add a script, "After switching on the object":
-
-```quest
-do (this, "use")
-this.switchedon = false
-```
-
-As with the "press" verb, we just need to run the "use" script, but here we also need to set the "switchedon" to false as the machine runs for a moment and then stops.
-
-Finally, let's have Ray do something! Go to the _Container_ tab, and the "After opening the object" script.
+Ray shouldn't stay in the compartment. On the _Container_ tab, add an "After opening the object" script:
 
 ```quest
 if (ray.parent = this) {
-  ray.parent = this.parent
-  msg ("A boy leaps out of the device! Hey, it's Ray, that geeky kid from school.")
+  MoveObject (ray, this.parent)
+  msg ("A boy leaps out of the machine! Hey, it's Ray, that kid from school.")
 }
 ```
 
-Now when the player opens the device, if Ray is inside, he will jump out!
+Here's the whole thing working:
+
+```
+> open machine
+You open it.
+
+> put tray in machine
+Done.
+
+> close machine
+You close it.
+
+> press button
+The machine rattles and shakes, there is a loud pop, and then it is quiet again.
+
+> open machine
+You open it.
+A boy leaps out of the machine! Hey, it's Ray, that kid from school.
+```
+
+If the player can find many objects with a T in their names, make sure the game can still be finished whatever they put in the machine.
+
+## See also
+
+- [Using containers](/tutorial/using-containers)
+- [Custom commands](/tutorial/custom-commands)
+- [Using verbs](/howto/commands/using-verbs)

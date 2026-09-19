@@ -43,7 +43,7 @@ The [text processor](/howto/world/text-processor) lets you vary descriptions and
 
 ## Hints and extras
 
-[Hints](/other-guides/a-hint-system), a [journal](/howto/tasks/keeping-a-journal), and [giving the player a memory](/howto/tasks/memory-or-wiki).
+[Hints](/other-guides/a-hint-system), a [journal](/howto/tasks/keeping-a-journal), and [giving the player a memory](/howto/tasks/keeping-a-journal#remembering-and-looking-things-up).
 
 ## Scripting
 
