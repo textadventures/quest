@@ -1,7 +1,8 @@
-// Verifies the "Timers" example documented in
-// site/src/content/docs/howto/ux/ui-callback.md — a JavaScript setInterval
-// that updates the custom status pane itself and calls back into the game
-// exactly once, through ASLEvent, when the countdown reaches zero.
+// Verifies a JavaScript setInterval countdown that updates the custom status
+// pane itself and calls back into the game exactly once, through ASLEvent,
+// when it reaches zero. The "Timers" section of
+// site/src/content/docs/howto/ux/ui-callback.md uses the same pattern, but
+// shows the countdown in the game text rather than the status pane.
 //
 // Requires the WasmPlayer dev server running locally:
 //   node src/WasmPlayer/dev-server.mjs

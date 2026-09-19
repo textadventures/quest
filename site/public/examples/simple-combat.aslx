@@ -1,0 +1,292 @@
+<asl version="600">
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+  <game name="A simple combat system">
+    <gameid>b54454a4-7655-44e0-b601-2d70ca84c5cc</gameid>
+    <version>1.0</version>
+    <description>The finished example from the Quest Viva docs page "A simple combat system".</description>
+    <showhealth type="boolean">true</showhealth>
+    <onhealthzero type="script">
+      msg ("The zombies drag you to the ground. You have died.")
+      finish
+    </onhealthzero>
+  </game>
+  <object name="yard">
+    <inherit name="editor_room"/>
+    <description>A back yard. The street is north.</description>
+    <object name="player">
+      <inherit name="editor_object"/>
+      <inherit name="editor_player"/>
+      <attack type="int">0</attack>
+      <damage>1d3</damage>
+      <hitmsg>You punch #target#.</hitmsg>
+      <missmsg>You swing a fist at #target# and miss.</missmsg>
+      <bullets type="int">4</bullets>
+      <statusattributes type="stringdictionary">
+        <item>
+          <key>bullets</key>
+          <value>Bullets: !</value>
+        </item>
+      </statusattributes>
+    </object>
+    <object name="spade">
+      <inherit name="editor_object"/>
+      <take type="boolean">true</take>
+      <look>Good for whacking zombies.</look>
+      <attack type="int">2</attack>
+      <damage>2d4</damage>
+      <hitmsg>You whack #target# with your spade.</hitmsg>
+      <missmsg>You swing your spade at #target# and miss.</missmsg>
+    </object>
+    <object name="pistol">
+      <inherit name="editor_object"/>
+      <take type="boolean">true</take>
+      <look>A battered pistol, with {pistol.ammo} of {pistol.maxammo} rounds loaded.</look>
+      <attack type="int">0</attack>
+      <damage type="int">2</damage>
+      <hitmsg>You pistol-whip #target#.</hitmsg>
+      <missmsg>You swing the pistol at #target# and miss.</missmsg>
+      <firearmattack type="int">5</firearmattack>
+      <firearmdamage>2d6</firearmdamage>
+      <firearmhitmsg>You shoot #target#.</firearmhitmsg>
+      <firearmmissmsg>You fire at #target# and miss.</firearmmissmsg>
+      <ammo type="int">2</ammo>
+      <maxammo type="int">6</maxammo>
+    </object>
+    <exit alias="north" to="street">
+      <inherit name="northdirection"/>
+    </exit>
+  </object>
+  <object name="street">
+    <inherit name="editor_room"/>
+    <description>A deserted street.</description>
+    <beforefirstenter type="script">
+      SpawnZombie (this)
+      SpawnZombie (this)
+    </beforefirstenter>
+    <exit alias="south" to="yard">
+      <inherit name="southdirection"/>
+    </exit>
+  </object>
+  <object name="offstage">
+    <inherit name="editor_room"/>
+    <object name="zombie">
+      <inherit name="editor_object"/>
+      <look>Grey skin, torn clothes and a hungry look.</look>
+      <displayverbs type="simplestringlist">Look at;Attack;Shoot</displayverbs>
+      <health type="int">12</health>
+      <adjectives type="stringlist">
+        <value>shambling</value>
+        <value>rotting</value>
+        <value>limping</value>
+        <value>groaning</value>
+      </adjectives>
+      <defence type="int">0</defence>
+      <attacks type="stringlist">
+        <value>zombie_bite</value>
+        <value>zombie_claw</value>
+        <value>zombie_vomit</value>
+      </attacks>
+      <changedhealth type="script">
+        if (this.health &lt;= 0 and not GetBoolean(this, "dead")) {
+          msg (CapFirst(GetDefiniteName(this)) + " falls to the ground and lies still.")
+          this.dead = true
+          this.alias = "dead " + this.alias
+        }
+      </changedhealth>
+      <search type="script">
+        if (not GetBoolean(this, "dead")) {
+          msg ("Not while it's still moving!")
+        }
+        else if (GetBoolean(this, "searched")) {
+          msg ("You've already searched it.")
+        }
+        else {
+          this.searched = true
+          if (RandomChance(50)) {
+            n = DiceRoll("2d3")
+            game.pov.bullets = game.pov.bullets + n
+            msg ("You find " + n + " bullets.")
+          }
+          else {
+            item = CloneObjectAndMoveHere(PickOneChild(loot))
+            msg ("You find " + GetDisplayName(item) + ".")
+          }
+        }
+      </search>
+    </object>
+    <object name="zombie_bite">
+      <inherit name="editor_object"/>
+      <attack type="int">0</attack>
+      <damage>1d8</damage>
+      <hitmsg>#Attacker# sinks its teeth into your arm.</hitmsg>
+      <missmsg>#Attacker# snaps at you, but you pull away.</missmsg>
+    </object>
+    <object name="zombie_claw">
+      <inherit name="editor_object"/>
+      <attack type="int">2</attack>
+      <damage>1d4</damage>
+      <hitmsg>#Attacker# rakes its nails across your face.</hitmsg>
+      <missmsg>#Attacker# claws at you and misses.</missmsg>
+    </object>
+    <object name="zombie_vomit">
+      <inherit name="editor_object"/>
+      <attack type="int">-2</attack>
+      <damage>2d6</damage>
+      <hitmsg>#Attacker# vomits all over you.</hitmsg>
+      <missmsg>#Attacker# retches, but nothing comes up.</missmsg>
+    </object>
+  </object>
+  <object name="loot">
+    <inherit name="editor_room"/>
+    <object name="beans">
+      <inherit name="editor_object"/>
+      <inherit name="edible"/>
+      <alias>tin of beans</alias>
+      <take type="boolean">true</take>
+      <eathealth type="int">20</eathealth>
+    </object>
+    <object name="chocolate">
+      <inherit name="editor_object"/>
+      <inherit name="edible"/>
+      <alias>chocolate bar</alias>
+      <take type="boolean">true</take>
+      <eathealth type="int">10</eathealth>
+    </object>
+  </object>
+  <function name="SpawnZombie" parameters="room">
+    z = CloneObjectAndMove(zombie, room)
+    adjective = PickOneString(zombie.adjectives)
+    list remove (zombie.adjectives, adjective)
+    z.alias = adjective + " zombie"
+  </function>
+  <function name="DoAttack" parameters="attacker, weapon, target, firearm">
+    if (firearm) {
+      prefix = "firearm"
+      weapon.ammo = weapon.ammo - 1
+    }
+    else {
+      prefix = ""
+    }
+    roll = DiceRoll("1d20") + GetInt(weapon, prefix + "attack") - GetInt(target, "defence")
+    if (roll &gt; 10) {
+      damage = DiceRoll(GetAttribute(weapon, prefix + "damage"))
+      s = GetString(weapon, prefix + "hitmsg") + " (" + damage + " damage)"
+    }
+    else {
+      damage = 0
+      s = GetString(weapon, prefix + "missmsg")
+    }
+    s = Replace(s, "#target#", GetDefiniteName(target))
+    s = Replace(s, "#Attacker#", CapFirst(GetDefiniteName(attacker)))
+    msg (s)
+    if (damage &gt; 0) {
+      target.health = target.health - damage
+    }
+  </function>
+  <command name="attackcmd">
+    <pattern>attack #object#;hit #object#;kill #object#</pattern>
+    <script>
+      weapon = GetAttribute(game.pov, "equipped")
+      if (weapon = null) {
+        weapon = game.pov
+      }
+      if (object = game.pov or not HasInt(object, "health")) {
+        msg ("You can't attack that.")
+      }
+      else if (GetBoolean(object, "dead")) {
+        msg ("It's already dead.")
+      }
+      else {
+        DoAttack (game.pov, weapon, object, false)
+      }
+    </script>
+  </command>
+  <command name="shootcmd">
+    <pattern>shoot #object#</pattern>
+    <script>
+      weapon = GetAttribute(game.pov, "equipped")
+      if (weapon = null) {
+        weapon = game.pov
+      }
+      if (object = game.pov or not HasInt(object, "health")) {
+        msg ("You can't shoot that.")
+      }
+      else if (GetBoolean(object, "dead")) {
+        msg ("It's already dead.")
+      }
+      else if (not HasInt(weapon, "ammo")) {
+        msg ("You haven't got a gun ready.")
+      }
+      else if (weapon.ammo = 0) {
+        msg ("Click. Your " + GetDisplayAlias(weapon) + " is empty.")
+      }
+      else {
+        DoAttack (game.pov, weapon, object, true)
+      }
+    </script>
+  </command>
+  <command name="equipcmd">
+    <pattern>equip #object#;wield #object#</pattern>
+    <script>
+      if (object = game.pov or not HasAttribute(object, "damage")) {
+        msg ("You can't equip that.")
+      }
+      else if (not object.parent = game.pov) {
+        msg ("You aren't carrying " + object.article + ".")
+      }
+      else if (object = GetAttribute(game.pov, "equipped")) {
+        msg ("You already have your " + GetDisplayAlias(object) + " ready.")
+      }
+      else {
+        game.pov.equipped = object
+        msg ("You ready your " + GetDisplayAlias(object) + ".")
+      }
+    </script>
+  </command>
+  <command name="unequipcmd">
+    <pattern>unequip #object#</pattern>
+    <script>
+      if (not object = GetAttribute(game.pov, "equipped")) {
+        msg ("You don't have " + object.article + " ready.")
+      }
+      else {
+        game.pov.equipped = null
+        msg ("You put away your " + GetDisplayAlias(object) + ".")
+      }
+    </script>
+  </command>
+  <command name="reloadcmd">
+    <pattern>reload #object#</pattern>
+    <script>
+      if (not HasInt(object, "ammo")) {
+        msg ("You can't reload " + object.article + ".")
+      }
+      else if (object.ammo = object.maxammo) {
+        msg ("It's already fully loaded.")
+      }
+      else if (game.pov.bullets = 0) {
+        msg ("You haven't got any bullets left.")
+      }
+      else {
+        n = object.maxammo - object.ammo
+        if (n &gt; game.pov.bullets) {
+          n = game.pov.bullets
+        }
+        object.ammo = object.ammo + n
+        game.pov.bullets = game.pov.bullets - n
+        msg ("You load " + n + " bullets into your " + GetDisplayAlias(object) + ".")
+      }
+    </script>
+  </command>
+  <turnscript name="zombieattacks">
+    <enabled/>
+    <script>
+      foreach (obj, GetDirectChildren(game.pov.parent)) {
+        if (HasAttribute(obj, "attacks") and not GetBoolean(obj, "dead") and game.pov.health &gt; 0) {
+          DoAttack (obj, GetObject(PickOneString(obj.attacks)), game.pov, false)
+        }
+      }
+    </script>
+  </turnscript>
+</asl>

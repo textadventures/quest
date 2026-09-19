@@ -1,5 +1,6 @@
 ---
 title: Building a conversation with Pages
+description: Start, redirect and end Pages conversations, link to them from text, and change their options as the game goes on
 sidebar:
   order: 5
 ---
@@ -11,8 +12,6 @@ The [Tutorial](/tutorial/using-pages) covers the basics of setting up a Pages di
 Quest Viva has several ways to let the player talk to a character - see [Talking to characters](/howto/npcs/conversations) for an overview. Pages are the right choice when you want a structured, multi-step exchange where each reply leads to a fixed set of further choices - the Text Adventure equivalent of a gamebook's branching passages. For a one-off list of topics with no follow-up, a [menu](/howto/npcs/conversations#a-menu-of-topics) is simpler. For a free-form "ask about anything" system, use [Ask/Tell](/howto/npcs/ask-about) instead.
 
 Each choice is a complete, ordinary turn, so the player can save at any point and `UNDO` steps back one choice at a time - see [Menus, Pages and saving](/howto/npcs/conversations#menus-pages-and-saving) for how this compares with menus.
-
-(Saving itself works during a `ShowMenu` callback too - the turn has ended by the time the menu is on screen. It's the `ShowMenu` *expression* form, and the `show menu` script command, that suspend the script mid-turn and make saving unavailable until the player answers.)
 
 ## The page object
 
@@ -45,6 +44,18 @@ else {
 
 If a Script or Script + Text page's script doesn't redirect anywhere else, the dialogue simply ends once it's finished running (for a plain Script page, without ever showing that page's own description).
 
+### Linking to a page from text
+
+To start a conversation from a link in ordinary text - a room description, say, or an object's "look at" description - use the `{page:}` text processor command. The Page button on the text editor's toolbar inserts one, letting you pick the page and the link text:
+
+```
+Bob is leaning on the bar. You could {page:bob_chat:talk to him}.
+```
+
+Clicking "talk to him" starts the conversation at `bob_chat`. Once the link has been shown, typing the page's name (`bob_chat`) does the same; before that, the page's name isn't a command the player can use.
+
+A conversation started this way doesn't let the player leave by typing another command - they're asked to choose one of the options. So give it a way out, such as a "Goodbye" option leading to a page with no options. If you need different settings, use a [command link](/howto/world/text-processor#links) to a command whose script calls `ShowPage` instead.
+
 ## Ending early
 
 A page with an empty options list ends the dialogue automatically once it's shown. To end things early from partway through a page's own script - for example, some game state means this exchange should be cut short - call [EndPageDialogue](/reference/functions/user-interface#endpagedialogue) directly; it hides the current page's options and clears the dialogue state before the option list would otherwise have been printed.
@@ -64,6 +75,21 @@ RemovePageLink (bob_chat, bob_lab_report)
 ```
 
 Under the hood, options are stored in the page's `options` attribute, a [stringdictionary](/types#stringdictionary) keyed by the destination page's object name - `AddPageLink`/`RemovePageLink` are just a convenient wrapper around `dictionary add`/`dictionary remove` on that attribute, so you can fall back to those directly for anything more unusual.
+
+### Options that only sometimes appear
+
+To show an option only when something is true - "Ask about the lab report" once the player has found it, say - set the page's type to "Script + Text" and add or remove the link in its script. The script runs every time the page is shown, before its options are listed, and `this` is the page:
+
+```quest
+if (Got(lab_report)) {
+  AddPageLink (this, bob_lab_report, "Ask about the lab report")
+}
+else {
+  RemovePageLink (this, bob_lab_report)
+}
+```
+
+Added options appear after the ones set up in the editor. In the editor, these are "Add page link" and "Remove page link" in the Pages category.
 
 ## Remembering what's been said
 

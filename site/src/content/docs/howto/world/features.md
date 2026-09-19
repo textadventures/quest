@@ -28,7 +28,7 @@ The _Features_ tab of the game object turns on optional systems for the whole ga
 | In-room descriptions | An "In-room description" box on every object, whose text is appended to the description of whatever room the object is in. See [the _Setup_ tab](/howto/world/objects-and-rooms#the-setup-tab). |
 | Multiple commands | Lets the player put several commands on one line, separated by full stops — `GET LAMP. LIGHT LAMP. GO NORTH`. Each is run as a separate turn. |
 
-Three more features — hyperlinks, the map and drawing grid, and the picture frame — are on the _Interface_ tab rather than here, because they change how the game looks. See [The UI style](/howto/ux/ui-style#the-interface-tab).
+Three more features are elsewhere, because they change how the game looks: hyperlinks are on the _Display_ tab, and the map and drawing grid and the picture frame are on the _Interface_ tab. See [Look and feel](/howto/ux/ui-style#the-display-tab).
 
 Turning a feature off again does not delete anything you set up while it was on; the tab simply disappears, and the attributes stay where they are. That makes it safe to turn a feature on to see what it offers.
 

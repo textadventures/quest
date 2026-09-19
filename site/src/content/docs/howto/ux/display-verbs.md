@@ -1,63 +1,79 @@
 ---
-title: Using display verbs
-sidebar:
-  order: 3
+title: Object verbs
+description: Choose which verbs appear when the player clicks an object, in the text or in the panes, and change them during the game
 ---
 
-When you play a text adventure using Quest Viva, there will usually be a set of panels on the right. As well as the compass rose, there will be lists of objects in the current location and in your inventory. Or there may be hyperlinks for each object in the text. If you click on an object, buttons will appear giving short-cuts to commands with the object. These are display verbs and inventory verbs.
+When the player clicks an object's name in the text, a menu of verbs appears - "Look at", "Take" and so on. The same verbs appear as buttons when the player selects the object in the Inventory or Places and Objects pane (in the ☰ drawer on a phone). Choosing one runs that verb on the object, just as if the player had typed "take lamp".
 
+Each object has two lists:
+
+- **Display verbs** - used when the object is somewhere around the player, such as in the room.
+- **Inventory verbs** - used when the player is carrying it.
+
+By default, an object's display verbs are "Look at" and "Take", and its inventory verbs are "Look at", "Use" and "Drop". This page shows how to change them in the editor and during the game.
+
+## The Object tab
+
+Select the object and go to its _Object_ tab. The options are:
+
+- **Other names** - words the player can type for this object, as well as its name or alias. A ball could also be called "sphere" or "orb".
+- **Alias to display in "Inventory" or "Places and Objects" pane** - a different name to show in the panes only, such as "bouncy ball" for an object called "ball".
+- **Link colour** - a colour for this object's links, overriding the game's link colour on the _Display_ tab.
+- **Display verbs** and **Inventory verbs** - the two lists of verbs.
+- **Disable automatically generated display verb list for this object** and **Only display verbs from this object's Verbs tab** - see [Verbs added automatically](#verbs-added-automatically).
+
+The verb options only appear if the game has hyperlinks or panes turned on (on the game's _Display_ and _Interface_ tabs), because without either the player never sees them.
 
 ## Adding and removing verbs
 
-There is a simple way to change the list of verbs for an object. On the _Object_ tab, at the bottom, is a section called "Display verbs". You can add and remove as appropriate. For example, if an object cannot be picked up, remove the "Take" entry from the display verbs.
+Add and remove verbs in the **Display verbs** and **Inventory verbs** lists as you need. If the player shouldn't be able to pick an object up, for example, remove "Take" from its display verbs.
 
-By the way, you can add anything you like here, even if it makes no sense to Quest Viva. It is, therefore, a good idea when playing through your game to click on each verb for every object to see how Quest Viva responds (if it can be picked up, do it for both in the inventory and in the room).
+A verb in these lists is simply the start of a command. Clicking "Kick" on a ball sends "kick ball", so the game must understand that command - otherwise the player gets "I don't understand your command." Anything you add here needs a verb on the object's _Verbs_ tab (see [Using verbs](/howto/commands/using-verbs)) or a command that handles it. Play through your game and try every verb on every object, both in the room and in the inventory.
 
-Changing the object type on the _Setup_ tab will also change the verbs. Changing it to a male character, for example, will change the display verbs to "Look at" and "Speak to", rather than "Look at" and "Take".
+Changing an object's **Type** on the _Setup_ tab changes its default verbs. A "Male character" or "Female character" has "Look at" and "Speak to" instead of "Look at" and "Take". Some features add verbs too: an openable container adds "Open" and "Close", and a switchable object adds "Switch on" and "Switch off".
 
-When you add a verb to an object via the _Verbs_ tab, Quest Viva will automatically add that verb to both the display verbs and the inventory verb. You can stop it doing that by unticking the "Automatically generate object display verbs list" box on the _Room Descriptions_ tab of the game object. Doing this gives you full control over the verbs that will be shown. You can also stop verbs being generated automatically for a specific item by ticking the box on the _Object_ tab for that object.
+### Verbs added automatically
 
+When you add a verb to an object's _Verbs_ tab, it's added to the menus automatically, so a ball with a "hit" verb shows "Look at", "Take" and "Hit". You don't need to add it to the lists yourself.
+
+To control every verb by hand instead:
+
+- For one object, tick **Disable automatically generated display verb list for this object**. Only the verbs in its lists appear.
+- For one object, tick **Only display verbs from this object's Verbs tab** to show just those verbs, without the lists. The lists disappear from the tab.
+- For the whole game, untick **Automatically generate object display verbs list** on the game's _Room Descriptions_ tab.
 
 ## Adding and removing verbs on the fly
 
-So far so good, but what if you want verbs to change during the course of the game? Say there is a hat that can be worn, so you want a "Wear" verb, but when put on you want a "Remove" verb instead (actually this happens automatically for wearable objects).
+Sometimes the verbs should change during the game - a "Wear" verb for a hat, which becomes "Remove" once the hat is on. (Objects set up as [wearables](/howto/world/wearables) do this for you.)
 
-The verbs are held in two string list attributes, `displayverbs` and `inventoryverbs`.
+The lists are the object attributes `displayverbs` and `inventoryverbs`, and you can set them in a script. To replace a list completely, use `Split`:
 
-There are issues to be aware of. Firstly, automatically generated verbs are not in that list (another good reason to turn the feature off).
+```quest
+hat.inventoryverbs = Split("Look at;Drop;Wear", ";")
+```
 
-Secondly, your object will only have those attributes if you have modified the lists on the Object tab. You can go to the Attributes tab, look for "displayverbs" in the list at the bottom. If it is in grey, your object is getting its list from its type, and if you try to add or remove something in the list during play, you will get this helpful message:
+And when the hat is worn:
+
+```quest
+hat.inventoryverbs = Split("Look at;Remove", ";")
+```
+
+To add or remove a single verb, leaving the others alone, use `ListCombine` and `ListExclude`:
+
+```quest
+// Add "Attack"
+orc.displayverbs = ListCombine(orc.displayverbs, Split("Attack", ";"))
+
+// Remove "Attack" again
+orc.displayverbs = ListExclude(orc.displayverbs, "Attack")
+```
+
+Both make a new list, so they work whether or not the object has its own list yet.
+
+Avoid `list add` and `list remove` here. An object whose lists you haven't changed on the _Object_ tab gets them from its type, and changing a type's list stops the game with this error:
 
 ```
 Error running script: Cannot modify the contents of this list as it is defined by an inherited type. Clone it before attempting to modify.
 ```
 
-
-
-## Coding...
-
-So how do you actually add and remove verbs? We have an object called "hat", and we want to add a "Wear" verb to the inventory list. One approach is to create a new list each time. This is easily done with the `Split` function. This takes two strings, the first being a list of verbs, separated by semi-colons, the second just a semi-colon, telling Quest Viva what to break the first list on.
-
-```quest
-hat.inventoryverbs = Split("look at;Drop;Wear", ";")
-```
-
-Then when the hat is worn:
-
-```quest
-hat.inventoryverbs = Split("look at;Remove", ";")
-```
-
-That will not work if there are potentially other verbs that may or may not be there, and you are better off assigning the attribute each time using `ListCombine`:
-
-```quest
-object.displayverbs = ListCombine(object.displayverbs, Split("Attack"))
-```
-
-When you want to remove the verb, it should be safe to use `list remove` as you know the object has the list, given you set it yourself earlier. To be extra safe, check the list has the verb first.
-
-```quest
-if (ListContains(object.displayverbs, "Attack")) {
-  list remove (object.displayverbs, "Attack")
-}
-```
+Verbs added automatically from the _Verbs_ tab aren't in `displayverbs` or `inventoryverbs`, so you can't remove them this way. For an object whose verbs change during the game, tick **Disable automatically generated display verb list for this object** and keep all its verbs in the lists.
