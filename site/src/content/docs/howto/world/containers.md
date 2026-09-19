@@ -46,7 +46,7 @@ By default, the player will need to have all the keys to unlock the container. Y
 
 ![](/images/lockandkey.png)
 
-Alternatively, you may require some event to unlock the chest. Perhaps the player has answered a riddle or moved the iron beam that was keeping the lid closed. In this case we will say the player has to talk to the pixie, who will magically unlock the chest. Set the number of keys to zero and untick the "Require all keys" check box (if using earlier versions of Quest Viva you will need to set the number of keys to 1, and create a dummy key the player cannot get to).
+Alternatively, you may require some event to unlock the chest. Perhaps the player has answered a riddle or moved the iron beam that was keeping the lid closed. In this case we will say the player has to talk to the pixie, who will magically unlock the chest. Leave "Number of keys to unlock container" at zero, and unlock the chest with a script instead.
 
 Set up the script like this:
 
@@ -73,6 +73,27 @@ You will also need to set the volume of any object in your game that the player 
 
 You can use any units that are convenient; it does not matter as long as you are consistent across your game. Note that if you put one container inside another, the volume of the inner container will be its own volume plus the volume of everything in it (Quest Viva assumes containers are floppy bags that expand to hold things, rather than rigid boxes with fixed volumes).
 
+
+
+## Parts of an object
+
+Sometimes an object has a part the player needs to use: a button on a machine, or a handle on a suitcase. If the object never moves, the part can simply be a scenery object in the same room. If the player can carry the object around, put the part inside it, and make the object a container that the player can reach into but not put anything in:
+
+1. Add the button on the machine's _Objects_ tab, or move an existing button to "machine" with "Move to..." in the tree.
+2. On the button's _Setup_ tab, tick "Scenery (do not display in room description)". Leave "Object can be taken" unticked on its _Inventory_ tab.
+3. On the machine's _Features_ tab, tick "Container: object is a container or surface, or can be opened and closed". On the _Container_ tab, set the type to "Container", untick "Can be opened" and "Can be closed", and leave "Is open" ticked.
+4. Set "Contents prefix" to "with".
+5. Set "Script to run when trying to add an object" to print a refusal:
+
+```quest
+msg ("You can't put anything in the machine.")
+```
+
+Mention the button in the machine's description, since Quest Viva won't list it. The player can now PUSH BUTTON whether the machine is on the floor or in their hands. TAKE BUTTON gets "You can't take it.", OPEN and CLOSE MACHINE get "You can't open it." and "You can't close it.", and PUT anything IN or ON the machine gets your message. The button stays out of room descriptions and TAKE ALL. While the player is carrying the machine, the button does show under it in the _Inventory_ pane, and INVENTORY says "a machine (with a button)" - which is why the contents prefix is worth changing.
+
+Don't use a surface for this. When the player carries it, a surface lists its scenery children ("a machine (on which there is a button)"), and it lets the player put things on the machine.
+
+What actually lets the player reach the button is the machine's `isopen` attribute: the children of any object whose `isopen` is true are within reach. So an object that isn't a container at all works too, if you give it an `isopen` attribute set to true on the _Attributes_ tab. PUT then gets the standard "You can't do that.", with no script needed.
 
 
 ## Advanced

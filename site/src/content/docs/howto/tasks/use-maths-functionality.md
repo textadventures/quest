@@ -1,220 +1,157 @@
 ---
-title: Use maths functionality
-sidebar:
-  order: 24
+title: Maths
+description: Arithmetic, whole numbers and decimals, rounding, the if function, the in operator and other maths functions
 ---
 
-Text adventures do not have a lot of call for mathematics, but Quest Viva does have a lot of maths functions built in nevertheless.
+Most games only need to add and subtract - a score, a health bar, a count of coins. This page covers that, and the rest of the maths Quest Viva can do when you need it.
 
-## Basic operations
+## Whole numbers and decimals
 
-You know about +, -, \* and /, right? Quest Viva also supports ^ and %, for raising to the power, and modulo arithmetic.
+Quest Viva has two kinds of number: whole numbers (`int`), such as 3 or -250, and decimals (`double`), such as 2.5. Use whole numbers whenever you can:
+
+- Dividing two whole numbers gives a whole number, dropping any remainder: `7 / 2` is 3. If either number is a decimal, the result is a decimal: `7 / 2.0` is 3.5.
+- Decimals are approximate. `0.1 + 0.2` gives 0.30000000000000004, and `Cos(pi / 2)` gives 6.123233995736766E-17 rather than 0. That's close enough for a calculation, but it doesn't look right when printed.
+
+For money, store the amount in pennies (or cents) as a whole number, and only format it when you print it. `DisplayMoney` does that using the format in `game.moneyformat`:
 
 ```quest
-msg ("2 to the 3 is " + (2^3))
-msg ("13 mod 3 is " + (13 % 3))
+game.moneyformat = "£!1.2!"
+msg ("That will be " + DisplayMoney(299) + ", please.")
 ```
+
+That prints "That will be £2.99, please." The same idea works for other quantities: to track a temperature to a tenth of a degree, store it in tenths, and print it with `DisplayNumber (temperature, "1.1")`, which shows 215 as 21.5. See [DisplayMoney](/reference/functions/string#displaymoney) for the format.
+
+## Arithmetic
+
+As well as `+`, `-`, `*` and `/`, you can use `%` for the remainder after dividing, and `^` to raise to a power:
+
+```quest
+msg ("13 mod 3 is " + (13 % 3))
+msg ("2 to the 3 is " + (2^3))
+```
+
+That prints "13 mod 3 is 1" and "2 to the 3 is 8". `%` is handy for telling whether one number divides exactly into another: `n % 2 = 0` is true when `n` is even.
 
 ## Rounding
 
-Three functions are available:
+There are four functions for rounding a decimal:
+
+| Value | `Floor` | `Ceiling` | `Round` | `Truncate` |
+|---|---|---|---|---|
+| 3.14 | 3 | 4 | 3 | 3 |
+| 3.6 | 3 | 4 | 4 | 3 |
+| -3.14 | -4 | -3 | -3 | -3 |
+| -3.6 | -4 | -3 | -4 | -3 |
+
+`Floor` always rounds down, `Ceiling` always rounds up, `Round` goes to the nearest whole number, and `Truncate` just drops the decimal part. When a number is exactly halfway, `Round` goes to the nearest even number, so `Round(2.5)` is 2 and `Round(3.5)` is 4.
+
+`Round` can also round to a number of decimal places:
 
 ```quest
-x = 3.14
-msg ("Floor " + x + " is " + floor(x))
-msg ("Ceiling " + x + " is " + ceiling(x))
-msg ("Round " + x + " is " + round(x))
-x = 3.6
-msg ("Floor " + x + " is " + floor(x))
-msg ("Ceiling " + x + " is " + ceiling(x))
-msg ("Round " + x + " is " + round(x))
-x = -3.14
-msg ("Floor " + x + " is " + floor(x))
-msg ("Ceiling " + x + " is " + ceiling(x))
-msg ("Round " + x + " is " + round(x))
-x = -3.6
-msg ("Floor " + x + " is " + floor(x))
-msg ("Ceiling " + x + " is " + ceiling(x))
-msg ("Round " + x + " is " + round(x))
+msg ("The ship is " + Round(distance, 2) + " km away.")
 ```
 
-The output is:
+With `distance` set to 12.345678, that prints "The ship is 12.35 km away."
+
+All four functions still give you a decimal, even though it has no fractional part - `Round(4.56)` is 5, but it's the decimal 5. To turn it into a whole number, use `cast`, with no quotes around `int`:
 
 ```quest
-Floor 3.14 is 3
-Ceiling 3.14 is 4
-Round 3.14 is 3
-Floor 3.6 is 3
-Ceiling 3.6 is 4
-Round 3.6 is 4
-Floor -3.14 is -4
-Ceiling -3.14 is -3
-Round -3.14 is -3
-Floor -3.6 is -4
-Ceiling -3.6 is -3
-Round -3.6 is -4
+whole = cast(Round(4.56), int)
 ```
 
 ## Minimum and maximum
 
-Use the min and max functions:
+`Min` and `Max` give the smaller or larger of two numbers. They're a neat way to keep a value within limits:
 
 ```quest
-msg ("Min of 4 and 10 is " + min (4, 10))
-msg ("Max of 4 and 10 is " + max (4, 10))
+player.health = Min(player.health + 20, 100)
 ```
+
+That adds 20 to the player's health, but never takes it above 100.
+
+## Choosing a value with if
+
+`if` can also be used as a function, which takes a condition and two values. It gives you the first value if the condition is true, and the second if it's false:
+
+```quest
+msg ("The lamp is " + if (lamp.switchedon, "on", "off") + ".")
+```
+
+That does the same as this:
+
+```quest
+if (lamp.switchedon) {
+  s = "on"
+}
+else {
+  s = "off"
+}
+msg ("The lamp is " + s + ".")
+```
+
+## Checking a list with in
+
+`in` is true if the value on the left is in the list on the right:
+
+```quest
+colours = Split("red;green;blue", ";")
+msg ("green" in colours)
+msg ("pink" in colours)
+```
+
+That prints "True" and then "False". You don't need to make a list first - you can put the values in brackets:
+
+```quest
+if (game.pov.parent.name in ("kitchen", "larder", "scullery")) {
+  msg ("You can smell baking.")
+}
+```
+
+## Indexing lists and dictionaries
+
+You can get an item from a list or a dictionary with square brackets. Lists count from 0:
+
+```quest
+colours = Split("red;green;blue", ";")
+msg (colours[1])
+```
+
+That prints "green". `colours[1]` does the same as `ListItem(colours, 1)`, and `prices["apple"]` does the same as `DictionaryItem(prices, "apple")`.
+
+## Other functions
+
+Quest Viva has these other maths functions, and the constants `e` and `pi`:
+
+| Function | Gives |
+|---|---|
+| `Abs(-2)` | The value without its sign: 2 |
+| `Sign(-2)` | -1 for a negative number, 1 for a positive one, 0 for zero |
+| `Sqrt(2)` | The square root: 1.4142135623730951 |
+| `Pow(2, 3)` | 2 to the power of 3: 8 |
+| `Exp(7)` | `e` to the power of 7 |
+| `Log(7)`, `Log10(7)` | The natural logarithm, and the logarithm to base 10 |
+| `Sin`, `Cos`, `Tan`, `Asin`, `Acos`, `Atan`, `Sinh`, `Cosh`, `Tanh` | Trigonometry |
+
+The trigonometry functions work in radians, not degrees. To use degrees, multiply by `pi / 180` first:
+
+```quest
+msg (Sin(30 * pi / 180))
+```
+
+That prints 0.49999999999999994 - which, as above, is how decimals go.
+
+Don't use `e` or `pi` as the names of local variables. Assigning to them is silently ignored, so they keep their values of 2.718... and 3.141....
 
 ## Bitwise operations
 
-If you are reading a page about maths, chances are you are familiar with Boolean operations such as:
+`and`, `or` and `xor` also work on whole numbers, comparing them one binary digit at a time. `<<` and `>>` shift the digits left or right:
 
 ```quest
-if (door.islocked and player.haskey)
+msg (20 and 4)
+msg (20 or 4)
+msg (20 xor 4)
+msg (3 << 3)
+msg (24 >> 3)
 ```
 
-... but the operations `and`, `or` and `not` can also be used with integers (but not with integers and Booleans mixed together).
-
-```quest
-msg ("bitwise 20 and 4 is " + (20 and 4))
-msg ("bitwise 20 or 4 is " + (20 or 4))
-```
-
-Twenty is 10100 in binary and 4 is 100. When you `and` them, the result is every bit they have in common, in this case just the third. When you `or` them, you get all the bits either of them have, the fifth and the third.
-
-```
-20     10100
- 4       100
-and      100
- or    10100
-```
-
-There is also a bitwise shift operator; it moves the binary representation of the number on the left by a number of places indicated by the number on the right (in effect, shift left multiplies the left number by two to the power of the right number; shift right divides the left number by two to the power of the right number):
-
-```quest
-msg ("24 shifted 3 right is " + (24 >> 3))
-msg ("3 shifted 3 left is " + (3 << 3))
-```
-
-2 to the power 3 is eight, so the first line effectively divides by 8, to give 3, the second line multiplies by eight to give 24.
-
-Thirty to forty years ago, this might give a significant speed boost, compared to 24 / 8. Nowadays, with faster computers, it is pretty much useless.
-
-
-
-## Tertiary operator
-
-So called because it takes three values. If the first is true, it returns the second, otherwise it returns the third.
-
-```quest
-msg (if (10 > 5, "yes it is", "no it's not"))
-msg (if (10 < 5, "yes it is", "no it's not"))
-s = if (10 < 5, "yes it is", "no it's not")
-msg (s)
-```
-
-The third line, for example, would otherwise be written like this:
-
-```quest
-if (10 < 5)
-  s = "yes it is"
-}
-else {
-  s = "no it's not"
-}
-
-
-```
-## The in operator
-
-Evaluates to true if the term on the left is in the list on the right, false otherwise.
-
-```quest
-list = Split ("one,two,three,four", ",")
-msg ("Is it is the list? two or zero")
-msg ("two" in list)
-msg ("zero" in list)
-```
-
-The first line creates our list. The third line prints "true", as "two" is found in the list, the last line prints "false"; "zero" is not in the list.
-
-You don't need to build a list first; you can check against a parenthesised list of literal values directly:
-
-```quest
-msg ("two" in ("one", "two", "three"))
-msg ("zero" in ("one", "two", "three"))
-```
-
-The first line prints "true", the second "false" - same rules as checking against a list.
-
-
-## Trigonometry and other functions
-
-Every felt you cannot create the adventure game of your dreams because Quest Viva does not support hyperbolic cosine? Fret no more!
-
-```quest
-msg ("Absolute value of -2 is " + abs (-2))
-msg ("Sign  of -2 is " + sign (-2))
-msg ("Square root of 2 is " + sqrt (2))
-msg ("Cosine 0.5 is " + cos (0.5))
-msg ("Inverse cosine 0.5 is " + acos (0.5))
-msg ("Cosh 0.5 is " + cosh (0.5))
-msg ("2 to the 3 is " + pow (2, 3))
-msg ("The log base 10 of 7 is " + log10(7))
-msg ("The natural log of 7 is " + log(7))
-msg ("e to the power of 7 is " + exp(7))
-```
-
-In case you are wondering, `abs` gets the absolute value, i.e., makes it a positive value. The `sign` function returns -1 for negative numbers, 1 for positive, and zero for zero.
-
-
-## Constants `e` and `pi`
-
-They are irrational! They are transcendental! They are right there in quest!
-
-```quest
-msg ("e is " + e)
-msg ("pi is " + pi)
-
-```
-
-Quest Viva will actually allow you to go through the motions of assigning a value to these:
-
-```quest
-e = game.pov
-msg (e)
-```
-
-No error will be given, but e will still be 2.718... Using e or pi as a variable name can lead to some very mysterious errors.
-
-
-## Indexing
-
-In most languages you can index an element in a array (or list, as they are also termed) with something like this:
-
-```quest
-myarray[5]
-```
-
-It works in Quest Viva too. You can even do it for a dictionary:
-
-```quest
-mydictionary["peter"]
-```
-
-Note that these do the same as `ListItem` and `DictionaryItem`; they return an element with an indeterminate type, and it will take Quest Viva a moment to work out what it is handling.
-
-Here is an example (TestFunc just prints out the value):
-
-```quest
-list = Split ("one,two,three,four", ",")
-msg ("number 2 is " + list[2])
-d = NewDictionary()
-dictionary add (d, "Name", "Quest")
-dictionary add (d, "Author", "Alex Warren")
-msg (d["Name"])
-TestFunc (list[1])
-dictionary add (d, "" + list[1], list[2])
-msg (d["two"])
-```
-
-Note that in the last but one line, the key for the dictionary is `"" + list[1]`. This addition gives Quest Viva a chance to work out what `list[1]` is.
+These print 4, 20, 16, 24 and 3. Twenty is 10100 in binary and 4 is 100: `and` keeps the digits they both have (100, which is 4), `or` keeps the digits either has (10100, which is 20), and `xor` keeps the digits only one of them has (10000, which is 16). Shifting left by 3 multiplies by 8, and shifting right by 3 divides by 8.

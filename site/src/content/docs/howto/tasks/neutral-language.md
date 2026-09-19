@@ -1,84 +1,113 @@
 ---
 title: Using neutral language
-sidebar:
-  order: 19
+description: Write command responses that read correctly whatever object the player chose - singular, plural or a named character
 ---
 
-Often when creating a text adventure you will find you do not know what you are talking about!
+When you write a command, you often don't know which object the player will use it on. Suppose you have an ATTACK command with this pattern:
 
-This is often the case with a command. Let us suppose we have an `ATTACK` command, with this pattern:
-
-    attack #object#;strike #object#;hit #object#
-
-In the command's script, you have this thing called "object", but you do not know what it is. You need your command to work - and to read properly, whether the player did `ATTACK ZOMBIE`, `ATTACK CROWD` or `ATTACK MARY`. If the response is "You attack it. It looks angry." for all three, the player will not be impressed. We need to make our response language neutral.
-
-
-## Attributes
-
-To help you, Quest Viva has a number of attributes and functions built-in. However, you do need to set up your objects correctly. On the _Setup_ tab, in our example, set Mary to be a "Female character (named)" and set the crowd to "Inanimate objects (plural)" (the zombie will be fine as the default "inanimate object").
-
-You can see the attributes on that same tab, and see them change when you change the type: `gender`, `article` and `possessive` (but note, all lower-case).
-
-Set the response to:
-
-```quest
-"You attack " + object.article + "; " + object.gender + " look angry."
+```
+attack #object#;strike #object#;hit #object#
 ```
 
-Now if the player attacks the crowd, she will see "You attack them; they look angry."
+The command's script gets the object in a variable called `object`, but it could be anything. The response has to read properly whether the player typed ATTACK ZOMBIE, ATTACK CROWD or ATTACK MARY. If it's "You attack it. It looks angry." for all three, the player won't be impressed.
 
+Quest Viva has attributes and functions for exactly this. The text processor can't do any of it, so you build the message as an [expression](/howto/scripting/expressions) - in the editor, add a "Print a message" script and change its dropdown from "message" to "expression".
+
+## Set up your objects
+
+The functions below rely on each object having the right type. On the object's _Setup_ tab, set the "Type" dropdown. For this example, set Mary to "Female character (named)" and the crowd to "Inanimate objects (plural)". The zombie can stay as the default, "Inanimate object".
+
+The type sets three attributes, which you can see under "Advanced" on the same tab:
+
+| Attribute | Zombie | Crowd | Mary |
+|---|---|---|---|
+| `gender` ("Gender") | it | they | she |
+| `article` ("Article") | it | them | her |
+| `possessive` ("Possessive") | its | their | her |
+
+So this:
+
+```quest
+msg ("You attack " + object.article + "; " + object.gender + " looks angry.")
+```
+
+prints "You attack them; they looks angry." for the crowd. That's nearly right - the verb needs fixing, which is covered [below](#conjugation).
 
 ## Names
 
-Some of your objects might have aliases and some might not (as names are limited in what characters you can use). When you want to refer to an object's name, use either `GetDisplayName` or `GetDisplayAlias` or `GetDefiniteName`. All will return the alias if the object has one, or the name otherwise. `GetDisplayName` will add the prefix to the object; this is "a" or "an" (by default; depending on if it starts with a vowel or not) except for named characters. `GetDefiniteName` will add "the" before the name, if applicable.
+To refer to an object by name, use one of these functions rather than `object.name`. All of them use the object's alias if it has one, and its name if it doesn't:
 
-To illustrate, here are three objects. The shoes were set up with "Default prefix" unticked, and "some" as the prefix.
+- `GetDisplayAlias` gives just the alias.
+- `GetDisplayName` adds the prefix: "a" or "an" by default, nothing for a named character, or whatever you've set as the object's "Prefix".
+- `GetDefiniteName` adds "the", except for named characters.
 
-<table>
-  <tr><td><i>Name</i></td><td>teapot</td><td>shoes</td><td>Zoë</td></tr>
-  <tr><td><i>Alias</i></td><td></td><td></td><td>Zoe</td></tr>
-  <tr><td><i>Type</i></td><td>Inanimate object</td><td>Inanimate object (plural)</td><td>Female</br>character<br/>(named)</td></tr>
-  <tr><td><i>GetDisplayAlias</i></td><td>teapot</td><td>shoes</td><td>Zoë</td></tr>
-  <tr><td><i>GetDisplayName</i></td><td>a teapot</td><td>some shoes</td><td>Zoë</td></tr>
-  <tr><td><i>GetDefiniteName</i></td><td>the teapot</td><td>the shoes</td><td>Zoë</td></tr>
-</table>
+Here are four objects. The shoes have "Use default prefix and suffix" unticked and "some" as their "Prefix". Zoë's name is `zoe` - it's what your scripts use - and her alias is "Zoë", which is what the player sees.
 
-So back to attacking the crowd and Mary, we can now do this:
+| | teapot | shoes | Mary | zoe |
+|---|---|---|---|---|
+| Type | Inanimate object | Inanimate objects (plural) | Female character (named) | Female character (named) |
+| Alias | | | | Zoë |
+| `GetDisplayAlias` | teapot | shoes | Mary | Zoë |
+| `GetDisplayName` | a teapot | some shoes | Mary | Zoë |
+| `GetDefiniteName` | the teapot | the shoes | Mary | Zoë |
+
+So back to the crowd and Mary:
 
 ```quest
-"You can see " + GetDisplayName(object) + "."
--> You can see a crowd.
--> You can see Mary.
-
-"You attack " + GetDefiniteName(object) + ". " + object.gender + " look angry."
--> You attack the crowd. they look angry.
--> You attack Mary. she look angry.
+msg ("You can see " + GetDisplayName(object) + ".")
+msg ("You attack " + GetDefiniteName(object) + ". " + object.gender + " look angry.")
 ```
 
+For the crowd, that prints:
+
+```
+You can see a crowd.
+You attack the crowd. they look angry.
+```
+
+and for Mary:
+
+```
+You can see Mary.
+You attack Mary. she look angry.
+```
 
 ## Capitalisation
 
-We need a capital at the start of the second sentence. We can use the `CapFirst` function.
+The second sentence needs a capital letter. `CapFirst` capitalises the first letter of a string:
 
 ```quest
-"You attack " + GetDefiniteName(object) + ". " + CapFirst(object.gender) + " look angry."
--> You attack the crowd. They look angry.
--> You attack Mary. She look angry.
+msg ("You attack " + GetDefiniteName(object) + ". " + CapFirst(object.gender) + " look angry.")
 ```
 
+That gives "They look angry." for the crowd, but still "She look angry." for Mary.
 
 ## Conjugation
 
-We also need to conjugate the verb so it is of the correct form. Quest Viva has the `Conjugate` function for that, it takes the object that is doing the verb, followed by the verb as a string (use "be" for the verb to be, by the way).
+The verb has to agree with the object. `Conjugate` takes the object doing the action and the verb, and returns the right form: "look" for the crowd, "looks" for Mary and the zombie. Use "be" for the verb "to be", which gives "is" or "are".
 
 ```quest
-"You attack " + GetDefiniteName(object) + ". " + CapFirst(object.gender) + " " + Conjugate(object, "look") + " angry."
--> You attack the crowd. They look angry.
--> You attack Mary. She looks angry.
+msg ("You attack " + GetDefiniteName(object) + ". " + CapFirst(object.gender) + " " + Conjugate(object, "look") + " angry.")
 ```
 
-Because we often want to start a sentence with the object doing the verb, Quest Viva has a `WriteVerb` that will get the gender of the object, capitalise it and add the conjugated verb. This is used a lot in the language files for built-in responses.
+```
+You attack the crowd. They look angry.
+You attack Mary. She looks angry.
+You attack the zombie. It looks angry.
+```
+
+Starting a sentence with the object doing something is so common that `WriteVerb` does it in one go. It takes the object's `gender`, capitalises it and adds the conjugated verb. This gives exactly the same result as the last example:
 
 ```quest
-"You attack " + GetDefiniteName(object) + ". " + WriteVerb(object, "look") + " angry."
+msg ("You attack " + GetDefiniteName(object) + ". " + WriteVerb(object, "look") + " angry.")
 ```
+
+Putting it all together:
+
+```quest
+msg (WriteVerb(object, "be") + " not amused. " + CapFirst(object.possessive) + " face says it all.")
+```
+
+prints "It is not amused. Its face says it all." for the zombie and "She is not amused. Her face says it all." for Mary.
+
+Quest Viva's own messages are written this way. `WriteVerb(game.pov, "can't")` gives "You can't" - see [Changing the game's messages](/howto/world/changing-templates) for how to change them.

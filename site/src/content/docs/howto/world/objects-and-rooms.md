@@ -85,4 +85,6 @@ It is the same containment relationship for every kind of object, which is what 
 
 The tree in the sidebar shows the same relationship. To move an existing object to a different parent, right-click it in the tree and choose "Move to..."; this tab is where you add new ones.
 
+So to give the player something to start the game with, put it inside the player object: add it on the player's _Objects_ tab, or move an existing object to "player" with "Move to...". It is in their inventory from the first turn.
+
 Whether the player can *see* the children of a non-room object is a separate question, answered by the [_Container_ tab](/howto/world/containers) — an object with children that is not a container or a surface simply keeps them hidden.

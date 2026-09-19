@@ -149,7 +149,7 @@ A "double" attribute represents a number with a decimal point. It can be positiv
 
 Examples: 1.23, 5.8214, -0.12421, 0.0.
 
-More [here](/howto/scripting/using-doubles).
+More [here](/howto/tasks/use-maths-functionality#whole-numbers-and-decimals).
 
 ## Object
 
