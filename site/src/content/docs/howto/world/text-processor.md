@@ -1,5 +1,6 @@
 ---
 title: Text processor
+description: Show text conditionally, vary it at random, format it, and add links the player can click
 sidebar:
   order: 1
 ---
@@ -79,33 +80,19 @@ Display text only if an object attribute is less than or equal to a certain valu
 
 
 {command:**command**}  
-Displays a link that will run a command, displaying the command itself as the text. The command will be parsed as normal, so could be as simple as {command:HELP} or as complicated as {command:put the ball in the chest}. For a gamebook, the command should be the name of a page.
-
 {command:**command**:**text**}  
-Displays a link that will run a command, as before, but displaying some different text.
+Displays a link that runs a command when clicked. See [Links](#links).
 
-{page:**command**}  
-As `command` (an alternative name that may be preferred for game books).
-
-{page:**command**:**text**}  
-As `command` (an alternative name that may be preferred for game books).
-
-
-
-
+{page:**page**}  
+{page:**page**:**text**}  
+Displays a link to a page - a gamebook page, or a [Pages](/tutorial/using-pages) dialogue in a text adventure. See [Links](#links).
 
 ## Additional text adventure commands
 
 {object:**name**}  
-Displays an object hyperlink, using the object's display alias.
-
 {object:**name**:**link text**}  
-Displays an object hyperlink, using text you specify.
-
-For more on how object and command links behave when clicked, and the functions that generate them, see [Hyperlinks](/other-guides/hyperlinks).
-
 {exit:**name**}  
-Displays an exit hyperlink. The name is the name you give to the exit (by default exits do not have names; you will need to give it a name yourself). The link will appear as the exit's alias ("north", "up", etc.)
+Display a link to an object or an exit. See [Links](#links).
 
 {rndalt:**object**}  
 Display a randomly chosen name from an object's [alt](/attributes#alt) list.
@@ -160,15 +147,12 @@ The beach is long, and the sand almost white. {nothere mary:You wonder where Mar
 Displays a link, with the first text (which cannot have text processor directives nested in it). When the player clicks on the link, a pop-up will be displayed, containing the long text. The pop-up will disappear when the long text is clicked on. This can be used with the img command to have an image pop-up.
 
 
-{either **condition**:**text**}
-This works similar to the if command above, but with two important differences. The first is that the condition can be any Quest Viva code that results in a Boolean (true or false). The second is that if you are comparing a string it needs to be in double quotes (as is true of normal Quest Viva code).
-
+{either **condition**:**text**}  
+{either **condition**:**text if true**|**text if false**}  
+This works like `if`, with three differences. The condition can be any Quest Viva expression that results in true or false, so you can use functions, `and`, `or` and `not`. Strings being compared need double quotes, as in normal code. And you can give a second text, after a `|`, to show when the condition is false.
 
 ```quest
-"You {either StartsWith(player.name, \"play\") and not player.flag:are the player}"
- -> "You are the player",
-"'Oh, {either player.male_flag:he|she} is not worth it.'"
- -> "'Oh, he is not worth it.'",
+An old chest. {either chest.isopen:The lid is open.|The lid is shut.}
 ```
 
 {eval:**code**}
@@ -219,6 +203,59 @@ Display text only if a counter is less than a certain value.
 Display text only if a counter is less than or equal to a certain value.
 
 
+## Links
+
+Four directives turn text into something the player can click. Like every other directive, they work anywhere the text processor does: descriptions, `msg`, page text and so on.
+
+| Directive | What clicking it does | Example |
+|---|---|---|
+| `{object:name}`<br/>`{object:name:text}` | Shows a menu of the object's verbs (Look at, Take and so on), and runs the one the player picks | `{object:torch:the old torch}` |
+| `{command:command}`<br/>`{command:command:text}` | Runs the command, just as if the player had typed it | `{command:wait:wait a moment}` |
+| `{exit:name}` | Goes through the exit | `{exit:north_exit}` |
+| `{page:page}`<br/>`{page:page:text}` | Goes to the page | `{page:guard_intro:talk to the guard}` |
+
+In each case the optional last part is the text the player sees. Leave it out and the link shows the object's display alias, the command itself, the exit's alias ("north") or the page name.
+
+- **Object links** take the object's name, not its alias. The menu offers the same verbs as the _Places and Objects_ pane.
+- **Command links** go through the parser like anything typed, so they can run any command your game understands, including your own: `{command:jump up and down:jump about}`.
+- **Exit links** need the exit's name. Exits don't have one by default, so give it one in the _Name_ box on the exit's _Exit_ tab. Clicking sends "go" and the exit's alias, for example "go north".
+- **Page links** work in both kinds of game. In a gamebook, `{page:...}` and `{command:...}` do the same thing: go to the named page. In a text adventure, `{page:...}` links to a [Pages](/tutorial/using-pages) dialogue, and clicking it starts the conversation at that page, as the "Show page" script command does. A sign could say `{page:guard_intro:talk to the guard}`, for example.
+
+To link to a web page, use an ordinary HTML link:
+
+```quest
+msg ("Read more on <a href=\"https://questviva.com\">the Quest Viva website</a>.")
+```
+
+### Hyperlink settings
+
+The game object's _Display_ tab has a _Hyperlinks_ section:
+
+- **Hyperlinks: players can access object verbs by clicking object names** - on by default. Untick it and `{object:...}` shows plain text, as do the objects and exits listed in room descriptions. `{command:...}`, `{exit:...}` and `{page:...}` links still appear.
+- **Link colour** and **Underline hyperlinks** - how links look.
+- **After using a command hyperlink, deactivate it** - each command link stops working once the player has clicked it.
+
+In code, these are `game.enablehyperlinks`, `game.defaultlinkforeground`, `game.underlinehyperlinks` and `game.deactivatecommandlinks`.
+
+### Building links in code
+
+These functions build the directive text for you, so you can join it into a message:
+
+- [`ObjectLink(object)`](/reference/functions/internal-core#objectlink) returns `{object:name}`.
+- [`CommandLink(command, text)`](/reference/functions/internal-core#commandlink) returns `{command:command:text}`.
+- [`GetDisplayNameLink(object, type)`](/reference/functions/core#getdisplaynamelink) returns the object's name with its article, as a link when `type` is `"object"`: "a torch", with "torch" as the link.
+
+```quest
+msg ("You could " + CommandLink("wait", "wait here") + ", or pick up " + GetDisplayNameLink(torch, "object") + ".")
+```
+
+Two more print a link straight away. [`DisplayHttpLink(text, url, https)`](/reference/functions/internal-core#displayhttplink) prints a link to a web page, using `https://` when the third parameter is `true`. [`DisplayMailtoLink(text, email)`](/reference/functions/user-interface#displaymailtolink) prints an email link.
+
+```quest
+DisplayHttpLink ("Quest Viva", "questviva.com", true)
+DisplayMailtoLink ("Email the author", "author@example.com")
+```
+
 ## Errors
 
 If the text processor cannot understand your directive, it will generally leave the text as is. This should make it easier to identify issue. For example, for the "select" directive, if the value of the object attribute is outside the range (a negative number or a number higher or equal to the number of options), no processing is done, and the text will appear as written.
@@ -241,25 +278,35 @@ You cannot use text processor commands in an object's name, as only a limited se
  
 ## Support for "this"
 
-In Quest Viva, "this" is a special local variable that refers to the object that owns the current script. Text processor directives do not naturally support "this", because when they are being processed they do not belong to a script. However, you can fake it by setting a special attribute of the game object called "text_processor_this". This would allow you to do something like this:
+In a script, `this` means the object the script belongs to. In the text processor, `{this.attribute}` means the object of the command the player has just typed: the teapot in X TEAPOT, the lamp in SWITCH ON LAMP, the first object in PUT BALL IN BOX. That makes it useful in an object's description, and in the messages it prints for its verbs:
+
+```quest
+The {this.alias} is {if this.switchedon:on}{if not this.switchedon:off}.
+```
+
+`{this.alias}` shows nothing if the object has no alias. `{=GetDisplayAlias(this)}` always shows the name the player sees.
+
+`this` isn't reset after a command, so don't rely on it anywhere else. In a room description, or in the output of a command without an object, it still refers to the object from the last command that had one.
+
+To choose what `this` means yourself, set `game.text_processor_this` before printing the text:
 
 ```quest
 game.text_processor_this = teapot
-msg("The {this.alias} is {if this.capacity<5:not }big enough.")
+msg ("The {this.alias} is {if this.capacity<5:not }big enough.")
 ```
 
 
 ## Local variables
 
-In fact you can add any number of local variables in a dictionary attribute of the game object called "text_processor_variables". The key will be the name of the variable, and the value should be the object.
+You can give the text processor other names for objects too. Put them in a dictionary in `game.text_processor_variables`, with the name as the key and the object as the value:
 
 ```quest
 game.text_processor_variables = NewDictionary()
 dictionary add (game.text_processor_variables, "animal", tiger)
-msg("You can see a {animal.name}")
+msg ("You can see a {animal.alias}.")
 ```
 
-You can add as many variables as you like to the dictionary, and they will last until you set "text_processor_variables" to be a new dictionary again. Note that if you have "this" set in the dictionary and using "text_processor_this", the latter value will be used.
+The names last until you change the dictionary, and you can add as many as you like. A `this` entry in the dictionary is ignored while `game.text_processor_this` is set.
 
 
 ## Extending

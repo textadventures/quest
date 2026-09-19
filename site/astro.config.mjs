@@ -149,10 +149,6 @@ export default defineConfig({
                                     "slug": "howto/tasks/showing-a-map"
                                 },
                                 {
-                                    "label": "Mapping with Trizbort",
-                                    "slug": "howto/world/trizbort"
-                                },
-                                {
                                     "label": "Fast travel",
                                     "slug": "howto/tasks/transit-system"
                                 }
@@ -173,10 +169,6 @@ export default defineConfig({
                                 {
                                     "label": "Containers",
                                     "slug": "howto/world/containers"
-                                },
-                                {
-                                    "label": "Parts of an object",
-                                    "slug": "other-guides/implementing-components-of-an-object"
                                 },
                                 {
                                     "label": "Switchable objects",
@@ -205,10 +197,6 @@ export default defineConfig({
                                 {
                                     "label": "Pushing objects between rooms",
                                     "slug": "howto/tasks/move-object"
-                                },
-                                {
-                                    "label": "Starting inventory",
-                                    "slug": "other-guides/starting-inventory"
                                 }
                             ]
                         },
@@ -309,10 +297,6 @@ export default defineConfig({
                                     "slug": "howto/world/score-health-money"
                                 },
                                 {
-                                    "label": "Keeping score",
-                                    "slug": "howto/tasks/keeping-score"
-                                },
-                                {
                                     "label": "Setting up a shop",
                                     "slug": "howto/tasks/shop"
                                 }
@@ -349,20 +333,8 @@ export default defineConfig({
                                     "slug": "howto/world/text-processor"
                                 },
                                 {
-                                    "label": "Links",
-                                    "slug": "other-guides/hyperlinks"
-                                },
-                                {
                                     "label": "Changing the game's messages",
                                     "slug": "howto/world/changing-templates"
-                                },
-                                {
-                                    "label": "Varying default responses",
-                                    "slug": "other-guides/random-default-answers"
-                                },
-                                {
-                                    "label": "Custom directions",
-                                    "slug": "other-guides/port-and-starboard"
                                 },
                                 {
                                     "label": "Using neutral language",
@@ -447,10 +419,6 @@ export default defineConfig({
                                     "slug": "howto/tasks/use-maths-functionality"
                                 },
                                 {
-                                    "label": "Decimal numbers",
-                                    "slug": "howto/scripting/using-doubles"
-                                },
-                                {
                                     "label": "Clones",
                                     "slug": "howto/scripting/clones"
                                 },
@@ -493,7 +461,7 @@ export default defineConfig({
                                     "slug": "howto/scripting/unit-testing"
                                 },
                                 {
-                                    "label": "Common problems",
+                                    "label": "Troubleshooting",
                                     "slug": "howto/tasks/problems"
                                 }
                             ]

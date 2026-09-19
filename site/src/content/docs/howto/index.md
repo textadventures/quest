@@ -31,7 +31,7 @@ Making things happen as the game goes on: [turn scripts](/howto/scripting/using-
 
 ## Score, health and money
 
-The [built-in score, health and money](/howto/world/score-health-money), [scoring achievements](/howto/tasks/keeping-score) and [shops](/howto/tasks/shop). For combat and character stats, see [Designing an RPG](/howto/rpg/rpg-intro).
+The [built-in score, health and money](/howto/world/score-health-money), [scoring achievements](/howto/world/score-health-money#awarding-points-only-once) and [shops](/howto/tasks/shop). For combat and character stats, see [Designing an RPG](/howto/rpg/rpg-intro).
 
 ## Text and messages
 

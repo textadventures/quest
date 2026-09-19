@@ -1,141 +1,138 @@
 ---
 title: Showing a map
+description: Turn on the automatic map, set the size and colour of each room, and handle levels, teleporting and clicks on the map
 sidebar:
   order: 7
 ---
 
-A text adventure generally involves moving around the game world by following compass directions – north, south, east, and west, with the occasional use of up and down, or in and out. Many players like to map out a game as they play using pencil and paper, but you can help your players out by getting Quest Viva to do that for them automatically!
+Many players map a text adventure with pencil and paper as they go. Quest Viva can draw that map for them: each room appears on a grid the first time the player reaches it, with a dot showing where they are. This page shows you how to turn the map on, tune how each room and exit is drawn, and deal with the cases the automatic map can't work out by itself - levels, teleporting and clicks.
 
-It's simple to enable the mapping feature - just select "game" from the tree, go to the _Interface_ tab, and turn on "Map and Drawing Grid".
+To turn the map on, select "game" in the tree, go to the _Interface_ tab, and tick "Map and Drawing Grid". More settings appear underneath:
 
-After turning the feature on, you can customise the map size, but we will leave the default scale and height settings - you can tweak these later if you want your map to be displayed at a different size. Quest Viva draws the map on a hidden grid - the "scale" setting is the width and height of one grid square.
+- **Scale** - the width and height of one grid square, in pixels (30 by default).
+- **Height (pixels)** - the height of the map panel (300 by default).
+- **Exit width** and **Exit colour** - how the lines between rooms are drawn.
+- **Map should respond to clicks?** - see [Handling player clicks](#handling-player-clicks).
 
-Run your game now and move between rooms. When the player first enters a room, it is drawn on the map. The yellow dot indicates where the player currently is. This is what it looks like for the tutorial game:
+Run your game and move between rooms. When the player first enters a room, it's drawn on the map, and the yellow dot shows where they are. This is what it looks like for the tutorial game:
 
 ![](/images/Map.png)
 
-By default, rooms are displayed as a 1x1 square. You can change this by selecting the room and going to the _Map_ tab (which only appears when the map feature is turned on).
+Quest Viva works out where each room goes from its exits: a room to the north of the lounge is drawn above it, and so on. You don't place rooms by hand.
 
-Here you can change the size and colour of the grid square. You can change what borders are shown, and you can enter a label too. Here's what the game looks like with a 5x3 yellow lounge and a 2x2 sky blue kitchen, with labels added.
+By default, each room is drawn as a 1x1 square. To change that, select the room and go to its _Map_ tab (it only appears once the map is turned on). There you can set the room's **Width** and **Length** in grid squares, its **Fill colour**, **Border colour**, **Border width** and **Border type**, and a **Label** with its own **Label colour**. Here's the tutorial game with a 5x3 yellow lounge and a 2x2 sky blue kitchen, with labels added:
 
 ![](/images/Map2.png)
 
 ### Exits
 
-Exits are shown with a "length" of 1 grid pixel (for diagonal exits, this is automatically sized to fit). You can change this by selecting the exit in the tree, and going to its _Map_ tab. A length of 0 means that rooms will be displayed right next to each other, without a line (note that this will mean the player cannot see if there is an exit that way).
+Each exit is drawn as a line one grid square long. To change that, select the exit in the tree and go to its _Map_ tab, where you can set its **Length**. A length of 0 draws the two rooms right next to each other with no line - which also means the player can't see there's an exit there.
 
-If you change the length of one exit, make sure you change the exit in the other direction too, or Quest Viva will get confused.
+If you change the length of an exit, change the exit coming back the other way to match. Otherwise the rooms end up in different places depending on which way the player walked.
 
-For large rooms, you might break them up into more than one location. Let's say the lobby is huge, and the player can go to the east end of it or the west end. How do we map that? This is where the "Border Type" is useful. For the east end, set the border type to "Path west", and for the west end, set it to "Path east". Set the exit length to zero in both directions.
-
-In the illustration below the border size for both rooms is set to 3 to show the effect better.
+A very large room can be split into more than one location. Say the lobby is huge, and the player can be at its east end or its west end. Set the **Border type** of the east end to "Path West" and of the west end to "Path East", so the side where the two halves meet has no border, and give the exits between them a length of 0 in both directions. In the illustration below, the border width of both rooms is 3 to show the effect more clearly:
 
 ![](/images/map7.png)
 
-
 ### Loops
 
-If you have rooms that connect in a loop you will also have to ensure the distances are equal whichever way the player goes, otherwise the player dot will get displaced more and more as the player goes round the loop. This is especially tricky with diagonal directions, and if you do have a loop it is best to either avoid diagonal exits in the loop or keep the rooms in the loop all the same size squares.
+If rooms connect in a loop, the distance has to be the same whichever way round the player goes. If it isn't, the player's dot is drawn a little further out of place each time they go round. This is especially tricky with diagonal exits, so in a loop it's best either to avoid diagonals or to make every room in the loop the same size square.
 
-In this example, the three rooms in the loop are all square, all 2x2, so the diagonal is fine:
+In this example, the three rooms in the loop are all 2x2 squares, so the diagonal works:
 
 ![](/images/map3.png)
 
-Now another loop has been added, but the lengths do not match, so the exits do not meet:
+Here another loop has been added, but the distances don't match, so the exits don't meet:
 
 ![](/images/map4.png)
 
-So let's sort it out! You need the rooms to match horizontally and vertically, so you need to do this process twice. We will do the horizontal here. On the bottom, there is the Garden and Gazebo. As the player dot sits in the middle of each room, we need half the width in both cases (3 and 1 respectively), plus the length of the exit, 1. This is a total of 5.
+To fix it, make the distances match horizontally, then do the same vertically. The dot sits in the middle of each room, so the distance between two rooms is half the width of each plus the length of the exit between them. Along the bottom of the loop, the garden is 6 wide and the gazebo 2 wide, so the distance is 3 + 1 + 1 = 5. Along the top, the kitchen is 2 wide and the garage 1 wide, which gives halves of 1 and 0.5. The map can't use fractions, so make the garage 2 wide too; the halves now add up to 2, so the exit between kitchen and garage needs a length of 3 (in both directions) to make 5.
 
-Now look at the top of the loop, and the kitchen and garage. The widths are 2 and 1, so the total of half of each in 1.5. Unfortunately the interface cannot cope with fractions, so we will need to adjust a room; we will make the garage 2 units wide, so now we have a total of 2. We need the total distance to be 5, like the bottom of the loop, so the exit needs a length of 3 (remember to change both directions).
-
-Once the vertical is also matched, we end up with this:
+Once the vertical distances match as well, the loop closes:
 
 ![](/images/map5.png)
 
-
 ### Up and down, in and out
 
-The map will cope with up and down exits (though it will not display them). When the player goes up or down, rooms on other levels will be shown faded behind the current level. It does assume your game is strictly levelled, that is, the only way between levels is up and down exits.
+The map copes with up and down exits, though it doesn't draw a line for them. When the player goes up or down, the rooms on other levels are shown faded behind the current level. This assumes your game is strictly levelled - the only way between levels is by up and down exits. If you have a staircase that goes north, see [Vertical movement](#vertical-movement).
 
 ![](/images/map6.png)
 
-Note that you can only go up seven levels from the starting room, and only down seven levels.
+You can only go seven levels up from the starting room, and seven levels down.
 
-In and out exits are displayed over the top of the connected room.
+In and out exits put the other room on top of the current one, centred on it.
 
-Sometimes you want to have two exits going to the same destination. For example, a shed to the east can be accessed by going _east_ or by going _in_. The map gives priority to the exit that appear last in the list, so in this case, it is best to have the _in_ exit above the _east_ exit. For the shed location, then, you want the _out_ exit above the _west_ exit.
+Sometimes two exits lead to the same place: a shed to the east might be reached by going _east_ or by going _in_. The map uses whichever exit comes last in the room's list of exits, so put the _in_ exit above the _east_ exit. In the shed, likewise, put the _out_ exit above the _west_ exit.
 
+## Planning your map with Trizbort
+
+[Trizbort](https://trizbort.io/) is a free, browser-based tool for drawing text adventure maps. You can lay out rooms, exits and the objects in each room there, then export the design as a Quest game to carry on with in Quest Viva. It's a one-way trip: once you start changing the game in Quest Viva, you can't take those changes back to Trizbort. Only the rooms, exits and objects carry over, not Trizbort's layout - the Quest Viva map is still worked out from the exits, as described above.
 
 ## Advanced options
 
-_NOTE:_ We will be using code from here on in. It is easier for me to type, and it is also easier for you to copy-and-paste. That said, you do not need to understand code to follow!
+The rest of this page uses code. You don't need to understand it to use it - you can paste it into the script editor's code view.
 
-_NOTE:_ The map system works by maintaining a dictionary attribute on the player object. When the player moves, the dictionary gets updated with all the exits and rooms adjoining the new room. If you get errors in your game about a dictionary, the culprit may well be the mapping system.
+The map works by keeping a dictionary attribute, `grid_coordinates`, on the player object. Each time the player moves, it's updated with the positions of the new room and the rooms its exits lead to. If you get an error about a dictionary key in a game with a map, the map is the likely cause.
 
 ### Changing the colour of the map
 
-Use this code to change the background colour, in this instance to red:
+This makes the map's background red:
+
 ```quest
 JS.setCss ("#gridPanel", "background-color:red")
 ```
-This is best put in the "User initialisation script...", found on the _Advanced Scripts_ tab of the game object (you may need to activate the tab on the _Features_ tab).
 
+Put it in the "User interface initialisation script" on the game's _Advanced Scripts_ tab, so it runs both at the start and when the player loads a saved game. If you can't see that tab, tick "Show advanced scripts for the game object" on the game's _Features_ tab.
 
 ### Turning the grid on and off
 
-If you want the grid to appear and disappear, make sure it is set up to be drawn at the start of the game, so it gets initialised properly, then use the `JS.ShowGrid` function to control display. It takes a single, integer parameter. If this is 0, the grid will disappear, otherwise if it is greater than 0, the grid will be displayed with this as its height in pixels (which defaults to 300).
-
-This, for example, will hide the map:
+To show and hide the map during the game, turn it on in the editor as above, so it's set up at the start, and then use `JS.ShowGrid`. It takes the height of the map in pixels; 0 hides it. This hides the map:
 
 ```quest
 JS.ShowGrid (0)
 ```
 
+And this shows it again at the default height:
 
+```quest
+JS.ShowGrid (300)
+```
 
 ### Vertical movement
 
-You can add code to allow an exit to move the player between levels when travelling along the compass directions. The trick is to define one room relative to the other. Say we have two rooms, `lower` and `upper`. In `upper`, this code should go in the Enter script:
+A staircase might lead north from the hall to the landing, but you want the landing drawn on the level above. The map only changes level for up and down exits, so you have to set the level yourself. Each room's level is its `z` coordinate, which you can read with `Grid_GetGridCoordinateForPlayer` and change with `Grid_SetGridCoordinateForPlayer`.
+
+In each of the two rooms, set the *other* room's level relative to this one. Select the room, and on its _Scripts_ tab add this to "After entering the room". For `hall`:
 
 ```quest
-Grid_SetGridCoordinateForPlayer (game.pov, upper, "z", Grid_GetGridCoordinateForPlayer(game.pov, lower, "z")+1)
+Grid_SetGridCoordinateForPlayer (game.pov, landing, "z", Grid_GetGridCoordinateForPlayer(game.pov, hall, "z") + 1)
 ```
 
-We use `Grid_GetGridCoordinateForPlayer(game.pov, lower, "z")` to get the current z value, and add one to it.
-
-You also need to make sure it works the other way, so this goes in the Enter script of `lower`:
+And for `landing`:
 
 ```quest
-Grid_SetGridCoordinateForPlayer (game.pov, upper, "z", Grid_GetGridCoordinateForPlayer(game.pov, lower, "z")-1)
+Grid_SetGridCoordinateForPlayer (game.pov, hall, "z", Grid_GetGridCoordinateForPlayer(game.pov, landing, "z") - 1)
 ```
 
-
-
+It has to be this way round. When the player enters a room, the map positions the neighbouring rooms, putting them on the same level, and only then runs the room's scripts - so each room corrects its neighbour's level before the player walks there. A room that tries to set its own level is too late, and drifts up or down a level with each trip.
 
 ### Teleporting
 
-In this context, teleportation means moving the player to another room not connected to the first room. This could be because the player has flow to another planet, or has been dragged into prison, or has cast a spell for example.
+Teleporting here means moving the player to a room that isn't connected to where they are - they've flown to another planet, been dragged off to prison, or cast a spell. If you move the player to a room the map hasn't reached yet, it doesn't know where to draw it, and the player sees a string of errors.
 
-We have a problem here: If you try to jump the player to another room that Quest Viva has not already mapped, Quest Viva will get confused about how to draw the map, and will throw an error.
-
-You have a number of options to avoid that, and each is suitable in different situations, so think carefully about how teleportation will work in your game.
-
+There are several ways round this, each suited to a different kind of game.
 
 #### Limited teleportation
 
-Restriction: _Can only move the player to a room she has already visited._
+Restriction: _Can only move the player to a room the map already knows about._
 
-The simplest technique is to only allow the player to teleport to a room she has already visited. Plenty of video games handle "fast travel" in this way; the character can only fast travel to a location already visited.
-
+The simplest answer is to only let the player teleport to rooms they've already visited, as many games do with fast travel. The [Fast travel](/howto/tasks/transit-system#fast-travel-to-visited-rooms) page shows how to offer a menu of visited rooms.
 
 #### Mapping everywhere
 
-Restriction: _Only works if all rooms are connected._
+Restriction: _Only maps rooms that can be reached from the start by exits._
 
-An alternative way to ensure teleportation works is to make Quest Viva map the whole game from the start. 
-
-Create a new function, call it "VisitRoom", and give it a single parameter, "room". Paste in this code (the fourth line is commented out, if you remove the slashes at the start, the map will be fully visible from the start):
+Alternatively, work out where every room goes at the start of the game. Create a function called `VisitRoom` with one parameter, `room`, and paste in this code:
 
 ```quest
 if (not GetBoolean(room, "genvisited")) {
@@ -150,130 +147,92 @@ if (not GetBoolean(room, "genvisited")) {
 }
 ```
 
-Then in the start script:
+Then call it from the game's start script:
 
 ```quest
 VisitRoom (game.pov.parent)
 ```
 
-Now you can move the player to any room, confident it is mapped.
-
+Now you can move the player to any room reachable from the start. The fourth line is commented out; remove the `//` and the whole map is drawn from the start, rather than being revealed as the player explores.
 
 #### Reset the map
 
-Restriction: _Best for isolated regions the player cannot return to._
+Restriction: _Best for separate regions the player can't come back to._
 
-An alternative approach is to erase all the existing map data and start again. Here is the code to move the player to `room`:
+Another approach is to throw the map away and start again from the new room. This moves the player to `room` with a fresh map:
 
 ```quest
-player.grid_coordinates = null
-player.parent = room
+game.pov.grid_coordinates = null
+MoveObject (game.pov, room)
 JS.Grid_ClearAllLayers ()
 Grid_Redraw
 Grid_DrawPlayerInRoom (game.pov.parent)
 ```
 
-Of course, this is not ideal, as the player loses their map every time, and if she can teleport back, will be back to square one with regards to the map. 
-
+The player loses the old map, and if they can teleport back, they start mapping it again from scratch.
 
 #### Save the map
 
-Restriction: _Only for isolated regions._
+Restriction: _Only for separate regions._
 
-Instead of resetting the map, we can save it as an attribute.
-
-Say your game is divided into three regions, with no way for the player to walk between them. What you can do when the player teleports from area one to area two, is to save the map for area one, and then grab the previously saved data for area two.
-
-This is not trivial, as you will need some way to tell which area the player is leaving. If you limit the player so she can only leave from a single location this is considerably easier...
-
+Instead of throwing the map away, you can save it in an attribute and bring it back later. Say your game has three regions with no way to walk between them: when the player teleports from the first region to the second, save the first region's map and load the second's. The hard part is knowing which region the player is leaving - which is much easier if each region has only one place to teleport from.
 
 #### Save the map, single departure
 
-Restriction: _Only for isolated regions, each with a single room the player can teleport to and from._
+Restriction: _Only for separate regions, each with a single room the player can teleport to and from._
 
-If we limited the player to a single point of departure in each region, then we can use that to define the region. As an example, let us suppose a railway, and the station for area one is called "Station One", etc. `Station One` then identifies the region, allowing us to save and retrieve the map for the region.
-
-We will do the hard work in a function. Call it "TeleportTo", and give it a single parameter, "to", then paste in this code:
+With a single departure point in each region, the room itself identifies the region. Suppose a railway with a station in each region, called `station one`, `station two` and so on. Create a function called `TeleportTo` with one parameter, `to`, and paste in this code:
 
 ```quest
-from = player.parent
-set (player, "saved_map_for_" + from.name, player.grid_coordinates)
-if (HasAttribute(player, "saved_map_for_" + to.name)) {
-  player.grid_coordinates = GetAttribute(player, "saved_map_for_" + to.name)
+from = game.pov.parent
+set (game.pov, "saved_map_for_" + from.name, game.pov.grid_coordinates)
+if (HasAttribute(game.pov, "saved_map_for_" + to.name)) {
+  game.pov.grid_coordinates = GetAttribute(game.pov, "saved_map_for_" + to.name)
 }
 else {
-  player.grid_coordinates = null
+  game.pov.grid_coordinates = null
 }
-player.parent = to
+MoveObject (game.pov, to)
 JS.Grid_ClearAllLayers ()
 Grid_Redraw
 Grid_DrawPlayerInRoom (game.pov.parent)
 ```
 
-Now it is simply a matter if calling the function. For Station One, you will have some command or action that will move the player to Station Two. The code to do that looks like this:
+Then, in the command or script that takes the train from station one:
 
 ```quest
-TeleportTo(Station Two)
+TeleportTo (station two)
 ```
 
-To go from `Station Two` back to `Station One`, use the same code, but put in Station One.
-
-
+Going back works the same way, with `TeleportTo (station one)`. Each time the player arrives, they see the map of that region as they left it.
 
 ### Handling player clicks
 
-You can [override](/advanced-topics/overriding) the `GridSquareClick` to handle the player clicking on the grid. This takes two parameters, the x and y coordinates.
+To make the map respond when the player clicks it, tick "Map should respond to clicks?" on the game's _Interface_ tab, then override the `GridSquareClick` function (see [Overriding functions](/advanced-topics/overriding)): in the tree options, turn on "Show Library Elements", select `GridSquareClick`, and click "Copy into your game". It's given the `x` and `y` of the grid square that was clicked.
 
-Working out what room was clicked takes some coding... First paste this in to the function:
+Paste this into your copy of the function. It finds the room the player clicked on, if any, among the rooms already drawn on the current level:
 
 ```quest
 z = Grid_GetGridCoordinateForPlayer(game.pov, game.pov.parent, "z")
-d = Grid_GetPlayerCoordinateDictionary(player)
-foreach (key, d) {
-  d2 = DictionaryItem(d, key)
-  if (DictionaryContains(d2, "grid_isdrawn")) {
-    r = GetObject(key)
-    if (InGridRoom(r, d2, x, y, z)) {
-      msg ("Room=" + r.name)
+foreach (room, AllObjects()) {
+  if (Grid_GetRoomBooleanForPlayer(game.pov, room, "grid_isdrawn")) {
+    left = Grid_GetGridCoordinateForPlayer(game.pov, room, "x")
+    top = Grid_GetGridCoordinateForPlayer(game.pov, room, "y")
+    if (Grid_GetGridCoordinateForPlayer(game.pov, room, "z") = z) {
+      if (x < left + room.grid_width and x + 1 > left and y < top + room.grid_length and y + 1 > top) {
+        msg ("You clicked on " + GetDisplayName(room) + ".")
+      }
     }
   }
 }
 ```
 
-Then create a new function, call it `InGridRoom`, set it to return a Boolean, with these parameters: room, dict, x, y, z. Paste in this code:
+Play the game and click a room on the map, and its name is printed. To make it do something useful, change the `msg` line. For example, to let the player travel to any room on the map just by clicking it:
 
 ```quest
-flag = DictionaryItem(dict, "grid_isdrawn")
-if (not flag) {
-  return (false)
+if (room <> game.pov.parent) {
+  MoveObject (game.pov, room)
 }
-z1 = DictionaryItem(dict, "z")
-if (not z = z1) {
-  return (false)
-}
-n = DictionaryItem(dict, "x")
-x1 = n - room.grid_width / 2.0
-x2 = x1 + room.grid_width
-n = DictionaryItem(dict, "y")
-y1 = n - room.grid_length / 2.0
-y2 = y1 + room.grid_length
-if (x < x1 or x > x2) {
-  return (false)
-}
-if (y < y1 or y > y2) {
-  return (false)
-}
-return (true)
 ```
 
-If you go into the game, you will find that when you click on a room, its name is printed. To get it to do something useful, modify this line in the first function:
-
-```quest
-msg ("Room=" + r.name)
-```
-      
-For example, if you want to allow the player to quickly travel to another room (on the same level) just by clicking it, change it to this:
-
-```quest
-player.parent = r
-```
+Because the player can only click rooms that are already on the map, this is safe to use with teleporting.

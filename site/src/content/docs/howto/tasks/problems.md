@@ -1,189 +1,179 @@
 ---
-title: Resolving common problems
-sidebar:
-  order: 25
+title: Troubleshooting
+description: Find where an error came from, and fix the most common problems - games that won't load, objects the player can't see, commands that aren't recognised and script errors
 ---
 
-## Problems when creating games
+This page helps you work out why your game isn't doing what you expect, and how to fix it. Start with the symptom:
 
-There are all sorts of problems that can arise as you code with Quest Viva. Computer languages are fussy things that expect you to type to very strict rules, and Quest Viva is no different. Some things to check:
+| What happens | See |
+|---|---|
+| The game won't start at all | [The game won't load](#the-game-wont-load) |
+| "I can't see that." | [I can't see that](#i-cant-see-that) |
+| "I don't understand your command." | [Command not recognised](#command-not-recognised) |
+| A message starting "Error running script" | [Script error messages](#script-error-messages) |
+| Something just happens wrongly, with no error | [Finding where a problem comes from](#finding-where-a-problem-comes-from) |
 
-- Variables, attributes and objects are named consistently (if it is `hitpoints` in one place and `hit points` in another and `Hit points` in a third, it is not going to work)
-- Brackets and braces need to match; if you have three open brackets and only two close brackets it is not going to work
-- Quotes likewise need quote marks at the start and end
-- If a function's return type is "None" there should be no `return`; if it is not "None" then there must be
-- Functions must have exactly the right number of parameters in the right order
+## Finding where a problem comes from
 
+### Read the error message
 
-### Room description appears twice
+When a script goes wrong while the game is running, the player shows "[Sorry, an error occurred]" followed by a line like this:
 
-This can happen if you move the player in script on the room. Say you want to turn a player back from an exit. You might think it is a good idea to set up the script that runs on the destination room so it moves the player back to the original room. What happens is that the player is moved twice, and so Quest Viva thinks it has to show the room description twice - and to add to the confusion, it does it for the current room, which will be where the player ends up.
-
-The solution is to avoid moving the player on any of the built-in room scripts. In the example above, the script should be on the exit that goes to the destination, without moving the player at all.
-
-
-### Error when player moves
-
-Occasionally you may see this error:
-
-```quest
-Error running script: Error evaluating expression '(not GetBoolean(game.pov.parent, "visited")) and HasScript(game.pov.parent, "beforefirstenter")': Value cannot be null. (Parameter 'obj')
 ```
-
-This happens when the player's "parent" attribute is set to null, and can happen if you try to move the player to a variable that has not been set (and Quest Viva will think an object name you have mis-spelled to be a variable).
-
-
-## Names you cannot use
-
-Sometimes Quest Viva is clever and will warn you or take some action if you try to give something a bad name (if you try to add an object called "game" it will call it "game1"). However, there are other times it will not...
-
-### Items/Rooms called K1, K2, etc.
-
-Quest Viva automatically assigns names to anything you do not name yourself (for example, most of the exits in your game will have no name). It will name the first one K1, the second K2, and so on. What this means is that if you name anything in your game 'K' following by a number you are in danger of having a name collision!
-
-### 'e' and 'pi'
-
-You will probably never need them in a text adventure, but `e` and `pi` are both mathematical constants. Quest Viva will happily let you assign a value to them, but will ignore the assignment.
-
-```quest
-e = GetExitByLink (room, room2)
-msg (e)
--> 2.71828182845905
-```
-
-This only applies to local variables, you can give these names to attributes.
-
-### `object`, `game`, `turnscript`, `command`, `exit`,`type`
-
-Trying to use any of these as the name of an attribute will confuse the editor. You will not get an error, but it will not do what you expect when you save your game and then load it (whether during player or when editing). The problem is that these all have special meaning for Quest Viva when it is loading XML files, and it will, for example, assume your "object" attribute is a real object.
-
-
-### Other attributes
-
-Various attributes are already used by Quest Viva. Do not do anything with "type" or "elementtype". Obviously "name", "parent", "alias", etc. have specific meanings in Quest Viva, and trying to use them for something else will cause problems.
-
-
-
-## Understanding runtime error messages
-
-Runtime errors occur when playing the game. Quest Viva has tried to run a script, and realised there is an issue. You will get an error in the game output that will usually consist of two parts. Here is an example:
-
-```quest
 Error running script: Error evaluating expression 'game.count + 1': 'game.count' is null (it has not been set) and cannot be used in this calculation.
 ```
 
-It will generally not be obvious what it means, but it does give important clues about the issue.
+Most messages have two parts. The text in single quotes after "Error evaluating expression" is the piece of code Quest Viva couldn't work out - here, `game.count + 1`. The part after the colon says what went wrong. [Script error messages](#script-error-messages) below lists the common ones.
 
+To find that code in your game, click "Raw XML code view" on the editor toolbar, press Ctrl+F (Cmd+F on a Mac), and search for the quoted text. The same code may appear in several places, so check each one. If you've only just changed a script, it's often quicker to look there first.
 
-### Locating the error
+If a game keeps failing, it stops after 20 script errors in one session, so restart it after fixing the problem.
 
-The first part is in this format:
+### Use the Debugger
 
-```
-Error running script: Error evaluating expression '[whatever]':
-```
+When there's no error but something still goes wrong - a door that won't open, a score that doesn't go up - the Debugger usually shows why. Preview the game, click "Debug", and look at the attributes of the objects involved while you play. You can also change an attribute there to try out a fix. See [Debugging your game](/howto/scripting/debugging-your-game).
 
-The `[whatever]` is the important part, as that is the code that Quest Viva cannot understand.
+### Print what's happening
 
-Copy the bit inside the single quotes (without the quotes) and open the raw XML Code View from the editor toolbar, press [Ctrl]-F, and paste in the text you just copied. Now you can search your game to quickly locate the code. Bear in mind that the same text could be at several places in your game, and some may be okay, so check each occurrence.
+To see whether a script runs at all, or what a value is at a certain point, add a temporary `msg`:
 
-It may also be easier to check any scripts you have changed recently, and see if the text is there using "Code view" for each script.
-
-
-### Correcting the error
-
-The second part of the message indicates what the error actually is.
-
-```
-Object reference not set to an instance of an object.
-Unable to cast object of type 'System.String' to type 'System.Boolean'.
+```quest
+msg ("DEBUG: box is in " + box.parent.name + ", count is " + game.count)
 ```
 
-These occur when the text inside an `if` condition does not work out to a Boolean. The first means the code has resulted in `null`, which is usually because an attribute does not exist (or has been spelled wrongly). The second means it resulted in something else - here a string, but it could be another type.
+If you'd rather not clutter the game text, `Log ("some text")` writes to the browser's developer console instead. Remove these lines when you've found the problem.
+
+## The game won't load
+
+If the player can't start the game, it shows "This game couldn't be started" followed by the problem. If the editor can't open it, it opens in Safe Mode, which shows the error above the game's raw XML so you can fix it there.
+
+Most load errors are script typos. The message names the element and the attribute that holds the broken script:
+
+```
+Error: Error adding script attribute 'script' to element 'jump': Function not found: 'msg2'
+Error: Error adding script attribute 'script' to element 'jump': Missing quote character in msg ("some text)
+Error: Error adding script attribute 'script' to element 'jump': Missing '}'
+```
+
+- **Function not found** - a line starts with a function name Quest Viva doesn't recognise. Either it's misspelt, or it's a function that returns a value (such as `GetBoolean`) used on a line of its own, where its result isn't used for anything.
+- **Missing quote character** - a string is missing its closing `"`.
+- **Missing '}'** - a `{` has no matching `}`, for example at the end of an `if` block.
+
+A missing `)` doesn't stop the game loading. Instead, you get `Error running script: Missing ')'` when that script runs.
+
+```
+Error: Cannot add object '': Invalid object name
+```
+
+This one usually means an attribute has one of the names Quest Viva reserves for elements in the game file - see [Names to avoid](#names-to-avoid).
+
+## I can't see that
+
+"I can't see that." means the player typed a command that needs an object, and Quest Viva couldn't find a matching object that the player can see. Check that:
+
+- the object is in the same room as the player, or in something the player is carrying - not in another room, or inside a closed container
+- the object's "Visible" box on the _Setup_ tab is ticked
+- the room isn't dark (see [Handling light and dark](/howto/world/handling-light-and-dark))
+- the word the player typed is part of the object's name or alias. Players type all sorts of words, so add the likely ones to "Other names" on the object's _Object_ tab. For example, an object with the alias "red ball" answers to BALL and RED, but not to RUBBER BALL unless you add it.
+
+It can also come from a command of yours whose pattern caught more than you meant. With a pattern of `push #object#`, PUSH ON BUTTON matches, and Quest Viva then looks for an object called "on button". Add the longer wording as another pattern, before the shorter one: `push on #object#; push #object#`. Quest Viva tries the patterns in order, so the other way round, `push #object#` still catches PUSH ON BUTTON first.
+
+## Command not recognised
+
+"I don't understand your command." means nothing matched what the player typed - no built-in command, no command of yours, and no verb. If you've added a command that isn't being recognised:
+
+- check its pattern matches what you're typing, word for word
+- if the command is inside a room in the tree, it only works in that room - WAVE in a room's own command gives "I don't understand your command." everywhere else
+
+See [How to use commands](/howto/commands/commands) for more on patterns.
+
+## Script error messages
+
+These are the messages you're most likely to see after "Error running script:", and what to do about them.
 
 ```
 '[something]' is null (it has not been set) and cannot be used in this calculation.
 ```
 
-This is telling you that you are trying to add (or subtract, or whatever) a number and null. Again, this is probably because an attribute does not exist or has been misspelled.
+You're doing arithmetic with an attribute that doesn't exist - usually because it's misspelt, or you never gave it a starting value. Set it on the object's _Attributes_ tab, or in the game's start script. See [Null](/howto/scripting/null).
 
 ```
 Cannot convert this value to a string because it has not been set - check whether an attribute or variable has been assigned a value before using it.
 ```
 
-This is the same problem again, but when printing the value, for example with `msg`.
+The same problem, when printing the value - for example `msg (game.nosuch)`.
 
 ```
-Unknown object or variable '[something]'
+Error evaluating expression 'foo': Unknown object or variable 'foo'
 ```
 
-In this case, Quest Viva has found `[something]` in a script, but has no idea what it is. It could be an object that you misspelled or a local variable that you have not given a value to yet.
+Quest Viva doesn't know what `foo` is. It could be a misspelt object name, a string missing its quotes, or a local variable you haven't set yet in this script. Local variables only last until the end of the script they're set in, so to keep a value between turns, store it in an attribute (such as `game.foo`) instead.
 
+```
+Error evaluating expression 'game.nosuch': Object reference not set to an instance of an object.
+Error evaluating expression 'game.s': Specified cast is not valid.
+```
 
+These come from an `if` whose condition isn't `true` or `false`. The first means the condition was null - usually a missing or misspelt attribute. The second means it was something else, such as a string or a number: check you've written a comparison, like `if (game.s = "hello")`.
 
-### Errors calling functions
+```
+Error evaluating expression 'msg2("some text")': Unknown function 'msg2'
+```
 
-If the function name is wrong, you will get something like this:
+A misspelt function name inside an expression. (On a line of its own, the same mistake stops the game loading - see above.)
+
+```
+Expected 1 parameter(s) in script 'msg ("some text", "more text")'
+Too many parameters passed to OutputText function - 2 passed, but only 1 expected
+```
+
+The wrong number of parameters. The first message is for script commands such as `msg`; the second is for functions.
+
+```
+GetBoolean function expected object parameter but was passed 'other text'
+```
+
+A parameter of the wrong type - here, a string where an object was needed. Check that object names don't have quotes around them.
+
+```
+Error evaluating expression 'msg("some text")': Unknown function 'msg'
+Function did not return a value
+```
+
+You've used the result of something that doesn't give one, as in `x = msg("some text")`. The first message is for a script command. The second is for a function: it happens when the function reaches its end without a `return`, and only when you use its result - calling the same function on a line of its own is fine. The function has already run by the time you see the error.
+
+```
+'hat' has no action called 'flatten'
+```
+
+A `do` asked for a script attribute that the object doesn't have. Check the attribute's name, or use `HasScript (hat, "flatten")` to check first.
+
+```
+Error evaluating expression '... game.pov.parent ...': Value cannot be null. (Parameter 'obj')
+```
+
+This comes in a burst of similar messages after the player moves, and means the player has been moved to `null` - nowhere. It happens when you move the player to an attribute or variable that hasn't been set, such as `MoveObject (player, game.target)` before setting `game.target`. Make sure it's set first.
+
+```
+Cannot modify the contents of this list as it is defined by an inherited type. Clone it before attempting to modify.
+```
+
+You're changing a list the object inherits from its type, with a line like `list add (hat.displayverbs, "Flatten")`. Give the object its own list first, for example:
 
 ```quest
-Error running script: Error evaluating expression 'msg2("some text")': Unknown function 'msg2'
+hat.displayverbs = Split("Look at;Take;Flatten", ";")
 ```
 
-If the misspelled function is called on a line of its own, rather than inside an expression, the game will not load at all, and you will instead see an error like the `Function not found` one below.
+## Other common problems
 
-If you have the wrong number of arguments, you might see one of these (first is for hard-coded functions):
+### A room description appears twice
 
-```quest
-Error running script: Expected 1 parameter(s) in script 'msg("some text", "more text")'
-Error running script: Too many parameters passed to OutputText function - 2 passed, but only 1 expected
-```
+If a room's "After entering the room" script (on the _Scripts_ tab) moves the player somewhere else, the player sees the room they walked into described, and then the room they were moved to. To turn the player back, don't let them enter at all: on the exit, tick "Run a script (instead of moving the player automatically)" and print a message there instead.
 
-If you try to set a value from a function that does not return a type, you might see one of these:
+### Names to avoid
 
-```quest
-Error running script: Error evaluating expression 'msg("some text")': Unknown function 'msg'
-Error running script: Function did not return a value
-```
+Most bad names are caught by the editor, but a few aren't:
 
-The first is for a script command such as `msg`; the second is for a function such as `OutputText` (note that the function will already have run by then).
-
-For hard-coded functions, you will get an error if you do not set a value and it has a return type, and if you send it the wrong type in the parameters:
-
-```quest
-Error: Error adding script attribute 'start' to element 'game': Function not found: 'GetBoolean'
-Error running script: Error evaluating expression 'GetBoolean("other text", "some text")': GetBoolean function expected object parameter but was passed 'other text'
-```
-
-### Error modifying the content of a list
-
-You might see this error when you change the display or inventory verbs of an object during a game (it is possible with other lists too):
-
-```
-Error running script: Cannot modify the contents of this list as it is defined by an inherited type. Clone it before attempting to modify.
-```
-
-Somewhere in your game you will have a line like one of these:
-
-```quest
-list add (sword.inventoryverbs, "Equip")
-list remove (hat.displayverbs, "Flatten")
-```
-
-The problem is that the two list attributes, "inventoryverbs" and "displayverbs" are set on the object's type, not on the object itself (go to the _Attributes_ tab, and check its source). You cannot modify the list when it belongs to the type.
-
-There are two solutions. The easiest is to add something to the the list in the editor (bottom of the Attributes tab). That will add the list attribute to this object. You can then delete the entry; once the attribute is on your object, it is there.
-
-Alternatively, you can give the object a new list. The `Split` function offers an easy way to do that:
-
-```quest
-sword.inventoryverbs = Split("Look at;Take;Equip", ";")
-```
-
-
-### Error using the `do` command
-
-If the attribute is missing or not a script, you will see an error like this:
-
-```
-Error running script: 'hat' has no action called 'flatten'
-```
+- Don't give attributes the names `object`, `command`, `exit`, `turnscript`, `game`, `type` or `elementtype`. These mean something special in the game file, and a game with an attribute called `object` won't load again after you save it. Attributes such as `name`, `parent` and `alias` already have jobs, so only use them for those.
+- Don't call local variables `e` or `pi`. They're maths constants, and assigning to them is silently ignored: after `e = game.pov`, `e` is still 2.718... You can use them as attribute names.
+- Don't name objects `exit1`, `exit2` and so on. Exits you don't name yourself get those names when the game loads, and a clash can make an exit disappear.

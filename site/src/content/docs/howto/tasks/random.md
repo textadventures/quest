@@ -1,226 +1,150 @@
 ---
-title: Randomisation
-sidebar:
-  order: 20
+title: Randomness
+description: Vary descriptions, pick random objects and exits, roll dice and decide outcomes by chance
 ---
 
+A little randomness makes a game feel less mechanical: a description the player sees many times can change, an NPC can wander off in a random direction, and an attack can hit or miss. This page shows the built-in ways to do that, and some patterns for using them.
 
-There are a number of reasons why you may want to add a degree of randomness to your game. You might want to add some variation to a description, perhaps to make the world feel more alive and dynamic. This is especially true of a description the player will see numerous times, such as the description of a hub room or of an NPC who follows the player.
+| You want | Use | In the editor |
+|---|---|---|
+| Varying text in a description or message | `{random:one:two:three}` | "Random text" in the text processor buttons above a text box |
+| Something to happen some of the time | `RandomChance(percent)` | "If", then "random chance" |
+| A random whole number | `GetRandomInt(min, max)` | "Set a variable or attribute", then "random number" |
+| A random item from a list, room or exits | `PickOneString`, `PickOneObject`, `PickOneChild`, `PickOneExit`... | Code only |
+| A dice roll, such as "3d6+2" | `DiceRoll(dice)` | Code only |
 
-Randomness is very useful in RPG-type games when you want to determine the outcome of an event such as an attack.
+All of these are listed in [Randomising functions](/reference/functions/random).
 
-You might also want to randomly generate descriptions of cloned objects so they do not all seem to be the same.
+## Random text
 
-Quest Viva has a suite of functions to allow these things. We will look first at what is available, and then at some examples of them in use.
-
-## Random functions
-
-### Text processor
-
-Not really a function, but the easiest to use. As with all [text processor](/howto/world/text-processor) directives, this is embedded in a string. The directive is called "random", and will select one text from the following list.
-
-Here is a simple example. When the text is printed, Quest Viva will randomly select one of "blue", "red" or "yellow".
+The easiest way to add variety is the text processor's `random` directive, which picks one of the options each time the text is printed:
 
 ```quest
 It was a {random:blue:red:yellow} flower.
 ```
 
-It is worth emphasising that the colour is picked randomly every time the text is printed. If the player looks again, she may well find the flowers have changed colour. We will look at a solution to that in the examples.
+You can use it in any text the [text processor](/howto/world/text-processor) handles, such as a room or object description. The choice is made again every time, so if the player looks twice, the flower may have changed colour. To make a choice that sticks, see [Descriptions that don't change](#descriptions-that-dont-change) below.
 
+## Chances and numbers
 
-### Get functions
+`RandomChance` takes a percentage from 0 to 100, and returns `true` that percentage of the time:
 
-The basic random functions get either an `int` or a `double`.
+```quest
+if (RandomChance(75)) {
+  msg ("You hit the troll.")
+}
+else {
+  msg ("You miss.")
+}
+```
 
-The `GetRandomDouble` function takes no parameters, and returns a value between 0.0 and 1.0. 
+`RandomChance(100)` is always `true`, and `RandomChance(0)` is always `false`.
 
-The `GetRandomInt` function takes two integer parameters, and will return a random number between (and including) those two numbers.
-
-Here is a simple example that will randomly print 1, 2 or 3 ten times.
+`GetRandomInt` returns a whole number between the two numbers you give it, including both of them. This prints 1, 2 or 3, ten times:
 
 ```quest
 for (i, 1, 10) {
-  msg(GetRandomInt(1, 3))
+  msg (GetRandomInt(1, 3))
 }
 ```
 
+`GetRandomDouble()` takes no parameters and returns a number between 0 and 1, such as 0.5395070795755296.
 
-### RandomChance
+## Picking one from a list
 
-The `RandomChance` function takes one integer parameter, between 0 and 100, and will return a Boolean. It will return `true` a percentage of the time equal to the number given.
+These functions each return one item at random:
+
+- `PickOneString` - a string from a string list, or from a string with the options separated by semicolons
+- `PickOneObject` - an object from an object list
+- `PickOneChild` - an object directly inside a room or container (not inside containers within it)
+- `PickOneChildOfType` - the same, but only objects of the given type
+- `PickOneExit` - a visible exit from a room
+- `PickOneUnlockedExit` - a visible, unlocked exit from a room
 
 ```quest
-// Always successful
-success = RandomChance(100)
-
-// Usually successful
-success = RandomChance(75)
-
-// Successful half the time
-success = RandomChance(50)
-
-// Successful only one time in 50
-success = RandomChance(2)
-
-// Always fail
-success = RandomChance(0)
+msg ("The parrot squawks '" + PickOneString("Pieces of eight;Who's a pretty boy;Hello sailor") + "'.")
 ```
 
-### Pick one
-
-Quest Viva has a number of functions that make it easy to randomly pick one example from a list:
-
-```
-PickOneChild
-PickOneChildOfType
-PickOneExit
-PickOneObject
-PickOneString
-PickOneUnlockedExit
-```
-
-The `PickOneChild` and `PickOneChildOfType` functions return a random object from the given room or container. `PickOneExit` and `PickOneUnlockedExit` obviously pick an exit from the given room (useful for randomly moving NPCs). `PickOneObject` needs to be given an object list. `PickOneString` can be given a string list or a semi-colon separated string.
-
-
-### Roll dice
-
-The `DiceRoll` function takes a string in the standard RPG format, eg "d6+1" and "3d8-2", and returns an integer, the result of rolling the given dice.
-
-A great example of this in use would be calculating damage for a weapon. Each weapon could be given a damage string in this format, so dagger might be "d4" and great sword could be "3d6+2". Damage after a successful attack can then be determined:
+`PickOneExit` and `PickOneUnlockedExit` are handy for NPCs that wander about. The exit's `to` attribute is the room it leads to:
 
 ```quest
-hits_lost = DiceRoll(weapon.damage)
-```
-
-## Examples of use
-
-### Selecting one option
-
-Let us suppose you want to randomly pick one of three (or more) things. You might think you could do this:
-```quest
-if (RandomChance(33)) {
-  msg("Event three happens")
-}
-else if (RandomChance(33)) {
-  msg("Event two happens")
-}
-else {
-  msg("Event one happens")
+exit = PickOneUnlockedExit(cat.parent)
+if (not exit = null) {
+  MoveObject (cat, exit.to)
 }
 ```
-Event three will be selected a third of the time - so far so good. It will not be selected two thirds of the times, and if it is not, then there is a third of a chance that event two will be picked. But that is not quite what we want; that means the chance of event two is only 2/3 times 1/3, i.e. 2/9, not 1/3.
 
-The way to approach this is to consider that if event three has not happened, then if we want events two and one to be equally likely, then there has to be a fifty percent chance of each:
+Each of these returns `null` (or an empty string, for `PickOneString`) if there's nothing to pick from.
+
+## Rolling dice
+
+`DiceRoll` takes a dice description in the usual RPG form - "d6", "3d6", "d6+1", "3d8-2" - and returns the total:
 
 ```quest
-if (RandomChance(33)) {
-  msg("Event three happens")
-}
-else if (RandomChance(50)) {
-  msg("Event two happens")
-}
-else {
-  msg("Event one happens")
-}
+damage = DiceRoll(weapon.damage)
 ```
-You could even think of it like this, though the `RandomChance(100)` is entirely unnecessary:
-```quest
-if (RandomChance(33)) {
-  msg("Event three happens")
-}
-else if (RandomChance(50)) {
-  msg("Event two happens")
-}
-else if (RandomChance(100)) {
-  msg("Event one happens")
-}
-```
-At the start there are three options to pick between, so the first is 33%. When there are only two left, it is 50% for each. When only one, there is 100% for it.
 
-What if you have multiple events? The general formula is to count how many options are left at each point; the percentage chance is 100 divided by that. Here there are seven events. The first has a probability of 100/7. For the second, there are six remaining, so the probability is 100/6.
+Here each weapon has a `damage` attribute, so a dagger might be "d4" and a great sword "3d6+2".
+
+## One of several outcomes
+
+To pick one of several outcomes, each equally likely, use `GetRandomInt` and a `switch`:
 
 ```quest
-if (RandomChance(14)) {
-  msg("Event seven happens")
-}
-else if (RandomChance(17)) {
-  msg("Event six happens")
-}
-else if (RandomChance(20)) {
-  msg("Event five happens")
-}
-else if (RandomChance(25)) {
-  msg("Event four happens")
-}
-else if (RandomChance(33)) {
-  msg("Event three happens")
-}
-else if (RandomChance(50)) {
-  msg("Event two happens")
-}
-else {
-  msg("Event one happens")
-}
-```
-An alternative (and conceptually simpler) approach is to use `GetRandomInt` and a `switch` statement.
-```quest
-switch (GetRandomInt(1,7)) {
+switch (GetRandomInt(1, 3)) {
   case (1) {
-    msg("Event seven happens")
+    msg ("The bat flies past your head.")
   }
   case (2) {
-    msg("Event six happens")
+    msg ("The bat lands on the ceiling.")
   }
   case (3) {
-    msg("Event five happens")
-  }
-  case (4) {
-    msg("Event four happens")
-  }
-  case (5) {
-    msg("Event three happens")
-  }
-  case (6) {
-    msg("Event two happens")
-  }
-  case (7) {
-    msg("Event one happens")
+    msg ("The bat flies off into the dark.")
   }
 }
 ```
 
+If the outcomes are just different text, `PickOneString` does the same job in one line.
 
-### Permanent values for descriptions
-
-The text processor offers a very simple randomisation technique, but the fact that it gets randomised when printing means you can get a different result each time, and sometimes that is not what you want. For example, if you are creating clones, and want to randomise the descriptions, you want the description of a specific clone to always be the same.
-
-The trick is to process the text when the clone is created rather than when the player looks at it. Here is a very simple example:
+You might think of doing it with a chain of `RandomChance` calls instead:
 
 ```quest
+if (RandomChance(33)) {
+  msg ("The bat flies past your head.")
+}
+else if (RandomChance(33)) {
+  msg ("The bat lands on the ceiling.")
+}
+else {
+  msg ("The bat flies off into the dark.")
+}
+```
+
+This doesn't give each outcome an equal chance. The first happens a third of the time, but the second `RandomChance` is only reached the other two thirds of the time, so the second outcome happens 1/3 of 2/3 of the time - about 22% - and the last happens about 44% of the time. To make a chain like this fair, the chance at each step has to be 100 divided by the number of outcomes left: `RandomChance(33)` then `RandomChance(50)`. A chain is still useful when you want outcomes that aren't equally likely - for example, a rare event followed by a common one.
+
+## Descriptions that don't change
+
+Because `{random:...}` chooses again every time the text is printed, it's not right for something that should stay the same, such as the look of a particular clone. Instead, run the text through `ProcessText` once, when the clone is created, and store the result:
+
+```quest
+clone = CloneObjectAndMove(alien, room)
 clone.look = ProcessText("The alien has {random:red:blue:yellow} skin.")
 ```
 
-It is probably more convenient to have the description in the prototype, and to process that when the clone is created.
+Each clone gets its own colour, and keeps it.
+
+If the description depends on the clone's other attributes, you can refer to them as `this` in the text. `this` normally means the object in the player's current command, so set `game.text_processor_this` to the clone first:
 
 ```quest
-clone.look = ProcessText(prototype.look)
-```
-
-If the attributes of the clone change randomly, you will need to have the description depend on those attributes. Here is a more involved example:
-
-```quest
-clone.size = GetRandomInt(0,2)
+clone = CloneObjectAndMove(alien, room)
+clone.size = GetRandomInt(0, 2)
 clone.weapon = CloneObjectAndMove(PickOneChild(weapons), clone)
 clone.weapon_name = GetDisplayName(clone.weapon)
 game.text_processor_this = clone
 clone.look = ProcessText("The {select:this.size:big:huge:enormous} alien has {random:red:blue:yellow} skin, and is armed with {this.weapon_name}.")
+game.text_processor_this = null
 ```
 
-The first line sets the clone's size. The second line gives him a weapon. This is picked at random from a room called "weapons" that the player would not have access to, and is just a stock of weapons. The selected weapon is cloned and moved to the alien. For the third line, we grab the name of the weapon.
+This gives the clone a random size, and a copy of a random weapon from a room called "weapons" that the player never visits. The `select` directive uses `this.size` to choose the word for the size, so one clone might be "The huge alien has blue skin, and is armed with a sword." The last line clears `game.text_processor_this` again, so that `this` in other text isn't left pointing at the clone.
 
-To allow the text processor to cope with `this`, we set `game.text_processor_this` next, as `clone` is just a local variable; we do not know what the name of the clone will be when the game is running (each clone will have its own name).
-
-Once we have all that set up, we can set the "look" attribute. The size uses the "select" directive, so is determined by `clone.size`.
-
-Now we have a clone with a description that matches its attributes (this is also discussed on the [clones](/howto/scripting/clones) page).
-
+See [Clones](/howto/scripting/clones) for more on creating clones.
