@@ -198,8 +198,4 @@ Either works, but mixing them across characters reads oddly.
 
 ## Characters that move
 
-Conversations are only one part of bringing a character to life. To make characters move around:
-
-- [Followers](/howto/npcs/follower) - a character who follows the player from room to room
-- [Making NPCs patrol](/howto/npcs/patrolling-npcs) - characters who walk a route or wander at random
-- [Making NPCs act independently](/howto/npcs/independent-npcs) - characters with goals of their own
+Conversations are only one part of bringing a character to life. [Characters that move](/howto/npcs/npcs-that-move) shows how to make characters follow the player, patrol a route, wander at random or go somewhere with a purpose.

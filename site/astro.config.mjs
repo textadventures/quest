@@ -231,16 +231,8 @@ export default defineConfig({
                                     "slug": "howto/npcs/dialogue-pages"
                                 },
                                 {
-                                    "label": "Followers",
-                                    "slug": "howto/npcs/follower"
-                                },
-                                {
-                                    "label": "Making NPCs patrol",
-                                    "slug": "howto/npcs/patrolling-npcs"
-                                },
-                                {
-                                    "label": "Making NPCs act independently",
-                                    "slug": "howto/npcs/independent-npcs"
+                                    "label": "Characters that move",
+                                    "slug": "howto/npcs/npcs-that-move"
                                 }
                             ]
                         },
@@ -311,15 +303,11 @@ export default defineConfig({
                                     "slug": "howto/rpg/rpg-intro"
                                 },
                                 {
-                                    "label": "Zombie Apocalypse (Part 1)",
+                                    "label": "A simple combat system",
                                     "slug": "howto/rpg/zombie-apocalypse-1"
                                 },
                                 {
-                                    "label": "Zombie Apocalypse (Part 2)",
-                                    "slug": "howto/rpg/zombie-apocalypse-2"
-                                },
-                                {
-                                    "label": "Spells for the Zombie Apocalypse",
+                                    "label": "Spells and magic",
                                     "slug": "howto/rpg/zombie-apocalypse-spells"
                                 }
                             ]
@@ -511,7 +499,7 @@ export default defineConfig({
                             "collapsed": true,
                             "items": [
                                 {
-                                    "label": "How players interact",
+                                    "label": "The player interface",
                                     "slug": "howto/ux/ui-game-play"
                                 },
                                 {
@@ -519,44 +507,20 @@ export default defineConfig({
                                     "slug": "howto/ux/ui-style"
                                 },
                                 {
-                                    "label": "Fonts",
-                                    "slug": "howto/ux/ui-fonts"
-                                },
-                                {
-                                    "label": "Object verb menus",
+                                    "label": "Object verbs",
                                     "slug": "howto/ux/display-verbs"
                                 },
                                 {
-                                    "label": "Custom command panes",
-                                    "slug": "howto/ux/command-pane"
-                                },
-                                {
-                                    "label": "Custom status pane",
+                                    "label": "Panes",
                                     "slug": "howto/ux/custom-panes"
                                 },
                                 {
-                                    "label": "Modifying the status and game panes",
-                                    "slug": "howto/ux/ui-custom"
-                                },
-                                {
-                                    "label": "The location bar",
-                                    "slug": "howto/ux/ui-location-bar"
-                                },
-                                {
-                                    "label": "Custom CSS and HTML",
+                                    "label": "Styling the player with CSS",
                                     "slug": "howto/ux/customising-the-ui"
                                 },
                                 {
-                                    "label": "JavaScript to Quest Viva with ASLEvent",
+                                    "label": "Calling the game from JavaScript",
                                     "slug": "howto/ux/ui-callback"
-                                },
-                                {
-                                    "label": "Adding a dialogue panel",
-                                    "slug": "howto/ux/ui-dialogue"
-                                },
-                                {
-                                    "label": "Adding a dialogue panel that assigns points",
-                                    "slug": "howto/ux/ui-dialogue-points"
                                 }
                             ]
                         },

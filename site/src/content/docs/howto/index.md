@@ -19,7 +19,7 @@ What the player can do with things: [features](/howto/world/features) that give 
 
 ## Characters and conversation
 
-Start with [Talking to characters](/howto/npcs/conversations), which compares the ways to write conversations: [Ask/Tell topics](/howto/npcs/ask-about), [SPEAK TO](/howto/npcs/conversations#responding-to-speak-to), and [conversations with Pages](/howto/npcs/dialogue-pages). There are also guides to characters that [follow the player](/howto/npcs/follower), [patrol](/howto/npcs/patrolling-npcs) or [act on their own](/howto/npcs/independent-npcs).
+Start with [Talking to characters](/howto/npcs/conversations), which compares the ways to write conversations: [Ask/Tell topics](/howto/npcs/ask-about), [SPEAK TO](/howto/npcs/conversations#responding-to-speak-to), and [conversations with Pages](/howto/npcs/dialogue-pages). [Characters that move](/howto/npcs/npcs-that-move) covers characters that follow the player, patrol, wander or go about their own business.
 
 ## Commands and verbs
 

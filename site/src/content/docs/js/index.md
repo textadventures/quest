@@ -118,7 +118,7 @@ Sets the background colour of the game area.
 JS.setCommands(string commands, string colour)
 ```
 
-Sets the commands to be displayed on the command pane (turn the command pane on on the _Interface_ script of the game object). Commands should be sent as a string, separated by semi-colons. The colour of the text can be specified, but is optional.
+Sets the commands to be displayed on the command pane (tick "Show a command pane" on the game object's _Interface_ tab). See [Panes](/howto/ux/custom-panes#command-pane). Commands should be sent as a string, separated by semi-colons. The colour of the text can be specified, but is optional.
 
 ```quest
 JS.setCommands("Wait;Look")
@@ -165,7 +165,7 @@ JS.setCss ("#qv-status", "background-image:none; background-color: green;")
 JS.setCustomStatus(string html)
 ```
 
-Sets the HTML text to be displayed on the custom status pane (turn the command pane on on the _Interface_ script of the game object). This is an involved issue, rather than give an example, go see this [page](/howto/ux/custom-panes).
+Sets the HTML text to be displayed on the custom status pane (tick "Show a custom status pane" on the game object's _Interface_ tab). See [Panes](/howto/ux/custom-panes) for an example.
 
 ## setGameName
 

@@ -1,182 +1,182 @@
 ---
 title: Building an Ask/Tell system
-sidebar:
-  order: 4
+description: Set up Ask/Tell topics on a character, understand how topics are matched, and add TOPICS, ASK ABOUT and ASK commands
 ---
 
-Interactive fiction has broadly three ways for the player to talk to NPCs.
+Ask/Tell lets the player question characters about anything they like - `ASK MARY ABOUT DR BLACK`, `TELL MARY ABOUT THE POISON` - and give them orders, like `TELL MARY TO DANCE`. It suits mysteries and investigations, where working out what to ask is part of the puzzle. This page covers setting up topics, exactly how Quest Viva matches what the player types against them, what happens when nothing matches, and some commands you can add to make topics easier to find.
 
-    SAY ...
+If you're still deciding how the player should talk to your characters, start with [Talking to characters](/howto/npcs/conversations).
 
-    TALK TO ...
+## Turning on Ask/Tell
 
-    ASK ... ABOUT ...
+Select the game in the tree, go to the _Features_ tab and tick "Ask/Tell: players can ask or tell characters about selected topics". Every object then has an _Ask/Tell_ tab, with three lists:
 
-This is something built in to Quest Viva, but it does need to be turned on. On the _Features_ tab of the game object, tick the "Ask/Tell" box. You should now find there is an _Ask/Tell_ tab for the objects in your game.
+| List | Handles |
+|---|---|
+| "Ask about" | `ASK MARY ABOUT ...` |
+| "Tell about" | `TELL MARY ABOUT ...` |
+| "Tell to" (under "Order") | `TELL MARY TO ...`, `ASK MARY TO ...` and `MARY, ...` |
 
-This page is about using `ASK/ABOUT`. This also includes `TELL/ABOUT` and `TELL/TO`, both of which are on the same tab, and work in exactly the same way, so everything here can also be applied to `TELL/ABOUT` and `TELL/TO`. For simplicity, we will go through just `ASK/ABOUT`.
+All three work the same way, so everything below applies to each of them.
 
+## Adding topics
 
-## Ask ... about ...
-
-The way ASK works is that you give a list of topics and corresponding scripts. Suppose we have a character, Mary, and we want to ask her about the murder of Dr Black. In the ASK section, type the topic, "dr black", into the entry box and click _Add_. The new entry appears expanded, ready for you to add the script that will run when the player asks about Dr Black. For now, just have it print a simple message.
-
-Now go in game, and type `ASK MARY ABOUT DR BLACK`, and you should see your message. Quest Viva will do its best to match topics, so you should also see the message if you type `ASK MARY ABOUT DR` or `ASK MARY ABOUT BLACK`. Ah, but what if the player types `ASK MARY ABOUT DOCTOR BLACK`? Go back to the _Ask/Tell_ tab for Mary, make sure this topic is selected and click on "Edit Key". Replace "dr black" with "dr doctor black".
-
-![](/images/Asktell3.png)
-
-What Quest Viva does is attempt to match the topic against each word in the topic's key, rather than exactly matching the whole thing, so you can put a list of keywords here, separated by spaces.
-
-Obviously you can change the script that runs at any time by clicking the topic again to expand it...
-
-
-## More advanced...
-
-We can make this system more sophisticated in a number of ways. However, we will be using code to do that. Why? Well, it is easier for me to show you, but it is easier for you to put in your game, as you can just copy-and-paste the code. We will keep it simple, and let you know what you need to change for your game, and what can be pasted in without any changes.
-
-For more on how to copy-and-paste code, see [here](/howto/scripting/copy-and-paste-code).
-
-
-
-## Varying the response
-
-Currently Mary will give the same response every time the player asks her about the murder.
+Select the character and go to the _Ask/Tell_ tab. Type the topic's keywords into the "Add entry key..." box under "Ask about", separated by spaces - for example `dr doctor black murder` - and click "Add". Then add the script to run when the player asks about it:
 
 ```quest
-msg ("'What do you know about the murder of Dr. Black?'")
-msg ("'Me? Nothing!'")
+msg ("'Me? I know nothing about the murder!'")
 ```
 
-It will be better if she varies it a bit. In this simple example we set a flag, "askedaboutmurder" on the character the first time she is asked. We can then test that flag using `GetBoolean` (which returns false if the attribute does not exist, so saves us having to set it to false from the start).
+To change a topic's keywords later, select it and click "Edit Key".
 
-```quest
-if (not GetBoolean(this, "askedaboutmurder")) {
-  msg ("'What do you know about the murder of Dr. Black?'")
-  msg ("'Me? Nothing!'")
-  this.askedaboutmurder = true
-}
-else {
-  msg ("'Tell me what do you know about the murder!'")
-  msg ("'I told you - nothing!'")
-}
+In code, the topics are a script dictionary attribute called `ask` (or `tell`, or `tellto`), where each key is a set of keywords and each value is the script. Inside the script, `this` is the character.
+
+## How topics are matched
+
+When the player types `ASK MARY ABOUT THE BLACK CAT`, Quest Viva takes the subject - "the black cat" - and scores every topic on Mary's "Ask about" list against it:
+
+- The subject is split into words, and so are the topic's keywords.
+- A word matches a keyword if the word **begins with** the keyword. Upper and lower case don't matter.
+- Each match adds the length of the keyword to the topic's score. Words that don't match anything, like "the", are ignored.
+- The topic with the highest score wins. If two topics have the same score, the one further down the list wins.
+
+So with the keywords `dr doctor black murder`, all of these find the same topic:
+
+```
+> ASK MARY ABOUT DR BLACK
+> ASK MARY ABOUT DOCTOR BLACK
+> ASK MARY ABOUT THE MURDER
 ```
 
-We might also want to have it change depending on the player's progress through the game.
+This has some consequences worth knowing:
+
+- **Short keywords match a lot.** `dr` matches "drinks" and "dress" too, because they begin with "dr". Keep keywords reasonably distinctive.
+- **Because matching is by the start of the word, you get some plurals and variations for free.** `report` matches "reports", and `black` matches "blackmail" - which may not be what you want.
+- **Longer keywords outscore shorter ones.** If Mary has `dr doctor black murder` and `cat`, then `ASK MARY ABOUT THE BLACK CAT` gets the murder topic, because "black" (5 letters) beats "cat" (3). To make sure the cat topic wins, give it the keywords `black cat` - it then scores 8.
+
+## Unknown topics
+
+If no topic matches, the character "does not reply" (for "Tell to", "does nothing"). To say something better, expand the "Advanced" section at the bottom of the _Ask/Tell_ tab and fill in "Script to run when asked about an unknown topic". There's one for each list - "Script to run when told about an unknown topic" and "Script to run when keywords not recognised".
+
+The variable `text` holds what the player asked about, converted to lower case:
 
 ```quest
-if (Got(lab report)) {
-  msg ("'What do you know about the murder of Dr. Black?' you say, showing Mary the lab report.")
-  msg ("'Oh, God! Okay, yes, it was me. But he had it coming to him!'")
-}
-else if (Got(poison bottle)) {
-  msg ("'What do you know about the murder of Dr. Black?' you say, showing Mary the poison bottle.")
-  msg ("'Nothing! That's not mine! You can't prove anything!'")
-}
-else if (not GetBoolean(this, "askedaboutmurder")) {
-  msg ("'What do you know about the murder of Dr. Black?'")
-  msg ("'Me? Nothing!'")
-  this.askedaboutmurder = true
-}
-else {
-  msg ("'Tell me what do you know about the murder!'")
-  msg ("'I told you - nothing!'")
-}
+msg ("Mary shrugs. 'I know nothing about " + text + ".'")
 ```
 
-This does have the potential to become complex, but that is the nature of the beast. The more complex, the more natural it will seem to the player. It will need thorough testing, however!
-
-
-## Default replies
-
-Underneath the list of ASK topics, you can put a script to run when there is no topic for this character. Perhaps for Mary we could print a message that says "She looks at you, wondering what you are talking about."
-
-You can use a special variable, "text", which will contain the subject the player was asking about. You could have something like this:
-
-```quest
-msg("Mary shrugs, and says, 'I know nothing about " + text + ".'")
+```
+> ASK MARY ABOUT PIES
+Mary shrugs. 'I know nothing about pies.'
 ```
 
+Players tend to try the same topics on every character, so it's worth giving each character a sensible reply to topics they don't know about - especially the ones that matter to the plot.
 
-## Topics
+## Varying the replies
 
-It can be frustrating for the player to have to guess what topics are available, so an option is to provide a `TOPICS` command, which simply lists the topics the player can ask about. The best way to do this is to set up a string with some initial entries, and then to add to it as the game progresses. In the investigation of the murder of Dr Black, new topics could be added as new evidence comes to light, for instance.
+A topic's script can check anything in the game, so a character can say something different the second time you ask, or once you've found some evidence. See [Varying what characters say](/howto/npcs/conversations#varying-what-characters-say) - everything there works in an Ask/Tell topic.
 
-Note that this assumes all NPCs will have the same topics available. The player is likely to assume that if she can ask Mary about Dr Black, she can ask any other character too. This does mean you will need to add all these topics to all the NPCs, even if they only say that they know nothing. This should be done anyway!
+## Starting a conversation from a topic
 
-The first step, then, is to create our string list. You can go to the _Attributes_ tab of the game object, and create a new attribute called "topics". Set it to be a string list, and add names of any topics that will be available from the start.
-
-Alternatively, you can add the attribute in a script instead. Go to the _Scripts_ tab of the game object, and add this to the start script (this will set "Job" and "Alibi" as topics from the start):
+A topic's script can start a [Pages](/howto/npcs/dialogue-pages) conversation, so that asking about something leads into a dialogue tree. Add "Show a page" from the Pages category, or in code:
 
 ```quest
-game.topics = Split("Job;Alibi", ";")
+ShowPage (mary_heart, true, false)
 ```
 
-This will be shown to the player, so capitalise it nicely and bear in mind it needs to fit the ASK ... ABOUT ... format. Also, it makes the script for the topics command easier if there are at least two topics from the start (because we can refer to them in the plural knowing there is at least two).
+`ASK MARY ABOUT HER HEART` then shows the `mary_heart` page and its options. See [Combining approaches](/howto/npcs/conversations#combining-approaches) for how this fits with a main conversation started by `TALK TO`.
 
-Now we need to create a new command. Go to _Commands_ in the left pane, then click "Add" in the right pane. For the command pattern, type in `topics`, and paste in this code:
+## Helping the player find topics
+
+Guessing topics can be frustrating. The commands in this section make it easier. To add one, select "Commands" in the tree, click "+ Add" and choose "Add Command", then enter the pattern and paste in the script.
+
+All three use a `topics` attribute on each character: a string list of the subjects that character can talk about, written the way the player should see them. Add it on the character's _Attributes_ tab, as a "String List" - for Mary, say, "Dr Black" and "the lab report". Each one needs to match one of her topics' keywords.
+
+As the plot develops, add to the list:
 
 ```quest
-msg ("Topics you might want to ask about include:")
-foreach (s, game.topics) {
-  msg (s)
-}
+list add (Mary.topics, "the poison bottle")
 ```
 
-You can add to the list of topics at any time during the game, as the plot develops. For example:
+### A TOPICS command
+
+With the pattern `topics`, this lists what each character in the room can be asked about:
 
 ```quest
-list add(game.topics, "Forensic results")
-```
-
-
-## Ask about ...
-
-If there is only one NPC in the room, we can save the player some typing by creating an `ASK ABOUT ...` command. Go to _Commands_ in the left pane, then click "Add" in the right pane. For the command pattern, type in `ask about #text#`, and paste in this code:
-
-```quest
-npcs = NewObjectList()
-opts = NewStringDictionary()
-foreach (o, GetDirectChildren(player.parent)) {
-  if (HasAttribute(o, "ask")) {
-    list add (npcs, o)
-    dictionary add (opts, o.name, GetDisplayAlias(o))
-  }
-}
-if (ListCount(npcs) = 0) {
-  msg ("You can ask, but no one is here to tell you anything.")
-}
-else if (ListCount(npcs) = 1) {
-  DoAskTell (ObjectListItem(npcs, 0), text, "ask", "askdefault", "DefaultAsk")
-}
-else {
-  game.askabouttext = text
-  ShowMenu ("Ask who?", opts, true) {
-    if (not result = null) {
-      o = GetObject(result)
-      DoAskTell (o, game.askabouttext, "ask", "askdefault", "DefaultAsk")
+found = false
+foreach (o, GetDirectChildren(game.pov.parent)) {
+  if (HasAttribute(o, "topics")) {
+    if (ListCount(o.topics) > 0) {
+      msg ("You could ask " + GetDisplayName(o) + " about " + FormatList(o.topics, ", ", " or ", "") + ".")
+      found = true
     }
   }
 }
+if (not found) {
+  msg ("There's no one here to ask about anything.")
+}
 ```
 
-What the code does is firstly go through all the objects in the current room (which it gets using `GetDirectChildren(player.parent)`), and collects up all those with an "ask" attribute (this is where Quest Viva stores the topics we set earlier, so this is a good test of whether the object is a character).
+```
+> TOPICS
+You could ask Mary about Dr Black or the lab report.
+You could ask Bob about the weather.
+```
 
-Then it looks at how many NPCs it found. If none, an error message; if one, then it calls the same function that the built-in ask/tell system uses, `DoAskTell`, using the one NPC it found.
+### ASK ABOUT without a character
 
-If it found more than one, it will show a menu, asking the player to select one, and then again call `DoAskTell`.
+With the pattern `ask about #text#`, the player can leave out who they're asking. If only one character is in the room, they're asked; if there are several, a menu asks who:
 
-
-## Ask ...
-
-A further option we could give the player is to ask a character, and then offer a list of topics to ask about. We already have the list of topics from the TOPICS command, so half the work is done.
-
-Go to _Commands_ in the left pane, then click "Add" in the right pane. For the command pattern, type in `ask #object#`, and paste in this code:
 ```quest
-game.askaboutobject = object
-ShowMenu ("Ask about?", game.topics, true) {
-  if (not result = null) {
-    DoAskTell (game.askaboutobject, result, "ask", "askdefault", "DefaultAsk")
+people = NewObjectList()
+foreach (o, GetDirectChildren(game.pov.parent)) {
+  if (HasAttribute(o, "ask")) {
+    list add (people, o)
+  }
+}
+if (ListCount(people) = 0) {
+  msg ("There's no one here to ask.")
+}
+else if (ListCount(people) = 1) {
+  DoAskTell (ObjectListItem(people, 0), text, "ask", "askdefault", "DefaultAsk")
+}
+else {
+  names = NewStringDictionary()
+  foreach (o, people) {
+    dictionary add (names, o.name, GetDisplayName(o))
+  }
+  who = ShowMenu("Ask who?", names, true)
+  if (who <> "") {
+    DoAskTell (GetObject(who), text, "ask", "askdefault", "DefaultAsk")
   }
 }
 ```
-It is even more important that every NPC have a response to all the topics now.
+
+A character that has "Ask about" topics has an `ask` attribute, so that's what the first part looks for. `DoAskTell` is the function the built-in `ASK` command uses: it matches the text against the character's topics and runs the right script, or the unknown-topic script. For `TELL ABOUT`, use `"tell", "telldefault", "DefaultTell"` instead.
+
+`ShowMenu` needs a list of strings or a string dictionary rather than a list of objects, so the menu shows each character's display name and returns their object name. If the player types something else instead of choosing, `ShowMenu` returns an empty string and nothing happens.
+
+### ASK a character
+
+With the pattern `ask #object#`, `ASK MARY` offers a menu of Mary's topics:
+
+```quest
+if (not HasAttribute(object, "topics")) {
+  msg (CapFirst(GetDisplayName(object)) + " has nothing to tell you.")
+}
+else {
+  topic = ShowMenu("Ask " + GetDisplayName(object) + " about...", object.topics, true)
+  if (topic <> "") {
+    DoAskTell (object, topic, "ask", "askdefault", "DefaultAsk")
+  }
+}
+```
+
+The chosen topic's text is matched against Mary's keywords just as if the player had typed it, so "the lab report" finds the topic with the keywords `lab report`. `ASK MARY ABOUT ...` still works as normal alongside this command.
+
+These menus use `ShowMenu()`, so the player can't save while one is waiting. For a quick choice like this that's rarely a problem - see [Saving while a question is waiting](/howto/scripting/asking-the-player#saving-while-a-question-is-waiting) if it matters.
+
+## See also
+
+- [Talking to characters](/howto/npcs/conversations)
+- [Building a conversation with Pages](/howto/npcs/dialogue-pages)
+- [Custom commands](/tutorial/custom-commands)

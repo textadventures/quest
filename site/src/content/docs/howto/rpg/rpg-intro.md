@@ -1,110 +1,99 @@
 ---
-title: Introduction to RPGs
-sidebar:
-  order: 12
+title: Designing an RPG-style game
+description: Questions to settle before you build an RPG-style game, and the parts Quest Viva already provides
 ---
 
+An RPG-style game is one where the player's character is defined by statistics - strength, hit points, magic - and whether an action succeeds depends partly on those numbers and partly on chance. The statistics usually change as the game goes on, and combat is usually a large part of it.
 
-## Introduction
+This page helps you decide what your game system needs before you start building it, and lists what Quest Viva already gives you. The rest of this section shows how to build the pieces:
 
-### What is an RPG?
+- [Character creation](/howto/rpg/character-creation) - ask the player for a name and a class at the start of the game.
+- [A simple combat system](/howto/rpg/zombie-apocalypse-1) - monsters, weapons and attacks.
+- [Spells and magic](/howto/rpg/zombie-apocalypse-spells) - spells the player learns and casts, with a mana cost.
 
-In a traditional RPG (role-playing game), each player takes the part of a character in a fictional world, where that character's capabilities are defined by a set of statistics, and his or her success at any action is determined in part by those statistics and partly at random. Dungeons and Dragons is the archetypal RPG.
+## Designing the game system
 
+RPG-style games are big. You need to design a game system, write the scripts for it, and then build a world to use it in. Decide how the game will play before you open the editor - forget about the code for now and think about what the player will experience.
 
-### What is an RPG-style text game?
+Every rule you add makes the game more complicated to build and to test, so keep the system as simple as you can. At the same time, the player needs real choices. If the sword always does more damage than the dagger, there's no decision to make. If the dagger is better against some enemies, choosing a weapon becomes part of the game.
 
-For the purposes of interactive fiction, an RPG-style game is one is which the player controls a character whose capabilities are defined by a set of statistics, and his or her success at any action is determined in part by those statistics and partly at random. Those statistics can be determined to some degree by the player, and are likely to change during the game. It is assumed that combat will be an important feature of the game.
-
-Here is an example game so you can see what we are talking about. It is based in a fantasy world, but the same ideas apply to science fiction, Wild West, cyberpunk and pulp genres too:
-https://textadventures.co.uk/games/view/em15b32xd0o-y-ysvgrtcg/deeper
-
-
-### So how do you create one?
-
-The very first thing to do is to realise it is a lot of work. RPG games are both big and complicated. You are going to have to design a game system, then code it and then build a whole world.
-
-
-## Designing a game system
-
-Before you start doing anything in Quest Viva, you need to think about how your game will play. Forget about how we will code it, just think about what the player will experience.
-
-The decisions you make here will affect how complicated your game is. Combat in Deeper, the example game above, was kept as simple as possible, and it is still a huge amount of code! For example, there are no ranged attacks at all, there is no consideration of position, damage is the total hits rather than by location.
-
-To be fun, your game must offer real choices to the player. If the sword does more damage than the dagger, the sword is the better option, and there is no strategy in choosing the sword. If the dagger is better against some enemies, but not other, the player gets a meaningful choice.
+Work through these questions and write down your answers.
 
 ### Stats
 
-What statistics define the player, and how are they meaningful in play (why would a player want to have a good charisma)?
+What statistics define the player's character? How does each one matter in play - why would a player want a good charisma?
 
 ### Mechanics
 
-You need to work out how combat is resolved; if this was a pen and paper game, what dice are rolled and how is success determined? How is damage resolved?
+How is an attack resolved? If this were a tabletop game, which dice would you roll, and what would count as a hit? How is damage worked out?
 
-### Time or turn?
+### Turns or real time?
 
-Is the game based on turns; the player attacks, then the monsters attack? Or is it time-based, with the monsters attacking every so many seconds. The latter would be more cool, but rather more complicated. Do the player's attacks have a cooldown? Quest Viva supports timed combat via its timer system, which runs entirely client-side, with no server round-trip involved.
+Does the game go in turns - the player attacks, then the monsters attack? Or do monsters attack every few seconds whatever the player does? Real time is more exciting but harder to build and to balance. If you go with real time, do the player's attacks need a cooldown?
 
 ### Defence
 
-What are the effects of armour or a shield?  Is armour handled as one outfit, or as separate pieces? Is there a drawback to using them? If sci-fi game a shield could be something that absorbs damage up to a certain point before being depleted.
+What does armour do? Is it one outfit or separate pieces, and is there a drawback to wearing it? In a science-fiction game, a shield might absorb damage until it runs out.
 
-Can the player parry attacks? How does that work? What weapons can parry? How does the player choose.
+Can the player parry or dodge? Which weapons can parry, and how does the player choose to do it?
 
 ### Attack
 
-Two important attributes of weapons are how often you hit with them and the damage they do. What is the difference between attacking with a dagger or a polearm or a flail? Are there situations where one weapon is better, and other situations where it is not?
+How often does each weapon hit, and how much damage does it do? What's the difference between a dagger, a polearm and a flail, and when is each one the better choice?
 
-How do you handle ranged attacks? Can you shoot an arrow from an adjacent room perhaps? Does an attacker get a bonus if you are holding a bow? Will you track ammo?
+How do ranged attacks work? Can the player shoot into the next room? Do you track ammunition?
 
 ### Positioning
 
-Is position significant or even tracked? In most adventure games the player is in a room, and not positioned any more than that, but traditional RPGs often take account of flanking, back-attack, higher ground. If you do track positioning, how does the player control where her character is? How does the game report it to her?
-
-Are you go to track the direction the player (and monsters) are facing?
+Does position matter? In most text adventures the player is simply in a room, but tabletop RPGs often care about flanking, attacking from behind or holding the high ground. If you track position, how does the player move around, and how does the game describe where everyone is? Do you track which way the player and the monsters are facing?
 
 ### Injuries
 
-Do you track individual injuries (say a laceration to the arm), or by location (8 hits to the left arm) or just total hits?
-
-How can the player heal, and what gets healed?
+Do you track individual wounds, damage to each part of the body, or just a total? How does the player heal, and what gets healed?
 
 ### Equipment
 
-Can weapons, armour and shields break? 
+Can weapons, armour and shields break or wear out? Can they be repaired?
 
 ### Stealth
 
-Can the player sneak? If so, what is the benefit? If the player can sneak, can the monsters?
+Can the player sneak past enemies or attack them unawares? Can monsters do the same to the player?
 
-### Special stuff
+### Magic and special effects
 
-Is there magic/poisons/etc.? How can magic affect combat; bonus to attack, to armour, to defence, etc.? Does casting magic use power points (how are they got back), use up the spell or what? What about magic items?
+Is there magic? Can it improve attack, armour or defence? Does casting cost something - magic points, a scroll that's used up - and how does the player get it back? What about magic items, poison and venom?
 
-What about poison and venom?
-
-How do you handle special effects on the monsters, such as reflecting magic, exploding on death, rusting the player's weapon?
+How will you handle monsters with special abilities, such as reflecting spells, exploding when they die or rusting the player's weapon?
 
 ### Companions
 
-Will the player be able to recruit a companion (or summon an elemental or raise a zombie, etc.) to aid him? How will you resolve whether a specific enemy targets the player or the companion?
+Can the player recruit a companion, summon an elemental or raise a zombie to help? When there's more than one target, how does a monster decide whom to attack?
 
+## What's built in
 
+Quest Viva doesn't have a combat system, but many of the pieces you need are already there.
 
-## Creating
+| You need | Use |
+|---|---|
+| Hit points, with something happening at zero | The **Health** feature. Tick "Health" on the _Features_ tab of the `game` object. The player starts with 100, it's shown in the status pane, and you can set a script to run when it reaches zero. See [Score, health and money](/howto/world/score-health-money#health). |
+| Gold or other currency | The **Money** feature, on the same tab. |
+| Other statistics shown on screen | [Status attributes](/tutorial/status-attributes). Any attribute of the player or the `game` object can be shown in the status pane, such as strength, mana or experience points. |
+| Dice rolls and random events | [Random functions](/reference/functions/random): `DiceRoll`, `RandomChance`, `GetRandomInt`, and `PickOneString`, `PickOneObject`, `PickOneChild`, `PickOneExit` and friends to pick something at random. |
+| Many monsters of the same kind | [Clones](/howto/scripting/clones). Build one monster in the editor, keep it somewhere the player can't reach, and copy it into the game with `CloneObjectAndMove`. |
+| Monsters acting after each turn | [Turn scripts](/tutorial/using-timers-and-turn-scripts#turn-scripts), which run at the end of each turn. |
+| Real-time combat | [Timers](/tutorial/using-timers-and-turn-scripts#timers), which run a script every so many seconds. |
 
-### Using a library
+`DiceRoll` takes dice in the usual tabletop notation, so a weapon can store its damage as a string attribute like `"2d6+1"`:
 
-There is a comprehensive library here, complete with detailed tutorial on how to use it:
+```quest
+damage = DiceRoll("2d6+1")
+if (RandomChance(10)) {
+  msg ("A critical hit!")
+  damage = damage * 2
+}
+msg (PickOneString(Split("The zombie groans.;The zombie lurches towards you.", ";")))
+```
 
-https://github.com/ThePix/quest/wiki/CombatLib
+`RandomChance(10)` is true 10% of the time, and `PickOneString` picks one string from a list.
 
-### Coding a game system from scratch
-
-If you just want to re-invent the wheel, we have a series of guides available:
-
-[The Zombie Apocalypse Part 1](/howto/rpg/zombie-apocalypse-1)
-
-[The Zombie Apocalypse Part 2](/howto/rpg/zombie-apocalypse-2)
-
-[Spells for the Zombie Apocalypse](/howto/rpg/zombie-apocalypse-spells)
+Libraries written by the community for Quest 5 also exist for combat and other RPG features. They haven't been tested with Quest Viva, so try one out in a test game before you build on it.

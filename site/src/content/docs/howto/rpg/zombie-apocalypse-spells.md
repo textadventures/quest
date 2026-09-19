@@ -1,288 +1,191 @@
 ---
-title: Spells for the Zombie Apocalypse
-sidebar:
-  order: 4
+title: Spells and magic
+description: Let the player learn spells and cast them on objects, with a mana cost shown in the status pane
 ---
 
+This page shows one way to add magic to a game. By the end, the player will be able to:
 
+- learn spells, by reading a scroll
+- see how much mana they have in the status pane, and spend it to cast spells
+- type CAST FROTZ ON STICK to make an object glow
+- cast a spell that reverses another spell
 
-_Why are there spells in a zombie apocalypse? No one knows, but it is a fact._
+Spells can do almost anything, so there's no single right way to build them. The approach here - each spell is an object, and one CAST command casts any of them - keeps everything about a spell in one place, and adding a new spell doesn't mean touching the command.
 
-This is an extension to the two part series on how to do combat in Quest Viva. However, nothing in this article relies on the other two articles, you could readily add these spells to your game without even reading them (though like them, this does assume some familiarity with Quest Viva code, at least to be able to copy-and-paste it).
+## Mana
 
-Spells have a number of issues that need to be considered, and will make a lot of work for the game creator. By their nature spells can do pretty much anything, and there is no way that can be covered here. All we can hope to do is look at a few examples, and hope that gives some points about how to implement your own spells.
+Give the player a `mana` attribute and show it in the status pane. Select the player object and go to the _Attributes_ tab. Add an attribute called `mana`, make it an Integer and set it to 5. Then, in the "Status attributes" box above, add `mana` with the display text `Mana: !`. The `!` stands for the value, so the player sees "Mana: 5". See [Status attributes](/tutorial/status-attributes) for more.
 
-A list of classic spells can be found here, and we will have a go at implementing some of them.
-http://www.ifwiki.org/index.php/Spells
+Because it's a status attribute, the pane updates by itself whenever a script changes `mana` - you don't need to print it.
 
-The second problem is that spells can be cast on anything, and we need the game to be able to handle that. If we start with "frotz", which will cause something to give light, we need to create the spell so it can be cast on any object in the game, from a zombie, to your trusty spade or even yourself.
+## Where the spells live
 
-We also need to think about how spells are cast. That is, what does the player need to do to be able to cast a spell. Perhaps the player must learn the spell from a wizard, or by absorbing a glyph from a scroll or just picking it up off the ground. Can she cast the spell as often as she likes, or can she only cast it once, or maybe she has to use magic points to cast it. For this tutorial, we shall say a spell needs to be learnt from a scroll, and the player has to spend magic points. Hopefully you will be able to adapt these to your own game.
+Each spell is an object, and where it is tells you whether the player knows it:
 
-You could create a "spell" type, and have each spell as an object of that type. Instead, we will do it quite differently here, and have each spell as a separate command.
+1. Add two rooms, `known_spells` and `unknown_spells`. They don't need exits or descriptions - the player never goes there.
+2. Select "Advanced" in the tree and click "Add Type". Call it `spell`. On its _Attributes_ tab, add an Integer attribute called `cost` and set it to 1. This is the default cost of a spell.
+3. Add an object called `frotz` inside `unknown_spells`. Give it the alias `Frotz`. On its _Attributes_ tab, add `spell` under "Inherited types".
 
-We will start by giving the player some magic points. Go to the "start" script of the game object, and add this line:
+Spells the player knows from the start go straight into `known_spells` instead. To make a spell more expensive, give that spell its own `cost` attribute.
 
-```quest
-player.magicka = 5
+## The CAST command
+
+Add a command (see [Commands](/howto/commands/commands)) with this pattern:
+
+```
+cast #object1# on #object2#;cast #object1# at #object2#
 ```
 
-### The Frotz spell
+Set its "Scope" box to:
 
-Our first spell will be "Frotz", which will make an object glow. This will be relatively easy, as Quest Viva has light and dark built in, and it affects objects that are in reach.
+```
+object1=known_spells|object2=all;known_spells
+```
 
-First, go to the _Features_ tab of the game object, and tick "Lightness and darkness". Then go make a room dark (go to its _Light/Dark_ tab, and tick "Room is initially dark"). This will allow us to test the spell later.
+The scope says where Quest Viva looks for each object. The spell (`object1`) can only be one the player knows - one inside `known_spells`. The target (`object2`) can be anything the player can see, or another known spell (we need that for the last spell on this page). See [Advanced scope](/howto/commands/advanced-scope#alternative-scope) for more about scopes.
 
-Now we can create the command. The pattern for our "frotz" spell will be this:
-
-    frotz #object#;cast frotz at #object#;cast frotz at #object#
-
-You also need to give the command a name, "frotz", so we can reference it later (commands generally do not need names, but we will do some magic later that will need these to). Here is the code:
+Set the command's script to:
 
 ```quest
-if (player.magicka  < 1) {
-  msg ("You don't have enough magic to do that.")
-}
-else if (GetBoolean(object, "lightsource")) {
-  msg ("It already is!")
+if (game.pov.mana < object1.cost) {
+  msg ("You don't have enough mana to cast " + GetDisplayAlias(object1) + ".")
 }
 else {
-  player.magicka = player.magicka - 1
-  // Modify the target object
-  object.lightsource = true
-  object.lightstrength = "strong"
-  object.frotzstatus = " " + WriteVerb(object, "be") + " shining brightly."
-  if (HasString(object, "look")) {
-    object.look = object.look + object.frotzstatus
-  }
-  else if (not HasScript(object, "look")) {
-    object.look = object.frotzstatus
-  }
-  if (not HasString(object, "alias")) {
-    object.alias = object.name
-  }
-  object.alias = object.alias + " (shining)"
-  msg ("You cast {i:Frotz} on the " + GetDisplayName(object) + "." + object.frotzstatus)
+  do (object1, "cast", QuickParams("target", object2))
 }
 ```
 
-It starts easy enough, checking if the object is already a light source and if the player has enough magic points. If all is well, the player's magic points are reduced, and then we modify the object...
+This checks the player has enough mana, then runs the spell's own `cast` script, passing it the target in a variable called `target`.
 
-We need to take account of the player casting this on a guy or a pair of shoes, and the `WriteVerb` function does just that, returning "He is" or "They are" respectively. We can then use that in the message telling the player what happened.
+### When the spell isn't known
 
-We also need to update the object description. If the description is just a string, we can tack `object.frotzstatus` on the end, and if it is blank (and please, let's not do that!), we can set it to be just `object.frotzstatus`. If it is a script, you will need to modify the script on each object to check if the object is glowing and react accordingly.
-
-Then we update the object alias (or give it an object alias if there is none).
-
-
-### Learning the spell
-
-So we have a spell, and the player can cast it limited times, but she knows it from the start. We need some way to flag if this spell has been learnt. If this was an object, that would be trivial, just use a flag (i.e., a Boolean attribute). Well, in Quest Viva, commands are objects too, and we can use attributes for them too.
-
-So we need to modify the command script to check the flag first. We need to add three new lines at the top, and then add an `else` at the start of the next line. The top three lines we had before will then look like these six lines (indeed, the top three lines of nearly _all_ our spells will look like this):
+If the player types the name of a spell they haven't learnt, or something that isn't a spell at all, Quest Viva can't find `object1` and would say "I can't see that." To say something better, set "Unresolved object text" to "Run script" and use:
 
 ```quest
-if (not GetBoolean(this, "learnt")) {
-  msg ("You don't know how to do that.")
-}
-else if (player.magicka  < 1) {
-  msg ("You don't have enough magic to do that.")
-}
-```
-
-Now we need a process to learn the spell. Let us say looking at a spell book does that (you may prefer to have the player read the book, or even drink a potion, look in a mirror or whatever). Create the spell book, and add this as a script to run when it is looked at:
-
-```quest
-firsttime {
-  frotz.learnt = true
-  msg ("You learn the {i:Frotz}. spell!")
-}
-otherwise {
-  msg ("The book is entirely blank!")
-}
-```
-
-
-
-### The Lleps spell
-
-The Lleps spell reverses any known spell. As spells are not objects (okay, we just said commands are, but when Quest Viva tries to match text the player has typed, it only looks at _object_ objects), we will need to use "text" in the command pattern:
-
-    lleps #text#;cast lleps at #text#;cast lleps at #text#
-
-The code then looks like this:
-
-```quest
-object = null
-foreach (cmd, ScopeCommands()) {
-  if (text = cmd.name and GetBoolean(cmd, "learnt")) {
-    object = cmd
-  }
-}
-if (object = null) {
-  msg ("You do not know a spell called " + text + ".")
-}
-else if (not GetBoolean(this, "learnt")) {
-  msg ("You don't know how to do that.")
-}
-else if (player.magicka  < 1) {
-  msg ("You don't have enough magic to do that.")
-}
-else if (object = this) {
-  msg ("You suspect the universe will turn inside out if you do that.")
+if (key = "object1") {
+  msg ("You don't know a spell called \"" + object + "\".")
 }
 else {
-  player.magicka = player.magicka - 1
-  object.llepsed = not GetBoolean(object, "llepsed")
-  msg ("You cast {i:Lleps} on the {i:" + CapFirst(object.name) + "}.")
+  msg ("You can't see \"" + object + "\" here.")
 }
 ```
 
-We just said all our spells would start with the same six lines - this is an exception, as we have to first convert the `text` to `object`. In this case the first six lines in this case are trying to find the right spell, by searching through all commands, and looking for one that matches and that the player has learnt, and the next three lines give a message if no match was found.
+`key` tells you which part of the command couldn't be matched, and `object` is what the player typed for it.
 
-At this point we have an `object` and can proceed as before. As with "Frotz" we check other conditions, including that the player is not trying to cast this on itself.
-
-If all goes well the last few lines do the spell effect. In particular this line:
+Players will also type CAST FROTZ on its own. Add a second command with the pattern `cast #object#`, the scope `known_spells` and this script:
 
 ```quest
-object.llepsed = not GetBoolean(object, "llepsed")
+msg ("What do you want to cast " + GetDisplayAlias(object) + " on?")
 ```
 
-This will set the "llepsed" flag of the target spell if not set, but will unset it if it is. This means the spell can be cast a second time on a spell to set it back to how it was.
+Quest Viva prefers the command whose pattern matches more of what was typed, so CAST FROTZ ON STICK still goes to the first command.
 
+## Frotz: making something glow
 
-### The Frotz spell again
+Frotz makes its target give off light. Quest Viva has [light and darkness](/howto/world/handling-light-and-dark) built in, so all the spell has to do is make the target a strong light source.
 
-So far so good. Now we need to change "Frotz" spell so it can be reversed. 
-
-Note that any object that is glowing at the start of the game needs to be set up just right so the reversed Frotz spell will work properly. Hmm, this might be best set up as a function, as we will be doing the same thing several times. Create a new function, "Frotz" (this has a capital at the start, so is a different name to our command). Give it a single parameter, "object", and paste in the code, which you will recognise from before:
+On the `frotz` object's _Attributes_ tab, add an attribute called `cast`, make it a Script, and enter:
 
 ```quest
-object.lightsource = true
-object.lightstrength = "strong"
-object.frotzstatus = " " + WriteVerb(object, "be") + " shining brightly."
-if (HasString(object, "look")) {
-  object.look = object.look + object.frotzstatus
+if (DoesInherit(target, "spell")) {
+  msg ("Spells can't glow.")
 }
-else if (not HasScript(object, "look")) {
-  object.look = object.frotzstatus
+else if (GetBoolean(target, "lightsource")) {
+  msg (WriteVerb(target, "be") + " already glowing.")
 }
-if (not HasString(object, "alias")) {
-  object.alias = object.name
+else {
+  game.pov.mana = game.pov.mana - this.cost
+  target.lightsource = true
+  target.lightstrength = "strong"
+  msg ("You cast {i:Frotz}. " + WriteVerb(target, "start") + " to glow brightly.")
 }
-object.alias = object.alias + " (shining)"
 ```
 
-Now go to the "frotz" command, and change its code for this:
+`this` is the spell and `target` is what it was cast on. The first check stops the player casting Frotz on another spell, which the command's scope allows. The spell only takes the mana once it has worked, so a failed cast is free.
+
+`WriteVerb` starts the sentence with the right pronoun and verb for the target: "It starts to glow" for a stick, "They start to glow" for a pair of boots, and "You start to glow" if the player casts it on themselves.
+
+Casting Frotz on something the player is carrying works even in a dark room, because the things you're carrying are always in scope.
+
+## Learning a spell
+
+To learn a spell, the player reads a scroll. Add a `scroll` object, tick "Object can be taken" on its _Inventory_ tab, and on the _Verbs_ tab add the verb "read" with this script:
 
 ```quest
-if (not GetBoolean(this, "learnt")) {
-  msg ("You don't know how to do that.")
+if (frotz.parent = known_spells) {
+  msg ("You already know this spell.")
 }
-else if (player.magicka  < 1) {
-  msg ("You don't have enough magic to do that.")
+else {
+  MoveObject (frotz, known_spells)
+  msg ("As you read the scroll, the words sink into your memory. You have learnt {i:Frotz}!")
 }
-else if (GetBoolean(object, "lightsource") and not GetBoolean(this, "llepsed")) {
-  msg ("It already is!")
+```
+
+Learning a spell is just moving it into `known_spells`. You could equally do it when the player talks to a wizard, drinks a potion or reaches a certain level.
+
+To let the player see which spells they know, add a command with the pattern `spells` and this script:
+
+```quest
+msg ("You know " + FormatList(GetDirectChildren(known_spells), ",", "and", "no spells") + ".")
+```
+
+## Lleps: reversing a spell
+
+Lleps reverses another spell. Cast on Frotz, it makes Frotz put lights out instead of lighting them. Cast on Frotz again, it puts it back. Its target is a spell, which is why the command's scope includes `known_spells` for `object2`.
+
+Add a `lleps` object to `known_spells` (or `unknown_spells`, with its own scroll), with the alias `Lleps`, inheriting `spell`. Give it this `cast` script:
+
+```quest
+if (not DoesInherit(target, "spell")) {
+  msg ("Lleps only works on other spells.")
 }
-else if (not GetBoolean(object, "lightsource") and GetBoolean(this, "llepsed")) {
-  msg ("It already is!")
+else if (target = this) {
+  msg ("You suspect the universe would turn inside out if you did that.")
 }
-else if (GetBoolean(this, "llepsed")) {
-  player.magicka = player.magicka - 1
-  object.lightsource = false
-  if (HasString(object, "look")) {
-    object.look = Replace(object.look, object.frotzstatus, "")
+else {
+  game.pov.mana = game.pov.mana - this.cost
+  target.reversed = not GetBoolean(target, "reversed")
+  msg ("You cast {i:Lleps} on {i:" + GetDisplayAlias(target) + "}. You feel it twist inside out in your memory.")
+}
+```
+
+`not GetBoolean(target, "reversed")` flips the target's `reversed` flag: on if it was off, off if it was on.
+
+Each spell then decides what "reversed" means for it. Here's Frotz's `cast` script again, with a reversed version that makes a glowing object stop glowing:
+
+```quest
+if (DoesInherit(target, "spell")) {
+  msg ("Spells can't glow.")
+}
+else if (GetBoolean(this, "reversed")) {
+  if (not GetBoolean(target, "lightsource")) {
+    msg (WriteVerb(target, "be") + "n't glowing.")
   }
-  object.alias = Replace(object.alias, " (shining)", "")
-  msg ("You cast {i:Frotz} on the " + GetDisplayName(object) + ", and it stops shining.")
+  else {
+    game.pov.mana = game.pov.mana - this.cost
+    target.lightsource = false
+    msg ("You cast {i:Frotz}, and the light fades.")
+  }
+}
+else if (GetBoolean(target, "lightsource")) {
+  msg (WriteVerb(target, "be") + " already glowing.")
 }
 else {
-  player.magicka = player.magicka - 1
-  Frotz(object)
-  msg ("You cast {i:Frotz} on the " + GetDisplayName(object) + "." + object.frotzstatus)
+  game.pov.mana = game.pov.mana - this.cost
+  target.lightsource = true
+  target.lightstrength = "strong"
+  msg ("You cast {i:Frotz}. " + WriteVerb(target, "start") + " to glow brightly.")
 }
 ```
 
-Now any object that is glowing at the start of the game, rather than setting it to glow on the _Light/Dark_ tab, instead doing it in code, in the "start" script of the game object. This example does it for an object called "glowstone":
+Reversed Frotz works on anything that's a light source, including a torch you set up on its _Light/Dark_ tab, so the player could use it to put out a light that's guarding something.
 
-```quest
-Frotz(glowstone)
-```
+## Adding more spells
 
-Now we can be sure that all the glowing items can be set to not glow by the reversed Frotz spell.
+Every new spell is an object in `known_spells` or `unknown_spells` that inherits `spell` and has a `cast` script. The script follows the same shape as Frotz:
 
+1. Check anything that would stop the spell working - the wrong kind of target, or the target already being affected - and say so.
+2. If it's reversed, take the mana and do the reverse effect.
+3. Otherwise, take the mana and do the normal effect.
 
-### Other spells
-
-So now we can think about how to approach all other spells. Create a command, give it a pattern in the form we did before, and a name. The code has the general format:
-
-```quest
-if (not GetBoolean(this, "learnt")) {
-  msg ("You don't know how to do that.")
-}
-else if (player.magicka  < 1) {
-  msg ("You don't have enough magic to do that.")
-}
-else if ([Check if the object is already affected by the spell]) {
-  msg ("It already is!")
-}
-else if ([Check any other conditions for not casting the spell]) {
-  msg ("You cannot do that!")
-}
-else if (GetBoolean(this, "llepsed")) {
-  player.magicka = player.magicka - 1
-  [Update the world for the reverse effect]
-  msg ([Message about the effect])
-}
-else {
-  player.magicka = player.magicka - 1
-  [Update the world for the normal effect]
-  msg ([Message about the effect])
-}
-```
-
-It is as easy as that!
-
-
-### The Aimfiz spell
-
-This spell teleports the caster to someone else's location, and we will look at it as it can be cast on objects that are not here. The pattern is the usual:
-
-    aimfiz #object#;cast aimfiz at #object#;cast aimfiz at #object#
-
-Remember to name it "aimfiz" so it can be reversed. We will say that if it is reversed the target gets teleported to the player.
-
-The trick here is to set the scope to "world". Quest Viva will try to match the object against everything in the game world. 
-
-The code then is pretty easy. We check all the possible fail scenarios as usual, then check if it is reversed, and perform the spell action. Note that the message should be before the line where the player moves so the player sees the message before the room description.
-
-```quest
-if (not GetBoolean(this, "learnt")) {
-  msg ("You don't know how to do that.")
-}
-else if (player.magicka  < 1) {
-  msg ("You don't have enough magic to do that.")
-}
-else if (object.parent = player.parent) {
-  msg ("You're already together!")
-}
-else if (not DoesInherit(object, "npc_type")) {
-  msg ("You can't {i:aimfiz} to that.")
-}
-else if (not ListContains(player.friends, object)) {
-  msg ("You can't {i:aimfiz} to someone you do not know.")
-}
-else if (GetBoolean(this, "llepsed")) {
-  player.magicka = player.magicka - 1
-  object.parent = player.parent
-  msg ("You cast {i:Aimfiz} on " + GetDisplayName(object) + ", and " + object.gender + " suddenly appears in front of you.")
-}
-else {
-  player.magicka = player.magicka - 1
-  msg ("You cast {i:Aimfiz} on " + GetDisplayName(object) + ", and sudden you are stood in the same room as " + object.article + ".")
-  player.parent = object.parent
-}
-```
-
-This version will only allow the player to teleport to an object that is of the "npc_type" (any object set to be male or female), and is in the list `player.friends`, so you will also need a mechanism to add NPCs to that list as the player encounters them. You could easily adapt the spell to allow the player to teleport to a known location (but what would the reverse spell do?), or to NPCs with a flag set on them (change the fifth condition). If you use ConvLib you could check the object is of the "talkingchar" type (change the fourth condition), and then that its "nevermet" flag is false (change the fifth condition); the player could then teleport to any NPC she has talked to.
+Mana only goes down so far, so give the player a way to get it back - a potion that adds to `mana`, or a [turn script](/tutorial/using-timers-and-turn-scripts#turn-scripts) that adds one every few turns up to a maximum.
