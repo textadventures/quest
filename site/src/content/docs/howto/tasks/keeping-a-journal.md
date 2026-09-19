@@ -1,113 +1,173 @@
 ---
-title: Keeping a journal
-sidebar:
-  order: 10
+title: Journals and player notes
+description: Give the player a journal that the game and the player can both write in, and a REMEMBER command that looks up what the character already knows
 ---
 
-This is a way to add a journal to your game. This is a book the player can make notes in, and that the game can add to as well when appropriate.
+Long games ask a lot of the player's memory. This page shows two ways to help: a journal that the game writes in when something important happens and the player can add their own notes to, and a `REMEMBER` command that tells the player what their character already knows about the world.
 
+| You want | Use |
+|---|---|
+| A record of what has happened, which the player can add to | A [journal object](#the-journal) with a string list of entries |
+| The player to be able to type notes | [`NOTE` and `-` commands](#letting-the-player-write-notes) |
+| The player to look up people, places and things their character knows about | A [`REMEMBER` command](#remembering-and-looking-things-up) that searches a string dictionary |
 
 ## The journal
 
-The first step is to add an object to the player that will be the journal. Let us call it "journal". Make sure it is in the player; Quest Viva will try to put it in the same room. To move it there, use the tree's "Move to…" option (in its "..." menu).
+The journal is an ordinary object that the player carries, with a list of entries.
 
-We will be adding new commands later to handle the journal and what we could do is have those commands check the player has the journal, and give an error if not. However, we are going to do this differently, and stop the play dropping the journal, so we know she will always have it. Go to the _Inventory_ tab of the journal, and untick "Object can be dropped". On the _Object_ tab, delete "Drop" from the list at the bottom.
+1. Select the player object in the tree and click Add Object in "player". Call the new object "journal".
+2. On its _Inventory_ tab, untick "Object can be dropped", so the player always has it. You can type something like "You'd better keep your journal." in "Drop message".
+3. On its _Attributes_ tab, add an attribute called "entries" and set its type to "String List". Leave the list empty.
 
-The journal needs to hold information so we need to give it a string list to do that. You can do that on the _Attributes_ tab, add a new attribute called "entries", and set it to be a string list.
+If your game shows object links or the Inventory pane, you may also want to remove "Drop" from the "Inventory verbs" list on the journal's _Object_ tab, so the player isn't offered it.
 
-Alternatively, go to the _Scripts_ tab of the game object, and add this to the start script:
-```quest
-journal.entries = NewStringList()
-```
+### Reading the journal
 
-## Read the journal
+On the journal's _Verbs_ tab, add a "read" verb, set it to "Run a script", and enter:
 
-We want the player to be able to read the journal, so go to the _Verbs_ tab of the journal, click _Add_ and type "read". At the bottom, set it to "Run a script", and paste this in:
 ```quest
 if (ListCount(this.entries) = 0) {
-  msg ("You have nothing written in your journal.")
+  msg ("You haven't written anything in your journal yet.")
 }
 else {
-  msg ("You look at your journal:")
-  foreach (s, this.entries) {
-    msg (s)
+  msg ("You read your journal:")
+  foreach (entry, this.entries) {
+    msg ("<i>" + entry + "</i>")
   }
 }
 ```
-The first bit checks if anything is written in the journal yet, and if not then says as much. The second bit prints an introductory message, then goes through each entry in turn, printing it out.
 
+The player can now type `READ JOURNAL`. Each entry is printed in italics - change the `msg` line if you'd like it to look different.
 
-## The JOURNAL command
+It's worth adding a shorter `JOURNAL` command too. Click "Add Command", and in "Pattern" type `journal;notes`. For its script, run the journal's "read" verb:
 
-This is optional, but will allow the player to type `JOURNAL` to see what is currently written in it, and would be useful if you turn off the panes on the right.
-
-Create a new command, and give it the pattern "journal". Then paste in this code:
 ```quest
-do(journal, "read")
-```
-We have already done the hard work setting up the `read` verb, so here all we need to do is invoke that script. We could paste in the same code, but doing it this way means that if we later update that code, we only have to do it once.
-
-
-## Adding to the journal
-
-The journal can be used for two things. The game can write to it automatically when something important happens, and the player can write in it too. We will do the former first. Unfortunately for this tutorial, there are countless things that could be significant and need to be recorded; you will have to decide where and when to do that. The important bit is to add this line of code (modifying the text as appropriate of course):
-```quest
-list add(journal.entries, "You did something important!")
+do (journal, "read")
 ```
 
-## Letting the player write in the journal
+Now there's only one script that reads the journal, so if you change how it looks, you only have to change it once.
 
-We are going to do this three ways. Firstly, for `USE JOURNAL`. On the _Features_ tab, tick "Use/Give", then on the _Use/Give_ tab in the "Use (on its own)" section, set it to "Run script". Paste in this code:
+### Writing to the journal from the game
+
+Whenever something happens that the player should be able to look up later, add an entry to the list. In the editor, use "Add a value to a list" from the Variables category. In code:
+
 ```quest
-msg ("Please type the text to go in the journal")
-entry = GetInput()
-list add (journal.entries, entry)
-msg (entry)
-```
-The [GetInput](/reference/functions/user-interface#getinput) function makes Quest Viva wait for the player to type something, and hands that text back so we can put it in a variable - `entry` here. That text then gets added to the journal entries, and printed back so the player can see it went in.
-
-
-## The NOTE command
-
-Like the `JOURNAL` command, this is optional, but useful if the right pane is turned off. We can use the same trick here too. Create a new command, and give it the pattern "note". Then paste in this code:
-```quest
-do(journal, "use")
+list add (journal.entries, "The old man said the treasure is buried under the oak tree.")
+msg ("(You make a note of that in your journal.)")
 ```
 
+Where to do this is up to you - in the script that runs when the player talks to a character, finds a clue, or solves a puzzle. Telling the player that the journal has been updated reminds them it's there.
 
-## The - command
+## Letting the player write notes
 
-We can also let the player just type in a journal entry without any command. If the input starts with a dash, the rest of the line will go into the journal.
+To let the player add their own notes, add a command with the pattern:
 
-Again, create a command, and give it this pattern: "-#text#" (no quotes). Quest Viva will match `#text#` to any text, and will match the dash exactly, so this will match any line that starts with a dash, and the rest of the line will go into a variable called `text`.
-
-Paste in this code:
-```quest
-msg("You write in your journal: " + text)
-list add(journal.entries, text)
 ```
-Probably worth pointing out to the player that she has this option.
+note #text#;write #text#;-#text#
+```
 
+`#text#` matches anything the player types, and puts it in a variable called `text` (see [Commands](/howto/commands/commands)). The last pattern means that any line starting with a dash is treated as a note, so the player can type `-the guard is lying` without typing a command at all. The script is:
 
-
-## Fancy display
-
-Quest Viva has a huge scope for showing text in different ways, and this is discussed else, so will not be covered here. However, here is where to make the changes. What we want to display differently is the actual text written in the journal, so it is the "read" verb of the journal that needs updating. here is an example:
 ```quest
-if (ListCount(this.entries) = 0) {
-  msg ("You have nothing written in your journal.")
+list add (journal.entries, text)
+msg ("You write in your journal: " + text)
+```
+
+```
+> note the door code might be 1847
+You write in your journal: the door code might be 1847
+
+> -Bob is lying about the ring
+You write in your journal: Bob is lying about the ring
+
+> journal
+You read your journal:
+The old man said the treasure is buried under the oak tree.
+the door code might be 1847
+Bob is lying about the ring
+```
+
+If the player types `NOTE` on its own, that command doesn't match - `#text#` needs something to match. Add a second command with the pattern `note;write` that asks what to write, using [`GetInput()`](/howto/scripting/asking-the-player#typed-input):
+
+```quest
+msg ("What do you want to write?")
+text = Trim(GetInput())
+if (text = "") {
+  msg ("You decide not to write anything.")
 }
 else {
-  msg ("You look at your journal:")
-  defaultfont = game.defaultfont
-  defaultforeground = game.defaultforeground
-  SetFontName ("serif")
-  SetForegroundColour("Blue")
-  foreach (s, this.entries) {
-    msg (s)
-  }
-  SetFontName (defaultfont)
-  SetForegroundColour(defaultforeground)
+  list add (journal.entries, text)
+  msg ("You write in your journal: " + text)
 }
 ```
-The first five lines are the same. Then the current values are saved to suitable variables, before the new vales are set. The entries are printed, and then the old values are set again to get the display back to normal.
+
+`Trim` removes spaces from each end, so the `if` catches an answer that's empty or only spaces, and doesn't add a blank entry.
+
+Mention these commands somewhere the player will see them, such as the game's introduction - players won't guess that a line starting with a dash is a note.
+
+## Remembering and looking things up
+
+In a game set in a detailed world, the player character knows things the player doesn't. If a character mentions the Weddle-Hoots, the player should be able to find out who they are. A `REMEMBER` command can look topics up in a string dictionary, where each key is the topic and each value is what the character remembers.
+
+1. Select "game" in the tree, and on its _Attributes_ tab add an attribute called "knowledge". Set its type to "String dictionary".
+2. Add an entry for each topic. For the key, type the words the player might use for it, separated by semicolons, in lower case - `weddle;hoots`. For the value, type what the player should see - "The Weddle-Hoots are an old aristocratic family, and not to be trusted."
+
+Then add a command with the pattern `remember #text#;recall #text#`, and this script:
+
+```quest
+found = false
+foreach (key, game.knowledge) {
+  foreach (keyword, Split(key, ";")) {
+    if (not found and Instr(LCase(text), keyword) > 0) {
+      msg (StringDictionaryItem(game.knowledge, key))
+      found = true
+    }
+  }
+}
+if (not found) {
+  msg ("You don't remember anything about " + text + ".")
+}
+```
+
+The script goes through each topic, and each word in its key, and checks whether that word appears anywhere in what the player typed. The first topic that matches is shown.
+
+```
+> remember the Weddle Hoots
+The Weddle-Hoots are an old aristocratic family, and not to be trusted.
+
+> recall hoots
+The Weddle-Hoots are an old aristocratic family, and not to be trusted.
+
+> remember bananas
+You don't remember anything about bananas.
+```
+
+Each keyword is matched anywhere in the typed text, so a short keyword like "ring" also matches "string". Choose keywords that are distinctive. A keyword can be a phrase, such as `gold ring`, which only matches when the player types those words together.
+
+The same approach works for any lookup command - just change the pattern and the messages. A science-fiction game might have `wiki #text#`, and a game with complicated commands could add `help #text#` for help topics. Core's `HELP` command only matches `HELP` on its own, so `HELP MAGIC` reaches your command instead.
+
+### Adding topics during the game
+
+You can add topics as the player learns things, for example when they read a book. Use "Add a value to a dictionary" from the Variables category, or in code:
+
+```quest
+if (not DictionaryContains(game.knowledge, "dagger;letros")) {
+  dictionary add (game.knowledge, "dagger;letros", "According to legend, the Dagger of Letros was used to kill Queen Hef.")
+}
+```
+
+The `if` stops the script failing if it runs a second time - a dictionary can't have the same key twice.
+
+To change what the player remembers about a topic, remove it and add it again with the new text. The key must be exactly the same as the one you used before:
+
+```quest
+dictionary remove (game.knowledge, "weddle;hoots")
+dictionary add (game.knowledge, "weddle;hoots", "The Weddle-Hoots have lost their fortune.")
+```
+
+Be careful about hiding topics until later in the game. A player who gets "You don't remember anything" once may not think to try again. For things the player discovers, a journal entry is often clearer.
+
+## See also
+
+- [Asking the player](/howto/scripting/asking-the-player) - `GetInput()`, menus and yes/no questions
+- [Using lists](/howto/scripting/using-lists) and [Using dictionaries](/howto/scripting/using-dictionaries)

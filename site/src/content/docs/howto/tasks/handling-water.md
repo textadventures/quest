@@ -1,107 +1,208 @@
 ---
-title: Handling water
-sidebar:
-  order: 6
+title: Liquids
+description: Let the player fill a container with water, drink from it, empty it and pour it over things
 ---
 
-There is more than one way to do this, but this is the recommended approach. This will involve setting attributes.
+Water, wine and potions don't work well as ordinary objects - the player can't pick up a litre of water and put it in their pocket. Instead, treat the liquid as an amount stored on its container. This page builds a waterskin that the player can fill from a pool or a tap, drink from, empty, and pour over a campfire to put it out.
 
-What we will do is to create a waterskin that can be filled and drunk from, and then set up a room with a pool of water and another with a tap.
+| You want | Use |
+|---|---|
+| Something the player can drink once, like a potion | The built-in "drink" verb on the object |
+| Water the player can drink where it is, like a pool | The "drink" verb on the pool |
+| A container that holds an amount of liquid | Integer attributes on the container, plus "fill", "empty" and "drink" verbs |
+| Pouring liquid over something else | A command with two objects |
 
-There is also a [library](https://github.com/ThePix/quest/wiki/Liquid-Library) available.
+## Drinking
 
+"drink" is one of Quest Viva's built-in verbs. Every object already understands DRINK, and says "You can't drink it." until you give it a response. To make something drinkable, select it, go to the _Verbs_ tab, add the verb "drink", and either print a message or run a script. For a potion that's used up, the script might be:
 
-## The waterskin
-
-So first create the waterskin, in the normal way. Give it two integer attributes, "full" and "capacity". Set them to 0 and 10 respectively. The full attribute will track how much water is in the waterskin, the capacity will be the maximum. You may want to play around with these values.
-
-Then go to the verbs tab, and create a new verb, "fill". Paste in this code:
 ```quest
-if (this.full = this.capacity) {
-  msg ("It is already full.")
+msg ("You drink the potion. You feel much stronger.")
+RemoveObject (this)
+```
+
+The _Edible_ feature doesn't help here - it only adds EAT.
+
+For a pool, the drink verb only needs a message: "You kneel and drink from the pool. The water is cold and fresh." Add "water" to the pool's _Other names_ (on the _Object_ tab), so DRINK WATER works too.
+
+## A container of water
+
+Create a `waterskin` object the player can take. On its _Attributes_ tab, add two Integer attributes:
+
+- `water`, set to 0 - how much water is in it now
+- `capacity`, set to 3 - how much it holds, measured in drinks
+
+### Describing it
+
+The simplest description uses the text processor. Set the waterskin's _"Look at" object description_ (on the _Setup_ tab) to:
+
+```
+A leather waterskin. {if waterskin.water=0:It's empty.}{if waterskin.water>0:There's some water in it.}
+```
+
+To say how full it is, change the description to "Run script" and use a script instead:
+
+```quest
+if (this.water = 0) {
+  msg ("A leather waterskin. It's empty.")
 }
-else if (not GetBoolean(game.pov.parent, "watersource")) {
-  msg ("No water here.")
+else if (this.water = this.capacity) {
+  msg ("A leather waterskin, full of water.")
 }
 else {
-  msg ("You fill it.")
-  this.full = this.capacity
+  msg ("A leather waterskin, about " + (this.water * 100 / this.capacity) + "% full.")
 }
 ```
-All this does is check if the waterskin is already full, then check if there is water. If all is okay, the waterskin gets filled.
 
-You might want to give it a description like this:
+Both `water` and `capacity` are whole numbers, so the percentage is rounded down - one drink from a full three-drink waterskin leaves it "about 66% full".
+
+### Drinking from it
+
+On the waterskin's _Verbs_ tab, add "drink" and choose "Run a script":
+
 ```quest
-The waterskin {if waterskin.full=0:is empty}
-{if waterskin.full<>0:contains some water}.
-```
-The text processor is a bit limited, and you might prefer to use a script so you can say how full it is.
-```quest
-if (this.full = 0) {
-  msg ("The waterskin.")
-}
-else if (this.full = this.capacity) {
-  msg ("The waterskin is full.")
+if (this.water = 0) {
+  msg ("It's empty.")
 }
 else {
-  msg ("The waterskin is about " + (waterskin.full  * 10) + "% full.")
+  this.water = this.water - 1
+  msg ("You take a drink of water.")
 }
 ```
 
-## A source of water
+If your game tracks thirst, this is the place to reduce it.
 
-Now we will do a room with a pool of clear, fresh water. Create a room, give it a Boolean attribute, "watersource", and set it to true. Now you should be able to go in-game and fill the waterskin with water.
+### Emptying it
 
-For a room with a tap, create the room, then create the tap as an object in it. For the tap, on the Features tab tick Switchable. On the "Switchable" tab set it to "Can be switched...". Fill in the text boxes as you like. For the first script, paste in this:
+Add an "empty" verb. It isn't built in, so the editor creates a new verb for it:
+
 ```quest
-this.parent.watersource = true
-```
-And for the second:
-```quest
-this.parent.watersource = false
-```
-
-## Playing with water
-
-What else do you want to do? Well, you could empty it. Create an "empty" verb, and paste this in.
-```quest
-if (this.full = 0) {
-  msg ("It is already empty.")
+if (this.water = 0) {
+  msg ("It's already empty.")
 }
 else {
-  msg ("You empty it.")
-  this.full = 0
+  this.water = 0
+  msg ("You pour the water out on the ground.")
 }
 ```
-Is there some point to emptying it? Perhaps there is a room with a fire, and emptying the waterskin will put the fire out. You could do that like this:
-```quest
-if (this.full = 0) {
-  msg ("It is already empty.")
-}
-else if (game.pov.parent = room_with_fire) {
-  msg ("You empty it over the fire, which spits, then dies.")
-  this.full = 0
-  room_with_fire.fireout = true
-}
-else {
-  msg ("You empty it.")
-  this.full = 0
-}
-```
-You might want to drink from the waterskin. Add a "drink from" verb, and paste this in:
-```quest
-if (this.full = 0) {
-  msg ("It is empty.")
-}
-else {
-  msg ("You take a drink from it.")
-  this.full = this.full - 1
-}
-```
-What it does is check the waterskin is not empty, and if not reduces its contents by 1. You might want to do some other things in the second block, if the player is going to die of thirst; that is up to you to sort out!
 
-You might want to `USE` the waterskin, i.e., presumably drink from it. `USE` is kind of built-in, so takes a bit of setting up. Go to the Features tab, and tick Use/Give. Then go to the Use/Give tab, and at the top, for "Use (on its own)", set the action to "Run script". This does the same thing as "drink from", so we can use that script (note that spaces are removed from the verb to make the attribute name).
+## Somewhere to fill it
+
+A water source is any object with a Boolean attribute called `watersource` set to true. Give the pool one on its _Attributes_ tab.
+
+For a tap, tick _Switchable_ on its _Features_ tab, set it to "Can be switched on/off" on the _Switchable_ tab, and give it a `watersource` attribute too. The fill verb below only counts a switchable source while it's switched on, so there's nothing to change in the tap's switch scripts - the tap's `switchedon` attribute is the only thing that needs to know whether water is running.
+
+Now add a "fill" verb to the waterskin:
+
 ```quest
-do(this, "drinkfrom")
+source = null
+foreach (obj, ScopeReachable()) {
+  if (GetBoolean(obj, "watersource")) {
+    if (not DoesInherit(obj, "switchable") or GetBoolean(obj, "switchedon")) {
+      source = obj
+    }
+  }
+}
+if (source = null) {
+  msg ("There's no water here.")
+}
+else if (this.water = this.capacity) {
+  msg ("It's already full.")
+}
+else {
+  this.water = this.capacity
+  msg ("You fill " + GetDefiniteName(this) + " from " + GetDefiniteName(source) + ".")
+}
 ```
-You could have pasted the script from "drink from" in here, but this way is better in the long term. If you later decide you want to change the effects of drinking water, you only have to change it in one place, rather than remember to do both. This is a principle in software engineering called DRY (Don't Repeat Yourself).
+
+`ScopeReachable()` is every object the player can reach, so the waterskin fills from any source in the room, or one the player is carrying.
+
+```
+> fill waterskin
+There's no water here.
+
+> turn on tap
+You switch it on.
+
+> fill waterskin
+You fill the waterskin from the tap.
+```
+
+If you have several containers, give each one `water` and `capacity` attributes and the same verbs. Once you're doing that for more than a couple of objects, it's worth [creating a type](/advanced-topics/using-inherited-types) that holds the attributes and verb scripts, and having each container inherit it.
+
+## Pouring it over something
+
+To let the player put out a campfire, you need a command that mentions two objects. Add a new command to the game with this pattern:
+
+```
+pour #object1# on #object2#;pour #object1# over #object2#;empty #object1# on #object2#;empty #object1# over #object2#
+```
+
+and this script:
+
+```quest
+if (not HasInt(object1, "water")) {
+  msg ("You can't pour " + object1.article + ".")
+}
+else if (object1.water = 0) {
+  msg (CapFirst(GetDefiniteName(object1)) + " is empty.")
+}
+else {
+  object1.water = 0
+  if (HasScript(object2, "douse")) {
+    do (object2, "douse")
+  }
+  else {
+    msg ("You pour the water over " + GetDefiniteName(object2) + ".")
+  }
+}
+```
+
+Any container with a `water` attribute can be poured. If the thing it's poured on has a `douse` script, that script decides what happens. Otherwise the water just runs off. EMPTY WATERSKIN on its own still runs the "empty" verb - Quest Viva picks the command because it matches more of what the player typed.
+
+For the campfire, give it a Boolean `lit` attribute set to true, "fire" as another name, and a Script attribute called `douse`:
+
+```quest
+if (this.lit) {
+  this.lit = false
+  msg ("The fire hisses and spits, and goes out.")
+}
+else {
+  msg ("You pour the water over the soggy ashes.")
+}
+```
+
+Its description can use the text processor: `{if campfire.lit:The fire crackles merrily.}{if not campfire.lit:A heap of soggy ashes.}`
+
+## Other ways the player might say it
+
+A verb only matches the verb followed by an object, so DRINK FROM WATERSKIN and FILL WATERSKIN FROM POOL aren't understood yet. Two more commands fix that for every object in the game. The first has the pattern `drink from #object#;drink out of #object#`:
+
+```quest
+if (HasScript(object, "drink")) {
+  do (object, "drink")
+}
+else {
+  msg ("You can't drink from " + object.article + ".")
+}
+```
+
+The second has the pattern `fill #object1# from #object2#;fill #object1# at #object2#;fill #object1# with #object2#`, and hands over to the fill verb, which finds the source by itself:
+
+```quest
+if (HasScript(object1, "fill")) {
+  do (object1, "fill")
+}
+else {
+  msg ("You can't fill " + object1.article + ".")
+}
+```
+
+Now FILL WATERSKIN WITH WATER works beside the pool, because "water" is one of the pool's other names. The `HasScript` checks matter: they only run a verb that was set up to "Run a script", not one that prints a message.
+
+## See also
+
+- [Using verbs](/howto/commands/using-verbs)
+- [Custom commands](/tutorial/custom-commands)
+- [Custom attributes](/tutorial/custom-attributes)
+- [Turning one thing into another](/howto/tasks/convert)

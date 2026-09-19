@@ -1,203 +1,199 @@
 ---
 title: Setting up a shop
-sidebar:
-  order: 15
+description: Let the player buy and sell items using the built-in money feature, with stock kept in a stockroom
 ---
 
+This page shows you how to build a shop where the player can see what's for sale, buy things if they can afford them, and sell things back. It uses Quest Viva's built-in money feature, a stockroom the player can never reach, and three commands: BUY, BROWSE and SELL. The same three commands work for every shop in your game.
 
-There is a library to handle shops, but this page describes how to do it yourself.
+As an example, we'll build a bakery selling a lamington, a Victoria sponge and a fairy cake.
 
-There are several ways to set up a shop; this is more comprehensive, which does mean it is more effort to set up initially, but once done, it is very easy to expand.
+## Turn on money
 
-The approach is to have separate rooms that the player cannot get to to hold the stock. When goods are purchased from stock, a clone is made for the player. When the player sells an item, if it is something that was purchased, it will get destroyed, otherwise it will get added to stock (and if bought back will not be cloned).
+1. On the game object's _Features_ tab, tick "Money". The player's money now appears in the status pane.
+2. On the game object's _Player_ tab, set "Format for money". The `!` stands for the amount, so `£!` shows 10 as "£10". Money is always a whole number, so decide whether your unit is pounds or pence. See [DisplayMoney](/reference/functions/string#displaymoney) for more formats.
+3. On the player object's _Player_ tab, set "Starting money". If you leave it, the player starts with nothing.
 
+There's more about money, and the "Increase money" and "Decrease money" script commands, in [Score, health and money](/howto/world/score-health-money).
 
-## Setting up an economy
+## The shop and its stockroom
 
-Quest Viva has some features built in to help us, so the first step is to turn these on. Go to the _Features_ tab of the `game` object, and tick "Money".
+Create the shop as an ordinary room, "bakery", with exits to and from it as usual.
 
-Now you need to think about what currency you want to use. If you are using pounds sterling, you should consider if you want to track the pennies, or just the pounds (the system will only be using whole numbers, so think carefully!).
+Then create a second room, "bakery stock", and give it no exits. This is the stockroom. Put everything the bakery sells inside it, and on each item's _Inventory_ tab, set its "Price". Because the player can never get to the stockroom, they can't see or take anything in it - the only way to get stock out is to buy it.
 
-Now go to the _Player_ tab, and the "Format for money" bit. By default it is "$!". The exclamation mark is a stand in for the actual value, so this will show money in dollars. You can modify that as you like - and there are [a lot of options](/reference/functions/string#displaymoney).
+Finally, link the shop to its stockroom. On the bakery's _Attributes_ tab, add an attribute called `stock`, set its type to "Object", and choose "bakery stock". Every room with a `stock` attribute is a shop, and the commands below look in whichever stockroom it points to.
 
-Clearly everything will need a price, so it can be bought and sold.  On the _Inventory_ tab of each object, you can set the price. You must also set the starting money for the player on the _Player_ tab of the player object (you will get errors if this is not set).
-
-### Functions...
-
-There are several functions we need to create. To create a function, select functions from the left pane, then click "Add" in the right pane.
-
-The `SetUpShop` function has no return type, and two parameters, "shop" and "stock" (in that order!). It will be called at the start to set up each shop. Paste in this code (you will need to click on the "Code view" button first):
+You can also set it in a script, such as the game's start script on the _Scripts_ tab:
 
 ```quest
-shop.stock = stock
-foreach (o, GetDirectChildren(stock)) {
-  SetUpMerchandise (o)
+bakery.stock = bakery stock
+```
+
+## Buying
+
+Add a command with the "Add Command" button, and set:
+
+- **Pattern**: "Command pattern", `buy #object#; purchase #object#`
+- **Scope**: `stock`
+- **Unresolved object text**: "Text", `That isn't for sale here.`
+
+Setting the scope to `stock` tells Quest Viva to look for `#object#` among the contents of the stockroom that the current room's `stock` attribute points to. Anywhere that isn't a shop, there's no `stock` attribute, so BUY finds nothing for sale.
+
+Then paste this into the command's script (click "Code view" in the script editor first):
+
+```quest
+if (not HasObject(game.pov.parent, "stock")) {
+  msg ("There's nothing for sale here.")
 }
-```
-
-It should like like this if all went well:
-
-![](/images/SetUpShop.png)
-
-The `BuyingPrice` function has "integer" as the return type, and one parameter, "obj". This will calculate the price merchants sell at (i.e., the player is buying), based on the object's price, and in the example below, it is just double. Paste in this code:
-
-```quest
-return (obj.price * 2)
-```
-
-You might want to modify this to reflect the player's skill at haggling, and perhaps any spell effect, but this is good for now.
-
-The `SellingPrice` function has "integer" as the return type, and one parameter, "obj". This will calculate the price merchants buy at, based on the object's price, and in the example below, it is not modified. Paste in this code:
-
-```quest
-return (obj.price)
-```
-
-You might want to modify this too later.
-
-The `StealObject` function has no return type, and one parameter, "obj". It will be called if the player tries to take something from the shop without paying. Paste in this code:
-
-```quest
-msg ("You can't just steal stuff!")
-```
-
-You might want to modify that to allow shop-lifting, but we are not going to condone that sort of thing!
-
-
-The `SetUpMerchandise` function has no return type, and one parameter, "obj". It will be called at the start for each object in the shop, but also when an object is sold. Paste in this code:
-
-```quest
-if (not HasString(obj, "alias")) {
-  obj.alias = obj.name
+else if (object.parent = game.pov) {
+  msg ("You already have " + object.article + ".")
 }
-obj.listalias = obj.alias + " (" + DisplayMoney(BuyingPrice(obj)) + ")"
-obj.cloneme = true
-obj.take => {
-  StealObject (this)
+else if (not object.parent = game.pov.parent.stock) {
+  msg ("That isn't for sale here.")
 }
-obj.buy => {
-  BuyObject (this)
-}
-```
-
-So this is a bit more complicated. First, it gives the object an alias if one is not set, so we can use it in the next step. Then it sets the "listalias" attribute. This is what will appear in the right pane, and it will show the alias, followed by the price in brackets.
-
-Then it sets "cloneme" to true. This will differentiate items that start in stock with items the player has sold to the shop. The former get cloned when bought, and destroyed when sold.
-
-Then we set the "take" and "buy" attributes to scripts that call the functions we created above, so now those functions will be called when the player tries to `TAKE` or `BUY` the item.
-
-
-The `BuyObject` function has no return type, and one parameter, "obj". It will be called if the player tries to buy something from the shop. Paste in this code:
-
-```quest
-if (obj.price > game.pov.money) {
-  msg ("You can't afford that!")
+else if (object.price > game.pov.money) {
+  msg ("You can't afford " + GetDisplayName(object) + ". It costs " + DisplayMoney(object.price) + ".")
 }
 else {
-  if (GetBoolean(obj, "cloneme")) {
-    obj = CloneObject(obj)
-  }
-  obj.take = true
-  obj.parent = game.pov
-  obj.buy = null
-  obj.listalias = obj.alias
-  list remove (obj.generatedverbslist, "Buy")
-  list remove (obj.displayverbs, "Buy")
-  list remove (obj.inventoryverbs, "Buy")
-  player.money = game.pov.money - BuyingPrice(obj)
-  msg ("You buy " + obj.article + " for " + DisplayMoney(BuyingPrice(obj)) + ".")
+  DecreaseMoney (object.price)
+  MoveObject (object, game.pov)
+  msg ("You buy " + GetDisplayName(object) + " for " + DisplayMoney(object.price) + ".")
 }
 ```
 
-Another complicated one. The first three lines handle the player not having enough money. If so, then the "cloneme" attribute is checked, and if true, the object is cloned, and we then work with the clone. We set the "take" attribute to true so the object can be picked up like a normal object from now on, we move it to the player, we remove the "buy" script so it cannot be bought again, we reset the "listalias" attribute so it does not show the price. The next three lines remove "Buy" from the verb lists. Then we take the money off the player, and finally say we did it.
+The checks run in order:
 
+1. The player isn't in a shop. If Quest Viva can't find the object in a stockroom, it also looks in the room and the player's inventory, so BUY LAMINGTON outside the shop can still match a lamington the player is carrying.
+2. The player already has the item - for example, BUY SPONGE after buying the only sponge.
+3. The item is somewhere else, such as lying on the shop floor, rather than in this shop's stockroom.
+4. The player can't afford it. Because the purchase only happens when the price is no more than the player's money, money can never go below zero. A player with exactly enough money can buy the item and is left with nothing.
+5. Otherwise, the item is sold. `DecreaseMoney` takes the price off the player's money, and the item moves from the stockroom to the player.
 
-### One command
+Here's how it plays, starting with £10:
 
-The system uses verbs to handle purchasing, but it is easier to use a command for selling, as the player might try to sell anything. So create a new command (go to "Commands" in the left pane, then click "Add" in the right pane), and put this as the pattern:
+```
+> buy sponge
+You buy a Victoria sponge for £8.
 
-    sell #object#
+> buy lamington
+You can't afford a lamington. It costs £3.
 
-For the unresolved text:
+> buy fairy cake
+You buy a fairy cake for £2.
 
-    You want to sell what exactly?
-
-We can also set the scope, so that Quest Viva looks in the player's inventory first. This means that if the player returns to the shop to sell something back, Quest Viva will match the clone the player is holding, rather than the original in the shop.
-
-```quest
-inventory
+> buy sponge
+You already have it.
 ```
 
-And paste in the script:
+Your BUY command takes the place of the built-in BUY verb, which only ever tells the player they can't buy the object.
+
+## Seeing what's for sale
+
+The player can't see into the stockroom, so give them a way to list it. Add a second command with the pattern `browse; list stock; wares`, leave the scope blank, and paste in this script:
 
 ```quest
-if (not HasAttribute(game.pov.parent, "stock")) {
-  msg ("You can't sell stuff here.")
-}
-else if (not object.parent = game.pov) {
-  msg ("You're not carrying " + object.article + ".")
+if (not HasObject(game.pov.parent, "stock")) {
+  msg ("There's nothing for sale here.")
 }
 else {
-  game.pov.money = game.pov.money + SellingPrice(object)
-  if (GetBoolean(object, "cloneme")) {
-    RemoveObject (object)
+  items = GetDirectChildren(game.pov.parent.stock)
+  if (ListCount(items) = 0) {
+    msg ("Everything has sold out.")
   }
   else {
-    object.parent = game.pov.parent.stock
-    SetUpMerchandise (object)
-  }
-  msg ("You sell " + object.article + " for " + DisplayMoney(SellingPrice(object)) + ".")
-}
-```
-
-This checks if the room is a shop, then checks if the object is being carried. If so, the player's money is adjusted. If the object has "cloneme" set to true, then it is a clone, and it is destroyed. Otherwise, it is moved to the shop's stock and set up as merchandise.
-
-
-
-
-
-### Game scripts
-
-We need to add a script on the game object. On the _Features_ tab, tick to display "Advanced scripts", then on the _Advanced scripts_ tab, paste this in at the bottom ("backdrop scope script..."):
-
-```quest
-if (HasAttribute(game.pov.parent, "stock")) {
-  foreach (o, GetDirectChildren(game.pov.parent.stock)) {
-    list add (items, o)
+    msg ("For sale:")
+    foreach (item, items) {
+      msg ("- " + CapFirst(GetDisplayAlias(item)) + ", " + DisplayMoney(item.price))
+    }
   }
 }
 ```
 
-This will add the contents of the shop's stock room to the scope, so the player will see the items there and can interact with them.
-
-## Creating a shop
-
-So now we have put in the infrastructure, we have done the hard work. Now you can create your shop - or however many you like. For each shop you need to also create a stockroom, which is just a room with no exits going to it, that contains everything for sale in that shop.
-
-You need to initialise each shop. Go to the _Scripts_ tab of the game object, and add a line for each shop in your game to the start script at the top. The code will look like this:
-
-```quest
-SetUpShop (shop, stock)
+```
+> browse
+For sale:
+- Lamington, £3
+- Victoria sponge, £8
+- Fairy cake, £2
 ```
 
-You will need to replace "shop" with the name of the shop object in your game, and "stock" with the name of its stock room.
+Items the player has bought are no longer in the stockroom, so they drop off the list. You can also mention the command in the shop's description so the player knows it's there, for example "A sign says: BROWSE to see what's for sale."
 
-### A cake shop...
+## Selling
 
-As an example, we will create a shop called "Cake Shop". Add exits so the player can get to and from it, and a description as usual. Then create a second room, "Cake Shop Stock". This should have no exits and needs no description. However, it does need some cake objects, so put a lamington, a Victoria sponge and a fairy cake in there. Make sure each has a price set.
+Selling works the other way round: the item goes from the player into the shop's stockroom, and the player gets money for it. Add a third command:
 
-Now go to the _Scripts_ tab of the game object, and in the start script at the top, add this line:
+- **Pattern**: "Command pattern", `sell #object#`
+- **Scope**: `inventory`
+- **Unresolved object text**: "Text", `You aren't carrying that.`
+
+The `inventory` scope makes Quest Viva look in the player's inventory first. Paste in this script:
 
 ```quest
-SetUpShop (Cake Shop, Cake Shop Stock)
+if (not HasObject(game.pov.parent, "stock")) {
+  msg ("There's no one here to buy it.")
+}
+else if (not object.parent = game.pov) {
+  msg ("You aren't carrying " + object.article + ".")
+}
+else if (object.price = 0) {
+  msg ("The shopkeeper doesn't want " + object.article + ".")
+}
+else {
+  offer = object.price / 2
+  IncreaseMoney (offer)
+  MoveObject (object, game.pov.parent.stock)
+  msg ("You sell " + GetDisplayName(object) + " for " + DisplayMoney(offer) + ".")
+}
 ```
 
-It should look like this:
+The shop pays half the item's price, so the player can't make money by buying and selling the same thing. Dividing one whole number by another gives a whole number, rounded down, so a £3 lamington sells for £1. Items with no price, such as a pebble the player picked up, can't be sold.
 
-![](/images/StartShop.png)
+Sold items go into the shop's stockroom, so they appear in BROWSE and the player can buy them back at the full price:
 
+```
+> sell lamington
+You sell a lamington for £1.
 
+> browse
+For sale:
+- Victoria sponge, £8
+- Fairy cake, £2
+- Lamington, £3
+```
 
-## Clones
+If you don't want the player to sell anything at all, leave this command out.
 
-There some issues when using clones in your game. See [here](/howto/scripting/clones).
+## Adding more shops
+
+For each new shop, create its room and a stockroom, put the stock in the stockroom, and give the shop a `stock` attribute pointing to it. You don't need to change the commands.
+
+## Variation: shops that never run out
+
+To let the player buy as many of an item as they like, sell them a copy - a [clone](/howto/scripting/clones) - and leave the original in the stockroom. In the BUY script, replace the `MoveObject` line with:
+
+```quest
+CloneObjectAndMove (object, game.pov)
+```
+
+The original never leaves the stockroom, so it stays in BROWSE, and BUY LAMINGTON always finds it before any lamington the player is carrying.
+
+Selling a clone back would then leave two lamingtons in the stockroom. Instead, in the SELL script, get rid of clones and only move originals into the stockroom. Replace the `MoveObject` line with:
+
+```quest
+if (HasObject(object, "prototype")) {
+  RemoveObject (object)
+}
+else {
+  MoveObject (object, game.pov.parent.stock)
+}
+```
+
+Every clone has a `prototype` attribute pointing to the object it was copied from, so this is how you tell them apart.
+
+## See also
+
+- [Score, health and money](/howto/world/score-health-money)
+- [Commands](/howto/commands/commands)
+- [Advanced scope](/howto/commands/advanced-scope) - more ways to set a command's scope
+- [Clones](/howto/scripting/clones)

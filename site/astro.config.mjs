@@ -401,20 +401,12 @@ export default defineConfig({
                             "collapsed": true,
                             "items": [
                                 {
-                                    "label": "A hint system",
+                                    "label": "Hints",
                                     "slug": "other-guides/a-hint-system"
                                 },
                                 {
-                                    "label": "InvisiClues-style hints",
-                                    "slug": "other-guides/invisiclues"
-                                },
-                                {
-                                    "label": "Keeping a journal",
+                                    "label": "Journals and player notes",
                                     "slug": "howto/tasks/keeping-a-journal"
-                                },
-                                {
-                                    "label": "Player memory or wiki",
-                                    "slug": "howto/tasks/memory-or-wiki"
                                 }
                             ]
                         },
