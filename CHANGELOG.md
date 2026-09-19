@@ -1,5 +1,18 @@
 # Changelog
 
+## [6.0.0-rc.3](https://github.com/textadventures/quest/compare/v6.0.0-rc.2...v6.0.0-rc.3) (2026-09-19)
+
+
+### Features
+
+* **ElectronApp:** package prereleases as a separate Quest Viva Beta app ([#2322](https://github.com/textadventures/quest/issues/2322)) ([0d75413](https://github.com/textadventures/quest/commit/0d754131c42e73ccb5999fc230aaf163aa9fae75))
+
+
+### Bug Fixes
+
+* **Engine:** correct Core messages and allow .ogg in sound pickers ([#2326](https://github.com/textadventures/quest/issues/2326)) ([2c7f93c](https://github.com/textadventures/quest/commit/2c7f93c19bff7bdce346f4f75d94735fa2bcf96a))
+* **Engine:** let ScopeCommands run before game.pov is set ([#2318](https://github.com/textadventures/quest/issues/2318)) ([b4dcca5](https://github.com/textadventures/quest/commit/b4dcca54cdfa2e59b876bc6995bfa7b4f08cbb28))
+
 ## [6.0.0-rc.2](https://github.com/textadventures/quest/compare/v6.0.0-rc.1...v6.0.0-rc.2) (2026-09-16)
 
 
