@@ -232,8 +232,9 @@
     // Keyed by insertBefore (Quest syntax, stable across locales) rather than cmd.command
     // (a localized caption) so the toolbar icons/grouping don't depend on the editor language.
     // These commands stay as always-visible buttons instead of going in the "Insert" dropdown:
-    // Bold/Italic/Underline as the most-reached-for formatting, and (gamebook mode only) Page
-    // Link since linking between pages is the core authoring action in a gamebook.
+    // Bold/Italic/Underline as the most-reached-for formatting, and Page Link since linking
+    // between pages is the core authoring action in a gamebook. Page Link is registered for
+    // text adventures too (CoreEditor.aslx's {page: entry), so it is pinned in both modes.
     const PINNED_ICONS: Record<string, typeof Bold | undefined> = {
         "<b>": Bold,
         "<i>": Italic,
@@ -565,7 +566,7 @@
             {/snippet}
         </DropdownMenu>
         <a
-            href="https://docs.textadventures.co.uk/quest/text_processor.html"
+            href={docsUrlForPath("/howto/world/text-processor/")}
             target="_blank"
             class="btn btn-sm text-xs px-2 py-0.5 text-surface-600-400 ml-auto"
             title={t("propertyEditor.textProcessorHelp")}
