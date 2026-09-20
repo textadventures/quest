@@ -1,57 +1,50 @@
 ---
 title: Character creation
-sidebar:
-  order: 1
+description: Ask the player for a name, a class and other details when the game starts, and set up their character from the answers
 ---
 
-Some text adventures leave the protagonist an empty slate, with no background or even a specific gender. In others, the protagonist is a certain person, and for the course of the game the player assumes the role of someone devised by the author. The third option is to let the player choose - after all, that is the nature of the genre.
+In some games the player plays a character the author has devised. In others - especially RPG-style games - the player gets to decide who they are. This page shows how to ask the player a few questions when the game starts and set up their character from the answers.
 
-To do that in Quest Viva involves setting up a start script on the game object and asking the player a series of questions.
-
-We will look at various ways of doing that, starting with the most basic.
+You do this in the start script of the `game` object, using the same functions described in [Asking the player](/howto/scripting/asking-the-player): `GetInput()` for typed answers, `ShowMenu()` for a choice from a list, and `WaitForKeyPress` to pause.
 
 
 ## Just a couple of questions
 
-Go to the "Scripts" tab of the "game" object. The start script is at the top. Set the script to print a message prompting the player, then add a "Set a variable or attribute" action, and pick "player's typed input" from the list of value templates (this is `GetInput()` under the hood - you'll see that if you switch to code view). Set it up like this:
+Go to the _Scripts_ tab of the `game` object. The start script is at the top. Set the script to print a message prompting the player, then add a "Set a variable or attribute" action, and pick "player's typed input" from the list of value templates (this is `GetInput()` in Code view). Set it up like this:
 
 ![](/images/Creation1.png)
 
-In code view it will look like this:
+In Code view it looks like this:
 
 ```quest
-<start type="script">
-  msg ("Let's generate a character...")
-  msg ("First, what is your name?")
-  player.alias = GetInput()
-  msg ("Hi, " + player.alias)
-</start>
+msg ("Let's generate a character...")
+msg ("First, what is your name?")
+player.alias = GetInput()
+msg ("Hi, " + player.alias)
 ```
 
-The important part is the `GetInput()` function, which suspends the game until the player types something, then returns what they typed as a string. There's no need to wrap the rest of the script in a block waiting for a callback - execution just continues on the next line once the player has answered, same as any other function call.
+`GetInput()` waits until the player types something and presses Enter, then returns what they typed. The script then carries on from the next line. We set the player's `alias` rather than `name`, because an object's name can't change during the game.
 
-You can keep adding more questions the same way. When you want to limit the player to a set of choices, use a menu instead - add another "Set a variable or attribute" action and pick "player's choice from a menu" (`ShowMenu` in code view). Like `GetInput()`, it waits for the player to choose, then carries on with the next line:
+You can keep adding more questions the same way. When you want to limit the player to a set of choices, use a menu instead - add another "Set a variable or attribute" action and pick "player's choice from a menu" (`ShowMenu` in Code view). Like `GetInput()`, it waits for the player to choose, then carries on with the next line:
 
 ![](/images/Creation2.png)
 
-In code view it will look like this:
+In Code view it looks like this:
 
 ```quest
-<start type="script">
-  msg ("Let's generate a character...")
-  msg ("First, what is your name?")
-  player.alias = GetInput()
-  msg ("Hi, " + player.alias)
-  classes = Split("Warrior;Wizard;Priest;Thief", ";")
-  player.class = ShowMenu("Your character class?", classes, false)
-  msg (player.alias + " is a " + LCase(player.class) + ".")
-  msg ("Now press a key to begin...")
-  WaitForKeyPress
-  ClearScreen
-</start>
+msg ("Let's generate a character...")
+msg ("First, what is your name?")
+player.alias = GetInput()
+msg ("Hi, " + player.alias)
+classes = Split("Warrior;Wizard;Priest;Thief", ";")
+player.class = ShowMenu("Your character class?", classes, false)
+msg (player.alias + " is a " + LCase(player.class) + ".")
+msg ("Now press a key to begin...")
+WaitForKeyPress
+ClearScreen
 ```
 
-A menu needs a list of options, and `Split` gives a quick way to create one from a string - here we put it in a variable called `classes` first. The last parameter says whether the player can ignore the menu, which we don't want here. `WaitForKeyPress` pauses until the player presses a key, so they can read the summary before the screen is cleared.
+A menu needs a list of options, and `Split` is a quick way to make one from a string. Put the list in a variable, like `classes` here, and pass the variable to `ShowMenu`. The last parameter says whether the player can ignore the menu, which we don't want here. `WaitForKeyPress` pauses until the player presses a key, so they can read the summary before the screen is cleared.
 
 See [Asking the player](/howto/scripting/asking-the-player) for more about `GetInput`, `ShowMenu` and the other ways to ask questions.
 
@@ -106,15 +99,45 @@ You should consider carefully if you want the player to know what bonuses they w
 
 
 
-## A creation room
+## When the start script runs
 
-A useful trick is to start the player in a blank room, with no exits, description or objects. This will prevent the player doing anything until the character creation is over and nothing will be displayed in the panes on the right.
+The start script runs before the player sees the first room. While it's waiting for an answer, nothing else happens, and the first room's description is only printed once the whole script has finished. So you don't need a separate "creation room" to keep the player busy - start them in the real first room. If the script ends with `ClearScreen`, as above, the room description is the first thing the player sees once they've pressed a key.
 
-At the end of the creation process, move the player to the start room. This will conveniently trigger the description for that room, setting the scene.
+The player can't save the game until the start script has finished, because it's stopped part-way through. For a few quick questions that doesn't matter. If you want the player to be able to save in the middle, see [Saving while a question is waiting](/howto/scripting/asking-the-player#saving-while-a-question-is-waiting).
 
+## The player's pronouns
 
-## A note about random stats
+Don't change the `gender`, `article` or `possessive` attributes of the player object. While it's the player, these are "you", "yourself" and "your", which is how Quest Viva's built-in messages come out as "You are in a room" and "You can't take yourself". Set `player.gender` to "she" and the game starts saying "She is in a room".
 
-You may be tempted to generate stats randomly. This is more in keeping with traditional tabletop RPGs, though many have moved away from that nowadays, and in any case they still offered a way to reject the worst values or to assign them to attributes as you choose.
+If other characters need to refer to the player, ask for their pronouns and store them in `external_gender`, `external_article` and `external_possessive` - the attributes Quest Viva uses for the player object when it's seen from outside:
 
-There are two big problems with random stats. The first is the player may end up with a terrible character who dies at the first encounter, barely able to swing a sword. The second is the player may end up with an incredible character, able to sweep past any hurdle without breaking a sweat. Then there is the very real temptation for a player to keep generating new characters until she gets one that is great at everything.
+```quest
+pronouns = NewStringDictionary()
+dictionary add (pronouns, "she", "She/her")
+dictionary add (pronouns, "he", "He/him")
+dictionary add (pronouns, "they", "They/them")
+choice = ShowMenu("Which pronouns should other characters use for you?", pronouns, false)
+switch (choice) {
+  case ("she") {
+    player.external_gender = "she"
+    player.external_article = "her"
+    player.external_possessive = "her"
+  }
+  case ("he") {
+    player.external_gender = "he"
+    player.external_article = "him"
+    player.external_possessive = "his"
+  }
+  case ("they") {
+    player.external_gender = "they"
+    player.external_article = "them"
+    player.external_possessive = "their"
+  }
+}
+```
+
+You can then use them in text: `'Have you met {player.alias}? I like {player.external_article},' says the guard.`
+
+## Random stats
+
+You might be tempted to roll the player's stats at random, as older tabletop games did. Bear in mind that the player may end up with a character who can barely swing a sword, or one who sweeps past every challenge - and many players will keep restarting until they get a great one. If you do use random stats, consider letting the player choose which score goes to which stat, or re-roll a limited number of times.
