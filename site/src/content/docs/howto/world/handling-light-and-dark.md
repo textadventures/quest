@@ -1,89 +1,100 @@
 ---
 title: Handling light and dark
+description: Make rooms dark, give the player a torch or a light switch, and check whether the player can see
 sidebar:
   order: 5
 ---
 
-Quest Viva has a system built in for handling light and darkness in your game.
+Quest Viva has a built-in system for darkness. A dark room hides its description, its contents and its exits until the player brings a light with them - or finds the switch.
 
+Start by ticking "Lightness and darkness: rooms can be dark, and objects can light them up" on the game object's [_Features_ tab](/howto/world/features#game-features). That reveals a _Light/Dark_ tab on every room, and a "Lightness and darkness: objects can light up a room" checkbox on each object's own _Features_ tab.
 
-## A dark room
+## Making a room dark
 
-The first step is to go to the features tab of the game object and tick the box "Lightness and darkness..." (actually this is optional; it just turns the editor features on, your game will run the same either way).
+Rooms are lit by default. On the room's _Light/Dark_ tab:
 
-By default rooms are lit. We will create a dark room, called "darkroom". Create the room as normal, make exits to and from it, and give is a description. Now go to the Light/Dark tab, and tick the "Room is initially dark" checkbox.
+| Option | What it does |
+| --- | --- |
+| Room is initially dark | Sets the room's `dark` attribute. |
+| Description to display when the room is dark | "Use default room description", "Text" or "Run script". The room's normal description is never used while it is dark. |
 
-Try the game, and you will find two things. The first is that you just get the default dark room description, "It is too dark to make anything out." The second is that you are trapped in the dark room - there is no way to use the exit if it is too dark to see it!
+Play it and you will find two things. First, you get the default dark-room message:
 
+```
+> west
 
-## A light from the door
+You are in a cellar.
+It is too dark to make anything out.
+```
 
-Go to the exit from this room, and on the Options tab, tick the "This object is a light source" box. In the dropdown box that appears, set it to be weak. Now the player will see and be able to use this exit, even if the room is dark - there is a faint light coming from the other room, enough to show you the way out.
+Second, you are stuck: nothing in the room is listed, nothing can be examined or picked up, and the exits are not shown either, so there is no way out.
 
-Go back to the Light/Dark tab of the room, and add a description to display when dark. Perhaps: "It is dark, but you can just make out an exit to the west." Now when you play the game the room is still dark, but the exit is useable, and the player will not be trapped here.
+## Letting light in through an exit
 
+Select the exit back out of the dark room, go to its _Options_ tab and tick "This object is a lightsource", leaving Brightness as "Weak (shown when room is dark)". The exit is now visible and usable even in the dark - there is faint light spilling in from the room beyond.
+
+Then go back to the room's _Light/Dark_ tab and put something in the dark description, so the player knows what they can see:
+
+```
+> west
+
+You are in a cellar.
+You can go east.
+It is dark, but you can just make out an exit to the east.
+```
 
 ## Weak and strong
 
-Quest Viva has three levels of light for objects. None at all, weak and strong. A strong light will illuminate the whole room. A weak source only illuminates itself. The exit was a weak light source, so it could be seen in the dark room but nothing else could. What we need is a strong light source.
+There are three levels of light: none, weak and strong.
 
+- **Strong** illuminates the whole room, so everything in it becomes visible and reachable.
+- **Weak** only illuminates itself. A weak light source is listed and can be examined in a dark room, but nothing else is.
 
-## Implementing a torch
+That is why the exit above was set to weak: it shows the way out without lighting up the room.
 
-Create a new object, called "torch". On the Inventory tab tick it so it can be taken. On the Features tab, tick Lightness and Darkness. Then on the Light/Dark tab, tick it as a light source and set it to be Strong.
+## Giving the player a torch
 
-Now go in-game. With the torch in hand, your darkroom will be illuminated.
+Create an object called "torch" and tick "Take" on its _Inventory_ tab. On its _Features_ tab tick "Lightness and darkness: objects can light up a room", then on the _Light/Dark_ tab that appears tick "This object is a lightsource" and set Brightness to "Strong (illuminates room)".
 
+Carry the torch into the dark room and the room is lit. The light source does not have to be carried, though - a strong light source sitting in the room works just as well.
 
-### A note about containers
+### Light sources in containers
 
-Quest Viva has a sophisticated container system. If the player puts the torch in a container that is flagged as transparent, the torch will still illuminate the room.
+A light source inside an [open or transparent container](/howto/world/containers) still lights the room. Put it in a closed, non-transparent one and the light goes out, because the player can no longer see it.
 
+## A light switch
 
-## Implementing a light switch
-
-Create an object, lightswitch, inside the dark room. On the Features tab, make it switchable. On the Switchable tab, also make it Switchable, and fill in the message boxes. Then in the script to run when turned on, put in this (not sure what to do with code? See [here](/howto/scripting/copy-and-paste-code)):
-
-```quest
-darkroom.dark=false
-```
-
-For the other script, you need this:
+Create a `lightswitch` object in the dark room and make it [switchable](/howto/world/switchable). In "After switching on the object" put:
 
 ```quest
-darkroom.dark=true
+darkroom.dark = false
 ```
 
-Very simple, they just alter the "dark" attribute of your dark room.
-
-If you try it out, you will find the light switch now controls the darkness of the room (you will need the torch to find the switch, but then leave the torch elsewhere to confirm the room is now lit). You could, of course, set the switch to be a weak light source, so it can be found in the dark.
-
-
-## Implementing a switchable torch
-
-We should be able to turn the torch off, to save the battery. Pretty similar to before - on the torch object, first set it to not be a light source, as it is initially turned off (but keep it as a Strong light source!), then go to the Features tab, and make it switchable. On the Switchable tab, make it Switchable (the default messages are good enough). Then in the script to run when turned on, put in this:
+and in "After switching off the object":
 
 ```quest
-this.lightsource=true
+darkroom.dark = true
 ```
 
-For the other script, you need this:
+The player needs a light to find the switch in the first place, so consider making the switch itself a weak light source - or put it in the lit room next door.
+
+## A torch that can be switched on and off
+
+Make the torch switchable as well. Leave "This object is a lightsource" unticked, since the torch starts off, but still set Brightness to "Strong (illuminates room)". Then in "After switching on the object":
 
 ```quest
-this.lightsource=false
+this.lightsource = true
 ```
 
-## A torch that fails
-
-No torch lasts forever; let us put a limit on this one. First create a new attribute for the torch, called "battery". You can do that by going to the Attributes tab to create it, and set it to be an integer, with a value of 5 (we want a small number whilst we are playing around; for your game you will want it much higher). Alternatively, you can do the same thing in a script - go to the Script tab of the game object, and add this code:
+and in "After switching off the object":
 
 ```quest
-torch.battery = 5
+this.lightsource = false
 ```
 
-We now need a turn script. We could do this two ways: have the turn script enabled and disabled when the torch is turned on and off, or have it running all the time, but only use the battery when turned on. We will do the former.
+## A battery that runs down
 
-Create a turn script, and make sure it is under the Object object (i.e., it is vertically aligned with your rooms, not the stuff in the rooms). Give the turn script a name, torchturnscript, and paste in this code:
+Give the torch an integer attribute `battery` on the _Attributes_ tab, with a value of 5 while you are testing. Then add a [turn script](/howto/scripting/using-turnscripts) to the game's _Scripts_ tab, name it `torchturnscript`, and leave "Enabled when the game begins" unticked:
 
 ```quest
 torch.battery = torch.battery - 1
@@ -96,67 +107,64 @@ if (torch.battery < 1) {
 }
 ```
 
-The first line reduces the life of the battery. If it gets to zero the rest of the script kicks in (it checks for less than one rather than zero in case something odd happens and it jumps to -1; the torch should still fail then). Once the battery fails, we need the torch to be switched off, to not be a light source and for this turn script to stop. We also need a message to the player.
+It checks for less than one rather than zero so the torch still fails if something odd makes it skip a value. The last line uses the switchable feature's `cannotswitchon` attribute: while it holds a string, `TURN ON` prints that string and refuses, so you do not need to check the battery in the switch-on script. Setting `switchedon` to false also runs the torch's own "After switching off" script.
 
-The last line sets a special attribute that Quest Viva will check before switching the object on; if the attribute is a string, the string is displayed, rather than turning on the item.
+The torch's switch scripts now start and stop the turn script. Switching on:
 
-Now we need to go back to the torch, and the scripts on the Switchable tab. The turn off script now looks like this, as we now want to turn off the turn script when the torch is off:
+```quest
+this.lightsource = true
+EnableTurnScript (torchturnscript)
+```
+
+Switching off:
 
 ```quest
 this.lightsource = false
 DisableTurnScript (torchturnscript)
 ```
-The turn on script is more complicated, as we have to test if the battery is dead.
-```quest
-if (this.battery > 0) {
-  this.lightsource = true
-  EnableTurnScript (torchturnscript)
-}
-else {
-  msg ("No light - the battery is dead.")
-  this.switchedon = false
-}
-```
 
-If the battery is good, the torch becomes a light source, and the turn script goes on.
-
-If the battery is dead, we need to turn the torch off again, and give a message. The turning on message will fire every time, that is just how Quest Viva works, so the fail message needs to be crafted around that.
-
-Want to recharge or replace the battery? Here is the code:
+To recharge or replace the battery, reset both attributes:
 
 ```quest
 torch.battery = 5
 torch.cannotswitchon = null
 ```
 
-## Is it dark?
+## Checking whether it is dark
 
-If you want to know if it is dark in the current room, use the `CheckDarkness` function. This will return `true` if the room is dark and there is no strong light source in it, and false otherwise. For example, for a `SEARCH` command, the code might look like this:
-
-```quest
-if (CheckDarkness()) {
-  msg("It is too dark to search.")
-}
-else {
-  msg("You search but find nothing of interest.")
-}
-```
-
-## Descriptions: scripts vs text
-
-If you use text for a room or object description, Quest Viva will check if it is dark first, and only give the description if there is light to see the object.
-
-If you have set the room description to be a script, then Quest Viva will again check if it is dark, and will only run the script if the room is illuminated.
-
-For objects, however, the Quest Viva will run the script, whatever the illumination. Note that this is only an issue when they are in the inventory - objects in the room are not reachable if the player cannot see them. You may want to check in each script, then, whether there is enough light to see the object. On the other hand, you might reason that since the player has picked the object up, it is reasonable to assume she can remember what it looks like or can feel it, and so it does not matter. Or you could give different descriptions depending on the lighting.
-
-To get you started, this script will check if it is dark, and if it is, give the standard response; otherwise it gives the proper description (replace the text with your own).
+`CheckDarkness()` returns true if the player's current room is dark and there is no strong light source in it. Use it in any script that should behave differently in the dark - here, a `SEARCH` command:
 
 ```quest
 if (CheckDarkness()) {
-  msg(DynamicTemplate("LookAtDarkness", this))
+  msg ("It is too dark to search.")
 }
 else {
-  msg("A sturdy metal torch, with a switch on the side.")
+  msg ("You search but find nothing of interest.")
 }
 ```
+
+## Descriptions: text or script
+
+For **rooms**, Quest Viva checks the light before anything is printed. If the room is dark it uses the "Description to display when the room is dark" - text or script - and the normal description never runs.
+
+For **objects**, a description set as *text* is replaced by "It is too dark to make anything out." when the room is dark, unless the object is itself a light source. A description set as a *script* runs whatever the light is. In practice that only comes up for objects the player is carrying, since nothing else in a dark room can be examined, and you may decide it does not matter - the player knows what they are holding. If you do want the check, make it yourself:
+
+```quest
+if (CheckDarkness()) {
+  msg (DynamicTemplate("LookAtDarkness", this))
+}
+else {
+  msg ("A sturdy metal torch, with a switch on the side.")
+}
+```
+
+`DynamicTemplate("LookAtDarkness", this)` gives the standard wording, so your game stays consistent (and translatable).
+
+## Setting light and dark in code
+
+| Function | What it does |
+| --- | --- |
+| `SetDark (room)` | Makes the room dark. |
+| `SetLight (room)` | Makes the room lit. |
+| `SetObjectLightstrength (object, strength)` | Sets `lightstrength` to `"weak"`, `"strong"` or `""` for none, and sets `lightsource` to match. |
+| `SetExitLightstrength (exit, strength)` | The same, for an exit. |

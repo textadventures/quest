@@ -54,7 +54,6 @@ else {
 msg ("A funny looking machine.")
 }`);
     await page.waitForSelector('xpath=//span[text()="if"]', { timeout: 5000 });
-    await capture(page, out('switchlookat.png'), { untilLocator: lastAddScript(page), padding: 40 });
 
     // --- switchpower.png: a "power" Command setting machine.cannotswitchon = null ---
     await selectTreeNode(page, 'room');
@@ -66,7 +65,6 @@ msg ("A funny looking machine.")
     await patternField.fill('power');
     await setScriptCodeView(page, codeViewBtn(page), `machine.cannotswitchon = null`);
     await page.waitForSelector('text=Set variable', { timeout: 5000 });
-    await capture(page, out('switchpower.png'), { untilLocator: lastAddScript(page), padding: 40 });
 
     // --- switchstate.png: crystal ball's "Use (on its own)" script checking machine.switchedon ---
     await selectTreeNode(page, 'crystal ball');
@@ -83,7 +81,6 @@ else {
 msg ("The crystal ball is dark for some reason.")
 }`);
     await page.waitForSelector('xpath=//span[text()="if"]', { timeout: 5000 });
-    await capture(page, out('switchstate.png'), { untilLocator: lastAddScript(page), padding: 40 });
 
     // --- switchgenerator.png: generator, Switchable on, both turn-on/turn-off scripts filled ---
     await selectTreeNode(page, 'generator');
@@ -108,7 +105,6 @@ msg("The machine stops when the power fails.")
 }
 machine.switchedon = false`);
     await page.waitForSelector('xpath=//span[text()="if"]', { timeout: 5000 });
-    await capture(page, out('switchgenerator.png'), { untilLocator: lastAddScript(page), padding: 40 });
 
     // --- switchmoment.png: machine's "After switching on" script cloning a rabbit + SwitchOff ---
     await selectTreeNode(page, 'machine');
@@ -119,7 +115,6 @@ machine.switchedon = false`);
     await setScriptCodeView(page, machineOnCodeView, `CloneObjectAndMove (rabbit, player.parent)
 SwitchOff (machine)`);
     await page.waitForSelector('text=Clone object', { timeout: 5000 });
-    await capture(page, out('switchmoment.png'), { untilLocator: lastAddScript(page), padding: 40 });
 
     // --- switchdisplayverbs.png: generator's "After switching on" script, extended with
     // this.displayverbs = Split(...) ---
@@ -133,5 +128,4 @@ light.look = "A light, shining brightly."
 machine.cannotswitchon = null
 this.displayverbs = Split("Look at;Switch off", ";")`);
     await page.waitForSelector('text=Set variable', { timeout: 5000 });
-    await capture(page, out('switchdisplayverbs.png'), { untilLocator: lastAddScript(page), padding: 40 });
 });

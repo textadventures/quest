@@ -23,7 +23,7 @@ The _Features_ tab of the game object turns on optional systems for the whole ga
 | Lightness and darkness | Dark rooms and light sources. Adds a _Light/Dark_ tab to every room, and a light/dark feature to each object's own _Features_ tab. See [Handling light and dark](/howto/world/handling-light-and-dark). |
 | Ask/Tell | `ASK ABOUT` and `TELL ABOUT` topics on characters. Adds an _Ask/Tell_ tab to every object. See [Building an Ask/Tell system](/howto/npcs/ask-about). |
 | Annotations | A _Notes_ tab on rooms, for your own notes. See [Annotations](#annotations) below. |
-| Advanced wearables | Layers and slots for clothing, so one garment can cover another. See [Multi-state wearable items](/howto/world/multistate-clothing). |
+| Show advanced options for wearables | Layers and slots for clothing, so one garment can cover another. See [Clothing with several states](/howto/world/wearables#clothing-with-several-states). |
 | Advanced scripts | The game's _Advanced Scripts_ tab, holding `inituserinterface`, `unresolvedcommandhandler` and `scopebackdrop`. See [Advanced game scripts](/howto/scripting/advanced-game-scripts). |
 | In-room descriptions | An "In-room description" box on every object, whose text is appended to the description of whatever room the object is in. See [the _Setup_ tab](/howto/world/objects-and-rooms#the-setup-tab). |
 | Multiple commands | Lets the player put several commands on one line, separated by full stops — `GET LAMP. LIGHT LAMP. GO NORTH`. Each is run as a separate turn. |

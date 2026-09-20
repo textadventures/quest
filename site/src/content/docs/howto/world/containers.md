@@ -1,79 +1,134 @@
 ---
-title: Using containers
-sidebar:
-  order: 3
+title: Containers and surfaces
+description: Make an object hold other objects - a box, a chest, a table, a backpack with a limit - and control what the player can see, reach and put inside
 ---
 
+Any object can hold other objects. A container is an object whose children the player can see and reach: a box they can open, a table they can put things on, a backpack that only holds so much. This page is the reference for the _Container_ tab, and for the scripts that let a container decide what it will accept.
 
+| You want | Container type |
+|---|---|
+| A box, chest or bag the player opens and closes | **Container** or **Closed container** |
+| A table, shelf or hook - things sit on it, always in view | **Surface** |
+| A bag that only holds so much | **Limited container** |
+| A door or window - it opens and closes but holds nothing | **Openable/Closable** |
 
-Containers have been a feature of text adventures from the very early days, and are simple to implement in Quest Viva.
+Locks and keys work the same way on a container as on a door, so they're covered in [Doors, locks and keys](/howto/world/doors).
 
-A container is a type of object, so the first thing to do is to create an object. Let's say we want to create a chest.
+## Turning an object into a container
 
-To make it a container, go to the _Features_ tab of the object, and tick "Container: ...". A new tab will appear; go to the _Container_ tab, and select the type of container that you want.
+Containers are a [feature](/howto/world/features), so they're hidden until you ask for them. Select the object, go to its _Features_ tab, and tick "Container: object is a container or surface, or can be opened and closed". A _Container_ tab appears.
 
-**Container:** Your basic container. We will look in detail in a moment.
-
-**Closed container:** As above, but it starts closed.
-
-**Surface:** A surface is a special container that you might not think is a container at all. It is really something you can put stuff on (like a table or shelf), rather than inside, but for most purposes it acts like a container. Objects on a surface are always visible and reachable, and obviously a surface cannot be closed or locked. If you select "Surface", you will see there are far less options.
-
-**Limited container:** A limited container can only hold a certain amount. We will look further later.
-
-**Openable/closable:** A object that is not a container, but can be opened and closed; a door or window. This is quite different to a container, and not discussed on this page (but see [here](/howto/world/doors#a-door-between-two-rooms)).
-
-
-## Container
-
-We want our chest to be a container, so select that option.
-
-At this point it is just a case of making some choices. Can it be opened and closed? Is it already open? Is it transparent (player can see the contents even if closed, but not get it)?
-
-There are also scripts that will trigger when the chest is opened (perhaps the chest is trapped), is closed or an item is added (see later).
+On the _Container_ tab, "Container type" starts at "Not a container". Change it and the rest of the tab appears.
 
 ![](/images/container2.png)
 
+### Container types
 
-## Locked container
+**Container** - the general case. It can be opened and closed, and it starts open.
 
-_Be careful using locked containers. The "Key hunt" is something of a cliche in computer games._
+**Closed container** - the same, but it starts closed. Objects inside a closed container can't be seen, referred to or taken until the player opens it.
 
-That said, we will set up our chest as lockable. Make sure it starts closed.
+**Surface** - things go *on* it rather than *in* it. A surface is permanently open and transparent: its contents are listed in the room description before the player has touched it ("a table, on which there is a newspaper"), and it can't be opened, closed or locked. Tables, shelves, desks and hooks are all surfaces. Most of the tab's options disappear when you choose it, because they don't apply.
 
-In the "Locking" section, select: "Lockable". Again, you will see a bunch of options, and two new script options. The important part is the key. You can set up to five different objects to be keys. Select the number, and a number of dropdown lists will appear. Simply select the key object from the list.
+**Limited container** - a container that only holds so much. See [Limited containers](#limited-containers).
 
-By default, the player will need to have all the keys to unlock the container. You can untick the "Require all keys" check box, and the player will be able to unlock the container with any of the keys.
+**Openable/Closable** - not a container at all: an object that opens and closes but never holds anything, like a door or a window. See [Doors, locks and keys](/howto/world/doors#a-door-between-two-rooms).
 
-![](/images/lockandkey.png)
+## The _Container_ tab
 
-Alternatively, you may require some event to unlock the chest. Perhaps the player has answered a riddle or moved the iron beam that was keeping the lid closed. In this case we will say the player has to talk to the pixie, who will magically unlock the chest. Leave "Number of keys to unlock container" at zero, and unlock the chest with a script instead.
+**Contents prefix** introduces the contents when the object is listed somewhere with them, in the room description or the inventory. It's "containing" for a container and "on which there is" for a surface:
 
-Set up the script like this:
+```
+You are carrying a machine (with a button).
+```
 
-![](/images/unlock.png)
+**Can be opened** and **Can be closed** control whether `OPEN` and `CLOSE` work. Untick both for something that's permanently open, like the inside of a machine. **Is open** is the object's starting state - it's just the `isopen` attribute, and it's what "Closed container" unticks for you.
 
+**Transparent** lets the player see the contents of a closed container. They're listed as usual, but the player can't take them or put anything in until it's opened.
 
-## Limited container
+**Hide children until object is looked at** keeps the contents completely hidden - not listed, not reachable - until the player examines the object. Looking at it clears the flag for good. It's useful for a drawer full of clutter that shouldn't be advertised in the room description.
 
-_Again, you need to be a little bit careful here. The limited container is something of a text adventure cliche, and can end up just annoying the player._
+**List children when object is looked at or opened** prints the contents as a sentence of their own when the player opens or examines the object, rather than only in parentheses after the object's name. **List prefix** sets the wording - the default is "It contains":
 
-Let's say we have a backpack, but it is not very big, and we want to limit how much the player can put in there (by the way, you can allow the player to wear the backpack just by making it wearable).
+```
+> open fridge
+You open it.
+It contains some milk and some cheese.
+```
 
-This time we need to set it to be a "Limited container". We get a warning, now, telling us we also need to activate the feature for the game. Go to the _Features_ tab of the `game` object, and tick the "Inventory limits:... " check box. Go back to the object, and some new options are visible.
+Both are in the _Advanced_ section at the bottom of the tab.
 
-Quest Viva allows you to limit a container by count and by volume. The player will only be able to add an item to the container if the container has less than the maximum number of items _and_ it has enough volume for the new item. By default the volume of an item is 0, and if you are not interested in volumes, you can just leave everything to the default. We will do that for our backpack for now. Set the "Maximum number of objects" to some suitable number and, if you want, put in a message for when it is full.
+**Message to print when opening** and **Message to print when closing** replace the default "You open it." and "You close it." for this object.
 
-![](/images/limitbycount.png)
+**After opening the object** and **After closing the object** are scripts that run once the object has actually been opened or closed. They're the place for a trap, a smell, or a noise - see [Scripts on a container](#scripts-on-a-container).
 
-If you want to limit the volume, you need to set the "Maximum number of objects" to some really big number, and then set the volume limit.
+**Script to run when trying to add an object** runs instead of the standard "Done." when the player puts something in. If you write one, it's up to you to move the object and tell the player. See [A fussy container](#a-fussy-container).
+
+Under **Locking**, set "Lock type" to "Lockable" and the key settings appear: how many keys (up to five), which objects they are, "Require all keys" if there's more than one, whether it starts "Locked", and messages for locking, unlocking and not having the key.
+
+"Automatically unlock if player has the key(s)" and "Automatically open when unlocked" are both on by default, which saves the player steps they'd only resent:
+
+```
+> open box
+It is locked.
+
+> unlock box
+You do not have the key.
+
+> take key
+You pick it up.
+
+> unlock box
+Unlocked.
+You open it.
+It contains a defibrillator.
+```
+
+`OPEN BOX` on its own would have done all of that, once the player had the key. Untick the two options if you want each step typed separately. This is the same machinery a lockable door uses, and it's explained in full in [Doors, locks and keys](/howto/world/doors).
+
+## A fridge in the kitchen
+
+A worked example, to put the settings together. The fridge starts closed, and the player should be told what's inside when they open it.
+
+1. Create a "fridge" object in the kitchen with a description like "A big old refrigerator sits in the corner, humming quietly."
+2. On the _Features_ tab, tick "Container". On the _Container_ tab, set "Container type" to "Closed container".
+3. In the _Advanced_ section, tick "List children when object is looked at or opened".
+4. Add the contents on the fridge's _Objects_ tab - milk, cheese, beer - or create them anywhere and use "Move to..." in the tree. Give each one a prefix of "some" on its _Setup_ tab, and tick "Object can be taken" on its _Inventory_ tab.
+
+Play it, and the milk isn't there until the fridge is open - `LOOK AT MILK` gets "I can't see that." Open the fridge and the contents are listed:
+
+```
+> open fridge
+You open it.
+It contains some milk, some cheese and some beer.
+```
+
+"List prefix" changes the "It contains" wording to anything you like: "The cupboard is bare except for", say.
+
+To make the fridge's own description change with its state, use the [text processor](/howto/world/text-processor) in its "Look at" description:
+
+```
+The fridge is {either fridge.isopen:open, casting its light out into the gloomy kitchen|humming quietly in the corner}.
+```
+
+## Limited containers
+
+A limited container refuses things once it's full. It needs the game-level feature as well as the object setting: on the `game` object's _Features_ tab, tick "Inventory limits". Until you do, the _Container_ tab shows a note instead of the limit fields.
+
+Quest Viva can limit a container two ways, and applies both:
+
+- **Maximum number of objects** - a simple count.
+- **Maximum volume of objects** - each object's `volume` attribute is added up, and the new object has to fit in what's left.
+
+Each has its own "Full container message (leave blank for default)" field, directly under it - the first is used when the count is reached, the second when the volume is.
+
+For a backpack that just holds five things, set "Maximum number of objects" to 5 and ignore volumes. For a volume limit, set "Maximum number of objects" to some large number so the count never bites, set "Maximum volume of objects", and give every object the player can carry a volume. With "Inventory limits" on, every object's _Inventory_ tab gains a "Volume" box; objects default to no volume, so anything you forget is weightless.
 
 ![](/images/limitbyvolume.png)
 
-You will also need to set the volume of any object in your game that the player can pick up - including any containers.
+The units are yours - anything, as long as you're consistent. A container inside another counts as its own volume plus everything in it, so Quest Viva treats containers as bags that bulge rather than boxes of fixed size.
 
-You can use any units that are convenient; it does not matter as long as you are consistent across your game. Note that if you put one container inside another, the volume of the inner container will be its own volume plus the volume of everything in it (Quest Viva assumes containers are floppy bags that expand to hold things, rather than rigid boxes with fixed volumes).
-
-
+The player's own carrying limit is a separate pair of settings on the player object's _Inventory_ tab - see [Taking and dropping objects](/howto/world/taking-and-dropping#inventory-limits).
 
 ## Parts of an object
 
@@ -95,18 +150,11 @@ Don't use a surface for this. When the player carries it, a surface lists its sc
 
 What actually lets the player reach the button is the machine's `isopen` attribute: the children of any object whose `isopen` is true are within reach. So an object that isn't a container at all works too, if you give it an `isopen` attribute set to true on the _Attributes_ tab. PUT then gets the standard "You can't do that.", with no script needed.
 
+## Scripts on a container
 
-## Advanced
+### A trapped chest
 
-Let's quickly look at scripts.
-
-### It's a trap!
-
-Suppose the chest has a trap that will cause a small explosion when it is opened. We only want it to fire the first time it is opened, and if the player disarms it (which we will flag with an attribute called "disarmed"), it will not fire. Here is how we might create the script:
-
-![](/images/containeropenscript.png)
-
-This is the code behind it:
+"After opening the object" runs once the chest is open. Here the trap fires only the first time, and only if the player hasn't disarmed it:
 
 ```quest
 firsttime {
@@ -117,14 +165,11 @@ firsttime {
 }
 ```
 
-Note that "this" is a special value that refers to the object the script is attached to.
+`this` is the object the script is attached to. `DecreaseHealth` needs the "Health" game feature turned on.
 
+### A fussy container
 
-### A fussy chest
-
-Limited containers are a special type of fussy containers; they will refuse to accept a new object under certain conditions. For other containers, we can add a script to make the container only accept objects using other criteria. In this example, the player will only be able to put clothing in the chest:
-
-![](/images/containerfussy.png)
+"Script to run when trying to add an object" gets the object being added in a variable called `object`. Whatever you do with it, the script is now in charge: it has to move the object and print a message, or refuse. This chest only takes clothing:
 
 ```quest
 if (DoesInherit(object, "wearable")) {
@@ -136,14 +181,17 @@ else {
 }
 ```
 
-The basic principle is straightforward. An `if` command is used to test the condition of the `object`. If it is okay, we move the object to the container, and tell the player. Otherwise, we tell the player it failed.
+`object.article` gives "it" or, for something set up as a plural on its _Setup_ tab, "them" - so a pair of trousers reads correctly without you writing two messages.
 
+If all you want is a nicer message than "Done.", the script only needs the `MoveObject` and `msg` lines, with no test around them.
 
-### Keeping count
+Both of these scripts, in the visual editor:
 
-We can use a similar script to track how many items are in the chest, and to react accordingly. In this example, the game finishes when three or more things are put in the chest. The player might put some items in the backpack, and then put the backpack in the chest, so the total could be more than three; this is a good general principle, always check if the player has exceeded a certain amount rather than got a certain amount.
+![](/images/containerfussy.png)
 
-![](/images/containercounter.png)
+### Counting what goes in
+
+The same script can react to how full the container is. This one finishes the game once the chest holds three things:
 
 ```quest
 MoveObject (object, this)
@@ -154,11 +202,10 @@ if (ListCount(GetAllChildObjects(this)) > 2) {
 }
 ```
 
-Note that if you use this script, you must move the object to the container yourself and you must keep the player informed.
+`GetAllChildObjects` counts what's nested inside too, so a player who puts three coins in a bag and then the bag in the chest still triggers it. Testing for "more than two" rather than "exactly three" is the habit to get into: the player can always arrive at a number you didn't expect.
 
-Also note that we use `object.article` in the message, so if the player puts a pair of trousers in the container, it will say "them" not "it" (as long as the trousers are set up as "Inanimate objects (plural)").
+## See also
 
-
-### Better messages
-
-You might just want a better message when the player puts things in the chest (just use the first part of the last script, up to, but not including, the `if`).
+- [Doors, locks and keys](/howto/world/doors) - locking a container, keys, and openable objects
+- [Taking and dropping objects](/howto/world/taking-and-dropping) - the _Inventory_ tab and the player's own carrying limit
+- [Objects and rooms](/howto/world/objects-and-rooms) - the _Objects_ tab, and what "children" means

@@ -14,7 +14,7 @@ When the player types something Quest Viva doesn't recognise, it says "I don't u
 
 ## Where the messages come from
 
-None of Quest Viva's game text is built into the engine. Every standard response is a **template** in the language library you chose when you created the game - `English.aslx` for an English game. That's what lets you [write games in other languages](/advanced-topics/translation).
+None of Quest Viva's game text is built into the engine. Every standard response is a **template** in the language library you chose when you created the game - `English.aslx` for an English game, which holds about 250 of them. That's what lets you [write games in other languages](/advanced-topics/translation).
 
 When you copy a template into your game and change it, your copy replaces the library's version for your game only. The library itself isn't changed.
 
@@ -28,6 +28,8 @@ There are two kinds of template:
   ```
 
   That prints "You pick it up." for one object and "You pick them up." for a plural object. The `WriteVerb` and `article` parts are explained in [Using neutral language](/howto/tasks/neutral-language). A few dynamic templates that involve two objects, like `DefaultGive`, use `object1` and `object2` instead.
+
+Both kinds go through the [text processor](/howto/world/text-processor) when they're printed, and several of the built-in ones use it already.
 
 ## Finding the template for a message
 
@@ -47,7 +49,7 @@ Close the code view when you're done.
 
 ## Changing a template
 
-1. Click the "Tree view options" button above the tree, and select "Show Library Elements".
+1. Click the "Tree view options" button next to the "Filter..." box at the top of the tree, and select "Show Library Elements".
 2. In the tree, expand "Advanced", then "Templates" or "Dynamic Templates". Type part of the name in the "Filter..." box to find it quickly.
 3. Select the template. A banner says it comes from a library and can't be edited directly. Click "Copy into your game".
 4. Change the "Text" field.
@@ -61,11 +63,31 @@ In code view, a changed template is just a `template` or `dynamictemplate` eleme
 <dynamictemplate name="DefaultKiss">"You'd rather not kiss " + object.article + "."</dynamictemplate>
 ```
 
+Adding those lines by hand does the same job as copying the template in the tree, which is handy when you want to change several at once. It's also the only way in a gamebook: the gamebook editor's tree has no Templates section.
+
 You can use a template in your own scripts too. `Template("UnresolvedObject")` returns a template's text, and `DynamicTemplate("TakeSuccessful", lamp)` returns a dynamic template's text for the `lamp` object.
+
+## The ones most games change
+
+| Name | Kind | Default text |
+|---|---|---|
+| `UnrecognisedCommand` | template | "I don't understand your command." |
+| `UnresolvedObject` | template | "I can't see that." |
+| `UnresolvedLocation` | template | "You can't go there." |
+| `DefaultObjectDescription` | template | "Nothing out of the ordinary." |
+| `DefaultSelfDescription` | template | "Looking good." (what LOOK AT ME says) |
+| `NotCarryingAnything` | template | "You are not carrying anything." |
+| `NoKey` | template | "You do not have the key." |
+| `DefaultHelp` | template | the whole text of the HELP command |
+| `TakeUnsuccessful` | dynamic | "You can't take it." |
+| `DefaultSpeakTo` | dynamic | "He says nothing." |
+| `LookAtDarkness` | dynamic | "It is too dark to make anything out." |
+
+`DefaultObjectDescription` is worth changing early: it's what every object you haven't described yet falls back on, and a more characterful line makes an unfinished game feel less unfinished.
 
 ## Varying default responses
 
-Hearing "I don't understand your command." every time gets dull. Templates are passed through the [text processor](/howto/world/text-processor) when they're printed, so the simplest way to vary one is the `{random:...}` directive. Set the `UnrecognisedCommand` template's text to:
+Hearing "I don't understand your command." every time gets dull. The simplest way to vary one is the text processor's `{random:...}` directive. Set the `UnrecognisedCommand` template's text to:
 
 ```
 {random:Eh?:Come again?:Try something else.}
@@ -105,7 +127,7 @@ On a ship, north and south don't make much sense. This example replaces them wit
    <template templatetype="command" name="lookdir"><![CDATA[^look (?<exit>forward|aft|port|starboard|out|up|down|f|a|p|s|o|u|d)$]]></template>
    ```
 
-3. Click "Apply". This reloads the game, so the editor picks up the new names straight away.
+3. Click "Apply", and confirm. This reloads the game from the text you edited, so the editor picks up the new names straight away - and discards your undo history.
 
 The `go` template is the pattern for moving: it lets the player type a direction on its own, like `forward` or `f`, as well as `go forward`. `lookdir` does the same for `look forward`. Both are [regular expressions](/howto/commands/pattern-matching), so if you add or rename directions, add them to both lists.
 
@@ -143,8 +165,16 @@ If you really want to print a template's name in square brackets, type the HTML 
 
 That prints "[CompassN]". In code view, the `&` itself has to be written as `&amp;`, so it looks like `&amp;#91;CompassN]`.
 
+## What happens when you publish
+
+Publishing copies the whole language library, including every template you didn't change, into the published game file. A published game is a snapshot: it carries its own copy of the messages as they were when you published, and keeps working the same way on later versions of Quest Viva even if the standard wording changes.
+
+That also means a template change only reaches players when you publish again. It has no effect on a game file they already have.
+
 ## See also
 
+- [Text processor](/howto/world/text-processor) - the directives you can use in a template's text
 - [Using neutral language](/howto/tasks/neutral-language) for writing messages that work for any object
+- [Writing a game in another language](/advanced-topics/translation)
 - [template](/elements#template) and [dynamictemplate](/elements#dynamictemplate) in the XML elements reference
 - [Template](/reference/functions/string#template) and [DynamicTemplate](/reference/functions/string#dynamictemplate) functions
