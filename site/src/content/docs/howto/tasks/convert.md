@@ -198,6 +198,6 @@ If the player can find many objects with a T in their names, make sure the game 
 
 ## See also
 
-- [Using containers](/tutorial/using-containers)
+- [Containers and surfaces](/howto/world/containers)
 - [Custom commands](/tutorial/custom-commands)
 - [Using verbs](/howto/commands/using-verbs)

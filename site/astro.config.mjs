@@ -91,10 +91,6 @@ export default defineConfig({
                             "slug": "tutorial/using-pages"
                         },
                         {
-                            "label": "Using containers",
-                            "slug": "tutorial/using-containers"
-                        },
-                        {
                             "label": "Moving objects during the game",
                             "slug": "tutorial/moving-objects-during-the-game"
                         },
@@ -167,7 +163,7 @@ export default defineConfig({
                                     "slug": "howto/world/taking-and-dropping"
                                 },
                                 {
-                                    "label": "Containers",
+                                    "label": "Containers and surfaces",
                                     "slug": "howto/world/containers"
                                 },
                                 {
@@ -177,10 +173,6 @@ export default defineConfig({
                                 {
                                     "label": "Clothing",
                                     "slug": "howto/world/wearables"
-                                },
-                                {
-                                    "label": "Clothing with several states",
-                                    "slug": "howto/world/multistate-clothing"
                                 },
                                 {
                                     "label": "Food",
@@ -335,24 +327,12 @@ export default defineConfig({
                             "collapsed": true,
                             "items": [
                                 {
-                                    "label": "Overview",
-                                    "slug": "howto/multimedia/multimedia"
-                                },
-                                {
                                     "label": "Pictures",
                                     "slug": "howto/multimedia/images"
                                 },
                                 {
-                                    "label": "Creating images on the fly",
-                                    "slug": "howto/multimedia/images-on-the-fly"
-                                },
-                                {
-                                    "label": "Sound",
+                                    "label": "Sound and video",
                                     "slug": "howto/multimedia/adding-sounds"
-                                },
-                                {
-                                    "label": "Video",
-                                    "slug": "howto/multimedia/adding-videos"
                                 }
                             ]
                         },

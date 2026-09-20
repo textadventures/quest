@@ -23,9 +23,6 @@ await runCapture(async ({ page, baseUrl }) => {
     await page.click('button:has-text("+ Add script")');
     await page.waitForSelector('text=Add Script Command', { timeout: 10000 });
     await page.getByRole('option', { name: /^●\s*Play a sound$/ }).click();
-    await capture(page, out('play_a_sound.jpg'), {
-        untilLocator: page.locator('[role="dialog"]'),
-    });
     await page.getByRole('button', { name: 'OK', exact: true }).click();
 
     // --- play_a_sound_GUI.jpg: the resulting command, filename filled, wait+loop shown ---
@@ -42,10 +39,6 @@ await runCapture(async ({ page, baseUrl }) => {
     // --- stop_sound.jpg: the "Stop sound" command (no fields) ---
     await setScriptCodeView(page, page.locator('button:has-text("Code view")').first(), `stop sound`);
     await page.waitForSelector('text=Stop sound', { timeout: 5000 });
-    await capture(page, out('stop_sound.jpg'), {
-        untilLocator: page.getByText('Stop sound', { exact: true }),
-        padding: 40,
-    });
     // Clear the Start script back out before moving on to room/object scripts.
     await setScriptCodeView(page, page.locator('button:has-text("Code view")').first(), ``);
 
@@ -86,10 +79,6 @@ await runCapture(async ({ page, baseUrl }) => {
         .locator('xpath=following::button[contains(.,"Code view")][1]');
     await setScriptCodeView(page, doorCloseCodeView, `stop sound`);
     await page.waitForSelector('text=Play sound', { timeout: 5000 });
-    await capture(page, out('play_audio_example4_door.jpg'), {
-        untilLocator: page.getByText('Script to run when closing object:', { exact: true }).locator('xpath=following::input[1]'),
-        padding: 200,
-    });
 
     // --- Hub room: after entering / after leaving scripts (ambient loop tied to Door) ---
     await selectTreeNode(page, 'Hub');
@@ -118,10 +107,6 @@ play sound ("ambient sound.mp3", false, true)
         .locator('xpath=following::button[contains(.,"Code view")][1]');
     await setScriptCodeView(page, hallCodeView, `stop sound`);
     await page.waitForSelector('text=Stop sound', { timeout: 5000 });
-    await capture(page, out('stop_audio_example1.jpg'), {
-        untilLocator: page.getByText('Stop sound', { exact: true }),
-        padding: 60,
-    });
 
     // --- Sound Effects Room: before entering the room -> message + play sound with wait=yes ---
     await selectTreeNode(page, 'Sound Effects Room');
@@ -132,10 +117,6 @@ play sound ("ambient sound.mp3", false, true)
     await setScriptCodeView(page, sfxCodeView, `msg ("A strange sound echoes through the corridor.")
 play sound ("effect.mp3", true, false)`);
     await page.waitForSelector('text=Play sound', { timeout: 5000 });
-    await capture(page, out('play_audio_example2_sync.jpg'), {
-        untilLocator: page.locator('button:has-text("+ Add script")').first(),
-        padding: 200,
-    });
 
     // --- button: "press" verb, run script -> play a click sound ---
     await selectTreeNode(page, 'button');
@@ -150,8 +131,4 @@ play sound ("effect.mp3", true, false)`);
     await behaviourTypeSelect.selectOption({ label: 'Run a script' });
     await setScriptCodeView(page, page.locator('button:has-text("Code view")').first(), `play sound ("click.mp3", false, false)`);
     await page.waitForSelector('text=Play sound', { timeout: 5000 });
-    await capture(page, out('play_audio_example3_button.jpg'), {
-        untilLocator: page.locator('button:has-text("+ Add script")').last(),
-        padding: 40,
-    });
 });

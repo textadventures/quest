@@ -60,10 +60,6 @@ await runCapture(async ({ page, baseUrl }) => {
     await page.waitForSelector('[role="option"]:has-text("key")', { timeout: 5000 });
     await page.click('[role="option"]:has-text("key")');
     await page.waitForSelector('text=Automatically unlock if player has the key(s)', { timeout: 10000 });
-    await capture(page, out('lockandkey.png'), {
-        untilLocator: page.getByText('Automatically open when unlocked', { exact: true }),
-        padding: 60,
-    });
 
     // --- unlock.png: pixie's "talk" verb, run script, chest.locked = false ---
     await selectTreeNode(page, 'pixie');
@@ -79,7 +75,6 @@ await runCapture(async ({ page, baseUrl }) => {
     await setScriptCodeView(page, page.locator('button:has-text("Code view")').first(), `msg ("The pixie waves her wand, and you hear a click from the chest.")
 chest.locked = false`);
     await page.waitForSelector('text=Set variable', { timeout: 5000 });
-    await capture(page, out('unlock.png'), { untilLocator: lastAddScript(page), padding: 40 });
 
     // --- limitbycount.png / limitbyvolume.png: a "backpack" Limited container ---
     await selectTreeNode(page, 'game');
@@ -99,7 +94,6 @@ chest.locked = false`);
     const countMessageField = page.getByText('Full container message (leave blank for default):', { exact: true }).first()
         .locator('xpath=following::input[1]');
     await countMessageField.fill("You can't fit anything else in the backpack.");
-    await capture(page, out('limitbycount.png'), { untilLocator: countMessageField, padding: 60 });
 
     await maxObjectsField.fill('1000000');
     const volumeField = page.getByText('Maximum volume of objects:', { exact: true })
@@ -125,10 +119,6 @@ DecreaseHealth (20)
     // Anchor to the "After closing the object:" label, not a global .last() "+ Add script" —
     // the page also has Locking-section "+ Add script" buttons further down, so .last() would
     // pull in the whole Locking section instead of cropping right after this script.
-    await capture(page, out('containeropenscript.png'), {
-        untilLocator: page.getByText('After closing the object:', { exact: true }),
-        padding: 40,
-    });
 
     // --- containerfussy.png: chest, "Script to run when trying to add an object" — clothing only ---
     await page.waitForSelector('text=Script to run when trying to add an object:', { timeout: 10000 });
@@ -157,8 +147,4 @@ msg ("Congratulations, you filled the chest, and completed your quest.")
 finish
 }`);
     await page.waitForSelector('text=Move object', { timeout: 5000 });
-    await capture(page, out('containercounter.png'), {
-        untilLocator: page.getByText('Locking', { exact: true }),
-        padding: 40,
-    });
 });

@@ -1,40 +1,49 @@
 ---
 title: Items that can be switched on and off
+description: Use the Switchable feature for lamps, machines and radios - messages, state-dependent descriptions, and scripts that run when the player flicks the switch
 sidebar:
   order: 4
 ---
 
-In a world of electronic goods, items that can be turned on and off are very common. How would you implement that in Quest Viva?
+Lamps, radios, generators, control panels - anything the player can turn on and off uses the built-in **Switchable** feature.
 
-Let's create an object called "machine", and do just that!
+Tick "Switchable: object can be switched on and off" on the object's [_Features_ tab](/howto/world/features#object-features), then go to the _Switchable_ tab that appears and change the dropdown from "Cannot be switched on/off" to "Can be switched on/off".
 
-## Switchable
+That gives the object the `TURN ON` and `TURN OFF` verbs, adds "Switch on" and "Switch off" to its verb lists, and gives it a `switchedon` boolean attribute that Quest Viva keeps up to date.
 
-On the _Features_ tab, of the object, tick "Switchable:...", and then go to the _Switchable_ tab. Select "Can be switched on/off". Various options will appear that you can fill in as you see fit, or just leave blank:
+![The Switchable tab](/images/switchbasic.png)
 
-![Basic machine](/images/switchbasic.png)
+## The Switchable tab
 
-## Descriptions
+| Option | What it does |
+| --- | --- |
+| Switched on at the start of the game | Sets `switchedon` to true before play begins. |
+| Message to print when switching on | Replaces the default "You switch it on." |
+| Message to print when switching off | Replaces the default "You switch it off." |
+| Leave blank to allow the object to be turned on; give a message if it cannot be turned on | The `cannotswitchon` attribute. While it holds a string, `TURN ON` prints that string instead of switching the object on. |
+| Extra object description when switched on | Text appended to the object's description while it is on. |
+| Extra object description when switched off | Text appended while it is off. |
+| After switching on the object | A script that runs once the object has been switched on. |
+| After switching off the object | A script that runs once it has been switched off. |
 
-Let us say the machine has a description that is text, and says "A funny looking machine." With the values set above, when the machine is looked at, the player will see "A funny looking machine." when it is turned off, and "A funny looking machine. It is chugging away to itself." when it is turned on.
+If the player tries to switch on something that is already on, they get "It is already switched on." - you do not need to guard against that yourself.
 
-You can sometimes get better prose using the text processor, as you are not limited to tacking a sentence on the end. Make the two "Extra object description..." fields blank, and have the description (_Setup_ tab) like this:
+## Descriptions that change with state
+
+The two "Extra object description" boxes are the quickest way to reflect the state. With a description of "A funny looking machine." and "It is chugging away to itself." in the switched-on box:
+
+```
+> look at machine
+A funny looking machine. It is chugging away to itself.
+```
+
+That always tacks a sentence on the end. For better prose, leave both boxes blank and use the [text processor](/howto/world/text-processor) in the description itself, on the _Setup_ tab - naming the object, since `this` is only reliable in scripts:
 
 ```quest
 A funny looking machine{if machine.switchedon: chugging away}.
 ```
 
-This uses the "switchedon" flag (or Boolean attribute) of the object, which Quest Viva will set to true when the object is switched on.
-
-For complex descriptions, you may have to use a script, instead of text, and in that case the two "Extra object description..." fields will be ignored. Again the text processor is a solution:
-
-```quest
-msg ("A funny looking machine{if machine.switchedon: chugging away}.")
-```
-
-Or an `if` command. This is a trivial example, but could be much more complicated. Note that "this" is a special variable that means the object the script belongs to (it cannot be used with the text processor unfortunately).
-
-![Machine description](/images/switchlookat.png)
+Both boxes are ignored if you set the description to a script rather than text. There, test the attribute directly:
 
 ```quest
 if (this.switchedon) {
@@ -45,34 +54,33 @@ else {
 }
 ```
 
+## When it cannot be switched on
 
-## It won't turn on!
+Put a message in the "give a message if it cannot be turned on" box and the object refuses to switch on, printing that message instead - useful for something with no power, a missing part or a need for repair:
 
-Switchables can be given a special attribute, "cannotswitchon", that will indicate it cannot be turned on - for example, there is no power or it needs a part or needs repairing. You can set this in the third text field on the _Switchable_ tab. In your game, you will need to set this to null at some point - when the device has power, perhaps.
+```
+> turn on machine
+The machine is dead; it has no power.
+```
 
-In this simple example, the player just has to use a new `POWER` command to get power to the machine:
-
-![Power command](/images/switchpower.png)
-
-This is the code:
+Clear it from whatever script fixes the problem, and set it again if the object becomes unusable later - remembering that it stops the object being switched on but does not stop anything already running:
 
 ```quest
 machine.cannotswitchon = null
 ```
 
-If the object becomes unuseable (perhaps the power is turned off), just set the "cannotswitchon" attribute to some appropriate string. Remember to also turn the machine off, by setting its "switchedon" attribute to false.
+```quest
+machine.cannotswitchon = "No power!"
+machine.switchedon = false
+```
 
-Note that using the "After switching on the object" script is not a good option in this case, as Quest Viva will report that the object has switched on before running the script; the player would see, "You turn the machine on. You can't turn it on, it has no power."
+Do not use "After switching on the object" to refuse a switch-on. That script runs *after* the success message has been printed, so the player would see "You turn the machine on. You can't turn it on, it has no power." `cannotswitchon` is checked first, before any message.
 
+## Reacting to the switch
 
+There are two ways to make the state matter.
 
-## Doing something
-
-So it is great that we can turn it on and off, but so what? How does that impact the game world? There are two approaches here. The first is to have other systems check if the object is on or off. A simple example might be checking if a generator is turned on, before allowing something else to work. This is best done by checking the "switchedon" attribute of the machine.
-
-Suppose we have a crystal ball that can be used only when our machine is turned on, we could set it up like this:
-
-![Crystal ball](/images/switchstate.png)
+**Have other things check the attribute.** Best for anything that happens at the moment the player acts, and safest, because the state lives in one place. A crystal ball that only works while the machine is running:
 
 ```quest
 if (machine.switchedon) {
@@ -83,15 +91,7 @@ else {
 }
 ```
 
-Alternatively, you could have the machine change the state of another object - or as many objects as you like. Let us say we have a new switchable object, a generator. This is connected to our machine and to a light (for details on using light and dark in your game, see [here](/howto/world/handling-light-and-dark)).
-
-In this case the turning-on script for the generator needs to change the state of the other objects affected; for the light, we need to set it as a light source and update the description. For the machine, we need to set the "cannotswitchon" attribute to null to allow it to be turned on.
-
-For the turn off script, we need to reverse all that. We have some extra house keeping to do, as the machine may be turned on, we need to ensure it is turned off.
-
-![The generator](/images/switchgenerator.png)
-
-The turn on code:
+**Have the switch change other objects.** Better for an ongoing situation, such as a generator powering a lamp and the machine. For the generator, "After switching on the object":
 
 ```quest
 light.lightsource = true
@@ -99,121 +99,45 @@ light.look = "A light, shining brightly."
 machine.cannotswitchon = null
 ```
 
-The turn off code:
-
-
-```quest
-light.lightsource = false
-light.look = "A light."
-machine.cannotswitchon = "No power!"
-machine.switchedon = false
-```
-
-You might also want to put some text in there to let the play know these things have happened. Here is an example that checks if the machine is on (before turning it off!), and if it is, gives a message:
+and this in "After switching off the object":
 
 ```quest
 light.lightsource = false
 light.look = "A light."
 machine.cannotswitchon = "No power!"
 if (machine.switchedon) {
-  msg("The machine stops when the power fails.")
+  msg ("The machine stops when the power fails.")
 }
 machine.switchedon = false
 ```
 
+Note the check before the last line: the message only appears if the machine was actually running.
 
-So which is the best approach for you? If you want to test if the object is switched on for something happening instantly, like using the crystal ball, the first approach is best. It is probably the safest way, in the sense that the state of the object is in one place only, so your game cannot get in a state where one thing thinks it is turned on and another thinks it is turned off.
+## Switching things from a script
 
-However, the second approach is easy for on-going situations, such as the light; the light will continue to give light as long as the generator is on.
+`SwitchOn (object)` and `SwitchOff (object)` change the state without printing anything - they simply set `switchedon`, which you can also do yourself. Either way the "After switching on/off" scripts still run, so anything hung off them stays consistent.
 
-
-
-## On for a moment
-
-Occasionally you might want to implement a machine that the player turns on, it does something straight away, and then is off again.
-
-Let us suppose our machine will clone rabbits. We need to add a script that does two things; clone the rabbit and switch the machine back off. Note that in this case we do not need a message when the player turns the machine off.
-
-![Bunny machine](/images/switchmoment.png)
+That makes a one-shot machine - one that does its job and turns itself straight off - easy. In "After switching on the object":
 
 ```quest
-CloneObjectAndMove (rabbit, player.parent)
-SwitchOff (machine)
+CloneObjectAndMove (rabbit, game.pov.parent)
+SwitchOff (this)
 ```
 
-Or change the attribute directly:
+The player sees only the switch-on message and whatever the script prints. Delete "Switch off" from the verb lists on the _Object_ tab: it is never on long enough to be switched off.
+
+## Changing the display verbs
+
+The verb lists are not updated for you, so a switchable object offers both "Switch on" and "Switch off" whatever state it is in. To show only the one that applies, delete "Switch off" from both verb lists on the _Object_ tab (the object starts off), then set the lists from the switch scripts:
 
 ```quest
-CloneObjectAndMove (rabbit, player.parent)
-machine.switchedon = false
-```
-
-It is also a good idea to go to the _Object_ tab and delete "Switch off" from the two lists at the bottom.
-
-
-## Better display verbs
-
-In fact, it will look better if the player only sees "Switch on" when the object is off, and "Switch off" when it is on.
-
-We will do this for the generator. The generator cannot be picked up, so we only need to worry about the display verbs. As it starts turned off, on the _Object_ tab delete "Switch off" and "Take" from the list of display verbs at the bottom.
-
-Then go to the _Switchable_ tab, and set it to change the display verbs when turned on and off:
-
-![Changing display verbs](/images/switchdisplayverbs.png)
-
-```quest
-light.lightsource = true
-light.look = "A light, shining brightly."
-machine.cannotswitchon = null
 this.displayverbs = Split("Look at;Switch off", ";")
 ```
 
 ```quest
-light.lightsource = false
-light.look = "A light."
-machine.cannotswitchon = "No power!"
-machine.switchedon = false
 this.displayverbs = Split("Look at;Switch on", ";")
 ```
 
-### Portable objects...
+If the object can be taken, keep "Take" in `displayverbs` and set `inventoryverbs` too, with "Drop" in place of "Take". And if anything else can change the state - a generator cutting the power to the machine - set that object's verbs there as well, because the switch scripts only run for the object that was actually switched.
 
-If the object can be picked up, then you need to modify the inventory verbs, and include the "Take" and "Drop" verbs. Delete just "Switch off", but from both lists at the bottom of the _Object_ tab. The code on the _Switchable_ tab would then look like this:
-
-```quest
-light.lightsource = true
-light.look = "A light, shining brightly."
-machine.cannotswitchon = null
-this.displayverbs = Split("Look at;Take;Switch off", ";")
-this.inventoryverbs = Split("Look at;Drop;Switch off", ";")
-```
-
-```quest
-light.lightsource = false
-light.look = "A light."
-machine.cannotswitchon = "No power!"
-machine.switchedon = false
-this.displayverbs = Split("Look at;Take;Switch on", ";")
-this.inventoryverbs = Split("Look at;Drop;Switch on", ";")
-```
-
-### Remember...
-
-If your object can be turned off another way, you will need to update the display verbs there. For the machine powered by the generator, when the generator is turned off, we would have to also update the verbs for the machine.
-
-```quest
-light.lightsource = false
-light.look = "A light."
-machine.cannotswitchon = "No power!"
-machine.switchedon = false
-machine.displayverbs = Split("Look at;Switch on", ";")
-this.displayverbs = Split("Look at;Switch on", ";")
-```
-
-## Testing
-
-It is vital that you test your switchable objects, as there is potential for weird bugs.
-
-What happens if the player switches it on three times in a row, or off three times in a row or on and off three times in a row. Do display verbs and descriptions change as they should. What happens if the player turns things on out of the expected sequence?
-
-Note that you can move the player object to the same room as the switchable object whilst you test. When you are sure it works as expected, move the player object back to its normal place.
+Switch your object on and off several times in a row, and out of the expected order, to check descriptions and verbs still match the state.

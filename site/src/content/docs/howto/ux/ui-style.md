@@ -112,7 +112,7 @@ These are under **Advanced** at the bottom of the tab.
 
 ### Picture frame
 
-**Picture frame** adds a fixed area above the text for a picture, which can change from room to room. **Clear picture panel if room has no picture** empties it in rooms without one; otherwise the last picture stays. See [Static picture frame](/howto/multimedia/multimedia#static-picture-frame).
+**Picture frame** adds a fixed area above the text for a picture, which can change from room to room. **Clear picture panel if room has no picture** empties it in rooms without one; otherwise the last picture stays. See [The picture frame](/howto/multimedia/images#the-picture-frame).
 
 ## The Room Descriptions tab
 

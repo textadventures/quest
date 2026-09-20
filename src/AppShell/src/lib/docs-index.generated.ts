@@ -162,7 +162,7 @@ export const HELP_PAGE_TITLES: Readonly<Record<string, string>> = {
     "/howto/ux/ui-style/#the-display-tab": "The Display tab",
     "/howto/ux/ui-style/#the-interface-tab": "The Interface tab",
     "/howto/ux/ui-style/#the-room-descriptions-tab": "The Room Descriptions tab",
-    "/howto/world/containers/": "Using containers",
+    "/howto/world/containers/": "Containers and surfaces",
     "/howto/world/edible/": "Items that can be eaten",
     "/howto/world/exits/": "Exits",
     "/howto/world/features/#annotations": "Annotations",

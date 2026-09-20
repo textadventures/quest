@@ -46,7 +46,7 @@ Inserts the given text into the page. This is how `msg` displays text. Use [addS
 JS.AddYouTube (string id)
 ```
 
-Embeds an autoplaying YouTube video for the given video ID. See [Adding videos](/howto/multimedia/adding-videos).
+Embeds an autoplaying YouTube video for the given video ID. See [Sound and video](/howto/multimedia/adding-sounds#a-youtube-video).
 
 ## colourBlend
 

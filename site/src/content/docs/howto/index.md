@@ -39,7 +39,7 @@ The [text processor](/howto/world/text-processor) lets you vary descriptions and
 
 ## Pictures, sound and video
 
-[Pictures](/howto/multimedia/images), [sound](/howto/multimedia/adding-sounds) and [video](/howto/multimedia/adding-videos) - see the [overview](/howto/multimedia/multimedia) first.
+[Pictures](/howto/multimedia/images), and [sound and video](/howto/multimedia/adding-sounds).
 
 ## Hints and extras
 

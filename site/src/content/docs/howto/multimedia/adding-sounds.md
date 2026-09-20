@@ -1,233 +1,141 @@
 ---
-title: Adding sounds to your game
-sidebar:
-  order: 3
+title: Sound and video
+description: Play sound effects and music, loop and stop them, embed a YouTube video or a video file, and cope with browsers that block autoplay
 ---
 
+A creaking door, a bar of music as the player steps into the throne room, or a video cutscene between chapters. Quest Viva has script commands for sound, and one for embedding a YouTube video; anything beyond those is a few lines of HTML.
 
-## Using Quest Viva's built-in script commands
+| You want | Use |
+|---|---|
+| A sound effect | ["Play a sound"](#playing-a-sound) |
+| Music that keeps going | Play a sound with [**Loop**](#looping-and-stopping) set to yes |
+| The script to pause until the sound ends | [**Wait for sound to finish**](#waiting-for-a-sound-to-finish) |
+| Two sounds at once, or volume control | [Your own `<audio>` tag](#more-than-one-sound-at-a-time) |
+| A YouTube video | ["Play YouTube video"](#a-youtube-video) |
+| Your own video file | [Your own `<video>` tag](#your-own-video-files) |
 
+## Playing a sound
 
-### Adding sounds
+In any script, click **+ Add script**, choose the **Output** category and then **Play a sound**. You get a filename box with an **Upload…** button beside it, and two options:
 
-You can add sounds to your game using the [`play sound`](/scripts#play-sound) script command. 
+![The Play sound script command, with a filename, a wait option and a loop option](/images/play_a_sound_GUI.jpg)
 
-![](/images/play_a_sound.jpg)
-
-
-This script will play any audio format the player's web browser supports, such as MP3, WAV or OGG. MP3 is recommended, because it is the most widely supported by web browsers on different platforms.
-
-![](/images/play_a_sound_GUI.jpg)
-
-
-You can choose “Wait for sound to finish before continuing” if you want to run the remaining script only after the sound has finished. This is useful for intro sequences, or letting some speech finish before moving the player to a different room, for example.
-
-Note that Quest Viva won’t let you use both the “wait” and “loop” options at the same time, as this would create an infinite loop.
-
-Also note that Quest Viva will only play one sound at a time when using the `play sound` script command.  If you have a sound set to loop for ambience, playing a new sound will stop the current one!
-
-### Stopping sounds
-
-Sometimes, you need to stop a sound.  For instance the “loop” option will cause the sound to continue playing until the [`stop sound`](/scripts#stop-sound) script command is run. 
-
-![](/images/stop_sound.jpg)
-
-Another sure-fire way to stop a sound from playing is to use `play sound` to play another sound!  Quest Viva will only play one sound at a time when using the `play sound` script command.
-
-## Example game
-
-Let's see this in action.
-
-We have an example game with a starting room called "Hub".  If the door is open in the hub, we can hear an ambient sound.
-
-### The hub
-
-We can set up an "After entering" script.  If the "Door" object is open, the sound "ambient sound.mp3" will play, and it will be set to loop.
-
-Then, we set up an "After leaving" script, which stops the sound (because we can only hear that particular sound in the hub).
-
-![](/images/play_audio_example1_loop.jpg)
-
-
-### The door
-
-We set the Door up as a container, making it "Openable/Closable".  Then we set up the open and close scripts to play and stop the sound.
-
-![](/images/play_audio_example4_door.jpg)
-
-
-### A silent room
-
-We also have a room called "Hall of Silence". This one is easy.  We just add a 'stop sound' script command to the "Before entering" script on the room.
-
-![](/images/stop_audio_example1.jpg)
-
-
-### A sound playing between rooms
-
-We have a third room called "Sound Effects Room", and a message plays before entering. In this script, we're using the `sync` option to pause play until the sound has finished playing.
-
-![](/images/play_audio_example2_sync.jpg)
-
-
-### A noise-making object
-
-Just for fun, we have a button.  We've set up a "Press" verb on the button so it plays a sound when pressed.
-
-![](/images/play_audio_example3_button.jpg)
-
-
-Play the example game:
-
-<a href="https://textadventures.co.uk/games/view/fbmbs2hb-eo8yyjfcqiu8q/play-audio-example">Play "play audio Example" at textadventures.co.uk</a>
-
-View the example game's code:
-
-<a target="_blank" href="/examples/PlayAudioExample.aslx">PlayAudioExample.aslx</a>
-
-
-
-## Using HTML audio elements
-
-
-If you need more control than `play sound` gives you - for example, to show playback controls, or to play more than one sound at once - you can use an HTML audio tag instead.
-
-
-The most basic example of an audio tag:
-
-```xml
-<audio src='YOUR_URL_GOES_HERE' autoplay />
-```
-
-For more information:
-
-https://www.w3schools.com/html/html5_audio.asp
-
-When using a local audio file in Quest Viva, we need to use [`GetFileURL()`](/reference/functions/general#getfileurl) to retrieve our local file's URL.
-
-This will find the correct path to the file regardless of how the game is hosted or played.
+In code, the two options are the second and third arguments - wait, then loop:
 
 ```quest
-src = GetFileURL("snd effect.ogg")
-msg ("<audio src='" + src + "' autoplay/>")
+play sound ("door-creak.mp3", false, false)
 ```
 
+The box offers **.mp3**, **.wav** and **.ogg**. MP3 is the safest choice: every browser plays it, and the files are small. WAV plays everywhere too but is many times the size for the same sound, which matters when everything you upload counts against the game's size. Ogg support varies between browsers, so use it only if you know who's playing.
 
-**NOTES:**  
+Sounds are uploaded and packaged exactly like pictures - see [Adding picture files](/howto/multimedia/images#adding-picture-files).
 
-The file "snd effect.ogg" is in my game's main folder.
+## Waiting for a sound to finish
 
-Every file in that folder is included when you publish, so the sound is packaged with your game. For more, see [The publish process](/publishing/publishing#the-publish-process).
-
-To simulate the “Wait for sound to finish before continuing” option when adding sounds to your game via HTML audio elements, follow the link at the end of this document.
-
-We can also use an HTML audio tag to play audio from an external site, which will help keep your game under the site's maximum upload size. Everything works the same way, you just use the actual URL instead of `GetFileURL()`.
-
-Here's an example with an actual URL:
+Tick **Wait for sound to finish before continuing** (the second argument, `true`) and the rest of the script is held until the sound ends. The player can't type in the meantime - the command box disappears and comes back when the sound does.
 
 ```quest
-src = "http://media.textadventures.co.uk/games/1RurGHLuLUqrWdMJh53LTQ/bushcave-explicit-r9/sounds/bushcave.ogg"
-msg ("<audio src='" + src + "' autoplay />")
+msg ("You put your shoulder to the door.")
+play sound ("door-creak.mp3", true, false)
+msg ("It gives, and you stumble into the dark.")
 ```
 
-For more on the maximum upload size, see the Size Limitations section on [this page](/publishing/publishing).
+That's what you want for an introduction, or to let a line of speech finish before moving the player somewhere else. Keep the sound short: the game is frozen for as long as it plays.
 
+## Looping and stopping
 
-### Adding controls
-
-We can add `controls` to the tag, giving the player an option to play or pause the sound at will.
+Set **Loop** to yes (the third argument, `true`) and the sound repeats until something stops it - handy for ambient noise or background music:
 
 ```quest
-src = GetFileURL("snd effect.ogg")
-msg ("<audio src='" + src + "' autoplay controls />")
+play sound ("rain.mp3", false, true)
 ```
 
-This will look like so: 
-
-![](/images/audio_controls.jpg)
-
- 
-**NOTE:**
-
-If we were to add the `controls` option, we could remove `autoplay`, making it so the player would have to press 'Play'.
-
-
-
-### Looping HTML audio
-
-We can also add a `loop` option, if we wish.  (Guess what this does!)
+Stop it with **Stop sound** in the same category:
 
 ```quest
-src = GetFileURL("snd effect.ogg")
-msg ("<audio src='" + src + "' autoplay loop />")
+stop sound
 ```
 
-If you choose to loop your audio, we will probably need a way to stop the sound.
+Two things are worth knowing. Quest Viva plays **one sound at a time**: starting another sound stops the one that's playing, so a looping background track is silenced the moment a door creaks. And you can't tick both **Wait** and **Loop** - the game would wait forever for a sound that never ends, and it stops you with an error saying so.
 
-Like everything else, there are numerous ways to handle this.
+So a room with ambient sound usually looks like this. On the room's _Scripts_ tab, put the sound in **After entering the room**, with **Loop** set to yes, and **Stop sound** in **After leaving the room**:
 
+![A room's scripts tab, playing a looping sound on entry and stopping it on exit](/images/play_audio_example1_loop.jpg)
 
-## Controlling HTML audio with JS (stopping, pausing, and playing)
+A complete worked example - ambient sound in one room, silence in another, a sound that plays before the player moves, and a button that makes a noise when pressed - is in the source of [PlayAudioExample.aslx](/examples/PlayAudioExample.aslx).
 
-The easiest way to stop a sound would be removing ALL audio tags from the game.  This can be handled [using Javascript](/howto/ux/customising-the-ui) via `JS.eval()` (NOTE: This will completely remove any HTML audio tags which have been added to the game!).
+## Autoplay: why the first sound may not play
+
+Browsers don't let a page start making noise until the player has interacted with it - clicked something, or typed. This applies on desktops as well as phones, and it hits games that play a sound in the start script, before the player has done anything at all.
+
+Quest Viva's player handles this for you: if the game contains sound files or uses **Play a sound**, and the browser hasn't registered any interaction yet, the player shows a **Begin** button on the loading screen instead of starting straight away. Clicking it is the interaction the browser wants, and sound works from then on.
+
+You don't need to do anything about this, but it's worth knowing why a game that plays music at the start asks the player to click first. Sounds triggered by anything the player types or clicks are never affected.
+
+## More than one sound at a time
+
+When you need background music *and* sound effects, or you want to control the volume, add your own HTML `<audio>` element instead of using **Play a sound**. It runs independently, so it plays alongside anything **Play a sound** is doing:
 
 ```quest
-JS.eval("$('audio').remove();")
+msg ("<audio id='music' src='" + GetFileURL("theme.mp3") + "' autoplay loop></audio>")
 ```
 
-
-### Using an ID to control a specific audio element
-
-
-An alternate approach would be assigning an ID to the audio element.
-
-This can be done like so:
+`GetFileURL` turns the filename into an address that works however the game is played. The `id` gives later scripts something to aim at:
 
 ```quest
-src = GetFileURL("snd effect.ogg")
-msg ("<audio id='html-audio' src='" + src + "' autoplay loop />")
+JS.eval ("document.getElementById('music').volume = 0.3;")
+JS.eval ("document.getElementById('music').pause();")
+JS.eval ("document.getElementById('music').play();")
 ```
 
-Once you have assigned an ID, you can actually pause the audio like this:
+Add `controls` instead of `autoplay` and the player gets a play button to press themselves, which is the simplest answer to the autoplay rules if you'd rather not rely on the **Begin** screen:
 
 ```quest
-JS.eval("document.getElementById('html-audio').pause();")
+msg ("<audio src='" + GetFileURL("theme.mp3") + "' controls></audio>")
 ```
 
-After pausing, you could resume like this:
+![An audio player's controls in the game text](/images/audio_controls.jpg)
+
+One catch: an `<audio>` element lives in the game text, so clearing the screen removes it and the sound stops. A sound started with **Play a sound** keeps going, because it isn't part of the text. If your music has to survive a screen clear, use **Play a sound** for it and the `<audio>` element for the effects.
+
+## A YouTube video
+
+**Play YouTube video** in the **Output** category embeds a video in the game text. It takes the video's ID - the part of the YouTube address after `v=`, so for `https://www.youtube.com/watch?v=7vIi0U4rSX4` the ID is `7vIi0U4rSX4`:
 
 ```quest
-JS.eval("document.getElementById('html-audio').play();")
+ShowYouTube ("7vIi0U4rSX4")
 ```
 
+The video appears where the text has got to, set to play automatically, and scrolls away with the text like anything else. Nothing stops you embedding several.
 
-You could also remove just that audio element:
+The embed is a fixed 425 by 344 pixels, which is wider than a phone screen - the page ends up scrolling sideways. Until that's fixed, write the embed yourself when phone players matter. This version fills the width it's given, at the usual widescreen shape, whatever the screen:
 
 ```quest
-JS.eval("$('#html-audio').remove();")
+msg ("<iframe src='https://www.youtube.com/embed/7vIi0U4rSX4' style='width:100%; aspect-ratio:16/9; border:0;' allow='autoplay; fullscreen' allowfullscreen></iframe>")
 ```
 
+Add `?autoplay=1&rel=0` to the address to match what **Play YouTube video** does - start playing at once, and don't suggest other people's videos at the end. Autoplay here is subject to the same browser rules as sound.
 
-### Autoplay
+Either way, the video is fetched from YouTube while the game is played, so it needs an internet connection and it disappears if the video is ever taken down. There's no equivalent command for Vimeo.
 
-Web browsers - on phones and desktops alike - won't let a page start playing sound until the player has interacted with it (by clicking or typing, for example). If your game tries to `autoplay` a sound before then, the browser will silently block it.
+## Your own video files
 
-If a sound might play before the player has done anything, include the `controls` option, so the player can press 'play' themselves.
-
-**IMPORTANT NOTE:  The sound will cease to exist if the screen is cleared when using HTML tags.**
-
-An easy way to avoid this is using JS to add the sound:
+There's no script command for playing a video file, so upload it through **Manage assets** on the toolbar and write the tag yourself:
 
 ```quest
-src = GetFileURL("snd effect.ogg")
-JS.eval("var songVar = new Audio();songVar.src = '"+src+"';songVar.load();songVar.play();")
+msg ("<video src='" + GetFileURL("cutscene.mp4") + "' controls style='width:100%; max-width:640px;'></video>")
 ```
 
+Use MP4 (H.264) - it's the one format every browser plays. Don't use Ogg Video: Safari won't play it at all.
 
-### Playing multiple sounds at once
+Unlike pictures, a video isn't scaled to fit the text automatically, so always set a width as above: `width:100%` keeps it inside the text column on a phone, and `max-width` stops it stretching absurdly wide on a desktop.
 
-Sometimes, you may want to play two (or more) sounds at once.
+`controls` gives the player play, pause and volume. You can add `autoplay` and `loop` as well, and control the video from a script exactly as with `<audio>` - give it an `id` and use `JS.eval`. Clearing the screen removes it, the same way.
 
-Here is an example game that does just that after adding some more advanced audio functions.
+Video files are big, and everything you upload counts towards the game's size - see [Size limitations](/publishing/publishing#size-limitations). A few seconds of video can be more than the entire rest of the game, so consider [hosting the game yourself](/publishing/hosting), where there's no limit.
 
-https://textadventures.co.uk/games/view/n08rpt4hjemo48i3zabgdg/audiolib-tester
+## See also
+
+- [Pictures](/howto/multimedia/images)
+- [Customising the interface](/howto/ux/customising-the-ui) - what else `JS.eval` can reach
+- [JS functions](/js) - the full list, including `AddYouTube`

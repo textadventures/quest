@@ -1,179 +1,213 @@
 ---
 title: Exits
-sidebar:
-  order: 2
+description: Create exits between rooms, control what the player sees and can use, run a script when they go that way, and make exits that appear during the game
 ---
 
-Exits are dead easy to set up in Quest Viva. Go to the _Exits_ tab of the room, click the direction, select a destination, choose if you want to also create a reverse exit and click "Create exit".
+An exit is the link between two rooms. It has a direction, a destination, and a handful of settings that decide whether the player can see it, whether they can use it, and what happens when they do.
 
-Like everything else in Quest Viva, an exit is an object, and your exit will appear in the left hand pane, under the room (you may need to expand the node to see it).
+| You want | Use |
+|---|---|
+| A normal way from one room to another | The room's [_Exits_ tab](#creating-an-exit) |
+| A bit of description when the player goes that way | ["Print message when used"](#print-message-when-used) |
+| To decide at the time whether the player may pass | ["Run a script"](#run-a-script) |
+| A way that opens up later in the game | An [invisible exit](#an-exit-that-appears-later) you make visible |
+| A way called "kitchen" rather than "north" | A [non-directional exit](#non-directional-exits) |
+| A lock, a key or a door | [Doors, locks and keys](/howto/world/doors) |
 
-We will start by looking at the various settings for an exit.
+## Creating an exit
 
+Select the room and go to its _Exits_ tab. The compass grid shows the twelve directions: eight points of the compass, plus up, down, in and out. Click an empty direction and a small panel appears headed "Create exit: north". Choose the destination room, leave "Also create the return exit" ticked if you want a way back as well, and click "Create exit".
 
-## To
+The destination list holds every room in the game except this one. If the destination already has an exit in the opposite direction, Quest Viva creates this one and warns you rather than overwriting the existing exit.
 
-The "To" dropdown determines where the exit will take the player.
+Below the grid, "+ Add Exit" creates an exit with no direction at all - see [Non-directional exits](#non-directional-exits) - and the list underneath shows every exit the room has. Use the arrows to change the order they're listed in, the pencil to edit one, and × to delete it. Deleting an exit that has a matching return exit offers to delete both.
 
-When you create a room, you will find you cannot create an exit that goes to the room it came from. However, once the exit is created, you can change its destination to any room (or object), including the same room.
+Like everything else in Quest Viva, an exit is an object, and it appears in the tree under the room.
 
+The room's _Exits_ tab also has an "Exits list prefix" field, in the _Advanced_ section at the bottom. It replaces "You can go" for this room only:
 
-## Type vs alias
+> **Ways out lead** through an arched doorway to the south, to the kitchen or east.
 
-Quest Viva uses the alias of the exit to decide which direction it is. The type is used when the exit is created, but does not really do anything once that has happened (it does provide an alternative name, if the alias is "east" and the type is "north", then the exit will get used for `EAST`, `E` and `N`).
+## The _Exit_ tab
 
-You can set the alias to any value you like, so you could have "kitchen" as a direction. Note that the exit will then appear in the list of "Places and Objects" rather than the compass. Set the type to "Non-directional exit".
-
-
-
-## Prefix and suffix
-
-This is text that will get added to the direction in the list of exits for the room description. For example, if you have an exit going south, you could add the prefix "through an arched doorway to the" and when the player sees the room description, she will see:
-
-> You can go through an arched doorway to the south.
-
-Note that if you are using hypertext links, only the alias will be a link, not the prefix or suffix.
-
-If you are using names instead of directions, you might want to have a prefix like "to the", so the player sees:
-
-> You can go to the kitchen.
-
-
-## Name
-
-A name is optional for an exit (if you do not give the exit a name, Quest Viva will when the game starts). However, if you want to change any attribute of the exit during play (say to [unlock it](/howto/world/doors#locking-an-exit)), you will need a name to refer to it by.
-
-
-## Locked vs visible vs scenery
-
-An exit that is not **visible** will not appear in the compass rose or room description, and cannot be used. As far as the player is concerned, it does not exist.
-
-Having an exit invisible is a great way of making an exit during the game. Suppose the explosion has created a new opening through the wall. Rather than create a new exit during the game, it is far easier to have the exit already created in the editor, and just set it to be visible at the explosion.
-
-An exit that is **locked** will be listed in the room description, and will be visible in the compass rose, but the player will not be able to use it (she will see the locked message instead).
-
-An exit flagged as **scenery** will not be listed in the room description, and will not be visible in the compass rose, but the player will still be able to use it.
-
-If you have a flight of stairs heading up to the east, the player might type `UP` or `EAST`, so you need to be able to handle both. However, if the room description lists both up and east as exits, the player will think they are different exits. The solution is to flag one as scenery.
-
-
-For locked exits that open later, keys, doors that open and close from both sides, and combination locks, see [Doors, locks and keys](/howto/world/doors).
-
-
-## Print message when used
-
-By default, Quest Viva does not print anything when an exit is used, and just gives the details of the new room. You can use this text field to have a message when the player heads that way.
-
-
-## Attributes
-
-To change the state of an exit during a game, we need to change its attributes. Actually, that is what we were changing with all the setting above, but during a game you need to do that with a script.
-
-As mentioned before, you need to give your exit a name to be able to do this. Say we have an exit called "exit to kitchen" (lines that start with two slashes are comments by the way)...
-
-```quest
-// lock the exit
-exit to kitchen.locked = true
-
-// unlock the exit
-exit to kitchen.locked = false
-
-// make the exit appear
-exit to kitchen.visible = true
-
-// have the exit go to the garden object
-exit to kitchen.to = garden
-```
-
-
-## Exit script
-
-You can have an exit run a script when the player uses it. Tick the "Run a script" check box to activate the script, and an area for the script will appear.
-
-There are any number of reasons why you might want to run a script, so we can only look at a few examples. Note that by default the player will not be moved if we have "Run a script"; if we want the player to go to the new room, we need to do that in the script.
-
-### Conditional move
-
-A common reason to run a script is to only allow the exit to be used if a certain condition is met. Perhaps the player has to complete a quest before the portal opens, or needs to be carrying the magical amulet or has to have persuaded the guard to let her pass.
+Selecting an exit in the tree, or clicking the pencil beside it, opens its own _Exit_ tab.
 
 ![](/images/exitscript1.png)
+
+### To
+
+Where the exit leads. The dropdown lists every room in the game, including the room the exit is in - handy for a maze, or a corridor that loops back on itself.
+
+### Type and alias
+
+The **type** is the direction the exit was created in. It sets the exit's alias, and gives the exit its short form: an exit of type "north" can also be used by typing `N`.
+
+The **alias** is what the player sees and types, and it is what decides which compass button the exit lights up. It's in the _Advanced_ section at the bottom of the tab, because most of the time it's simply the direction you picked.
+
+If you change the alias and leave the type alone, both work. An exit with the alias "east" and the type "north" appears as "east" in the room description, lights the east button on the compass, and answers to `EAST`, `E` and `N`. That is occasionally useful, but as a rule set the type to the direction you want and leave the alias to follow it.
+
+### Prefix and suffix
+
+Text added around the direction in the room's list of exits. A south exit with the prefix "through an arched doorway to the" gives:
+
+> You can go **through an arched doorway to the** south.
+
+The suffix goes after it, in the same way. When hyperlinks are on, only the direction itself is a link - the prefix and suffix are plain text.
+
+### Name
+
+Exits don't need a name. Quest Viva gives unnamed ones an internal one when the game starts. But a script can only refer to an exit that has a name, so if you want to unlock it, reveal it or change its destination during the game, type a name such as "garden exit" here. The editor reminds you with a note above the box when you tick "Locked" or untick "Visible" on an exit that hasn't got one.
+
+### Visible, Scenery and Locked
+
+These three control what the player can see and do, and they are easy to confuse:
+
+| Setting | In the room description | On the compass | Can the player use it? |
+|---|---|---|---|
+| Normal | Listed | Lit | Yes |
+| **Visible** unticked | No | No | No |
+| **Scenery** ticked | No | No | Yes |
+| **Locked** ticked | Listed | Lit | No - shows the locked message |
+
+An exit that is not visible doesn't exist as far as the player is concerned. That makes it the easiest way to open up a route later in the game - see [An exit that appears later](#an-exit-that-appears-later).
+
+Scenery is for an exit you don't want listed but do want to work. If a flight of stairs leads up and to the east, create both exits so that `UP` and `EAST` both work, and mark one as scenery so the player isn't told about two separate ways out.
+
+### Print message when locked
+
+What the player sees instead of moving when the exit is locked. Leave it empty and they get "That way is locked." Locked exits, keys and doors are covered in [Doors, locks and keys](/howto/world/doors).
+
+### Print message when used
+
+By default going through an exit prints nothing, and the player just sees the new room. Put text here and it's printed first:
+
+```
+> down
+You scramble down the ladder.
+
+You are in a cellar.
+```
+
+This field is hidden when "Run a script" is ticked, because a script does the moving itself.
+
+### Run a script
+
+Tick "Run a script (instead of moving the player automatically)" and a script box appears. **Nothing else happens when the exit is used** - if you want the player to move, your script has to do it.
+
+### Look directions
+
+In the _Advanced_ section at the bottom of the tab. Tick "Exit is a look direction only (players can't move this way)" and the exit stops being a way out altogether: it isn't listed, isn't on the compass, and `NORTHEAST` gets "You can't go there." All that's left is the "Look" box, which is what `LOOK NORTHEAST` prints:
+
+> Rolling hills stretch away to the northeast.
+
+Use it for the view from a clifftop, or a corridor the player can see down but not reach. "Create a look exit instead" on the _Exits_ tab makes one directly.
+
+You can also fill in "Look" on an ordinary exit, and `LOOK EAST` will print it instead of the default "You are looking east." If the exit is locked, the locked message is added after it.
+
+### The _Map_ and _Options_ tabs
+
+The _Map_ tab only appears when the grid map is turned on, and sets how this exit is drawn: "Length" is how many squares long the corridor is, and "Offset X" and "Offset Y" nudge the destination room on the grid. See [Showing a map](/howto/tasks/showing-a-map).
+
+The _Options_ tab only appears when the light/dark feature is on, and lets an exit be a light source - which is how you write "it's pitch dark, but there's light coming from the doorway". See [Handling light and dark](/howto/world/handling-light-and-dark).
+
+## An exit that appears later
+
+Rather than creating an exit during the game, create it in the editor and untick "Visible". Give it a name, then make it visible when the moment comes:
+
+```quest
+hall to attic.visible = true
+msg ("A trapdoor opens in the ceiling.")
+```
+
+From then on it's listed, it's on the compass, and the player can use it.
+
+## A one-way exit
+
+Untick "Also create the return exit" when you create it, or delete the one that was made for you. Nothing stops the player coming back except the absence of an exit.
+
+## A script that decides whether the player can pass
+
+Tick "Run a script" and test whatever the condition is. Print the message first, then move the player, because moving them prints the room description:
 
 ```quest
 if (Got(talisman)) {
   msg ("The talisman hums as you pass through the portal.")
-  MoveObject (player, room2)
+  MoveObject (game.pov, this.to)
 }
 else {
   msg ("For some reason you cannot get through the portal.")
 }
 ```
 
-The basic principle is that we test the condition. If the condition passes, then we print a message, and move the player (it is important to do the message first, as moving the player will cause the room description to get printed, and you want the message before that). If the condition fails, just give a message.
+`this` is the exit the script is attached to, and `this.to` is its destination, so the same script works on any exit, and keeps working if you change where the exit leads.
 
-This is very much like having the exit locked, so when would you use this, rather than unlocked? This technique is best for checking an on-going situation, so in fact whether the player is carrying a key is actually better done this way. The "locked" attribute is better for specific events, such as the player using the `UNLOCK` command - see [Doors, locks and keys](/howto/world/doors).
-
-
-### Move and...
-
-You might want the player to trigger some event by using the exit.
-
-![](/images/exitscript2.png)
+To make something happen the first time the player goes that way, wrap it in `firsttime` and move them at the end:
 
 ```quest
 firsttime {
-  msg ("As you walk down the path, the sky darkens alarmingly ")
-  SetObjectFlagOn (player, "apocolyse started")
+  msg ("As you walk down the path, the sky darkens alarmingly.")
 }
-MoveObject (player, room2)
+MoveObject (game.pov, this.to)
 ```
 
-In this instance, we only want it to happen once, so we use the `firsttime` script command. Again, we need the message to appear before the room description, so we move the player in the last line.
+A script is the right tool for an ongoing condition - carrying something, having talked to someone. For a one-off state change, like a door that gets unlocked and stays unlocked, use the `locked` attribute instead.
 
+![](/images/exitscript2.png)
 
-### Using `this.to`
+## Non-directional exits
 
-Rather than using a specific destination in your scripts, it can be a good idea to use `this.to` instead. `this` is a special value in Quest Viva that refers to the object the script is attached to (i.e., the exit), and the "to" attribute is the destination of an exit. This means you can potentially use the same script for different exits to different destinations. It also means that if you later modify your game and change the destination of an exit, your script will still work fine; it will send the player to the new destination without you having to remember to update the script. It is probably less typing too!
+An exit doesn't have to be a compass direction. Use "+ Add Exit" on the room's _Exits_ tab. The new exit has no direction and nowhere to go, so open it, set "To", and set the alias in the _Advanced_ section to whatever you want - "kitchen", "the old mill", "down the rabbit hole". (An exit created in a compass direction can be turned into one of these by setting "Type" to "Non-directional exit" and changing the alias.)
 
+The player can't type `KITCHEN` on its own, because Quest Viva only recognises the twelve compass words as bare commands. They type `GO KITCHEN` or `GO TO KITCHEN`, or click it: a non-directional exit appears in the _Places and Objects_ pane rather than on the compass. A prefix of "to the" makes the room description read naturally:
 
-## Room scripts
+> You can go **to the** kitchen.
 
-It is worth briefly mentioning room scripts. Rooms have a number of scripts that fire in different situations; before entering, after entering, when leaving, etc. Do not be tempted to move the player in any of these scripts; it will confuse Quest Viva, and the output will confuse you.
+## Changing exits from a script
 
-So what if you want to trap the player in a room with several exits?
-
-The easiest way is to set the player's `notallowedtoexit` attribute to the message you want them to see - see [Stopping the player leaving](/howto/world/doors#stopping-the-player-leaving).
-
-
-## Useful functions
-
-### Creating exits on the fly
-
-Sometimes the tricking of setting a exit to be visible is not going to work, and you really need to create an exit. Quest Viva has the [create exit](/scripts#create-exit) script command for just this purpose. If you want to create an exit going the other way at the same time, we have the [CreateBiExits](/reference/functions/objects#createbiexits) function.
-
-### Finding an exit
-
-To find a specific exit, use [GetExitByLink](/reference/functions/objects#getexitbylink) to get the exit from one room to another or [GetExitByName](/reference/functions/objects#getexitbyname) to get the exit from a room in a specific direction (uses the alias of the exit). These both return the name of the exit (or `null` if there is none). Use `GetObject` to get the exit itself.
+Everything on the tab is an attribute, and a named exit's attributes can be changed at any time:
 
 ```quest
-exitname = GetExitByName(room2, "north")
+// lock and unlock
+hall to tower.locked = true
+hall to tower.locked = false
+
+// reveal it
+hall to attic.visible = true
+
+// send it somewhere else
+hall to kitchen.to = garden
+```
+
+`LockExit` and `UnlockExit` do the same as setting `locked`, and are what the editor adds from the Objects category.
+
+## Creating and finding exits from a script
+
+When an exit can't be prepared in advance - a randomly generated maze, say - use the [create exit](/scripts#create-exit) script command. Its first argument is the direction the player types, and its fourth is the direction type:
+
+```quest
+create exit ("up", hall, attic, "updirection")
+```
+
+[CreateBiExits](/reference/functions/objects#createbiexits) makes a pair at once, working out the return direction for you:
+
+```quest
+CreateBiExits ("down", hall, cellar)
+```
+
+To find an existing exit, [GetExitByName](/reference/functions/objects#getexitbyname) takes a room and a direction, and [GetExitByLink](/reference/functions/objects#getexitbylink) takes two rooms. Both return the exit's name, or `null`:
+
+```quest
+exitname = GetExitByName(hall, "east")
 if (not exitname = null) {
   ext = GetObject(exitname)
-  msg ("The exit north goes to " + ext.to.name + ".")
-}
-else {
-  msg ("No exit north")
+  msg ("The exit east goes to " + ext.to.name + ".")
 }
 ```
 
-### Finding exits
+To work with all of a room's exits, [ScopeExits](/reference/functions/scope#scopeexits) gives the visible exits of the room the player is in, [ScopeExitsForRoom](/reference/functions/scope#scopeexitsforroom) does the same for any room, and [ScopeUnlockedExitsForRoom](/reference/functions/scope#scopeunlockedexitsforroom) leaves out the locked ones. [PickOneExit](/reference/functions/random#pickoneexit) and [PickOneUnlockedExit](/reference/functions/random#pickoneunlockedexit) pick one at random, which is all you need for an NPC that wanders.
 
-There are three scope functions that will return a list of exits for a given room. 
+## See also
 
-- [ScopeExits](/reference/functions/scope#scopeexits) All visible exits for current room
-- [ScopeExitsForRoom](/reference/functions/scope#scopeexitsforroom) All visible exits for the given room
-- [ScopeUnlockedExitsForRoom](/reference/functions/scope#scopeunlockedexitsforroom) All visible and unlocked exits for the given room
-
-
-### Random exit
-
-Two functions, [PickOneExit](/reference/functions/random#pickoneexit) and [PickOneUnlockedExit](/reference/functions/random#pickoneunlockedexit), will give a random exit from the given room (or `null` if there are none).
+- [Doors, locks and keys](/howto/world/doors) - locked exits, keys, doors that open and close, and stopping the player leaving
+- [Objects and rooms](/howto/world/objects-and-rooms) - the _Setup_, _Room_ and _Objects_ tabs
+- [Showing a map](/howto/tasks/showing-a-map) - the grid map and the _Map_ tab
