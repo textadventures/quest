@@ -153,7 +153,26 @@ ShowMenu ("What flowers do you want to buy?", options, true) {
 
 This is what the editor adds when you choose "Show a menu" or "Ask a question" from the Output category. The menu is shown and the turn ends straight away, so the player can save while it's on screen, and the block runs when they choose.
 
-The catch is that the block runs later, as a separate script, so local variables from before the menu - like `options` above - aren't available inside it. Anything the block needs must be stored in an attribute, like `Cindy.stock` or `game.lastchoice`, rather than a local variable. For the same reason, asking a second question means nesting a second menu inside the first block, and so on.
+The catch is that the script doesn't pause. Everything after the `ShowMenu (...) { }` runs straight away, while the menu is still on screen, and the block runs later, as a separate script:
+
+```quest
+ShowMenu ("Paint it what colour?", options, false) {
+  msg ("You paint it " + LCase(result) + ".")
+}
+msg ("(this line is printed before the player has chosen)")
+```
+
+Because the block is a separate script, it can't see anything local to the script that showed the menu: not local variables like `options` above, not `this`, not a command's `object` or `text`, and not a function's parameters. Using one stops the script with "Unknown object or variable 'object'". Anything the block needs has to be put somewhere that outlives the turn first - an attribute on `game` or on an object:
+
+```quest
+game.objecttopaint = object
+ShowMenu ("Paint it what colour?", options, false) {
+  msg ("You paint the " + GetDisplayAlias(game.objecttopaint) + " " + LCase(result) + ".")
+  game.objecttopaint.colour = result
+}
+```
+
+For the same reason, asking a second question means nesting a second menu inside the first block, and so on. The `on ready` script command, which waits for outstanding blocks to finish before running its own, doesn't help here - it has no way of knowing that a menu is waiting.
 
 So, as a rule of thumb:
 

@@ -21,7 +21,7 @@ When you copy a template into your game and change it, your copy replaces the li
 There are two kinds of template:
 
 - A **template** is plain text, such as `UnrecognisedCommand`: "I don't understand your command."
-- A **dynamic template** is an [expression](/howto/scripting/expressions), for messages that depend on an object. The object is in a variable called `object`. For example, `TakeSuccessful` is used when the player picks something up:
+- A **dynamic template** is an [expression](/howto/scripting/introtocoding#expressions-and-operators), for messages that depend on an object. The object is in a variable called `object`. For example, `TakeSuccessful` is used when the player picks something up:
 
   ```quest
   WriteVerb(game.pov, "pick") + " " + object.article + " up."

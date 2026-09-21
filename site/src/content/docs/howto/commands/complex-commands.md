@@ -1,228 +1,131 @@
 ---
-title: Complex commands
+title: Commands with two objects
+description: Handle TIE CORD TO HOOK, BURN PAPER WITH MATCH and other actions that involve two objects
 sidebar:
   order: 3
 ---
 
-So you want to use `THIS` with `THAT`? what is the best way to handle it?
+Some actions need two objects: `TIE CORD TO HOOK`, `CUT ROPE WITH KNIFE`, `IGNITE FIREWORK WITH MATCH`, `GET HOT COAL WITH TONGS`. There are three ways to handle them, and it's worth checking the first two before writing a command.
 
-This page discusses how to set up commands that use two (or more) objects. For simple commands, see [here](/howto/commands/commands).
+| You want | Use |
+|---|---|
+| USE X ON Y or GIVE X TO Y, for a few specific pairs | The object's _Use/Give_ tab - no code needed |
+| Your own joining word ("with", "using") on one object | A [two-object verb](/howto/commands/using-verbs#two-object-verbs) |
+| Your own wording, or objects in either order, or many pairs handled by one rule | A command |
 
-```
-> TIE CORD TO HOOK
+## USE and GIVE
 
-> CUT ROPE WITH KNIFE
+Quest Viva already understands `USE KNIFE ON DOOR` (or WITH instead of ON) and `GIVE SPOON TO MARY`. To set them up, select the object, tick "Use/Give" on its _Features_ tab, and go to the _Use/Give_ tab that appears.
 
-> ATTACK GOBLIN WITH KNIFE
+The tab is in sections. The ones you'll want most are:
 
-> GET HOT COAL WITH TONGS
+- **Use (other object) on this** - what happens when something is used on this object. Set **Action** to "Handle objects individually" and you get a list: add an entry per object, and write a script for each. "Use any other object on this" catches everything else.
+- **Give (other object) to this** - the same for giving something to this object, which is usually a character.
 
-> IGNITE FIREWORK WITH MATCH
-```
+There are matching "Use this on (other object)" and "Give this to (other object)" sections, flagged as advanced, for when it's easier to put the response on the object being carried than on the target. Quest Viva tries the target's list first, then the carried object's.
 
-First, remember that `GIVE` and `USE` are already built in; if you want to use them, tick the feature on one of the items, and go to the Use/give tab. What about the others? 
+Two more sections, **Use (on its own)** and **Give (on its own)**, handle plain `USE LAMP` and `GIVE SPOON`. Set **Action** to "Default behaviour" and tick "Display menu of objects this can be used on" (or "given to") to have Quest Viva ask which object to use it on.
 
-As an example, we will implement `TIE CORD TO HOOK`.
+When nothing matches, the player gets "You can't use it that way." or "She does not want it."
 
+## The command pattern
 
-## Command pattern
+If USE and GIVE don't fit, add a command. The pattern needs two placeholders, and both must start with `object`:
 
-First you need a command pattern. We could do this:
-```
-tie cord to hook
-```
-If you do that then the player has to type that exact phrase or Quest Viva will not recognise it. We can concatenate alternatives by separating them with semi-colons (and optionally spaces too).
-```
-tie cord to hook; tie thread to hook; tie string to hook
-```
-However, we can do even better, and let Quest Viva handle the synonyms, by using `#object#`.
-```
-tie #object# to hook
-```
-As long as you have set up the cord with these alternative names (the "Other names" list on the Object tab), Quest Viva will match `#object#` against any of them. An important benefit here is that your game will have the same set of synonyms for an object whether the player is trying to pick it up, look at it or tie it to a hook.
-
-And you can have as many objects as you like in the pattern; just make sure they start object so Quest Viva will match them against objects that are present (in practice, any more than two will confuse the player). We need two here, the cord and the hook:
 ```
 tie #object1# to #object2#
 ```
-You might now want to include alternative verbs.
+
+Quest Viva matches each placeholder against the objects around the player, including any alternative names you gave them on the _Object_ tab, so `TIE THREAD TO HOOK` works too if "thread" is one of the cord's other names. Add alternative wordings by separating them with semicolons:
+
 ```
 tie #object1# to #object2#; attach #object1# to #object2#; fasten #object1# to #object2#
 ```
 
+That gets unwieldy if the joining word varies as well. Switch the Pattern dropdown from "Command pattern" to "Regular expression" and you can write all the variations at once - see [Pattern matching](/howto/commands/pattern-matching).
 
-## Regular expression (optional!)
+More than two objects is possible (`#object3#` and so on), but a command the player has to phrase that precisely is rarely worth having.
 
-If you are feeling brave, you could use a regular expression here (remember to set Regular expression from the drop down list).
-```regex
-^(tie|attach|fasten) (?<object1>.*) to (?<object2>.*)$
-```
-* The `^` at the start says Quest Viva must match this to the start of the command, whilst the $ at the end says this must be the end of the command.
+## Which object is which
 
-* The `(tie\|attach\|fasten)` tells Quest Viva it has to match to one of these. One has to match exactly, but it does not matter which.
+In the script, each placeholder becomes a variable of the same name, holding the object it matched. With `tie #object1# to #object2#`, `object1` is what's being tied and `object2` is what it's being tied to. They are always in pattern order, not in the order the player typed them - so if your pattern also has a reversed alternative, `#object1#` is still the thing being tied.
 
-* `(?\<object1\>.*)` is equivalent to `#object1#`; in a regex it is called a "capture group", because it groups some characters together, and captures them for use elsewhere.
-
-* Plain text, like "to", has to be matched exactly.
-
-* If you need to match special characters, you can escape them with a backslash. Backslashes have a special meaning in strings, so you then need to escape the backslash as well! To match a `*`, you therefore need to use `\\*`
-
-Quest Viva uses .NET regex rules, and a quick reference for .NET regex rules can be found [here](https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-language-quick-reference).
-
-May be not much point in this example, but if you have variations in the joining word to handle too, you could be looking at a lot of combinations, so this way may be easier. For example:
-```regex
-^(get|pick up|take) (?<object1>.*) (using|holding|with) (the |)(?<object2>.*)$
-```
-Or even:
-```regex
-^((get|pick up|take) (the |)(?<object1>.*) (using|holding|with) (the |)(?<object2>.*)|(using|holding|with) (the |)(?<object2>.*) (get|pick up|take) (the |)(?<object1>.*))$
-```
-That will handle any of these:
-
-```
-> get hat with hook
-
-> pick up hat using hook
-
-> take the hat with the hook
-
-> using the hook take the hat
-```
-
-There is more on regular expressions [here](/howto/commands/pattern-matching).
-
-
-## Script
-
-So we have a command pattern or regular expression that Quest Viva will use to match this command, now we need to do something, so we need a script. Because we used this as the command pattern:
-```
-tie #object1# to #object2#
-```
-... Quest Viva will already have assigned values to two special variables, in this case called object1 and object2. We do not know specifically what they are, but they will be objects that are present in the current room or in the player's inventory.
-
-The way to write the code here is going to be the same for most commands; what do we need to check before allowing the command to work?
-
-1. The player has the first object
-
-1. The first object is the cord
-
-1. The second object is the hook
-
-1. The cord is not already tied to the hook
-
-As Quest Viva will only match an object if it is present, so we do not need to check if the hook is present, it must be if Quest Viva found it (and you may choose not to check number 1; does the player need the cord in his inventory or should the command work if the cord is lying on the ground?).
-
-There is a design consideration here. If you have some cord and tie it to a hook, you could still hold the other end of it. However, you cannot take it to another room, so it is better to assume the player is not holding it and cannot pick it up once it is tied to the hook. This means that the last condition does not need to be tested - if the player is holding the cord it cannot be already tied.
-
-For the first three conditions, we convert them to a if/else if/else cascade, at each step testing if it is not so (lines starting with two slashes are comments, by the way):
+Because Quest Viva only matches objects the player can see, the script doesn't need to check that either object is there. What it does need to check is whether this particular pair makes sense. The usual shape is a cascade that tests each requirement in turn and stops at the first failure:
 
 ```quest
-// 1. The player has the first object
-if (not object1.parent = player) {
-  msg("You are not holding " + GetDisplayAlias(object1) + ".")
+if (not object1.parent = game.pov) {
+  msg ("You are not holding " + GetDisplayAlias(object1) + ".")
 }
-// 2. The first object is the cord
 else if (not object1 = cord) {
-  msg("You cannot tie the " + GetDisplayAlias(object1) + " to anything.")
+  msg ("You can't tie " + object1.article + " to anything.")
 }
-// 3. The second object is the hook
-else if (not object2 = hook) {
-  msg("You cannot tie anything to the " + GetDisplayAlias(object2) + ".")
-}
-// Everything checked, so do it
-else {
-  msg("You tie the cord to the hook.")
-  cord.take = false
-  cord.parent = player.parent
-  cord.tiedtohook = true
-}
-```
-
-## More general
-
-Suppose there are several objects the cord might be tied to, what is the best way to handle that? What we want is a command that can handle tying the cord to any such object, so the first thing to do is to flag an object as attachable. Go to the _Attributes_ tab of each object, and add a new attribute, "attachable", set it to be a Boolean, and tick it. Now our command can check if the object has that set, and if it does, the cord can be tied to it.
-
-The code here has two changes. Condition number 3 now checks the attachable flag, instead of checking the object in the hook. Also, at the end, an attribute on the cord gets set to the object it is attached to, so you can test what that was if necessary (and we can check if that is set to see if the cord is attached so do not need the "tiedtohook" attribute).
-
-```quest
-// 1. The player has the first object
-if (not object1.parent = player) {
-  msg("You are not holding " + GetDisplayAlias(object1) + ".")
-}
-// 2. The first object is the cord
-else if (not object1 = cord) {
-  msg("You cannot tie the " + GetDisplayAlias(object1) + " to anything.")
-}
-// 3. The second object is the attachable
 else if (not GetBoolean(object2, "attachable")) {
-  msg("You cannot tie anything to the " + GetDisplayAlias(object2) + ".")
+  msg ("You can't tie anything to " + object2.article + ".")
 }
-// Everything checked, so do it
 else {
-  msg("You tie the cord to the hook.")
+  msg ("You tie the cord to the " + GetDisplayAlias(object2) + ".")
   cord.take = false
-  cord.parent = player.parent
+  cord.parent = game.pov.parent
   cord.attachedto = object2
 }
 ```
 
+Use `game.pov` rather than `player`, so the command still works if your game lets the player change character.
 
-## Burn, baby, burn!
+The third check is the one to copy: instead of naming the hook, it tests an `attachable` attribute, so anything you flag becomes a valid thing to tie the cord to. Add it on each object's _Attributes_ tab as a Boolean set to true. `GetBoolean` returns false rather than failing when an object doesn't have the attribute at all.
 
-Let's look at another example. Suppose you want to have fire in your game, to allow the player to burn certain items. There are several ways you could do this; here is a relatively simple approach.
-
-We will do this with two commands, one to handle BURN PAPER IN FIREPLACE and one to handle BURN PAPER. The trick is that we will call the code in the first command from the second.
-
-Before we get to the commands, you need to give any fire a new attribute "fire", and set it to be a Boolean and true. This will tell Quest Viva this is something objects can be burned on. Then for any object that can be destroyed in the fire, give it an attribute "ashes", and make this a string that can be used for the name (alias) of the ashes, say "ashes of the paper". You could also give the object another attribute "ashes_look" and that will be used for the description of the ashes.
-
-For the first command give it this pattern:
-
-    burn #object1# on #object2#;burn #object1# in #object2#;burn #object1# with #object2#
-
-Give it a name, "cmd_burn_with" (commands do not usually need names, but this will be useful later). Paste in the code:
+Storing `object2` in `cord.attachedto` records what happened, which is what an UNTIE command needs:
 
 ```quest
-if (not GetBoolean(object2, "fire")) {
-  msg (CapFirst(GetDisplayName(object2)) + " " + Conjugate(object2, "be") + "n't a fire.")
-}
-else if (not HasString(object1, "ashes")) {
-  msg (WriteVerb(object1, "do") + "n't burn.")
+if (not HasObject(object, "attachedto")) {
+  msg (CapFirst(GetDisplayName(object)) + " " + Conjugate(object, "be") + "n't tied to anything.")
 }
 else {
-  msg ("You burn the " + GetDisplayAlias(object1) + " with the " + GetDisplayAlias(object2) + ".")
-  create ("ashes of " + object1.name)
-  ashes = GetObject("ashes of " + object1.name)
-  ashes.parent = object1.parent
-  ashes.alias = object1.ashes
-  if (HasString(object1, "ashes_look")) {
-    ashes.look = object1.ashes_look
-  }
-  else {
-    ashes.look = "This is all that is left of the " + GetDisplayAlias(object1) + " after you burnt " + object1.article + "."
-  }
-  object1.parent = null
+  msg ("You untie the cord from the " + GetDisplayAlias(object.attachedto) + ".")
+  object.attachedto = null
+  object.take = true
+  object.parent = game.pov
 }
 ```
 
-The code checks if the second object is on fire (i.e., the "fire" attribute is true), then checks the first object can be burnt (i.e., it has an "ashes" string). If so, it creates a new object, the ashes of the first object, placing that wherever the first object is, and then removes that object.
+## When the player is vague
 
-The second command has this pattern:
+If two objects in the room match what the player typed, Quest Viva asks before running the command, and nothing extra is needed from you:
 
-    burn #object1#
+```
+> tie ball to hook
 
-Here is the code:
+Please choose which 'ball' you mean:
+1: red ball
+2: blue ball
+```
+
+If one of the words matches nothing, the command doesn't run at all. The player gets "I can't see that.", followed by the word that failed in brackets so they know which of the two was the problem. To replace that with something in your game's voice, set **Unresolved object text** on the Command tab:
+
+- **Text** - your own message. Quest Viva still appends the unmatched words in brackets when the pattern has more than one placeholder.
+- **Run a script** - the script gets `object` (the text the player typed, as a string) and `key` (which placeholder failed, such as `"object2"`).
 
 ```quest
-l = FilterByAttribute(ScopeReachable(), "fire", true)
-if (ListCount(l) = 0) {
-  msg ("There is no fire here to burn anything on.")
+msg ("You look around for " + object + ", but there's nothing like that here.")
+```
+
+The **Scope** box on the same tab changes where Quest Viva looks first for each placeholder - `object1=inventory|object2=notheld`, for instance. It's a preference, not a restriction: if nothing in that scope matches, Quest Viva still falls back to everything the player can see. See [Advanced scope](/howto/commands/advanced-scope).
+
+## Filling in the second object yourself
+
+Sometimes the player shouldn't have to name the second object at all. `BURN PAPER` is reasonable if there's an obvious fire in the room. Give the two-object command a **Name** on the Command tab - `cmd_burn_with`, say - then write a second, one-object command that finds the missing object and calls the first one's script:
+
+```quest
+fires = FilterByAttribute(ScopeReachable(), "fire", true)
+if (ListCount(fires) = 0) {
+  msg ("There is no fire here.")
 }
 else {
-  d = NewDictionary()
-  dictionary add (d, "object1", object1)
-  dictionary add (d, "object2", ObjectListItem(l, 0))
-  do (cmd_burn_with, "script", d)
+  params = NewDictionary()
+  dictionary add (params, "object1", object)
+  dictionary add (params, "object2", ObjectListItem(fires, 0))
+  do (cmd_burn_with, "script", params)
 }
 ```
 
-This looks for an object present with the "fire" attribute. If it finds one, it passes that and object1 to the first command as a dictionary to do all the work. Note that if there are two fires in the room, one will be selected arbitrarily by Quest Viva.
+The dictionary supplies exactly the variables the other command's script expects. All the checking and all the messages stay in one place, so `BURN PAPER` and `BURN PAPER IN FIREPLACE` can never drift apart. If there's more than one fire in the room, this picks the first; offer a [menu](/howto/scripting/asking-the-player#menus) instead if that matters.

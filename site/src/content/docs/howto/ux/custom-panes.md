@@ -76,7 +76,7 @@ JS.setCommands (game.panecommands)
 
 If the player saves in that room and loads the game later, the pane still shows SHOUT.
 
-For a command that only works in one room, see [Commands for a room](/howto/commands/commands-for-room).
+For a command that only works in one room, see [Commands for one room](/howto/commands/commands#commands-for-one-room).
 
 ## Showing a bar in the Status pane
 

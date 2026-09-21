@@ -98,7 +98,7 @@ msg ("You leap across the chasm.")
 AwardPoints ("Crossing the chasm", 5)
 ```
 
-Every script that awards "Crossing the chasm" can call `AwardPoints` with the same name, and the player only gets the points once. For more about functions and parameters, see [Functions](/howto/tasks/about-functions).
+Every script that awards "Crossing the chasm" can call `AwardPoints` with the same name, and the player only gets the points once. For more about functions and parameters, see [Functions](/howto/scripting/creating-functions-which-return-a-value).
 
 To let the player see what they've scored for, add a command with the pattern `score; full score; full` and this script:
 

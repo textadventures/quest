@@ -42,7 +42,7 @@ Set its "Scope" box to:
 object1=known_spells|object2=all;known_spells
 ```
 
-The scope says where Quest Viva looks for each object. The spell (`object1`) can only be one the player knows - one inside `known_spells`. The target (`object2`) can be anything the player can see, or another known spell (we need that for the last spell on this page). See [Advanced scope](/howto/commands/advanced-scope#alternative-scope) for more about scopes.
+The scope says where Quest Viva looks for each object. The spell (`object1`) can only be one the player knows - one inside `known_spells`. The target (`object2`) can be anything the player can see, or another known spell (we need that for the last spell on this page). See [Scope](/howto/commands/advanced-scope#setting-the-scope-on-a-command) for more about scopes.
 
 Set the command's script to:
 

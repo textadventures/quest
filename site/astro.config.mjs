@@ -237,10 +237,6 @@ export default defineConfig({
                                     "slug": "howto/commands/commands"
                                 },
                                 {
-                                    "label": "Commands specific to a room",
-                                    "slug": "howto/commands/commands-for-room"
-                                },
-                                {
                                     "label": "Verbs",
                                     "slug": "howto/commands/using-verbs"
                                 },
@@ -253,7 +249,7 @@ export default defineConfig({
                                     "slug": "howto/commands/handling-multiple"
                                 },
                                 {
-                                    "label": "Scope for commands",
+                                    "label": "Scope",
                                     "slug": "howto/commands/advanced-scope"
                                 },
                                 {
@@ -355,7 +351,7 @@ export default defineConfig({
                             "collapsed": true,
                             "items": [
                                 {
-                                    "label": "Introduction to coding",
+                                    "label": "Writing code",
                                     "slug": "howto/scripting/introtocoding"
                                 },
                                 {
@@ -363,11 +359,7 @@ export default defineConfig({
                                     "slug": "howto/scripting/asking-the-player"
                                 },
                                 {
-                                    "label": "Using functions",
-                                    "slug": "howto/tasks/about-functions"
-                                },
-                                {
-                                    "label": "Creating functions",
+                                    "label": "Functions",
                                     "slug": "howto/scripting/creating-functions-which-return-a-value"
                                 },
                                 {
@@ -391,16 +383,8 @@ export default defineConfig({
                                     "slug": "howto/scripting/clones"
                                 },
                                 {
-                                    "label": "Blocks and scripts",
-                                    "slug": "howto/scripting/blocks-and-scripts"
-                                },
-                                {
                                     "label": "Advanced game scripts",
                                     "slug": "howto/scripting/advanced-game-scripts"
-                                },
-                                {
-                                    "label": "Copying and pasting code",
-                                    "slug": "howto/scripting/copy-and-paste-code"
                                 },
                                 {
                                     "label": "Editing the raw XML",
@@ -425,10 +409,6 @@ export default defineConfig({
                                     "slug": "howto/world/transcript"
                                 },
                                 {
-                                    "label": "Unit testing",
-                                    "slug": "howto/scripting/unit-testing"
-                                },
-                                {
                                     "label": "Troubleshooting",
                                     "slug": "howto/tasks/problems"
                                 }
@@ -449,15 +429,7 @@ export default defineConfig({
                             "slug": "howto/scripting/when-scripts-run"
                         },
                         {
-                            "label": "Scope: what the player can see and reach",
-                            "slug": "howto/scripting/scopes"
-                        },
-                        {
-                            "label": "Expressions",
-                            "slug": "howto/scripting/expressions"
-                        },
-                        {
-                            "label": "Null and unset values",
+                            "label": "Values and types",
                             "slug": "howto/scripting/null"
                         },
                         {

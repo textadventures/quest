@@ -404,7 +404,7 @@ This is used by the Core library so that, for example, a room description is onl
 
 Generally there should be no need to use this command in your own games, as of course if you want script to run after an "ask", you can just put it inside the "ask" script block.
 
-Note that this does not wait for scripts attached to functions to work (such as `Ask` and `ShowMenu`). see [here](/howto/scripting/blocks-and-scripts)
+Note that this does not wait for scripts attached to functions to work (such as `Ask` and `ShowMenu`). see [Saving while a question is waiting](/howto/scripting/asking-the-player#saving-while-a-question-is-waiting)
 
 ## picture
 ```quest

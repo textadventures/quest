@@ -1,360 +1,226 @@
 ---
 title: Using lists
+description: Store several values in one place, and read, iterate, filter, combine and sort them
 sidebar:
   order: 4
 ---
 
+A list holds any number of values in order. Each value has a position, counting from zero: the first item is at position 0, the second at position 1, and so on.
 
+There are three kinds:
 
-A list is a sequence of entries in a prescribed order. Each entry is associated with a number, which is its position in the list.
+| Kind | Holds | Create with |
+|---|---|---|
+| String list | Strings only | `NewStringList()`, or `Split(...)` |
+| Object list | Objects only | `NewObjectList()`, or a [scope function](/reference/functions/scope) |
+| List | Anything, including a mixture | `NewList()` |
 
-There are three types of lists: string lists; object lists; and general lists. As you might expect, a string list can only hold strings, and an object list can only hold objects, but a general list can pretty much hold anything.
+Use a string list or an object list whenever you can. The functions for them return the right type, so you can chain them together, and Quest Viva can tell you when something has gone wrong.
 
-To create a list, then, we have three functions:
-```quest
-mystringlist = NewStringList()
-myobjectlist = NewObjectList()
-mylist = NewList()
-```
-It is best practice to use string lists or object lists wherever possible, rather than general lists.
-
-You can add a list to an object on the Attributes tab, but you are restricted to string lists. Object lists and general lists are useful for temporarily storing information (i.e., as local variables), but generally should not be used as attributes (sometimes it is the only way!).
-
+In the editor, select an object, go to the _Attributes_ tab and add an attribute of type "String List". You can then add and remove items with the "Add item…" box. That's the only kind of list the editor stores as an attribute - object lists and general lists are usually built in a script and kept in a local variable.
 
 ## Adding and removing items
 
-To add items to a list, use the `list add` command. To remove something from a list, use `list remove`. Here is an example that illustrates how we can add various types to a list:
+Use the `list add` and `list remove` script commands. In the editor they're "Add a value to a list" and "Remove a value from a list", in the Variables category.
+
 ```quest
-l = NewList()
-l2 = NewList()
-list add (l, "one")
-list add (l, fancy table)
-list add (l, game.start)
-list add (l, 42)
-list add (l, 9.23)
-list add (l, l2)
-list remove(l, fancy table)
-```
-If you try to add something to a list that is already in the list, it will get added a second time.
-
-If you try to remove something from a list that is not there, nothing will happen (no error message or warning is given). If you remove something that is in the list multiple times, only one instance is removed (the first in the list).
-
-
-### When adding or removing fails...
-
-In a certain situation you may find you cannot add or remove an item from a list, and you get this error:
-
-```
-Error running script: Cannot modify the contents of this list as it is defined by an inherited type. Clone it before attempting to modify.
+verbs = NewStringList()
+list add (verbs, "Poke")
+list add (verbs, "Prod")
+list remove (verbs, "Poke")
 ```
 
-This typically happens when you try to modify the display or inventory verbs, but the list is actually an attribute of the type the object inherits from, rather than the object itself. You will be able to go to the _Attributes_ tab of the object, and will see that the attribute in question is greyed out.
+Adding something that's already in the list adds it a second time. Removing something that isn't in the list does nothing at all - no error. If a value appears more than once, `list remove` removes only the first one.
 
-There are two solutions.
+Both commands change the list in place, so you can use them on an attribute directly:
 
-The simplest is to add something to the list in the editor (bottom of the _object_ tab), and then delete it. This will force Quest Viva to add the attribute to the object (you will find it is not in black on the _Attributes_ tab).
-
-The alternative is to give the object a new list, using `NewStringList`, and then add all the values from scratch (or use the `Split` function discussed later).
-
-
-## Retrieving from lists
-
-You can access an item in a list using the `ListItem` function. This takes the list and the position as parameters. Note that the positions count from zero, i.e, the first member of the list is at position 0.
-
-It is also important to note that removing an item from a list will change the position of all subsequent entries. So:
 ```quest
-l = NewList()
-l2 = NewList()
-list add (l, "one")
-list add (l, fancy table)
-list add (l, game.start)
-list add (l, 42)
-list add (l, 9.23)
-list add (l, l2)
-msg(ListItem(l, 3))
-// -> 42
-list remove(l, fancy table)
-msg(ListItem(l, 3))
-// -> 9.23
+list add (hat.inventoryverbs, "Poke")
 ```
-The first `msg` prints the number 42, because that is the fourth entry, and 3 is the fourth position, counting zero as the first. When the object `fancy table` is removed from the list, the position of 42 changes; it is now third, and the number 9.23 is fourth.
 
-It is good practice to consider a list as either:
+### "Cannot modify the contents of this list"
 
-- Static: The list will never have an element removed over the course of the game, so the position of each element will never change, and can be relied upon (adding elements is allowed as this will not change the position of existing elements).
+If the attribute belongs to a type the object inherits from rather than to the object itself, you'll get:
 
-- Variable: Elements can be removed from the list, so the position of an element is expected to change and cannot be reliable upon.
+> Error running script: Cannot modify the contents of this list as it is defined by an inherited type. Clone it before attempting to modify.
 
+The object needs its own copy of the list first. Assigning the list back to the object makes one:
 
-### Retrieving from string lists and object lists
-
-If you know your list will contain only strings then it is better to use a string list rather than a general list. Similarly, if the list is just going to hold objects, use an object list.
-
-If you know that what you are retrieving is a string, you can use `StringListItem`, and similarly you can use `ObjectListItem` for an object. You _can_ use these with general lists, but there will be a risk that what you retrieve is not what you thought it was (perhaps because something got removed from the list, and the positions all changed), and it is bad idea.
-
-
-
-
-### Retrieving from other lists
-
-It can take Quest Viva a moment to work out what the thing is with `ListItem`. Consider this code:
 ```quest
-if (ListItem(l, 2) = "one") {
-  msg("Here")
-}
-if (ListItem(l, 2) = 42) {
-  msg("Here")
-}
+hat.inventoryverbs = hat.inventoryverbs + "Poke"
 ```
-The first line is fine, but the second will throw an error. Quest Viva has extracted 42 from the list, but has yet to work out that it is an integer, and so throws an error when we try to compare it to a number. Assigning the value to a variable seems to give Quest Viva enough time to work out what it is!
+
+After that, `list add` and `list remove` work on `hat.inventoryverbs` as normal. In the editor, adding the attribute on the object's own _Attributes_ tab has the same effect.
+
+## Getting items out
+
+`StringListItem` and `ObjectListItem` take the list and a position:
+
 ```quest
-if (ListItem(l, 2) = "one") {
-  msg("Here")
-}
-n = ListItem(l, 2)
-if (n = 42) {
-  msg("Here")
+msg (StringListItem(verbs, 0))
+msg (ObjectListItem(ScopeInventory(), 1).name)
+```
+
+`ListItem` does the same for a general list. Asking for a position that doesn't exist is an error:
+
+> StringListItem: index 7 is out of range for this list (3 items, last index is 2)
+
+Remember that removing an item shifts everything after it down by one, so a position is only worth storing if nothing is ever removed from the list.
+
+## Going through a list
+
+`foreach` runs a script once for each item, with the item in a variable you name. In the editor it's "For each…", in the Scripts category.
+
+```quest
+foreach (obj, ScopeInventory()) {
+  msg ("You are carrying " + GetDisplayName(obj) + ".")
 }
 ```
 
+Adding to or removing from a list while you're looping over it is an error:
 
+> Error running script: Collection was modified; enumeration operation may not execute.
 
+So collect the items you want to remove as you go, and remove them afterwards:
 
-## Quick string lists
-
-A quick way to get a string list is the Split command (especially useful for menu options). The second parameter is the separator, and you can choose anything suitable (this is optional, and if omitted will default to a semi-colon):
 ```quest
-l1 = Split("one|two|three", "|")
-msg(l1)
-// -> List: one; two; three; 
-
-l1 = Split("one;two;three")
-msg(l1)
-// -> List: one; two; three; 
-```
-By the way, the `Join` function goes the other way; it converts from a string list to a string.
-
-
-
-## Quick object lists
-
-There are various scope and other functions that will return a list of objects, and should be used where possible. See the [Scopes](/howto/scripting/scopes) page for more details.
-
-Some other useful functions that return object lists:
-
--   [AllObjects](/reference/functions/scope#allobjects)
--   [GetAllChildObjects](/reference/functions/scope#getallchildobjects)
--   [GetDirectChildren](/reference/functions/scope#getdirectchildren)
-
-
-
-## Iterating
-
-Often you will want to go through each member of a list. Use the `foreach` command to do this. It takes two parameters, the first being a variable to store an entry in, and the second being the list. It also requires a script.
-
-This example will output each member of the list. The script will be run once for each entry in the list `l`, and for each iteration, `x` will have the value of that entry.
-```quest
-foreach(x, l) {
-  msg("Entry: " + x)
-}
-```
-Changing a list whilst in a foreach loop (i.e., adding or removing entries) will cause an error:
-
-```
-Error running script: Collection was modified; enumeration operation may not execute.
-```
-
-One way around that is to add entries you want to remove to another list while you iterate, and then to remove them later. For example, say we have a list of monsters and want to go through it and remove any that are dead, we could do this:
-```quest
-delete = NewObjectList()
-foreach(obj, listOfMonsters) {
-  if (obj.dead) {
-    list add(delete, obj)
+dead = NewObjectList()
+foreach (monster, game.monsters) {
+  if (monster.health <= 0) {
+    list add (dead, monster)
   }
 }
-foreach (obj, delete) {
-  list remove(listOfMonsters, obj)
+foreach (monster, dead) {
+  list remove (game.monsters, monster)
 }
 ```
 
+## Printing a list
 
+`msg` prints a list as `List: one; two; three;`. Joining it to a string doesn't do what you might expect - `+` on a list means "add an item", so `"You have: " + l` puts the string at the *front of the list*. Use `Join` instead, which turns a string list back into a string:
 
-## Other functions
-
-### How many?
-
-The `ListCount` function will return the number of entries in the list. Remember that the entries will number from zero to _one less than_ the number returned.
 ```quest
-msg("My list has " + ListCount(myList) + " things in it.")
-msg("The last entry is at position " + (ListCount(myList) - 1))
+msg ("You have: " + Join(l, ", "))
 ```
 
-### Does it contain?
+`Join` needs a string list. For an object list, use `FormatList`, which uses each object's display name and lets you set the word before the last one:
 
-Use `ListContains` to determine if a list contains a specific entry.
 ```quest
-if (ListContains(myList, player) {
-  list remove(myList, player)            
-}
-```
-Alternatively, you can use the `in` operator (but only in a local variable or attribute; extra brackets confuse it!):
-```quest
-if (player in myList) {
-  list remove(myList, player)            
-}
+msg ("You are carrying " + FormatList(ScopeInventory(), ",", "and", "nothing") + ".")
 ```
 
-### Adding and taking away
+`Split` goes the other way, and is the quickest way to write a string list out in full. The separator is optional and defaults to a semicolon:
 
-The `ListCombine` function will return a new list made up by combining the two given lists. The lists must be of the same type.
 ```quest
-myBigList = ListCombine(list1, list2)
+flowers = Split("roses;lavender;lilies")
+colours = Split("red|blue|green", "|")
 ```
-The `ListExclude` function is the reverse, it will return a new list made up by subtracting the second list from the first. For string lists and object lists, you can also use it to exclude a single string or object as appropriate. In this example, the two `msg` commands print the same list, for both the player object is excluded.
-```quest
-l = NewObjectList()
-l2 = NewObjectList()
-list add (l, player)
-list add (l, fancy table)
-list add (l, bronze sword)
-list add (l2, player)
-msg (ListExclude(l, l2))
-msg (ListExclude(l, player))
-```
-Note that `ListCombine` and `ListExclude` do not change the original lists at all.
 
-### Compacting
+## Lists of objects
 
-If you have combined two lists, you may have one entry appear in the list multiple times. You can use `ListCompact` or `ObjectListCompact` to remove repeated elements (and null elements too). `ListCompact` can be used with any type of list, and will return a new generic list. `ObjectListCompact` can only be used with lists of objects, and will return an object list.
-
+Most object lists come from a function rather than being built by hand. `ScopeVisible`, `ScopeReachable` and `ScopeInventory` are the common ones - see [Scope functions](/reference/functions/scope) for the full set. `GetDirectChildren(room)` gives what's immediately inside a room or container, and `GetAllChildObjects(room)` also looks inside the containers within it.
 
 ### Filtering
 
-You can filter lists to pull out just the objects you are interested in. For example, you might want a list of characters in the current room. All characters are of the "npc_type" type.
+`FilterByType` returns just the objects of a given type:
 
 ```quest
-allobjects = ScopeReachable()
-charactersonly = FilterByType(allobjects)
+characters = FilterByType(ScopeReachable(), "npc_type")
 ```
 
-You can also filter by attribute. Suppose you have clones a whole hoard of goblins, and now you want to list them. If they all have the alias "goblin", then you can do this:
+`FilterByAttribute` and `FilterByNotAttribute` filter on an attribute's value, which can be of any type:
 
 ```quest
-allobjects = ScopeReachable()
-goblinsonly = FilterByAttribute(allobjects, "alias", "goblin")
+scenery = FilterByAttribute(ScopeVisible(), "scenery", true)
+notgoblins = FilterByNotAttribute(ScopeVisible(), "alias", "goblin")
 ```
 
-There is a reverse function, so we can get all the objects that are not goblins:
+Leave the value off altogether and you filter on whether the attribute is there at all: `FilterByAttribute(ScopeVisible(), "health")` gives you everything that has a `health` attribute, whatever its value, and `FilterByNotAttribute(ScopeVisible(), "health")` everything that hasn't.
+
+All three return a new object list and leave the original alone, so you can filter a filtered list:
 
 ```quest
-allobjects = ScopeReachable()
-notgoblins = FilterByNotAttribute(allobjects, "alias", "goblin")
+wounded = FilterByAttribute(FilterByType(ScopeVisible(), "npc_type"), "health")
 ```
 
-Perhaps you just want the characters that are not goblins. You can do that by filtering twice:
+## Counting and searching
+
+`ListCount` gives the number of items - so the last position is always `ListCount(l) - 1`. `ListContains` and the `in` operator both test whether an item is in a list, and `IndexOf` gives its position, or -1 if it isn't there:
 
 ```quest
-allobjects = ScopeReachable()
-charactersonly = FilterByType(allobjects)
-charactersnotgoblins = FilterByNotAttribute(charactersonly, "alias", "goblin")
+if (player in myList) {
+  list remove (myList, player)
+}
+msg (IndexOf(flowers, "lilies"))
 ```
 
-Note that you can use any type of attribute. This example will get all the scenery objects in the room:
+`in` works on anything that gives you a list, including a function call: `if (hat in ScopeVisible())`.
+
+## Combining, sorting and de-duplicating
+
+None of these change the lists you give them - each returns a new list:
+
+| | |
+|---|---|
+| `ListCombine(a, b)`, or `a + b` | Everything in `a`, then everything in `b` |
+| `a * b` | The same, but without adding anything from `b` that's already in `a` |
+| `ListExclude(a, b)` | `a` without any of the items in `b` - `b` can also be a single item |
+| `a - item` | `a` without that item |
+| `a + item` | `a` with that item added at the end |
+| `ListCompact(a)` | `a` with repeats and `null` entries removed, as a general list |
+| `StringListCompact(a)`, `ObjectListCompact(a)` | The same, keeping the string or object list type |
+| `StringListSort(a)`, `StringListSortDescending(a)` | `a` sorted alphabetically |
+| `ObjectListSort(a, "attribute")`, `ObjectListSortDescending(a, "attribute")` | `a` sorted by the value of an attribute |
+
+`ListCombine` needs both lists to be of the same kind. `ObjectListSort` takes more than one attribute name if you want to break ties: `ObjectListSort(l, "weight", "name")`.
+
+## Picking at random
+
+`PickOneString` and `PickOneObject` each return a random item, or an empty string or `null` if the list is empty. [Randomness](/howto/tasks/random) covers them and their relatives. To pick several without repeating yourself, remove each one as you take it:
 
 ```quest
-allobjects = ScopeReachable()
-sceneryonly = FilterByAttribute(allobjects, "scenery", true)
-```
-
-
-
-### Where?
-
-The `IndexOf` function can be used to get the position of an element in a list (or -1 if it is not in the list).
-
-[IndexOf](/reference/functions/list#indexof)
-
-
-### Sorting lists
-
-You can use `StringListSort` and `StringListSortDescending` to sort a list of strings.
-
-[StringListSort](/reference/functions/list#stringlistsort)
-[StringListSortDescending](/reference/functions/list#stringlistsortdescending)
-
-You can also use `ObjectListSort` and `ObjectListSortDescending` to sort a list of objects according to a certain attribute.
-
-[ObjectListSort](/reference/functions/list#objectlistsort)
-[ObjectListSortDescending](/reference/functions/list#objectlistsortdescending)
-
-
-
-
-
-
-
-
-## List arithmetic
-
-You can use `+` and `-` on lists. These can be used to add and remove single elements from a list.
-```quest
-listOne = Split("one|two|three", "|")
-listTwo = "zero" + listOne + "four"
-msg(listTwo)
--> List: zero; one; two; three; four; 
-listThree = listTwo - "two"
-msg(listThree)
--> List: zero; one; three; four; 
-listFour = listOne + listThree
-msg(listFour)
--> List: one; two; three; zero; one; three; four; 
-```
-
-Also works for object lists:
-```quest
-objectListOne = NewObjectList()
-objectListTwo = objectListOne + player
-msg(objectListTwo)
-```
-And mixed lists, here in one step we add an object and a string:
-```quest
-list1 = NewList()
-list2 = list1 + player + "player"
-```
-
-
-
-
-## Randomising
-
-You can pick a random string or object from a list using `PickOneObject` or `PickOneString`. If you want to do that several times, but avoid having any repeats, just remove the selected from the list.
-
-```quest
-list = Split ("One;Two;Three")
-for (i, 1, 5) {
-  if (ListCount(list) > 0) {
-    s = PickOneString (list)
-    list remove (list, s)
-    msg (list)
-  }
-  else {
-    msg ("Default")
-  }
+remaining = Split("Ann;Bob;Cath;Dai")
+while (ListCount(remaining) > 0) {
+  name = PickOneString(remaining)
+  list remove (remaining, name)
+  msg (name)
 }
 ```
 
-Inside the loop, we check if there are any left in the list. If there are, one is selected at random, removed from the list, and displayed. If the list is empty, a default message is displayed.
+That also shuffles a list, if you add each pick to a second list instead of printing it.
 
-This also allows us to shuffle a list.
+## Lists in attributes
+
+A list stored in an attribute behaves differently from one in a local variable, in a way that's worth knowing before it surprises you.
+
+**Assigning a list to an attribute stores a copy of it.** Changing the original afterwards doesn't change the attribute:
 
 ```quest
-list = Split ("One;Two;Three")
-shuffled = NewStringList()
-while (ListCount(list) > 0) {
-  s = PickOneString (list)
-  list remove (list, s)
-  list add (shuffled, s)
-}
+l = NewStringList()
+list add (l, "alpha")
+game.flowers = l
+list add (l, "beta")
+msg (game.flowers)
+// -> List: alpha;
 ```
 
+The same goes for copying one attribute to another: `game.b = game.a` gives `game.b` its own list, and the two then change independently.
 
+**Reading an attribute gives you the real list, not a copy.** So this changes `game.flowers`:
+
+```quest
+l = game.flowers
+list add (l, "gamma")
+msg (game.flowers)
+// -> List: alpha; gamma;
+```
+
+That's usually what you want - it's what lets `list add (hat.inventoryverbs, "Poke")` work - but if you need a list you can safely pull apart, take a copy first with `ListExclude(game.flowers, NewStringList())` or by assigning it to another attribute.
+
+Assigning one local variable to another never copies: `l2 = l` leaves both names pointing at the same list.
+
+## See also
+
+- [List functions](/reference/functions/list) - the full reference
+- [Using dictionaries](/howto/scripting/using-dictionaries) - for values looked up by name rather than by position
+- [Scope functions](/reference/functions/scope) - the object lists the engine can give you

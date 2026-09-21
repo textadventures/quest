@@ -53,7 +53,7 @@ Ask ("Are you sure?") {
 
 This form is still offered in the script editor. Both forms look the same to the player; the difference is that this one ends the turn before waiting, so the player can save or load while choosing, whereas the plain `Ask (question)` form suspends the script mid-turn and saving is unavailable until it is answered.
 
-**Note:** The callback form is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](/howto/scripting/blocks-and-scripts). Neither caveat applies to the plain `Ask (question)` form above, which simply returns a value.
+**Note:** The callback form is "non-blocking", and its script has no access to local variables. For a fuller discussion, see [Saving while a question is waiting](/howto/scripting/asking-the-player#saving-while-a-question-is-waiting). Neither caveat applies to the plain `Ask (question)` form above, which simply returns a value.
 
 ## ClearFramePicture
 ```quest
@@ -330,7 +330,7 @@ ShowMenu ("Select", ScopeInventory(), true) {
 }
 ```
 
-**Note:** The callback form is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](/howto/scripting/blocks-and-scripts). Neither caveat applies to the plain `ShowMenu (caption, options, allow cancel)` form above, which simply returns a value.
+**Note:** The callback form is "non-blocking", and its script has no access to local variables. For a fuller discussion, see [Saving while a question is waiting](/howto/scripting/asking-the-player#saving-while-a-question-is-waiting). Neither caveat applies to the plain `ShowMenu (caption, options, allow cancel)` form above, which simply returns a value.
 
 ## ShowPage
 ```quest

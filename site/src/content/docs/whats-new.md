@@ -78,7 +78,7 @@ The editor was rebuilt for Quest Viva. Most of it does what it always did - here
 - **Light and dark themes**, or match your system setting
 - **Syntax highlighting and autocompletion** in Code View
 - **An asset picker** for images and sounds you've already added to your game
-- **Folders for functions**, so a game with lots of functions doesn't have to be one long list. See [Organising functions into folders](/howto/tasks/about-functions#organising-functions-into-folders)
+- **Folders for functions**, so a game with lots of functions doesn't have to be one long list. See [Organising functions into folders](/howto/scripting/creating-functions-which-return-a-value#organising-functions-into-folders)
 - **Safe Mode**, a raw XML editor that opens if a game file fails to load, so a broken file is recoverable instead of lost
 - **Advanced options tucked away** - instead of Quest 5's Simple Mode, every tab keeps its advanced options in a collapsed "Advanced" section, and the script command list puts the everyday commands first, so beginners see less clutter without anything being hidden from you
 - **Keyboard and screen reader support**, throughout the editor and the player

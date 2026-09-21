@@ -19,7 +19,7 @@ When you get rid of the parts, use the "Remove object" script command (`RemoveOb
 
 Create a `string` and a `branch` that the player can take, and a `bow` in the `nowhere` room. Make the bow takeable too.
 
-The bow can be made in several ways - MAKE BOW, TIE STRING TO BRANCH, USE STRING ON BRANCH - so put the work in a [function](/howto/tasks/about-functions) and call it from each one. Add a function called `MakeBow`, with no parameters:
+The bow can be made in several ways - MAKE BOW, TIE STRING TO BRANCH, USE STRING ON BRANCH - so put the work in a [function](/howto/scripting/creating-functions-which-return-a-value) and call it from each one. Add a function called `MakeBow`, with no parameters:
 
 ```quest
 if (not Got(branch)) {
