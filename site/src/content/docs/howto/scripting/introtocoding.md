@@ -1,246 +1,243 @@
 ---
-title: Introduction to coding
-sidebar:
-  order: 2
+title: Writing code
+description: Read and write Quest script directly - statements, attributes, conditions, loops and functions - and paste in code you were given
 ---
 
-Writing code is not trivial, and this page cannot hope to make you an expert. However, it is not as difficult as you might think, and hopefully this will get you started.
+Every script in your game exists in two forms at once: the row of boxes you fill in with the script editor, and the code behind them. Neither is the "real" one - the editor is just a way of looking at the same script. Anything you can build by clicking you can also type, and anything you type shows up in the boxes when you switch back.
 
-Quest Viva uses four languages, including XML. If you open the raw XML code view in the editor toolbar you will see the XML. Writing XML is a pain in the neck; let Quest Viva do that for you. About the only time you will need this code view is when you have spotted a typo while playing your game and want to quickly find it to correct it.
+After this page you'll be able to read a script as code, write one yourself, and drop code that someone posted on Discord or the forum into the right place in your game.
 
-Quest Viva also uses Javascript, but unless you want to do fancy stuff with the interface, you can ignore that. This is not about JavaScript.
+| You want to | Use |
+|---|---|
+| Learn what commands exist, and what arguments they take | The script editor - the "+ Add script" list is the whole menu |
+| Write a long or fiddly script quickly | Code view |
+| Copy a script into a forum post, or paste one in | Code view |
+| Rewrite a whole element, or several at once | [The raw XML view](/howto/scripting/codeview) |
 
-Quest Viva is written in C#, but you will never need to know anything about C# to create games.
+## Switching between the two views
 
-The important one is the one used in scripts, ASL, and that is unique to Quest Viva. It is kind of similar to C++/Java and many of the built-in functions come from Visual BASIC.
+Wherever the editor shows you a script - a verb, a command, a function, a room's "After entering the room" script - there's a "Code view" button under it. Click it and the boxes are replaced with a text editor containing the same script. The button becomes "Visual editor"; click it again to go back.
 
+![](/images/codeview_web.png)
 
-### A note about objects
+If you mostly work in code, turn on "Default scripts to code view" in Settings and every script opens as code.
 
-Note: The word "object" has two distinct meanings in Quest Viva. Firstly it can mean something that the player can interact with, perhaps pick up, examine, etc. However, in the programming world, an object is sort of data structure, and in that sense Quest Viva uses it to include rooms, exits, commands, the game object and indeed everything in the game world. On this page, "object" is used in this second sense, and "item" is used for the first meaning (however, when quoting a label or dialogue box, "object" will probably mean item).
-
-
-## Code view versus the GUI
-
-This page assumes you have made it to the end of the tutorial, and now you are ready to jump into the deep end!
-
-Well, the first thing to say is you are already splashing around in the shallow end. If you completed the tutorial, you have already written code! Let us take a look at the "saying" command. This is the script:
-
-![](/images/Say_to_troll.png)
-
-What you are looking at is a graphical representation of Quest Viva code. Click on the "Code view" button (it has changed since the image above)...
+Here's a "watch" verb on a TV, as code:
 
 ```quest
-switch (object_one) {
-  case (troll) {
-    msg ("You say: " + text_talk)
-    msg ("The troll grunts but otherwise ignores you.")
-  }
-  case (bob) {
-    msg ("You say: " + text_talk)
-    msg ("Bob smiles back at you.")
-  }
-  default {
-    msg ("You say: " + text_talk + " but the " + object_one.name + " says nothing, possible because, you know, it cannot speak.")
-  }
-}
-```
-
-... And you will see code behind. Code you wrote! And if you compare the two, you will see how the lines match up. At the top is the switch line, and below that each of the case lines.
-
-Some people prefer to type the code, some prefer to use the GUI, it does not particularly matter, because anything written in code can be seen in the GUI, and anything created with the GUI can be seen in code.
-
-
-### So why use code?
-
-Code has a number of advantages, but one of the most important is that you can easily copy-and-paste into a forum post if you are having a problem, and you can easily copy-and-paste into your game from someone else's forum post or one of these help files.
-
-
-### So why use the GUI?
-
-The GUI is excellent when you start out because it handles the details (those `{` and `}` that have to be just right, for example), and also it is far easier selecting a function from a menu instead of trying to remember its name - and exactly how it is written (but note that there are many functions that are not in the lists).
-
-
-### So which should I use?
-
-Start with the GUI, but take a look at the code you are creating to see how it looks and get an idea of how it works. As you get more confident, and your scripts get more complicated, see if you can start to use code.
-
-
-## Scripts in Quest Viva
-
-Scripts are found in numerous places in Quest Viva. Functions and commands are little more than scripts, but you can also attach scripts to items, rooms and exits. Rooms can be set to run a script when the player enters or leaves. Verbs on objects are all scripts, exits can run a script when used, items can run a script when picked up or dropped.
-
-Here is an example from a built-in command, INVENTORY:
-
-```quest
-list = FormatObjectList(Template("CarryingListHeader"), game.pov, Template("And"), ".")
-if (list = "") {
-  msg (Template("NotCarryingAnything"))
+if (GetBoolean(tv, "switchedon")) {
+  msg ("A repeat of a quiz show you have already seen twice.")
 }
 else {
-  msg (list)
+  msg ("The screen is blank.")
 }
 ```
 
-At its simplest, code is a list of instructions. When the script starts (the player enters the room, drops the item, or whatever), Quest Viva starts at the top and does each line in turn - just like following a recipe when baking a cake.
+In the visual editor that's the same four things in the same order: an "If" command with its condition, a message inside it, an "Else", and a message inside that.
 
-Here is a simple example that might be set on an exit:
+## Statements
+
+A script is a list of statements, one per line, run from the top down. There's no semicolon or other end-of-line marker - the line break is enough.
 
 ```quest
-msg("You crawl for some time through the dark tunnel, before arriving at...")
-player.parent = this.to
+msg ("You crawl through the dark tunnel for some time, and arrive at...")
+MoveObject (game.pov, this.to)
 ```
 
-Quest Viva does the first line, which prints out the message, then the second line, which moves the player. Let's look at the second line in more detail...
+Blocks of script are wrapped in curly braces, and indented by two spaces. The editor will re-indent for you when you switch back to the visual editor, but do it yourself as you type - it's how you spot a missing brace.
 
+Statements come in two kinds:
 
-### Attributes
+- **Script commands** such as `msg`, `foreach`, `set` and `list add`. These are built into the language, and you'll find them all in the [script command reference](/scripts/).
+- **Functions** such as `GetBoolean`, `MoveObject` and `Split`. These are ordinary functions - the engine ships hundreds, and you can write your own. See the [function reference](/reference/functions/) and [Functions](/howto/scripting/creating-functions-which-return-a-value).
 
-Objects have attributes, which are values with names. You can set these up on the Attributes tab for any object (if off-line), but everything you set on the other tabs is an attribute too, with a pre-defined name. An attribute can be a string, an integer, another object or a script and more besides.
+A function that returns a value goes inside an expression. One that doesn't - like `MoveObject` - goes on a line of its own.
 
-In code, you can access an attribute using the dot operator. The above example accesses the "parent" attribute of the player object and the "to" attribute of "this".
+## Attributes and variables
 
+An attribute is a named value stored on an object, and it's how your game remembers anything. Read and write one with a dot:
 
-### What is "this"?
-
-In Quest Viva code, "this" has a special meaning, it refers to the object that this script belongs to. In the example, then, "this" refers to the exit itself. We could have used the name of the exit instead, but generally it is better to use "this", as it allows your code to be reused more easily.
-
-
-### What is "to"?
-
-All exits have a "to" attribute which is an object (or technically a pointer to an object); the destination of the exit, so "this.to" is the destination of the exit the script is attached to.
-
-
-### What is "parent"
-
-All items and exits have a "parent" attribute (rooms can too). It indicates the object's position in the hierarchy in the left pane, or who the object belongs to. Any item that belongs to the player is in the player's inventory; it has the player as its parent. Any item or exit in a room has that room as the parent, and similarly if the player has a room as its parent, then the player is in that room. Any item that has another item as its parent is inside that object (though you need to set up the latter as a container for that to work properly).
-
-To move the player to a new room, all you have to do is set the player's parent to the new room. This is what the script above does. It sets the player's parent to be whatever room is indicated by the "to" attribute of this exit.
-
-To move an item to the player, set the item's parent to the player.
 ```quest
-my_item.parent = player
+hat.worn = true
+player.strength = player.strength + 1
+msg (hat.alias)
 ```
-To move an item to the current room, set its parent to the player's parent
+
+Every box on every tab in the editor is an attribute with a fixed name, and you can add your own on the [Attributes tab](/tutorial/custom-attributes). Attributes are saved with the game.
+
+A **variable** has no dot and belongs to the script it's in. You don't declare it - setting it is enough - and it vanishes when the script ends:
+
 ```quest
-my_item.parent = player.parent
+count = 0
+foreach (obj, ScopeInventory()) {
+  count = count + 1
+}
+msg ("You are carrying " + count + " things.")
 ```
 
-### Aside: about "player"
+If something has to survive to the next turn, it has to be an attribute. `game.something` is the usual home for a value that doesn't belong to any particular object.
 
-Just be aware that Quest Viva has the capability for changing the point of view (i.e. swapping from one player character to another) built-in. To handle that, Quest Viva has an attribute of the game object called "pov", and that refers to the current player. To be able to change the player's point of view, we should use "game.pov" rather than "player". This is mentioned for completeness; this page will continue to use "player" to keep things simple, but if you look at code in a library it will probably use "game.pov".
+Two names are worth knowing:
 
+- **`this`** is the object the running script belongs to - the exit in the example above, or the object whose verb you're editing. Using `this` rather than the object's name means the same script works if you copy it onto another object.
+- **`game.pov`** is the current player object. Quest Viva can [switch the player character](/howto/tasks/changing-the-player-object) mid-game, so library code always says `game.pov` rather than `player`. In your own game, `player` is fine until the day you add a second player character.
 
-### Computers are fussy
+## Expressions and operators
 
-You have to be precise when writing code. Computers will not cope if you miss a quote or a bracket. To check you have not missed something, always click on the View code icon and check there is no red writing. Scroll down to the bottom to be sure.
+Anywhere a value is expected you can write an expression, and expressions are the same everywhere - in an `if`, in a `msg`, as a function argument.
 
-Working out what is missing can be tricky! However, if you do not check at this stage, Quest Viva will sometimes try to correct the problem itself, which sometimes means deleting big chunks of code, leaving it in rather more of a mess.
+| Operator | Does |
+|---|---|
+| `+` | Adds numbers, joins strings, joins two lists |
+| `-` `*` `/` | The usual arithmetic. Two integers divide to an integer: `7 / 2` is `3` |
+| `%` | Remainder: `7 % 2` is `1` |
+| `=` `<>` | Equal, not equal |
+| `<` `>` `<=` `>=` | Comparison - also works on strings, alphabetically |
+| `and` `or` `not` | Combine conditions |
+| `in` | Whether a list contains an item, or a dictionary contains a key |
 
+Multiplication binds tighter than addition, as you'd expect, and brackets override that: `2 + 3 * 4` is `14`, `(2 + 3) * 4` is `20`. `not` binds very loosely, so `not x = 3` means `not (x = 3)`. When a condition has more than two parts, bracket it anyway - it costs nothing and saves an argument with yourself later.
 
-### Quotes in strings
+`and` and `or` stop as soon as the answer is known, so this is safe even when `wet` has never been set on the object:
 
-Given a double quote terminates a string, how do you handle doubles quotes? This is going to fail:
 ```quest
-msg ("The scarecrow looks at you. "Howdy!" he says.")
+if (HasAttribute(obj, "wet") and obj.wet) {
+  msg ("It is soaking.")
+}
 ```
-Quest Viva will consider `"The scarecrow looks at you. "` to be a string, and `" he says."` to be another, and will try to work out what `Howdy!` is supposed to mean! The trick is to use an escape code; put a backslash before the double quotes within the string. This will work fine.
+
+## Strings
+
+Strings are in double quotes. A double quote inside a string has to be escaped with a backslash, and a backslash with another backslash:
+
 ```quest
 msg ("The scarecrow looks at you. \"Howdy!\" he says.")
 ```
-If you want to put a backslash into a string, you need to escape that too, so use `\\`.
 
+Joining a string to a number converts the number for you, so `"You have " + 3 + " coins"` works. Joining a string to an *object* gives you something like `Object: hat`, which is never what you want in player-facing text - use `GetDisplayName(hat)` ("a bowler hat") or `GetDisplayAlias(hat)` ("bowler hat") instead.
 
-### Functions
+Text you print also goes through the [text processor](/howto/world/text-processor), so you can put values into the text directly rather than concatenating:
 
-Quest Viva has a large number of script commands and functions, listed on these helpful pages:
-
-[Script commands](/scripts/)
-
-[Functions](/reference/functions/)
-
-See here for how to use them and how to write your own:
-
-[Using and Creating Functions](/howto/scripting/creating-functions-which-return-a-value)
-
-
-
-## Control structures
-
-A control structure allows code to break out of the simple recipe. Instead of just doing each line in turn, we can get Quest Viva to perform some lines repeatedly or to only do certain lines if specific conditions are met.
-
-Control structures have the same general format. First there is the script command, then the values, then the instructions. The values all go inside a set of brackets, and separated by commas. The instructions all go on separate lines (just like normal code), and inside a set of curly braces. To help make it easier to read, the instructions are indented. Quest Viva will do this for you, but it is a good habit to do it yourself anyway.
-
-Let us have a look at a couple:
-
-
-### The `foreach` loop
-
-This is how to go through each entry in a list (or dictionary). Quest Viva has a number of "scope" functions that will grab all the appropriate items. For example, ScopeInventory gives us a list of items in the player's inventory. We can use that with `foreach`.
 ```quest
-foreach (item, ScopeInventory()) {
-  msg("You dry out " + GetDisplayName(item))
-  item.wet = false
-}
+msg ("The {hat.alias} costs {hat.price} gold.")
 ```
-The first thing is the script command, `foreach`. Next we have the values, and these are inside brackets, separated by commas. In this case, the first is a variable that we can use in the code section. The second is the list, which we are getting from ScopeInventory.
 
-Then there are the instructions. Here there are two, each on its own line, indented by two spaces. They are surrounded by curly braces.
+## Making decisions
 
-Quest Viva will go though the objects returned by ScopeInventory. For each one, it will put the value in "item" and then run the code.
+`if`, with any number of `else if`s and an optional `else`:
 
-
-### The `if` structure
-
-You use `if` to make the script sometimes do one thing and sometimes another. In this simple example, the message is only seen if the `hat` item is in this room.
 ```quest
-if (hat.parent = this) {
-  msg("There is a bowler hat on the hatstand.")
-}
-```
-You can add an `else` if you want; this will get done if the condition fails:
-```quest
-if (hat.parent = this) {
-  msg("There is a bowler hat on the hatstand.")
-}
-else {
-  msg("The hatstand is devoid of hats.")
-}
-```
-You can append an `if` to an `else`, to make complex structures. In an adventure game, a common use is to check all the conditions have been met before something happens. This example might be the script for a SIT command.
-```quest
-if (not this.has_chair) {
-  msg("There's nowhere to sit here!")
-}
-else if (not player.parent.name = clown_room) {
-  msg("Okay, you sit down. Now what?")
+if (not chair.parent = game.pov.parent) {
+  msg ("There's nowhere to sit here.")
 }
 else if (not hat.worn) {
-  msg ("You sit on the orange chair. A clown suddenly appears in the room, looks at your head in confusion, then disappears as quickly.")
-}
-else if (clown.parent = clown_room) {
-  msg("You are already sat down.")
+  msg ("You sit down. Nothing happens.")
 }
 else {
-  msg ("You sit on the orange chair. A clown suddenly appears in the room, and knocks the hat off your head.")
+  msg ("You sit down. A clown appears and knocks the hat off your head.")
   hat.worn = false
-  hat.parent = clown_room
-  clown.parent = clown_room
+  MoveObject (hat, game.pov.parent)
 }
 ```
-The strategy here is to test each condition has not been met in turn, and give a suitable response if it fails. Only if each condition passes do we reach the final "else", where the player has solved the puzzle and the game world gets updated.
 
+This "fail first" shape is worth getting into the habit of: test each thing that could stop the player, one at a time, with its own message, and leave the thing that actually happens for the final `else`. It's easier to read than one enormous condition, and the player gets told which part they got wrong.
 
-### Complex conditions
+When you're comparing one value against several, `switch` is tidier:
 
-You can do some complicated condition testing in Quest Viva. To test if conditions are all true, use the `and` operator, and to test if at least one is true, use `or`. You can also test a condition is not true using `not`. In this example all the above conditions are checked at once (the first implicitly).
 ```quest
-if (player.parent.name = clown_room and hat.worn and not clown.parent = clown_room) {
-  msg ("You sit on the orange chair. A clown suddenly appears in the room, and knocks the hat off your head.")
-}
-else {
-  msg("Nothing happens.")
+switch (game.weather) {
+  case ("rain") {
+    msg ("It is pouring.")
+  }
+  case ("fog", "mist") {
+    msg ("You can barely see.")
+  }
+  default {
+    msg ("The sky is clear.")
+  }
 }
 ```
 
-That said, the if/if else/else sequence described before is to be preferred as it gives the player more information, and is a lot easier you you, the creator, to see what is going on.
+## Repeating
+
+`foreach` walks a list or a dictionary, putting each entry into the variable you name:
+
+```quest
+foreach (obj, ScopeInventory()) {
+  msg ("You dry out " + GetDisplayName(obj) + ".")
+  obj.wet = false
+}
+```
+
+`for` counts, and `while` repeats until a condition stops being true:
+
+```quest
+for (i, 1, 3) {
+  msg ("Bell number " + i)
+}
+```
+
+Make very sure something inside a `while` will eventually make its condition false, or the game will hang.
+
+`firsttime` runs its block only on the first visit, and takes an optional `otherwise`:
+
+```quest
+firsttime {
+  msg ("The door creaks horribly as it opens.")
+}
+otherwise {
+  msg ("You open the door.")
+}
+```
+
+## Comments
+
+A line starting with `//` is ignored:
+
+```quest
+// The clown only appears once the hat is on.
+```
+
+## Pasting code you were given
+
+Code from a forum post or from these pages is just text, so it pastes straight into a code view. The only question is which one.
+
+- **A function.** Add a function from the "+ Add" menu and give it exactly the name in the post - capitals matter. On the _Function_ tab, set _Return type_ if the post says the function returns something, add each _Parameter_ with the exact name and in the same order, then click "Code view" under _Script_ and paste.
+- **The start script.** Select the "game" element, go to the _Scripts_ tab, and paste into the code view of the "Start" script. If there's already something there, paste underneath it.
+- **A verb.** Select the object, go to the _Verbs_ tab, add the verb, change "Print a message" to "Run a script", then use the code view.
+- **A script attribute.** On the object's _Attributes_ tab, add an attribute, set its type to Script, and use the code view.
+
+Pasted code is checked when you leave the editor box. If it doesn't parse, nothing is applied - your game is not damaged - but the editor keeps the old script and doesn't currently tell you why. So after pasting, switch to the visual editor and back: if you see the old script rather than what you pasted, the paste failed. Usual causes are a missing closing brace, a stray line of prose copied along with the code, and a curly "smart" quote, pasted from somewhere that autocorrected it, where a plain `"` belongs.
+
+One thing to expect: code you wrote in the editor and code you write by hand often look different even when they do the same thing. The editor's "Move object to current room" is `MoveObjectHere (hat)`; by hand you'd probably write `hat.parent = game.pov.parent`. Both are correct, and both display fine in either view.
+
+## When something goes wrong
+
+Errors appear in the game transcript when the line actually runs, not when you save. A script with a typo in an expression will load and play happily until the player reaches that line.
+
+| Message | Usually means |
+|---|---|
+| `Unknown object or variable '...'` | A misspelled object name, or a variable you set in a different script |
+| `Unknown function '...'` | A misspelled function name, or one you meant to write and haven't yet |
+| `'obj.att' is null (it has not been set) and cannot be used in this calculation` | Arithmetic on an attribute that was never set - see [Values and types](/howto/scripting/null) |
+| `Invalid token in expression at position (1:31)` | A quote or bracket problem inside a string or expression |
+| `Expected 1 parameter(s) in script '...'` | Missing brackets round a script command's arguments |
+| `Error adding script attribute 'script' to element '...': Missing '}'` | An unclosed block. This one stops the game loading at all |
+
+One mistake produces no error at all, which makes it the worst of the lot. `player.parent.name` is a *string*, and `lounge` is an *object*, so:
+
+```quest
+if (player.parent.name = lounge) {
+```
+
+is always false, silently. Compare the objects (`player.parent = lounge`) or the strings (`player.parent.name = "lounge"`), not one of each.
+
+The [Debugger](/howto/scripting/debugging-your-game) will show you what every attribute actually holds while the game is running, which is normally the fastest way to find out why a condition isn't firing.
+
+## See also
+
+- [Script commands](/scripts/) and [Functions](/reference/functions/) - the full reference
+- [Values and types](/howto/scripting/null) - what a value can be, and what happens when an attribute isn't set
+- [Functions](/howto/scripting/creating-functions-which-return-a-value) - writing your own
+- [When scripts run](/howto/scripting/when-scripts-run) - which script fires when
+- [Editing the raw XML](/howto/scripting/codeview) - the whole game file as text

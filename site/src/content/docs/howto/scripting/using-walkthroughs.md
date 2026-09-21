@@ -1,57 +1,61 @@
 ---
 title: Using walkthroughs
+description: Record and replay a play-through, answer menus and questions from a walkthrough, and check the game with assertions
 sidebar:
   order: 20
 ---
 
-## What is a walkthrough?
+A walkthrough is a list of commands the game can play back for you. Record one and you can replay it whenever you like: after changing a puzzle, run the walkthrough to check the game is still winnable, and that the alternative endings still work too.
 
-A walkthrough is the set of steps or commands that you can record in the editor, and then play during the game. Quest Viva lets you record and play back walkthroughs, allowing you to test your game - after making changes, you can run your walkthrough to ensure your game is still winnable, and that any alternative endings also still work.
+Walkthroughs are also the quickest way to hand a problem to someone else. If you report a bug, a walkthrough takes whoever looks at it straight to the point where it happens.
 
-Another use for walkthroughs is when you have a problem with Quest Viva - it helps hugely if we can play your game through to the required point, and a walkthrough will take us straight there.
-
-You can record and play back walkthroughs from the Editor, or you can also play a walkthrough from within a game by opening the Debugger and choosing the Walkthrough tab. Walkthroughs are automatically removed from published .quest files.
+You can record and play back walkthroughs in the editor, or play one from inside a running game by opening the [Debugger](/howto/scripting/debugging-your-game) and choosing the Walkthrough tab. Walkthroughs are stripped out when you publish, so a `.quest` file never carries them.
 
 ## Creating and recording a walkthrough
 
-To add a walkthrough, you can right-click the tree and choose "Add Walkthrough", or you can go via the "Add" menu. Give the walkthrough a name to describe it, for example "win game".
+Click the "⋯" button next to *Walkthrough* in the tree and choose **Add Walkthrough** (or use "+ Add" in the toolbar and pick *Walkthrough*). Give it a name that says what it does - "win game", "bad ending", "the cellar puzzle".
 
-Now you'll see the walkthrough editor. Here you can add, edit and delete steps manually, and you can also click the Play and Record buttons. If you click Record, any existing steps in your walkthrough will be run, and then any new moves that you make will be added to the end. Click the Record button now and make a few moves. When you're done, click the stop button on the "Recording…" banner.
+The walkthrough editor is a list of steps you can add, edit and reorder by hand, with **Play** and **Record** buttons above it.
 
-You'll see that the walkthrough editor has now been updated with the moves you made in the game. The walkthrough will also record any selections you made from menus which appeared.
+**Record** opens the game, replays any steps the walkthrough already has, and then records everything you do from there as new steps. A banner at the top of the player shows "Recording — 3 steps" as you go; click its stop button when you are done, and the steps appear in the editor. Because recording replays what is already there first, you can come back to a walkthrough later and carry on from where it ended.
 
-If you want to add steps to an existing walkthrough, choose this walkthrough und click the Record button. The walkthrough is then executed and all new moves will be appended.
+Recording captures menu choices and yes/no answers as well as commands, so a walkthrough that goes through a conversation replays it correctly.
+
+**Play** runs the steps without recording.
 
 ## Creating sub-walkthroughs
 
-Many of your walkthroughs may share the same steps - for example, if your game has multiple endings, there may be points in the walkthrough where you want to "branch off". Quest Viva lets you handle this by creating a hierarchy of walkthroughs - if you move one walkthrough in the tree to be a child of another walkthrough, when the child walkthrough is run, it will run all the steps of its parent walkthrough(s) first.
+Walkthroughs often share their first half - a game with three endings has one route as far as the last room, then three different finishes. Rather than repeating those steps, make one walkthrough a child of another in the tree: when the child runs, it runs all of its parent's steps first.
 
-To create a sub-walkthrough, select the walkthrough in the tree, choose "Move to..." and pick the walkthrough that should be its parent.
+To do that, click the "⋯" button next to the parent walkthrough and choose **Add Walkthrough here**, or, for one that already exists, click its own "⋯" and choose **Move to…** and pick the parent.
 
+## Answering menus and questions
 
-## Handling menus and questions
+When the game stops to ask something, an ordinary step won't do - the walkthrough has to say what kind of answer it is.
 
-You can manually add a menu selection to a walkthrough by preceding it with "menu:"
+| The game is waiting at | Answer it with |
+|---|---|
+| `Ask(...)` or the `ask` script command | `answer:yes` or `answer:no` |
+| `ShowMenu(...)` or the `show menu` script command | `menu:` followed by the option's key |
+| `ShowMenu (...) { }` or `Ask (...) { }`, the forms with a script block | `event:ShowMenuResponse;` followed by the option's key |
+| `GetInput()` | An ordinary step containing whatever the player would type |
 
-For example if you have two objects "potato" and "potassium", you can put this in the walkthrough:
+`answer:` only understands `yes` and `no`; anything else stops the walkthrough with "Question response was invalid".
 
-     take pot
-     menu:potato
+`menu:` takes the option's *key*, not the text on screen. When the menu was built from a list, those are the same thing. When it was built from a string dictionary, the key is the dictionary key, and for a menu of objects it is the object's name:
 
-You can also add an answer to a question by preceding it with "answer:"
+```
+take pot
+menu:potato
+```
 
-For example if somebody asks you a question when you speak to them, put this in the walkthrough:
+If the key isn't one of the options, the walkthrough stops with "Menu response was not an option".
 
-     speak to Bill
-     answer:yes
-
-If you forget to put in these two statements, the walkthrough will immediately stop.
+If you forget one of these lines altogether, the walkthrough stops and says so - "No menu response defined in walkthrough", or "Question response not defined in walkthrough". The exception is the block forms, which the walkthrough runner isn't told about: there, a `menu:` step is simply swallowed by the menu, and the walkthrough runs to the end without ever answering it. Use `event:ShowMenuResponse;…` for those - which is what Record produces anyway. (`Ask (...) { }` is a menu underneath, with the keys `[Yes]` and `[No]`.)
 
 ## Assertions
 
-You can use walkthrough assertions to test your game. Simply include a line starting with "assert:", and then any expression which should be true.
-
-For example, in the walkthrough below, the assert expression checks that the "take biscuit" command succeeded:
+A line starting with `assert:` checks an expression that should be true at that point. The walkthrough prints the expression and then "Pass" or "Failed", and stops as soon as one fails.
 
 ```xml
 <walkthrough name="main">
@@ -65,24 +69,28 @@ For example, in the walkthrough below, the assert expression checks that the "ta
 </walkthrough>
 ```
 
-If a walkthrough assert expression returns false, the walkthrough is immediately stopped.
+This is what turns a walkthrough from "does it still get to the end?" into a real test. Assert on the things the player can't see: a flag you set, a score, where an object ended up, how many turns something took.
 
-## Displaying runtime
+## Comments
 
-You can include the line
+A line starting with `label:` is ignored. Use it to mark the sections of a long walkthrough:
 
-     runtime:
+```
+label: the cellar
+open trapdoor
+down
+```
 
-anywhere in the walkthrough to display the total runtime of the walkthrough. The command can also be used several times in a walkthrough.
+## Timing and display
 
-## Output speed
+`runtime:` prints how long the walkthrough has taken so far. You can use it as often as you like.
 
-You can influence the speed of the output with the line "delay:". The delay in milliseconds is specified behind it. The setting takes effect after the delay command line.
+`delay:` sets a pause in milliseconds between the steps that follow it, so you can watch what is happening rather than seeing the whole run appear at once. It applies from that line on, and you can change it again later in the same walkthrough.
 
 ```xml
 <walkthrough name="main">
   <steps>
-    look 
+    look
     get apple
     delay:1000
     examine apple
@@ -96,4 +104,7 @@ You can influence the speed of the output with the line "delay:". The delay in m
 </walkthrough>
 ```
 
-The command can also be used several times in a walkthrough if certain areas are to be displayed with their own speed.
+## See also
+
+- [Debugging your game](/howto/scripting/debugging-your-game) - inspect and change attributes while the game runs
+- [Asking the player](/howto/scripting/asking-the-player) - the question and menu forms the table above refers to

@@ -52,7 +52,7 @@ Anything the menu doesn't cover, you type by hand. Nothing else is needed: a dir
 | `{if object.attribute>value:text}` | Compares as numbers. Also `>=`, `<` and `<=` |
 | `{if attribute:text}`<br/>`{if not attribute:text}` | The same, for an attribute on the **game** object. `{if brave:...}` and `{if game.brave:...}` are the same thing |
 | `{if counter>value:text}` | A bare name on the left of a comparison works only if the game has an **integer** attribute of that name |
-| `{either condition:text}`<br/>`{either condition:text if true\|text if false}`<br/>`{either condition:text if true:text if false}` | Like `{if}`, but the condition is a full [expression](/howto/scripting/expressions), so it can use functions, `and`, `or` and `not`, and compare strings with double quotes |
+| `{either condition:text}`<br/>`{either condition:text if true\|text if false}`<br/>`{either condition:text if true:text if false}` | Like `{if}`, but the condition is a full [expression](/howto/scripting/introtocoding#expressions-and-operators), so it can use functions, `and`, `or` and `not`, and compare strings with double quotes |
 | `{select:object.attribute:text 0:text 1:text 2}` | Picks one option by number. The attribute must be a whole number, and options count from zero |
 | `{here object:text}` | Shows the text if the object is directly in the player's current room - not if it's carried, and not if it's inside something |
 | `{nothere object:text}` | Shows the text if it isn't |
@@ -253,5 +253,5 @@ The key you add is matched against the start of the section, which is why the bu
 ## See also
 
 - [Changing the game's messages](/howto/world/changing-templates) - the built-in text, which is written with these directives
-- [Expressions](/howto/scripting/expressions) - what you can put in `{either}` and `{=}`
+- [Expressions](/howto/scripting/introtocoding#expressions-and-operators) - what you can put in `{either}` and `{=}`
 - [Pictures](/howto/multimedia/images) - more on `{img:}` and the picture frame

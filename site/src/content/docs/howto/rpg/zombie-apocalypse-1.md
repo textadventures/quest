@@ -16,7 +16,7 @@ It's built from a few parts, each of which is described below:
 | ATTACK, SHOOT, EQUIP, UNEQUIP, RELOAD | Commands |
 | Zombie attacks | A turn script |
 
-The scripts are easiest to paste into the script editor's code view. For more about any of these, see [Commands](/tutorial/custom-commands), [Functions](/howto/tasks/about-functions) and [Turn scripts](/howto/scripting/using-turnscripts).
+The scripts are easiest to paste into the script editor's code view. For more about any of these, see [Commands](/tutorial/custom-commands), [Functions](/howto/scripting/creating-functions-which-return-a-value) and [Turn scripts](/howto/scripting/using-turnscripts).
 
 To see it all working first, download the finished game, [simple-combat.aslx](/examples/simple-combat.aslx), and open it in the editor. It has a yard with a spade and a pistol, and a street where two zombies are waiting.
 

@@ -32,7 +32,7 @@ Note that if the value is `null` this effectively filters for objects without th
 
 See also [FilterByNotAttribute](#filterbynotattribute).
 
-You can omit the last value, and it will be assumed to be `null`.
+Omit the value to get the objects that **have** the attribute set to anything: with no value, this function returns `FilterByNotAttribute(list, name, null)`.
 
 ## FilterByNotAttribute
 ```quest
@@ -45,7 +45,7 @@ Note that if the value is `null` this effectively filters for objects with the n
 
 See also [FilterByAttribute](#filterbyattribute).
 
-You can omit the last value, and it will be assumed to be `null`.
+Omit the value to get the objects that do **not** have the attribute set at all: with no value, this function returns `FilterByAttribute(list, name, null)`.
 
 ## FilterByType
 ```quest

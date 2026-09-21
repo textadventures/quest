@@ -47,7 +47,7 @@ The [text processor](/howto/world/text-processor) lets you vary descriptions and
 
 ## Scripting
 
-When the editor's options aren't enough: an [introduction to coding](/howto/scripting/introtocoding), [asking the player a question](/howto/scripting/asking-the-player), [functions](/howto/tasks/about-functions), [lists](/howto/scripting/using-lists), [dictionaries](/howto/scripting/using-dictionaries), [randomness](/howto/tasks/random) and [clones](/howto/scripting/clones).
+When the editor's options aren't enough: an [introduction to coding](/howto/scripting/introtocoding), [asking the player a question](/howto/scripting/asking-the-player), [functions](/howto/scripting/creating-functions-which-return-a-value), [lists](/howto/scripting/using-lists), [dictionaries](/howto/scripting/using-dictionaries), [randomness](/howto/tasks/random) and [clones](/howto/scripting/clones).
 
 ## Testing and debugging
 

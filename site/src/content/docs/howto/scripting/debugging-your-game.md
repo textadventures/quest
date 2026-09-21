@@ -4,13 +4,13 @@ sidebar:
   order: 21
 ---
 
-As you develop your games, there will be times when things happen which you didn't expect – usually because you’ve forgotten to set something up, or you've made a mistake in one of your script commands.
+As you develop your games, there will be times when things happen which you didn't expect - usually because you've forgotten to set something up, or you've made a mistake in one of your script commands.
 
 Fortunately, Quest Viva provides you with the Debugger, which lets you keep an eye on what's going on inside your game while you're testing it, and change things to try out a fix without editing the game.
 
 ## Opening the Debugger
 
-Click "Preview" in the editor to run your game, then click the "Debug" button at the top of the player. It's also available if you open an `.aslx` file directly in the player, but not when playing a published `.quest` file.
+Click "Preview" in the editor to run your game, then click the "Debug" button at the top of the player. It's also there if you open one of your own `.aslx` files with "Open a game file…" on the Play tab. It isn't available when you're playing a published `.quest` file.
 
 ![](/images/Debugger.png)
 
@@ -54,3 +54,18 @@ Changes only last until the game restarts - they aren't saved to your game file.
 ## Running walkthroughs
 
 The Walkthrough tab lists your game's [walkthroughs](/howto/scripting/using-walkthroughs). Select one to see its steps, then click "Run" to play them. You can click "Cancel" to stop a walkthrough that's running.
+
+## Reading error messages
+
+When a script goes wrong, the player prints "[Sorry, an error occurred]" followed by a line starting "Error running script:" or "Error evaluating expression:". The rest of that line is the useful part:
+
+| Message | What it usually means |
+|---|---|
+| Unknown object or variable 'x' | Nothing called `x` exists at that point - a misspelt object name, a local variable that was never set, or a variable used inside a `ShowMenu (...) { }` block that belonged to the script outside it (see [Asking the player](/howto/scripting/asking-the-player#saving-while-a-question-is-waiting)) |
+| Function did not return a value | A function with a return type reached the end of its script without a `return` - usually a missing `return` on one branch of an `if` |
+| Too few parameters passed to X function | The call doesn't match the function's parameter list - see [Functions](/howto/scripting/creating-functions-which-return-a-value#parameters) |
+| Error evaluating expression '…': The input string 'abc' was not in a correct format | `ToInt` or `ToDouble` was given something that isn't a number - typically what the player typed at a `GetInput()`. Check it with `IsInt` first |
+
+The message quotes the expression that failed but not the line it was on, so to find it, open the script in the editor's Code view and search for what it quotes. The script stops there, so anything you expected to happen after that point didn't - which is often the more visible symptom.
+
+Not everything that looks like a problem is an error. "I don't understand your command." means nothing matched what the player typed, and "I can't see that." means a command matched but the object it named isn't in scope - see [Scope](/howto/commands/advanced-scope) for that one.

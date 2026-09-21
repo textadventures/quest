@@ -4,7 +4,7 @@ sidebar:
   order: 7
 ---
 
-Functions that will return a list of objects (in the loosest sense). See more [here](/howto/scripting/scopes).
+Functions that will return a list of objects (in the loosest sense). See [Scope](/howto/commands/advanced-scope#the-scope-functions).
 
 ## AllCommands
 ```quest

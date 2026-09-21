@@ -1,119 +1,201 @@
 ---
-title: Advanced scope for items
-sidebar:
-  order: 6
+title: Scope
+description: Control which objects a command can find - backdrop scenery present in every room, commands that reach into another room, and objects the player can see but not touch
 ---
 
+When the player types LOOK AT WALL, Quest Viva has to work out which object "wall" means. The set of objects it is willing to consider is that command's **scope**. By default it is everything the player can see in the room they are in, plus everything they are carrying. Anything else gets "I can't see that."
 
-Sometimes you want the player to be able to access items in other rooms. For example:
+That default is right most of the time, and wrong in some familiar situations: walls and a sky that belong in every room, a barmaid behind a counter you have modelled as a separate room, spells that live in a spellbook, stock in a shop's back room.
 
--  background objects, such as walls and sky, that are common to a lot or all rooms
--  items in adjacent rooms, perhaps behind the counter is another room, but the player can still talk to the barmaid there
--  items in a specific locations, perhaps spells that are in a spellbook
--  items in a related location, perhaps the stock for a shop
--  items of a specific type that might be anywhere, such as NPCs that can be phoned
+| You want | Use |
+|---|---|
+| Objects present in every room - walls, floor, sky | The game's [Backdrop scope script](#objects-present-in-every-room) |
+| One command to look somewhere else - CAST, BUY, PHONE | The command's [Scope field](#setting-the-scope-on-a-command) |
+| A command to prefer what the player is holding, or what they are not | The command's Scope field: `inventory` or `notheld` |
+| Scope that depends on the room, or on what has happened | A [`changecommandscope` script](#scope-that-changes-as-the-game-goes-on) |
+| To ask, in a script of your own, what the player can see or touch | The [scope functions](#the-scope-functions) |
 
-There are two features that let you handle these situations relatively easily.
+## Visible and reachable
 
-To change the scope of all commands, say because of the nature of the rooms or objects (as with the first two examples), use the Extended Scope feature. If this is for a specific command (as with CAST, BUY or CALL in the examples above), use Alternative Scope.
+Quest Viva keeps two questions apart: can the player *see* an object, and can they *touch* it.
 
-## Extended scope
+- An object is **visible** if nothing opaque stands between it and the player. The contents of an open container are visible; so are the contents of a closed container that is transparent, like a glass case.
+- An object is **reachable** if nothing closed stands in the way. The glass case's contents are visible but not reachable until it is opened.
 
-On the _Features_ tab of the game object, tick "Advanced scripts", then go to the _Advanced scripts_ tab. The script at the bottom allows you to add items to the scope Quest Viva uses to decide what the player can reach.
+An object whose `visible` attribute you have set to false is in neither list. Neither is anything in a dark room, apart from the player and anything flagged as a light source.
 
+Scenery makes no difference here. An object marked **Scenery (do not display in room description)** on its _Setup_ tab is left out of the room description and the Places and Objects pane, but it is still in scope, which is exactly what you want for a mural the player can examine.
 
-### Scenery
+## What a command looks at by default
 
-The simplest way to use this is to set up a room, let us say it is called "scenery", of background objects, things like walls, floor and ceiling. Each object should be set to be scenery (_Setup_ tab). The script then adds each item in the scenery room to a special variable called "items":
+An `#object#` in a command pattern matches anything **visible**. An `#exit#` matches the exits the player can use. That is all a command does for you: matching an object is no promise that the player can touch it.
+
+So with a pearl inside a closed glass showcase, LOOK AT PEARL works - but a command that actually moves the pearl has to check. The built-in commands do it like this, and so should yours:
 
 ```quest
-foreach (obj, GetDirectChildren(scenery)) {
+if (not ListContains(ScopeReachable(), object)) {
+  msg (BlockingMessage(object, ""))
+}
+else {
+  msg ("You polish the " + GetDisplayAlias(object) + ".")
+}
+```
+
+`BlockingMessage` finds the thing that is in the way and produces "The showcase is not open." - or the `blockingmessage` you set on the showcase yourself.
+
+A few built-in commands narrow their scope rather than widening it:
+
+| Command | Scope |
+|---|---|
+| TAKE | `notheld` |
+| DROP, WEAR, REMOVE | `inventory` |
+| PUT X IN/ON Y | `object1=inventory\|object2=container` |
+| TAKE X FROM Y | `object1=contents\|object2=container` |
+
+Everything else, including every verb, uses the default.
+
+## Setting the scope on a command
+
+Select the command in the tree. On its _Command_ tab there is a box labelled **Scope ("inventory", "notheld", room name or object attribute, Blank for everywhere)**. Verbs have the same box on their _Verb_ tab. It takes one of these:
+
+| Value | What it matches |
+|---|---|
+| *(blank)* | Everything visible - the default |
+| `inventory` | Everything the player is carrying |
+| `notheld` or `room` | Everything visible that the player is not carrying, and not the player |
+| `container` | The visible containers |
+| `contents` | Everything inside a visible container |
+| `world` | Every object in the game |
+| `none` | Nothing, so that a `changecommandscope` script can supply the list |
+| an object name | Everything inside that object, however deeply nested |
+| an attribute name | See below |
+
+If the text is not one of the keywords and not an object name, Quest Viva looks for an attribute of that name on the room the player is in, and then on the player. If the attribute holds an object, the contents of that object are used; if it holds an object list, the objects in the list are used.
+
+That is how you scope a spell list. Keep the spell objects in a room the player never visits, give the player an object list attribute called `knownspells` holding the ones they have learned, and give a command with the pattern `cast #object#` the scope `knownspells`. Now CAST FIREBALL works if the player knows fireball, and CAST ICEBOLT gets "I can't see that." A shop works the same way with an attribute on the room: give the shop an object attribute `stock` pointing at the storeroom, and set the BUY command's scope to `stock`.
+
+Separate several values with a semicolon to combine them - `contents;storeroom` matches anything inside a container the player can see, and anything in the storeroom. Order does not matter. For a command with more than one object, give each variable its own scope, separated by a vertical bar:
+
+```
+object1=inventory|object2=notheld
+```
+
+### Scope is a preference, not a restriction
+
+If nothing in the scope matches what the player typed, Quest Viva tries again against everything visible. So `inventory` on WEAR means "if the player is holding a hat, mean that one rather than the hat on the floor" - it does not stop them wearing the hat on the floor. Even `none` falls back this way.
+
+To refuse an object outright, test it in the command's script:
+
+```quest
+if (not ListContains(ScopeInventory(), object)) {
+  msg ("You are not carrying that.")
+}
+```
+
+Be careful with `world`. It is every object in the game, ignoring darkness, containers and the `visible` attribute, so a command scoped to `world` will happily match an object you meant to keep hidden.
+
+## Objects present in every room
+
+Walls, a floor, a ceiling, the sky, the river that runs past several rooms - you do not want a copy of these in every room, but the player will still type LOOK AT WALLS. The game's backdrop scope script adds objects to every scope Quest Viva works out, wherever the player is.
+
+On the game object's _Features_ tab, tick **Show advanced scripts for the game object**. That reveals the _Advanced Scripts_ tab, whose last box is **Backdrop scope script (add objects to the "items" object list variable)**.
+
+Put the objects themselves in a room the player can never get to - call it `backdrops` - mark each one as scenery on its _Setup_ tab, and write:
+
+```quest
+foreach (obj, GetDirectChildren(backdrops)) {
   list add (items, obj)
 }
 ```
 
-Note that each item has to be added individually to ensure the `items` variable is not lost; using the `ListCombine` function will fail.
+Three things to know:
 
-Note also that using `ScopeVisibleForRoom` rather than `GetDirectChildren` will cause Quest Viva to crash, as `ScopeVisibleForRoom` uses this script, which uses `ScopeVisibleForRoom`, which uses this script, which... And so on for ever! 
+- **Add to the list you were given.** `items = ListCombine(items, ...)` builds a new list and throws it away, so nothing happens and there is no error to tell you.
+- **Backdrops are never listed in a room description**, because that listing only looks at the room's own children. They do show up in the Places and Objects pane, though, so mark them as scenery unless you want "sky" in the pane in every room.
+- **This script runs several times a turn**, so keep it short, and never call a scope function such as `ScopeVisibleForRoom` from inside it. That function runs this script, which runs that function, and the game hangs on the loading screen with no error at all.
 
-Because we tagged the items as scenery, they will not show up in room lists, but the player can still examine them.
-
-We can go further, and add scenery items according to the type of room. How you do that depends on how you flag the rooms of a certain type. In the code below, it is assumed that locations in the forest all start "Forest", etc.
+To vary the backdrops by place, test the room the player is in:
 
 ```quest
-if (StartsWith(game.pov.parent.name, "Forest")) {
-  foreach (obj, GetDirectChildren(forest_scenery)) {
-    list add (items, obj)
-  }
+list add (items, walls)
+if (GetBoolean(game.pov.parent, "outdoors")) {
+  list add (items, sky)
 }
-else if (StartsWith(game.pov.parent.name, "Dungeon")) {
-  foreach (obj, GetDirectChildren(dungeon_scenery)) {
-    list add (items, obj)
-  }
+```
+
+## Scope that changes as the game goes on
+
+For anything the Scope field cannot express - scope that depends on which room the player is in, or on what they have done - add a `changecommandscope` script. There is no control for it, so add it on the _Attributes_ tab of the command, the room or the game object: **Add attribute...**, name it `changecommandscope`, and set its type to **Script**.
+
+The script runs after the Scope field has been dealt with, so it adds to whatever that produced. Quest Viva runs every one it finds, in this order: the command or verb itself, the player, the room the player is in, each room containing that one, and the game object. Inside the script you have:
+
+| Variable | Holds |
+|---|---|
+| `items` | The object list to add to |
+| `command` | The command or verb being matched |
+| `variable` | Which part of the pattern is being resolved - `object`, `object1`, `object2` |
+| `objtype` | `object` or `exit` |
+| `matched` | A dictionary of the object variables already resolved for this command |
+
+The barmaid behind the counter is a room script. Put this on the bar:
+
+```quest
+foreach (obj, GetDirectChildren(behind_the_counter)) {
+  list add (items, obj)
 }
-else {
-  foreach (obj, GetDirectChildren(default_scenery)) {
+```
+
+Now a command typed in the bar can reach the barmaid, and the same command typed anywhere else cannot.
+
+Use `command` when only one command should reach further - this one on the game object lets BUY see the storeroom from anywhere:
+
+```quest
+if (command.name = "cmd_buy") {
+  foreach (obj, GetDirectChildren(storeroom)) {
     list add (items, obj)
   }
 }
 ```
 
-### Adjacent rooms
+Use `variable` to scope each object of a two-object command differently, and `matched` when the second object depends on the first - to offer only the keys that fit the lock the player already named, say.
 
-We can use the same system to allow the player to access objects in an adjacent room. This is fully compatible with the above; the code just needs to go after it. Here is an example:
+## The scope functions
 
-```quest
-if (game.pov.parent = bar room) {
-  foreach (obj, GetDirectChildren(behind the counter)) {
-    list add (items, obj)
-  }
-}
-if (game.pov.parent = behind the counter) {
-  foreach (obj, GetDirectChildren(bar room)) {
-    list add (items, obj)
-  }
-}
-```
+These return an object list, possibly empty, of what the player can currently see or reach. Use them in your own scripts rather than walking the object tree yourself. The `...ForRoom` versions take a room; the others use the room the player is in. Full details are in the [scope function reference](/reference/functions/scope).
 
-What this does is check if the player is in the bar, and if so, it adds all the object that are behind the bar to the list. Also, if the player is behind the bar, it will add objects from the bar room. You can have as many of these as you like.
+**What the player can touch**
 
+| Function | Returns |
+|---|---|
+| [`ScopeReachable`](/reference/functions/scope#scopereachable) | Everything reachable in the room, plus what the player is carrying, plus the player |
+| [`ScopeReachableNotHeld`](/reference/functions/scope#scopereachablenotheld) | The same, without the player or anything they are carrying |
+| [`ScopeReachableInventory`](/reference/functions/scope#scopereachableinventory) | Carried objects that are reachable - not what is inside a bag they have closed |
+| [`ScopeReachableForRoom`](/reference/functions/scope#scopereachableforroom), [`ScopeReachableNotHeldForRoom`](/reference/functions/scope#scopereachablenotheldforroom) | As above, for a room you name |
 
-## Alternative scope
+**What the player can see**
 
-You can also set the scope for a command. Quest Viva will look for any matching objects in that place first. If it fails to find a match, it will then fall back to looking in the normal places (inventory and current room). You have five options:
+| Function | Returns |
+|---|---|
+| [`ScopeVisible`](/reference/functions/scope#scopevisible) | Everything visible in the room, plus the inventory, plus the player |
+| [`ScopeVisibleNotHeld`](/reference/functions/scope#scopevisiblenotheld) | Everything visible the player is not carrying - but still including the player object itself |
+| [`ScopeVisibleNotHeldNotScenery`](/reference/functions/scope#scopevisiblenotheldnotscenery) | The same, minus scenery and minus the player - this is what the Places and Objects pane lists |
+| [`ScopeInventory`](/reference/functions/scope#scopeinventory) | Everything visible that the player is carrying |
+| [`ScopeVisibleNotReachable`](/reference/functions/scope#scopevisiblenotreachable) | Visible but out of reach - what is inside the glass case |
+| [`ScopeVisibleLightsource`](/reference/functions/scope#scopevisiblelightsource) | Visible light sources of a given strength |
+| [`ScopeVisibleForRoom`](/reference/functions/scope#scopevisibleforroom) and the other `...ForRoom` forms | As above, for a room you name |
 
-```quest
-"all"        ScopeVisible()
-"inventory"  ScopeInventory()
-"notheld"    ScopeVisibleNotHeld()
-"room"       As above
-"container"  As "all", but only includes containers
-"contents"   As "all", but only includes the contents of containers
-"world"      AllObjects()
-objectname   GetAllChildObjects(GetObject(objectname))
-attrname     GetAllChildObjects(GetAttribute(player.parent, attrname))
-     or      Contents of the list
-```
+**Exits, commands and everything else**
 
-The first is the default. The second tells Quest Viva to look in the inventory; if the players is carrying a hat and there is another on the ground, typing WEAR HAT will put on the one being held, because WEAR is set to "inventory". Conversely, "notheld" makes Quest Viva look in the room first.
+| Function | Returns |
+|---|---|
+| [`ScopeExits`](/reference/functions/scope#scopeexits) | Exits the player can use from here, locked or not |
+| [`ScopeExitsForRoom`](/reference/functions/scope#scopeexitsforroom), [`ScopeUnlockedExitsForRoom`](/reference/functions/scope#scopeunlockedexitsforroom) | Exits of a room you name, all of them or only the unlocked ones |
+| [`ScopeCommands`](/reference/functions/scope#scopecommands) | Global commands plus the ones local to this room |
+| [`AllObjects`](/reference/functions/scope#allobjects), [`AllRooms`](/reference/functions/scope#allrooms), [`AllExits`](/reference/functions/scope#allexits), [`AllCommands`](/reference/functions/scope#allcommands), [`AllTurnScripts`](/reference/functions/scope#allturnscripts) | Everything of that kind in the game, present or not |
+| [`GetDirectChildren`](/reference/functions/scope#getdirectchildren), [`GetAllChildObjects`](/reference/functions/scope#getallchildobjects) | What an object contains, one level down or all the way down |
 
-If the text is set to the name of an object, Quest Viva will look at the children of that object; that might be the objects in another room. This could be used for a spellbook, containing spells.
+## See also
 
-If the text is an object attribute of the current location, Quest Viva will look at the children of that object. This could be used for a stockroom of a shop.
-
-On the other hand, if it is an object list, then the items in the list will be used. This might be an address book, used for phoning NPCs.
-
-You can combine scopes, so "contents;storeroom" would collect any object that the player can reach that is an object and any object in the "storeroom" location. There is no prioritising, so order does not matter.
-
-For commands with multiple objects, you can specify by each object. You can see the format in this example:
-
-> object1=contents;storeroom\|object2=room
-
-In this example, Quest Viva will look for object1 in containers or the storeroom location, and for object2 in the current location.
-
-
-## Even more options?
-You can also add your own "changecommandscope" script to add even more items to the list Quest Viva will try to match object names against. This script can be on the command, player, the player's parent (the room the player is in), the player's parent's parent, or the game object. Or all of them! This allows you to add objects on a per room or per zone basis as you like.
-
-As with Extended Scope, your script should add items to the "items" local variable. It can access the command object via the "command" variable.
-
+- [Advanced game scripts](/howto/scripting/advanced-game-scripts) - the rest of the _Advanced Scripts_ tab
+- [Containers and surfaces](/howto/world/containers) - open, closed and transparent, and what that does to reach
+- [Handling multiple items (and all)](/howto/commands/handling-multiple) - what TAKE ALL picks up

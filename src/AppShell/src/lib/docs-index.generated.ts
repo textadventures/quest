@@ -147,8 +147,8 @@ export const DOCS_INDEX: Readonly<Record<string, DocsIndexEntry>> = {
 
 /** Documentation path (as used in a <helpurl>) -> that page's title. */
 export const HELP_PAGE_TITLES: Readonly<Record<string, string>> = {
-    "/howto/commands/commands/": "How to use commands",
-    "/howto/commands/using-verbs/": "How to use verbs",
+    "/howto/commands/commands/": "How commands work",
+    "/howto/commands/using-verbs/": "Verbs",
     "/howto/npcs/ask-about/": "Building an Ask/Tell system",
     "/howto/npcs/dialogue-pages/": "Building a conversation with Pages",
     "/howto/scripting/advanced-game-scripts/": "Advanced game scripts",

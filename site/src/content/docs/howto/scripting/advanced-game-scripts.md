@@ -1,61 +1,75 @@
 ---
 title: Advanced game scripts
+description: The game's Advanced Scripts tab - inituserinterface, unresolvedcommandhandler and scopebackdrop
 sidebar:
   order: 9
 ---
 
-This describes some advanced features. These are called advanced scripts for a reason, and will be of no interest to many users. You will need to turn the feature on by ticking it on the _Features_ tab of the game object. If you are using these scripts, it is assumed you are reasonably comfortable looking at code.
+The game object's _Advanced Scripts_ tab holds three scripts that are not tied to a moment in the story the way the [start and room scripts](/howto/scripting/when-scripts-run) are. Each one lets you take over something Quest Viva would otherwise do for itself.
 
+The tab is hidden until you ask for it: on the game object's _Features_ tab, tick **Show advanced scripts for the game object**.
 
+| Script | Runs when |
+|---|---|
+| **User interface initialisation script** (`inituserinterface`) | Before anything is drawn, at the start of the game and again whenever a saved game is loaded |
+| **Unresolved command script** (`unresolvedcommandhandler`) | The player types something Quest Viva cannot match to any command or verb |
+| **Backdrop scope script** (`scopebackdrop`) | Quest Viva works out which objects are present, several times a turn |
 
-## The `inituserinterface` script
+## The user interface initialisation script
 
-The `InitUserInterface` function has been in Quest Viva for a long time. It is an empty function that you can override to set up the user interface, and it gets called at the start of the game, and also when the player loads a saved game (unlike `game.start`, which only runs when the games starts, not a reload). This makes it ideal for code that customises the user interface.
+`inituserinterface` is the earliest place your own code can run. It happens before the title, before the start script, and before the first room description - so anything that changes how the game looks should go here rather than in the start script, or the player sees the default appearance flash past first.
 
-The `game.inituserinterface` script is exactly the same; it is called at the start of the game, and also when the player loads a saved game. So why have both?
-
-Before this was added, users of the web editor could not override `InitUserInterface` at all, so their user interface was restricted to the basic options. Now, you can change `game.inituserinterface` to do whatever you want, regardless of which editor you're using!
-
-For a starting point as to what you can do, see [here](/howto/ux/customising-the-ui).
-
-
-
-
-## The `unresolvedcommandhandler` script
-
-This has been in Quest Viva for a long time, and you can add it via the GUI.
-
-If it exists, this script gets called when Quest Viva has no idea how to handle a command (if there is no script, Quest Viva will just print "I don't understand your command.").
-
-Why would you want to? Well, if you are counting turns, if would be unfair to count as a turn when the player has just mistyped something, or has typed a command you forgot to implement. You can use this to tell Quest Viva not to run turnscripts for this turn.
-
-The "command" variable will hold what the player typed, so your script might look like this:
+More importantly, it runs *again* every time the player loads a saved game. The start script does not: it belongs to the beginning of the story, and a loaded game is already part-way through. Anything that has to be re-applied to a fresh browser window - a background colour, a custom stylesheet, a panel you added with JavaScript - belongs in `inituserinterface`.
 
 ```quest
-msg("I do not understand \"" + command + "\"")
-SuppressTurnscripts
+JS.setCss ("#qv-status", "background:#3b2f2f;color:wheat;border:none")
+JS.addScript ("<style>#lstInventory li:hover { background: gold; }</style>")
 ```
 
+See [Styling the player with CSS](/howto/ux/customising-the-ui) for what you can do from here. Don't print anything from this script - at the start of the game it runs before the title, so your text would appear above it.
 
+There is also a function called `InitUserInterface`, which is empty in Core and which you can [override](/howto/scripting/creating-functions-which-return-a-value#overriding-a-built-in-function) with your own. It runs at exactly the same points, immediately before the `inituserinterface` script. Use the script on this tab unless you are writing a library, in which case overriding the function leaves the tab free for the game that includes your library.
 
-## The `scopebackdrop` script
+Note that `game.pov` has not been worked out yet while this script runs, so you cannot ask where the player is.
 
-When the player does LOOK AT (or pretty much any command that references an object), Quest Viva will compare the object in the typed text against all the items present. You can use this script to add to the list Quest Viva will try to match against.
+## The unresolved command script
 
-Why would you want to? Let us say your game is set in an old house; in every room there are walls, floor and ceiling, and some player might do LOOK AT WALL (and seriously, some will). This would not look good: 
-
->You are in a room with a bed and table; there are old posters stuck to the walls.
->
-> > LOOK AT WALLS
->
-> I can't see that.
-
-However, you really do not want to have to create a wall object in every room, plus floor, plus ceiling, etc. The `scopebackdrop` script offers a solution; just add  your generic objects to the "items" list in that script. For example:
+When Quest Viva cannot match what the player typed against any command or verb, it prints the `UnrecognisedCommand` template - "I don't understand your command." - and the turn ends. Add an `unresolvedcommandhandler` script and yours runs instead. What the player typed is in a string variable called `command`:
 
 ```quest
-list add (items, wall)
+msg ("You try to " + command + ", but nothing comes of it.")
+```
+
+Useful things to do here:
+
+- **Give the game its own voice.** A single unhelpful line is the one piece of text every player sees, and it usually sounds nothing like the rest of the game. (If all you want is different wording, you do not need this script at all - change the `UnrecognisedCommand` [template](/howto/world/changing-templates) instead. Use the script when the reply should vary.)
+- **Log what players type.** Collecting unmatched input while testing tells you which verbs your players expect and you have not implemented.
+- **Parse it yourself.** With the raw text in hand you can do your own matching - a magic-word system, a conversation mode where anything typed is treated as speech, or a fallback that strips a leading "please".
+
+You do not need to worry about turn scripts here. An unrecognised command never finishes a turn, so turn scripts do not run after one anyway, and `SuppressTurnscripts` in this script does nothing.
+
+Note that this script only catches text that matched nothing at all. A command that matched but named an object that is not there ("I can't see that.") never reaches it - see [Scope](/howto/commands/advanced-scope) for that case.
+
+## The backdrop scope script
+
+Every time Quest Viva works out which objects are present - to resolve LOOK AT WALL, to decide whether TAKE LAMP can reach the lamp, to build the list of things you can see - it runs `scopebackdrop`, if the game has one. The script is handed an object list called `items` holding everything it has found so far, and anything you add to that list counts as present too.
+
+That is how you give a game walls, a floor, a sky or a river without creating a copy of them in every room:
+
+```quest
+list add (items, walls)
 list add (items, floor)
 list add (items, ceiling)
 ```
 
-Now when Quest Viva is looking for a suitable object it will also consider these three. See the "Extended Scope" section of [this page](/howto/commands/advanced-scope) for more.
+Keep the objects themselves somewhere off-stage - a room the player can never reach - and mark them as scenery so they do not appear in every room description.
+
+Two things to watch. You must add to the `items` list that was passed in; building a new list and returning it, or using `ListCombine`, has no effect, because it is the passed-in list that Quest Viva goes on to use. And this script runs many times a turn, so keep it short - a loop over every object in the game will be felt.
+
+[Scope](/howto/commands/advanced-scope) covers this in full, along with the other ways to change what a command can reach.
+
+## See also
+
+- [When scripts run](/howto/scripting/when-scripts-run) - every other script that fires by itself
+- [Scope](/howto/commands/advanced-scope)
+- [Styling the player with CSS](/howto/ux/customising-the-ui)

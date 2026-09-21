@@ -1,166 +1,154 @@
 ---
-title: Attack of the Clones!
+title: Clones
+description: Copy an object at runtime to make many of the same thing, and refer to the copies afterwards
 sidebar:
   order: 8
 ---
 
+A clone is a copy of an object made while the game is running. Build one goblin in the editor and you can put a dozen into the game world without building a dozen goblins; sell a copy of a cake and the original stays in the stockroom, so the baker never runs out.
 
-A clone is an exact copy of a prototype, and can be a useful way to quickly create several of the same things whilst a game is underway. For example, you could create a single orc, and then clone it several times to give the player a hoard to fight against, or you could [implement a shop](/howto/tasks/shop) where all the goods for sale get cloned when the player purchases them, so the shop remains stocked.
+The object you copy is called the *prototype*. Keep prototypes somewhere the player can never go - a room called `offstage` with no exits leading to it is the usual arrangement - so the player never meets the original.
 
-Actually clones are not exact copies. Every object in Quest Viva must have a unique name, so each clone will have its own name. This name will be the name of the prototype, with a number appended (orc1, orc2, etc.). To ensure the clone is _apparently_ identical to the player, it is best to use the `CloneObject` function (rather than the `Clone` function), so the clone will be given the name of the prototype as an alias, if none is already set. It will also be given a new attribute "prototype", which points to the prototype.
+| You want | Use |
+|---|---|
+| A copy, which you'll place yourself | `CloneObject(prototype)` |
+| A copy in a particular room or container | `CloneObjectAndMove(prototype, parent)` |
+| A copy in the room the player is in | `CloneObjectAndMoveHere(prototype)` |
+| A copy whose initialisation script should run | `CloneObjectAndInitialise(prototype)` |
 
-Note that cloning an object with `CloneObject` will also clone any objects it contains.
-
-Alternatively, use the `CloneObjectAndMove` function, which uses `CloneObject`, but then moves the clone to the given location, or the `CloneObjectAndMoveHere` function which is similar but moves the clone to the current room.
-
-All of these function return the clone, which allows you to modify if required.
+All of them return the new clone, so you can set it up as you go:
 
 ```quest
 newgoblin = CloneObjectAndMoveHere(goblin)
 newgoblin.look = "This goblin has a wooden leg."
 ```
 
-Once the player is interacting with a clone, you need to ensure that it is the clone that things happen to. And this is where it gets complicated...
+In the editor, these are "Clone object" and "Clone object and move", in the Objects category. To keep hold of the clone, use "Set a variable or attribute" instead and choose the function there, so the clone lands in a variable you can then work with.
 
-In the code above, `goblin` is an object that has the name "goblin", and this is the way of all objects in Quest Viva. However, `newgoblin` is quite different; it is a _local variable_, which is a kind of temporary container. The first line above puts the clone into the container, and we can then use it as though it is the real thing, as you see above. That is fine in that script, but as soon as the script ends, the container is gone. The clone still exists; that is now a part of the game world, but we have lost the container called "newgoblin".
+## Names and aliases
 
-So what is the clone called? The first will be "goblin1", the second "goblin2", and so on. We need a way to refer to the clone, without knowing its name.
+Every object in a game has a unique name, so a clone can't share its prototype's. Quest Viva gives it the prototype's name with a number on the end - `goblin1`, `goblin2`, and so on - and you can't choose it.
 
+`CloneObject` and its relatives then set two attributes for you:
 
-## Commands
+- `alias`, if the prototype doesn't already have one, is set to the prototype's name. That's what the player sees, so clones of `goblin` all look like "goblin".
+- `prototype` points at the object that was cloned. Cloning a clone still points at the original prototype, not at the clone it came from.
 
-In commands, we have a system built-in. Say there is an ATTACK command, the pattern could be:
+(There is also a bare `Clone` function, which does neither of these. Use `CloneObject`.)
 
-> attack #object#
-
-In the command script, we now have a _local variable_ called "object". It has a different name, but this is just a container like `newgoblin`, and just as with `newgoblin`, we can change it around in our script.
+Clones that all share an alias are awkward for the player: typing `X GOBLIN` when there are three gets them a "Please choose which 'goblin' you mean" list of three identical entries. Give each clone its own alias as you create it. Picking from a list of adjectives and removing each one as it's used keeps them distinct:
 
 ```quest
-object.hitpoints = object.hitpoints - 5
+z = CloneObjectAndMove(goblin, room)
+adjective = PickOneString(goblin.adjectives)
+list remove (goblin.adjectives, adjective)
+z.alias = adjective + " goblin"
 ```
 
+That gives you "a fat goblin", "a tall goblin" and so on. Put more adjectives in the list than you will ever have goblins.
 
+## Cloning something with contents
 
-## Scripts
+Cloning an object clones everything inside it, all the way down, and each copy gets its own `alias` and `prototype` in the same way. Clone a chest with a coin in it and you get a new chest containing a new coin - the original chest keeps its own.
 
-Scripts are attached to an object, and when the object is cloned, the clone has that script too. All well and good... unless the script refers to the object by name. Suppose you have a script for LOOK, and it is set up like this:
+## Writing scripts that work on clones
+
+A clone gets copies of the prototype's verbs and scripts. The trap is a script that refers to the prototype by name, because every clone will then act on the original:
 
 ```quest
-msg("The goblin is green, small and looks nasty. It currently has " + goblin.hitpoints + " hit points.")
+// Wrong - always reports the prototype's health
+msg ("The goblin has " + goblin.health + " hit points.")
 ```
 
-Now every time the player looks at the clone, she will be told how many hits the prototype has! The solution is to use the special variable `this`, which refers to the owner of the script:
+Use `this` instead. In a script attached to an object, `this` is the object the script is running on - the clone, not the prototype:
 
 ```quest
-msg("The goblin is green, small and looks nasty. It currently has " + this.hitpoints + " hit points.")
+msg ("The goblin has " + this.health + " hit points.")
 ```
 
-Now when the player looks at the goblin, she will get told the hit points for the owner of the script; the clone not the prototype.
+The same goes for verbs, and for attribute change scripts.
 
-Note that the text processor does not currently support `this`, so cannot be used here.
-
-Verbs use scripts, so again should be using `this`, not the name of the prototype.
-
-
-
-## Finding and checking for clones
-
-Note that neither of these techniques will flag up the prototype; it is generally best to keep the prototypes somewhere the player will never find them.
-
-Back at the start the "prototype" attribute was mentioned. This will point to the prototype (even if you clone a clone, it will point to the original prototype) on our clones. We can use that to see if an object is a clone of a certain item. In this case, we are testing a object in a local variable called "obj".
-
+`this` also works in text handled by the [text processor](/howto/world/text-processor), so a plain text description can use it:
 
 ```quest
-if (obj.prototype = goblin) {
-  msg("The is a clone of the goblin")
+The goblin has {this.health} hit points, and looks {this.mood}.
+```
+
+In text, `this` means the object in the command the player just typed, which is the right object whenever the player is looking at, taking or otherwise acting on the clone. If you need it somewhere else - text printed by a turn script, say - set `game.text_processor_this` to the clone first, as described in [Descriptions that don't change](/howto/tasks/random#descriptions-that-dont-change).
+
+For a description that should be different for each clone but then stay put, run it through `ProcessText` when you create the clone and store the result:
+
+```quest
+z = CloneObjectAndMoveHere(goblin)
+z.look = ProcessText("This goblin has a {random:red:green:yellow} tunic.")
+```
+
+## Finding a clone again
+
+The variable you put the clone in is a local variable: it lasts until the end of the script, and then it's gone. The clone stays in the game world, but nothing is called `goblin1` in your scripts. There are three ways to reach it again.
+
+**From a command.** A command with `#object#` in its pattern gives you a local variable `object`, which is the clone the player named, already resolved. Scripts for verbs get `this`. Most of the time this is all you need:
+
+```quest
+object.health = object.health - 5
+```
+
+**With `GetClone`.** This returns the first clone of a prototype directly inside a given parent, or `null` if there isn't one. Leave the parent off and it looks inside the player:
+
+```quest
+key = GetClone(rusty key, game.pov.parent)
+if (not key = null) {
+  msg ("A rusty key is lying here.")
 }
 ```
 
-If you want to find all the clones in the current room, you can use ScopeVisible to get everything here, and filter that to get the clones:
-
+**By filtering on `prototype`.** For all of them rather than the first:
 
 ```quest
-goblin_clone_list = FilterByAttribute(ScopeVisible(), "prototype", goblin)
+goblins = FilterByAttribute(ScopeVisible(), "prototype", goblin)
+msg ("There are " + ListCount(goblins) + " goblins here.")
 ```
 
-If you just want to get the clones the player is actually carrying use `ScopeInventory`.
+`ScopeVisible`, `ScopeReachable`, `ScopeInventory` and `GetDirectChildren(room)` all work as the first argument - see [Using lists](/howto/scripting/using-lists#filtering). To test a single object, check the attribute directly. `HasObject` is safest, since objects that aren't clones don't have the attribute at all:
 
-To remove a set number of clones from the player, you might do something like this:
+```quest
+if (HasObject(object, "prototype") and object.prototype = stick) {
+  msg ("That's one of your sticks.")
+}
+```
 
+Neither `GetClone` nor a `prototype` filter ever picks up the prototype itself, which has no `prototype` attribute of its own.
+
+Here's a command that needs four sticks and uses them up. Note that list positions count from zero:
 
 ```quest
 sticks = FilterByAttribute(ScopeInventory(), "prototype", stick)
 if (ListCount(sticks) < 4) {
-  msg("You need at least four sticks to do that.")
+  msg ("You need at least four sticks to do that.")
 }
 else {
-  for (i, 1, 4) {
-    RemoveObject (ListItem(sticks, i))
+  for (i, 0, 3) {
+    destroy (ObjectListItem(sticks, i).name)
   }
-  msg ("You use four sticks to do that thing.")
+  msg ("You lash four sticks together into a raft.")
 }
 ```
 
+## Getting rid of clones
 
+`RemoveObject` only moves an object out of the world - it still exists, and it's still written into every saved game from then on. A game that clones freely and never tidies up (a shop the player visits a hundred times, a monster spawner) will grow a large number of these.
 
-## Specialised functions
-
-If you are going to be cloning several of the same type of thing in your game, you might want to create functions to do the job for you. Let's look at some examples, from an RPG-style game.
-
-The first is `CreateTreasure`. It is going to create a clone of a given object, then mix it up a bit. It has no return type, and two parameters, obj and room. Here is the code:
+`destroy` removes the object completely. It takes the object's *name*, not the object itself, and it destroys anything inside it too:
 
 ```quest
-o = CloneObjectAndMove(obj, room)
-if (HasString(o, "look")) o.look = ProcessText(o.look)
-o.price = o.price - GetRandomInt(o.price/-4, o.price/4)
+destroy (object.name)
 ```
 
-It will clone any item, move it to the given room, then, to give some variety, it will call `ProcessText` on the "look" attribute. This means that we can set the attribute to something like this:
+Destroy clones you're sure the player can no longer reach. For something the player might come back to - a dead monster they could still search - `RemoveObject` or leaving it in place is safer.
 
-> This is a {random:red:blue:green} hat.
+## See also
 
-The text processor directive will get processed now, as the item is created, and so its colour will not change each time the player looks at it. The price is also varied within 25% of the price of the prototype.
-
-The next one, `CreateProtectionPotion` is a bit more specialised, but could readily be adapted. It take a single parameter, room. It makes a clone of a specific item, masterpotionprotection, and assigns an element from one of a set of predefined objects too.
-
-```quest
-o = CloneObjectAndMove(masterpotionprotection, room)
-o.element = GetObject(PickOneString("fire;frost;necrotic"))
-o.alias = "Potion of Protection from " + CapFirst(o.element.name)
-o.listalias = o.alias
-o.price = o.price - GetRandomInt(o.price/-4, o.price/4)
-```
-
-In this case the "look" attribute is a script, which references the attribute set in the function:
-
-```quest
-msg ("An inky black liquid in a small glass phial. You can see the word \"" + this.element.name + "\" in runes on the cap.")
-```
-    
-This is a more involved example, but the principle is the same. `CreateScroll` has two parameters, level and room. The prototype, masterscroll, is cloned, and various attributes set.
-
-```quest
-o = CloneObjectAndMove(masterscroll, room)
-o.element = GetObject(PickOneString("fire;frost;divine;storm;earthmight"))
-qualifier = StringListItem(Split("Lesser ||Greater ", "|"), level % 3)
-o.alias = "Scroll of " + qualifier + CapFirst(o.element.name) + " Blast " + ToRoman(level / 3 + 1)
-o.listalias = o.alias
-o.look = "The scroll has a glyph of " + o.alias + " on it."
-o.price = 10 * level
-o.level = level
-```    
-    
-    
-Finally, `CreateArmour`, which has two parameters, level and room. In this case the prototype is randomly picked from a room called "garments". It will also try to pick something that is suitable to the level, specifically has a price less than 10 times the level. It will make random picks up to 6 times.
-
-```quest
-count = 0
-prototype = PickFromObject(garments)
-while (prototype.price > 10 * level and 6 > count) {
-  prototype = PickFromObject(garments)
-}
-o = CloneObjectAndMove(prototype, room)
-o.prototype = prototype
-o.price = o.price - GetRandomInt(o.price/-4, o.price/4)
-```  
-
+- [Monsters](/howto/rpg/zombie-apocalypse-1#monsters) - clones used for a whole population of enemies, with health, attacks and loot
+- [Shops that never run out](/howto/tasks/shop#variation-shops-that-never-run-out) - selling clones from a stockroom
+- [Randomness](/howto/tasks/random#descriptions-that-dont-change) - giving each clone its own fixed description
+- [Object functions](/reference/functions/objects) - the full reference

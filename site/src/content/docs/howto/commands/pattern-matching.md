@@ -1,201 +1,152 @@
 ---
-title: Pattern matching with regular expressions
-sidebar:
-  order: 5
+title: Regular expressions in commands
+description: Write a command pattern as a regular expression when the simple form isn't enough, and capture what the player typed into named variables
 ---
 
-What exactly is a "regular expression"? It is a sort of string that can be used to match against another string. You could think of it as a template or a set of rules that a string can be compared to. Quest Viva handles a regex as a string, but behind the scenes it converts that into a proper regex object deep in its workings.
+Most commands don't need a regular expression. The simple "Command pattern" form - `attack #object#;strike #object#` - covers alternatives, objects, exits and free text, and is described in [How commands work](/howto/commands/commands). Reach for a regular expression when you need something it can't express:
 
-Quest Viva has three functions that can use a regex. All three functions takes the regex and a string to compare against it as parameters and differ only in what they return.
+- a set of alternative words in the middle of a pattern, without writing out every combination
+- a restriction on what the player can type, such as digits only
+- optional words, so that `ASK MAN ABOUT THE SWORD` and `ASK MAN ABOUT SWORD` both work from one pattern
+- a pattern where one of `*`, `+`, `[`, `]`, `|`, `^`, `$` or `\` has to be a literal character (the simple form only escapes `.`, `?`, `(` and `)`)
 
-To investigate what the three functions do, we will set up a regex and two strings.
-```quest
-regex = "put (?<object1>.*) on (?<object2>.*)"
-s1 = "put hat on table"
-s2 = "put hat in box"
-```
+To use one, set the dropdown next to the Pattern box on the command's _Command_ tab from "Command pattern" to "Regular expression".
 
-## The regex
+## What a command's regular expression looks like
 
-So what does that regex mean? We will look at this in detail later, but the regex for a lot of commands use these same components, so we will quickly look at it now. The two bits in brackets, `(?<object1>.*)`, are called "capture groups", that is, groups of characters that we want to capture for later use. The capture group starts with an open bracket, followed by a question mark, and then the name of the group in angle brackets, `<object1>`, followed by the pattern to match, `.*`, which in this case says to match any number of anything, and then ended with a close bracket.
+A **capture group** stands in for what the player types, the way `#object#` does in a simple pattern. It is written `(?<name>...)`: an open bracket, a question mark, the group's name in angle brackets, then the pattern to match, then a close bracket.
 
-The rest of the regex is simple text and this needs to match exactly.
+In a command, a group's name must start with `object`, `exit` or `text`, so Quest Viva knows what to match it against. Anything else fails at runtime with "command variable names must begin with 'object', 'exit' or 'text'". Those names become the variables your script receives, exactly as with a simple pattern.
 
-
-## `IsRegexMatch`
-
-The `IsRegexMatch` function will return true if there is a match and false if not. For our example, the first string is a match, the words (and spaces) of "put" and "on" match exactly, and hat and table match the capture groups. The second return false, because "in" does not match "on".
-```quest
-IsRegexMatch(regex, s1)
-=> true
-IsRegexMatch(regex, s2)
-=> false
-```
-
-## `GetMatchStrength`
-
-The `GetMatchStrength` will return an indication of how good the match is, or throw an error if it is not a match. The strength is simply the number of characters that are matched outside of the capture groups. For `s1`, these are "put " and " on ", a total of eight characters.
-```quest
-GetMatchStrength(regex, s1)
-=> 8
-GetMatchStrength(regex, s2)
-=> Error running script: Error evaluating expression ...
-```
-
-## `Populate`
-
-The `Populate` function will return a dictionary containing the capture groups, or throw an error if it is not a match. Each entry in the dictionary will have the name of the capture group paired with the matched text.
-```quest
-Populate(regex, s1)
-=> Dictionary: object1 = hat;object2 = table
-Populate(regex, s2)
-=> Error running script: Error evaluating expression ...
-```
-
-## The "cache ID" parameter
-
-All the above functions take an optional third parameter, the "cache ID". If you supply a cache ID, the regex will be saved under that name. The next time you use that cache ID for any of the above functions, Quest Viva will ignore the regex you supply, and use the one it created earlier instead.
-
-Continuing with the example before:
-```quest
-IsRegexMatch(regex, s1, "my regex")
-=> true
-IsRegexMatch("nonsense", s1, "my regex")
-=> true
-```
-The original regex is given a cache ID here (the string "my regex"). When `IsRegexMatch` is called a second time, Quest Viva ignores the nonsense regex, because it already has a regex with that cache ID.
-
-Every time the player types some input, Quest Viva has to compare that against the regex for every command, and using cache IDs makes that process considerably faster (and it does that for any custom command you add yourself). It is doubtful if cache IDs are of significant use outside of that, and are more likely to be a source of obscure bugs, so my advice is to not use them.
-
-
-## Command matching
-
-When the player types some input, Quest Viva goes through the list of commands, looking for the best match. A match is determined by using `IsRegexMatch`.
-
-If there is more than one matching command, Quest Viva uses three criteria to select the best. Firstly it looks at the value from `GetMatchStrength`, giving priority to the command with the higher match strength.
-
-If there is a tie for the highest match strength, it will give priority to the command specific to the room. If there is still a tie after that, commands lower down the list take priority (so user defined commands take priority over the built in commands).
-
-Note that verb objects are actually a type of command, so when the game iterates through all the commands, that includes verbs. A verb object is really just a command with some specific behaviour, which is to run a certain script on the given object.
-
-
-## A note about patterns
-
-You can use a "command pattern" for your command, instead of a regular expression. A command pattern is really just a short hand for a regex, and will get converted into a regex when the game starts. Here is a comparison
-```quest
-regex = "^put (?<object1>.*) on (?<object2>.*)$"
-pattern "put #object1# on #object2#"
-```
-
-
-## What about object matching?
-
-None of the above has paid any attention to what objects are present in the game or are within reach. All these functions do is match text. We could have used this as the regex, the result would be the same (except the dictionary returned from `Populate` would contain different keys of course).
-```quest
-regex = "put (?<bill>.*) on (?<ben>.*)"
-```
-Once a command has been selected as the best match, it is only _then_ that Quest Viva will attempt to match the text to the objects present. At this point it will complain if we use "bill" and "ben"; all capture group names _in commands_ must start "object", "exit" or "text", so Quest Viva knows what it is supposed to be matching them to.
-
-## Text matching
-
-Text will match anything, and so is useful if you want to relate a command to an object outside the normal scope. You could also use text matching for open-ended commands, such as `SAY`, as is done in the basic tutorial. You then need to work out what you will do with the text.
-
-You can limit the text that will be matched. In the following example, a cheat command is set up; the player (presumably the author while testing) can type `CHEAT` followed by either `MOVE`, `SET` or `GET`, followed by further text. Quest Viva will hand two variables to the command's script, `text1` and `text2`.
-
-```regex
-^cheat (?<text1>move|set|get) (?<text2>.+)$
-```
-
-Here is another example that would allow you to handle violent commands peacefully:
-
-```regex
-^(?<text>hit|strike|slap|punch|kick|headbutt|kill|murder) (?<object>.+)$
-```
-
-If the player types `KICK BORIS`, Quest Viva will match it to this command, putting "KICK" in the `text` variable, the object `Boris` in the `object` variable, so you could have a message like this:
+That is all a simple pattern is: a short form for a regular expression, converted when the game loads. These two are the same command:
 
 ```quest
-"For a moment you want to " + LCase(text) + " " + object.name + ", but then you think better of it."
+put #object1# on #object2#
 ```
 
-By the way, to get `HIT` to work, you will need to disable the built-in verb. You can do that by copying the verb into your game, and then typing a load of nonsense into the pattern. The player will never type in that nonsense, so the verb will never get matched.
-
-
-
-## More on regex
-
-Quest Viva is based on .Net technology, and so uses the .Net format for regex. That said, it is fairly standard and is used across several programming languages, and not at all specific to Microsoft (one difference, though, is how capture groups are defined).
-
-[https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-language-quick-reference](https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-language-quick-reference)
-
-A lot of regex options start with a backslash, and this is a bit of a problem, because Quest Viva is using strings to handle them, and in Quest Viva (and most programming languages) the backslash is an escape character. What this means is that to display a backslash in Quest Viva, you actually need to have two of them.
 ```quest
-msg("Here is a single backslash: \\")
+^put (?<object1>.*) on (?<object2>.*)$
 ```
-If you want to use any regex option that has a backslash _in your code_ you need to remember to use two! An important use of backslashes is to match against a character that has some special meaning. For example, to match a question mark, the standard way is to use `\?`. In Quest Viva you will need to use `\\?`.
 
-However, for pattern-matching _in a command_, you do not need the extra backslash.
+Each semicolon-separated alternative in a simple pattern becomes one `^...$` section, joined with `|`, so `help;?` becomes `^help$|^\?$`.
 
-So what can we put into a regular expression? There is a variety of options allowing you to specify your template as broadly or as narrowly as you want.
+Matching ignores capitals - `PUT HAT ON TABLE` matches the pattern above - so there is no need to allow for them yourself.
 
+### Anchors and greediness
 
-### Classes
+`^` matches the start of the input and `$` the end. Without them, your pattern can match part of what the player typed rather than all of it, so start and end every command pattern with them. `\b` matches a boundary between word and non-word characters.
 
-You can match against a class of characters. For example, `\d` will match a single digit.
-```quest
+`.*` is greedy: it takes as much as it can while still allowing the rest of the pattern to match. With `^greet (?<text1>.*) for (?<text2>.*)$`, typing `GREET ANNA FOR BOB FOR CAROL` gives `text1` = "anna for bob" and `text2` = "carol". Use `.*?` instead to make a group take as little as possible.
+
+### Character classes
+
+```
 \d    Any digit
 \D    Any non-digit
 \w    Any word character (digit or letter)
 \W    Any non-word character
 \s    Any white space (space, tab, return)
-\S    Anything not white space
-.     Anything (except return)
+\S    Anything that is not white space
+.     Anything except a line break
 ```
-You can also set up you own class using square brackets. Some examples:
+
+Square brackets define a class of your own:
+
 ```
 [aeiou]     Any single character in the group aeiou
-[^aeiou]    Any single character NOT in the group aeiou
-[a-mA-M]    Any letter from A to M, upper or lower
+[^aeiou]    Any single character not in the group aeiou
+[a-mA-M]    Any letter from A to M, upper or lower case
 ```
 
 ### Quantifiers
 
-You can control how many of a thing can be matched using ?, + and *. To illustrate, let us start with this: 
+`?` means zero or one, `+` means one or more, and `*` means zero or more. Curly braces give an exact number or a range:
+
+```
+\d{2,5}      Between 2 and 5 digits
+[aeiou]{4}   Exactly 4 vowels
+```
+
+So `^set dial to (?<text>\d+\.?\d*)$` accepts `SET DIAL TO 42.5` but not `SET DIAL TO ABC`. The `\.` is an escaped full stop, meaning a literal `.` rather than "any character".
+
+### Alternatives
+
+Round brackets with `|` inside give a choice of words. Put the choice in a named group when you want to know which one the player used:
+
 ```quest
-regex = "\\d+\\.?\\d*"
+^cheat (?<text1>move|set|get) (?<text2>.+)$
 ```
-There are three parts to it (removing the extra backslashes):
-```
-\d+
-\.?
-\d*
-```
-The `\d` matches a digit. When followed by `+` it matches 1 or more digits, and when followed by `*` it matches zero or more. A `.` in a regex can match any character, as was seen in the capture groups of the first regex. Here, though, it is preceded by a backslash, so it instead means an actual full stop (period). The question mark after it indicates you can have zero or one of them. This regex will match a string containing a series of digits, optionally followed by a single decimal point and optionally followed by more digits.
 
-You can also use curly braces to specify a specific number or range:
+`CHEAT SET score 100` gives `text1` = "set" and `text2` = "score 100".
+
+:::caution
+Putting words inside a capture group lowers the command's [match strength](/howto/commands/commands#how-quest-viva-picks-a-command), because strength counts the characters matched *outside* the groups. Suppose you want to catch violent commands and turn them aside. This pattern scores only 1 for `HIT BORIS` - just the space, because "hit" and "boris" are both inside groups - so the built-in HIT verb, which scores 4, wins instead:
+
 ```quest
-\d{2,5}    Between 2 and 5 digits
-[aeiou]{4} Exactly 4 vowels
+^(?<text>hit|slap|kick) (?<object>.+)$
 ```
 
-### Anchors
+Writing the alternatives out as separate `^...$` sections, with the verb word outside the group, brings the score back up to 4. That ties with the verb, and a tie goes to whichever was defined later - which is yours:
 
-Anchors allow you to specify where in the string the match must be. In the previous example, the number could be anywhere in the string. Perhaps you require them to be at the beginning or end?
 ```quest
-regex = "^help$"
+^hit (?<object>.+)$|^slap (?<object>.+)$|^kick (?<object>.+)$
 ```
-The `^` and `$` are special codes that must match the start of the string and the end respectively, and they appear in most built in Quest Viva commands. \A and \z do the same. \b must match the boundary between alphanumerics and non-alphanumerics.
 
+The simple pattern `hit #object#;slap #object#;kick #object#` converts to the same thing, and beats the verb for the same reason. Reach for the group form only when your script needs to know which word the player used.
+:::
 
-## Other applications
+### Backslashes
 
-Here is some code that will handle a string like this:
+.NET's regular expressions are what Quest Viva uses, and Microsoft's [quick reference](https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-language-quick-reference) is the full list of what you can write.
+
+In a command's Pattern box, type backslashes exactly as the regular expression needs them: `^set dial to (?<text>\d+)$`.
+
+Inside a Quest script, a regular expression is an ordinary string, and the backslash is the string escape character - so every backslash has to be doubled:
+
 ```quest
-player.health = 60
+if (IsRegexMatch("^\\d+$", answer)) {
+  msg ("That's a number.")
+}
 ```
-It uses a regex to first confirm the string is in the right format, and then to split it into the three important parts.
+
+Writing `"^\d+$"` there is an error: "Invalid token in expression".
+
+## Trying a regular expression out
+
+Three functions let you check a regular expression against a string, which is the quickest way to find out why a pattern isn't doing what you expect. Add a temporary command of your own that prints the results, play the game and try a few strings.
+
 ```quest
-regex = "(?<object>.+)\\.(?<attribute>\\S+)\\s*=\\s*(?<value>.+)"
+regex = "put (?<object1>.*) on (?<object2>.*)"
+IsRegexMatch(regex, "put hat on table")
+=> true
+GetMatchStrength(regex, "put hat on table")
+=> 8
+Populate(regex, "put hat on table")
+=> Dictionary: object1 = hat;object2 = table
+```
+
+- [`IsRegexMatch`](/reference/functions/string#isregexmatch) returns true or false.
+- [`GetMatchStrength`](/reference/functions/string#getmatchstrength) returns the number of characters matched outside the capture groups - here "put " and " on ", so 8. This is the number Quest Viva compares when [choosing between commands](/howto/commands/commands#how-quest-viva-picks-a-command).
+- [`Populate`](/reference/functions/internal-core#populate) returns a string dictionary of the capture groups and what they matched.
+
+`GetMatchStrength` and `Populate` throw an error if the string doesn't match at all, so test with `IsRegexMatch` first.
+
+All three ignore what objects are actually present - they only match text. Matching a word to an object happens afterwards, and only for the command Quest Viva has already chosen.
+
+### The cache ID
+
+Each of the three takes an optional third argument, a cache ID. The first call with a given ID compiles and stores the regular expression under that name; every later call with the same ID reuses the stored one and **ignores the regular expression you passed**.
+
+This is how the parser stays fast: it tests the player's input against every command's pattern on every turn, using each command's name as the cache ID. It also means a command's pattern is fixed once the game is running - assigning to `cmd.pattern` during play changes the attribute but not the pattern the parser uses.
+
+Outside that, a cache ID is rarely worth it and easy to get wrong, since a stale entry silently makes a different regular expression match. Leave the argument out.
+
+## Using a regular expression elsewhere
+
+Regular expressions aren't only for commands. This script takes a string like `player.health = 60`, checks the shape, pulls out the three parts and applies them - the basis of a cheat command for testing:
+
+```quest
+regex = "^(?<object>.+)\\.(?<attribute>\\S+)\\s*=\\s*(?<value>.+)$"
 if (not IsRegexMatch(regex, text)) {
   error ("Sorry, wrong format")
 }
@@ -209,3 +160,9 @@ value = Eval(StringDictionaryItem(dict, "value"))
 set (obj, att, value)
 ```
 
+Checking a typed answer against a regular expression rather than an exact string is also the reliable way to accept a riddle answer - see [Asking the player](/howto/scripting/asking-the-player#checking-the-answer).
+
+## See also
+
+- [How commands work](/howto/commands/commands) - simple patterns, and how the parser chooses between commands
+- [String functions](/reference/functions/string) - the full signatures for `IsRegexMatch` and `GetMatchStrength`

@@ -1,153 +1,134 @@
 ---
-title: How to use verbs
+title: Verbs
+description: Add a verb to an object, set its default response, give it synonyms, and let it take a second object
 sidebar:
   order: 2
 ---
 
+A verb is a command that always applies to one object - `ROTATE DIAL`, `POLISH LAMP`, `SPEAK TO MARY`. You add it to the object it belongs to, and Quest Viva takes care of matching the object's name for you. A [command](/howto/commands/commands) is the more general tool: it can match anything the player types, including things that don't involve an object at all, like `JUMP` or `SING LOUDLY`.
 
-Verbs are an alternative to commands that can be simpler to use, but do seem to lead to some confusion. We did look at them in the [tutorial](/tutorial/verbs-in-depth), but it is worth looking at them in more depth.
+| You want | Use |
+|---|---|
+| An action on one or two specific objects | A verb on the object |
+| The same action on lots of objects, handled the same way | A command |
+| An action with no object, or with fixed words | A command |
 
-Verbs are always used in conjunction with an object, so `ROTATE KNOB` could be set up as a verb, but `STAND UP` or `JUMP` will require commands. You could use a command for `ROTATE KNOB`, but using a verb is probably simpler. If the player will only try to do this with one or two objects, use a verb. If she could potentially do it with anything, and the outcome will be broadly similar (such as a `SELL` command - the player could try to sell any object, and you would handle them all the same), a command might be better; however there is no hard and fast rule.
+The [tutorial](/tutorial/verbs-in-depth) covers adding a verb, how it is stored as an attribute on the object, and calling it from a command with `do`. This page picks up where that ends.
 
-To create a verb, select the appropriate object, and go to the _Verbs_ tab. Click add, and type in your verb. Your verb will appear in the upper box, and the response can be set in the section below, either "Print a message" or "Run a script". Let us suppose we set this up with a script to make things happen when the dial is turned (how to write scripts is not covered here).
+## The Verbs tab
 
+Select an object - not a room, which has no Verbs tab - and go to its _Verbs_ tab. The left-hand list has a **Verb** and a **Behaviour** column, with a box and an **Add Verb** button beneath it. Type the verb into the box and click **Add Verb**. The box suggests every verb already defined in the game, so you can pick a built-in one from the list instead of typing it.
 
+Selecting a verb in the list shows the **Behaviour** panel on the right, where **Type** is one of:
 
-## Verbs are just script attributes
+- **Print a message** - the response is a string attribute. Use this for anything that just prints text. The **Value** box takes the [text processor](/howto/world/text-processor), so you can write `The {this.colour} dial clicks round a notch.`
+- **Run a script** - the response is a script attribute. Use this when anything happens beyond printing text, or when you want to call the verb from somewhere else with `do (object, "verbname")`.
+- **Require another object** - the response depends on a *second* object, as in `ATTACK GOBLIN WITH KNIFE`. See [Two-object verbs](#two-object-verbs) below.
 
-When you create a verb for an object, it is just a script attribute of that object, and scripts can be called whenever you like. Let us suppose you have an object that is a chair, and you create a "sit on" verb, with an appropriate script. That works fine if the player types `SIT ON CHAIR`, but what if she just types `SIT`? You need a command to handle that, but you can still use your verb here. Create your command, then, in the script, have it first test that sitting is appropriate (that the chair is in the current room), and if it is, invoke the script on the chair object.
+![](/images/Addverb.png)
 
-Here is the script for the command:
+## Built-in verbs
+
+Quest Viva already defines about thirty verbs. Adding one of these to an object doesn't create anything new - it just fills in that object's response. The attribute a verb's response ends up in isn't always the verb text, so check this table (or the object's _Attributes_ tab) before you try to call one with `do`:
+
+| Verb | The player can type | Attribute |
+|---|---|---|
+| buy | buy, purchase | `buy` |
+| climb | climb | `climb` |
+| drink | drink | `drink` |
+| eat | eat | `eat` |
+| hit | hit | `hit` |
+| kill | kill | `kill` |
+| kiss | kiss | `kiss` |
+| knock | knock | `knock` |
+| lick | lick | `lick` |
+| lie on | lie on, lie upon, lie down on, lie down upon | `lie` |
+| listen to | listen to | `listen` |
+| lock | lock | `lock` |
+| move | move | `move` |
+| pull | pull | `pull` |
+| push | push | `push` |
+| read | read | `read` |
+| search | search | `search` |
+| show | show | `show` |
+| sit on | sit on, sit upon, sit down on, sit down upon | `sit` |
+| smell | smell, sniff | `smell` |
+| speak to | speak to, speak, talk to, talk | `speak` |
+| taste | taste | `taste` |
+| throw | throw | `throw` |
+| tie | tie | `tie` |
+| touch | touch | `touch` |
+| turn | turn | `turn` |
+| turn on | turn on, switch on, turn *x* on, switch *x* on | `turnon` |
+| turn off | turn off, switch off, turn *x* off, switch *x* off | `turnoff` |
+| unlock | unlock | `unlock` |
+| untie | untie | `untie` |
+
+A few actions the player types as verbs aren't verbs at all, because a tab or a feature already handles them: LOOK AT is the object's Description on the _Setup_ tab, TAKE and DROP are on the _Inventory_ tab, OPEN, CLOSE and PUT are on the _Container_ tab, USE and GIVE are on the _Use/Give_ tab, ASK and TELL are on the _Ask/Tell_ tab, and GO uses the room's exits. The editor won't let you add these as verbs, and tells you which tab to use instead.
+
+ENTER is the odd one out. It *is* a real verb - the player can also type GO IN, GO INTO, GET IN or GET INTO - but its attribute is called `enterverb` rather than `enter`, so pick "enter; go in; go into; get in; get into" from the Add Verb box's suggestions rather than typing "enter" yourself.
+
+## Verbs on types
+
+A verb put on a [type](/advanced-topics/using-inherited-types) applies to every object that inherits it, which saves repeating the same response on a dozen objects. A type has no Verbs tab, so add the verb on its _Attributes_ tab instead: give the attribute the verb's attribute name from the table above, and make it a string (to print a message) or a script. The verb itself has to exist first, so if it's one of your own, add it to any one object to create it.
+
+Write the script with `this`, so the same response works for every object of the type:
 
 ```quest
-if (chair.parent = player.parent) {
-  do (chair, "sit")
-}
-else {
-  msg ("Nothing to sit on here!")
-}
+msg ("You kick " + GetDisplayName(this) + ". Nothing falls out.")
 ```
 
-The second line is where the "sit on" verb is invoked.
+Any object of that type can still override the response by adding the same verb on its own Verbs tab.
 
-By the way, if your verb is multiple words (such as `sit on`) Quest Viva will run them together into one long word, `siton`. However, some built-in verbs have been set up differently, so in this case the attribute name is just `sit`. You can check what name Quest Viva is using by looking on the Attributes tab.
+## Running a verb from a script
 
-This trick is also useful when you have a verb that can mean different things. You might want your game to handle these:
+`do (sofa, "sit")` runs a verb's script, as in the [tutorial](/tutorial/verbs-in-depth) - but only when that verb's Behaviour is "Run a script". On a "Print a message" verb it fails with "'sofa' has no action called 'sit'".
 
-```
-> LIGHT MATCH
-
-> STRIKE MATCH
-
-> PUNCH MAN
-
-> STRIKE MAN
-```
-
-What you can do is set up match with a "light" verb, and man with a "punch" verb. Then add a second verb to each for "strike". All the second verb does is invoke the other verb. So on the match, the "strike" verb does this:
+To run a verb exactly as the parser would, whatever its Behaviour, call the verb element itself. Its name is in the **Name** box on the Verb tab; the built-in "sit on" verb is called `siton`:
 
 ```quest
-do(this, "light")
+params = NewDictionary()
+dictionary add (params, "object", sofa)
+do (siton, "script", params)
 ```
 
-On the man, the "strike" verb does this:
+That prints the message, runs the script or falls back to the verb's default, as appropriate.
 
-```quest
-do(this, "punch")
-```
+## Default responses
 
-In case you are wondering, Quest Viva understands "this" to mean the object to which the script is attached. It is good practice to use "this" rather than the name of the object; for one thing, you may later rename an object, perhaps giving the man a proper name.
+When the player uses a verb on an object that hasn't implemented it, Quest Viva prints the verb's own default - "You can't kick it." rather than "I don't understand your command." That default lives on the verb, not on the object, so there is one place to change it.
 
-
-## Multiple objects
-
-You can also set up verbs to handle multiple objects, so we could use them for `ATTACK GOBLIN WITH KNIFE`. Whether this is preferable to using a command is debatable. Again it depends how specific it is. If there are several things you can attack the goblin with, all doing pretty much the same thing, use a command. If there are specific combinations that apply then a verb is probably easier.
-
-The first step is to add the verb to the object, in this case the goblin. However, instead of setting "attack" to use a script, set it to "Require another object". this will then put up a list of objects (currently empty) to which you can add the knife by clicking Add. You will then get a new dialogue box, into which you can put your script.
-
-
-## Notes
-
-Some verbs are already implemented, such as "speak to" and "sit on". If you start to type in the Add Verb box, you will see these appear as options. The left-hand column below is the internal name Quest Viva matches your typing against - the resulting script attribute (shown in brackets) is sometimes different, so check the object's Attributes tab if you're not sure. If you add "talk to" as a verb, for example, it matches the built-in "speak" verb, and the response script ends up in an attribute called "speak" too.
-
-```
-lieon      (attribute: lie)     lie on #object#; lie upon #object#; lie down on #object#; lie down upon #object#
-listento   (attribute: listen)  listen to #object#
-siton      (attribute: sit)     sit on #object#; sit upon #object#; sit down on #object#; sit down upon #object#
-speak      (attribute: speak)   speak to #object#; speak #object#; talk to #object#; talk #object#
-```
-
-A few verbs cannot be implements, as they already mean something in Quest Viva. "Open" and "close", and "switch/turn on/off" and "enter" are the main examples. Quest Viva should warn you if you try to do this, as it can have far-reaching consequences in your game.
-
-
-## The verb element
-
-The text Quest Viva uses to match against goes into the verb element, and as Quest Viva quietly creates these for you it is easy to miss they even exist. Look for them under the game object. Here is one for our `ROTATE` verb.
+Verbs are stored as `verb` elements under _game_ in the tree, below a "Verbs" folder. Quest Viva creates one automatically the first time you add a new verb to any object, which is easy to miss. Select it to get the Verb tab:
 
 ![](/images/verb_element.png)
 
-The first bit is the text that Quest Viva will match against, just as with a command. You can change this, to allow for synonyms, with each word separated by semi-colons, like this:
+- **Pattern** - the text the player types. Separate synonyms with semicolons: `rotate; turn; twist`. Switch the dropdown from "Command pattern" to "Regular expression" if you need one.
+- **Attribute** - the attribute the response is stored in on each object. Changing this on an existing verb orphans every response already written.
+- **Default** - what to print when no object has implemented this verb. Choose **Text** for a fixed string, **Template** for the name of a [template](/howto/world/changing-templates), or **Expression** for a script expression. Quest Viva fills in an expression for new verbs: `WriteVerb(game.pov, "can't") + " rotate " + object.article + "."`, which gives "You can't rotate it." and adapts to the object's gender and to the player character.
+- **Name** - the element's own name, needed only if you want to refer to the verb element in code.
+- **Scope** - which objects the verb prefers to match. Leave it blank for everywhere the player can see. See [Advanced scope](/howto/commands/advanced-scope).
 
-  rotate; turn; twist
+## Two-object verbs
 
-The "Attribute" is the name of the attribute on the object, it tells Quest Viva to use the "rotate" script attribute in this case.
+Every verb can take a second object, using the words in **Object separator** (`with; using` by default) to join them: `ATTACK GOBLIN WITH KNIFE`.
 
-The third part ("Default" and the text box below) is what Quest Viva will use if the player tries this verb on something you have not implemented it for (and Quest Viva will even generate this default text for you, so the above is the default default!). You can, of course, change this to your liking.
+Set the verb's Behaviour on the object to **Require another object**. That gives you a list of entries, one per object, each with its own script. Add an entry by picking the second object from the dropdown and clicking **Add**, then expand it to write the script. Inside the script, `this` is the object the verb is on and `object` is the second object.
 
-The fourth part is for handling multiple objects for your verb. Remember the `ATTACK GOBLIN WITH KNIFE` verb?
+If the player names a second object that has no entry, Quest Viva prints the verb's **Default text** ("That doesn't work."). To handle those yourself instead, add an entry, click **Edit Key** and rename it to `default` - that script runs for any second object you haven't listed, with `object` set to whatever the player named:
 
-The "Object separator" defaults to `with; using`. This is a list, separated by semi-colons, of words that will go between the two objects, i.e., between `GOBLIN` and `KNIFE`. In this case the default is what we want.
-
-If the player just types `ATTACK GOBLIN`, she will be presented with a menu of appropriate objects, and the "Menu caption" will be the caption for that menu. If there are no such objects around, the "If no objects available..." text is shown.
-
-The same information appears in the game's XML as a `<verb>` element:
-
-```xml
-<verb>
-  <property>zing</property>
-  <pattern>zing; ping; ling; ring ring</pattern>
-  <defaulttext>You can't zing that.</defaulttext>
-</verb>
+```quest
+msg ("You flail at the goblin with " + GetDisplayName(object) + ", to no effect.")
 ```
 
-Here, `property` is the attribute name, `pattern` is the semi-colon separated list of text Quest Viva matches against, and `defaulttext` is the "Default" text box.
+If the player types just `ATTACK GOBLIN`, Quest Viva shows a menu of the objects around them, captioned with **Menu caption** ("With which object?"), or prints **If no objects available, show this message** if there's nothing to offer.
 
-Quest Viva checks that a new verb won't clash with an existing one, but it can only do that for single words or phrases: it will stop you adding "look at" or "examine" on their own, but it will not stop you adding "look at;examine" as a single pattern, which can quietly break LOOK AT for everything else in your game.
+## Limits
 
+- A verb's pattern can put the object anywhere - `give #object# a hug` as well as plain `hug` - but the placeholder must be called `#object#`. The order matters, because Quest Viva takes the first alternative that matches: with `hug; give #object# hug; give #object# a hug`, typing GIVE MARY A HUG gets "I can't see that. (mary a)". Put the longer alternative first.
+- A regular-expression pattern can't be combined with a second object, because Quest Viva appends the separator to the pattern itself. Use a [command with two objects](/howto/commands/complex-commands) instead.
+- A verb can't reverse the order of its objects, so `USE KNIFE TO ATTACK GOBLIN` also needs a command.
+- Quest Viva checks a new verb against existing commands, but only pattern by pattern. It will stop you adding "look at" on its own, and won't stop you adding `look at; examine` as one pattern - which quietly breaks LOOK AT for every object in the game.
 
-### Complex verbs
+## Verbs the player can click
 
-Verbs are a simple way to add commands to your game, but they only handle commands of the form `VERB OBJECT`, such as `THROW BALL`. Or so you might think. In fact, you can edit the verb element to cover a lot of possible commands.
-
-Say we have a `HUG` command. We can implement `HUG MARY` very easily, but what about `GIVE MARY A HUG`? Sure, just use this as the pattern:
-
-```
-hug;give #object# a hug
-```
-
-Each option is separated by a semi-colon. The second option includes `#object#` - just as commands do - as a stand-in for the object name (note that it has to be called "object"; with commands it can be anything that starts "object"). The above will handle `HUG MARY` and `GIVE MARY A HUG`, but not `GIVE MARY HUG`, but we can add that too:
-
-```
-hug;give #object# a hug;give #object# hug
-```
-
-Note that the order is important here. If you use this:
-
-```
-hug;give #object# hug;give #object# a hug
-```
-
-... Quest Viva will get a match with the second option, then complain it cannot find a "mary a".
-
-
-As with commands, you can also use a Regex to match against (change "Pattern" to "Regular expression"). 
-
-```regex
-^(hug (?<object>.*)|give (?<object>.*?) (a hug|hug))$
-```
-
-By default, Regex matching is "greedy", and will try to grab as much as it can, so again will attempt to grab "mary a" as the object. The question mark after the asterisk makes that non-greedy so it takes the minimum, leaving the "a" out of the object name.
-
-For verbs that use two objects, Quest Viva will append the option to include the second object in the command pattern, which will just confuse it if you are using a regular expression. There appears to be no way to successfully use a regular expression with multiple objects for a verb. There also seems to be no way to reverse the order (to allow for `ATTACK GOBLIN WITH KNIFE` and `USE KNIFE TO ATTACK GOBLIN`) using the command pattern. In both cases you will need to use commands.
-
-There is more on regular expressions [here](/howto/commands/pattern-matching).
+The verbs listed in an object's pop-up menu and in the panes are a separate list, set on the object's _Object_ tab. Adding a verb doesn't add it to that menu. See [Object verbs](/howto/ux/display-verbs).

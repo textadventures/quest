@@ -11,7 +11,7 @@ attack #object#;strike #object#;hit #object#
 
 The command's script gets the object in a variable called `object`, but it could be anything. The response has to read properly whether the player typed ATTACK ZOMBIE, ATTACK CROWD or ATTACK MARY. If it's "You attack it. It looks angry." for all three, the player won't be impressed.
 
-Quest Viva has attributes and functions for exactly this. The text processor can't do any of it, so you build the message as an [expression](/howto/scripting/expressions) - in the editor, add a "Print a message" script and change its dropdown from "message" to "expression".
+Quest Viva has attributes and functions for exactly this. The text processor can't do any of it, so you build the message as an [expression](/howto/scripting/introtocoding#expressions-and-operators) - in the editor, add a "Print a message" script and change its dropdown from "message" to "expression".
 
 ## Set up your objects
 

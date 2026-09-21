@@ -1,23 +1,31 @@
 ---
 title: Handling multiple items (and all)
+description: What TAKE ALL and DROP ALL include, how to exclude an object, and how to accept ALL in your own commands
 sidebar:
   order: 4
 ---
 
+Some commands let the player act on several objects at once, either by listing them - `DROP BAT, BALL AND HAT` - or by saying `ALL`. This page covers what Quest Viva includes when they do, and how to accept it in a command of your own.
 
-Some commands will allow the player to give a list of items to apply the action to, or to just say `ALL`. For example, the player can type `GET ALL` or `DROP BAT, BALL AND HAT`.
+Four built-in commands support it: TAKE (and GET), DROP, WEAR and REMOVE. No others do, and most commands don't need to.
 
-Handling `ALL` is not straightforward, as we need to consider exactly what items to consider.
+Whichever form the player uses, the whole thing is one turn: turn scripts fire once, not once per object.
 
-Note that turnscripts will only fire once per command, rather than once per object.
+## What the player can type
 
-## TAKE ALL
+- `ALL` or `EVERYTHING` - everything in the command's scope, minus the exclusions below.
+- A list separated by commas, "and", or both: `TAKE BOOK, LAMP AND ROPE`.
 
-Let us suppose there is a rucksack with a book in it, an open cupboard with a ball of string in it, a character called Mary, who is holding a cup, and a table with an apple on it. There is also a door that is mentioned in the room description, and is implemented, but is just scenery, and not listed when the player types `LOOK`.
+There is no EXCEPT. `TAKE ALL EXCEPT THE HAT` is read as the name of one object, and gets "I can't see that.". Mixing `ALL` into a list doesn't work either: as soon as Quest Viva reaches the word `ALL` it uses the whole scope and ignores the rest of the list, including anything named before it.
+
+## What ALL includes
+
+Take a room with a rucksack (containing a book), an open cupboard (containing a ball of string), a character called Mary holding a cup, a table with an apple on it, and a door that is scenery:
 
 ```
-You can see a rucksack (containing a book), a cupboard (containing a ball of string), a Mary (carrying a cup) and a table (on which there is an apple).
-> GET ALL
+You can see a rucksack (containing a book), a cupboard (containing a ball of string), a mary (containing a cup) and a table (on which there is an apple).
+
+> TAKE ALL
 rucksack: You pick it up.
 cupboard: You can't take it.
 ball of string: You pick it up.
@@ -25,80 +33,76 @@ table: You can't take it.
 apple: You pick it up.
 ```
 
-Note that Quest Viva does not try to take the book; it is inside the rucksack, and that has been picked up already. It will get the string and the apple, though, as they are in containers that cannot be taken (even if the containers are scenery, by the way, though they would not normally appear in the room description).
+Several things to notice:
 
-There is no attempt to take the door, as it is scenery.
+- The **book isn't taken**, because the rucksack it's in has already been taken. The ball of string and the apple *are* taken, because the cupboard and the table stay behind.
+- The **door isn't mentioned at all**, because objects flagged as scenery are never included.
+- **Mary isn't taken**, and neither is her cup. Characters are excluded automatically, and so is anything a character is carrying.
+- The cupboard and the table are tried and refused. TAKE ALL doesn't quietly skip things it can't pick up.
 
-Quest Viva also does not try to take Mary, as she is a character. It can be useful to set up characters as surfaces or (as in the example above) transparent containers so the player can see what they are carrying. `GET ALL` will also ignore any item carried by a character (but note that items inside items held by characters are not properly supported!).
+Making a character a transparent container, as Mary is here, is a good way to show what they're carrying - it doesn't put those items into ALL.
 
+`DROP ALL` is simpler: everything the player is carrying, with anything inside a dropped container going along with it and not listed separately.
 
-### Excluding other items
+### Excluding an object
 
-Just as Mary was excluded from the ALL list, you can exclude other items, just by ticking the "Object is excluded..." box on the _Inventory_ tab (behind the scenes this sets their "not_all" flag to true).
+To keep an object out of ALL, tick "Object is excluded when entering TAKE ALL" on its _Inventory_ tab. The player can still take it by naming it. Behind the scenes this sets a Boolean attribute called `not_all`.
 
-Note that this will cause any contained objects to also be excluded, and it may be better to flag the container as scenery instead.
+Anything inside an excluded object is excluded too. If that isn't what you want, flag the container as scenery on its _Setup_ tab instead.
 
+### Including a character
 
-### Characters that can be taken
+To make a character takeable - Mary is really a poodle - untick "Object is excluded when entering TAKE ALL" and tick "Object can be taken" as usual. Anything the character is carrying still stays out of ALL.
 
-Conversely, you may want a character to be taken. Perhaps Mary is a poodle that the player can pick up. Just untick the "Object is excluded..." box. You will also need to tick the "Object can be taken" box as normal.
+## Accepting ALL in your own command
 
-Note that items held by the character will still not get included in ALL.
+Three things are needed.
 
+**1. Turn it on.** The Command tab has no control for this, so go to the command's _Attributes_ tab, add an attribute called `allow_all`, set its type to Boolean, and tick it.
 
-## DROP ALL
+**2. Set the scope.** This is what `ALL` means for this command. Leave it blank and it means everything the player can see, which is rarely right - including, for TAKE, the things they are already carrying. Use the **Scope** box on the Command tab: TAKE uses `notheld`, while DROP, WEAR and REMOVE use `inventory`. See [Advanced scope](/howto/commands/advanced-scope) for the other values.
 
-What gets dropped is considerably easier.
+**3. Handle a list in the script.** With `allow_all` set, the `object` variable is always an object *list*, even when the player named a single object. A second variable, `multiple`, is true when the player said `ALL` or gave a list, and false when they named exactly one thing.
 
-```
-> i
-You are carrying a rucksack (containing a book), a ball of string, a purse and an apple.
-
-> drop all
-rucksack: You drop it.
-ball of string: You drop it.
-purse: You drop it.
-apple: You drop it.
-```
-
-The only thing to note is that the book is dropped inside the rucksack, so is not mentioned.
-
-
-## Handling ALL in your own commands
-
-For the majority of commands, it is not necessary to add the facility for `ALL`, and most of the built-in commands do not support it. However, if you want to allow it for your custom command, here is what you must do:
-
-The command must have a Boolean attribute called `allow_all` set to true.
-
-You need to set the scope. This tells Quest Viva where to look for objects, and is a good idea for all commands.
-
-You also need to modify the script. For any command with `allow_all` set to true, the `object` variable will be a list of objects, rather than one object - even if the player only specifies a single object. The list will include any in the given scope, unless `not_all` is true.
-
-The script will also have access to a second variable, `multiple`, which will be true if the player said `ALL` or gave a list of items.
-
-By way of an example, we will look at the script for `TAKE`:
+Here is the built-in TAKE command, which is a good template:
 
 ```quest
 took_something = false
 foreach (obj, object) {
-  // if this is multiple then we should skip anything in a container that will be taken
-  // and anything held by an NPC
+  // if this is multiple then we should skip anything in a container that has already been taken
+  // (always earlier in the list) and anything held by an NPC.
+  // Scenery and anything flagged "not_all" will already be excluded
   if (not multiple or (not Contains(game.pov, obj.parent) and not DoesInherit(obj.parent, "npc_type"))) {
     DoTake (obj, multiple)
     took_something = true
   }
 }
 if (multiple and not took_something) {
-  msg ("Nothing to take.")
+  msg (Template("NothingToTake"))
 }
 ```
 
-The first line sets up a flag we will use later. Then we go through each member of the list.
+The `multiple` checks are there for two reasons:
 
-For each item, we need to consider if the item should be included in an ALL list. If `multiple` is false, we need to handle it whatever - the player has specified this item. If it is true, there are some situations where we should not handle it (in this case, if the container has already been taken or if the item is held by a character, but it will be different for you).
+- **Skipping.** When the player named an object, act on it whatever the circumstances - they asked for it, and deserve a real answer. When the list came from `ALL`, silently skip the ones that would be pointless or absurd. TAKE skips anything already inside something the player just took, and anything a character is holding. Scenery and `not_all` objects are gone before the script runs.
+- **Nothing to say.** If `ALL` matched nothing, or everything got skipped, the player still needs a reply. A command should never produce no output at all.
 
-Note that any item that is flagged as scenery or as `not_all` will already be excluded from the list.
+Prefix each line with the object's name when handling a list, so the player can tell the responses apart. TAKE does this inside `DoTake`; in your own script, use `OutputTextNoBr (GetDisplayAlias(obj) + ": ")` before the response.
 
-Then the action is done. In this case, another function is called. Inside that function, if `multiple` is true, the object name and a colon are prefixed to the response.
+Putting it together, a POLISH command that accepts ALL:
 
-Finally, we need to handle what happens if there was nothing in the list - for any command, you need to ensure the player always get some kind of a response. This will be flagged by the `took_something` flag still being false, and is only applicable if `multiple` is true.
+```quest
+polished = false
+foreach (obj, object) {
+  if (not multiple or GetBoolean(obj, "polishable")) {
+    if (multiple) {
+      OutputTextNoBr (GetDisplayAlias(obj) + ": ")
+    }
+    msg ("You give " + obj.article + " a quick polish.")
+    polished = true
+  }
+}
+if (multiple and not polished) {
+  msg ("There is nothing here worth polishing.")
+}
+```
