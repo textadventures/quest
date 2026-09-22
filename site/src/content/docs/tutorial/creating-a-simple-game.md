@@ -4,7 +4,7 @@ sidebar:
   order: 2
 ---
 
-This tutorial guides you through creating your first text adventure game. If you want to create a gamebook instead, see [Creating a gamebook](/tutorial/creating-a-gamebook).
+This tutorial guides you through creating your first text adventure game. If you want to create a gamebook instead, see [Creating a gamebook](/tutorial/gamebook/).
 
 ## Creating a blank game
 

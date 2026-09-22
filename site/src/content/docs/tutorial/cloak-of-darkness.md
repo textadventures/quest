@@ -1,80 +1,62 @@
 ---
-title: The Cloak of Darkness
+title: Cloak of Darkness
 sidebar:
   order: 18
 ---
 
-The Cloak of Darkness is a specification for an adventure game that has been created in numerous systems, with the purpose of giving prospective authors some idea of what is involved in each system. 
+Cloak of Darkness is a tiny game that has been written in almost every interactive fiction system there is, so that authors can compare them. It is interactive fiction's "hello, world".
 
-[IFWiki](http://www.ifwiki.org/index.php/Cloak_of_Darkness) says of it:
+It is also a good way to finish this tutorial. The game you built over the last seventeen chapters was assembled a piece at a time, each piece introducing one feature. This one starts from a specification somebody else wrote, and works out how to build it - which is what writing your own game actually feels like.
 
-> This adventure is a tiny adventure designed to be easy to port to a given Authoring system. It is, if you will, the interactive fiction equivalent of "Hello, world!"
+We will use code throughout. Everything here can be built by clicking, exactly as before, and if you want to see how a script looks in the editor you can paste the code into a script's Code View and click "Code view" again to switch back. But the code is shorter to read, and by now you have seen enough of the editor to recognise what it is doing.
 
-This seems to be a great way to look in some detail at how to create a Quest Viva game. This walkthrough assumes you have already completed the [Tutorial](/tutorial/tutorial-introduction), and goes further than it does - we will be working with code throughout. We will try at each step to make systems that are general, so that this could be extended into a lengthy game.
-
-If you want to see how the scripts look in the GUI, download the game (link below) and open it in the editor to take a look. Alternatively, you can click the "Code view" button for a script, paste the code in there, and then click "Code view" again to go back to the GUI view.
-
-There was a version written for Quest 3.5 in October 2003, which was very different to the version of Quest that we know today.
-
-The source code for Cloak of Darkness can be downloaded here. It was saved with Quest 5.8, but like any older game file it opens and runs in Quest Viva unchanged:
-
-[cloak_of_darkness.aslx](/examples/cloak_of_darkness.aslx)
-
+The finished game is here: [cloak_of_darkness.aslx](/examples/cloak_of_darkness.aslx). It was written by The Pixie, who also wrote the walkthrough this chapter is based on.
 
 ## The specification
 
-The specification is as follows:
+[Roger Firth's specification](http://www.firthworks.com/roger/cloak/) is deliberately small. In summary:
 
-- The Foyer of the Opera House is where the game begins. This empty room has doors to the south and west, also an unusable exit to the north. There is nobody else around.
-- The Bar lies south of the Foyer, and is initially unlit. Trying to do anything other than return northwards results in a warning message about disturbing things in the dark.
-- On the wall of the Cloakroom, to the west of the Foyer, is fixed a small brass hook.
-- Taking an inventory of possessions reveals that the player is wearing a black velvet cloak which, upon examination, is found to be light-absorbent. The player can drop the cloak on the floor of the Cloakroom or, better, put it on the hook.
-- Returning to the Bar without the cloak reveals that the room is now lit. A message is scratched in the sawdust on the floor.
-- The message reads either "You have won" or "You have lost", depending on how much it was disturbed by the player while the room was dark.
-- The act of reading the message ends the game.
+- The player starts in the **foyer** of an opera house. There are doors south and west, and an unusable exit north. Nobody else is around.
+- The **bar**, south of the foyer, is dark. Doing anything there other than going back north warns the player about disturbing things in the dark.
+- The **cloakroom**, west of the foyer, has a small brass hook on the wall.
+- The player is wearing a black velvet cloak which, examined, turns out to absorb light. It can be dropped on the cloakroom floor, or better, hung on the hook.
+- With the cloak gone, the bar is lit, and a message is scratched in the sawdust on the floor.
+- The message reads "You have won" or "You have lost", depending on how much the player disturbed the room while it was dark.
+- Reading the message ends the game.
 
-As you can see, there is really not much to it! So how would one go about creating that in Quest Viva?
+Not much to it. But there are three separate little systems in there - the hook, the message and the darkness - and they interact, which is where the interest is.
 
-We will divide the process into five sections, starting with the locations and items, then each of the systems in turn (i.e., the hook, message and darkness), then the interface. As you complete a section, you should go into the game and check it works properly (and other times too, as required). You should check you can save the game (as this is particularly sensitive to errors), and you should also check all the response messages. Do not just check you can hang the cloak on the hook, test what happens when you try to hang the hook on the cloak, or hang in up in the foyer, etc.
+We will do the rooms and objects first, then those three systems, then the look of the thing. Check the game after each section, and don't only check the thing you just built: try hanging the hook on the cloak, and hanging the cloak up in the foyer, as well as the case you had in mind.
 
+## Rooms and objects
 
-## Locations and items
-
-The first place to start is the geography of your game; creating the locations, the exits between them and the items in them. For a big game, you might want to create a map with [trizbort](/howto/rooms/map#planning-your-map-with-trizbort), and export it to Quest Viva, but there is no point when there are only three rooms!
-
-Note that if you are creating a large adventure you may find it more convenient to create a section of the geography, and then get all the systems working there, then move to the next section. In fact, you may find it advantageous to do it in reverse order; do the ending first, and get that right, then work your way back to the start. In that way you do not have to trek all the way through the adventure to get to the bit you are working on.
-
-For Cloak of Darkness, rename the starting room to "foyer", add two more rooms and three objects.
+Rename the starting room to "foyer", and add two more: "cloakroom" and "bar". Then add three objects: a "cloak" inside the player, a "hook" in the cloakroom, and a "message" in the bar.
 
 ![](/images/cod01.png)
 
-The only complicated bit is the locked door to the north of the foyer. Quest Viva will ask you for a destination when you try to create it. Just select any other room, but make sure "Also create exit in other direction" is not ticked. Then go to the exit (make sure it is the one to the north), and tick it as locked. You might want to change the message too.
+Create the exits between them as you did in the first chapter - foyer south to bar, foyer west to cloakroom, both with the matching exit in the other direction.
 
-For the objects, on the _Object_ tab, add any synonyms ("peg" for hook; "cape", "mantle", "robe" for cloak; "note", "writing" for message).
+The north exit from the foyer is the odd one. It is meant to be a door the player can see and cannot use, so it needs to exist without going anywhere useful. Create it like any other exit, pick any room as its destination, and untick "Also create exit in the other direction". Then select the exit and tick "Locked" on its _Exit_ tab, with a message of your own - the player will never get through it, so where it claims to lead doesn't matter.
 
-On the _Inventory_ tab of the cloak, tick that it can be taken. You need to make sure the cloak is inside the player; if it is not, use "Move to..." to move it there. We could set up the cloak as clothing, but there is nothing in the specification about putting it on and taking it off (which is a bit odd, perhaps), so we will not bother.
+Give the objects their synonyms on the _Object_ tab: "peg" for the hook; "cape", "mantle" and "robe" for the cloak; "note" and "writing" for the message. Tick "Object can be taken" on the cloak's _Inventory_ tab.
 
-Give the cloak and the hook descriptions. Generally you would be adding descriptions for all the items and locations, but these are going to depend on the various systems, so we will leave that for now.
-
+Descriptions can wait - most of them depend on the systems we haven't built yet.
 
 ## The hook
 
-The first system we will look at is the hook, upon which we can hang the cloak.
+Go to the hook's _Features_ tab and tick "Container", then set its _Container_ tab to **Surface**. Things sit on a surface in plain view, which is exactly what a hook is. Play the game, walk west and type `PUT CLOAK ON HOOK`, and it works already.
 
-Go to the _Features_ tab of the hook, and tick the "Container" option. This will show the _Container_ tab. On that tab, set it to be a surface. Now go into the game, head to the cloakroom, and type `PUT CLOAK ON HOOK`. When you look, you will see the cloak is now on the hook.
+The player is at least as likely to type `HANG UP CLOAK` or `HANG CLOAK ON HOOK`, though. Those need two commands, because one takes a single object and the other takes two.
 
-What if the player types HANG UP CLOAK or HANG CLOAK ON HOOK? We need a couple of commands to cover this (two because one will deal with one object, and one with two objects).
+### HANG UP CLOAK
 
-
-### Handling HANG UP CLOAK
-
-Our command pattern will be this:
+Add a command with this pattern:
 
     hang up #object#;hang #object#
 
-Note that you need to have the longer versions at the start, otherwise Quest Viva will match "hang #object#" to `HANG UP CLOAK`, and will complain that it cannot see an "up cloak"!
+The longer alternative has to come first. Quest Viva takes the first one that matches, so with them the other way round `HANG UP CLOAK` matches `hang #object#`, and the player is told there is no "up cloak" here.
 
-For the command script, the general strategy is to check each failing condition, with an appropriate message, and if it all passes, do the command:
+The script works the way most command scripts should: test each way it can fail, say something specific about each one, and do the thing at the end.
 
 ```quest
 if (not object.parent = player) {
@@ -89,18 +71,17 @@ else {
 }
 ```
 
-We are using "object.article" so Quest Viva will use "it", "them, "him" as appropriate. The `GetDefiniteName` function will return the alias of the object if it exists, or the name otherwise, and will prepend "the" if appropriate. This is good practice that you should adopt, as it keeps the language flowing and natural.
+`object.article` gives "it", "them" or "him" as appropriate, so one message covers every object. `GetDefiniteName` gives the object's alias, or its name if it hasn't got one, with "the" in front where that reads correctly. Both are worth the habit: they keep the writing natural without you having to write a version of each sentence for every object.
 
+### HANG CLOAK ON HOOK
 
-### Handling HANG CLOAK ON HOOK
-
-Our command pattern will be this:
+The second command's pattern:
 
     hang #object1# on #object2#
 
-Why not do this as "hang #object1# on hook"? It is better practice to always use a general object, as this allows Quest Viva to match the synonyms for the objects. The above will also match `HANG CAPE ON PEG`. If we later think of another synonym for hook, we can just add it to hook, and all the commands will handle it fine.
+Why not `hang #object1# on hook`? Because `#object2#` lets Quest Viva match the hook's synonyms too, so `HANG CAPE ON PEG` works, and if you think of another name for the hook later you only have to add it in one place.
 
-Quest Viva will only match against objects present (unless we tell it otherwise for a specific command), so we know the hook must be present; so rather than checking we are in the right room, we need to check `object2` is the hook object. For a bigger game, we might want to have an attribute on the hook that flags it as something we can hang stuff on, and then check that flag on `object2`; the messages here are written to keep them general. Note that `GetDisplayName` prepends "a" or "some" to the name, as appropriate.
+Quest Viva only matches objects that are present, so we know the hook is here if it matched - what we need to check is that `object2` really is the hook:
 
 ```quest
 if (not object1.parent = player) {
@@ -115,12 +96,11 @@ else {
 }
 ```
 
+In a bigger game you would put a flag on everything that can be hung from, and test that instead of naming the hook - which is why the messages are written to suit any object rather than this one.
 
-### Better descriptions
+### A description that changes
 
-The cloakroom description will read more naturally if the hook is part of the description, rather than a line on its own. However, we want it to change, depending on whether the cloak is on it.
-
-Go to the _Room_ tab of the cloakroom, and in the description paste in this code:
+The cloakroom reads better if the hook is part of the room description than as an object listed underneath it. So put the hook's _Setup_ tab "Scenery" box on, and write the description as a script on the cloakroom's _Room_ tab:
 
 ```quest
 s = "The cloakroom is {either CloakHere():dimly|brightly} lit, and is little more than a cupboard. "
@@ -136,38 +116,27 @@ else {
 msg (s + " The only way out is back to the east.")
 ```
 
-The first line is the general description, which is used for all descriptions. It is assigned to a local variable `s`. We add that to a specific message, depending on where the cloak is. This means we only need to write the text one time, instead of repeating it for each option. We want the comment about the exit at the end of the paragraph, so the last line adds that to the string, and prints the whole thing.
+The general part of the description is built up in a local variable `s`, the part that depends on the cloak is added to it, and the whole thing is printed at the end. Writing it this way means the parts that never change are written once.
 
-Now go to the _Setup_ tab of the hook, and tick it to be scenery. This will stop it appearing in the list of objects.
+`CloakHere()` is a function we haven't written yet - it comes with the darkness, below.
 
+## Counting the disturbance
 
+The message has to know how much the player blundered about in the dark. That is not simply "how many turns did they spend in the bar": arriving and leaving again straight away is meant to be harmless, so what counts is *consecutive* turns.
 
-## The message
+Give the message two integer attributes, `count` and `disturbed`, on its _Attributes_ tab, both starting at 0.
 
-For the message, we need to keep a count of how many turns the player spends in the bar, and to base the message on that. It is complicated because entering the bar, and then leaving straight after is okay, so we need to count how many consecutive turns the player spends there.
-
-We also need the message to only be visible if the cloak is not here, but we will do that in the next bit.
-
-We will add a "count" attribute and a "disturbed" attribute to the message first. You can add attributes directly on the _Attributes_ tab, and set them both to be integers. Alternatively, tick "Run an initialisation script..." on the _Features_ tab, then on the _Initialisation script_ tab, paste in this code:
-
-```quest
-this.count = 0
-this.disturbed = 0
-```
-
-The "count" attribute will store how many consecutive turns the player has spent in the bar, so we need to reset it when the player leaves. Go to the _Scripts_ tab of the bar, and for the "After leaving the room" script, paste this in, to set the count back to zero:
+`count` has to go back to zero when the player leaves, so put this in the bar's "After leaving the room" script on its _Scripts_ tab:
 
 ```quest
 message.count = 0
 ```
 
-To get this to increment each turn, we will use a turnscript. We only want it to do that when the player is in the room, so will will put the turnscript in the room (if it is not, use "Move to..." to move it there).
-
-Tick the "Enabled when the game begins" box, and paste in the code:
+Then add a turn script **inside the bar**, so that it only runs while the player is there, with "Enabled when the game begins" ticked:
 
 ```quest
 message.count = message.count + 1
-if (message.count > 1) {
+if (CloakHere() and message.count > 1) {
   message.disturbed = message.disturbed + 1
   firsttime {
     msg ("You think it might be a bad idea to disturb things in the dark.")
@@ -178,12 +147,14 @@ if (message.count > 1) {
 }
 ```
 
-So the first thing this does is increment "count". If the player leaves the room straightaway, count will only get to 1 (the turn the player enters the room), so nothing more happens. However, if the player does stuff in the room, count will get higher, and we count how often that happens. Also, the first time it happens, we give the player a warning. Any other time, the player will get a comment about something moving about. We are using the "random" text processor directive to give some variation.
+The turn the player arrives takes `count` to 1 and does nothing else, so walking in and straight back out costs nothing. Every turn after that counts as a disturbance. The first one gets a warning; the rest get a noise, varied with `{random}` so the game doesn't repeat itself. And the whole thing is wrapped in `CloakHere()`, because none of it should happen once the room is lit - without that test, a player who does everything right and then stops to look around the lit bar gets told they are disturbing things in the dark, and can lose a game they had won.
 
-Finally (for now), we need to set the description for the message. On the _Setup_ tab, set its description to be a script, and paste this in:
+`otherwise` is the partner of `firsttime`: it runs every time except the first.
+
+Now the message itself. Set its "Look at" description to a script:
 
 ```quest
-if (this.disturbed < 2) {
+if (this.disturbed < 3) {
   msg ("The message in the dust says 'You have won!'")
 }
 else {
@@ -192,72 +163,51 @@ else {
 finish
 ```
 
-This checks how much the room was disturbed - you are allowed one time, when you get the warning - and gives a message accordingly. It then finishes the game.
+So the player is allowed two disturbances - the one they were warned about, and one more - before they lose. `finish` ends the game, as in [Score and winning](/tutorial/score-and-winning).
 
-You should now be able to play the game to check it works.
-
-
-### Improvements
-
-So we have a working system, but can improve it.
-
-Firstly, the player is likely to try `READ MESSAGE`. Go to the _Verbs_ tab and add "read". Set it to run a script, and paste in this code:
+Players will type `READ MESSAGE` as often as `LOOK AT MESSAGE`. Add a "read" verb set to "Run a script", with a single line:
 
 ```quest
 do (this, "look")
 ```
 
-All it will do is run the "look" script, exactly the same as `LOOK AT MESSAGE`. This means that if we later change the "look" script, `READ` will not need to be updated.
+That runs the object's own "look" script, so if you rewrite the description later, `READ` follows it automatically.
 
-The second thing we can do is stop turnscripts running in some situations. If the player mistypes a command, it is not really fair to count that as a turn. Typing `HELP` should also not count as a turn. There may be other examples you can think of.
+### Turns that shouldn't count
 
-Go to the _Features_ tab of the game object, and tick "Advanced scripts", then go to the _Advanced scripts_ tab. The middle script is for unresolved commands. We want to have it print a message, and to tell Quest Viva to skip turnscripts this turn.
+Mistyping a command shouldn't count as disturbing the room, and neither should asking for help. Tick "Show advanced scripts for the game object" on the game's _Features_ tab, then go to the _Advanced Scripts_ tab it adds, and use the "Unresolved command script":
 
 ```quest
 msg ("Sorry, I do not understand '" + command + "'.")
 SuppressTurnscripts
 ```
 
-Note that `command` is a local variable that contains the text the player typed.
+`command` holds whatever the player typed. `SuppressTurnscripts` tells Quest Viva not to run turn scripts this turn, so the turn effectively didn't happen.
 
-For the help command, we do pretty much the same. The pattern is:
-
-    help;?
-
-And the script:
+Do the same in a `help;?` command:
 
 ```quest
 msg ("Just type stuff at the prompt!")
 SuppressTurnscripts
 ```
 
-You might want something more helpful...
-
+You will want something more helpful than that.
 
 ## The darkness
 
-So now we have to handle the darkness. Note that Quest Viva has a built-in light/dark system, but it is not so useful here, where the darkness will depend on where an object is.
+Quest Viva has a [light and dark feature](/howto/rooms/light-and-darkness) built in, but it isn't much use here: it works on rooms and light sources, and our darkness depends on where one particular object is. We only need one question answered - is the cloak in the room with the player? - and we are going to ask it in several places, so it belongs in a function.
 
-A room is dark if the cloak is in it, and in the bar it is so dark nothing but the exit can be seen. We will be checking if the cloak is present a lot, so it is a good idea to do this with a function.
+### The CloakHere function
 
-
-### The `CloakHere` function
-
-Create a function, call it "CloakHere", set it to return a Boolean, and paste in this code:
+Add a function called `CloakHere`, set its return type to Boolean, and give it one line:
 
 ```quest
 return (cloak.parent = player.parent or cloak.parent.parent = player.parent)
 ```
 
-If you are not familiar with Boolean algebra, that might not mean anything to you, so let's quickly break it down. Firstly, is the cloak in the same room as the player? That is, do they have the same parent?
+Two things make the cloak "here". Either it is lying in the room, so it has the same parent as the player, or the player is carrying it - or it is on the hook - in which case its parent's parent is the room the player is in. Either will do, so the two tests are joined with `or`.
 
-> Does cloak.parent = player.parent?
-
-Then we check if either the player or the hook have the cloak, and if the hook does, is it in the same room as the player. We can do all that in one question.
-
-> Does cloak.parent.parent = player.parent?
-
-Is either of these is true, then we want the function to return true. So we could do it like this:
+It's tempting to write that as:
 
 ```quest
 if (cloak.parent = player.parent or cloak.parent.parent = player.parent) {
@@ -268,37 +218,21 @@ else {
 }
 ```
 
-But the bit in the `if` condition is already `true` or `false`, so we can just return that.
-
+but the thing inside the `if` is already true or false, so you can simply return it.
 
 ### Room descriptions
 
-So now we need some room descriptions, and these need to depend on whether the cloak is present or not. There are a couple of ways to do that. `if/else` is a good idea if the text is very different, but the text processor is better if just a few words are changing. For the foyer, then, we might have:
+Now the rooms can react. Where only a word or two changes, the [text processor](/tutorial/varying-your-text) is neater than a script. The foyer:
 
 ```quest
 There is something oppressive about the {either CloakHere():dark|dingy} {once:room}{notfirst:foyer}; a presence in the air that almost suffocates you. Very much faded glory, the walls sport posters from productions that ended over twenty years ago. Paint is peeling, dust is everywhere and it smells decidedly musty.
 ```
 
-This uses the `either` text processor directive, which then uses `CloakHere` as the condition. The true and false options are separated by `|`. If the cloak is here, the room is dark, otherwise dingy.
+`{either}` takes a condition - here a call to our own function - and the text to use when it is true and false. The second trick is `{once:room}{notfirst:foyer}`: the game opens with a paragraph about arriving at the opera house, so the first description reads better as "this dark room" and every later one as "the dingy foyer".
 
-```quest
-{either CloakHere():dark|dingy}
-```
+The cloakroom's description is a script, but the same directive works inside it - that is the first line we wrote earlier.
 
-At the start of the game there is an introductory text saying how the player has arrived at the foyer. It reads better if this description then avoids the word "foyer". However, any other time the player enters the room, we do need the word. To handle this, we use the `once` directive which only uses the text the first time, and `notfirst` which only uses the given text when it is not the first time.
-
-```quest
-{once:room}{notfirst:foyer}
-```
-
-
-The cloakroom uses a script, but we can modify the first line to use the same text processor directive:
-
-```quest
-s = "The cloakroom is {either CloakHere():dimly|brightly} lit, and is little more than a cupboard. "
-```
-
-For the bar, the descriptions are very different, so we will do it the other way. 
+For the bar the two versions have nothing in common, so a script is clearer than a directive:
 
 ```quest
 if (CloakHere()) {
@@ -309,93 +243,70 @@ else {
 }
 ```
 
+That is the rule of thumb: `{either}` when a few words change, a script when whole sentences do.
 
-### The message
+### Hiding the message
 
-The player should not be able to look at or read the message when the cloak is in the bar. One way to do that would be to check if the cloak is present when the player looks at the message, but a better way is to stop that even being possible, and we can do that by making the message invisible. Of course, it should only be invisible when the cloak is present, and again there are various ways to handle that, for example in the turnscript.
+The player shouldn't be able to read the message in the dark. We could test for the cloak inside the message's own description, but it is better to stop the message being referred to at all - otherwise `LOOK AT MESSAGE` tells the player there is a message to look at.
 
-In this case, however, we can set it when the player enters the room, as there is no way for the player to get rid of the cloak whilst in the room. So, go to the _Scripts_ tab of the bar, and in the "after entering the room", put in this script:
+There is no way for the player to get rid of the cloak while in the bar, so the state can only change between visits. Put this in the bar's "After entering the room" script:
 
 ```quest
 message.visible = not CloakHere()
 ```
 
-Again, the Boolean algebra. This is the same as doing this:
+An invisible object is not in scope, so in the dark `LOOK AT MESSAGE` gets "I can't see that." - exactly what the player would get for anything else that isn't there.
+
+That is the specification met. The rest of this chapter is the difference between a game that meets a specification and a game somebody would enjoy.
+
+## The look of it
+
+The puzzle in Cloak of Darkness is working out that the darkness is something you are carrying. An inventory pane listing a cloak gives that away before the player has begun, so this game wants the old school treatment: no hyperlinks (the _Display_ tab), and no panes at all (the _Interface_ tab). Turn off the location bar on the same tab, and turn on the command bar cursor.
+
+Then pick a font and colours to suit. The finished game uses Kavivanar, a handwriting font that is still perfectly legible, in pink on `#333` - a very dark grey, which is softer to read against than pure black. Any colour box takes a hex value of three or six digits, beginning with `#`.
+
+Finally, the _Room Descriptions_ tab controls what a room prints and in what order. Turn off "You are in", set the list of exits to zero so the exits are described in the prose instead, and swap the numbers so the objects come after the description.
+
+With "You are in" off, the room's name is printed as a heading - and by default that includes the article, giving "A bar". Untick "Use default prefix and suffix" on each room's _Setup_ tab and you get "Bar", which is what this style wants.
+
+## Finishing touches
+
+### An opening
+
+A game reads better with a line or two before the first room description. You could put it in the game's start script, but that script tends to fill up with other things, so it is tidier in the room. The foyer's _Scripts_ tab has "Before entering the room for the first time":
 
 ```quest
-if (not CloakHere()) {
-  message.visible = true
-}
-else {
-  message.visible = false
-}
-```
-
-You should now have a working game that fits the required specification.
-
-
-## The interface
-
-So the last step is the aesthetics. We want this to look good, to fit the mood of the game. This is all done on the game object.
-
-The puzzle in Cloak of Darkness is to realise it is something you are carrying that is causing the darkness, and an inventory pane that tells the player she is wearing a cloak would give it away. So we will go for an Old School feel, with no hyperlinks (_Display_ tab) and no panes (_Interface_ tab). We will have a cursor for the command bar (_Interface_ tab), and no location bar (_Interface_ tab).
-
-We can then select colours and fonts. When picking a font, make sure it is easily readable! This example uses Kavivanar, which is a handwriting font, but still legible. For colours, it uses Pink on #444, which is a very dark grey (softer than pure black). You can type any colour into the boxes, as long as you know its hex value, as either three figures or six; it must start with a #.
-
-On the _Room descriptions_ tab we can change the text displayed. We will turn off using "You are in", and the list of exits (set it to zero). We want the objects after the description, so we will swap their numbers.
-
-
-## Next steps
-
-Now we have a complete game, that looks good too. We can add some finishing touches, such as an `ABOUT` command, or implement the posters that are mentioned in the foyer (remember to set them to be scenery).
-
-
-### Introduction
-
-It is usually a good idea to give the player some introductory text that sets the scene. You want this to appear before the first room description, and you want to write it so that the room description will follow naturally.
-
-You can put the text in the start script of the game object, but that can get pretty long with other stuff, so here we will put it in the room. Go to the _Scripts_ tab of the foyer; the fourth one is "Before entering the room for the first time". We just want it to print a message (with a blank line at the end):
-
-```quest
-msg ("You hurry through the night, keen to get out of the rain. ...")
-msg ("Moments later you are pushing though the doors into the foyer. ...")
+msg ("You hurry through the night, keen to get out of the rain. Ahead, you can see the old opera house, a brightly lit beacon of safety.")
+msg ("Moments later you are pushing though the doors into a foyer...")
 msg ("")
 ```
 
+The empty `msg ("")` leaves a blank line before the room description.
 
-### Locked message
+### The locked doors
 
-We can improve the message the player sees when trying the locked door using the text processor. Using the `once` directive, we can have a longer message appear the first time.
-
-```quest
-You try the doors out of the opera house, but they are locked. {once:How did that happen? you wonder.}
-```
-
-We can put the player's thoughts in italics too, using the `i` directive, nesting one text directive in another.
+The locked north exit's message is a good place for `{once}` again, with `{i}` nested inside it for italics:
 
 ```quest
 You try the doors out of the opera house, but they are locked. {once:{i:How did that happen?} you wonder.}
 ```
 
+### Walls, floor and ceiling
 
+Players examine the scenery, and "I can't see that" is a poor answer when the description has just mentioned peeling paint. These objects want to exist in every room, so rather than copying them into each one, make a room called "everywhere" that the player never visits, and put "walls", "ceiling" and "floor" in it, all ticked as scenery, with synonyms like "carpet" for the floor.
 
-
-### Walls, etc.
-
-Some players will try to examine the walls. We do not want Quest Viva to say there are no walls, so we will implement them. Create a new room called "everywhere", and in it put three objects, "walls", "ceiling" and "floor". Add any synonyms you can think of ("carpet" for example). Set them all to be scenery.
-
-For the "Look at" description, we need to check if it is too dark to see the wall, that is, if the player is in the bar and the cloak is here. Here is an example for the walls:
+Each needs a description that knows about the dark:
 
 ```quest
 if (CloakHere() and player.parent = bar) {
-  msg("It is too dark to see the walls.")
+  msg ("It is too dark to see the walls.")
 }
 else {
-  msg("The walls are covered in a faded red and gold wallpaper, that is showing signs of damp.")
+  msg ("The walls are covered in a faded red and gold wallpaper, that is showing signs of damp.")
 }
 ```
 
-Now go to the _Advanced scripts_ tab of the game object, and for the bottom script, "Backdrop scope script", add this code:
+Then put them in scope everywhere, using the "Backdrop scope script" on the game's _Advanced Scripts_ tab:
 
 ```quest
 foreach (o, GetAllChildObjects (everywhere)) {
@@ -403,17 +314,15 @@ foreach (o, GetAllChildObjects (everywhere)) {
 }
 ```
 
-This will add each object in the "everywhere" room to the special object list "items". Note that you cannot use `ListCombine` here, you have to add each item in turn to "items". Also, you cannot use a scope function (eg `ScopeVisibleForRoom`), as they use this script, and you will get Quest Viva stuck in a loop.
+That adds every object in "everywhere" to `items`, the list of objects the parser will consider. Two warnings. You cannot use `ListCombine` here - the objects have to be added one at a time. And you cannot call a scope function such as `ScopeVisibleForRoom` from this script, because those functions call this script, and the game will hang.
 
+See [Scope](/howto/commands/scope) for the rest of what this script can do.
 
-### LISTEN and SMELL
+### SMELL and LISTEN
 
-We mention sounds and smells in the game, so the player is likely to try to `LISTEN` and to `SMELL`. The way these are handled is the same, so what works for one will work for the other. There's more than one way to handle them, so we will do `SMELL` one way, and `LISTEN` another, to show you both techniques.
+The game mentions smells and sounds, so players will try both. They are the same problem, and there are two ways to solve it - worth seeing both.
 
-
-#### SMELL
-
-Create a new command, with the pattern `smell;sniff`. Paste in this code:
+`SMELL` the obvious way. A command with the pattern `smell;sniff`:
 
 ```quest
 switch (player.parent) {
@@ -429,12 +338,9 @@ switch (player.parent) {
 }
 ```
 
-So here we are checking what room the player is in, and giving an appropriate message. Note that there is also a default; this is good practice in case we ever extend the game, and forget to update the SMELL command.
+The `default` matters: without it, a room you add later and forget about says nothing at all.
 
-
-#### LISTEN, a better way
-
-The above will work fine, but there is a better way. Create a new command, with the pattern `listen`. Paste in this code:
+`LISTEN` the better way. A command with the pattern `listen`:
 
 ```quest
 if (HasString(player.parent, "listen")) {
@@ -445,78 +351,42 @@ else {
 }
 ```
 
-What that will do is to check if the current room has a string attribute called "listen". If it has, print that, otherwise print a default message. Using an attribute is better as it keeps the information about the room with the room. The LOOK description is an attribute of the room; it makes sense for LISTEN and SMELL to be too. Furthermore as your game gets bigger and bigger, you never need to modify the LISTEN command, it does not need to get bigger and bigger with each new room, and indeed you can use that same command in all your games (possibly modifying the default).
+This keeps what a room sounds like *on the room*, as a string attribute called `listen` added on its _Attributes_ tab - exactly where its description already lives. The command never has to change as the game grows, and you can paste it into your next game unaltered. The `switch` version has to be edited every time you add a room.
 
-Now we need to give "listen" attributes to rooms where there is something to hear. Go to the _Attributes_ tab of the room, and add it there. Type in the appropriate text.
-
-
-#### Improved LISTEN
-
-There is an issue here that if you go and listen in the bar, you will see this:
-
-```
-A bar
-It is too dark to see anything except the door to the north.
-
-> listen
-Is there something moving?
-You think it might be a bad idea to disturb things in the dark.
-
-> listen
-Is there something moving?
-You can hear something moving in the dark.
-
-> listen
-Is there something moving?
-You can hear rasping breathing.
-```
-
-It reads a little odd when the `LISTEN` command says one thing, and the turnscript something slightly different. Little annoyances like this can be very tricky to correct, and you may feel it is better to just keep it as it is. Only a minority of players will even do `LISTEN`; is it worth the hassle? Let us suppose it is!
-
-What we will do is have a flag on the player called "suppress_background_sounds"; when it is true, no extra sounds are allowed. Therefore, we need to add this to the end of the `LISTEN` command script:
+There is one wrinkle. In the dark bar, `LISTEN` prints the room's `listen` text and then the turn script adds a noise of its own, and the two don't quite sit together. If that bothers you - and it is fair enough if it doesn't, since few players will ever type `LISTEN` - set a flag at the end of the `LISTEN` command:
 
 ```quest
 player.suppress_background_sounds = true
 ```
 
-Now in the turnscript for the bar, we need to check that flag. Here is the full, modified script:
+and test it in the bar's turn script, around the `otherwise` message:
 
 ```quest
-message.count = message.count + 1
-if (message.count > 1) {
-  message.disturbed = message.disturbed + 1
-  firsttime {
-    msg ("You think it might be a bad idea to disturb things in the dark.")
-  }
-  otherwise {
-    if (not GetBoolean(player, "suppress_background_sounds")) {
-      msg ("You can hear {random:scratching:something moving in the dark:rasping breathing}.")
-    }
-  }
-}
+if (not GetBoolean(player, "suppress_background_sounds")) {
 ```
 
-Note that we use `GetBoolean(player, "suppress_background_sounds")`; this is because the attribute may not be set. The `GetBoolean` function returns false if the flag is false, but also if it is absent, so is safer in most situations.
+`GetBoolean` is right here rather than reading the attribute directly, because for most of the game there is no such attribute, and `GetBoolean` reports a missing attribute as false.
 
-So now if the player does LISTEN, the command will set player.suppress_background_sounds to true, and no sounds of scratching will be printed.... Ever again... We need a way to reset it. The best way is in a turnscript that runs after everything else.
-
-Turnscripts run in alphabetical order, so we can create a new turnscript, and give it a name, "z_endturn" (the turnscript in the bar has no name, but Quest Viva will give it a name that starts with a "k" when the game starts). Tick to have it enabled at the start. The code just sets the flag back to false:
+The flag then has to be cleared again, at the end of the turn, after everything that might read it. Turn scripts run in alphabetical order, so add a second turn script outside any room, name it something that sorts late like `z_endturn`, enable it at the start, and give it one line:
 
 ```quest
 player.suppress_background_sounds = false
 ```
 
-### Wearable cloak
+### Wearing the cloak
 
-Some players will expect to be able to wear and remove the cloak, so we better handle that too.
+Players will try `WEAR CLOAK` and `REMOVE CLOAK`. Quest Viva has a [wearable feature](/howto/objects/clothing) built in, but it is the wrong fit here: a worn garment can't be dropped or put down until it is taken off -
 
-Quest Viva has a built-in system for wearables, but it is a bit much for this game. Specifically, it will insist that the cloak is removed before it is hung up or dropped, which will be annoying and against the Cloak of Darkness specification, so we will create our own.
+```
+> put cloak on hook
+You can't put it there.
+```
 
-As there is the built-in system, we cannot use verbs, but we can add our own commands. For the `WEAR` command, this is the pattern:
+\- and the specification wants the player to be able to hang the cloak up while wearing it. So this game does its own, much simpler version.
 
-    put #object# on; wear #object#; put on #object#; don #object#; wear #object#
+Because the built-in feature owns the "wear" and "remove" verbs, ours have to be commands. `WEAR`:
 
-We can set the scope to "inventory", so Quest Viva will look there first, but it will then look anywhere reachable when trying to match the object. Here is the code:
+    put #object# on; wear #object#; put on #object#; don #object#
 
 ```quest
 if (not HasBoolean(object, "worn")) {
@@ -532,13 +402,11 @@ else {
 }
 ```
 
-As usual it checks for possible failure first - can the item be worn, is it already worn? If all is okay, we make sure the player is carrying the object (so if it is on the hook, and the player does `WEAR CLOAK`, it will be picked up, and worn in one go), then set worn to true.
+Setting `object.parent` means `WEAR CLOAK` works when the cloak is on the hook: the player picks it up and puts it on in one move. Set the command's scope to "inventory" so Quest Viva looks at what the player is carrying first, and then anywhere within reach.
 
-For the `REMOVE` command:
+`REMOVE` is shorter, since anything worn is being carried already:
 
     take #object# off; remove #object#; take off #object#; doff #object#
-
-The code is a bit shorter, as it must be wearable and you must be carrying it if it is worn.
 
 ```quest
 if (not object.worn) {
@@ -550,7 +418,7 @@ else {
 }
 ```
 
-Now we need to make the cloak wearable. You could do this directly on the _Attributes_ tab, but we will do it the more general way. Go to the _Features_ tab of the cloak, and turn on "Initialisation script...", then go to the _Initialisation script_ tab. Paste in this code:
+Now make the cloak wearable. You could add a `worn` attribute on its _Attributes_ tab, but there is a better way. Tick "Run an initialisation script when the game begins" on the cloak's _Features_ tab, and on the _Initialisation script_ tab:
 
 ```quest
 this.worn = true
@@ -559,17 +427,19 @@ this.changedparent => {
 }
 ```
 
-This will set the "worn" attribute to be true, so the cloak is worn at the start. The "changedparent" script is a special type of script called a change script, and this fires when the value of the associated attribute changes - in this case the parent attribute. This means that whenever the cloak moves, i.e., goes from or to the player, worn is set to false, which will ensure that when the cloak is dropped or hung up, and picked up again, it is not magically being worn.
+The first line starts the game with the cloak on. The second is a **change script**: `changedparent` runs whenever the object's `parent` attribute changes, which is to say whenever the cloak moves. So dropping it, or hanging it up, takes it off - without which a cloak on a hook would still count as worn, and the player would be wearing something across the room.
 
-The "this" variable indicates the object to which the script belongs, by the way. It is good practice to use it where possible as it means you can copy-and-paste code very easily. Any other wearable item can have exactly the same code.
+`this` means the object the script belongs to, so this code is not about the cloak at all - paste it into any object and that object becomes wearable too.
 
-Finally we need to tell the player if the cloak is worn or not when in the inventory, so we will create our own `INVENTORY` command. Here is the pattern:
+### Inventory
+
+The built-in `INVENTORY` doesn't know about our `worn` attribute, so it will say the player is carrying a cloak when they are wearing it. Replace it with a command of our own. This pattern is a [regular expression](/howto/commands/regular-expressions), so that it matches those three words and nothing else:
 
 ```regex
 ^i$|^inv$|^inventory$
 ```
 
-There is only one item that can be picked up in this game, so the code is very simple:
+There is exactly one portable object in this game, so this would do:
 
 ```quest
 if (not cloak.parent = player) {
@@ -583,7 +453,7 @@ else {
 }
 ```
 
-But we said at the start we would keep it general so this could be extended in to a large game, so let us re-write the code for any number of items...
+But we said at the start we would write this as though the game might grow, so:
 
 ```quest
 carrylist = FilterByNotAttribute(ScopeInventory(), "worn", true)
@@ -607,29 +477,25 @@ else {
 }
 ```
 
-This version creates two lists, one of worn items, one of carried items, and prints a message depending on whether there is anything is each list. It uses a local variable, `s`, primarily so the code will fit the page, by the way.
+`ScopeInventory()` is everything the player is carrying; the two filters split it into worn and not worn; `FormatList` turns a list into "a hat, a scarf and a cloak". This version never needs touching again, however many things you add.
 
+## Testing it
 
-## Walkthrough
+This is a small game with two endings, which makes it a good candidate for the walkthroughs from [Testing your game](/tutorial/testing-your-game): one that hangs the cloak up and wins, and one that blunders around in the dark first and loses. Record the winning route, then make a second walkthrough a child of it in the tree and record only the divergence.
 
-You can test your game by following a walk through.
+Add an assertion to each, so the walkthrough checks the ending rather than just reaching it:
 
-You can also create a walkthrough object that you can play again and again. Click "Add", then "Add Walkthrough", to create a new one. Give it some name. You can now add each step of the walkthrough.
+```
+assert:message.disturbed < 3
+```
 
-However, an easier way is to click the record button (the circle), and then play through the game. Quest Viva will record each step.
+Then work through [Before you release](/publishing) - saving the game (which checks your code more thoroughly than anything else does), spellchecking, beta testers, and cover art.
 
-Once you have a walkthrough you can click the play button (the triangle), to play through the walkthrough. You can add to a walkthrough by clicking record again; Quest Viva will play through the existing steps, then record your new moves.
+## What to take from it
 
+Four things in this game are worth stealing for your own:
 
-
-## Releasing the game
-
-So you think the game is ready for release... Not yet!
-
-_Save._ Go into the game, and try to save it. For some reason, saving the game during play checks your game code more thoroughly than anything else, and if you cannot save, you have a problem somewhere.
-
-_Spellcheck._ Hopefully you are using a browser with a spell-checker, and have been checking as you go along. You can also back-up the game file, then open it in an editor with a spell-check facility. All the stuff inside angle brackets (i.e., < and >) can be ignored (and indeed should not be touched). Hopefully you will recognise the text you typed, and the editor will tell you if there are mistakes in it. You could use a word processor like LibraOffice or MS Word to find errors, but be very careful saving the game from a word processor, as they are likely to make changes that will stop Quest Viva loading your game.
-
-_Beta-test._ Get some people to beta-test your game. They will find problems you have not. Remember to thank them somewhere in your game (the ABOUT command is usual). You can upload/publish your game as unlisted for beta-testing.
-
-_Cover art._ Get an image, preferably a PNG that is 512 by 512 pixels, and add it to the _Setup_ tab of the game object. Be careful of copyright!
+- **Test each way a command can fail, in order, and do the thing last.** Every command script here has that shape, and the player gets a specific message rather than a generic one.
+- **When you ask the same question in several places, make it a function.** `CloakHere()` appears in five scripts, and there is one place to change if the rules change.
+- **Keep what a room is like on the room.** The `listen` attribute is the pattern; a command that reads an attribute stays the same size forever, and one with a `switch` in it grows with your game.
+- **Use `this`, not the object's name.** The cloak's initialisation script works on any object you paste it into.

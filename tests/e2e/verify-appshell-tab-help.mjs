@@ -123,7 +123,7 @@ async function run() {
     await page.click('text=Page1');
     await selectTab('Page');
     check('gamebook Page tab points at the gamebook guide, not TA dialogue pages',
-        await helpLink().getAttribute('href'), 'https://questviva.com/tutorial/creating-a-gamebook/');
+        await helpLink().getAttribute('href'), 'https://questviva.com/tutorial/gamebook/');
 
     console.log('PASS');
 }

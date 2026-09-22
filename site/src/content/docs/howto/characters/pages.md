@@ -98,6 +98,6 @@ Added options appear after the ones set up in the editor. In the editor, these a
 ## See also
 
 - [Tutorial: Using Pages](/tutorial/using-pages)
-- [Creating a gamebook](/tutorial/creating-a-gamebook), for the equivalent gamebook page mechanism
+- [Creating a gamebook](/tutorial/gamebook/), for the equivalent gamebook page mechanism
 - [User interface functions](/reference/functions/user-interface) for the full ShowPage/GoToPage/EndPageDialogue/HasSeenPage reference
 - [Talking to characters](/howto/characters/talking)

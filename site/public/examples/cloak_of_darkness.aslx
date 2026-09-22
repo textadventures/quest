@@ -1,12 +1,11 @@
-<!--Saved by Quest 5.8.6809.15141-->
-<asl version="580">
+<asl version="600">
   <include ref="English.aslx" />
   <include ref="Core.aslx" />
   <game name="Cloak of Darkness">
     <gameid>18ad63b5-78e2-4846-872b-9177d78cc5e6</gameid>
     <version>1.0</version>
     <firstpublished>2018</firstpublished>
-    <description><![CDATA[From the specification here:<br/>http://www.firthworks.com/roger/cloak/]]></description>
+    <description><![CDATA[The worked example from the Quest Viva tutorial. Originally written for Quest 5 by The Pixie, from the specification at http://www.firthworks.com/roger/cloak/]]></description>
     <author>The Pixie</author>
     <attr name="feature_advancedwearables" type="boolean">false</attr>
     <feature_advancedscripts />
@@ -45,6 +44,7 @@
   <object name="foyer">
     <inherit name="editor_room" />
     <isroom />
+    <usedefaultprefix type="boolean">false</usedefaultprefix>
     <description>There is something oppressive about the {either CloakHere():dark|dingy} {once:room}{notfirst:foyer}; a presence in the air that almost suffocates you. It's former glory has all but faded, the walls still sport old posters from productions that ended over twenty years ago. Paint is peeling, dust is everywhere and it smells decidedly musty. You can see doors to the north, west and south.</description>
     <listen>You can hear the rain pounding against the windows.</listen>
     <beforefirstenter type="script">
@@ -97,6 +97,7 @@
   </object>
   <object name="cloakroom">
     <inherit name="editor_room" />
+    <usedefaultprefix type="boolean">false</usedefaultprefix>
     <description type="script">
       s = "The cloakroom is {either CloakHere():dimly|brightly} lit, and is little more than a cupboard. "
       if (cloak.parent = hook) {
@@ -134,6 +135,7 @@
   </object>
   <object name="bar">
     <inherit name="editor_room" />
+    <usedefaultprefix type="boolean">false</usedefaultprefix>
     <listen>Is there something moving?</listen>
     <description type="script">
       if (CloakHere()) {
@@ -184,7 +186,7 @@
       <enabled />
       <script><![CDATA[
         message.count = message.count + 1
-        if (message.count > 1) {
+        if (CloakHere() and message.count > 1) {
           message.disturbed = message.disturbed + 1
           firsttime {
             msg ("You think it might be a bad idea to disturb things in the dark.")
@@ -274,7 +276,7 @@
       </alt>
       <look type="script">
         if (CloakHere() and player.parent = bar) {
-          msg ("It is too dark to see the walls.")
+          msg ("It is too dark to see the floor.")
         }
         else {
           msg ("A red carpet covers the floor, worn almost though in places.")
@@ -302,7 +304,7 @@
           msg ("It smells of damp and neglect in here.")
         }
         case (bar) {
-          msg ("There is a musty smell, but behind that, something else, something thast reminds you of the zoo, perhaps?")
+          msg ("There is a musty smell, but behind that, something else, something that reminds you of the zoo, perhaps?")
         }
         default {
           msg ("It smells slightly musty.")
