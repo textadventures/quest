@@ -43,7 +43,7 @@ Sooner or later a script will fail, and the game will print "[Sorry, an error oc
 
 The message quotes the expression that failed, so switch the script to Code View and search for what it quotes. The script stops at that point, so whatever you expected to happen next didn't - which is often the symptom you noticed first.
 
-Two things that look like errors aren't. "I don't understand your command." means nothing matched what the player typed. "I can't see that." means something matched, but the object isn't within reach.
+Two things that look like errors aren't. "I don't understand your command." means nothing matched what the player typed at all. "I can't see that." means a command *did* match, but the object the player named isn't in scope - it's in another room, shut inside something, or the word they used isn't one of that object's names. Something the player can see but can't get at gets a more specific message of its own, like "The display case is not open."
 
 ## Walkthroughs
 

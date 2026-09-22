@@ -34,7 +34,7 @@ Whichever type you select, the object will behave in pretty much the same way, e
 
 The "Scenery" option means that the object won't be displayed automatically in the room description, or the "Places and Objects" on the right of the screen.
 
-Why might we want to do this? Well, when we created our "lounge" description in the previous section, we wrote "This is quite a plain lounge with an old beige carpet and peeling wallpaper". What if the player types `LOOK AT WALLPAPER`? Quest Viva will reply "I can't see that here", which will be a bit strange.
+Why might we want to do this? Well, when we created our "lounge" description in the previous section, we wrote "This is quite a plain lounge with an old beige carpet and peeling wallpaper". What if the player types `LOOK AT WALLPAPER`? Quest Viva will reply "I can't see that.", which will be a bit strange.
 
 Although the wallpaper isn't an important object, we should still have a response for `LOOK AT WALLPAPER`. If we make it a scenery object, it's "in the background" as far as the game goes, as it won't appear in the "Places and Objects" list, or in the list of objects in the description of the room. We won't be cluttering things unnecessarily, but we will still be providing responses for anything the player might reasonably type in.
 
