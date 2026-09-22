@@ -1,7 +1,7 @@
 ---
 title: The Cloak of Darkness
 sidebar:
-  order: 1
+  order: 18
 ---
 
 The Cloak of Darkness is a specification for an adventure game that has been created in numerous systems, with the purpose of giving prospective authors some idea of what is involved in each system. 

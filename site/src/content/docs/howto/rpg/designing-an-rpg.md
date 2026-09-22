@@ -77,11 +77,11 @@ Quest Viva doesn't have a combat system, but many of the pieces you need are alr
 |---|---|
 | Hit points, with something happening at zero | The **Health** feature. Tick "Health" on the _Features_ tab of the `game` object. The player starts with 100, it's shown in the status pane, and you can set a script to run when it reaches zero. See [Score, health and money](/howto/score/score-health-money#health). |
 | Gold or other currency | The **Money** feature, on the same tab. |
-| Other statistics shown on screen | [Status attributes](/tutorial/status-attributes). Any attribute of the player or the `game` object can be shown in the status pane, such as strength, mana or experience points. |
+| Other statistics shown on screen | [Status attributes](/reference/attributes/status). Any attribute of the player or the `game` object can be shown in the status pane, such as strength, mana or experience points. |
 | Dice rolls and random events | [Random functions](/reference/functions/random): `DiceRoll`, `RandomChance`, `GetRandomInt`, and `PickOneString`, `PickOneObject`, `PickOneChild`, `PickOneExit` and friends to pick something at random. |
 | Many monsters of the same kind | [Clones](/howto/scripting/clones). Build one monster in the editor, keep it somewhere the player can't reach, and copy it into the game with `CloneObjectAndMove`. |
-| Monsters acting after each turn | [Turn scripts](/tutorial/using-timers-and-turn-scripts#turn-scripts), which run at the end of each turn. |
-| Real-time combat | [Timers](/tutorial/using-timers-and-turn-scripts#timers), which run a script every so many seconds. |
+| Monsters acting after each turn | [Turn scripts](/howto/time/time-turns-and-timers#turn-scripts), which run at the end of each turn. |
+| Real-time combat | [Timers](/howto/time/time-turns-and-timers#real-time-timers), which run a script every so many seconds. |
 
 `DiceRoll` takes dice in the usual tabletop notation, so a weapon can store its damage as a string attribute like `"2d6+1"`:
 

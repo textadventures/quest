@@ -176,7 +176,7 @@ export const HELP_PAGE_TITLES: Readonly<Record<string, string>> = {
     "/tutorial/creating-a-gamebook/": "Creating a gamebook",
     "/tutorial/custom-attributes/#the-attributes-tab": "The attributes tab",
     "/tutorial/more-things-to-do-with-objects/": "More things to do with objects",
-    "/tutorial/using-timers-and-turn-scripts/": "Using timers and turn scripts",
+    "/tutorial/turns-and-timers/#real-time-timers": "Real-time timers",
     "/understanding/when-scripts-run/#object-initialisation-scripts": "Object initialisation scripts",
     "/understanding/when-scripts-run/#the-game-scripts-tab": "The game Scripts tab",
     "/understanding/when-scripts-run/#the-room-scripts-tab": "The room Scripts tab",

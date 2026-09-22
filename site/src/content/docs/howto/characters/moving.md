@@ -206,5 +206,5 @@ As long as the player keeps talking to Mary, she stays put. As soon as they do s
 ## See also
 
 - [Talking to characters](/howto/characters/talking)
-- [Using timers and turn scripts](/tutorial/using-timers-and-turn-scripts)
+- [Turns and timers](/tutorial/turns-and-timers)
 - [Moving objects during the game](/tutorial/moving-objects-during-the-game)

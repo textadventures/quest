@@ -54,7 +54,7 @@ Now add a "Set object flag" command. Choose Bob from the objects list, and enter
 
 Close the Script Editor window. Now run the game. Look at Bob, then type `USE DEFIBRILLATOR ON BOB`, then look at Bob again. Verify that you see the correct text in each case.
 
-Notice what happens when you type `USE DEFIBRILLATOR ON BOB` a second time - you get the same response again. You should know how to fix this now - update your "use defibrillator on bob" script to check for the "alive" flag. Update this now (if you are struggling, just move on to the next section, where it will be revealed!).
+Notice what happens when you type `USE DEFIBRILLATOR ON BOB` a second time - you get the same response again, as though Bob had been dead all over again. You should know how to fix this now: add an "if" command that checks Bob's "alive" flag, and only revives him if it isn't set. Try it yourself before reading on - the finished version is at the end of the next section.
 
 ## Using functions
 
@@ -75,7 +75,7 @@ Let's create one now to store the script commands we use to resuscitate Bob. We 
 
 First, go to Bob's _Use/Give_ tab, and double click "defibrillator" in the "Use" table to bring up the Script Editor. Hold down the shift key and select all script lines, then click the Cut button to move this script to the clipboard. Now close the window.
 
-Now add a new function (right click the tree, or use the Add menu), and call it "revive bob". For the script, click the Paste button.
+Now add a new function - click "+ Add" on the toolbar and choose "Add Function", or use the "..." menu on an element in the tree - and call it "revive bob". For the script, click the Paste button.
 
 ![](/images/Functionrevive.png)
 
@@ -91,7 +91,30 @@ We just need to make `USE DEFIBRILLATOR` call the same function now, so go to th
 
 Launch the game now and verify you get the same response whether you type `USE DEFIBRILLATOR ON BOB` or just `USE DEFIBRILLATOR`.
 
-Note that if you pick up the defibrillator and go to the kitchen, `USE DEFIBRILLATOR` will still work. It would be pretty remarkable for a defibrillator to work at such a long range, so consider adding an "if" command to the "revive bob" procedure. You can select "player is in room" from the list of conditions to check whether the player is in the lounge before carrying out the defibrillation. If they're not in the lounge, print a suitably sarcastic message.
+## Finishing the function
+
+Two things are still wrong, and now that both ways of using the defibrillator go through one function, we only have to fix them once.
+
+The first is the one left hanging at the end of the last section: using the defibrillator on Bob twice revives him twice. The second is that if you pick up the defibrillator and walk to the kitchen, `USE DEFIBRILLATOR` still works - which would be remarkable at that range.
+
+Both are "if" commands wrapped around the script we already have. Add an "if" with the condition "object has flag", for Bob and the flag "alive", and print something like "Bob is already about as alive as he gets." Then click "Add Else If", choose "player is in room" and pick the lounge, and move the existing two commands inside it. Finally "Add Else", for the sarcastic message. Switch to Code View and it looks like this:
+
+```quest
+if (GetBoolean(Bob, "alive")) {
+  msg ("Bob is already about as alive as he gets.")
+}
+else if (game.pov.parent = lounge) {
+  msg ("Miraculously, the defibrillator lived up to its promise, and Bob is now alive again. He says his head feels kind of fuzzy.")
+  Bob.alive = true
+}
+else {
+  msg ("It would be remarkable for a defibrillator to work at this range.")
+}
+```
+
+`GetBoolean` is what "object has flag" becomes behind the scenes. It reads a true or false attribute, and gives back false if the attribute isn't there at all - which is what we want here, since Bob has no "alive" attribute until the defibrillator gives him one.
+
+Play the game and try all three cases: revive Bob, try it again, and try it from the kitchen.
 
 ## Giving objects
 

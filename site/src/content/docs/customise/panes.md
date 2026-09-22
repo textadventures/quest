@@ -8,7 +8,7 @@ On a wide screen, the panes sit to the right of the game text: Inventory, Status
 | You want to | Use |
 |---|---|
 | Choose which of the standard panes appear | The _Interface_ tab of the `game` object |
-| Show numbers or text, such as a score or the player's mood | [Status attributes](/tutorial/status-attributes), which appear in the Status pane |
+| Show numbers or text, such as a score or the player's mood | [Status attributes](/reference/attributes/status), which appear in the Status pane |
 | Show a bar, a table or other formatting | A status attribute with HTML in its format, or a custom status pane |
 | Give the player one-click commands such as LOOK and WAIT | A command pane |
 
@@ -128,5 +128,5 @@ msg ("You cast a spell.")
 ## See also
 
 - [Styling the player with CSS](/customise/css) - changing how the panes look
-- [Status attributes](/tutorial/status-attributes)
+- [Status attributes](/reference/attributes/status)
 - [Score, health and money](/howto/score/score-health-money)

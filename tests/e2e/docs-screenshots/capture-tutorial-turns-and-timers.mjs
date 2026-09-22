@@ -1,11 +1,11 @@
-// Regenerates the 4 editor screenshots embedded in
-// site/src/content/docs/tutorial/using_timers_and_turn_scripts.md. See
+// Regenerates the 5 editor screenshots embedded in
+// site/src/content/docs/tutorial/turns-and-timers.md. See
 // .claude/skills/docs-screenshots/SKILL.md.
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
-    runCapture, createLocalDraft, selectTreeNode, addAdvancedElement, openTab,
-    ifExpressionSelect, ifObjectSelect, capture,
+    runCapture, createLocalDraft, selectTreeNode, addElement, addAdvancedElement, addVerb,
+    openTab, setScriptCodeView, ifExpressionSelect, ifObjectSelect, capture,
 } from './lib.mjs';
 
 const imagesDir = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'site', 'public', 'images');
@@ -81,4 +81,24 @@ await runCapture(async ({ page, baseUrl }) => {
     await nameInput.fill('player.turns');
     await valueInput.fill('player.turns + 1');
     await capture(page, out('Turnscript.png'), { untilLocator: valueInput });
+
+    // --- TurnTimeout.png: the bin's "smell" verb, running a script a few turns later ---
+    await selectTreeNode(page, 'room');
+    await addElement(page, 'Add Object in "room"', 'bin');
+    await openTab(page, 'Verbs');
+    await page.waitForSelector('text=No verbs added yet', { timeout: 15000 });
+    await addVerb(page, 'smell');
+    const behaviourTypeSelect = page.locator('text=Type').first().locator('xpath=following::select[1]');
+    await behaviourTypeSelect.selectOption({ label: 'Run a script' });
+    await setScriptCodeView(page, page.locator('button:has-text("Code view")').first(),
+        `msg ("You lean over the bin and inhale. This was a mistake.")
+SetTurnTimeout (3) {
+msg ("You can still taste that bin.")
+}`);
+    const turnTimeoutMsg = page.locator('xpath=//span[text()="Print"]/following-sibling::textarea[1]').last();
+    await turnTimeoutMsg.waitFor({ timeout: 10000 });
+    await capture(page, out('TurnTimeout.png'), {
+        untilLocator: page.locator('button:has-text("+ Add script")').last(),
+        padding: 16,
+    });
 });

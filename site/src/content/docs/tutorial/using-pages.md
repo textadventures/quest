@@ -12,7 +12,7 @@ You could build this with a menu (see [Talking to characters](/howto/characters/
 
 A page is a special kind of object: instead of a room description, it has some text to show the player and a list of options leading to other pages.
 
-Right-click the tree (or use "+ Add") and choose "Add Page". Call it `bob_chat`. On its "Page" tab, leave "Page type" set to "Text", and enter a description like `Bob rubs his chest gingerly. "What do you want to know?" he asks.`
+Click "+ Add" on the toolbar and choose "Add Page" (or use the "..." menu on an element in the tree). Call it `bob_chat`. On its "Page" tab, leave "Page type" set to "Text", and enter a description like `Bob rubs his chest gingerly. "What do you want to know?" he asks.`
 
 Now add some options. In the "Options" list, click "Add", and when prompted for the page name enter `bob_defib` - this creates a new page for you - and for the link text enter "Ask about the defibrillator". Add a second option pointing to a new page called `bob_heart`, with the link text "Ask about his heart attack".
 

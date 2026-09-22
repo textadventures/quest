@@ -201,6 +201,6 @@ Think twice before using real time for a puzzle like this. Players who read slow
 
 ## See also
 
-- [Using timers and turn scripts](/tutorial/using-timers-and-turn-scripts) - the tutorial's step-by-step introduction
+- [Turns and timers](/tutorial/turns-and-timers) - the tutorial's step-by-step introduction
 - [Change scripts](/reference/attributes/change-scripts) - run a script whenever an attribute changes, rather than checking every turn
 - [When scripts run](/understanding/when-scripts-run)
