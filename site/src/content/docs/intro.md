@@ -86,4 +86,4 @@ The **[Tutorial](/tutorial/tutorial-introduction)** is the best place to begin. 
 
 If you get stuck, or just want to show people what you're making, ask on [Discord](https://textadventures.co.uk/community/discord) or in [GitHub Discussions](https://github.com/textadventures/quest/discussions). If you find a bug or want to request a feature, [open an issue](https://github.com/textadventures/quest/issues).
 
-Quest Viva is [open source](/developers/open-source) - the [source code is on GitHub](https://github.com/textadventures/quest), and contributions are welcome.
+Quest Viva is [open source](/developers/developers) - the [source code is on GitHub](https://github.com/textadventures/quest), and contributions are welcome.

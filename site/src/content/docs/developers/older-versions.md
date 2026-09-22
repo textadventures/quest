@@ -1,12 +1,25 @@
 ---
 title: Older versions
+description: Download an older release of Quest, and what still opens in Quest Viva
 sidebar:
   order: 3
 ---
 
-The current release is Quest Viva, available from the [download page](/download) or in your browser at [play.questviva.com](https://play.questviva.com). It is fully compatible with games made in older versions, so always use the latest version if you can.
+The current version is Quest Viva - [download the app](/download), or use it in your browser at [play.questviva.com](https://play.questviva.com). It opens the game files Quest 5 saved and plays games in every format Quest has used since 1998, so there's rarely a reason to go back. If you're bringing a Quest 5 game across, start with [What's new in Quest Viva 6.0](/whats-new).
 
-Older versions are provided here for reference — for example, if you need to compare behaviour against a specific version, or if you want to run Quest on an older version of Windows.
+Quest 5 had been Quest's current version since 2011, and has now been superseded by Quest Viva. The installers below are kept for reference - to compare behaviour against a particular version, say, or to run Quest on a version of Windows that the current app doesn't support. They are all Windows-only.
+
+Quest 5's separate documentation site has been retired, and its addresses now point here. The scripting language is the same one Quest Viva uses, so most of this documentation still describes Quest 5 accurately - but it documents Quest Viva, and describes Quest Viva's behaviour wherever the two differ.
+
+## What still opens in Quest Viva
+
+| Made in | File | In Quest Viva |
+|---|---|---|
+| Quest 5, or Quest Viva | `.aslx` | Opens in the editor, and plays |
+| Any version, once published | `.quest` | Plays |
+| Quest 1.0 to 4.1 | `.asl`, `.cas` | Plays, but can't be edited |
+
+A published game carries its own copy of the library code it was built with, so a game published years ago goes on behaving exactly as it did, whatever plays it. See [the publish process](/publishing/publishing#the-publish-process).
 
 ## Quest 5.x
 

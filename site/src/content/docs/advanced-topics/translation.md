@@ -1,42 +1,121 @@
 ---
-title: Translating Quest Viva
+title: Writing a game in another language
+description: Start a game in one of the fifteen built-in languages, handle gendered objects and verbs, and contribute or update a language library
 sidebar:
   order: 4
 ---
 
-## Introduction
+There is no English in Quest Viva's engine. Every word the game says to the player - "You pick it up.", "I can't see that.", the compass directions, even the words the parser recognises as verbs - comes from a **language library**, a file of [templates](/howto/world/changing-templates) that Core.aslx looks up as it runs. Swap the library and the whole game speaks a different language. Fifteen ship with Quest Viva, contributed by the community over many years.
 
-Quest Viva has been designed to be language neutral, so you can write games that can be played in any language.
+| You want to | Go to |
+|---|---|
+| Start a new game in another language | [Starting a game in another language](#starting-a-game-in-another-language) |
+| Change the language of a game you've already started | [Switching an existing game](#switching-an-existing-game) |
+| Use the editor itself in another language | [The editor's own language](#the-editors-own-language) |
+| Change one or two messages in an English game | [Changing the game's messages](/howto/world/changing-templates) |
+| Add a new language, or update an existing one | [Writing a language library](#writing-a-language-library) |
 
-There are numerous translations that are built in, donated by the community over the years. This does mean that some of them are out of date, and do not include the more recent additions. 
+## The built-in languages
 
-You can even use the editor in your own language, but that will obviously involve more translations. Currently the editor can be used in English, German and Spanish.
+| Language | Library file | Code |
+|---|---|---|
+| Dansk | `Dansk.aslx` | `da` |
+| Deutsch | `Deutsch.aslx` | `de` |
+| English | `English.aslx` | `en` |
+| Español | `Espanol.aslx` | `es` |
+| Esperanto | `Esperanto.aslx` | `eo` |
+| Français | `Francais.aslx` | `fr` |
+| Greek | `Greek.aslx` | `el` |
+| Icelandic | `Icelandic.aslx` | `is` |
+| Italiano | `Italiano.aslx` | `it` |
+| Nederlands | `Nederlands.aslx` | `nl` |
+| Norsk | `Norsk.aslx` | `nb` |
+| Português (Brasil) | `Portugues.aslx` | `pt-BR` |
+| Português (Portugal) | `Portugues-Portugal.aslx` | `pt-PT` |
+| Română | `Romana.aslx` | `ro` |
+| Русский | `Russian.aslx` | `ru` |
 
+Every one of these includes `English.aslx`, so anything a translator hasn't got to yet falls back to the English wording rather than breaking. Coverage varies: some are close to complete, others were translated years ago and don't have the newer messages. If English text turns up in your game, the fix is to translate that one template - and it's worth [sending the change back](#contributing-your-work).
 
-## Using non-Latin alphabets
+## Starting a game in another language
 
-Quests scripts cannot cope with letters outside the standard Latin alphabet.
+Pick the language when you create the game - that's all there is to it:
 
-Let us suppose you have an object, a rock, in a game you are writing in Greek. Quest Viva will not object to you calling it πέτρα, and the player will be able to interact with it as normal. However, if you try to do anything in a script using that name, you will get an error:
+1. On the Create tab, under "Create new game", type your game's name.
+2. Under "Game type", choose "Text Adventure" or "Gamebook".
+3. Pick the language from the dropdown underneath. The list uses each language's own name.
+4. Click "Create local draft" (or "Save to folder…").
 
-```quest
-πέτρα.parent = player.parent
+Gamebooks offer English, Deutsch and Español only. A gamebook has no parser and few standard messages, so its text comes from the editor libraries rather than a game language library - see [the editor's own language](#the-editors-own-language) below.
+
+The only difference in the resulting game file is the first `include` line:
+
+```xml
+<asl version="600">
+  <include ref="Francais.aslx" />
+  <include ref="Core.aslx" />
 ```
 
-The solution is to name in in the Latin alphabet, and give it an alias "πέτρα".
+## Switching an existing game
 
+The language library has to be loaded **before** `Core.aslx`, because Core's commands and verbs are built out of the templates as it loads. Adding it with "Add Library" puts it at the end of the list, after Core, which leaves you with a half-translated game - the room descriptions and commands stay in English. Change the include line instead:
 
-## Verbs
+1. Click "Raw XML code view" on the toolbar (on a narrow screen it's in the "More" menu).
+2. In the "File:" list, choose your own game file.
+3. Change `<include ref="English.aslx" />` to the library you want, such as `<include ref="Francais.aslx" />`.
+4. Click "Apply", and confirm.
 
-In English, we can just put a verb with a noun to get a command, and the verbs in Quest Viva employ this to great effect. That may not work in your language. You can edit the verb object. In the pattern bit, you can set a pattern just as you do with commands, so instead of "wear", you could use "put #object# on", and the verb will match PUT HAT ON.
+Text you have already written stays as you wrote it. Exits you created before the change keep their old direction names, because each exit stores its own name as its alias - the same problem as [renaming the compass directions](/howto/world/changing-templates#custom-directions).
 
+## Gendered objects
 
+English doesn't give inanimate objects a gender, so the "Type" dropdown on an object's Setup tab normally offers "Inanimate object", "Inanimate objects (plural)" and the character types. Languages that do have gender add their own entries there. In a French game the dropdown gains "Inanimate object (masculine)" and "Inanimate object (feminine)", which set the object's [article](/attributes#article) to *le* or *la* and its [gender](/attributes#gender) to *il* or *elle*. The library's messages are written in terms of those two attributes, so everything follows:
 
-## Making a translation
+```
+> prendre pomme
+Vous la prenez.
 
-To translate Quest Viva, make a copy of English.aslx and rename it for your language. Open the file in a text editor.
+> prendre livre
+Vous le prenez.
+```
 
-At the top you will see this:
+Which types a language offers is up to its library: Greek has masculine, feminine and neuter, each with a plural, and Русский has nine, one per declension pattern. Some libraries have none yet, in which case every object uses the library's default wording. Adding them is a good first contribution - see [language-specific object types](#language-specific-object-types).
+
+## Verbs and commands
+
+The library translates the commands and verbs that Core defines, so `prendre`, `regarder` and `inventaire` work in a French game without you doing anything.
+
+Your own [verbs](/howto/commands/using-verbs) need a little more care. When the player clicks a verb button next to an object, Quest Viva sends the verb's name followed by the object's - "wear" plus "hat" gives "wear hat", which works in English but not everywhere. The German for "wear hat" is "ziehe Hut an", with the verb split in two.
+
+The fix is to give the verb more than one pattern. A verb's "Pattern" field takes semicolon-separated [patterns](/howto/commands/pattern-matching), so `ziehe #object# an; anziehen #object#` accepts both. The second is clumsy German, but the player never types it - it's only there so the verb button has something to send.
+
+## Names in other alphabets
+
+Object, room, function and command *names* can be written in any alphabet, and scripts can use them. This works:
+
+```quest
+πέτρα.isheavy = true
+```
+
+Attribute and variable names are the exception: they must **start** with a Latin letter (`A`-`Z`, `a`-`z`) or an underscore, although the rest of the name can be anything. `πέτρα.ωραία` is rejected when the game loads, with "Invalid attribute name"; `πέτρα.xωραία` is accepted. Keeping attribute names in English is the simplest way round it.
+
+Some of the older language libraries advise naming every object in Latin characters and putting the real name in the alias. That's no longer necessary.
+
+## The editor's own language
+
+Two separate things are translated, and they're set in two different places.
+
+**The editor's own chrome** - its menus, buttons and dialogs - follows the "Language" setting in Settings, under the "⋯" menu on the toolbar. English, Deutsch and Español are available. It's a preference for you, not part of your game.
+
+**The editor's tab and field captions** - "Setup", "Features", "Inherited Type" and so on - come from an editor library that your game's language library includes. Only `EditorDeutsch.aslx` and `EditorEspanol.aslx` exist, and only `Deutsch.aslx` and `Espanol.aslx` pull them in. Every other language library gets `EditorEnglish.aslx` by way of `English.aslx`, so the tabs stay in English even when the game itself is fully translated.
+
+## Writing a language library
+
+The rest of this page is for translators. A language library is a plain XML file, and the quickest way to start is to copy `English.aslx` and edit it.
+
+### The header
+
+`English.aslx` begins like this:
 
 ```xml
 <library>
@@ -44,7 +123,7 @@ At the top you will see this:
   <template name="LanguageId">en</template>
 ```
 
-The first step is to modify that so it uses "English.aslx", rather than "EditorEnglish.aslx", and change the language ID. This example is for Icelandic:
+In your copy, include `English.aslx` instead of `EditorEnglish.aslx`, and change the language ID to your language's code:
 
 ```xml
 <library>
@@ -52,92 +131,63 @@ The first step is to modify that so it uses "English.aslx", rather than "EditorE
   <template name="LanguageId">is</template>
 ```
 
-This will include the English template within yours. This means that if English.aslx is updated, your translation won't cause errors due to missing template entries.
+Including `English.aslx` means every template you haven't translated yet still has a value, so a half-finished library never causes a "No template named…" error - the player just sees some English. `LanguageId` also becomes `game.languageid`, which is how a published game tells a catalogue what language it's in.
 
+### Templates and dynamic templates
 
-## Translating default text
-
-Default text appears within [template](/elements#template) and [dynamictemplate](/elements#dynamictemplate) tags.
-
-You can translate "template" tags directly, as they are simply static text. Note that the name must not be changed, just the bit between the tags. Here are some examples from the Russian.aslx:
+A `template` is static text. Translate what's between the tags and leave the name alone:
 
 ```xml
 <template name="LookAt">Посмотреть на</template>
 <template name="Take">Взять</template>
 <template name="SpeakTo">Поговорить с</template>
-<template name="Use">Использовать</template>
 ```
 
-Dynamic templates are expressions - usually these are templates that include some object attribute, for example:
+A `dynamictemplate` is an [expression](/howto/scripting/introtocoding#expressions-and-operators), evaluated when it's printed, with the object it's about in a variable called `object`:
 
 ```xml
 <dynamictemplate name="TakeSuccessful">"You pick " + object.article + " up."</dynamictemplate>
 ```
 
-Your translation should also be an expression, but you're not forced to use the same attributes. If it makes more sense for your language, for example, you could use the [gender](/attributes#gender) instead of the [article](/attributes#article) to create your sentence. Again, you just change the bit between the tags, as these examples from Russian show.
+Your version has to be an expression too, but it doesn't have to use the same attributes. If your language needs the [gender](/attributes#gender) rather than the [article](/attributes#article), use that instead:
 
 ```xml
 <dynamictemplate name="DropSuccessful">"Ты оставляешь " + object.article + " здесь."</dynamictemplate>
-<dynamictemplate name="DropUnsuccessful">"Ты не можешь " + object.article + "оставить."</dynamictemplate>
 ```
 
-Some functions that appear within dynamic templates are defined in English.aslx - for example the [GetDefaultPrefix](/reference/functions/internal-core#getdefaultprefix) and [Conjugate](/reference/functions/string#conjugate) functions. You can add, edit, or remove these functions in your template as required.
+Some helper functions used inside dynamic templates, such as `GetDefaultPrefix` and [Conjugate](/reference/functions/string#conjugate), are defined in `English.aslx` itself rather than the engine. You can override them in your library, or add your own - Русский defines a `GetSkl` function for noun declension, Română defines `Greu`.
 
-If you want to know where a template is used, search through the Core library files. A code editor with a "find in files" feature, which searches every file in a folder at once, makes this much easier.
+To find where a template is used, search the `Engine/Core/*.aslx` files for its name with a "find in files" search.
 
+### Commands and verbs
 
-## Translating commands
+Verbs are simple - each `verbtemplate` is one word or phrase the parser will accept:
 
-Some commands are defined using a [verbtemplate](/elements#verbtemplate) - you can have as many of these as you wish for any particular command, so feel free to add more if there are more alternatives. Likewise, feel free to remove any additional ones you don't need - there are 4 "speakto" verbtemplates in English.aslx, but it's fine for there to be fewer in your translation.
+```xml
+<verbtemplate name="take">prendre</verbtemplate>
+<verbtemplate name="take">attraper</verbtemplate>
+<verbtemplate name="take">ramasser</verbtemplate>
+```
 
-Some commands are defined like this:
+Add as many alternatives as your language needs, and drop any you don't - there's no requirement to match English one for one.
+
+Commands are [regular expressions](/howto/commands/pattern-matching), because they have to pull the object names out of what the player typed:
 
 ```xml
 <template templatetype="command" name="put"><![CDATA[^put (?<object1>.*) (on|in) (?<object2>.*)$]]></template>
 ```
 
-That may look a bit off-putting at first glance, but it's fairly simple. Let's break it down:
-
--   you don't need to worry about the templatetype - just leave it in. This is used so the Editor knows this is a template for a command, and that it doesn't need to display this template separately.
--   the CDATA is simply XML formatting. Within the template, we're using "\<" and "\>" - so for our XML to be valid, we *must* enclose the template within a [CDATA](http://en.wikipedia.org/wiki/CDATA) section - starting with "\<![CDATA[" and ending with "]]\>"
-
-So the only bit we need to worry about is inside the CDATA, which is this:
-
-```regex
-^put (?<object1>.*) (on|in) (?<object2>.*)$
-```
-
-This is a [regular expression](http://en.wikipedia.org/wiki/Regular_expression) ("regex") and is simply a more advanced form of command pattern, and is discussed in some detail [here](/howto/commands/pattern-matching). This [cheat sheet](http://regexlib.com/CheatSheet.aspx) is a handy syntax reference.
-
-The "^" at the beginning and the "$" at the end simply mean that this regex must match the *entire* player input. We don't want to match only a small fragment of what the player typed in - we want to understand the entire command. So leave those in.
-
-That means you only need to worry about the bit in the middle:
-
-```regex
-put (?<object1>.*) (on|in) (?<object2>.*)
-```
-
-The brackets are there for grouping. There are three groups in the regex above. The first one is named using the ?\<name\> syntax as "object1". It matches ".\*" which is the regex way of saying "any number of any character". The second group matches "on" or "in". The third group is named "object2".
-
-If we didn't have the "(on|in)" in there, this would be equivalent to this command pattern:
-
-     put #object1# in #object2#
-
-To translate it, you only need to worry about the "put" and "on|in" parts.
-
-For example, in Deutsch.aslx the translation of this is:
+Leave `templatetype="command"` alone - it tells the editor this is a command pattern, not a message - and keep the `<![CDATA[ … ]]>` wrapper, which is only there because the pattern contains `<` and `>`. The `^` and `$` mean it has to match the whole of what the player typed, and `(?<object1>.*)` captures a chunk of text under the name `object1`. Everything else is yours to translate:
 
 ```xml
-<template templatetype="command" name="put"><![CDATA[^lege (1?<object>.*) (auf|in) (?<object2>.*)$]]></template>
-
-
-
+<template templatetype="command" name="put"><![CDATA[^mettre (?<object1>.*) (dessus|dedans|sur|dans) (?<object2>.*)$]]></template>
 ```
-## Language-specific object types
 
-English doesn't have the concept of "gender" for inanimate objects, but most other languages do. To handle this, you can define "masculine" and "feminine" [types](/elements#type) in your language file.
+Alternatives separated by `|` let you accept several phrasings, as French does for "put on" and "put in" above.
 
-For example, in French:
+### Language-specific object types
+
+To give the author gendered object types, define the types and then list them in the `LanguageSpecificObjectTypes` template. French:
 
 ```xml
 <type name="masculine">
@@ -149,46 +199,25 @@ For example, in French:
   <gender>elle</gender>
   <article>la</article>
 </type>
-```
 
-Then the LanguageSpecificObjectTypes template should look like this:
-
-```xml
 <template name="LanguageSpecificObjectTypes">masculine=Inanimate object (masculine); feminine=Inanimate object (feminine); </template>
 ```
 
-The type names in the template must match the type names you define. If they don't, you'll see errors in the Editor.
+The names on the left of each `=` must match the types you defined, or the editor shows errors. The captions on the right are what the author sees in the "Type" dropdown, so write them in your language. The trailing `; ` matters - don't delete it. Add as many types as your language needs; Greek has six.
 
-This will add two entries in the object "Type" dropdown, allowing the game author to choose masculine or feminine inanimate object types.
+### Testing it
 
-If your language has more than two genders, you can add more types and add them to the same LanguageSpecificObjectTypes template.
+Translate, then play. Create a small game from your language's template - two rooms, a few objects of each gender, something takeable, a character to talk to - and work through the standard commands: look, the compass directions, take, drop, inventory, examine, open, speak to, and a command that fails so you see the parser's error messages. Untranslated templates show up as English in the transcript, which is the quickest way to see what's left. Then open the same game in the editor: a mistake in `LanguageSpecificObjectTypes` shows up in the object "Type" dropdown.
 
+### Contributing your work
 
+If you'd like your language to ship with Quest Viva so other authors can use it, open a pull request on [GitHub](https://github.com/textadventures/quest). Updates to existing translations are just as welcome - most of them have gaps.
 
-## Adding the translation to your game
+To see what's changed in `English.aslx` since a translation was last touched, open `src/Engine/Core/Languages/English.aslx` on GitHub and click "History". New templates are added there as Quest Viva gains features, and every language library needs the same additions eventually.
 
-These are standard library files so can be added as such.
+## See also
 
-To add a library, go the bottom of the left pane in the GUI, and expand Advanced, then click on Included Libraries. Click Add, and navigate to the file. Quest Viva will copy the file to your game folder, and add a line of code to your game so the library is part of it. Quest Viva will then tell you to save and re-load your game.
-
-More on using libraries [here](/advanced-topics/using-libraries).
-
-
-## Display verbs
-
-Quest Viva uses a very simple method for handling display verbs (the verbs that are shown when you click on an object): The verb followed by the object name are sent to be handled as a command. In English this works fine; "wear" plus "hat" gives "wear hat", and Quest Viva will understand that. That may not be the case in your language. If not, them just add that as an alternative.
-
-For example, in German, the verb to display to allow the player to wear something is "Anziehen", but the full phrase for "wear hat" would be "ziehe hut an". The solution is to add "anziehen #object#" as an alternative, even though it is bad German.
-
-
-## Releasing your translation
-
-When you have finished your translation - and checked it works in your game - if you'd like it to be included with Quest Viva so that other game authors can use it, open a Pull Request. We would also be grateful for updates to existing translations.
-
-## Keeping the translation up to date
-
-Quest Viva is continually improving, and as new features are added, new templates are added to English.aslx. This means that your language library will need to be updated to reflect new changes.
-
-If you include English.aslx in your language file, as recommended, you won't see errors, but it does mean that there is a chance players will see some English text. To avoid this, you will need to keep your language file up to date to reflect changes made in English.aslx.
-
-The easiest way to do this is to see what changes have been made to English.aslx by [browsing the source code](https://github.com/textadventures/quest). Navigate to `src/Engine/Core/Languages/English.aslx`, then click "History" to see the changes that have been made to it, and when.
+- [Changing the game's messages](/howto/world/changing-templates) - overriding individual templates in one game
+- [Using neutral language](/howto/tasks/neutral-language) - `article`, `gender` and `WriteVerb`
+- [Using and creating libraries](/advanced-topics/using-libraries)
+- [template](/elements#template) and [dynamictemplate](/elements#dynamictemplate) in the XML elements reference

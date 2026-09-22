@@ -1,124 +1,134 @@
 ---
-title: Using inherited types
-sidebar:
-  order: 2
+title: Creating and using object types
+description: Make your own object type in the editor, apply it to objects, override it on one of them, and combine several types
 ---
 
-This page builds on [Types](/advanced-topics/about-types), which covers what types are, how attributes are inherited, and multiple inheritance - read that first if you haven't already. Here, we'll cover how to test for types in a script, and how to create your own.
+When several objects in your game behave the same way - a dozen spells, a shelf of books, every coin in the dungeon - you don't want to build each one by hand. An **object type** holds the attributes and scripts once, and every object that inherits it gets them.
 
+After this page you'll be able to create a type in the editor, apply it to objects, change one object's behaviour without disturbing the rest, and combine two types on the same object.
 
-## Testing for types
+If you haven't met attributes and inheritance before, read [Attributes and types](/advanced-topics/about-types) first - it explains where an attribute's value comes from, which is what everything below relies on.
 
-You can test if an object is of a certain type in a script or function using the `DoesInherit` function. In code, it might look like this:
+## Is a type the right tool?
+
+| You want | Use |
+|---|---|
+| The same attributes and scripts on several objects | A type |
+| The same behaviour available to several *games* | A [library](/advanced-topics/using-libraries), usually containing types |
+| One piece of logic called from several places | A [function](/howto/scripting/creating-functions-which-return-a-value) |
+| To change how Quest Viva itself behaves everywhere | [Override the Core library](/advanced-topics/overriding) - including its `defaultobject` type, which every object inherits |
+
+A type earns its place at about three objects. Below that, setting the attributes on each object is clearer.
+
+## Creating a type
+
+1. In the tree on the left, select **Advanced**.
+2. Click **+ Add Type**.
+3. In the "Add Type" dialog, type a **Name** and click **Add Type**.
+
+Use a short lower-case name with no spaces, as you would for an object. The new type appears under _Advanced > Object Types_.
+
+A type has a single _Type_ tab, with its **Name** and the same attributes list you get on an object: _Inherited types_ at the top, _Attributes_ underneath. Everything a type does, it does through those attributes.
+
+Here's a `spell` type. Spells can't be taken or dropped in the usual way, and they can be learned:
+
+| Attribute | Type | Value |
+|---|---|---|
+| `take` | Boolean | false |
+| `drop` | Boolean | false |
+| `known` | Boolean | false |
+| `learnmsg` | String | The words settle into your memory. |
+| `learn` | Script | see below |
+
+Type each name into the **Add attribute...** box, click **Add**, then set its type and value on the right.
+
+`learn` is a [verb](/howto/commands/using-verbs). A type has no _Verbs_ tab, so add the verb as an attribute here, using the verb's attribute name. The verb itself has to exist before objects respond to it, so if it's one of your own, add it once on any object's _Verbs_ tab to create it.
+
+The script has to work for any spell, so write it with `this` - inside a script on a type, `this` is whichever object the script is running on:
+
 ```quest
-if (DoesInherit (fireball_spell, "spell")) {
-  // do stuff
-}
-```
-Here, "fireball_spell" is the thing we are testing, and we want to know if it is of the spell type. Let's assume it is.
-
-As mentioned, an object can have several types, and this function will tell you about all of them, even the ones that would appear in grey on the _Attributes_ tab.
-
-
-## Creating new types
-
-Creating your own types is a great way to extend Quest Viva for your own needs. Any time you have a bunch of things that are all pretty similar in what they do, but a bit different to anything already in Quest Viva, consider creating a new type.
-
-As an example, we are going to create a spell type. The easiest way to do that is to first do it for an actual example of the type, a prototype, and then to move the code from the object to the type - this is easiest to do using Code View.
-
-
-### Create a prototype
-
-So the first thing to do is to create an actual spell, let us call it "fireball spell". You cannot drop a spell, and you cannot pick one up, so on the Inventory tab, untick "Object can be dropped".
-
-Something  we can do with spells is to learn them, so next we will add a "learn" script to it. Go to the Verbs tab, and add a "learn" verb. Set it to run a script, and paste this code in:
-
-```quest
-if (not this.parent = game.pov) {
-  this.parent = player
-  msg ("How about that? You can now cast " + GetDisplayName(this) + ".")
+if (this.known) {
+  msg ("You already know " + GetDisplayName(this) + ".")
 }
 else {
-  msg ("Er, you already know that one!")
+  this.known = true
+  this.parent = game.pov
+  msg (this.learnmsg)
 }
 ```
 
-Briefly then: The first line of the script checks that the player does not already hold the spell. The next line moves this spell to the player, and the next line lets the player know this happened.
+For the same reason, avoid naming a specific object anywhere in a type's scripts, and avoid [text processor](/howto/world/text-processor) directives that name one.
 
+## Applying a type to an object
 
-### "this"
+Select the object, go to its _Attributes_ tab, and under _Inherited types_ pick your type from the **Add type...** dropdown and click **Add**.
 
-The important point to notice about the code is that it uses "this". In Quest Viva, "this" refers to the thing the script is attached to. In this case, that will be the spell. Later on this code will be used by the type, and it could be any spell, so we need to keep it generic; nothing there referring to this specific spell by name (this does mean using text processor commands in types is tricky...).
+The type's attributes immediately appear in the attributes list below, greyed out, with your type's name in the **Source** column. Add the type to as many objects as you like - `fireball`, `frostbolt`, `invisibility` - and each one is a working spell with no further setup.
 
-Go in game, and you should be able to learn the spell, and it will appear in your inventory.
+To take a type off again, click the ✕ beside it in the _Inherited types_ list. Types that Quest Viva applies to every object, such as `defaultobject`, have no ✕ and can't be removed.
 
+## Overriding an inherited attribute
 
-### Create a type
+One object can always disagree with its type. Set the attribute on the object itself, and the object's own value wins:
 
-So now we are ready to create a new type. Right click in the Quest Viva right pane, and select “Add Object Type”, in the box type “spelltype”, and click “Okay”.
-
-So far so good, but it does not do anything yet. We will change that by copying code. It may look scary, but if you are careful, it will be pretty easy.
-
-Open the raw XML code view in the editor toolbar. This will show you the code that is your game. If you are not familiar with XML, it will not make much sense, but do not worry about that. Somewhere there will be a bit like this (if you do [CTRL]-F, you can search for "fireball" to find it quickly):
 ```quest
-<object name="fireball spell">
-  <inherit name="editor_object" />
-  <drop type="boolean">false</drop>
-  <learn type="script">
-    if (not this.parent = game.pov) {
-      this.parent = player
-      msg ("How about that? You can now cast " + GetDisplayName(this) + ".")
-    }
-    else {
-      msg ("Er, you already know that one!")
-    }
-  </learn>
-</object>
+fireball.learnmsg = "The page bursts into flame as you read it."
 ```
-Somewhere else (probably at the bottom) you should find this:
-```xml
-<type name="spelltype" />
+
+In the editor, add the attribute on the object's _Attributes_ tab exactly as you would any other. The greyed inherited row is replaced by your own value, and the other objects of the type are untouched.
+
+To go back to the type's value, delete the object's copy - click the ✕ on its row, or in a script set it to `null`. That removes the object's own attribute rather than blanking it, so the lookup falls through to the type again:
+
+```quest
+fireball.learnmsg = null   // back to the type's message
 ```
-Step 1. Expand the type XML. Quest Viva is using a condensed form of XML for the type because there is nothing in it. Change it to this:
+
+## Several types on one object
+
+An object can inherit any number of types, and a type can inherit other types. A `cursed_spell` type can inherit `spell` and add to it:
+
 ```xml
-<type name="spelltype">
+<type name="cursed_spell">
+  <inherit name="spell"/>
+  <curse type="int">5</curse>
 </type>
 ```
-Step 2. Cut the attributes from the fireball spell to leave just this:
-```xml
-<object name="fireball spell">
-  <inherit name="editor_object" />
-</object>
-```
-Step 3. ... And paste them into the type:
+
+If two of an object's types define the same attribute, the one added most recently wins - that is, the last `<inherit>` tag in the XML. Quest Viva searches that type and everything it inherits before it looks at the next type down, so a value inherited indirectly through a late type still beats one defined directly on an earlier type.
+
+You rarely have to work this out in your head: select the attribute on the _Attributes_ tab and the **Source** column names the type whose value is actually in force. If you find yourself relying on the order, that's usually a sign the two types should be one type, or that the object should set the attribute itself.
+
+## Testing for a type in a script
+
+[`DoesInherit`](/reference/functions/objects#doesinherit) tells you whether an object is of a given type, directly or indirectly:
+
 ```quest
-<type name="spelltype">
-    <drop type="boolean">false</drop>
-    <learn type="script">
-      if (not this.parent = game.pov) {
-        this.parent = player
-        msg ("How about that? You can now cast " + GetDisplayName(this) + ".")
-      }
-      else {
-        msg ("Er, you already know that one!")
-      }
-    </learn>
-</type>
+if (DoesInherit (fireball, "spell")) {
+  msg ("You mutter the words under your breath.")
+}
 ```
-Now close the code view again, to get back to the GUI.
 
-Now if you look at the spelltype, you should see it has a whole load of attributes.
+This is how the Core library decides whether an object is a container, wearable, switchable and so on, and it's the neatest way to write a command that only applies to some of your objects:
 
-The last thing to do is to go back to the fireball spell, and on the attributes tab, to add "spelltype" to its list of inherited types.
+```quest
+if (not DoesInherit (object, "spell")) {
+  msg ("That isn't something you can cast.")
+}
+```
 
-Now go into the game, and see if you can still learn that spell.
+## Turning an existing object into a type
 
+There is no "extract a type from this object" command in the editor. To move attributes you've already set up on a prototype object into a new type, open the **Raw XML code view** on the toolbar, cut the attribute elements out of the `<object>` and paste them into the `<type>` ([Editing the raw XML](/howto/scripting/codeview) explains how to apply changes safely). The alternative is to add the attributes to the type by hand and delete them from the object afterwards.
 
-### More on creating types
+Either way it's worth deciding up front which attributes belong to the type and which are particular to that one object - the description and alias almost always stay on the object.
 
-When you are creating types yourself, you may not want all the attributes in your prototype to be in your type. The best approach then is to copy the code from the prototype, rather than cutting it. Then, when you are in the GUI again, go to the type, and delete the attributes you do not want in the type. Then go to the prototype, and delete from there the attributes you do want in your type there.
+## Lists and dictionaries on types
 
+A list or dictionary defined on a type is shared by every object that inherits it, so Quest Viva locks it: `list add (fireball.words, "zap")` raises an error rather than silently changing every spell in the game. See [Mutable attributes on inherited types](/advanced-topics/about-types#mutable-attributes-on-inherited-types) for the one-line fix.
 
-### A note about lists and dictionaries
+## See also
 
-It is worth noting that attributes on types are not mutable - they cannot be changed. You might never notice this, because if you have an object and you attempt to assign a value to an attribute that is set in the object’s type, it works fine - behind the scenes when you assign it, the attribute stops being on the type, and is now on the object, and as far as the game is concerned the attribute value has changed. The problem only arises if you try to change the content of a list or dictionary, so unless you are sure a list or dictionary will not change during a game, avoid having them in types.
+- [Attributes and types](/advanced-topics/about-types) - what inheritance actually does
+- [Verbs on types](/howto/commands/using-verbs#verbs-on-types)
+- [Adding a tab for your type](/advanced-topics/tabs-for-types) - give your type its own editor tab
+- [Using libraries](/advanced-topics/using-libraries) - sharing types between games

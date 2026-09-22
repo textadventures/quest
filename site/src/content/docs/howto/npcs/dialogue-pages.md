@@ -11,7 +11,7 @@ The [Tutorial](/tutorial/using-pages) covers the basics of setting up a Pages di
 
 Quest Viva has several ways to let the player talk to a character - see [Talking to characters](/howto/npcs/conversations) for an overview. Pages are the right choice when you want a structured, multi-step exchange where each reply leads to a fixed set of further choices - the Text Adventure equivalent of a gamebook's branching passages. For a one-off list of topics with no follow-up, a [menu](/howto/npcs/conversations#a-menu-of-topics) is simpler. For a free-form "ask about anything" system, use [Ask/Tell](/howto/npcs/ask-about) instead.
 
-Each choice is a complete, ordinary turn, so the player can save at any point and `UNDO` steps back one choice at a time - see [Menus, Pages and saving](/howto/npcs/conversations#menus-pages-and-saving) for how this compares with menus.
+Each choice is a complete, ordinary turn, so the player can save at any point in a conversation - see [Menus, Pages and saving](/howto/npcs/conversations#menus-pages-and-saving) for how this compares with menus. (The player cannot type `UNDO` while the dialogue is waiting, because what they type is taken as their choice.)
 
 ## The page object
 
