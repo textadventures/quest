@@ -2,7 +2,7 @@
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectOptionsSwitchable]</caption>
-    <helpurl>/howto/world/switchable/</helpurl>
+    <helpurl>/howto/objects/switchable/</helpurl>
     <mustnotinherit>editor_room</mustnotinherit>
     <onlydisplayif>this.feature_switchable</onlydisplayif>
 
@@ -78,7 +78,7 @@
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectOptionsEdible]</caption>
-    <helpurl>/howto/world/edible/</helpurl>
+    <helpurl>/howto/objects/food/</helpurl>
     <mustnotinherit>editor_room</mustnotinherit>
     <onlydisplayif>this.feature_edible</onlydisplayif>
 
@@ -126,7 +126,7 @@
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectOptionsLight/Dark]</caption>
-    <helpurl>/howto/world/handling-light-and-dark/</helpurl>
+    <helpurl>/howto/rooms/light-and-darkness/</helpurl>
     <mustnotinherit>editor_room</mustnotinherit>
     <onlydisplayif>this.feature_lightdark</onlydisplayif>
 
@@ -151,7 +151,7 @@
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectOptionsPlayer]</caption>
-    <helpurl>/howto/tasks/changing-the-player-object/</helpurl>
+    <helpurl>/howto/player/player-object/</helpurl>
     <mustnotinherit>editor_room</mustnotinherit>
     <onlydisplayif>this.feature_player</onlydisplayif>
 

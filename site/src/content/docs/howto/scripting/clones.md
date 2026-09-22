@@ -68,13 +68,13 @@ msg ("The goblin has " + this.health + " hit points.")
 
 The same goes for verbs, and for attribute change scripts.
 
-`this` also works in text handled by the [text processor](/howto/world/text-processor), so a plain text description can use it:
+`this` also works in text handled by the [text processor](/howto/text/text-processor), so a plain text description can use it:
 
 ```quest
 The goblin has {this.health} hit points, and looks {this.mood}.
 ```
 
-In text, `this` means the object in the command the player just typed, which is the right object whenever the player is looking at, taking or otherwise acting on the clone. If you need it somewhere else - text printed by a turn script, say - set `game.text_processor_this` to the clone first, as described in [Descriptions that don't change](/howto/tasks/random#descriptions-that-dont-change).
+In text, `this` means the object in the command the player just typed, which is the right object whenever the player is looking at, taking or otherwise acting on the clone. If you need it somewhere else - text printed by a turn script, say - set `game.text_processor_this` to the clone first, as described in [Descriptions that don't change](/howto/scripting/randomness#descriptions-that-dont-change).
 
 For a description that should be different for each clone but then stay put, run it through `ProcessText` when you create the clone and store the result:
 
@@ -109,7 +109,7 @@ goblins = FilterByAttribute(ScopeVisible(), "prototype", goblin)
 msg ("There are " + ListCount(goblins) + " goblins here.")
 ```
 
-`ScopeVisible`, `ScopeReachable`, `ScopeInventory` and `GetDirectChildren(room)` all work as the first argument - see [Using lists](/howto/scripting/using-lists#filtering). To test a single object, check the attribute directly. `HasObject` is safest, since objects that aren't clones don't have the attribute at all:
+`ScopeVisible`, `ScopeReachable`, `ScopeInventory` and `GetDirectChildren(room)` all work as the first argument - see [Using lists](/howto/scripting/lists#filtering). To test a single object, check the attribute directly. `HasObject` is safest, since objects that aren't clones don't have the attribute at all:
 
 ```quest
 if (HasObject(object, "prototype") and object.prototype = stick) {
@@ -148,7 +148,7 @@ Destroy clones you're sure the player can no longer reach. For something the pla
 
 ## See also
 
-- [Monsters](/howto/rpg/zombie-apocalypse-1#monsters) - clones used for a whole population of enemies, with health, attacks and loot
-- [Shops that never run out](/howto/tasks/shop#variation-shops-that-never-run-out) - selling clones from a stockroom
-- [Randomness](/howto/tasks/random#descriptions-that-dont-change) - giving each clone its own fixed description
+- [Monsters](/howto/rpg/combat#monsters) - clones used for a whole population of enemies, with health, attacks and loot
+- [Shops that never run out](/howto/score/shop#variation-shops-that-never-run-out) - selling clones from a stockroom
+- [Randomness](/howto/scripting/randomness#descriptions-that-dont-change) - giving each clone its own fixed description
 - [Object functions](/reference/functions/objects) - the full reference

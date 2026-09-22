@@ -59,14 +59,14 @@ import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
 	<Card title="Surprisingly powerful" icon="star">
 		Quest Viva is designed to be easy to learn, but it has huge power when you need it.
 
-		There's a fully featured [scripting language](/scripts) behind the scenes, which you can dip in and out of as required. Use variables and functions, share behaviour between objects using object types, and package up advanced functionality into libraries to reuse and share.
+		There's a fully featured [scripting language](/reference/script-commands) behind the scenes, which you can dip in and out of as required. Use variables and functions, share behaviour between objects using object types, and package up advanced functionality into libraries to reuse and share.
 	</Card>
 	<Card title="Graphics, sound and video" icon="youtube">
 		Who says text adventures are all about text?
 
-		You can add [pictures](/howto/multimedia/images) to your game, along with [music and sound effects](/howto/multimedia/adding-sounds), and you can even embed [video](/howto/multimedia/adding-sounds#a-youtube-video) from YouTube.
+		You can add [pictures](/howto/media/pictures) to your game, along with [music and sound effects](/howto/media/sound-and-video), and you can even embed [video](/howto/media/sound-and-video#a-youtube-video) from YouTube.
 
-		And you can go further still, [customising the user interface](/howto/ux/customising-the-ui) with your own HTML, CSS and JavaScript, to get your game looking exactly how you want.
+		And you can go further still, [customising the user interface](/customise/css) with your own HTML, CSS and JavaScript, to get your game looking exactly how you want.
 	</Card>
 	<Card title="Create in your browser, or on your desktop" icon="laptop">
 		Quest Viva runs in any modern web browser - there's nothing to install, and it works on Windows, Mac, Linux and Chromebooks.
@@ -84,17 +84,17 @@ import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
 		Once a game has loaded, everything runs in the browser - so it keeps working even if the network drops.
 	</Card>
 	<Card title="Share with the world" icon="open-book">
-		[Publish your game](/publishing/publishing) to [textadventures.co.uk](https://textadventures.co.uk/), the top destination for people looking for text adventure games to play.
+		[Publish your game](/publishing) to [textadventures.co.uk](https://textadventures.co.uk/), the top destination for people looking for text adventure games to play.
 
 		Or [host it yourself](/publishing/hosting) - on your own website, or as a single HTML file you can upload anywhere. It's your game, and you choose where it lives.
 	</Card>
 	<Card title="Any language" icon="translate">
 		Create games in English, French, German, Spanish, Dutch, Italian, Portuguese, Danish, Norwegian, Icelandic, Greek, Russian, Romanian - even Esperanto.
 
-		Or [create your own translation](/advanced-topics/translation).
+		Or [create your own translation](/customise/other-languages).
 	</Card>
 	<Card title="It's free - and so are you" icon="heart">
-		Quest Viva is free and [open source](/developers/developers), licensed under the [MIT License](https://opensource.org/license/MIT).
+		Quest Viva is free and [open source](/contribute), licensed under the [MIT License](https://opensource.org/license/MIT).
 
 		You can sell the games you make with it. You can [modify the source code](https://github.com/textadventures/quest) and use it inside closed source commercial applications.
 
@@ -121,22 +121,22 @@ New to all this? Start with the **[Tutorial](/tutorial/tutorial-introduction)**,
 		description="Guides grouped by what you want to do - rooms and exits, objects, characters and conversation, time and events, pictures and sound, and more." />
 	<LinkCard
 		title="Understanding Quest Viva"
-		href="/howto/scripting/when-scripts-run"
+		href="/understanding/when-scripts-run"
 		description="What goes on underneath - when scripts run, scope, expressions and object types." />
 	<LinkCard
 		title="Customise and Extend"
-		href="/howto/ux/ui-style"
+		href="/customise/look-and-feel"
 		description="The player's look and feel, custom CSS and JavaScript, your own types and libraries, and translation." />
 	<LinkCard
 		title="Publishing"
-		href="/publishing/publishing"
+		href="/publishing"
 		description="Getting your finished game in front of players, on textadventures.co.uk or hosted yourself." />
 	<LinkCard
 		title="Language Reference"
-		href="/scripts"
+		href="/reference/script-commands"
 		description="Every script command, function, attribute and element, described in detail." />
 	<LinkCard
 		title="Contribute"
-		href="/developers/developers"
+		href="/contribute"
 		description="Building Quest Viva from source, how the project is organised, and older releases." />
 </CardGrid>

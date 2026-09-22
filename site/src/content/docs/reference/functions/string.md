@@ -22,7 +22,7 @@ CapFirst (input)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [string](/types#string) with the first character of the input capitalised.
+Returns a [string](/reference/attributes/types#string) with the first character of the input capitalised.
 
 ## Chr
 ```quest
@@ -64,7 +64,7 @@ See also [WriteVerb](#writeverb)
 Decimalise (int input, int places)
 ```
 
-Returns a [string](/types#string) with the given number divided by 10^places and then displayed as a decimal. For example, if `places` is 2, the number is divided by 100, and then shown with two digits after the decimal point. If `places` is zero, the number is returns as a string (no decimal point).
+Returns a [string](/reference/attributes/types#string) with the given number divided by 10^places and then displayed as a decimal. For example, if `places` is 2, the number is divided by 100, and then shown with two digits after the decimal point. If `places` is zero, the number is returns as a string (no decimal point).
 
 This is especially useful for displaying money, when you are tracking the number of pennies the player has, and want to show the number of pounds.
 
@@ -82,7 +82,7 @@ Decimalise(1234, 0)
 DisplayMoney (int money)
 ```
 
-Returns a [string](/types#string) that is the given number, formatted according to the string in game.moneyformat. This allows money to be printed consistently across your game.
+Returns a [string](/reference/attributes/types#string) that is the given number, formatted according to the string in game.moneyformat. This allows money to be printed consistently across your game.
 
 The string game.moneyformat can be formatted in three ways:
 
@@ -135,7 +135,7 @@ The easiest way to set game.moneyformat, is to tick "Money" on the _Features_ ta
 DisplayNumber (int input, string format)
 ```
 
-Returns a [string](/types#string), the given number formatted. The format should consist of:
+Returns a [string](/reference/attributes/types#string), the given number formatted. The format should consist of:
 
 - any number of non-digits (optional)
 - a number, the minimum number of digits left of the decimal point (padded with 0)
@@ -169,11 +169,11 @@ DynamicTemplate (string  template name, string  text)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [string](/types#string) containing the requested text, based on the object or string passed in.
+Returns a [string](/reference/attributes/types#string) containing the requested text, based on the object or string passed in.
 
 You can pass in multiple objects. If you only pass in one, you can refer to it using the variable "object". Otherwise you can use "object1", "object2" etc.
 
-See [Changing templates](/howto/world/changing-templates)
+See [Changing templates](/howto/text/messages)
 
 *Example:* We want to provide a templated message about a blocked exit.
 
@@ -198,14 +198,14 @@ EndsWith (string input, string ending)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [boolean](/types#boolean) - **true** if the input string finishes with the ending string.
+Returns a [boolean](/reference/attributes/types#boolean) - **true** if the input string finishes with the ending string.
 
 ## FormatList
 ```quest
 FormatList (stringlist or object list, string joiner, string lastjoiner, string nothing)
 ```
 
-Returns a [string](/types#string), listing the entries in the given list. For an object list, the GetDisplayName function is used to get an appropriate string. The last two entries in the list are separated by `lastjoiner`, whilst other entries are separated by `joiner`. If the list is empty the string string in `nothing` is returned.
+Returns a [string](/reference/attributes/types#string), listing the entries in the given list. For an object list, the GetDisplayName function is used to get an appropriate string. The last two entries in the list are separated by `lastjoiner`, whilst other entries are separated by `joiner`. If the list is empty the string string in `nothing` is returned.
 
 ```quest
 list = Split("one;two;three", ";") 
@@ -232,7 +232,7 @@ GetMatchStrength (string regex, string input, string cache ID)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns an [int](/types#int) indicating how strongly the given input matches the regular expression.
+Returns an [int](/reference/attributes/types#int) indicating how strongly the given input matches the regular expression.
 
 The strength is defined as the length of the "required" parts of the string, i.e. the total length of the string *minus* the total length of all named groups.
 
@@ -269,7 +269,7 @@ Instr (int start position, string input, string search)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns an [int](/types#int) representing the character position of the search string within the input, or zero if it is not found.
+Returns an [int](/reference/attributes/types#int) representing the character position of the search string within the input, or zero if it is not found.
 
 Maps to the VB.net [Instr function](http://msdn.microsoft.com/en-us/library/8460tsh1(VS.80).aspx).
 
@@ -286,7 +286,7 @@ InstrRev (int start position, string input, string search)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns an [int](/types#int) representing the character position of the search string within the input, starting from the right side of the string.
+Returns an [int](/reference/attributes/types#int) representing the character position of the search string within the input, starting from the right side of the string.
 
 Maps to the VB.net [InstrRev function](http://msdn.microsoft.com/en-us/library/t2ekk41a%28v=VS.80%29.aspx).
 
@@ -297,7 +297,7 @@ IsNumeric (string input)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [boolean](/types#boolean) - **true** if the input is numeric (i.e. a string which can be converted into a number).
+Returns a [boolean](/reference/attributes/types#boolean) - **true** if the input is numeric (i.e. a string which can be converted into a number).
 
 ## IsRegexMatch
 ```quest
@@ -312,7 +312,7 @@ IsRegexMatch (string regex, string, string cache ID)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [boolean](/types#boolean) - **true** if the string matches the specified regular expression.
+Returns a [boolean](/reference/attributes/types#boolean) - **true** if the string matches the specified regular expression.
 
 Use a cache ID for improved performance if you repeatedly test strings against the same regular expression. The compiled regular expression will be cached and used again for subsequent calls to IsRegexMatch (or [Populate](/reference/functions/internal-core#populate) or [GetMatchStrength](#getmatchstrength) ) using the same cache ID.
 
@@ -325,7 +325,7 @@ Join (stringlist input, string split character)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [string](/types#string) containing each element of the input, separated by the split character. This is the inverse of the [split](#split) function.
+Returns a [string](/reference/attributes/types#string) containing each element of the input, separated by the split character. This is the inverse of the [split](#split) function.
 
 ## LCase
 ```quest
@@ -334,7 +334,7 @@ LCase (string input)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [string](/types#string) - the lower-case version of the input.
+Returns a [string](/reference/attributes/types#string) - the lower-case version of the input.
 
 ## Left
 ```quest
@@ -343,7 +343,7 @@ Left (string input, int character count)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [string](/types#string) containing characters from the left of the input string.
+Returns a [string](/reference/attributes/types#string) containing characters from the left of the input string.
 
 Maps to the VB.net [Left function](http://msdn.microsoft.com/en-US/library/y050k1wb(v=VS.80).aspx).
 
@@ -354,7 +354,7 @@ LengthOf (string input)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns an [int](/types#int) containing the number of characters in the string.
+Returns an [int](/reference/attributes/types#int) containing the number of characters in the string.
 
 ## LTrim
 ```quest
@@ -363,7 +363,7 @@ LTrim (input)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-The LTrim function removes spaces on the left side of a [string](/types#string).
+The LTrim function removes spaces on the left side of a [string](/reference/attributes/types#string).
 
 ## Mid
 ```quest
@@ -378,7 +378,7 @@ Mid (string input, int start position, int character count)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [string](/types#string) containing characters from the middle of the input string. The position counts from 1.
+Returns a [string](/reference/attributes/types#string) containing characters from the middle of the input string. The position counts from 1.
 
 Maps to the VB.net [Mid function](http://msdn.microsoft.com/en-us/library/05e63829(v=VS.90).aspx).
 
@@ -387,7 +387,7 @@ Maps to the VB.net [Mid function](http://msdn.microsoft.com/en-us/library/05e638
 PadString (string input, int length, string pad)
 ```
 
-Returns a [string](/types#string) that has been padded to the given length with the given padding.
+Returns a [string](/reference/attributes/types#string) that has been padded to the given length with the given padding.
 
 ```quest
 PadString("23", 4, "0")
@@ -412,14 +412,14 @@ It will attempt to do it if the pad string is more than 1 character, but will be
 Possessive (string possessive, object)
 ```
 
-Returns a [string](/types#string) combining **possessive** with the object's display name, e.g. `Possessive("your", box)` returns "your box". Note that in the current implementation, this doesn't inflect **possessive** itself for gender/number - it's a plain concatenation.
+Returns a [string](/reference/attributes/types#string) combining **possessive** with the object's display name, e.g. `Possessive("your", box)` returns "your box". Note that in the current implementation, this doesn't inflect **possessive** itself for gender/number - it's a plain concatenation.
 
 ## ProcessText
 ```quest
 ProcessText (string)
 ```
 
-Returns an [string](/types#string) - the result of passing the given string through the text processor. For details on what the text processor does, see [here](/howto/world/text-processor).
+Returns an [string](/reference/attributes/types#string) - the result of passing the given string through the text processor. For details on what the text processor does, see [here](/howto/text/text-processor).
 
 ## Replace
 ```quest
@@ -428,14 +428,14 @@ Replace (string input, string old text, string new text)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [string](/types#string) where any text matching "old text" in the input has been replaced by "new text".
+Returns a [string](/reference/attributes/types#string) where any text matching "old text" in the input has been replaced by "new text".
 
 ## ReverseDirection
 ```quest
 ReverseDirection (string input)
 ```
 
-Returns a [string](/types#string), the reverse direction of the given string, so "northwest" becomes "southeast", and "in" becomes "out" (or the equivalent for the language you areusing). Only works for the full name (not "nw" for example). Unrecognised strings are returned unaltered.
+Returns a [string](/reference/attributes/types#string), the reverse direction of the given string, so "northwest" becomes "southeast", and "in" becomes "out" (or the equivalent for the language you areusing). Only works for the full name (not "nw" for example). Unrecognised strings are returned unaltered.
 
 ## Right
 ```quest
@@ -444,7 +444,7 @@ Right (string input, int character count)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [string](/types#string) containing characters from the right of the input string.
+Returns a [string](/reference/attributes/types#string) containing characters from the right of the input string.
 
 Maps to the VB.net [Right function](http://msdn.microsoft.com/en-us/library/dxs6hz0a.aspx).
 
@@ -455,7 +455,7 @@ RTrim (input)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-The RTrim function removes spaces on the right side of a [string](/types#string).
+The RTrim function removes spaces on the right side of a [string](/reference/attributes/types#string).
 
 ## SafeXML
 ```quest
@@ -471,7 +471,7 @@ Returns an XML encoded version of the string that is safe for output (for exampl
 Spaces (int)
 ```
 
-Returns a [string](/types#string) - a number of spaces equal to the given number. This is useful because HTML will collapse a string of spaces into just one.
+Returns a [string](/reference/attributes/types#string) - a number of spaces equal to the given number. This is useful because HTML will collapse a string of spaces into just one.
 
 ## Split
 ```quest
@@ -480,7 +480,7 @@ Split (string input, string split character)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [stringlist](/types#stringlist) where the input has been split into individual strings by the split character. Useful for turning a comma-separated string into a list of strings, for example.
+Returns a [stringlist](/reference/attributes/types#stringlist) where the input has been split into individual strings by the split character. Useful for turning a comma-separated string into a list of strings, for example.
 
 As of version 5.7.2, you can omit the split character, and Quest Viva will assume it is a semicolon.
 
@@ -502,7 +502,7 @@ StartsWith (string input, string start)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [boolean](/types#boolean) - **true** if the input string begins with the start string.
+Returns a [boolean](/reference/attributes/types#boolean) - **true** if the input string begins with the start string.
 
 ## Template
 ```quest
@@ -511,25 +511,25 @@ Template (string template name)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [string](/types#string) containing the text for the requested template.
+Returns a [string](/reference/attributes/types#string) containing the text for the requested template.
 
-You can create a template in your ASLX file with a [\<template\> element](/elements#template).
+You can create a template in your ASLX file with a [\<template\> element](/reference/elements#template).
 
-See [Changing templates](/howto/world/changing-templates)
+See [Changing templates](/howto/text/messages)
 
 ## ToRoman
 ```quest
 ToRoman (int)
 ```
 
-Returns a [string](/types#string) - the given number in Roman numerals (i.e., I, II, III...). Good for numbers from 1 to 3999 (the Romans had no zero or negative numbers, this will produce an empty string; for high numbers, it will just add more and more Ms).
+Returns a [string](/reference/attributes/types#string) - the given number in Roman numerals (i.e., I, II, III...). Good for numbers from 1 to 3999 (the Romans had no zero or negative numbers, this will produce an empty string; for high numbers, it will just add more and more Ms).
 
 ## ToWords
 ```quest
 ToWords (int)
 ```
 
-Returns a [string](/types#string) - the given integer in word form (i.e., one, two...). Numbers outside the range -1999 to 1999 are returned as the digits, but in a string (eg "2000").
+Returns a [string](/reference/attributes/types#string) - the given integer in word form (i.e., one, two...). Numbers outside the range -1999 to 1999 are returned as the digits, but in a string (eg "2000").
 
 This function is part of English.aslx, and is currently only available in English. We would welcome any code for other languages, to be added to later versions of Quest Viva.
 
@@ -540,7 +540,7 @@ Trim (input)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-The Trim function removes spaces on both sides of a [string](/types#string).
+The Trim function removes spaces on both sides of a [string](/reference/attributes/types#string).
 
 ## UCase
 ```quest
@@ -549,7 +549,7 @@ UCase (string input)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [string](/types#string) - the upper-case version of the input.
+Returns a [string](/reference/attributes/types#string) - the upper-case version of the input.
 
 ## WriteVerb
 ```quest

@@ -20,7 +20,7 @@ Ask (string question)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Asks the player the specified **question**, showing "Yes" and "No" as numbered links in the transcript, and returns a [boolean](/types#boolean) - **true** if they answer "Yes". The player can click a link or type its number. The script is suspended until they have answered, so the result can go straight into an `if`:
+Asks the player the specified **question**, showing "Yes" and "No" as numbered links in the transcript, and returns a [boolean](/reference/attributes/types#boolean) - **true** if they answer "Yes". The player can click a link or type its number. The script is suspended until they have answered, so the result can go straight into an `if`:
 
 ```quest
 if (Ask ("Are you sure?")) {
@@ -31,7 +31,7 @@ else {
 }
 ```
 
-This replaces the [ask](/scripts#ask) script command, which is no longer offered when you add a script command.
+This replaces the [ask](/reference/script-commands#ask) script command, which is no longer offered when you add a script command.
 
 ### The callback form
 
@@ -41,7 +41,7 @@ There is a second form, which takes a script to run once the player has answered
 Ask (string question)  { script }
 ```
 
-The script can read a [boolean](/types#boolean) variable **result**, **true** if the player answered "Yes".
+The script can read a [boolean](/reference/attributes/types#boolean) variable **result**, **true** if the player answered "Yes".
 
 ```quest
 Ask ("Are you sure?") {
@@ -97,7 +97,7 @@ Ends the current [Pages](#showpage) dialogue, hiding the current page's option l
 GetCurrentFontFamily ()
 ```
 
-Returns the fonts currently in use - the [defaultwebfont](/attributes#defaultwebfont) and [defaultfont](/attributes#defaultfont).
+Returns the fonts currently in use - the [defaultwebfont](/reference/attributes/all#defaultwebfont) and [defaultfont](/reference/attributes/all#defaultfont).
 
 ## GetInput
 ```quest
@@ -106,7 +106,7 @@ GetInput()
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Waits for the user to enter some text at the command prompt. Instead of handling the input as a command, it is returned as the result of the function, as a [string](/types#string).
+Waits for the user to enter some text at the command prompt. Instead of handling the input as a command, it is returned as the result of the function, as a [string](/reference/attributes/types#string).
 
 The script is suspended where it is, so the line after the `GetInput()` call does not run until the player has answered:
 
@@ -118,7 +118,7 @@ msg ("Hi, " + player.alias)
 
 In the script editor, this is the "player's typed input" template on a "Set a variable or attribute" action. See [Asking the player](/howto/scripting/asking-the-player) for a fuller guide.
 
-**Note:** Quest 5.2 deprecated this function, and Quest 5.4 to 5.8 rejected it outright, in favour of the [get input](/scripts#get-input) script command - blocking the game to wait for an answer tied up a real thread in those versions. Quest Viva suspends the script instead, so the function is available again in games marked as ASL version 600, and is now the better of the two. It still raises an error in a game whose version is 540 to 580; change the game's version to 600 or later to use it.
+**Note:** Quest 5.2 deprecated this function, and Quest 5.4 to 5.8 rejected it outright, in favour of the [get input](/reference/script-commands#get-input) script command - blocking the game to wait for an answer tied up a real thread in those versions. Quest Viva suspends the script instead, so the function is available again in games marked as ASL version 600, and is now the better of the two. It still raises an error in a game whose version is 540 to 580; change the game's version to 600 or later to use it.
 
 ## GoToPage
 ```quest
@@ -132,7 +132,7 @@ Displays the given [dialoguepage](#showpage) object: prints its description, the
 HasSeenPage (object page)
 ```
 
-Returns a [boolean](/types#boolean) - **true** if the given [dialoguepage](#showpage) has been visited before (its `visited` attribute), for conditional page text or options based on what the player has already seen.
+Returns a [boolean](/reference/attributes/types#boolean) - **true** if the given [dialoguepage](#showpage) has been visited before (its `visited` attribute), for conditional page text or options based on what the player has already seen.
 
 ## InitUserInterface
 ```quest
@@ -182,7 +182,7 @@ The usual `OutputTextRaw` adds an HTML "br" element to the end of the text, to i
 PrintCentered(string text)
 ```
 
-Prints the specified text the same way [msg](/scripts/#msg) does, just centered instead of left-aligned - the text can include HTML as usual.
+Prints the specified text the same way [msg](/reference/script-commands/#msg) does, just centered instead of left-aligned - the text can include HTML as usual.
 
 ## RemovePageLink
 ```quest
@@ -268,7 +268,7 @@ ShowMenu (string caption, stringdictionary or stringlist options, boolean allow 
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Shows the specified options as a numbered list of links in the transcript and returns the player's choice, as a [string](/types#string). The player can click an option or type its number. If a dictionary of options is passed in, the values are displayed as options and the key is returned; if a list of options is passed in, the list item is returned. The script is suspended until the player has chosen, so the result can go straight into a variable:
+Shows the specified options as a numbered list of links in the transcript and returns the player's choice, as a [string](/reference/attributes/types#string). The player can click an option or type its number. If a dictionary of options is passed in, the values are displayed as options and the key is returned; if a list of options is passed in, the list item is returned. The script is suspended until the player has chosen, so the result can go straight into a variable:
 
 ```quest
 colour = ShowMenu ("What is your favourite colour?", Split("Red;Green;Blue;Yellow", ";"), false)
@@ -277,7 +277,7 @@ msg ("You chose " + colour)
 
 If the "allow cancel" parameter is set to **true**, entering any command other than one of the option numbers dismisses the menu, and `ShowMenu` returns an empty string (the dismissing command itself is discarded). If it is set to **false**, the player must choose one entry of the menu, and anything else they type is ignored.
 
-The [Split](/reference/functions/string#split) function can be useful to quickly get a list of options, whilst [switch](/scripts#switch) can be useful for dealing with the result. Because one call simply follows another, asking several questions in a row needs no nesting:
+The [Split](/reference/functions/string#split) function can be useful to quickly get a list of options, whilst [switch](/reference/script-commands#switch) can be useful for dealing with the result. Because one call simply follows another, asking several questions in a row needs no nesting:
 
 ```quest
 colour = ShowMenu ("What is your favourite colour?", Split("Red;Green;Blue;Yellow", ";"), false)
@@ -285,7 +285,7 @@ animal = ShowMenu ("Okay, and what is your favourite animal?", Split("Dog;Turtle
 msg ("Really? A " + LCase(colour) + " " + LCase(animal) + " fan.")
 ```
 
-This replaces the [show menu](/scripts#show-menu) script command, which is no longer offered when you add a script command.
+This replaces the [show menu](/reference/script-commands#show-menu) script command, which is no longer offered when you add a script command.
 
 ### The callback form
 
@@ -295,7 +295,7 @@ There is a second form, which takes a script to run once the player has chosen:
 ShowMenu (string caption, stringdictionary or list options, boolean allow ignore)  { script }
 ```
 
-The script can read a [string](/types#string) variable **result** containing the player's choice. If a list of objects is passed in, **result** is the object's name, and an object with a link colour specified has that colour used for its link.
+The script can read a [string](/reference/attributes/types#string) variable **result** containing the player's choice. If a list of objects is passed in, **result** is the object's name, and an object with a link colour specified has that colour used for its link.
 
 If the "allow ignore" parameter is set to **true**, the player can ignore the menu and interact with other objects. The menu is just closed then. If the "allow ignore" parameter is set to **false**, the player must choose one entry of the menu.
 
@@ -387,4 +387,4 @@ WaitForKeyPress
 msg ("Second bit")
 ```
 
-**Note:** Quest 5.1 deprecated this function in favour of the [wait](/scripts#wait) script command, for the same reason as [GetInput](#getinput) above. Quest Viva suspends the script rather than blocking a thread, so it is available again - and preferred - in games marked as ASL version 600. It still raises an error in a game whose version is 540 to 580.
+**Note:** Quest 5.1 deprecated this function in favour of the [wait](/reference/script-commands#wait) script command, for the same reason as [GetInput](#getinput) above. Quest Viva suspends the script rather than blocking a thread, so it is available again - and preferred - in games marked as ASL version 600. It still raises an error in a game whose version is 540 to 580.

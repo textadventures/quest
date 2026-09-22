@@ -4,7 +4,7 @@ sidebar:
   order: 8
 ---
 
-Functions for manipulating dictionaries. For a discussion on how to use dictionaries, see [here](/howto/scripting/using-dictionaries).
+Functions for manipulating dictionaries. For a discussion on how to use dictionaries, see [here](/howto/scripting/dictionaries).
 
 ## DictionaryAdd
 ```quest
@@ -13,7 +13,7 @@ DictionaryAdd (dictionary, string key, string value)
 
 Adds to the dictionary an element with the specified key and value. If an element with that key already exists in the dictionary, that element will be removed first.
 
-See [Using Dictionaries](/howto/scripting/using-dictionaries)
+See [Using Dictionaries](/howto/scripting/dictionaries)
 
 ## DictionaryContains
 ```quest
@@ -22,9 +22,9 @@ DictionaryContains (dictionary, string key)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [boolean](/types#boolean) - **true** if the dictionary contains an element with the specified key.
+Returns a [boolean](/reference/attributes/types#boolean) - **true** if the dictionary contains an element with the specified key.
 
-See [Using Dictionaries](/howto/scripting/using-dictionaries)
+See [Using Dictionaries](/howto/scripting/dictionaries)
 
 ## DictionaryCount
 ```quest
@@ -33,9 +33,9 @@ DictionaryCount (dictionary)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns an [int](/types#int) - the number of items in the dictionary.
+Returns an [int](/reference/attributes/types#int) - the number of items in the dictionary.
 
-See [Using Dictionaries](/howto/scripting/using-dictionaries)
+See [Using Dictionaries](/howto/scripting/dictionaries)
 
 ## DictionaryItem
 ```quest
@@ -44,11 +44,11 @@ DictionaryItem (dictionary, string key)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Retrieves the specified item from the dictionary. Returns a [string](/types#string) or [object](/types#object), depending on whether the dictionary is an [objectdictionary](/types#objectdictionary) or a [stringdictionary](/types#stringdictionary).
+Retrieves the specified item from the dictionary. Returns a [string](/reference/attributes/types#string) or [object](/reference/attributes/types#object), depending on whether the dictionary is an [objectdictionary](/reference/attributes/types#objectdictionary) or a [stringdictionary](/reference/attributes/types#stringdictionary).
 
 Usually you will know the type of list that you're passing in, so you should use the [StringDictionaryItem](#stringdictionaryitem), [ObjectDictionaryItem](#objectdictionaryitem) or [ScriptDictionaryItem](#scriptdictionaryitem) functions instead.
 
-See [Using Dictionaries](/howto/scripting/using-dictionaries)
+See [Using Dictionaries](/howto/scripting/dictionaries)
 
 ## DictionaryRemove
 ```quest
@@ -57,7 +57,7 @@ DictionaryRemove (dictionary, string key)
 
 Removes from the dictionary the element with the specified key. If there is no such key, it does nothing.
 
-See [Using Dictionaries](/howto/scripting/using-dictionaries)
+See [Using Dictionaries](/howto/scripting/dictionaries)
 
 ## NewDictionary
 ```quest
@@ -66,7 +66,7 @@ NewDictionary ()
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns an empty [dictionary](/howto/scripting/using-dictionaries). The dictionary can contain any type of data, or a mixture - for example, both objects and strings.
+Returns an empty [dictionary](/howto/scripting/dictionaries). The dictionary can contain any type of data, or a mixture - for example, both objects and strings.
 
 If the dictionary will only contain one type of data (as will usually be the case), you should use [NewStringDictionary](#newstringdictionary) or [NewObjectDictionary](#newobjectdictionary) instead.
 
@@ -77,7 +77,7 @@ NewObjectDictionary ()
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns an empty [objectdictionary](/types#objectdictionary).
+Returns an empty [objectdictionary](/reference/attributes/types#objectdictionary).
 
 ## NewScriptDictionary
 ```quest
@@ -86,7 +86,7 @@ NewScriptDictionary ()
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns an empty [scriptdictionary](/types#scriptdictionary).
+Returns an empty [scriptdictionary](/reference/attributes/types#scriptdictionary).
 
 ## NewStringDictionary
 ```quest
@@ -95,7 +95,7 @@ NewStringDictionary ()
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns an empty [stringdictionary](/types#stringdictionary).
+Returns an empty [stringdictionary](/reference/attributes/types#stringdictionary).
 
 ## ObjectDictionaryItem
 ```quest
@@ -104,11 +104,11 @@ ObjectDictionaryItem (dictionary, string key)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns the [object](/types#object) specified by the dictionary key.
+Returns the [object](/reference/attributes/types#object) specified by the dictionary key.
 
 You can use the [DictionaryItem](#dictionaryitem) function if you don't know the type of the dictionary.
 
-See [Using Dictionaries](/howto/scripting/using-dictionaries)
+See [Using Dictionaries](/howto/scripting/dictionaries)
 
 ## QuickParams
 ```quest
@@ -142,11 +142,11 @@ ScriptDictionaryItem (scriptdictionary, string key)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns the [script](/types#script) specified by the dictionary key.
+Returns the [script](/reference/attributes/types#script) specified by the dictionary key.
 
 You can use the [DictionaryItem](#dictionaryitem) function if you don't know the type of the dictionary.
 
-See [Using Dictionaries](/howto/scripting/using-dictionaries)
+See [Using Dictionaries](/howto/scripting/dictionaries)
 
 ## StringDictionaryItem
 ```quest
@@ -155,9 +155,9 @@ StringDictionaryItem (stringdictionary, string key)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns the [string](/types#string) specified by the dictionary key.
+Returns the [string](/reference/attributes/types#string) specified by the dictionary key.
 
 You can use the [DictionaryItem](#dictionaryitem) function if you don't know the type of the dictionary.
 
-See [Using Dictionaries](/howto/scripting/using-dictionaries)
+See [Using Dictionaries](/howto/scripting/dictionaries)
 

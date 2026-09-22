@@ -9,7 +9,7 @@ The most significant interactive fiction competition is [IFComp](https://ifcomp.
 
 ## Your entry is a web page
 
-Most IFComp entries are now HTML: a judge opens the game in a browser and plays. Quest Viva can produce exactly that. Publish a **Zip with player included** (see [Publishing your game](/publishing/publishing)) and you have a self-contained entry with `index.html` at the top - your game, the Quest player, and nothing fetched from anywhere else. Judges need no account, no download and no knowledge of Quest.
+Most IFComp entries are now HTML: a judge opens the game in a browser and plays. Quest Viva can produce exactly that. Publish a **Zip with player included** (see [Publishing your game](/publishing)) and you have a self-contained entry with `index.html` at the top - your game, the Quest player, and nothing fetched from anywhere else. Judges need no account, no download and no knowledge of Quest.
 
 That removes what used to be the awkward part of entering a Quest game, which was that judges had to go to textadventures.co.uk or install something to play it. IFComp does still list `.quest` among its formats, but describes it in terms of the old Windows Quest interpreter. Submit the HTML zip instead.
 
@@ -80,7 +80,7 @@ The important message is to think about the interface and make a choice that is 
 
 ## Testing
 
-Beta-testing is especially important for a competition entry, since you only get one shot at a good first impression from the judges. See [Beta-testing](/publishing/publishing#beta-testing) for the general process - the before-testing checklist, how to publish an unlisted test version, and crediting testers. A few things are specific to a competition entry:
+Beta-testing is especially important for a competition entry, since you only get one shot at a good first impression from the judges. See [Beta-testing](/publishing#beta-testing) for the general process - the before-testing checklist, how to publish an unlisted test version, and crediting testers. A few things are specific to a competition entry:
 
 **Keep it unlisted.** IFComp's rules mean your game will be disqualified if it is released publicly before the competition, so if you upload test builds to textadventures.co.uk, double-check that "Who can access this game?" stays on "Only people I give the link to" throughout. There is no "private" setting to look for - unlisted is what keeps the game reachable by your testers and nobody else. If you send testers an HTML build hosted somewhere of your own, keep the address unadvertised and out of search engines.
 

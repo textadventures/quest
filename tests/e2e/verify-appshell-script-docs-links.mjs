@@ -42,7 +42,7 @@ async function run() {
     await page.locator('[role="option"]:has-text("Print a message")').first().click();
     const learnMore = page.locator('a:has-text("Learn more")');
     check('AddScriptModal "Learn more" href for "Print a message" (msg)',
-        await learnMore.getAttribute('href'), 'https://questviva.com/scripts/#msg');
+        await learnMore.getAttribute('href'), 'https://questviva.com/reference/script-commands/#msg');
     // The link names the command, so it's clear it tracks the selection rather
     // than being generic scripting help - and it's the only place the author
     // sees the name they'd write in code ("msg", not "Print a message").
@@ -110,7 +110,7 @@ async function run() {
     ]);
     const popupUrl = popup.url();
     await popup.close();
-    check('script row "?" opens the msg reference', popupUrl, 'https://questviva.com/scripts/#msg');
+    check('script row "?" opens the msg reference', popupUrl, 'https://questviva.com/reference/script-commands/#msg');
 
     // --- Selection toolbar: "? Help" (the touch path) ---
     await row.locator('input[type="checkbox"]').check();
@@ -124,7 +124,7 @@ async function run() {
     ]);
     const popup2Url = popup2.url();
     await popup2.close();
-    check('selection toolbar "Help" opens the msg reference', popup2Url, 'https://questviva.com/scripts/#msg');
+    check('selection toolbar "Help" opens the msg reference', popup2Url, 'https://questviva.com/reference/script-commands/#msg');
 
     console.log('PASS');
 }

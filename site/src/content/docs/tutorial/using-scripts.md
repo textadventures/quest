@@ -10,7 +10,7 @@ We'll now start to play with the real power behind Quest Viva – scripts. Scrip
 
 A script is a list of commands, run in order. Each command does one thing — print a message, move an object, change an attribute, ask a question — and you build up whatever you need by stacking them.
 
-You never have to type a script out. The editor gives you a list of every command available, you pick one, and it shows you boxes to fill in. (If you would rather write code directly, you can — see [Editing in full code view](/howto/scripting/codeview) — but everything in this tutorial is done by clicking.)
+You never have to type a script out. The editor gives you a list of every command available, you pick one, and it shows you boxes to fill in. (If you would rather write code directly, you can — see [Editing in full code view](/howto/scripting/raw-xml) — but everything in this tutorial is done by clicking.)
 
 ## Adding a script to a verb
 
@@ -61,6 +61,6 @@ A few things are worth knowing once your scripts get longer than two commands:
 
 ## Where else scripts go
 
-The verb you have just written runs when the player does something specific. Scripts can also be attached to moments in the game rather than to a command: the game starting, the player entering a room, the end of every turn. Those live on the _Scripts_ tab of the game object and of each room — see [When scripts run](/howto/scripting/when-scripts-run).
+The verb you have just written runs when the player does something specific. Scripts can also be attached to moments in the game rather than to a command: the game starting, the player entering a room, the end of every turn. Those live on the _Scripts_ tab of the game object and of each room — see [When scripts run](/understanding/when-scripts-run).
 
 The next few sections of this tutorial use scripts steadily more, so this is the pattern to get comfortable with.

@@ -126,27 +126,27 @@ export default defineConfig({
                             "items": [
                                 {
                                     "label": "Objects and rooms",
-                                    "slug": "howto/world/objects-and-rooms"
+                                    "slug": "howto/rooms/objects-and-rooms"
                                 },
                                 {
                                     "label": "Exits",
-                                    "slug": "howto/world/exits"
+                                    "slug": "howto/rooms/exits"
                                 },
                                 {
                                     "label": "Doors, locks and keys",
-                                    "slug": "howto/world/doors"
+                                    "slug": "howto/rooms/doors"
                                 },
                                 {
                                     "label": "Light and darkness",
-                                    "slug": "howto/world/handling-light-and-dark"
+                                    "slug": "howto/rooms/light-and-darkness"
                                 },
                                 {
                                     "label": "The map",
-                                    "slug": "howto/tasks/showing-a-map"
+                                    "slug": "howto/rooms/map"
                                 },
                                 {
                                     "label": "Fast travel",
-                                    "slug": "howto/tasks/transit-system"
+                                    "slug": "howto/rooms/fast-travel"
                                 }
                             ]
                         },
@@ -156,39 +156,39 @@ export default defineConfig({
                             "items": [
                                 {
                                     "label": "Object and game features",
-                                    "slug": "howto/world/features"
+                                    "slug": "howto/objects/features"
                                 },
                                 {
                                     "label": "Taking and dropping objects",
-                                    "slug": "howto/world/taking-and-dropping"
+                                    "slug": "howto/objects/taking-and-dropping"
                                 },
                                 {
                                     "label": "Containers and surfaces",
-                                    "slug": "howto/world/containers"
+                                    "slug": "howto/objects/containers"
                                 },
                                 {
                                     "label": "Switchable objects",
-                                    "slug": "howto/world/switchable"
+                                    "slug": "howto/objects/switchable"
                                 },
                                 {
                                     "label": "Clothing",
-                                    "slug": "howto/world/wearables"
+                                    "slug": "howto/objects/clothing"
                                 },
                                 {
                                     "label": "Food",
-                                    "slug": "howto/world/edible"
+                                    "slug": "howto/objects/food"
                                 },
                                 {
                                     "label": "Liquids",
-                                    "slug": "howto/tasks/handling-water"
+                                    "slug": "howto/objects/liquids"
                                 },
                                 {
                                     "label": "Turning one thing into another",
-                                    "slug": "howto/tasks/convert"
+                                    "slug": "howto/objects/transforming"
                                 },
                                 {
                                     "label": "Pushing objects between rooms",
-                                    "slug": "howto/tasks/move-object"
+                                    "slug": "howto/objects/pushing"
                                 }
                             ]
                         },
@@ -198,11 +198,11 @@ export default defineConfig({
                             "items": [
                                 {
                                     "label": "Changing the player object",
-                                    "slug": "howto/tasks/changing-the-player-object"
+                                    "slug": "howto/player/player-object"
                                 },
                                 {
                                     "label": "Character creation",
-                                    "slug": "howto/rpg/character-creation"
+                                    "slug": "howto/player/character-creation"
                                 }
                             ]
                         },
@@ -212,19 +212,19 @@ export default defineConfig({
                             "items": [
                                 {
                                     "label": "Talking to characters",
-                                    "slug": "howto/npcs/conversations"
+                                    "slug": "howto/characters/talking"
                                 },
                                 {
                                     "label": "Ask/Tell topics",
-                                    "slug": "howto/npcs/ask-about"
+                                    "slug": "howto/characters/ask-tell"
                                 },
                                 {
                                     "label": "Conversations with Pages",
-                                    "slug": "howto/npcs/dialogue-pages"
+                                    "slug": "howto/characters/pages"
                                 },
                                 {
                                     "label": "Characters that move",
-                                    "slug": "howto/npcs/npcs-that-move"
+                                    "slug": "howto/characters/moving"
                                 }
                             ]
                         },
@@ -234,27 +234,27 @@ export default defineConfig({
                             "items": [
                                 {
                                     "label": "How commands work",
-                                    "slug": "howto/commands/commands"
+                                    "slug": "howto/commands/how-commands-work"
                                 },
                                 {
                                     "label": "Verbs",
-                                    "slug": "howto/commands/using-verbs"
+                                    "slug": "howto/commands/verbs"
                                 },
                                 {
                                     "label": "Commands with two objects",
-                                    "slug": "howto/commands/complex-commands"
+                                    "slug": "howto/commands/two-objects"
                                 },
                                 {
                                     "label": "Handling multiple items (and all)",
-                                    "slug": "howto/commands/handling-multiple"
+                                    "slug": "howto/commands/multiple-items"
                                 },
                                 {
                                     "label": "Scope",
-                                    "slug": "howto/commands/advanced-scope"
+                                    "slug": "howto/commands/scope"
                                 },
                                 {
                                     "label": "Regular expressions in commands",
-                                    "slug": "howto/commands/pattern-matching"
+                                    "slug": "howto/commands/regular-expressions"
                                 }
                             ]
                         },
@@ -264,7 +264,7 @@ export default defineConfig({
                             "items": [
                                 {
                                     "label": "Time, turns and timers",
-                                    "slug": "howto/scripting/using-turnscripts"
+                                    "slug": "howto/time/time-turns-and-timers"
                                 }
                             ]
                         },
@@ -274,11 +274,11 @@ export default defineConfig({
                             "items": [
                                 {
                                     "label": "Score, health and money",
-                                    "slug": "howto/world/score-health-money"
+                                    "slug": "howto/score/score-health-money"
                                 },
                                 {
                                     "label": "Setting up a shop",
-                                    "slug": "howto/tasks/shop"
+                                    "slug": "howto/score/shop"
                                 }
                             ]
                         },
@@ -288,15 +288,15 @@ export default defineConfig({
                             "items": [
                                 {
                                     "label": "Designing an RPG",
-                                    "slug": "howto/rpg/rpg-intro"
+                                    "slug": "howto/rpg/designing-an-rpg"
                                 },
                                 {
                                     "label": "A simple combat system",
-                                    "slug": "howto/rpg/zombie-apocalypse-1"
+                                    "slug": "howto/rpg/combat"
                                 },
                                 {
                                     "label": "Spells and magic",
-                                    "slug": "howto/rpg/zombie-apocalypse-spells"
+                                    "slug": "howto/rpg/spells"
                                 }
                             ]
                         },
@@ -306,15 +306,15 @@ export default defineConfig({
                             "items": [
                                 {
                                     "label": "Text processor",
-                                    "slug": "howto/world/text-processor"
+                                    "slug": "howto/text/text-processor"
                                 },
                                 {
                                     "label": "Changing the game's messages",
-                                    "slug": "howto/world/changing-templates"
+                                    "slug": "howto/text/messages"
                                 },
                                 {
                                     "label": "Using neutral language",
-                                    "slug": "howto/tasks/neutral-language"
+                                    "slug": "howto/text/neutral-language"
                                 }
                             ]
                         },
@@ -324,11 +324,11 @@ export default defineConfig({
                             "items": [
                                 {
                                     "label": "Pictures",
-                                    "slug": "howto/multimedia/images"
+                                    "slug": "howto/media/pictures"
                                 },
                                 {
                                     "label": "Sound and video",
-                                    "slug": "howto/multimedia/adding-sounds"
+                                    "slug": "howto/media/sound-and-video"
                                 }
                             ]
                         },
@@ -338,11 +338,11 @@ export default defineConfig({
                             "items": [
                                 {
                                     "label": "Hints",
-                                    "slug": "other-guides/a-hint-system"
+                                    "slug": "howto/extras/hints"
                                 },
                                 {
                                     "label": "Journals and player notes",
-                                    "slug": "howto/tasks/keeping-a-journal"
+                                    "slug": "howto/extras/journals"
                                 }
                             ]
                         },
@@ -352,7 +352,7 @@ export default defineConfig({
                             "items": [
                                 {
                                     "label": "Writing code",
-                                    "slug": "howto/scripting/introtocoding"
+                                    "slug": "howto/scripting/writing-code"
                                 },
                                 {
                                     "label": "Asking the player",
@@ -360,23 +360,23 @@ export default defineConfig({
                                 },
                                 {
                                     "label": "Functions",
-                                    "slug": "howto/scripting/creating-functions-which-return-a-value"
+                                    "slug": "howto/scripting/functions"
                                 },
                                 {
                                     "label": "Using lists",
-                                    "slug": "howto/scripting/using-lists"
+                                    "slug": "howto/scripting/lists"
                                 },
                                 {
                                     "label": "Using dictionaries",
-                                    "slug": "howto/scripting/using-dictionaries"
+                                    "slug": "howto/scripting/dictionaries"
                                 },
                                 {
                                     "label": "Randomness",
-                                    "slug": "howto/tasks/random"
+                                    "slug": "howto/scripting/randomness"
                                 },
                                 {
                                     "label": "Maths",
-                                    "slug": "howto/tasks/use-maths-functionality"
+                                    "slug": "howto/scripting/maths"
                                 },
                                 {
                                     "label": "Clones",
@@ -388,7 +388,7 @@ export default defineConfig({
                                 },
                                 {
                                     "label": "Editing the raw XML",
-                                    "slug": "howto/scripting/codeview"
+                                    "slug": "howto/scripting/raw-xml"
                                 }
                             ]
                         },
@@ -398,25 +398,25 @@ export default defineConfig({
                             "items": [
                                 {
                                     "label": "Debugging your game",
-                                    "slug": "howto/scripting/debugging-your-game"
+                                    "slug": "howto/testing/debugging"
                                 },
                                 {
                                     "label": "Walkthroughs",
-                                    "slug": "howto/scripting/using-walkthroughs"
+                                    "slug": "howto/testing/walkthroughs"
                                 },
                                 {
                                     "label": "Transcripts",
-                                    "slug": "howto/world/transcript"
+                                    "slug": "howto/testing/transcripts"
                                 },
                                 {
                                     "label": "Troubleshooting",
-                                    "slug": "howto/tasks/problems"
+                                    "slug": "howto/testing/troubleshooting"
                                 }
                             ]
                         },
                         {
                             "label": "Worked example: Cloak of Darkness",
-                            "slug": "cloak-of-darkness"
+                            "slug": "tutorial/cloak-of-darkness"
                         }
                     ]
                 },
@@ -426,19 +426,19 @@ export default defineConfig({
                     "items": [
                         {
                             "label": "When scripts run",
-                            "slug": "howto/scripting/when-scripts-run"
+                            "slug": "understanding/when-scripts-run"
                         },
                         {
                             "label": "Values and types",
-                            "slug": "howto/scripting/null"
+                            "slug": "understanding/values-and-types"
                         },
                         {
                             "label": "Attributes and types",
-                            "slug": "advanced-topics/about-types"
+                            "slug": "understanding/attributes-and-types"
                         },
                         {
                             "label": "Undo",
-                            "slug": "advanced-topics/undo-support"
+                            "slug": "understanding/undo"
                         }
                     ]
                 },
@@ -452,27 +452,27 @@ export default defineConfig({
                             "items": [
                                 {
                                     "label": "The player interface",
-                                    "slug": "howto/ux/ui-game-play"
+                                    "slug": "customise/player-interface"
                                 },
                                 {
                                     "label": "Look and feel",
-                                    "slug": "howto/ux/ui-style"
+                                    "slug": "customise/look-and-feel"
                                 },
                                 {
                                     "label": "Object verbs",
-                                    "slug": "howto/ux/display-verbs"
+                                    "slug": "customise/object-verbs"
                                 },
                                 {
                                     "label": "Panes",
-                                    "slug": "howto/ux/custom-panes"
+                                    "slug": "customise/panes"
                                 },
                                 {
                                     "label": "Styling the player with CSS",
-                                    "slug": "howto/ux/customising-the-ui"
+                                    "slug": "customise/css"
                                 },
                                 {
                                     "label": "Calling the game from JavaScript",
-                                    "slug": "howto/ux/ui-callback"
+                                    "slug": "customise/javascript"
                                 }
                             ]
                         },
@@ -482,29 +482,29 @@ export default defineConfig({
                             "items": [
                                 {
                                     "label": "Creating and using object types",
-                                    "slug": "advanced-topics/using-inherited-types"
+                                    "slug": "customise/object-types"
                                 },
                                 {
                                     "label": "Using and creating libraries",
-                                    "slug": "advanced-topics/using-libraries"
+                                    "slug": "customise/libraries"
                                 },
                                 {
                                     "label": "Adding editor tabs and script commands",
-                                    "slug": "advanced-topics/tabs-for-types"
+                                    "slug": "customise/editor-tabs"
                                 },
                                 {
                                     "label": "Overriding Core library functions",
-                                    "slug": "advanced-topics/overriding"
+                                    "slug": "customise/overriding"
                                 },
                                 {
                                     "label": "Using delegates",
-                                    "slug": "advanced-topics/using-delegates"
+                                    "slug": "customise/delegates"
                                 }
                             ]
                         },
                         {
                             "label": "Writing a game in another language",
-                            "slug": "advanced-topics/translation"
+                            "slug": "customise/other-languages"
                         }
                     ]
                 },
@@ -514,7 +514,7 @@ export default defineConfig({
                     "items": [
                         {
                             "label": "Publishing your game",
-                            "slug": "publishing/publishing"
+                            "slug": "publishing"
                         },
                         {
                             "label": "Your game's details",
@@ -530,7 +530,7 @@ export default defineConfig({
                         },
                         {
                             "label": "Updating a released game",
-                            "slug": "howto/world/about-save"
+                            "slug": "publishing/updating-a-released-game"
                         },
                         {
                             "label": "WebPlayer",
@@ -544,7 +544,7 @@ export default defineConfig({
                     "items": [
                         {
                             "label": "Script commands",
-                            "slug": "scripts"
+                            "slug": "reference/script-commands"
                         },
                         {
                             "label": "Functions",
@@ -626,37 +626,37 @@ export default defineConfig({
                             "items": [
                                 {
                                     "label": "Overview",
-                                    "slug": "about-attributes"
+                                    "slug": "reference/attributes"
                                 },
                                 {
                                     "label": "Important attributes",
-                                    "slug": "important-attributes"
+                                    "slug": "reference/attributes/important"
                                 },
                                 {
                                     "label": "Status attributes",
-                                    "slug": "status-attributes"
+                                    "slug": "reference/attributes/status"
                                 },
                                 {
                                     "label": "Change script",
-                                    "slug": "change-scripts"
+                                    "slug": "reference/attributes/change-scripts"
                                 },
                                 {
                                     "label": "Attribute Types",
-                                    "slug": "types"
+                                    "slug": "reference/attributes/types"
                                 },
                                 {
                                     "label": "Attribute reference",
-                                    "slug": "attributes"
+                                    "slug": "reference/attributes/all"
                                 }
                             ]
                         },
                         {
                             "label": "XML elements",
-                            "slug": "elements"
+                            "slug": "reference/elements"
                         },
                         {
                             "label": "JS functions",
-                            "slug": "js"
+                            "slug": "reference/js"
                         },
                         {
                             "label": "Hard-coded functions and library functions",
@@ -664,11 +664,11 @@ export default defineConfig({
                         },
                         {
                             "label": "ASLX file format",
-                            "slug": "aslx"
+                            "slug": "reference/aslx"
                         },
                         {
                             "label": "ASL requirements",
-                            "slug": "asl-requirements"
+                            "slug": "reference/asl-requirements"
                         }
                     ]
                 },
@@ -678,15 +678,11 @@ export default defineConfig({
                     "items": [
                         {
                             "label": "Overview",
-                            "slug": "developers/developers"
+                            "slug": "contribute"
                         },
                         {
                             "label": "Building from source",
-                            "slug": "developers/source-code"
-                        },
-                        {
-                            "label": "Older versions",
-                            "slug": "developers/older-versions"
+                            "slug": "contribute/building-from-source"
                         }
                     ]
                 }

@@ -39,7 +39,7 @@ player.age = ToInt(GetInput())
 
 ### Checking the answer
 
-To check for a particular answer, like the answer to a riddle, compare what the player typed. Players don't always type exactly what you expect, so it's worth converting to lower case with `LCase` and matching with a [regular expression](/howto/commands/pattern-matching) rather than an exact string:
+To check for a particular answer, like the answer to a riddle, compare what the player typed. Players don't always type exactly what you expect, so it's worth converting to lower case with `LCase` and matching with a [regular expression](/howto/commands/regular-expressions) rather than an exact string:
 
 ```quest
 msg ("'What walks on four legs in the morning, two in the afternoon, and three in the evening?'")

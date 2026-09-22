@@ -4,7 +4,7 @@
 
     <tab>
       <caption>[EditorExitExit]</caption>
-      <helpurl>/howto/world/exits/</helpurl>
+      <helpurl>/howto/rooms/exits/</helpurl>
 
       <control>
         <caption>[EditorExitTo]</caption>
@@ -135,7 +135,7 @@
 
     <tab>
       <caption>[EditorExitMap]</caption>
-      <helpurl>/howto/tasks/showing-a-map/</helpurl>
+      <helpurl>/howto/rooms/map/</helpurl>
       <onlydisplayif>game.gridmap</onlydisplayif>
 
       <control>
@@ -161,7 +161,7 @@
 
     <tab>
       <caption>[EditorExitOptions]</caption>
-      <helpurl>/howto/world/handling-light-and-dark/</helpurl>
+      <helpurl>/howto/rooms/light-and-darkness/</helpurl>
       <advanced/>
       <onlydisplayif>game.feature_lightdark</onlydisplayif>
 

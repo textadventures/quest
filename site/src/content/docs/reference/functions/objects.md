@@ -9,14 +9,14 @@ sidebar:
 AllKeysAvailable (object)
 ```
 
-Returns a [boolean](/types#boolean) - **true** if the player is carrying every key object listed in the locked object's `key`/`key1`, `key2`, ... attributes. Used by the built-in unlock handling when the object's `requireallkeys` attribute is true; see [KeysAvailable](#keysavailable).
+Returns a [boolean](/reference/attributes/types#boolean) - **true** if the player is carrying every key object listed in the locked object's `key`/`key1`, `key2`, ... attributes. Used by the built-in unlock handling when the object's `requireallkeys` attribute is true; see [KeysAvailable](#keysavailable).
 
 ## AnyKeyAvailable
 ```quest
 AnyKeyAvailable (object)
 ```
 
-Returns a [boolean](/types#boolean) - **true** if the player is carrying at least one of the key objects listed in the locked object's `key`/`key1`, `key2`, ... attributes (or if no keys are set at all). Used by the built-in unlock handling when the object's `requireallkeys` attribute is false; see [KeysAvailable](#keysavailable).
+Returns a [boolean](/reference/attributes/types#boolean) - **true** if the player is carrying at least one of the key objects listed in the locked object's `key`/`key1`, `key2`, ... attributes (or if no keys are set at all). Used by the built-in unlock handling when the object's `requireallkeys` attribute is false; see [KeysAvailable](#keysavailable).
 
 ## Clone
 ```quest
@@ -34,7 +34,7 @@ See also [CloneObjectAndMove](#cloneobjectandmove).
 CloneObject (object)
 ```
 
-Returns an [object](/types#object). Helper function for cloning objects. Clones the object using the [clone](#clone) function. If the existing object did not have an alias, the new object gets an alias of the old object's name - this means that this function returns an object that looks the same to the player as the original object.
+Returns an [object](/reference/attributes/types#object). Helper function for cloning objects. Clones the object using the [clone](#clone) function. If the existing object did not have an alias, the new object gets an alias of the old object's name - this means that this function returns an object that looks the same to the player as the original object.
 
 Objects inside the target object are also cloned, so if you clone a basket with a sandwich inside it, the clone of the basket will have a clone of the sandwich inside it (and if there is ham in the sandwich, that will be cloned, and so on).
 
@@ -47,14 +47,14 @@ See also [CloneObjectAndMove](#cloneobjectandmove) and [CloneObjectAndMoveHere](
 CloneObjectAndMove (object, object new parent)
 ```
 
-Returns an [object](/types#object). Helper function for cloning objects. Clones the object using the [CloneObject](#cloneobject) function and also moves it to the specified parent. For more details, see that function.
+Returns an [object](/reference/attributes/types#object). Helper function for cloning objects. Clones the object using the [CloneObject](#cloneobject) function and also moves it to the specified parent. For more details, see that function.
 
 ## CloneObjectAndMoveHere
 ```quest
 CloneObjectAndMoveHere (object)
 ```
 
-Returns an [object](/types#object). Helper function for cloning objects. Clones the object using the [CloneObject](#cloneobject) function and also moves it to current room.  For more details, see that function.
+Returns an [object](/reference/attributes/types#object). Helper function for cloning objects. Clones the object using the [CloneObject](#cloneobject) function and also moves it to current room.  For more details, see that function.
 
 ## CreateBiExits
 ```quest
@@ -70,7 +70,7 @@ DoesInherit (object object, string type name)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [boolean](/types#boolean) indicating whether the object inherits the specified type.
+Returns a [boolean](/reference/attributes/types#boolean) indicating whether the object inherits the specified type.
 
 ```quest
 if (DoesInherit(o, "male")) {
@@ -93,7 +93,7 @@ GetExitByLink (object from room, object to room)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [string](/types#string) containing the name of the exit joining the specified rooms, if it exits. If it does not exist, [null](/types#null) is returned instead.
+Returns a [string](/reference/attributes/types#string) containing the name of the exit joining the specified rooms, if it exits. If it does not exist, [null](/reference/attributes/types#null) is returned instead.
 
 ## GetExitByName
 ```quest
@@ -102,7 +102,7 @@ GetExitByName (object from room, string direction name)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [string](/types#string) containing the name of the exit going from the specified room in the specified direction, if it exists. If it does not exist, [null](/types#null) is returned instead.
+Returns a [string](/reference/attributes/types#string) containing the name of the exit going from the specified room in the specified direction, if it exists. If it does not exist, [null](/reference/attributes/types#null) is returned instead.
 
 ## GetObject
 ```quest
@@ -111,7 +111,7 @@ GetObject (string object name)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns the [object](/types#object) of the specified name (or exit, or command, or turn script; but not timer). Returns null if the object doesn't exist.
+Returns the [object](/reference/attributes/types#object) of the specified name (or exit, or command, or turn script; but not timer). Returns null if the object doesn't exist.
 
 See also [HasObject](/reference/functions/attributes#hasobject)
 
@@ -120,14 +120,14 @@ See also [HasObject](/reference/functions/attributes#hasobject)
 KeysAvailable (object)
 ```
 
-Returns a [boolean](/types#boolean) indicating whether the player has the key(s) needed to unlock the object. Delegates to [AllKeysAvailable](#allkeysavailable) if the object's `requireallkeys` attribute is true, otherwise to [AnyKeyAvailable](#anykeyavailable).
+Returns a [boolean](/reference/attributes/types#boolean) indicating whether the player has the key(s) needed to unlock the object. Delegates to [AllKeysAvailable](#allkeysavailable) if the object's `requireallkeys` attribute is true, otherwise to [AnyKeyAvailable](#anykeyavailable).
 
 ## LockExit
 ```quest
 LockExit (exit)
 ```
 
-Locks the specified exit, simply by setting the [locked](/attributes#locked) property to true.
+Locks the specified exit, simply by setting the [locked](/reference/attributes/all#locked) property to true.
 
 ## MakeExitInvisible
 ```quest
@@ -189,11 +189,11 @@ player.parent = lounge
 RemoveObject(object object1)
 ```
 
-Removes an object from its parent, by setting its `parent` attribute to null - the object still exists, it just isn't contained anywhere, so it won't appear in room contents, inventory, etc. This is different from [destroy](/scripts/#destroy), which deletes the object completely.
+Removes an object from its parent, by setting its `parent` attribute to null - the object still exists, it just isn't contained anywhere, so it won't appear in room contents, inventory, etc. This is different from [destroy](/reference/script-commands/#destroy), which deletes the object completely.
 
 ## UnlockExit
 ```quest
 UnlockExit (exit)
 ```
 
-Unlocks the specified exit, simply by setting the [locked](/attributes#locked) property to false.
+Unlocks the specified exit, simply by setting the [locked](/reference/attributes/all#locked) property to false.

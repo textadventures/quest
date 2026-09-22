@@ -2,7 +2,7 @@
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectVerbsVerbs]</caption>
-    <helpurl>/howto/commands/using-verbs/</helpurl>
+    <helpurl>/howto/commands/verbs/</helpurl>
     <mustnotinherit>editor_room; dialoguepage</mustnotinherit>
 
     <control>

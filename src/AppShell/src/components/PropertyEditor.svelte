@@ -566,7 +566,7 @@
             {/snippet}
         </DropdownMenu>
         <a
-            href={docsUrlForPath("/howto/world/text-processor/")}
+            href={docsUrlForPath("/howto/text/text-processor/")}
             target="_blank"
             class="btn btn-sm text-xs px-2 py-0.5 text-surface-600-400 ml-auto"
             title={t("propertyEditor.textProcessorHelp")}
