@@ -16,7 +16,7 @@ Quest Viva opens the same `.aslx` game files as Quest 5, so you can carry on wor
 
 Games you've already published keep working too, and don't need republishing. The library code a game uses is baked into its `.quest` file when you publish, so a game published years ago goes on behaving exactly as it did, whatever a player runs it with - see [the publish process](/publishing#the-publish-process) for what a published game contains.
 
-Quest 5 itself is no longer developed. If you need an old installer - to compare behaviour against a particular version, say - they are kept on the [archive site](https://archive.textadventures.co.uk/quest5/).
+Quest 5 itself is no longer developed. If you need an old installer - to compare behaviour against a particular version, say - they are kept on the [archive site](https://archive.textadventures.co.uk/quest/).
 
 ## One editor, everywhere
 
