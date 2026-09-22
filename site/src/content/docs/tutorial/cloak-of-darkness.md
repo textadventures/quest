@@ -14,7 +14,7 @@ The finished game is here: [cloak_of_darkness.aslx](/examples/cloak_of_darkness.
 
 ## The specification
 
-[Roger Firth's specification](http://www.firthworks.com/roger/cloak/) is deliberately small. In summary:
+Roger Firth's specification is deliberately small. His own site has since gone, but the original is [preserved in the Internet Archive](https://web.archive.org/web/20181215172446/http://www.firthworks.com/roger/cloak/), and [IFWiki](https://www.ifwiki.org/Cloak_of_Darkness) lists the implementations. In summary:
 
 - The player starts in the **foyer** of an opera house. There are doors south and west, and an unusable exit north. Nobody else is around.
 - The **bar**, south of the foyer, is dark. Doing anything there other than going back north warns the player about disturbing things in the dark.

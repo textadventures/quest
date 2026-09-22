@@ -5,7 +5,7 @@
     <gameid>18ad63b5-78e2-4846-872b-9177d78cc5e6</gameid>
     <version>1.0</version>
     <firstpublished>2018</firstpublished>
-    <description><![CDATA[The worked example from the Quest Viva tutorial. Originally written for Quest 5 by The Pixie, from the specification at http://www.firthworks.com/roger/cloak/]]></description>
+    <description><![CDATA[The worked example from the Quest Viva tutorial. Originally written for Quest 5 by The Pixie, from Roger Firth's Cloak of Darkness specification (https://www.ifwiki.org/Cloak_of_Darkness)]]></description>
     <author>The Pixie</author>
     <attr name="feature_advancedwearables" type="boolean">false</attr>
     <feature_advancedscripts />

@@ -203,7 +203,7 @@ Sets the text alignment for all the text which follows. Valid alignment values a
 SetBackgroundColour(string colour)
 ```
 
-Sets the colour of the background. [Here](http://www.html-color-names.com/color-chart.php) is a site which shows the HTML-colour-names.
+Sets the colour of the background. See [MDN's list of named colours](https://developer.mozilla.org/en-US/docs/Web/CSS/named-color) for the names you can use, or give a hex value such as `#334455`.
 
 ## SetBackgroundImage
 ```quest
@@ -243,7 +243,7 @@ Sets the font size.
 SetForegroundColour(string colour)
 ```
 
-Sets the colour of the text. [Here](http://www.html-color-names.com/color-chart.php) is a site which shows the HTML-colour-names.
+Sets the colour of the text. See [MDN's list of named colours](https://developer.mozilla.org/en-US/docs/Web/CSS/named-color) for the names you can use, or give a hex value such as `#334455`.
 
 ## SetFramePicture
 ```quest
