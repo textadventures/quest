@@ -175,7 +175,7 @@ The player can still type commands while the form is on screen. If the game shou
 
 ## Timers
 
-Quest Viva's own [timers](/tutorial/using-timers-and-turn-scripts) work in whole seconds. For anything finer, run the timer in JavaScript, and use `ASLEvent` to tell the game only about the moments it cares about.
+Quest Viva's own [timers](/howto/time/time-turns-and-timers#real-time-timers) work in whole seconds. For anything finer, run the timer in JavaScript, and use `ASLEvent` to tell the game only about the moments it cares about.
 
 Every `ASLEvent` call runs a script in the game, so calling it on every tick of a fast timer is wasteful - and each call marks the game as having unsaved progress. Keep the fast, cosmetic part - counting, animating, redrawing - in JavaScript.
 

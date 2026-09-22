@@ -3,7 +3,7 @@ title: Overriding Core library functions
 description: Copy a function, type, template or command out of the Core library into your game so you can change it - and what that costs you later
 ---
 
-Almost everything Quest Viva does - listing the objects in a room, working out whether the player can reach something, printing "You can't see that" - is written in Quest script in the Core library, in exactly the same language your own game is written in. You can take any of it into your game and change it. That's called **overriding**.
+Almost everything Quest Viva does - listing the objects in a room, working out whether the player can reach something, printing "I can't see that." - is written in Quest script in the Core library, in exactly the same language your own game is written in. You can take any of it into your game and change it. That's called **overriding**.
 
 After this page you'll know how to find and copy a library element, what can and can't be overridden, and - the part that matters most - what you're signing up for when you do.
 

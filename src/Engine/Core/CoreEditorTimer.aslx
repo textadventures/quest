@@ -3,7 +3,7 @@
     <appliesto>timer</appliesto>
     <tab>
       <caption>[EditorTimerTimer]</caption>
-      <helpurl>/tutorial/using-timers-and-turn-scripts/</helpurl>
+      <helpurl>/tutorial/turns-and-timers/#real-time-timers</helpurl>
 
       <control>
         <controltype>checkbox</controltype>

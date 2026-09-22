@@ -1,7 +1,7 @@
 ---
 title: Moving objects during the game
 sidebar:
-  order: 12
+  order: 13
 ---
 
 As your game unfolds and the player interacts with your world, you may want to bring additional objects into play, or remove others. In this example, we'll add a window to the kitchen. When the player opens it, a bee flies in. In the next section we'll make this bee quite irritating.
@@ -12,20 +12,29 @@ First, let's create the "bee" object. We don't want this object to appear anywhe
 
 ## Bringing the object into play
 
-Now, add a window object to the kitchen and give it a sensible description. We want to make this window openable, but it's not a container, as you can't put things in a window. We can't add "open" as a verb though, because the "open" command is handled by Quest Viva's container logic. The solution is to go to the _Container_ tab (via the _Features_ tab, of course) and select "Openable/Closable" from the Container Type list. This provides basic functionality for opening and closing an object, but it doesn't do anything else.
+Now, add a window object to the kitchen and give it a sensible description.
 
-Choose "Openable/Closable", and now add script commands to the "Script to run when opening object":
+We want the player to be able to open the window. That's a job for the _Container_ tab, as in [Containers, locks and doors](/tutorial/containers-locks-and-doors) - but a window isn't really a container, because you can't put anything in it. That's what the **Openable/Closable** container type is for: an object that opens and closes and holds nothing. Tick "Container" on the window's _Features_ tab, then choose "Openable/Closable" on its _Container_ tab.
+
+Now add script commands to "Script to run when opening object". This script *replaces* Quest Viva's own handling of `OPEN WINDOW` rather than running alongside it, so the first thing it has to do is open the window itself, and then say so:
 
 -   Open object: window
--   Print a message: "You open the window and a bee flies into the kitchen."
+-   Print a message: "You open the window, and a bee flies into the kitchen."
 -   Move object "bee" to "kitchen"
 
-For the close script, you just need to add:
+"Open object" is in the Objects category, below the "Advanced" divider. It only sets the object's state - it doesn't print anything - which is why we print our own message on the next line.
 
--   Print a message: "You close the window."
--   Close object: window
+There's a matching "Script to run when closing object", but we don't need one: leave it empty and Quest Viva closes the window for us, with its usual message.
 
 Launch the game and go to the kitchen. Open the window and verify that you can now look at the bee.
+
+```
+> open window
+You open the window, and a bee flies into the kitchen.
+
+> close window
+You close it.
+```
 
 ## Checking if the object is already there
 
@@ -33,9 +42,9 @@ What if the player closes the window and then opens it again? They'll be told th
 
 One way to get around this might be to use an object flag, as we've done before. However it's even simpler just to check if the bee is in the kitchen. Add an "if" command and choose "object contains". Now you can select "kitchen" as the parent and "bee" as the child.
 
-For the "then" script, print a message such as "You open the window. Not much happens."
+For the "then" script, print a message such as "You open the window. Nothing much happens this time."
 
-Now cut and paste the existing "print a message" ("a bee flies in...") and "move object" to the "Else".
+Now cut and paste the existing "print a message" ("You open the window, and a bee flies in...") and "move object" to the "Else". Leave "Open object" where it is, above the "if" - the window should open either way.
 
 ![](/images/Bee.png)
 

@@ -99,7 +99,7 @@ Launch the game and verify that you now get a sensible response for `WEIGH BOB` 
 
 ## Additional example (advanced)
 
-Quest Viva can handle text and objects in the same command. Here the say command is extended to allow the player to specify who she is talking to.
+Quest Viva can handle text and objects in the same command. Here the say command is extended to let the player say who they are talking to.
 
 ![](/images/Say_to_troll.png)
 

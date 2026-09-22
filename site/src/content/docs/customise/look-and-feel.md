@@ -81,7 +81,7 @@ When hyperlinks are on, these style the pop-up menu of verbs that appears when t
 
 With panes on, you can also:
 
-- **Turn off compass**, **Turn off inventory** or **Turn off places and objects** - hide individual panes. The Status pane appears by itself whenever there are [status attributes](/tutorial/status-attributes) to show.
+- **Turn off compass**, **Turn off inventory** or **Turn off places and objects** - hide individual panes. The Status pane appears by itself whenever there are [status attributes](/reference/attributes/status) to show.
 - **Alternative pane order (status and compass at top)** - put Status and Compass above Inventory, so they don't move up and down as the inventory grows.
 - **Show a command pane** and **Show a custom status pane** - extra panes you fill from a script. See [Panes](/customise/panes).
 - **Colour scheme for panes** - Classic (light blue, the default), Midnight, Nature, Vanilla, Black, Blood, Tranquil or Parchment.

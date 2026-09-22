@@ -13,7 +13,9 @@ You can record and play back walkthroughs in the editor, or play one from inside
 
 ## Creating and recording a walkthrough
 
-Click the "⋯" button next to *Walkthrough* in the tree and choose **Add Walkthrough** (or use "+ Add" in the toolbar and pick *Walkthrough*). Give it a name that says what it does - "win game", "bad ending", "the cellar puzzle".
+Select **Advanced** in the tree and click **+ Add Walkthrough**. Give it a name that says what it does - "win game", "bad ending", "the cellar puzzle". Once a game has one, a *Walkthrough* node appears under Advanced, and its own "⋯" menu offers **Add Walkthrough** as well.
+
+Walkthroughs aren't in the toolbar's "+ Add" menu - like functions, timers and types, they live under Advanced.
 
 The walkthrough editor is a list of steps you can add, edit and reorder by hand, with **Play** and **Record** buttons above it.
 

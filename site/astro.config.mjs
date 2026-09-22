@@ -91,20 +91,36 @@ export default defineConfig({
                             "slug": "tutorial/using-pages"
                         },
                         {
+                            "label": "Varying your text",
+                            "slug": "tutorial/varying-your-text"
+                        },
+                        {
+                            "label": "Containers, locks and doors",
+                            "slug": "tutorial/containers-locks-and-doors"
+                        },
+                        {
                             "label": "Moving objects during the game",
                             "slug": "tutorial/moving-objects-during-the-game"
                         },
                         {
-                            "label": "Status attributes",
-                            "slug": "tutorial/status-attributes"
+                            "label": "Score and winning",
+                            "slug": "tutorial/score-and-winning"
                         },
                         {
-                            "label": "Using timers and turn scripts",
-                            "slug": "tutorial/using-timers-and-turn-scripts"
+                            "label": "Turns and timers",
+                            "slug": "tutorial/turns-and-timers"
+                        },
+                        {
+                            "label": "Testing your game",
+                            "slug": "tutorial/testing-your-game"
                         },
                         {
                             "label": "Releasing your game",
                             "slug": "tutorial/releasing-your-game"
+                        },
+                        {
+                            "label": "Worked example: Cloak of Darkness",
+                            "slug": "tutorial/cloak-of-darkness"
                         },
                         {
                             "label": "Creating a gamebook",
@@ -413,10 +429,6 @@ export default defineConfig({
                                     "slug": "howto/testing/troubleshooting"
                                 }
                             ]
-                        },
-                        {
-                            "label": "Worked example: Cloak of Darkness",
-                            "slug": "tutorial/cloak-of-darkness"
                         }
                     ]
                 },

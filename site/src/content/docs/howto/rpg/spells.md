@@ -14,7 +14,7 @@ Spells can do almost anything, so there's no single right way to build them. The
 
 ## Mana
 
-Give the player a `mana` attribute and show it in the status pane. Select the player object and go to the _Attributes_ tab. Add an attribute called `mana`, make it an Integer and set it to 5. Then, in the "Status attributes" box above, add `mana` with the display text `Mana: !`. The `!` stands for the value, so the player sees "Mana: 5". See [Status attributes](/tutorial/status-attributes) for more.
+Give the player a `mana` attribute and show it in the status pane. Select the player object and go to the _Attributes_ tab. Add an attribute called `mana`, make it an Integer and set it to 5. Then, in the "Status attributes" box above, add `mana` with the display text `Mana: !`. The `!` stands for the value, so the player sees "Mana: 5". See [Status attributes](/reference/attributes/status) for more.
 
 Because it's a status attribute, the pane updates by itself whenever a script changes `mana` - you don't need to print it.
 
@@ -188,4 +188,4 @@ Every new spell is an object in `known_spells` or `unknown_spells` that inherits
 2. If it's reversed, take the mana and do the reverse effect.
 3. Otherwise, take the mana and do the normal effect.
 
-Mana only goes down so far, so give the player a way to get it back - a potion that adds to `mana`, or a [turn script](/tutorial/using-timers-and-turn-scripts#turn-scripts) that adds one every few turns up to a maximum.
+Mana only goes down so far, so give the player a way to get it back - a potion that adds to `mana`, or a [turn script](/howto/time/time-turns-and-timers#turn-scripts) that adds one every few turns up to a maximum.
