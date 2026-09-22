@@ -586,7 +586,7 @@ For using `switch` with a menu, see [Asking the player](/howto/scripting/asking-
 undo
 ```
 
-Reverts the game state to how it was before the current transaction - see [start transaction](#start-transaction) for how transaction boundaries are controlled. Without any explicit `start transaction` calls, this means `undo` undoes the whole of the previous turn (every attribute change and every line of output) in one go, not just a single script line.
+Reverts the game state to how it was before the current transaction - see [start transaction](#start-transaction) for how transaction boundaries are controlled. Without any explicit `start transaction` calls, this means `undo` undoes the whole of the previous turn in one go, not just a single script line. It reverts every attribute change; text already printed stays on screen.
 
 ## wait
 ```quest

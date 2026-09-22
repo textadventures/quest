@@ -433,7 +433,7 @@ export default defineConfig({
                             "slug": "howto/scripting/null"
                         },
                         {
-                            "label": "Object types",
+                            "label": "Attributes and types",
                             "slug": "advanced-topics/about-types"
                         },
                         {
@@ -481,7 +481,7 @@ export default defineConfig({
                             "collapsed": true,
                             "items": [
                                 {
-                                    "label": "Creating your own types",
+                                    "label": "Creating and using object types",
                                     "slug": "advanced-topics/using-inherited-types"
                                 },
                                 {
@@ -489,15 +489,11 @@ export default defineConfig({
                                     "slug": "advanced-topics/using-libraries"
                                 },
                                 {
-                                    "label": "Editor tabs for types",
+                                    "label": "Adding editor tabs and script commands",
                                     "slug": "advanced-topics/tabs-for-types"
                                 },
                                 {
-                                    "label": "Editor user interface elements",
-                                    "slug": "advanced-topics/editor-user-interface-elements"
-                                },
-                                {
-                                    "label": "Overriding built-in functions",
+                                    "label": "Overriding Core library functions",
                                     "slug": "advanced-topics/overriding"
                                 },
                                 {
@@ -507,7 +503,7 @@ export default defineConfig({
                             ]
                         },
                         {
-                            "label": "Translating Quest Viva",
+                            "label": "Writing a game in another language",
                             "slug": "advanced-topics/translation"
                         }
                     ]
@@ -517,7 +513,7 @@ export default defineConfig({
                     "collapsed": true,
                     "items": [
                         {
-                            "label": "Overview",
+                            "label": "Publishing your game",
                             "slug": "publishing/publishing"
                         },
                         {
@@ -651,10 +647,6 @@ export default defineConfig({
                                 {
                                     "label": "Attribute reference",
                                     "slug": "attributes"
-                                },
-                                {
-                                    "label": "Mutable attributes on inherited types",
-                                    "slug": "notes"
                                 }
                             ]
                         },
@@ -691,10 +683,6 @@ export default defineConfig({
                         {
                             "label": "Building from source",
                             "slug": "developers/source-code"
-                        },
-                        {
-                            "label": "Open source",
-                            "slug": "developers/open-source"
                         },
                         {
                             "label": "Older versions",

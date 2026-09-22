@@ -1,30 +1,31 @@
 ---
 title: Using delegates
+description: Store a script on an object that takes parameters or returns a value, by defining a delegate to describe its signature
 sidebar:
   order: 3
 ---
 
+A [script](/types#script) attribute lets you attach a script to an object and run it with `do`. But a script attribute takes no parameters and returns no value, so it can't answer a question or be told how much damage to do. A **delegate** fills that gap: it defines a signature - parameters, a return type, or both - that a script attribute can then use instead of plain `script`.
+
 :::note
-Delegates can currently only be edited in the raw XML code view. There is no dedicated editor support for delegates.
+Delegates can currently only be edited in the raw XML code view. There is no dedicated editor support for delegates, so if you want the editor's help, see "Passing values in a dictionary" at the end of this page.
 :::
 
-It is easy to create a [script](/types#script) attribute to run at a particular point in the game, but what if you want to create a script attribute that returns a value? It would look a lot like a function. The answer is to use **delegates**.
+To use one:
 
-Note: Delegates also offer a way to pass parameters to a script, but this is arguably better done by passing a dictionary to a script (if only because it is supported by the editors).
+1. Define the delegate with a [`<delegate>`](/elements#delegate) element. It takes the same attributes as [`<function>`](/elements#function), so you can give it parameters, a return type, or both.
+2. Give an attribute that delegate's name as its type, instead of `script`.
+3. Run it with [`rundelegate`](/scripts#rundelegate) if it returns nothing, or [`RunDelegateFunction`](/reference/functions/general#rundelegatefunction) if it returns a value.
 
-First you need to define the delegate, using a [delegate](/elements#delegate) XML tag. This accepts the same attributes as the [function](/elements#function) tag, so you can specify parameters and/or a return value type.
+[`HasDelegateImplementation`](/reference/functions/attributes#hasdelegateimplementation) tells you whether a particular object has implemented one.
 
-Now you can simply use the delegate name as an attribute type name.
-
--   To run a delegate which does not return a value, use the [rundelegate](/scripts#rundelegate) script command.
--   To get a return value from a delegate, use the [RunDelegateFunction](/reference/functions/general#rundelegatefunction) function.
--   To see if an object implements a delegate, use the [HasDelegateImplementation](/reference/functions/attributes#hasdelegateimplementation) function.
+The `<delegate>` element has to appear in the file **before** anything that uses it - just after the library includes is a good place. Put it later and the game won't load: it stops with "Unrecognised attribute type '...' in '...'".
 
 ## Delegates in action
 
-Let us see this in action. First, a bit of terminology. In "object-orientated programming" a function that is attached to an object is called a "method", and that term is used here. The "signature" of a method is the return type and the parameters it expects (a Quest Viva function similarly has a signature).
+In object-oriented programming, a function attached to an object is called a *method*, and that's the word used here. A method's *signature* is its return type and the parameters it expects.
 
-Here is a very simple game where you can hit a goblin.
+Here is a very simple game where you can hit a goblin. English.aslx already defines a `hit` verb, so the goblin's `hit` script attribute runs when the player types HIT GOBLIN.
 
 ```xml
 <!--Saved by Quest Viva 6.0.0-->
@@ -33,8 +34,6 @@ Here is a very simple game where you can hit a goblin.
   <include ref="Core.aslx" />
   <game name="test">
     <gameid>cb4455e4-6e7c-45da-bf39-f2126e817fb1</gameid>
-    <version>1.1</version>
-    <firstpublished>2013</firstpublished>
   </game>
   <object name="room">
     <inherit name="editor_room" />
@@ -55,15 +54,15 @@ Here is a very simple game where you can hit a goblin.
 </asl>
 ```
 
-The goblin object has a method, called "hit". It is also a script, as it takes no parameters and returns no value.
+### Returning a value
 
-We will now set up a new method, which will return the percentage of the goblin's full hits that it has remaining. A delegate is essentially a way to define a custom signature, in this case it will look like this:
+Now add a method that returns the percentage of its full hits the goblin has left. A delegate is a way to define a custom signature, and this one needs no parameters and returns an int:
 
 ```xml
 <delegate name="script_returns_int" type="int" />
 ```
 
-This has to appear in your code before the delegate is used - just after the library includes seems best to me. Here is the modified game:
+The goblin gets a new attribute, `getpc`, set up like a script but with the delegate's name as its type. Because it returns a value, call it with `RunDelegateFunction` rather than `do`:
 
 ```xml
 <!--Saved by Quest Viva 6.0.0-->
@@ -73,8 +72,6 @@ This has to appear in your code before the delegate is used - just after the lib
   <delegate name="script_returns_int" type="int" />
   <game name="test">
     <gameid>cb4455e4-6e7c-45da-bf39-f2126e817fb1</gameid>
-    <version>1.1</version>
-    <firstpublished>2013</firstpublished>
   </game>
   <object name="room">
     <inherit name="editor_room" />
@@ -99,27 +96,27 @@ This has to appear in your code before the delegate is used - just after the lib
 </asl>
 ```
 
-Note the new method, "getpc". It is set up like a script, but its type is what was defined by the delegate, rather than "script". Also, to invoke it, use "RunDelegateFunction" rather than "do".
+The goblin's own `getpc` decides how its percentage is worked out, so a different monster can carry a different calculation under the same name - armour that soaks up damage, say - and the code that prints the message doesn't have to know or care.
 
-Suppose we want to kick that goblin too. We do not want to have to repeat code, so the kick and hit scripts are going to call a new method, "attack", and send a parameter, the damage done. We need a new delegate, this time allowing a parameter to be sent, rather than a value to be returned (you can readily do both, of course, if you need to).
+### Taking parameters
+
+Suppose the player can kick the goblin as well as hit it. Rather than repeat the code, both scripts call a new method, `attack`, and pass it the damage done. That needs a second delegate, this time with a parameter instead of a return value (a delegate can have both, if you need it to):
 
 ```xml
 <delegate name="script_with_1" parameters="a" />
 ```
 
-The game now looks like this:
+The parameters of the method must have the same names as those in the delegate definition - here, `a`. Invoke it with `rundelegate`, because it returns nothing:
 
 ```xml
 <!--Saved by Quest Viva 6.0.0-->
 <asl version="600">
   <include ref="English.aslx" />
   <include ref="Core.aslx" />
-  <delegate name="script_returns_int" parameters="" type="int" />
+  <delegate name="script_returns_int" type="int" />
   <delegate name="script_with_1" parameters="a" />
   <game name="test">
     <gameid>cb4455e4-6e7c-45da-bf39-f2126e817fb1</gameid>
-    <version>1.1</version>
-    <firstpublished>2013</firstpublished>
   </game>
   <object name="room">
     <inherit name="editor_room" />
@@ -134,14 +131,14 @@ The game now looks like this:
       <getpc type="script_returns_int">
         return (100 * (this.fullhits - this.hitslost) / this.fullhits)
       </getpc>
-      <attack type="script_with_1">
-        msg ("You hit the " + this.name + " and it loses " + a + " hits!")
-        this.hitslost = this.hitslost + a
-        msg ("The " + this.name + " has " + RunDelegateFunction (this, "getpc") + "% of its hits.")
-      </attack>
       <gethits type="script_returns_int">
         return (this.fullhits - this.hitslost)
       </gethits>
+      <attack type="script_with_1">
+        msg ("The " + this.name + " loses " + a + " hits!")
+        this.hitslost = this.hitslost + a
+        msg ("The " + this.name + " has " + RunDelegateFunction (this, "getpc") + "% of its hits.")
+      </attack>
       <hit type="script">
         rundelegate (this, "attack", 4)
       </hit>
@@ -158,58 +155,31 @@ The game now looks like this:
 </asl>
 ```
 
-We use "rundelegate" to invoke the new method, as it does not return a value. The parameters for your method must have the same names as those in your delegate definition.
+## Passing values in a dictionary
 
-NOTE: For sending parameters to a script, an alternative is to put the parameters into a dictionary. Whether this is preferable is a matter of choice, but it is at least supported by the editor.
+If all you need is to pass parameters to a script - not to get a value back - you don't need a delegate at all. Put the values in a dictionary and pass that to `do`. The script picks them up as ordinary variables, so `attack` goes back to being a plain `script` attribute, and the editor can edit it like any other script:
 
 ```xml
-<!--Saved by Quest Viva 6.0.0-->
-<asl version="600">
-  <include ref="English.aslx" />
-  <include ref="Core.aslx" />
-  <delegate name="script_returns_int" parameters="" type="int" />
-  <game name="test">
-    <gameid>cb4455e4-6e7c-45da-bf39-f2126e817fb1</gameid>
-    <version>1.1</version>
-    <firstpublished>2013</firstpublished>
-  </game>
-  <object name="room">
-    <inherit name="editor_room" />
-    <object name="player">
-      <inherit name="editor_object" />
-      <inherit name="editor_player" />
-    </object>
-    <object name="goblin">
-      <inherit name="editor_object" />
-      <fullhits type="int">25</fullhits>
-      <hitslost type="int">0</hitslost>
-      <getpc type="script_returns_int">
-        return (100 * (this.fullhits - this.hitslost) / this.fullhits)
-      </getpc>
-      <attack type="script">
-        msg ("You hit the " + this.name + " and it loses " + a + " hits!")
-        this.hitslost = this.hitslost + a
-        msg ("The " + this.name + " has " + RunDelegateFunction (this, "getpc") + "% of its hits.")
-      </attack>
-      <gethits type="script_returns_int">
-        return (this.fullhits - this.hitslost)
-      </gethits>
-      <hit type="script">
-        d = NewDictionary()
-        dictionary add(d, "a", 4)
-        do (this, "attack", d)
-      </hit>
-      <kick type="script">
-        d = NewDictionary()
-        dictionary add(d, "a", 7)
-        do (this, "attack", d)
-      </kick>
-    </object>
-  </object>
-  <verb>
-    <property>kick</property>
-    <pattern>kick</pattern>
-    <defaultexpression>"You can't kick " + object.article + "."</defaultexpression>
-  </verb>
-</asl>
+<attack type="script">
+  msg ("The " + this.name + " loses " + a + " hits!")
+  this.hitslost = this.hitslost + a
+</attack>
+<hit type="script">
+  d = NewDictionary()
+  dictionary add (d, "a", 4)
+  do (this, "attack", d)
+</hit>
+<kick type="script">
+  d = NewDictionary()
+  dictionary add (d, "a", 7)
+  do (this, "attack", d)
+</kick>
 ```
+
+Which you prefer is a matter of taste. The dictionary is easier to edit and needs no `<delegate>` element; the delegate makes the signature explicit, and it's the only option when you need a return value.
+
+## See also
+
+- [Creating functions which return a value](/howto/scripting/creating-functions-which-return-a-value)
+- [`<delegate>` in the XML elements reference](/elements#delegate)
+- [Editing the raw XML](/howto/scripting/codeview)

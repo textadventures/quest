@@ -1,23 +1,28 @@
 ---
-title: Using tabs for types
+title: Adding editor tabs and script commands
+description: Give your library its own tab in the object editor and its own entries in the script adder, so the features it adds can be used without writing code
 sidebar:
   order: 8
 ---
 
-So you know all about types, from the [Using Types](/advanced-topics/using-inherited-types) page, right? Let us do some more. In this tutorial we will add a new tab to an object so we can easily edit attributes of objects of that type.
+If your library adds a [type](/advanced-topics/using-inherited-types) or some functions, anyone using it has to know which attributes to set and which functions to call. You can do better than that: a library can add its own **tab** to the object editor, and its own **script commands** to the "Add Script Command" list, so its features are used by filling in boxes like any built-in feature.
 
-Some familiarity with XML (or HTML) will be useful!
+| You want | Add |
+|---|---|
+| Boxes for the attributes your type uses, on the object that has it | a `<tab>` |
+| Your library's functions to appear in the script adder | an `<editor>` |
 
-This is great if you want to share your library as it makes it much easier for other people to include objects of your type - it is all done through a dedicated tab. If can be useful for you too; if you have a dozen or so of the same type of thing, it may be easier to set up a tab, and then modify the attributes there.
+Both are written as XML, so some familiarity with XML (or HTML) is useful, and both use the same `<control>` elements. The core library is built the same way: `src/Engine/Core/CoreEditor*.aslx` in the [source code](/developers/source-code) is one long worked example of everything on this page.
 
+:::caution
+Put these in a library, not in your main game file. Quest Viva does not save `<tab>` or `<editor>` elements that belong to the built-in editors, so a tab you add to your game file works until you next save, and is then silently gone. In a library it is safe, because libraries aren't rewritten when the game is saved.
+:::
 
-## Use a library
+## Put your type in a library
 
-If we are going to get serious, it is better to put your types in another file (and verbs, commands, functions, turn scripts and templates can go in there too), so we will do that first.
+Libraries are covered in [Using and creating libraries](/advanced-topics/using-libraries) - in short, create a text file with a `<library>` root element, then add it to your game by clicking **Advanced** at the bottom of the tree and then **Add Library**, and reload the editor when the banner asks you to.
 
-One reason to use a library is that Quest Viva will not save your tabs, so if you add them to the main game they will disappear!
-
-Start the library in any text editor - once it has been added to your game, you can carry on editing it in Quest Viva (see [Editing a library](/advanced-topics/using-libraries#editing-a-library)). Your basic library has a start tag and an end tag. It is also worth putting an XML declaration first, so that you can check the file with an online XML validator (such as [this](http://validator.w3.org/#validate_by_input)) if the code ever gets so broken that Quest Viva cannot handle it. The basic framework looks like this:
+It is worth putting an XML declaration first, so you can check the file with an online XML validator if the code ever gets so broken that Quest Viva cannot load it:
 
 ```xml
 <?xml version="1.0"?>
@@ -25,7 +30,7 @@ Start the library in any text editor - once it has been added to your game, you 
 </library>
 ```
 
-Go into the code in Quest Viva, and cut the type from there, and paste it into your library (if you are following this as a tutorial from the previous page, you will see that the text here has been improved a little).
+The examples on this page build a "spell" type and a specialised "attackspell" that inherits from it. Everything goes between the `<library>` tags. If the type already exists in your game, cut it out of the [raw XML code view](/howto/scripting/codeview) and paste it here - taking everything from the opening tag to the closing tag, whole lines only:
 
 ```xml
 <?xml version="1.0"?>
@@ -43,50 +48,27 @@ Go into the code in Quest Viva, and cut the type from there, and paste it into y
     <take type="boolean">false</take>
     <usedefaultprefix type="boolean">false</usedefaultprefix>
     <learn type="script"><![CDATA[
-      if (not this.parent = player) {
-        this.parent = player
-        msg ("In a process that seems at once unfathomable, and yet familiar, the spell fades away, and you realise you are now able to cast the <i>" + this.alias + "</i> spell.")
+      if (not this.parent = game.pov) {
+        this.parent = game.pov
+        msg ("In a process that seems at once unfathomable and yet familiar, the spell fades away, and you realise you can now cast the <i>" + this.alias + "</i> spell.")
       }
       else {
-        msg ("Er, you already know that one!")
+        msg ("You already know that one.")
       }
     ]]></learn>
+  </type>
+
+  <type name="attackspell">
+    <inherit name="spell" />
   </type>
 </library>
 ```
 
-It is vital that you cut-and-paste everything from the start tag to the end tag, including both tags. Save this file as "library.aslx" in the same directory as your game.
-
-In your game file in Quest Viva, you need an extra line at the top of the code, telling Quest Viva to include your library. The top five lines will be like this, with your library after the two standard libraries (the numbers in the first two lines may be different if you are using a different version).
-
-```xml
-<!--Saved by Quest Viva 6.0.0-->
-<asl version="600">
-  <include ref="English.aslx" />
-  <include ref="Core.aslx" />
-  <include ref="Library.aslx" />
-  ...
-
-```
-Now go into the game, and check it still works.
-
-
-## More types
-
-We will now set up a new type, attackspell. The attackspell is a particular type of spell, so it needs all the properties of an ordinary spell, but perhaps some new ones too. So it wants to *inherit* those properties from spell. Here, then, is our new type:
-
-```xml
-<type name="attackspell">
-  <inherit name="spell"/>
-</type>
-```
-
+Add the library to your game, reload the editor, and check the game still works before going any further.
 
 ## A simple tab
 
-Let us suppose attack spells will use different elements and have different power ratings. The way to do that is to have attributes on each spell, "powerrating" and "element". The cool way to do *that*, is to create new tabs in the editor.
-
-Here is the basic code (paste this in before the </library> tag).
+Attack spells use different elements and have different power ratings, so they need `powerrating` and `element` attributes. Rather than make the author add those by hand on the Attributes tab, give them a tab of their own. Paste this into the library, before the closing `</library>` tag:
 
 ```xml
 <tab>
@@ -103,16 +85,16 @@ Here is the basic code (paste this in before the </library> tag).
 </tab>
 ```
 
-So what do we see here? It starts and ends with `<tab>` and `</tab>`, so Quest Viva knows this is a tab. The `parent` element tells Quest Viva this is an editor for an object. The `caption` is the name on the tab, and `mustnotinherit` stops this tab appearing for rooms and the player (note these types are separated by semi-colons).
+- `<parent>` says which editor the tab belongs to. `_ObjectEditor` is the one you see when you select an object.
+- `<caption>` is the name on the tab. Your tabs appear after the built-in ones.
+- `<mustnotinherit>` keeps the tab off rooms and the player object. The types are separated by semicolons.
+- The one control is a dropdown letting the author say whether this object is a spell, an attack spell, or neither. `*` is the "none of them" choice, and it has to be there.
 
-Then there is our control, and you can have several of these. This one gives a dropdown menu, allowing the user to select whether this is not spell, is a non-attack spell, or is an attack spell. The asterisk indicates the null choice, by the way.
-
-Quest Viva will not realise you have changed your library file; to see a difference, you will need to close your game (from the _File_ menu - no need to exit Quest Viva completely), then open it again. Hopefully, if you click on an object you will see a new tab called "Spell"!
-
+Quest Viva reads libraries when the game is loaded, so after editing the library you need to reload the editor before the tab appears - click "Reload" in the banner. Select an object and you should see a new "Spell" tab.
 
 ## More controls
 
-Now we will put in a powerrating control. Try this (remember, it has to go before the </tag> line, because that marks the end of the tag):
+A tab can have as many controls as you like. Here is one for the power rating:
 
 ```xml
 <control>
@@ -126,9 +108,9 @@ Now we will put in a powerrating control. Try this (remember, it has to go befor
 </control>
 ```
 
-The `controltype` says this is for an integer number, the `caption` is again the label the user will see, the `attribute` is what is being set, and `width`, of course, is the size (not sure if it actually gets used). By setting `mustinherit`, this is only visible for attackspells. Also, `minimum` and `maximum` values are set (but these are only for this tab, the values can change outside the tab by editing the attribute directly or during play, so do not rely on them being in that range).
+`<attribute>` names the attribute the control sets - every control that edits a value needs one. `<width>` is the control's width in pixels; leave it out and the control fills the space available. `<mustinherit>` means this one is only shown for attack spells. `<minimum>` and `<maximum>` bound the spinner, but they only apply to this control - a script, or a hand-edited attribute, can still put the value outside that range, so don't rely on it.
 
-Now here is a text box, which is pretty straightforward. We can use this for descriptions of what happens.
+A text box for the description, shown for both kinds of spell because `attackspell` inherits `spell`:
 
 ```xml
 <control>
@@ -139,28 +121,25 @@ Now here is a text box, which is pretty straightforward. We can use this for des
 </control>
 ```
 
-Note that this must inherit from spell, so will be visible for both types of spells (as attack spells inherit from spell).
-
-We also want to be able to select an element (fire for fireball, etc). Now we can create the dropdown list just as we did before (inside the "tab" tags):
+And a dropdown for the element:
 
 ```xml
 <control>
   <controltype>dropdown</controltype>
   <caption>Element</caption>
-  <attribute>category</attribute>
+  <attribute>element</attribute>
   <validvalues type="simplestringlist">none;Fire;Frost;Storm</validvalues>
   <mustinherit>attackspell</mustinherit>
 </control>
-
 ```
 
-## Other options
+It is generally a good idea to give your type a sensible default value for each attribute your tab edits.
 
-Now you know the basics, you will want to know what other options are available.
+## Showing a control only when it applies
 
-### Conditional display
+Keeping the editor tidy matters: a tab crowded with controls that don't apply is worse than no tab. Three elements control visibility, and all three work on a whole `<tab>` or on a single `<control>`.
 
-Often, a tab is only applicable to certain types, or it not applicable to certain types, and you can help keep the GUI tidy by having your tab only displayed when relevant. In this example, the tab will only be shown for objects with the "container" type:
+`<mustinherit>` shows it only for objects of the given type (or types, separated by semicolons):
 
 ```xml
 <tab>
@@ -170,7 +149,7 @@ Often, a tab is only applicable to certain types, or it not applicable to certai
 </tab>
 ```
 
-This tab will _not_ be be shown for rooms and the player object.
+`<mustnotinherit>` hides it for the given types - here, for rooms and the player object:
 
 ```xml
 <tab>
@@ -180,35 +159,51 @@ This tab will _not_ be be shown for rooms and the player object.
 </tab>
 ```
 
-As we saw earlier, the same "mustinherit" and "mustnotinherit" elements can be used inside the controls themselves. This way the user can select the object to be a "container", and the controls relevant to that type will suddenly appear on the tab.
+Used inside a control, these let the author pick a type on your `dropdowntypes` control and watch the relevant controls appear.
 
-You can also control what is displayed based on the value of an attribute, using `onlydisplayif`. This takes a condition expressed in Quest Viva code. Here are some examples from the core library.
-
-This will display if the "feature_annotations" attribute of the game object is true:
+`<onlydisplayif>` takes a condition written in Quest Viva code, with `this` being the object being edited. Anything you could put in an `if` works. These examples come from the core library:
 
 ```xml
 <onlydisplayif>game.feature_annotations</onlydisplayif>
-```
 
-This displays if the "lookonly" attribute of this object is _not_ true:
-
-```xml
 <onlydisplayif>not this.lookonly</onlydisplayif>
-```
-These next three illustrate how you can use any code that you might put inside an `if` condition:
-
-```xml
-<onlydisplayif>game.pov = null</onlydisplayif>
 
 <onlydisplayif>GetInt(this, "keycount") > 2</onlydisplayif>
 
 <onlydisplayif>(GetBoolean(this, "locked") or not GetBoolean(this, "visible"))</onlydisplayif>
 ```
 
+Add `<advanced/>` to a control to tuck it into the collapsed **Advanced** section at the bottom of the tab, rather than hide it altogether. That is the right home for anything most authors won't need.
 
-### Text controls
+## Control types
 
-There are several types of controls you can put on your tabs, the simplest are text controls.
+Every `<control>` needs a `<controltype>`, and almost all of them need a `<caption>` (the label the author sees) and an `<attribute>`. The rest of the elements listed here are optional extras for that control type.
+
+| Control type | Edits | Useful extras |
+|---|---|---|
+| `title` | nothing - a heading within the tab | |
+| `label` | nothing - a line of explanatory text | `<bold/>` |
+| `checkbox` | a boolean | |
+| `textbox` | a string, on one line | `<nullable/>` |
+| `richtext` | a string, with formatting buttons and text processor help | `<expand/>`, `<nullable/>` |
+| `number` | an int | `<minimum>`, `<maximum>`, `<increment>` |
+| `numberdouble` | a double | `<minimum>`, `<maximum>`, `<increment>` |
+| `dropdown` | a string chosen from a list | `<validvalues>`, `<freetext/>` |
+| `dropdowntypes` | which of your types the object inherits | `<types>` (no `<attribute>`) |
+| `objects` | an object, chosen from the objects in the game | |
+| `file` | a file from the game's assets | |
+| `list` | a stringlist | `<editprompt>` |
+| `stringdictionary` | a stringdictionary | `<keyprompt>`, `<valueprompt>` |
+| `scriptdictionary` | a scriptdictionary | `<keyprompt>` |
+| `script` | a script | |
+| `multi` | an attribute whose type the author chooses | `<types>`, `<editors>`, `<checkbox>`, `<selfcaption>` |
+| `elementslist` | the object's child elements | `<elementtype>`, `<objecttype>`, `<expand/>` |
+| `attributes` | the full attributes table | `<expand/>` |
+| `expression` | a script command's parameter (see [Script commands](#script-commands-for-your-functions)) | `<simple>`, `<simpleeditor>`, `<source>` |
+
+A few more exist - `exits`, `verbs`, `gameid`, `filter`, `texteditor`, `gamebookoptions` - but they drive specific built-in tabs and aren't much use in a library.
+
+### Text, booleans, numbers and scripts
 
 ```xml
 <control>
@@ -220,53 +215,33 @@ There are several types of controls you can put on your tabs, the simplest are t
   <controltype>label</controltype>
   <caption>You can use any valid HTML colour name</caption>
 </control>
-```
 
-The `controltype` element tells Quest Viva what type of control you want, the `caption` tab puts text on the page. Both `controltype` and `caption` should be present in all your controls.
-
-
-### Basic controls
-
-These five examples show how to add controls for attributes that are Booleans, integers, strings, objects and scripts respectively.
-
-```xml
- <control>
-   <controltype>checkbox</controltype>
-   <caption>Underline hyperlinks</caption>
-   <attribute>underlinehyperlinks</attribute>
- </control>
-
- <control>
-   <controltype>number</controltype>
-   <caption>Font size</caption>
-   <attribute>menufontsize</attribute>
- </control>
-
- <control>
-   <controltype>textbox</controltype>
-   <caption>Version</caption>
-   <attribute>version</attribute>
- </control>
-
- <control>
-   <controltype>objects</controltype>
-   <caption>Key</caption>
-   <attribute>key</attribute>
+<control>
+  <controltype>checkbox</controltype>
+  <caption>Underline hyperlinks</caption>
+  <attribute>underlinehyperlinks</attribute>
 </control>
 
- <control>
-   <controltype>script</controltype>
-   <caption>Start script</caption>
-   <attribute>start</attribute>
- </control>
+<control>
+  <controltype>number</controltype>
+  <caption>Font size</caption>
+  <attribute>menufontsize</attribute>
+</control>
+
+<control>
+  <controltype>objects</controltype>
+  <caption>Key</caption>
+  <attribute>key</attribute>
+</control>
+
+<control>
+  <controltype>script</controltype>
+  <caption>Start script</caption>
+  <attribute>start</attribute>
+</control>
 ```
 
-There is a new element, `attribute`, and this contains the name of the attribute that will be set. It is generally a good idea to set a default value on your type by the way.
-
-
-### Not so basic
-
-This one will give a string, but the type is "richtext", allowing the user to format the string (this also has the "expand" element, so the text area will expand to fill the tab).
+For a string the author should be able to format, use `richtext` instead of `textbox`. Adding `<expand/>` lets the text area grow to fill the tab:
 
 ```xml
 <control>
@@ -277,18 +252,20 @@ This one will give a string, but the type is "richtext", allowing the user to fo
 </control>
 ```
 
-For a string list, use the "list" control. You should also add an "editprompt" element, this is the text the user will see as each item is added.
+### Lists and dictionaries
+
+A `list` control edits a stringlist. Give it an `<editprompt>`, the text shown when the author adds or edits an item:
 
 ```xml
 <control>
   <controltype>list</controltype>
   <caption>Parameters</caption>
   <attribute>paramnames</attribute>
-  <editprompt>Please enter an parameter name</editprompt>
+  <editprompt>Please enter a parameter name</editprompt>
 </control>
 ```
 
-For a stringdictionary, you need two prompts, like this:
+A `stringdictionary` needs two prompts:
 
 ```xml
 <control>
@@ -300,10 +277,9 @@ For a stringdictionary, you need two prompts, like this:
 </control>
 ```
 
+### Dropdowns
 
-### Dropdown lists
-
-You can add drop-down lists. There are two types, the first looks like this:
+A plain `dropdown` sets a string attribute from `<validvalues>`. Add `<freetext/>` and the author can type a value that isn't in the list:
 
 ```xml
 <control>
@@ -315,9 +291,9 @@ You can add drop-down lists. There are two types, the first looks like this:
 </control>
 ```
 
-The "validvalues" obviously supplies the list the user can pick from. The "freetext" element tells Quest Viva that the user can also just type in a value.
+`<validvalues>` can also be a string dictionary, in which case the key is stored in the attribute and the value is what the author sees.
 
-The second type of drop-down is for selecting the type for an object. Here is an example:
+A `dropdowntypes` control is different: it sets which type the object inherits, rather than an attribute, so it has no `<attribute>` element. The `<types>` element is a string dictionary of type name to label:
 
 ```xml
 <control>
@@ -327,12 +303,11 @@ The second type of drop-down is for selecting the type for an object. Here is an
 </control>
 ```
 
-So now the control type is "dropdowntypes", and the different types are listed in the "types" element in the form of a string dictionary. Note that \* is used to denote no selection (and this must be present); all other types ("container\_open" and "container\_closed" in this case) must be defined elsewhere in your game somewhere (and ideally in this same library). Also note there is no attribute element here.
+`*` means "none of these", and it must be present. Every other type listed has to be defined somewhere in the game - ideally in this same library.
 
+### The multi control
 
-### The multi type
-
-Sometimes you want to allow the user to decide what type the attribute will be. Use the multi control. As well as the usual elements, you also need a "types" element, a string dictionary that sets up the types:
+Sometimes the author should decide what type the attribute is - a message, or a script, or nothing at all. That's what `multi` is for. Its `<types>` element is a string dictionary of attribute type to label:
 
 ```xml
 <control>
@@ -344,13 +319,13 @@ Sometimes you want to allow the user to decide what type the attribute will be. 
   </types>
   <editors>
     string=textbox
-  </editors>     
+  </editors>
 </control>
 ```
 
-The types here are "null" (no attribute to be set), "string" and "script". Note that for the string option an editor is specified. "textbox" is actually the default, so is not strictly required here; "richtext" is an alternative.
+`<editors>` says which control to use for a given type. `textbox` is the default for a string, so it isn't strictly needed here; `richtext` is the alternative.
 
-Here is another example, this has boolean as one type, and the associated checkbox is set up as well.
+When one of the types is `boolean`, use `<checkbox>` to give the checkbox its own label:
 
 ```xml
 <control>
@@ -364,9 +339,7 @@ Here is another example, this has boolean as one type, and the associated checkb
 </control>
 ```
 
-You can also use "stringlist".
-
-Further examples, for completeness:
+The types a `multi` control can offer are `null`, `string`, `boolean`, `script`, `scriptdictionary` and `simplepattern`. `<selfcaption>` labels the type dropdown itself rather than the control as a whole, and `<source>object</source>` makes a `scriptdictionary` option pick its keys from the game's objects rather than free text:
 
 ```xml
 <control>
@@ -374,10 +347,8 @@ Further examples, for completeness:
   <selfcaption>Action</selfcaption>
   <attribute>useon</attribute>
   <types>
-    null=None;scriptdictionary=Handle objects individually;string=Print a message
+    null=None; scriptdictionary=Handle objects individually; string=Print a message
   </types>
-  <keyname>Object</keyname>
-  <keyprompt>Please enter the object name</keyprompt>
   <source>object</source>
 </control>
 
@@ -391,52 +362,73 @@ Further examples, for completeness:
 </control>
 ```
 
-
 ### Element lists
 
-These seem to add a new child object to the object, rather than an attribute. Here are some examples:
+An `elementslist` control lists the object's child *elements* rather than an attribute - the turn scripts or commands defined inside it, say - and lets the author add and remove them:
 
 ```xml
-<control>
-  <controltype>elementslist</controltype>
-  <elementtype>object</elementtype>
-  <objecttype>object</objecttype>
-  <expand/>
-</control>
-
 <control>
   <caption>Turn scripts - run after every turn the player takes in this room</caption>
   <controltype>elementslist</controltype>
   <elementtype>object</elementtype>
   <objecttype>turnscript</objecttype>
 </control>
-
-<control>
-  <caption>Commands</caption>
-  <controltype>elementslist</controltype>
-  <elementtype>object</elementtype>
-  <objecttype>command</objecttype>
-</control>
 ```
 
-Probably not so useful for your custom library - easier to create the object through the GUI normally.
+This is what the built-in Objects and Room tabs use. It is rarely what a library wants, since those elements are easier to create from the tree.
 
+## Script commands for your functions
 
-### For completeness
+The other half of the job is the script adder. If your library defines a function, an `<editor>` element puts it in the "Add Script Command" list, with controls for its parameters, so it can be added without writing code.
 
-A couple more examples you will probably never need to see.
+This is how the core library's own script commands are defined. Here is the one for `EnableTimer`:
 
 ```xml
-<control>
-  <controltype>attributes</controltype>
-  <expand/>
-</control>
+<editor>
+  <appliesto>(function)EnableTimer</appliesto>
+  <display>Enable timer #0</display>
+  <category>Timers</category>
+  <create>EnableTimer ()</create>
+  <add>Enable timer</add>
 
-<control>
-  <controltype>gameid</controltype>
-  <caption>Game ID</caption>
-  <attribute>gameid</attribute>
-  <advanced/>
-  <desktop/>
-</control>
+  <control>
+    <controltype>label</controltype>
+    <caption>Enable timer</caption>
+  </control>
+
+  <control>
+    <controltype>expression</controltype>
+    <attribute>0</attribute>
+    <simple>name</simple>
+    <simpleeditor>objects</simpleeditor>
+    <source>timer</source>
+  </control>
+</editor>
 ```
+
+| Element | What it does |
+|---|---|
+| `appliesto` | the function this editor is for, in the form `(function)YourFunctionName` |
+| `display` | how the command reads in the script list. `#0`, `#1` and so on are replaced by the parameter values |
+| `category` | which category it appears under in the adder |
+| `add` | how the command is described in the adder |
+| `create` | the blank command inserted when the author picks it |
+| `advanced` | put it in the adder's collapsed "Advanced" group |
+
+That adds "Enable timer" to the "Timers" category:
+
+![](/images/Editorui1.png)
+
+And the two controls - a label reading "Enable timer" and an expression control offering the game's timers - make up the command itself:
+
+![](/images/Editorui2.png)
+
+Inside an `<editor>`, a control's `<attribute>` is the **parameter number**, counting from zero, rather than an attribute name. A control with no `<attribute>` (a `label`) is just text.
+
+Most controls in a script command are `expression`, because any parameter can be given an arbitrary expression. `<simple>` is the label for the friendlier alternative offered next to it, and `<simpleeditor>` says what that alternative looks like: `textbox`, `boolean`, `dropdown` (with `<validvalues>`, optionally `<freetext/>`), `number`, `numberdouble` (both with `<minimum>`, `<maximum>` and `<increment>`), `objects` or `file`. With `objects`, `<source>` narrows the list to elements of one kind, such as `timer` above. The other control types that work in a script command are `label`, `textbox`, `richtext`, `checkbox`, `dropdown`, `list`, `scriptdictionary` and `script`.
+
+## See also
+
+- [Using and creating libraries](/advanced-topics/using-libraries)
+- [Using inherited types](/advanced-topics/using-inherited-types)
+- [Editing the raw XML](/howto/scripting/codeview)

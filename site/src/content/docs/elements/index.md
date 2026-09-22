@@ -647,7 +647,7 @@ caption
 controltype  
 [string](/types#string) specifying the control type
 
-See [Editor user interface elements](/advanced-topics/editor-user-interface-elements)
+See [Script commands for your functions](/advanced-topics/tabs-for-types#script-commands-for-your-functions)
 
 ## resource
 

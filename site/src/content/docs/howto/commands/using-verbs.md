@@ -70,7 +70,7 @@ ENTER is the odd one out. It *is* a real verb - the player can also type GO IN, 
 
 ## Verbs on types
 
-A verb put on a [type](/advanced-topics/using-inherited-types) applies to every object that inherits it, which saves repeating the same response on a dozen objects. A type has no Verbs tab, so add the verb on its _Attributes_ tab instead: give the attribute the verb's attribute name from the table above, and make it a string (to print a message) or a script. The verb itself has to exist first, so if it's one of your own, add it to any one object to create it.
+A verb put on a [type](/advanced-topics/using-inherited-types) applies to every object that inherits it, which saves repeating the same response on a dozen objects. A type has no Verbs tab - it has a single _Type_ tab, holding a list of attributes - so add the verb there: give the attribute the verb's attribute name from the table above, and make it a string (to print a message) or a script. The verb itself has to exist first, so if it's one of your own, add it to any one object to create it.
 
 Write the script with `this`, so the same response works for every object of the type:
 

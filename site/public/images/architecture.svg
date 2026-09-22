@@ -37,7 +37,7 @@
     <!-- WasmPlayer -->
     <rect x="250" y="130" width="180" height="55" rx="6" fill="#dce8f7" stroke="#333333"/>
     <text x="340" y="153">WasmPlayer</text>
-    <text x="340" y="171" font-size="11" font-weight="normal">browser-wasm, AOT</text>
+    <text x="340" y="171" font-size="11" font-weight="normal">browser-wasm, no server</text>
 
     <!-- AppShell -->
     <rect x="470" y="130" width="180" height="55" rx="6" fill="#dce8f7" stroke="#333333"/>

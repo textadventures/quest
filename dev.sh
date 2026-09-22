@@ -109,7 +109,7 @@ cleanup() {
 trap cleanup EXIT INT TERM
 
 echo "  AppShell:    http://localhost:$APPSHELL_PORT"
-echo "  WasmPlayer:  http://localhost:$PLAYER_PORT/?game=/examples/simple.aslx"
+echo "  WasmPlayer:  http://localhost:$PLAYER_PORT/?url=/examples/simple.aslx"
 [[ -n "$API_PROXY" ]] && echo "  API proxy →  $API_PROXY"
 echo ""
 echo "Ctrl+C to stop."
