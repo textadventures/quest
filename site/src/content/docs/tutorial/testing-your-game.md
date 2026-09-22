@@ -79,7 +79,9 @@ Walkthroughs are stripped out when you publish, so players never see them.
 
 Neither tool tells you whether your game is any good, or whether a stranger can work out what to do. For that, nothing beats watching somebody else play it without helping them. You'll learn more in ten minutes of that than in an hour of replaying it yourself, because you already know all the answers.
 
-Congratulations - you now know the basics of Quest Viva. There is a great deal more to it, but you're best off learning that as your game needs it. The [last part of the tutorial](/tutorial/releasing-your-game) is about releasing your masterpiece, and ends with some pointers to what to learn next.
+## That's the building done
+
+There is a great deal more to Quest Viva than this, but you're best off picking it up as your game needs it. One short chapter left: [releasing your game](/tutorial/releasing-your-game), which also ends with some pointers to what to learn next.
 
 ## See also
 
