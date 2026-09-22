@@ -44,4 +44,4 @@ Launch the game, go to the lounge, and try both `SIT` and `SIT ON SOFA` - you sh
 
 ## Going further
 
-Verbs can also involve a second object - for example, handling `ATTACK GOBLIN WITH KNIFE` - and the pattern text a verb matches against can be edited directly, with semicolon-separated synonyms or even a regular expression, in exactly the same way as the command patterns from the last section. See [How to use verbs](/howto/commands/using-verbs) for both of these in depth.
+Verbs can also involve a second object - for example, handling `ATTACK GOBLIN WITH KNIFE` - and the pattern text a verb matches against can be edited directly, with semicolon-separated synonyms or even a regular expression, in exactly the same way as the command patterns from the last section. See [How to use verbs](/howto/commands/verbs) for both of these in depth.

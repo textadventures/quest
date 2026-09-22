@@ -11,7 +11,7 @@ Functions with very specific effects in the game world.
 AddDescriptionLine (string description so far, string line)
 ```
 
-Returns a [string](/types#string). Building-block used to assemble a multi-line description: if **line** is non-empty, any text already accumulated in **description so far** is printed immediately (via [msg](/scripts#msg)) and the description is reset to just **line**; if **line** is empty, **description so far** is returned unchanged. This lets you print each non-blank line as its own paragraph while collapsing blank lines, by repeatedly calling it and printing whatever's left over at the end.
+Returns a [string](/reference/attributes/types#string). Building-block used to assemble a multi-line description: if **line** is non-empty, any text already accumulated in **description so far** is printed immediately (via [msg](/reference/script-commands#msg)) and the description is reset to just **line**; if **line** is empty, **description so far** is returned unchanged. This lets you print each non-blank line as its own paragraph while collapsing blank lines, by repeatedly calling it and printing whatever's left over at the end.
 
 ## AddToInventory
 ```quest
@@ -35,28 +35,28 @@ myobject.parent = game.pov
 CanReachThrough (object)
 ```
 
-Returns a [boolean](/types#boolean) - **true** if the player can reach through the object.
+Returns a [boolean](/reference/attributes/types#boolean) - **true** if the player can reach through the object.
 
 ## CanSeeThrough
 ```quest
 CanSeeThrough (object)
 ```
 
-Returns a [boolean](/types#boolean) - **true** if the player can see through the object.
+Returns a [boolean](/reference/attributes/types#boolean) - **true** if the player can see through the object.
 
 ## ChangePOV
 ```quest
 ChangePOV (object)
 ```
 
-Switches the current player object (point of view) to the given object, which must already have a parent (e.g. be placed somewhere in the game world). Triggers `OnEnterRoom` for the new POV's location. See [Changing the player object](/howto/tasks/changing-the-player-object/) for a full walkthrough.
+Switches the current player object (point of view) to the given object, which must already have a parent (e.g. be placed somewhere in the game world). Triggers `OnEnterRoom` for the new POV's location. See [Changing the player object](/howto/player/player-object/) for a full walkthrough.
 
 ## CheckDarkness
 ```quest
 CheckDarkness()
 ```
 
-Returns a [boolean](/types#boolean) - **true** if the player is in an room, which is dark and has no strong lightsources in it.
+Returns a [boolean](/reference/attributes/types#boolean) - **true** if the player is in an room, which is dark and has no strong lightsources in it.
 
 See also [SetDark](#setdark), [SetLight](#setlight), [SetObjectLightstrength](#setobjectlightstrength), [SetExitLightstrength](#setexitlightstrength)
 
@@ -65,7 +65,7 @@ See also [SetDark](#setdark), [SetLight](#setlight), [SetObjectLightstrength](#s
 CloneObjectAndInitialise (object)
 ```
 
-Returns an [object](/types#object). Clones the object using [CloneObject](/reference/functions/objects#cloneobject) and, if the clone has an `_initialise_` script, runs it. Useful for prototype objects that need to set up their own state (e.g. random stats) each time a new copy is created, rather than only when moved into a room - see also [CloneObjectAndMoveHere](/reference/functions/objects#cloneobjectandmovehere).
+Returns an [object](/reference/attributes/types#object). Clones the object using [CloneObject](/reference/functions/objects#cloneobject) and, if the clone has an `_initialise_` script, runs it. Useful for prototype objects that need to set up their own state (e.g. random stats) each time a new copy is created, rather than only when moved into a room - see also [CloneObjectAndMoveHere](/reference/functions/objects#cloneobjectandmovehere).
 
 ## FinishTurn
 ```quest
@@ -79,14 +79,14 @@ Ends the current turn: runs turn scripts (if `game.runturnscripts` is set and th
 FormatContentsList (string pre-list, object parent, string pre-final, string post-list, boolean include scenery)
 ```
 
-Returns a [string](/types#string) containing a formatted list of the direct children of **parent**. This is the shared implementation behind [FormatObjectList](#formatobjectlist) (`include scenery` false) and [FormatInventoryList](#formatinventorylist) (`include scenery` true) - call one of those instead unless you specifically need a third scenery-filtering behaviour.
+Returns a [string](/reference/attributes/types#string) containing a formatted list of the direct children of **parent**. This is the shared implementation behind [FormatObjectList](#formatobjectlist) (`include scenery` false) and [FormatInventoryList](#formatinventorylist) (`include scenery` true) - call one of those instead unless you specifically need a third scenery-filtering behaviour.
 
 ## FormatExitList
 ```quest
 FormatExitList (string pre-list, objectlist exits, string pre-final, string post-list)
 ```
 
-Returns a [string](/types#string) containing a formatted list of exits.
+Returns a [string](/reference/attributes/types#string) containing a formatted list of exits.
 
 For example, this:
 
@@ -103,14 +103,14 @@ may return output like this:
 FormatInventoryList (string pre-list, object parent, string pre-final, string post-list)
 ```
 
-Returns a [string](/types#string) containing a formatted list of what **parent** is carrying, for the "inventory" command. Unlike [FormatObjectList](#formatobjectlist), scenery-flagged objects are always included: "scenery" means "don't clutter the room description with this", not "don't tell the player they're holding it".
+Returns a [string](/reference/attributes/types#string) containing a formatted list of what **parent** is carrying, for the "inventory" command. Unlike [FormatObjectList](#formatobjectlist), scenery-flagged objects are always included: "scenery" means "don't clutter the room description with this", not "don't tell the player they're holding it".
 
 ## FormatObjectList
 ```quest
 FormatObjectList (string pre-list, object parent, string pre-final, string post-list, boolean use inventory verbs)
 ```
 
-Returns a [string](/types#string) containing a formatted list of objects.
+Returns a [string](/reference/attributes/types#string) containing a formatted list of objects.
 
 Used by [ShowRoomDescription](#showroomdescription) and the "inventory" command to display lists of visible and carried objects.
 
@@ -126,14 +126,14 @@ may return output like this:
 
 > You can see a sofa, a lamp, a box (containing a diary and a pen) and a kitten in this room.
 
-All object names will be hyperlinked to show a menu of [displayverbs](/attributes#displayverbs). The final parameter lets you specify whether to use the [inventoryverbs](/attributes#inventoryverbs) instead.
+All object names will be hyperlinked to show a menu of [displayverbs](/reference/attributes/all#displayverbs). The final parameter lets you specify whether to use the [inventoryverbs](/reference/attributes/all#inventoryverbs) instead.
 
 ## GetBlockingObject
 ```quest
 GetBlockingObject (object)
 ```
 
-Returns the [object](/types#object) which is preventing the player from reaching the specified object.
+Returns the [object](/reference/attributes/types#object) which is preventing the player from reaching the specified object.
 
 If an object is in [ScopeVisible](/reference/functions/scope#scopevisible) but not in [ScopeReachable](/reference/functions/scope#scopereachable), then it may be inside a container where the player can see it but not reach it. You can call the GetBlockingObject function to find out what is "blocking" the player from reaching the object. It will be the top-most parent which the player cannot reach through.
 
@@ -142,30 +142,30 @@ If an object is in [ScopeVisible](/reference/functions/scope#scopevisible) but n
 GetClone (object prototype, object parent)
 ```
 
-Returns the [object](/types#object) among **parent**'s direct children whose `prototype` attribute points to **prototype**, or [null](/types#null) if there isn't one. **parent** is optional and defaults to the current player. Useful for finding a previously-made clone (see [CloneObject](/reference/functions/objects#cloneobject)) instead of creating a new one.
+Returns the [object](/reference/attributes/types#object) among **parent**'s direct children whose `prototype` attribute points to **prototype**, or [null](/reference/attributes/types#null) if there isn't one. **parent** is optional and defaults to the current player. Useful for finding a previously-made clone (see [CloneObject](/reference/functions/objects#cloneobject)) instead of creating a new one.
 
 ## GetDefiniteName
 ```quest
 GetDefiniteName (object)
 ```
 
-Returns a [string](/types#string) containing the full displayed name of an object, prefixed with "the" if it is neither a named male or a named female.
+Returns a [string](/reference/attributes/types#string) containing the full displayed name of an object, prefixed with "the" if it is neither a named male or a named female.
 
 ## GetDisplayAlias
 ```quest
 GetDisplayAlias (object)
 ```
 
-Returns a [string](/types#string) containing the displayed version of the object name. This will be the [alias](/attributes#alias), if the object has one, otherwise it will just be the object name.
+Returns a [string](/reference/attributes/types#string) containing the displayed version of the object name. This will be the [alias](/reference/attributes/all#alias), if the object has one, otherwise it will just be the object name.
 
 ## GetDisplayName
 ```quest
 GetDisplayName (object)
 ```
 
-Returns a [string](/types#string) containing the full displayed name of an object.
+Returns a [string](/reference/attributes/types#string) containing the full displayed name of an object.
 
-This will be the [prefix](/attributes#prefix) + the result from [GetDisplayAlias](#getdisplayalias) + the [suffix](/attributes#suffix).
+This will be the [prefix](/reference/attributes/all#prefix) + the result from [GetDisplayAlias](#getdisplayalias) + the [suffix](/reference/attributes/all#suffix).
 
 ## GetDisplayNameLink
 
@@ -181,32 +181,32 @@ For Quest 5.4 and later, there is no verbs parameter:
 GetDisplayNameLink (object, string type)
 ```
 
-Returns a [string](/types#string) containing the full displayed name of an object.
+Returns a [string](/reference/attributes/types#string) containing the full displayed name of an object.
 
-This will be the [prefix](/attributes#prefix) + the result from [GetDisplayAlias](#getdisplayalias) + the [suffix](/attributes#suffix).
+This will be the [prefix](/reference/attributes/all#prefix) + the result from [GetDisplayAlias](#getdisplayalias) + the [suffix](/reference/attributes/all#suffix).
 
-If type is not an empty string (and, in Quest 5.3 and earlier, a verbs list is specified), the result will include the display alias wrapped in an \<object\> tag complete with verbs. This will mean the Quest Viva interface will display a hyperlinked object name with a menu of verbs. In Quest 5.4 and later, the [displayverbs](/attributes#displayverbs) or [inventoryverbs](/attributes#inventoryverbs) are picked up automatically depending on the object's parent.
+If type is not an empty string (and, in Quest 5.3 and earlier, a verbs list is specified), the result will include the display alias wrapped in an \<object\> tag complete with verbs. This will mean the Quest Viva interface will display a hyperlinked object name with a menu of verbs. In Quest 5.4 and later, the [displayverbs](/reference/attributes/all#displayverbs) or [inventoryverbs](/reference/attributes/all#inventoryverbs) are picked up automatically depending on the object's parent.
 
 ## GetDisplayVerbs
 ```quest
 GetDisplayVerbs (object)
 ```
 
-Returns a [stringlist](/types#stringlist) with the current display verbs for the object. If the object is in the current player's inventory, the [inventoryverbs](/attributes#inventoryverbs) are used as a base, otherwise the [displayverbs](/attributes#displayverbs) are used. If [autodisplayverbs](/attributes#autodisplayverbs) is turned on, any verbs set up for the object will be added to the list returned.
+Returns a [stringlist](/reference/attributes/types#stringlist) with the current display verbs for the object. If the object is in the current player's inventory, the [inventoryverbs](/reference/attributes/all#inventoryverbs) are used as a base, otherwise the [displayverbs](/reference/attributes/all#displayverbs) are used. If [autodisplayverbs](/reference/attributes/all#autodisplayverbs) is turned on, any verbs set up for the object will be added to the list returned.
 
 ## GetListDisplayAlias
 ```quest
 GetListDisplayAlias (object)
 ```
 
-Returns a [string](/types#string) containing the displayed version of the object name to use in the object panes. This will be the listalias, if the object has one, otherwise it will be the result of [GetDisplayAlias](#getdisplayalias).
+Returns a [string](/reference/attributes/types#string) containing the displayed version of the object name to use in the object panes. This will be the listalias, if the object has one, otherwise it will be the result of [GetDisplayAlias](#getdisplayalias).
 
 ## GetNonTransparentParent
 ```quest
 GetNonTransparentParent (object)
 ```
 
-Returns the first [object](/types#object) in the parent hierarchy that is non-transparent. If the object specified in the parameter is the player, then it is the limit of what the player can see out of - usually the object that represents the current room.
+Returns the first [object](/reference/attributes/types#object) in the parent hierarchy that is non-transparent. If the object specified in the parameter is the player, then it is the limit of what the player can see out of - usually the object that represents the current room.
 
 So if the player gets onto a platform within a room, or is inside a transparent box within the room, you can still find out the overall parent room by calling this function.
 
@@ -215,7 +215,7 @@ So if the player gets onto a platform within a room, or is inside a transparent 
 GetRoomDescription ()
 ```
 
-Returns a [string](/types#string) containing the full formatted description of the current room (the current player's parent) - the same text [ShowRoomDescription](#showroomdescription) would print, including the dark-room fallback from [CheckDarkness](#checkdarkness). Useful if you want the description as text rather than having it printed immediately, e.g. to include it in a menu or a saved log.
+Returns a [string](/reference/attributes/types#string) containing the full formatted description of the current room (the current player's parent) - the same text [ShowRoomDescription](#showroomdescription) would print, including the dark-room fallback from [CheckDarkness](#checkdarkness). Useful if you want the description as text rather than having it printed immediately, e.g. to include it in a menu or a saved log.
 
 ## GetVolume
 ```quest
@@ -233,21 +233,21 @@ If **inclusiveobject** is true, then the volume of all objects within **object**
 Got (object)
 ```
 
-Returns a [boolean](/types#boolean) - **true** if the player has the specified object. This is just a convenient shortcut to seeing if it is within the list returned by [ScopeInventory](/reference/functions/scope#scopeinventory).
+Returns a [boolean](/reference/attributes/types#boolean) - **true** if the player has the specified object. This is just a convenient shortcut to seeing if it is within the list returned by [ScopeInventory](/reference/functions/scope#scopeinventory).
 
 ## GridSquareClick
 ```quest
 GridSquareClick (integer x, integer y)
 ```
 
-Override hook for [grid maps](/howto/tasks/showing-a-map): the default implementation does nothing. Copy this function into your game and give it a body to handle clicks on a grid map square, using the clicked square's coordinates.
+Override hook for [grid maps](/howto/rooms/map): the default implementation does nothing. Copy this function into your game and give it a body to handle clicks on a grid map square, using the clicked square's coordinates.
 
 ## HelperCloseObject
 ```quest
 HelperCloseObject (object)
 ```
 
-Closes the object. This simply sets the [isopen](/attributes#isopen) attribute to false.
+Closes the object. This simply sets the [isopen](/reference/attributes/all#isopen) attribute to false.
 
 See also [HelperOpenObject](#helperopenobject)
 
@@ -256,7 +256,7 @@ See also [HelperOpenObject](#helperopenobject)
 HelperOpenObject (object)
 ```
 
-Opens the object. This simply sets the [isopen](/attributes#isopen) attribute to true.
+Opens the object. This simply sets the [isopen](/reference/attributes/all#isopen) attribute to true.
 
 See also [HelperCloseObject](#helpercloseobject)
 
@@ -265,16 +265,16 @@ See also [HelperCloseObject](#helpercloseobject)
 IsSwitchedOn (object)
 ```
 
-Returns a [boolean](/types#boolean) - true if the object is switched on.
+Returns a [boolean](/reference/attributes/types#boolean) - true if the object is switched on.
 
-This function simply reads the [switchedon](/attributes#switchedon) attribute of the object.
+This function simply reads the [switchedon](/reference/attributes/all#switchedon) attribute of the object.
 
 ## ListParents
 ```quest
 ListParents (object)
 ```
 
-Returns an [objectlist](/types#objectlist) of all parents of an object - the object's direct parent, the parent's parent, and so on.
+Returns an [objectlist](/reference/attributes/types#objectlist) of all parents of an object - the object's direct parent, the parent's parent, and so on.
 
 ## MoveObjectHere
 ```quest
@@ -352,12 +352,12 @@ Sets the `questplatform` attribute on `game` to the given string. Despite the na
 SwitchOff (object)
 ```
 
-Switches off the specified object, simply by setting the [switchedon](/attributes#switchedon) property to false.
+Switches off the specified object, simply by setting the [switchedon](/reference/attributes/all#switchedon) property to false.
 
 ## SwitchOn
 ```quest
 SwitchOn (object)
 ```
 
-Switches on the specified object, simply by setting the [switchedon](/attributes#switchedon) property to true.
+Switches on the specified object, simply by setting the [switchedon](/reference/attributes/all#switchedon) property to true.
 

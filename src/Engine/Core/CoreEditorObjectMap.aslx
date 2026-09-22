@@ -2,7 +2,7 @@
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectMapMap]</caption>
-    <helpurl>/howto/tasks/showing-a-map/</helpurl>
+    <helpurl>/howto/rooms/map/</helpurl>
     <mustnotinherit>editor_object</mustnotinherit>
     <onlydisplayif>game.gridmap</onlydisplayif>
 

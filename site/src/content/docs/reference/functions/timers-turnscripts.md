@@ -39,7 +39,7 @@ GetTimer (string timer name)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns the [timer](/elements#timer) of the specified name. Returns null if the timer doesn't exist.
+Returns the [timer](/reference/elements#timer) of the specified name. Returns null if the timer doesn't exist.
 
 ## Pause
 ```quest
@@ -160,4 +160,4 @@ SuppressTurnscripts ()
 
 Stops all turnscripts running for one turn.
 
-For more on turnscripts, see [here](/howto/scripting/using-turnscripts).
+For more on turnscripts, see [here](/howto/time/time-turns-and-timers).

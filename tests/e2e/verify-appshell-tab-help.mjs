@@ -61,23 +61,23 @@ async function run() {
     await selectTab('Scripts');
     check('help link on game > Scripts is anchored at its section',
         await helpLink().getAttribute('href'),
-        'https://questviva.com/howto/scripting/when-scripts-run/#the-game-scripts-tab');
+        'https://questviva.com/understanding/when-scripts-run/#the-game-scripts-tab');
     check('game > Scripts help link names the section',
         (await helpLink().textContent()).trim(), 'Help: The game Scripts tab');
 
-    // /howto/ux/ui-style/ has a section per tab, so the link is anchored and
+    // /customise/look-and-feel/ has a section per tab, so the link is anchored and
     // names the section rather than the whole page.
     await selectTab('Display');
     check('help link on game > Display is anchored at its section',
-        await helpLink().getAttribute('href'), 'https://questviva.com/howto/ux/ui-style/#the-display-tab');
+        await helpLink().getAttribute('href'), 'https://questviva.com/customise/look-and-feel/#the-display-tab');
     check('anchored help link names the section, not the page',
-        (await helpLink().textContent()).trim(), 'Help: The display tab');
+        (await helpLink().textContent()).trim(), 'Help: The Display tab');
 
     // --- a room: Exits carries its own target ---
     await page.click('text=room');
     await selectTab('Exits');
     check('help link on room > Exits', await helpLink().getAttribute('href'),
-        'https://questviva.com/howto/world/exits/');
+        'https://questviva.com/howto/rooms/exits/');
     check('help link title tracks the tab', (await helpLink().textContent()).trim(), 'Help: Exits');
 
     // Attributes is anchored at the section about that tab, so the reader
@@ -92,12 +92,12 @@ async function run() {
     await selectTab('Scripts');
     check('help link on room > Scripts is anchored at its section',
         await helpLink().getAttribute('href'),
-        'https://questviva.com/howto/scripting/when-scripts-run/#the-room-scripts-tab');
+        'https://questviva.com/understanding/when-scripts-run/#the-room-scripts-tab');
 
     // The link tracks the active tab rather than being fixed per element.
     await selectTab('Room');
     check('help link follows the active tab (room > Room)', await helpLink().getAttribute('href'),
-        'https://questviva.com/howto/world/objects-and-rooms/#the-room-tab');
+        'https://questviva.com/howto/rooms/objects-and-rooms/#the-room-tab');
 
     // Absence is still part of the contract: every tab of the object and game
     // editors now carries a <helpurl>, but the Function editor has none, so its

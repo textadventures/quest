@@ -29,7 +29,7 @@ export const DOCS_TUTORIAL_URL = docsUrl("/tutorial/tutorial-introduction");
 
 /**
  * Absolute URL for a site-relative documentation path, as stored in a
- * <helpurl> in the editor definitions (e.g. "/howto/world/exits/"). Paths are
+ * <helpurl> in the editor definitions (e.g. "/howto/rooms/exits/"). Paths are
  * stored with their trailing slash so this adds no redirect hop; CI checks
  * that each one resolves to a built page.
  */

@@ -6,7 +6,7 @@ sidebar:
   label: What's new in Quest Viva 6.0
 ---
 
-Quest Viva is the successor to [Quest 5](/developers/older-versions), which had been Quest's current major version since 2011. Under the hood it's the same engine and the same scripting language, so if you know Quest 5, you already know Quest Viva - but a lot has changed around it.
+Quest Viva is the successor to Quest 5, which had been Quest's current major version since 2011. Under the hood it's the same engine and the same scripting language, so if you know Quest 5, you already know Quest Viva - but a lot has changed around it.
 
 This page is a summary for people coming from Quest 5. If you're new to Quest Viva, you don't need any of this - start with the [Introduction](/intro) instead.
 
@@ -14,7 +14,9 @@ This page is a summary for people coming from Quest 5. If you're new to Quest Vi
 
 Quest Viva opens the same `.aslx` game files as Quest 5, so you can carry on working on a game you started there. The player will also run `.quest` packages, and games in the much older `.asl` and `.cas` formats, which Quest used from version 1.0 in 1998 right through to 4.1.
 
-Games you've already published keep working too, and don't need republishing. The library code a game uses is baked into its `.quest` file when you publish, so a game published years ago goes on behaving exactly as it did, whatever a player runs it with - see [the publish process](/publishing/publishing#the-publish-process) for what a published game contains.
+Games you've already published keep working too, and don't need republishing. The library code a game uses is baked into its `.quest` file when you publish, so a game published years ago goes on behaving exactly as it did, whatever a player runs it with - see [the publish process](/publishing#the-publish-process) for what a published game contains.
+
+Quest 5 itself is no longer developed. If you need an old installer - to compare behaviour against a particular version, say - they are kept on the [archive site](https://archive.textadventures.co.uk/quest/).
 
 ## One editor, everywhere
 
@@ -52,7 +54,7 @@ The player interface is also now fully responsive, so games look right on phones
 
 ## Host your game anywhere
 
-Because a game no longer needs a server to run it, you're no longer tied to textadventures.co.uk. You can still [publish there](/publishing/publishing) - it's still the easiest way to find an audience - but you can also:
+Because a game no longer needs a server to run it, you're no longer tied to textadventures.co.uk. You can still [publish there](/publishing) - it's still the easiest way to find an audience - but you can also:
 
 - upload your `.quest` file to your own website and link to it through the player
 - host the player itself alongside your game, on any static web host
@@ -74,11 +76,11 @@ The editor was rebuilt for Quest Viva. Most of it does what it always did - here
 
 - **Autosave** - your changes are saved as you make them, so there's no Save button to forget
 - **Works on phones and tablets** - the layout adapts to the screen, so on a phone the element tree and its properties each get the full screen, with a back button to switch between them, and the toolbar and dialogs are sized for touch
-- **A better debugger** - you can change attribute values as well as read them, search and sort the attribute list, and leave it open while you play. See [Debugging your game](/howto/scripting/debugging-your-game)
+- **A better debugger** - you can change attribute values as well as read them, search and sort the attribute list, and leave it open while you play. See [Debugging your game](/howto/testing/debugging)
 - **Light and dark themes**, or match your system setting
 - **Syntax highlighting and autocompletion** in Code View
 - **An asset picker** for images and sounds you've already added to your game
-- **Folders for functions**, so a game with lots of functions doesn't have to be one long list. See [Organising functions into folders](/howto/scripting/creating-functions-which-return-a-value#organising-functions-into-folders)
+- **Folders for functions**, so a game with lots of functions doesn't have to be one long list. See [Organising functions into folders](/howto/scripting/functions#organising-functions-into-folders)
 - **Safe Mode**, a raw XML editor that opens if a game file fails to load, so a broken file is recoverable instead of lost
 - **Advanced options tucked away** - instead of Quest 5's Simple Mode, every tab keeps its advanced options in a collapsed "Advanced" section, and the script command list puts the everyday commands first, so beginners see less clutter without anything being hidden from you
 - **Keyboard and screen reader support**, throughout the editor and the player

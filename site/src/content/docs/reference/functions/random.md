@@ -4,14 +4,14 @@ sidebar:
   order: 11
 ---
 
-These functions all return a random value. See also [here](/howto/tasks/random).
+These functions all return a random value. See also [here](/howto/scripting/randomness).
 
 ## DiceRoll
 ```quest
 DiceRoll (string dicetype)
 ```
 
-Returns an [int](/types#int) - the result of the dice roll.
+Returns an [int](/reference/attributes/types#int) - the result of the dice roll.
 
 Format dicetype: [number of dice]d[number of sides]
 
@@ -41,7 +41,7 @@ GetRandomDouble ()
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a random [double](/types#double) value between 0.0 and 1.0.
+Returns a random [double](/reference/attributes/types#double) value between 0.0 and 1.0.
 
 ## GetRandomInt
 ```quest
@@ -50,21 +50,21 @@ GetRandomInt (integer min, integer max)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a random [int](/types#int) value between the specified maximum and minimum.
+Returns a random [int](/reference/attributes/types#int) value between the specified maximum and minimum.
 
 ## PickOneChild
 ```quest
 PickOneChild (object room or container)
 ```
 
-Returns an [object](/types#object), picked at random from the direct children of the given object (so if the given object is a room, this would be any object in the room, but not including objects inside containers). Returns null if there are none.
+Returns an [object](/reference/attributes/types#object), picked at random from the direct children of the given object (so if the given object is a room, this would be any object in the room, but not including objects inside containers). Returns null if there are none.
 
 ## PickOneChildOfType
 ```quest
 PickOneChildOfType (object room or container, string typename)
 ```
 
-Returns an [object](/types#object), picked at random from the direct children of the given object, and is also of the given type (so if the given object is a room, this would be any object in the room, but not including objects inside containers). Returns null if there are none.
+Returns an [object](/reference/attributes/types#object), picked at random from the direct children of the given object, and is also of the given type (so if the given object is a room, this would be any object in the room, but not including objects inside containers). Returns null if there are none.
 
 ## PickOneExit
 ```quest
@@ -78,14 +78,14 @@ Returns a visible exit, picked at random from the given room. Returns null if th
 PickOneObject (objectlist)
 ```
 
-Returns an [object](/types#object), picked at random from the given list. Returns null if the list is empty.
+Returns an [object](/reference/attributes/types#object), picked at random from the given list. Returns null if the list is empty.
 
 ## PickOneString
 ```quest
 PickOneString (string or stringlist)
 ```
 
-Returns an [string](/types#string), picked at random from the given list. If a string is given instead, the string will be split into a list, using `;` as a separator. Returns an empty string if the list is empty.
+Returns an [string](/reference/attributes/types#string), picked at random from the given list. If a string is given instead, the string will be split into a list, using `;` as a separator. Returns an empty string if the list is empty.
 
 ## PickOneUnlockedExit
 ```quest

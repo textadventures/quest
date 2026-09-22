@@ -5,7 +5,7 @@ sidebar:
   order: 9
 ---
 
-The game object's _Advanced Scripts_ tab holds three scripts that are not tied to a moment in the story the way the [start and room scripts](/howto/scripting/when-scripts-run) are. Each one lets you take over something Quest Viva would otherwise do for itself.
+The game object's _Advanced Scripts_ tab holds three scripts that are not tied to a moment in the story the way the [start and room scripts](/understanding/when-scripts-run) are. Each one lets you take over something Quest Viva would otherwise do for itself.
 
 The tab is hidden until you ask for it: on the game object's _Features_ tab, tick **Show advanced scripts for the game object**.
 
@@ -26,9 +26,9 @@ JS.setCss ("#qv-status", "background:#3b2f2f;color:wheat;border:none")
 JS.addScript ("<style>#lstInventory li:hover { background: gold; }</style>")
 ```
 
-See [Styling the player with CSS](/howto/ux/customising-the-ui) for what you can do from here. Don't print anything from this script - at the start of the game it runs before the title, so your text would appear above it.
+See [Styling the player with CSS](/customise/css) for what you can do from here. Don't print anything from this script - at the start of the game it runs before the title, so your text would appear above it.
 
-There is also a function called `InitUserInterface`, which is empty in Core and which you can [override](/howto/scripting/creating-functions-which-return-a-value#overriding-a-built-in-function) with your own. It runs at exactly the same points, immediately before the `inituserinterface` script. Use the script on this tab unless you are writing a library, in which case overriding the function leaves the tab free for the game that includes your library.
+There is also a function called `InitUserInterface`, which is empty in Core and which you can [override](/howto/scripting/functions#overriding-a-built-in-function) with your own. It runs at exactly the same points, immediately before the `inituserinterface` script. Use the script on this tab unless you are writing a library, in which case overriding the function leaves the tab free for the game that includes your library.
 
 Note that `game.pov` has not been worked out yet while this script runs, so you cannot ask where the player is.
 
@@ -42,13 +42,13 @@ msg ("You try to " + command + ", but nothing comes of it.")
 
 Useful things to do here:
 
-- **Give the game its own voice.** A single unhelpful line is the one piece of text every player sees, and it usually sounds nothing like the rest of the game. (If all you want is different wording, you do not need this script at all - change the `UnrecognisedCommand` [template](/howto/world/changing-templates) instead. Use the script when the reply should vary.)
+- **Give the game its own voice.** A single unhelpful line is the one piece of text every player sees, and it usually sounds nothing like the rest of the game. (If all you want is different wording, you do not need this script at all - change the `UnrecognisedCommand` [template](/howto/text/messages) instead. Use the script when the reply should vary.)
 - **Log what players type.** Collecting unmatched input while testing tells you which verbs your players expect and you have not implemented.
 - **Parse it yourself.** With the raw text in hand you can do your own matching - a magic-word system, a conversation mode where anything typed is treated as speech, or a fallback that strips a leading "please".
 
 You do not need to worry about turn scripts here. An unrecognised command never finishes a turn, so turn scripts do not run after one anyway, and `SuppressTurnscripts` in this script does nothing.
 
-Note that this script only catches text that matched nothing at all. A command that matched but named an object that is not there ("I can't see that.") never reaches it - see [Scope](/howto/commands/advanced-scope) for that case.
+Note that this script only catches text that matched nothing at all. A command that matched but named an object that is not there ("I can't see that.") never reaches it - see [Scope](/howto/commands/scope) for that case.
 
 ## The backdrop scope script
 
@@ -66,10 +66,10 @@ Keep the objects themselves somewhere off-stage - a room the player can never re
 
 Two things to watch. You must add to the `items` list that was passed in; building a new list and returning it, or using `ListCombine`, has no effect, because it is the passed-in list that Quest Viva goes on to use. And this script runs many times a turn, so keep it short - a loop over every object in the game will be felt.
 
-[Scope](/howto/commands/advanced-scope) covers this in full, along with the other ways to change what a command can reach.
+[Scope](/howto/commands/scope) covers this in full, along with the other ways to change what a command can reach.
 
 ## See also
 
-- [When scripts run](/howto/scripting/when-scripts-run) - every other script that fires by itself
-- [Scope](/howto/commands/advanced-scope)
-- [Styling the player with CSS](/howto/ux/customising-the-ui)
+- [When scripts run](/understanding/when-scripts-run) - every other script that fires by itself
+- [Scope](/howto/commands/scope)
+- [Styling the player with CSS](/customise/css)

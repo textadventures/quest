@@ -4,7 +4,7 @@ sidebar:
   order: 6
 ---
 
-Functions for manipulating lists. For a discussion on how to use lists, see [here](/howto/scripting/using-lists).
+Functions for manipulating lists. For a discussion on how to use lists, see [here](/howto/scripting/lists).
 
 ## Contains
 ```quest
@@ -13,7 +13,7 @@ Contains (object parent, object child)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [boolean](/types#boolean) - **true** if the child object is contained by the parent. This doesn't necessarily mean that there is a direct parent-child relationship - for example if object A has parent B, and B has parent C, then
+Returns a [boolean](/reference/attributes/types#boolean) - **true** if the child object is contained by the parent. This doesn't necessarily mean that there is a direct parent-child relationship - for example if object A has parent B, and B has parent C, then
 
 ```quest
 Contains(C, A)
@@ -59,7 +59,7 @@ Returns a new object list containing only the objects in the given list that are
 IndexOf (list, anything)
 ```
 
-Returns an [int](/types#int) - the position of the given element in the list, or -1 if it is not in the list. Note that lists count from zero.
+Returns an [int](/reference/attributes/types#int) - the position of the given element in the list, or -1 if it is not in the list. Note that lists count from zero.
 
 ```quest
 list = Split("One;Two;Three;Four")
@@ -78,14 +78,14 @@ ListCombine (list, list)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Combines two [stringlists](/types#stringlist) or two [objectlists](/types#objectlist) or two generic lists (can cannot add a list of one type to another).
+Combines two [stringlists](/reference/attributes/types#stringlist) or two [objectlists](/reference/attributes/types#objectlist) or two generic lists (can cannot add a list of one type to another).
 
 ## ListCompact
 ```quest
 ListCompact (any list list)
 ```
 
-Returns a [list](/types#list), based on the given list, but with any repeated entries removed and any entries that are null removed. The canonical use is when combining two lists that might have some entries in common:
+Returns a [list](/reference/attributes/types#list), based on the given list, but with any repeated entries removed and any entries that are null removed. The canonical use is when combining two lists that might have some entries in common:
 
 ```quest
 combinedlist = ListCompact (list1 + list2)
@@ -98,7 +98,7 @@ ListContains (list, any type item)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [boolean](/types#boolean) - **true** if the list contains the item.
+Returns a [boolean](/reference/attributes/types#boolean) - **true** if the list contains the item.
 
 ## ListCount
 ```quest
@@ -107,7 +107,7 @@ ListCount (list)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns an [int](/types#int) - the number of items in the list.
+Returns an [int](/reference/attributes/types#int) - the number of items in the list.
 
 ## ListExclude
 ```quest
@@ -116,9 +116,9 @@ ListExclude (list, any type item or list)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a copy of the [stringlist](/types#stringlist) or [objectlist](/types#objectlist), with the specified item removed, or with all the items removed if the second parameter is a list.
+Returns a copy of the [stringlist](/reference/attributes/types#stringlist) or [objectlist](/reference/attributes/types#objectlist), with the specified item removed, or with all the items removed if the second parameter is a list.
 
-Note that this is different to the [list remove](/scripts#list-remove) script command, as that removes the item from the original list. ListExclude by contrast returns a copy of the list - the original list is unaffected.
+Note that this is different to the [list remove](/reference/script-commands#list-remove) script command, as that removes the item from the original list. ListExclude by contrast returns a copy of the list - the original list is unaffected.
 
 ## ListItem
 ```quest
@@ -127,7 +127,7 @@ ListItem (list, int index)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [string](/types#string) or an [object](/types#object), depending on whether the list is a [stringlist](/types#stringlist) or an [objectlist](/types#objectlist). Gets an item from the list by index. The index is zero-based. (The first item is at index 0, the second is at index 1, etc.)
+Returns a [string](/reference/attributes/types#string) or an [object](/reference/attributes/types#object), depending on whether the list is a [stringlist](/reference/attributes/types#stringlist) or an [objectlist](/reference/attributes/types#objectlist). Gets an item from the list by index. The index is zero-based. (The first item is at index 0, the second is at index 1, etc.)
 
 Usually you will know the type of list that you're passing in, so you should use the [StringListItem](#stringlistitem) or [ObjectListItem](#objectlistitem) functions instead.
 
@@ -138,7 +138,7 @@ NewList ()
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns an empty [list](/types#list). The list can contain any type of data, or a mixture - for example, both objects and strings.
+Returns an empty [list](/reference/attributes/types#list). The list can contain any type of data, or a mixture - for example, both objects and strings.
 
 If the list will only contain one type of data (as will usually be the case), you should use [NewStringList](#newstringlist) or [NewObjectList](#newobjectlist) instead.
 
@@ -149,7 +149,7 @@ NewObjectList ()
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns an empty [objectlist](/types#objectlist).
+Returns an empty [objectlist](/reference/attributes/types#objectlist).
 
 ## NewStringList
 ```quest
@@ -158,14 +158,14 @@ NewStringList ()
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns an empty [stringlist](/types#stringlist).
+Returns an empty [stringlist](/reference/attributes/types#stringlist).
 
 ## ObjectListCompact
 ```quest
 ObjectListCompact (objectlist list)
 ```
 
-Returns an [objectlist](/types#list), based on the given list, but with any repeated entries removed and any entries that are null removed. The canonical use is when combining two lists that might have some entries in common:
+Returns an [objectlist](/reference/attributes/types#list), based on the given list, but with any repeated entries removed and any entries that are null removed. The canonical use is when combining two lists that might have some entries in common:
 
 ```quest
 combinedlist = ObjectListCompact (list1 + list2)
@@ -178,12 +178,12 @@ ObjectListItem (objectlist, int index)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns the [object](/types#object) from the list by the specified index. The index is zero-based. (The first item is at index 0, the second is at index 1, etc.)
+Returns the [object](/reference/attributes/types#object) from the list by the specified index. The index is zero-based. (The first item is at index 0, the second is at index 1, etc.)
 
 You can use the [ListItem](#listitem) function if you don't know the type of the list.
 
 ### Example
-For example, to show a specific objects' name from a list, first create an [objectlist](/types#objectlist) called myList, in this example it is a list of objects that can be seen currently [ScopeVisibleNotHeld](/reference/functions/scope#scopevisiblenotheld).
+For example, to show a specific objects' name from a list, first create an [objectlist](/reference/attributes/types#objectlist) called myList, in this example it is a list of objects that can be seen currently [ScopeVisibleNotHeld](/reference/functions/scope#scopevisiblenotheld).
 
 ```quest
 myList = ScopeVisibleNotHeld()
@@ -204,7 +204,7 @@ ObjectListSort (objectlist list, string attributes ...)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns an [objectlist](/types#objectlist) - a copy of the input objectlist, sorted in order of the values of the first specified attribute (and then optionally by any subsequently specified attributes).
+Returns an [objectlist](/reference/attributes/types#objectlist) - a copy of the input objectlist, sorted in order of the values of the first specified attribute (and then optionally by any subsequently specified attributes).
 
 For example, to return a list of objects sorted by name:
 
@@ -259,7 +259,7 @@ Returns a new string list containing the values or the names attribute for each 
 RemoveInvisibleObjects(objectlist)
 ```
 
-Returns a list where the player object and any objects flagged not [visible](/attributes#visible) are removed from the list **objectlist**. Unlike [RemoveSceneryObjects](#removesceneryobjects), scenery objects are kept - used when building the "inventory" list, where scenery should still show as carried.
+Returns a list where the player object and any objects flagged not [visible](/reference/attributes/all#visible) are removed from the list **objectlist**. Unlike [RemoveSceneryObjects](#removesceneryobjects), scenery objects are kept - used when building the "inventory" list, where scenery should still show as carried.
 
 ## RemoveSceneryObjects
 ```quest
@@ -273,7 +273,7 @@ Returns a list where all scenery objects are removed from the list **objectlist*
 StringListCompact (stringlist list)
 ```
 
-Returns a [stringlist](/types#stringlist), based on the given list, but with any repeated entries removed and any entries that are null removed. The canonical use is when combining two lists that might have some entries in common:
+Returns a [stringlist](/reference/attributes/types#stringlist), based on the given list, but with any repeated entries removed and any entries that are null removed. The canonical use is when combining two lists that might have some entries in common:
 
 ```quest
 combinedlist = StringListCompact (list1 + list2)
@@ -286,7 +286,7 @@ StringListItem (stringlist, int index)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns the [string](/types#string) from the list by the specified index. The index is zero-based. (The first item is at index 0, the second is at index 1, etc.)
+Returns the [string](/reference/attributes/types#string) from the list by the specified index. The index is zero-based. (The first item is at index 0, the second is at index 1, etc.)
 
 You can use the [ListItem](#listitem) function if you don't know the type of the list.
 
@@ -297,7 +297,7 @@ StringListSort (stringlist list)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [stringlist](/types#stringlist) - a copy of the input stringlist, sorted alphabetically.
+Returns a [stringlist](/reference/attributes/types#stringlist) - a copy of the input stringlist, sorted alphabetically.
 
 To return the values in reverse order, use [StringListSortDescending](#stringlistsortdescending).
 
@@ -308,7 +308,7 @@ StringListSortDescending (stringlist list)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [stringlist](/types#stringlist) - a copy of the input stringlist, reverse sorted alphabetically.
+Returns a [stringlist](/reference/attributes/types#stringlist) - a copy of the input stringlist, reverse sorted alphabetically.
 
 To return the values in ascending order, use [StringListSort](#stringlistsort).
 

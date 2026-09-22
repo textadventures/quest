@@ -5,7 +5,7 @@ description: Put your game on your own website, on itch.io, or anywhere else tha
 
 Once you have created a Quest Viva game, you'll want to let other people play it. You have various options for hosting it.
 
-If you are not sure which to pick, [Publishing your game](/publishing/publishing) has a decision table covering all of them.
+If you are not sure which to pick, [Publishing your game](/publishing) has a decision table covering all of them.
 
 ## Upload to textadventures.co.uk
 

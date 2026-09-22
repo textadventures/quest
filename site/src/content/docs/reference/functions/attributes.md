@@ -43,7 +43,7 @@ GetAttribute (object, string attribute name)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns the value of the specified object attribute. The return type will be the attribute type. Returns [null](/types#null) if the attribute does not exist.
+Returns the value of the specified object attribute. The return type will be the attribute type. Returns [null](/reference/attributes/types#null) if the attribute does not exist.
 
 ## GetAttributeNames
 ```quest
@@ -52,7 +52,7 @@ GetAttributeNames (object, boolean include inherited attributes)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [stringlist](/types#stringlist) of all attribute names of the specified object, optionally including attributes set by an included type.
+Returns a [stringlist](/reference/attributes/types#stringlist) of all attribute names of the specified object, optionally including attributes set by an included type.
 
 ## GetBoolean
 ```quest
@@ -61,7 +61,7 @@ GetBoolean (object, string attribute name)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [boolean](/types#boolean) - **true** if the object has that boolean attribute set to true, or **false** if the attribute is set to false, null or some other non-boolean value.
+Returns a [boolean](/reference/attributes/types#boolean) - **true** if the object has that boolean attribute set to true, or **false** if the attribute is set to false, null or some other non-boolean value.
 
 See also [HasBoolean](#hasboolean)
 
@@ -72,7 +72,7 @@ GetDouble (object, string attribute name)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns an [double](/types#double) if the object has that double attribute, or **null** if the attribute is set to null or some other non-double value.
+Returns an [double](/reference/attributes/types#double) if the object has that double attribute, or **null** if the attribute is set to null or some other non-double value.
 
 See also [HasDouble](#hasdouble) and [ToDouble](/reference/functions/variables#todouble)
 
@@ -83,7 +83,7 @@ GetInt (object, string attribute name)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns an [int](/types#int) if the object has that integer attribute, or **null** if the attribute is set to null or some other non-integer value.
+Returns an [int](/reference/attributes/types#int) if the object has that integer attribute, or **null** if the attribute is set to null or some other non-integer value.
 
 See also [HasInt](#hasint), [IsInt](/reference/functions/variables#isint) and [ToInt](/reference/functions/variables#toint)
 
@@ -94,7 +94,7 @@ GetString (object, string attribute name)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns the [string](/types#string) value of the specified object attribute. Returns [null](/types#null) if the attribute does not exist, or is not a string.
+Returns the [string](/reference/attributes/types#string) value of the specified object attribute. Returns [null](/reference/attributes/types#null) if the attribute does not exist, or is not a string.
 
 See also [ToString](/reference/functions/variables#tostring) and [HasString](#hasstring)
 
@@ -114,7 +114,7 @@ HasBoolean (object, string attribute name)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [boolean](/types#boolean) - **true** if the object *has* a boolean attribute of the specified name.
+Returns a [boolean](/reference/attributes/types#boolean) - **true** if the object *has* a boolean attribute of the specified name.
 
 Whether the value of that attribute is true or false is unimportant - this function always returns **true** if a value has been defined.
 
@@ -127,9 +127,9 @@ HasDelegateImplementation (object, string attribute name)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [boolean](/types#boolean) - **true** if the specified attribute is a delegate implementation.
+Returns a [boolean](/reference/attributes/types#boolean) - **true** if the specified attribute is a delegate implementation.
 
-See [Using delegates](/advanced-topics/using-delegates)
+See [Using delegates](/customise/delegates)
 
 ## HasDouble
 ```quest
@@ -138,7 +138,7 @@ HasDouble (object, string attribute name)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [boolean](/types#boolean) - **true** if the object *has* a double attribute of the specified name.
+Returns a [boolean](/reference/attributes/types#boolean) - **true** if the object *has* a double attribute of the specified name.
 
 See also [GetDouble](#getdouble) and [ToDouble](/reference/functions/variables#todouble)
 
@@ -149,7 +149,7 @@ HasInt (object, string attribute name)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [boolean](/types#boolean) - **true** if the object *has* an integer attribute of the specified name.
+Returns a [boolean](/reference/attributes/types#boolean) - **true** if the object *has* an integer attribute of the specified name.
 
 See also [GetInt](#getint), [IsInt](/reference/functions/variables#isint) and [ToInt](/reference/functions/variables#toint)
 
@@ -160,7 +160,7 @@ HasObject (object, string attribute name)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [boolean](/types#boolean) - **true** if the specified attribute is a reference to another object.
+Returns a [boolean](/reference/attributes/types#boolean) - **true** if the specified attribute is a reference to another object.
 
 See also [GetObject](/reference/functions/objects#getobject)
 
@@ -171,7 +171,7 @@ HasScript (object, string attribute name)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [boolean](/types#boolean) - **true** if the specified attribute is a script.
+Returns a [boolean](/reference/attributes/types#boolean) - **true** if the specified attribute is a script.
 
 ## HasString
 ```quest
@@ -180,7 +180,7 @@ HasString (object, string attribute name)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [boolean](/types#boolean) - **true** if the specified attribute is a string.
+Returns a [boolean](/reference/attributes/types#boolean) - **true** if the specified attribute is a string.
 
 See also [ToString](/reference/functions/variables#tostring) and [GetString](#getstring)
 
@@ -219,7 +219,7 @@ Increases the game's score attribute by the specified amount.
 SetObjectFlagOff (object, string flag name)
 ```
 
-Turns the object flag off - an object flag is simply a [boolean](/types#boolean) attribute, so:
+Turns the object flag off - an object flag is simply a [boolean](/reference/attributes/types#boolean) attribute, so:
 
 ```quest
 SetObjectFlagOff(myobject, "myflag")
@@ -238,7 +238,7 @@ See also [SetObjectFlagOn](#setobjectflagon)
 SetObjectFlagOn (object, string flag name)
 ```
 
-Turns the object flag on - an object flag is simply a [boolean](/types#boolean) attribute, so:
+Turns the object flag on - an object flag is simply a [boolean](/reference/attributes/types#boolean) attribute, so:
 
 ```quest
 SetObjectFlagOn(myobject, "myflag")

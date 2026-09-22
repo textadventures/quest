@@ -54,11 +54,11 @@ const isInternalName = (name) => name.startsWith("_") || !/^[A-Za-z]/.test(name)
 // Where the target *is* in readHeadings()'s scope, `heading` is checked
 // against it so a rename doesn't silently leave this pointing at nothing.
 const manualTargets = {
-  "=": { path: "/scripts/#setting-variables", slug: "scripts", heading: "Setting variables" },
-  "=>": { path: "/scripts/#setting-variables", slug: "scripts", heading: "Setting variables" },
-  "//": { path: "/scripts/#comments", slug: "scripts", heading: "Comments" },
+  "=": { path: "/reference/script-commands/#setting-variables", slug: "reference/script-commands", heading: "Setting variables" },
+  "=>": { path: "/reference/script-commands/#setting-variables", slug: "reference/script-commands", heading: "Setting variables" },
+  "//": { path: "/reference/script-commands/#comments", slug: "reference/script-commands", heading: "Comments" },
   "()": { path: "/howto/tasks/about-functions/#using-functions" },
-  "JS.": { path: "/js/#calling-js-functions" },
+  "JS.": { path: "/reference/js/#calling-js-functions" },
 };
 
 // Element-type editors (<editor name="object">, etc.) rather than script
@@ -122,7 +122,7 @@ function readHeadings() {
     const slug = `${FUNCTIONS_SECTION}/${entry.name.replace(/\.md$/, "")}`;
     add(slug === `${FUNCTIONS_SECTION}/index` ? FUNCTIONS_SECTION : slug, join(functionsDir, entry.name));
   }
-  add("scripts", join(docsDir, "scripts", "index.md"));
+  add("reference/script-commands", join(docsDir, "reference", "script-commands.md"));
   return bySlug;
 }
 
@@ -227,7 +227,7 @@ function build() {
     // (function) keyword is a function. This is what keeps `ask` the script
     // command and `Ask` the function pointing at different pages.
     const dual = isFunction ? dualPageFunctions[name] : undefined;
-    const preferred = isFunction ? (dual ? [dual.default] : []) : ["scripts"];
+    const preferred = isFunction ? (dual ? [dual.default] : []) : ["reference/script-commands"];
 
     const match = findPage(headingsBySlug, name, preferred);
     if (!match) {

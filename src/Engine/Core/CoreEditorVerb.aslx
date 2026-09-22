@@ -4,7 +4,7 @@
 
     <tab>
       <caption>[EditorVerbVerb]</caption>
-      <helpurl>/howto/commands/using-verbs/</helpurl>
+      <helpurl>/howto/commands/verbs/</helpurl>
 
       <control>
         <controltype>multi</controltype>

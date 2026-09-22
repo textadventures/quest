@@ -9,7 +9,7 @@ sidebar:
 
 Quest Viva is a free, open source system for creating and playing **text adventure games** and **gamebooks** - the kind of games sometimes called [interactive fiction](https://en.wikipedia.org/wiki/Interactive_fiction).
 
-Quest Viva gives you a point-and-click editor where everything about your game is described in plain English, a [scripting language](/scripts) for when you want to go further, and a player that runs your finished game in anybody's web browser. It handles the machinery underneath - working out what the player meant when they typed something, keeping track of where everything in the world is, and what the player can see and reach - so you can get on with writing and designing the game itself.
+Quest Viva gives you a point-and-click editor where everything about your game is described in plain English, a [scripting language](/reference/script-commands) for when you want to go further, and a player that runs your finished game in anybody's web browser. It handles the machinery underneath - working out what the player meant when they typed something, keeping track of where everything in the world is, and what the player can see and reach - so you can get on with writing and designing the game itself.
 
 You don't need any programming experience to use it. Plenty of people have written and published complete games without ever looking at a line of code.
 
@@ -47,7 +47,7 @@ Your game can be more than just text. You can add:
 
 ## Scripting
 
-When you want precise control over how your game behaves, Quest Viva's scripting system is there. You can write scripts in the editor using a visual block interface, or switch to Code View and write the [scripting language](/scripts) directly. Scripts can use variables, conditionals, loops and functions, and you can package up reusable behaviour in object types and libraries.
+When you want precise control over how your game behaves, Quest Viva's scripting system is there. You can write scripts in the editor using a visual block interface, or switch to Code View and write the [scripting language](/reference/script-commands) directly. Scripts can use variables, conditionals, loops and functions, and you can package up reusable behaviour in object types and libraries.
 
 You can make a complete game without ever using any of it.
 
@@ -72,7 +72,7 @@ Otherwise your game is stored inside the browser itself, so use **Backup** every
 
 ## Sharing your game
 
-When your game is ready, you can [publish it](/publishing/publishing) to [textadventures.co.uk](https://textadventures.co.uk), where players can find it and play it in their browser. You can also keep a game private and share just a direct link with friends.
+When your game is ready, you can [publish it](/publishing) to [textadventures.co.uk](https://textadventures.co.uk), where players can find it and play it in their browser. You can also keep a game private and share just a direct link with friends.
 
 If you'd rather host it yourself, you can - on your own website, or as a single HTML file you can upload almost anywhere. See [Hosting your game](/publishing/hosting) for the options.
 
@@ -86,4 +86,4 @@ The **[Tutorial](/tutorial/tutorial-introduction)** is the best place to begin. 
 
 If you get stuck, or just want to show people what you're making, ask on [Discord](https://textadventures.co.uk/community/discord) or in [GitHub Discussions](https://github.com/textadventures/quest/discussions). If you find a bug or want to request a feature, [open an issue](https://github.com/textadventures/quest/issues).
 
-Quest Viva is [open source](/developers/developers) - the [source code is on GitHub](https://github.com/textadventures/quest), and contributions are welcome.
+Quest Viva is [open source](/contribute) - the [source code is on GitHub](https://github.com/textadventures/quest), and contributions are welcome.

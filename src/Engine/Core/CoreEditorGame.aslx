@@ -96,7 +96,7 @@
 
     <tab>
       <caption>[EditorGameFeatures]</caption>
-      <helpurl>/howto/world/features/#game-features</helpurl>
+      <helpurl>/howto/objects/features/#game-features</helpurl>
 
       <control>
         <controltype>checkbox</controltype>
@@ -168,7 +168,7 @@
 
     <tab>
       <caption>[EditorGameDisplay]</caption>
-      <helpurl>/howto/ux/ui-style/#the-display-tab</helpurl>
+      <helpurl>/customise/look-and-feel/#the-display-tab</helpurl>
 
       <control>
         <caption>[EditorGameTheme]</caption>
@@ -410,7 +410,7 @@
 
     <tab>
       <caption>[EditorGameInterface]</caption>
-      <helpurl>/howto/ux/ui-style/#the-interface-tab</helpurl>
+      <helpurl>/customise/look-and-feel/#the-interface-tab</helpurl>
 
       <control>
         <controltype>label</controltype>
@@ -720,7 +720,7 @@
 
     <tab>
       <caption>[EditorGameScript]</caption>
-      <helpurl>/howto/scripting/when-scripts-run/#the-game-scripts-tab</helpurl>
+      <helpurl>/understanding/when-scripts-run/#the-game-scripts-tab</helpurl>
       <advanced/>
 
       <control>
@@ -772,7 +772,7 @@
 
     <tab>
       <caption>[EditorGameRoomDescriptions]</caption>
-      <helpurl>/howto/ux/ui-style/#the-room-descriptions-tab</helpurl>
+      <helpurl>/customise/look-and-feel/#the-room-descriptions-tab</helpurl>
       <advanced/>
 
       <control>
@@ -905,7 +905,7 @@
 
     <tab>
       <caption>[EditorGamePlayer]</caption>
-      <helpurl>/howto/tasks/changing-the-player-object/</helpurl>
+      <helpurl>/howto/player/player-object/</helpurl>
       <advanced/>
 
       <control>

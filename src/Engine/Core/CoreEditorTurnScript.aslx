@@ -3,7 +3,7 @@
     <appliesto>turnscript</appliesto>
     <tab>
       <caption>[EditorTurnScriptTurnScript]</caption>
-      <helpurl>/howto/scripting/using-turnscripts/</helpurl>
+      <helpurl>/howto/time/time-turns-and-timers/</helpurl>
 
       <control>
         <controltype>textbox</controltype>

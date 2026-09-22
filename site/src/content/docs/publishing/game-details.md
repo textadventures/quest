@@ -20,7 +20,7 @@ Most of it can be left until you are ready to publish, but the game name and aut
 
 **Version** is a free-text label — "1.0", "2026-03-14", "Director's cut". It is for people, so use whatever scheme you like.
 
-**Version code** is a number, for machines. Increase it every time you release an update, so that two builds can always be told apart in the right order even when their version labels cannot be compared. Both are shown together when the player types `VERSION`, and at the head of a [transcript](/howto/world/transcript).
+**Version code** is a number, for machines. Increase it every time you release an update, so that two builds can always be told apart in the right order even when their version labels cannot be compared. Both are shown together when the player types `VERSION`, and at the head of a [transcript](/howto/testing/transcripts).
 
 **Game ID** uniquely identifies your game, and is generated for you when the game is created. It is also your game's IFID - the ID that interactive fiction catalogues and tools use to tell games apart, as defined by the [Treaty of Babel](https://babel.ifarchive.org/babel.html) - and it is shown by the `VERSION` command. You should never normally change it. The one time you should is if you made this game by copying an existing one: both would otherwise claim the same identity, and a player's saved games could end up attached to the wrong game. Generate a new ID in that case, and only that case.
 
@@ -40,4 +40,4 @@ Gamebooks also have a **Language** dropdown here, recording the language your ga
 
 Everything on this tab travels with the published game file, and a catalogue that lists your game reads its title, author, category, cover art and description from there.
 
-The _Setup_ tab is only the description of the game, though — getting it in front of players is a separate step. See [Publishing your game](/publishing/publishing).
+The _Setup_ tab is only the description of the game, though — getting it in front of players is a separate step. See [Publishing your game](/publishing).

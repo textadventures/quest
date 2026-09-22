@@ -2,7 +2,7 @@
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectExitsExits]</caption>
-    <helpurl>/howto/world/exits/</helpurl>
+    <helpurl>/howto/rooms/exits/</helpurl>
     <mustnotinherit>editor_object</mustnotinherit>
 
     <control>

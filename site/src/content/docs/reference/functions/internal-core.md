@@ -101,7 +101,7 @@ CloseObject(object, ismultiple)
 CommandLink (string command, string link text)
 ```
 
-Returns a [string](/types#string) containing the XML required to display a hyperlink. When the hyperlink is clicked, the specified player command will be run. For example:
+Returns a [string](/reference/attributes/types#string) containing the XML required to display a hyperlink. When the hyperlink is clicked, the specified player command will be run. For example:
 
 ```quest
 msg (CommandLink("undo", "Click here to undo the previous turn"))
@@ -121,21 +121,21 @@ CompareNames(name, value, obj, fullmatches, partialmatches)
 ContainsAccessible (object parent, object child, boolean reachable)
 ```
 
-Returns a [boolean](/types#boolean).
+Returns a [boolean](/reference/attributes/types#boolean).
 
 ## ContainsReachable
 ```quest
 ContainsReachable (object parent, object child)
 ```
 
-Returns a [boolean](/types#boolean).
+Returns a [boolean](/reference/attributes/types#boolean).
 
 ## ContainsVisible
 ```quest
 ContainsVisible (object parent, object child)
 ```
 
-Returns a [boolean](/types#boolean).
+Returns a [boolean](/reference/attributes/types#boolean).
 
 ## CreateGiveMenuList
 ```quest
@@ -224,7 +224,7 @@ GetCurrentTextFormat(colour)
 GetDefaultPrefix(object)
 ```
 
-Should be defined by the language library (but is only used within the language library, so it is safe to not define this if it is not used). When [usedefaultprefix](/attributes#usedefaultprefix) is in use for an object, this should generate the relevant default.
+Should be defined by the language library (but is only used within the language library, so it is safe to not define this if it is not used). When [usedefaultprefix](/reference/attributes/all#usedefaultprefix) is in use for an object, this should generate the relevant default.
 
 ## GetDescriptor
 ```quest
@@ -263,7 +263,7 @@ GetScoping(scopestring, variable)
 GetTaggedName (object, string type, stringlist verbs)
 ```
 
-Returns a [string](/types#string).
+Returns a [string](/reference/attributes/types#string).
 
 **This function was removed in Quest 5.4**
 
@@ -274,7 +274,7 @@ GetUniqueElementName (string element name)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [string](/types#string) containing the specified name - if necessary with a number added to ensure it is an unused element name.
+Returns a [string](/reference/attributes/types#string) containing the specified name - if necessary with a number added to ensure it is an unused element name.
 
 ## Grid_AddNewShapePoint
 ```quest
@@ -499,7 +499,7 @@ Core.aslx defines an implementation of a InitInterface function. It does the fol
 -   sets up the default game fonts and colours
 -   sets up compass direction names
 -   sets titles of panes ("Inventory", "Places and Objects" etc.)
--   shows or hides panes depending on the [showpanes](/attributes#showpanes) option
+-   shows or hides panes depending on the [showpanes](/reference/attributes/all#showpanes) option
 
 ## InitPOV
 ```quest
@@ -523,7 +523,7 @@ IsGameRunning ()
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [boolean](/types#boolean) indicating whether the game is currently running (i.e. false when the game has finished).
+Returns a [boolean](/reference/attributes/types#boolean) indicating whether the game is currently running (i.e. false when the game has finished).
 
 ## JS_GridSquareClick
 ```quest
@@ -540,7 +540,7 @@ JSSafe(s)
 ListObjectContents(object)
 ```
 
-Lists the contents of the specified object, only if [isopen](/attributes#isopen) and [listchildren](/attributes#listchildren) are set.
+Lists the contents of the specified object, only if [isopen](/reference/attributes/all#isopen) and [listchildren](/reference/attributes/all#listchildren) are set.
 
 ## MapPOVCoordinate
 ```quest
@@ -567,7 +567,7 @@ ObjectForTextProcessor(objectname)
 ObjectLink (object)
 ```
 
-Returns a [string](/types#string) containing the XML required to display a hyperlink for the specified object, with its display verbs.
+Returns a [string](/reference/attributes/types#string) containing the XML required to display a hyperlink for the specified object, with its display verbs.
 
 See also: [CommandLink](#commandlink)
 
@@ -608,7 +608,7 @@ Populate (string regex, string input, string cache ID)
 
 The input must be a match for the regular expression, or an error occurs.
 
-Returns a [stringdictionary](/types#stringdictionary), keyed by the group names in the regular expression, with values set to the resolved regex groups.
+Returns a [stringdictionary](/reference/attributes/types#stringdictionary), keyed by the group names in the regular expression, with values set to the resolved regex groups.
 
 Use a cache ID for improved performance if you repeatedly test strings against the same regular expression. The compiled regular expression will be cached and used again for subsequent calls to Populate (or [GetMatchStrength](/reference/functions/string#getmatchstrength) or [IsRegexMatch](/reference/functions/string#isregexmatch) ) using the same cache ID.
 
@@ -618,7 +618,7 @@ For example, given this regex which matches the text "put (object name) on (obje
 put (<object1>.*) on (<object2>.*)
 ```
 
-Passing this to the Populate function with an input "put book on shelf" will return a [stringdictionary](/types#stringdictionary) where object1="book" and object2="shelf".
+Passing this to the Populate function with an input "put book on shelf" will return a [stringdictionary](/reference/attributes/types#stringdictionary) where object1="book" and object2="shelf".
 
 See also [GetMatchStrength](/reference/functions/string#getmatchstrength), [IsRegexMatch](/reference/functions/string#isregexmatch)
 
@@ -811,7 +811,7 @@ Quest Viva will look for a function called StartGame, and if one exists then it 
 Core.aslx defines an implementation of a StartGame function. It does the following:
 
 -   updates status attributes
--   if the [game](/elements#game) object has a "start" script attribute, runs that
+-   if the [game](/reference/elements#game) object has a "start" script attribute, runs that
 -   displays the initial room description
 
 ## StartNewOutputSection

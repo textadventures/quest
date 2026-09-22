@@ -39,7 +39,7 @@ Displays a gamebook page: prints its picture and description, moves the player t
 HasSeenPage (object page)
 ```
 
-Returns a [boolean](/types#boolean) - **true** if the given page has been visited before (its `visited` attribute), for conditional page text or options based on what the player has already seen.
+Returns a [boolean](/reference/attributes/types#boolean) - **true** if the given page has been visited before (its `visited` attribute), for conditional page text or options based on what the player has already seen.
 
 ## IncreaseCounter
 ```quest

@@ -48,4 +48,4 @@ You can play a sound when a player reaches a page. Go to the Action tab and brow
 
 ## Releasing your game
 
-To publish your game, see [Publishing your game](/publishing/publishing) - it works the same way for a gamebook.
+To publish your game, see [Publishing your game](/publishing) - it works the same way for a gamebook.
