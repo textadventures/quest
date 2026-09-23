@@ -400,6 +400,12 @@
                 case "numberdouble":
                     onSetParam(scriptIndex, ctrl.attribute!, "0");
                     break;
+                case "objects":
+                    // An object reference resets to a bare "" (nothing selected), not the
+                    // quoted empty string a textbox/dropdown simple editor wants - see
+                    // defaultSimpleValue's identical case.
+                    onSetParam(scriptIndex, ctrl.attribute!, "");
+                    break;
                 default:
                     onSetParam(scriptIndex, ctrl.attribute!, '""');
             }
