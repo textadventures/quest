@@ -4,7 +4,7 @@ sidebar:
   order: 4
 ---
 
-A change script is a script linked to an attribute. The script runs whenever the attribute changes. It is most useful when you have an attribute that can change in several different situations, but in all of them, you want the same thing to happen. A good example is in an RPG-style game, where you want to check the player's hit points to see if he is dead. The hit points might change when the player is attacked, drinks a poison or sets off a trap. Each of those events can modify the hits, but you have just one change script that checks if the player is alive.
+A change script is a script linked to an attribute. The script runs whenever the attribute changes. It is most useful when you have an attribute that can change in several different situations, but in all of them, you want the same thing to happen. A good example is in an RPG-style game, where you want to check the player's hit points to see if they are dead. The hit points might change when the player is attacked, drinks a poison or sets off a trap. Each of those events can modify the hits, but you have just one change script that checks if the player is alive.
 
 Quest Viva has some change scripts already built in. If you change the parent attribute of the player, a change script fires that calls the OnEnterRoom function. This ensures the function gets called every time, rather than relying on game creators calling it each time the player moves (in fact, this change script is on all objects, as any object can potentially be the player).
 
@@ -49,7 +49,7 @@ The change script will fire when the attribute changes, so be careful where you 
 player.hitpoints = player.hitpoints - 20
 msg("You drink the liquid... and realised it was poison!")
 ```
-If it kills the player, she will see this:
+If it kills the player, they will see this:
 
 ```
 You are dead!
@@ -128,6 +128,6 @@ this.changedhits => {
 }
 ```
 
-Note that you should test if the `hits` attribute is zero _or less_, as you want the player to be dead if her hits are -5.
+Note that you should test if the `hits` attribute is zero _or less_, as you want the player to be dead if their hits are -5.
 
 You can do the same for the monsters, ensuring they die when they run out of hits (editing the script as required).

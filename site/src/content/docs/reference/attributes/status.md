@@ -4,7 +4,7 @@ sidebar:
   order: 3
 ---
 
-Status attributes are a great way to keep the player continuously informed of her progress. You might want to display the player's current score or health or money or any number of other values.
+Status attributes are a great way to keep the player continuously informed of their progress. You might want to display the player's current score or health or money or any number of other values.
 
 Status attributes have their values displayed in their own pane on the right side of the screen. The pane will not be present if you have no status attributes in your game (or if you have the panes on the right turned off).
 

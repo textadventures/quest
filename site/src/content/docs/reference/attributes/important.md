@@ -56,7 +56,7 @@ Quest Viva will match bits of names, so if you have "Dave's ball" as the alias, 
 
 > X BLUE ORB
 
-If there is also someone called "dave" in the room, it will match that in preference to his ball for X DAVE.
+If there is also someone called "dave" in the room, it will match that in preference to their ball for X DAVE.
 
 You can also use the alt list in a text processor command. The `rndalt` command will pick an entry in the alt list at random.
 
