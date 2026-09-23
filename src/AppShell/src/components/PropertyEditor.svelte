@@ -823,7 +823,8 @@
             </div>
         </div>
         {#if newPageModalFor === dk}
-            {@const newPageParent = $treeNodes.find(n => n.key === $selectedKey)?.parent ?? null}
+            {@const treeParent = $treeNodes.find(n => n.key === $selectedKey)?.parent ?? null}
+            {@const newPageParent = treeParent === "_objects" ? null : treeParent}
             <AddElementModal
                 elementType="page"
                 parent={newPageParent}
