@@ -8,7 +8,7 @@ Functions for manipulating dictionaries. For a discussion on how to use dictiona
 
 ## DictionaryAdd
 ```quest
-DictionaryAdd (dictionary, string key, string value)
+DictionaryAdd (dictionary, string key, any type value)
 ```
 
 Adds to the dictionary an element with the specified key and value. If an element with that key already exists in the dictionary, that element will be removed first.
@@ -44,7 +44,7 @@ DictionaryItem (dictionary, string key)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Retrieves the specified item from the dictionary. Returns a [string](/reference/attributes/types#string) or [object](/reference/attributes/types#object), depending on whether the dictionary is an [objectdictionary](/reference/attributes/types#objectdictionary) or a [stringdictionary](/reference/attributes/types#stringdictionary).
+Retrieves the specified item from the dictionary. Returns a [string](/reference/attributes/types#string) or an [object](/reference/attributes/types#object), depending on whether the dictionary is a [stringdictionary](/reference/attributes/types#stringdictionary) or an [objectdictionary](/reference/attributes/types#objectdictionary).
 
 Usually you will know the type of list that you're passing in, so you should use the [StringDictionaryItem](#stringdictionaryitem), [ObjectDictionaryItem](#objectdictionaryitem) or [ScriptDictionaryItem](#scriptdictionaryitem) functions instead.
 
@@ -66,7 +66,7 @@ NewDictionary ()
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns an empty [dictionary](/howto/scripting/dictionaries). The dictionary can contain any type of data, or a mixture - for example, both objects and strings.
+Returns an empty [dictionary](/reference/attributes/types#dictionary). The dictionary can contain any type of data, or a mixture - for example, both objects and strings.
 
 If the dictionary will only contain one type of data (as will usually be the case), you should use [NewStringDictionary](#newstringdictionary) or [NewObjectDictionary](#newobjectdictionary) instead.
 

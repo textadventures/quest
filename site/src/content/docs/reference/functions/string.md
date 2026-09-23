@@ -13,7 +13,7 @@ Asc (string input)
 
 The Asc function returns the character code of the input.
 
-Maps to the VB.net [Asc function](http://msdn.microsoft.com/en-us/library/zew1e4wc%28v=VS.80%29.aspx).
+Maps to the VB.net [Asc function](https://learn.microsoft.com/en-us/dotnet/api/microsoft.visualbasic.strings.asc).
 
 ## CapFirst
 ```quest
@@ -33,7 +33,7 @@ Chr (int input)
 
 The Chr function returns the character with the character code of the input.
 
-Maps to the VB.net [Chr function](http://msdn.microsoft.com/en-us/library/613dxh46%28v=VS.80%29.aspx).
+Maps to the VB.net [Chr function](https://learn.microsoft.com/en-us/dotnet/api/microsoft.visualbasic.strings.chr).
 
 ## Conjugate
 ```quest
@@ -252,7 +252,7 @@ This is calculated as follows:
 -   The named group "object" matches the substring "dog", which has a length of 3
 -   The strength therefore is 11 - 3 = 8
 
-The strength is used by the command handling functions in CoreCommands.aslx to determine which command is the best match for a given input.
+The strength is used by `HandleSingleCommand` in CoreParser.aslx to decide which command is the best match for a given input, when more than one matches.
 
 See also [IsRegexMatch](#isregexmatch), [Populate](/reference/functions/internal-core#populate)
 
@@ -271,7 +271,7 @@ Instr (int start position, string input, string search)
 
 Returns an [int](/reference/attributes/types#int) representing the character position of the search string within the input, or zero if it is not found.
 
-Maps to the VB.net [Instr function](http://msdn.microsoft.com/en-us/library/8460tsh1(VS.80).aspx).
+Maps to the VB.net [Instr function](https://learn.microsoft.com/en-us/dotnet/api/microsoft.visualbasic.strings.instr).
 
 ## InstrRev
 ```quest
@@ -288,7 +288,7 @@ InstrRev (int start position, string input, string search)
 
 Returns an [int](/reference/attributes/types#int) representing the character position of the search string within the input, starting from the right side of the string.
 
-Maps to the VB.net [InstrRev function](http://msdn.microsoft.com/en-us/library/t2ekk41a%28v=VS.80%29.aspx).
+Maps to the VB.net [InstrRev function](https://learn.microsoft.com/en-us/dotnet/api/microsoft.visualbasic.strings.instrrev).
 
 ## IsNumeric
 ```quest
@@ -345,7 +345,7 @@ Left (string input, int character count)
 
 Returns a [string](/reference/attributes/types#string) containing characters from the left of the input string.
 
-Maps to the VB.net [Left function](http://msdn.microsoft.com/en-US/library/y050k1wb(v=VS.80).aspx).
+Maps to the VB.net [Left function](https://learn.microsoft.com/en-us/dotnet/api/microsoft.visualbasic.strings.left).
 
 ## LengthOf
 ```quest
@@ -380,7 +380,7 @@ Mid (string input, int start position, int character count)
 
 Returns a [string](/reference/attributes/types#string) containing characters from the middle of the input string. The position counts from 1.
 
-Maps to the VB.net [Mid function](http://msdn.microsoft.com/en-us/library/05e63829(v=VS.90).aspx).
+Maps to the VB.net [Mid function](https://learn.microsoft.com/en-us/dotnet/api/microsoft.visualbasic.strings.mid).
 
 ## PadString
 ```quest
@@ -446,7 +446,7 @@ Right (string input, int character count)
 
 Returns a [string](/reference/attributes/types#string) containing characters from the right of the input string.
 
-Maps to the VB.net [Right function](http://msdn.microsoft.com/en-us/library/dxs6hz0a.aspx).
+Maps to the VB.net [Right function](https://learn.microsoft.com/en-us/dotnet/api/microsoft.visualbasic.strings.right).
 
 ## RTrim
 ```quest
