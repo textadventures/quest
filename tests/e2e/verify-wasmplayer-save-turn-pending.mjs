@@ -3,7 +3,8 @@
 // finished with nothing outstanding (WorldModel._pendingCallbackCount == 0,
 // pushed via IPlayer.SetTurnPending) - fixing a flicker where Save briefly
 // showed enabled between chained wait()s (e.g. a game with several waits at
-// startup). Also verifies Save gets disabled again once the game finishes.
+// startup). Also verifies the button stays enabled once the game finishes,
+// since it's the only way to reach Load/Restart at that point (discussion #1828).
 // Requires the WasmPlayer dev server running locally:
 //   node src/WasmPlayer/dev-server.mjs
 import { chromium } from 'playwright';
@@ -133,10 +134,12 @@ async function run() {
     await page.waitForTimeout(300);
     await assertSaveDisabled(false, 'Save enabled after ShowMenu() answered');
 
-    // Game completion should disable Save even though the turn itself finished cleanly
+    // Game completion must NOT disable the button - it's the only way to reach
+    // Load/Restart once the game has ended (see discussion #1828: disabling it
+    // here used to lock players out of loading a save or restarting).
     await sendCommand('finishit');
     await page.waitForTimeout(600);
-    await assertSaveDisabled(true, 'Save disabled after game completion');
+    await assertSaveDisabled(false, 'Save/Load button stays enabled after game completion so Load/Restart remain reachable');
 
     console.log('PASS: all checks passed');
 }
