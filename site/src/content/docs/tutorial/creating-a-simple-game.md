@@ -12,6 +12,8 @@ Open the editor - either in your browser, or the desktop app - and you'll see a 
 
 Click "Create local draft" (or "Save to folder..." if you'd rather store the game file yourself), and you'll see the main Editor screen.
 
+Whichever you choose, it's worth [backing up your game](/howto/testing/backups) every so often once you're working on something more than a tutorial exercise - it only takes one accidental change to lose something you'd rather have kept.
+
 
 ## The editor screen
 

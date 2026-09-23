@@ -70,6 +70,8 @@ Where your game is kept depends on how you open it. Pick a folder on your comput
 
 Otherwise your game is stored inside the browser itself, so use **Backup** every so often to save a copy to disk - the editor will remind you.
 
+Either way, it's worth keeping more than one copy as you go, so an accidental change is never the only version of your game that exists - see [Backing up your game](/howto/testing/backups).
+
 ## Sharing your game
 
 When your game is ready, you can [publish it](/publishing) to [textadventures.co.uk](https://textadventures.co.uk), where players can find it and play it in their browser. You can also keep a game private and share just a direct link with friends.

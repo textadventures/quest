@@ -449,6 +449,10 @@ export default defineConfig({
                                 {
                                     "label": "Troubleshooting",
                                     "slug": "howto/testing/troubleshooting"
+                                },
+                                {
+                                    "label": "Backing up your game",
+                                    "slug": "howto/testing/backups"
                                 }
                             ]
                         }

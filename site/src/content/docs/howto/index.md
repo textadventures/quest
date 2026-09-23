@@ -51,7 +51,7 @@ When the editor's options aren't enough: an [introduction to coding](/howto/scri
 
 ## Testing and debugging
 
-The [debugger](/howto/testing/debugging), [walkthroughs](/howto/testing/walkthroughs) that replay your game automatically, [transcripts](/howto/testing/transcripts) from your testers, and [common problems](/howto/testing/troubleshooting).
+The [debugger](/howto/testing/debugging), [walkthroughs](/howto/testing/walkthroughs) that replay your game automatically, [transcripts](/howto/testing/transcripts) from your testers, [common problems](/howto/testing/troubleshooting), and [backing up your work](/howto/testing/backups) as you go.
 
 ## A complete example
 
