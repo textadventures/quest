@@ -8,7 +8,7 @@ A gamebook is pages and the links between them, so this is the chapter that matt
 
 ## Adding a page
 
-Click "+ Add" on the toolbar and choose "Add Page", or use the "⋯" menu on an element in the tree. You will be asked for a name - this is the internal name, not anything the reader sees, so make it something you will recognise later. No spaces: `TakeLantern`, not `Take the lantern`.
+Click "+ Add" on the toolbar and choose "Add Page", or use the "⋯" menu on an element in the tree. You will be asked for a name - this is the internal name, not anything the reader sees, so make it something you will recognise later. Spaces are fine, so `Take the lantern` works as well as `TakeLantern`. Punctuation is not - no apostrophes, hyphens or full stops - and a name cannot begin with a number, or use `and`, `or`, `not`, `if` or `in` as a word on its own.
 
 Let's start The Lighthouse. Select Page1, open its _Advanced_ section and rename it to `Start`, then give it this description:
 
