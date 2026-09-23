@@ -41,7 +41,7 @@ By default a sound stops when the reader turns the page. Tick "Continue to play 
 
 For The Lighthouse, a loop of rain and sea on the `Start` page with "continue" ticked, and something quieter once the reader is inside, does most of the work of setting a scene.
 
-Two things worth knowing. Browsers will not play sound until the reader has clicked something, so a sound on the very first page may not play until they choose an option - put the sound on the second page if it matters. And a reader may well be somewhere they can't have sound on at all, so never make a sound the only way to learn something.
+Two things worth knowing. Browsers do not let a page start making noise until the reader has interacted with it, but you do not have to design around that - Quest Viva notices that a game has sound in it and shows a **Begin** button on the loading screen, which is the click the browser is waiting for, so a sound on the very first page plays as it should. [Autoplay](/howto/media/sound-and-video#autoplay-why-the-first-sound-may-not-play) has the detail. And a reader may well be somewhere they cannot have sound on at all, so never make a sound the only way to learn something.
 
 ## Sending the reader elsewhere
 
