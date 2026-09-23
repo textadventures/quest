@@ -4,7 +4,7 @@ sidebar:
   order: 18
 ---
 
-Cloak of Darkness is a tiny game that has been written in almost every interactive fiction system there is, so that authors can compare them. It is interactive fiction's "hello, world".
+Cloak of Darkness is a tiny game that has been written in almost every interactive fiction system there is. The point of it is comparison: the same handful of requirements, solved in each system's own way, tells you far more about how a system actually works than any list of features would.
 
 It is also a good way to finish this tutorial. The game you built over the last seventeen chapters was assembled a piece at a time, each piece introducing one feature. This one starts from a specification somebody else wrote, and works out how to build it - which is what writing your own game actually feels like.
 
@@ -54,7 +54,9 @@ Add a command with this pattern:
 
     hang up #object#;hang #object#
 
-The longer alternative has to come first. Quest Viva takes the first one that matches, so with them the other way round `HANG UP CLOAK` matches `hang #object#`, and the player is told there is no "up cloak" here.
+The longer alternative has to come first. The two alternatives in a pattern are tried in the order you write them, and the first one that matches wins - so with them the other way round, `HANG UP CLOAK` matches `hang #object#`, Quest Viva goes looking for an object called "up cloak", and the player is told "I can't see that."
+
+When two _separate_ commands both match what the player typed, Quest Viva does compare them, and prefers the one whose pattern has more of the typed text fixed in it rather than left to a `#object#` placeholder. That does not help here, though, because these are two alternatives inside a single command - once that command has been chosen, the alternatives are just tried in order.
 
 The script works the way most command scripts should: test each way it can fail, say something specific about each one, and do the thing at the end.
 
