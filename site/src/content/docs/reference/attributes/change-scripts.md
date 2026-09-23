@@ -4,7 +4,7 @@ sidebar:
   order: 4
 ---
 
-A change script is a script linked to an attribute. The script runs whenever the attribute changes. It is most useful when you have an attribute that can change in several different situations, but in all of them, you want the same thing to happen. A good example is in an RPG-style game, where you want to check the player's hit points to see if he is dead. The hit points might change when the player is attacked, drinks a poison or sets off a trap. Each of those events can modify the hits, but you have one just one change script that checks if the player is alive.
+A change script is a script linked to an attribute. The script runs whenever the attribute changes. It is most useful when you have an attribute that can change in several different situations, but in all of them, you want the same thing to happen. A good example is in an RPG-style game, where you want to check the player's hit points to see if he is dead. The hit points might change when the player is attacked, drinks a poison or sets off a trap. Each of those events can modify the hits, but you have just one change script that checks if the player is alive.
 
 Quest Viva has some change scripts already built in. If you change the parent attribute of the player, a change script fires that calls the OnEnterRoom function. This ensures the function gets called every time, rather than relying on game creators calling it each time the player moves (in fact, this change script is on all objects, as any object can potentially be the player).
 
@@ -23,7 +23,7 @@ else {
 }
 ```
 
-Quest Viva recognises an attribute as a change script if it is a script and its name starts with "changed". There are just standard scripts, and you can use them as such:
+Quest Viva recognises an attribute as a change script if it is a script and its name starts with "changed". These are just standard scripts, and you can use them as such:
 ```quest
 do (player, "changedhits")
 ```
@@ -61,7 +61,10 @@ You need to adjust the hit points _after_ the message.
 
 ### Change inside change
 
-Be careful changing an attribute inside its own change script, you will end up in an infinite loop!
+Be careful changing an attribute inside its own change script. It is fine as long as the value settles - the capping
+example below assigns to `this.purity` from `purity`'s own change script and stops after one more pass, because the
+second assignment sets it to a value it already has. A script that always changes the value to something different
+will loop forever.
 
 
 ### The "parent" attribute
@@ -117,7 +120,7 @@ You may find you want something to happen when an attribute hits a certain value
 
 ```quest
 this.hits = 35
-this.changedhits = > {
+this.changedhits => {
   if (this.hits <= 0) {
     msg("You are dead!")
     finish
