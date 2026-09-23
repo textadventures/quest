@@ -43,4 +43,4 @@ Quest Viva is a powerful system with a gentle learning curve - you can get start
 
 [Next: Creating a simple text adventure](/tutorial/creating-a-simple-game)
 
-[Next: Creating a simple game book](/tutorial/creating-a-gamebook)
+[Next: Creating a gamebook](/tutorial/gamebook/)

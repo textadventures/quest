@@ -47,7 +47,7 @@ export default defineConfig({
                     ]
                 },
                 {
-                    "label": "Tutorial",
+                    "label": "Tutorial: text adventure",
                     "collapsed": false,
                     "items": [
                         {
@@ -121,10 +121,32 @@ export default defineConfig({
                         {
                             "label": "Worked example: Cloak of Darkness",
                             "slug": "tutorial/cloak-of-darkness"
-                        },
+                        }
+                    ]
+                },
+                {
+                    "label": "Tutorial: gamebook",
+                    "collapsed": true,
+                    "items": [
                         {
                             "label": "Creating a gamebook",
-                            "slug": "tutorial/creating-a-gamebook"
+                            "slug": "tutorial/gamebook"
+                        },
+                        {
+                            "label": "Pages and links",
+                            "slug": "tutorial/gamebook/pages-and-links"
+                        },
+                        {
+                            "label": "Pictures, sound and video",
+                            "slug": "tutorial/gamebook/pictures-and-sound"
+                        },
+                        {
+                            "label": "Keeping track",
+                            "slug": "tutorial/gamebook/keeping-track"
+                        },
+                        {
+                            "label": "Publishing your gamebook",
+                            "slug": "tutorial/gamebook/publishing"
                         }
                     ]
                 },

@@ -1,0 +1,76 @@
+<asl version="600" templatetype="gamebook">
+  <include ref="GamebookCore.aslx"/>
+  <game name="The Lighthouse">
+    <gameid>3f6c1d92-4b88-4a7e-9c55-2ad0f1e7b634</gameid>
+    <version>1.0</version>
+    <firstpublished>2026</firstpublished>
+    <description>The finished gamebook from the Quest Viva gamebook tutorial.</description>
+  </game>
+  <object name="Page1">
+    <object name="player">
+      <inherit name="defaultplayer"/>
+    </object>
+    <description><![CDATA[The boat that brought you is already a smudge on the horizon, and the rain has started in earnest. The lighthouse stands at the end of a short stone causeway, dark from top to bottom.<br/><br/>There is a lantern hanging on a post by the jetty.]]></description>
+    <options type="simplestringdictionary">TakeLantern = Take the lantern;Causeway = Leave it and walk up to the lighthouse</options>
+  </object>
+  <object name="TakeLantern">
+    <inherit name="scripttext"/>
+    <script type="script">
+      SetFlagOn ("lantern")
+      IncreaseCounter ("nerve")
+    </script>
+    <description>It is heavier than it looks, and the flame gutters but holds. Whoever left it here was not expecting to be long.</description>
+    <options type="simplestringdictionary">Causeway = Walk up to the lighthouse</options>
+  </object>
+  <object name="Causeway">
+    <description><![CDATA[Spray comes over the causeway in sheets. By the time you reach the door you are soaked through.{if lantern: The lantern has survived, just.}<br/><br/>The door is shut. There is no bell, and no light in any window.]]></description>
+    <options type="simplestringdictionary">Knock = Knock;Handle = Try the handle;Back = Walk round the back</options>
+  </object>
+  <object name="Knock">
+    <inherit name="scripttext"/>
+    <script type="script">
+      IncreaseCounter ("nerve")
+    </script>
+    <description>You knock, three times, hard. The sound goes nowhere at all. Nothing answers.</description>
+    <options type="simplestringdictionary">Handle = Try the handle;Back = Walk round the back</options>
+  </object>
+  <object name="Handle">
+    <description>The handle turns without complaint, and the door swings inward.</description>
+    <options type="simplestringdictionary">Hall = Go in</options>
+  </object>
+  <object name="Back">
+    <inherit name="scripttext"/>
+    <script type="script">
+      IncreaseCounter ("nerve")
+    </script>
+    <description>Round the back there is nothing but rock, and a window too high to reach. Coming back round, you find the front door standing open. You are fairly sure it was shut.</description>
+    <options type="simplestringdictionary">Hall = Go in</options>
+  </object>
+  <object name="Hall">
+    <inherit name="scripttext"/>
+    <script type="script">
+      if (GetBoolean(game, "lantern")) {
+        AddPageLink (Hall, Stairs, "Climb the stairs")
+      }
+      else {
+        RemovePageLink (Hall, Stairs)
+      }
+    </script>
+    <description>{if lantern:The lantern shows you a round room, a table, and a staircase winding up into the dark.}{if not lantern:It is too dark to see more than the shape of a staircase, somewhere ahead. You are not going up there without a light.}</description>
+    <options type="simplestringdictionary">Leave = Go back out into the rain</options>
+  </object>
+  <object name="Stairs">
+    <inherit name="scripttext"/>
+    <script type="script">
+      IncreaseCounter ("nerve")
+    </script>
+    <description><![CDATA[Ninety-one steps, and the lantern showing you about four of them at a time.<br/><br/>At the top, the lamp room. The great lens is intact. The lamp is cold, but the oil is there, and so are the matches.]]></description>
+    <options type="simplestringdictionary">Light = Light the lamp</options>
+  </object>
+  <object name="Light">
+    <description><![CDATA[The lamp catches. The lens takes the flame and throws it out across the water, and somewhere out there a boat that had given up on the night turns towards you.<br/><br/>{either game.nerve > 3:You did not hesitate once.|You got there in the end.}<br/><br/>{b:The end.}]]></description>
+  </object>
+  <object name="Leave">
+    <description><![CDATA[You walk back down the causeway in the dark, and wait on the jetty until morning. The lighthouse stays dark all night.<br/><br/>{b:The end.}]]></description>
+  </object>
+</asl>

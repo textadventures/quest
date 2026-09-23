@@ -4,7 +4,7 @@ sidebar:
   order: 16
 ---
 
-Functions for the Gamebook game type (see [Creating a gamebook](/tutorial/creating-a-gamebook)), defined in GamebookCore.aslx. Most of them are only available in gamebooks. `AddPageLink`, `RemovePageLink` and `HasSeenPage` also work with [Pages in a text adventure](/tutorial/using-pages), along with `ShowPage`, which is listed under [user interface functions](/reference/functions/user-interface).
+Functions for the Gamebook game type (see [Creating a gamebook](/tutorial/gamebook/)), defined in GamebookCore.aslx. Most of them are only available in gamebooks. `AddPageLink`, `RemovePageLink` and `HasSeenPage` also work with [Pages in a text adventure](/tutorial/using-pages), along with `ShowPage`, which is listed under [user interface functions](/reference/functions/user-interface).
 
 ## AddPageLink
 ```quest

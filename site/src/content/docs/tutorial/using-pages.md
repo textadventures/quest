@@ -6,7 +6,7 @@ sidebar:
 
 Bob is alive, and thanks to Ask/Tell he'll tell you about his heart attack if you ask him directly. But Ask/Tell only works if the player already knows what to ask about. Sometimes you want to offer the player a menu of things to say, and have Bob's replies lead on to further choices - a proper branching conversation.
 
-You could build this with a menu (see [Talking to characters](/howto/characters/talking#a-menu-of-topics)), but every further set of choices would mean another menu nested inside the last one. **Pages** turn every choice into a normal, complete turn - the same mechanism gamebooks use for their branching passages (see [Creating a gamebook](/tutorial/creating-a-gamebook)), but usable in a Text Adventure room. The player can save at any point in the conversation, `UNDO` steps back one choice at a time, and the whole conversation is described as linked page objects rather than nested scripts.
+You could build this with a menu (see [Talking to characters](/howto/characters/talking#a-menu-of-topics)), but every further set of choices would mean another menu nested inside the last one. **Pages** turn every choice into a normal, complete turn - the same mechanism gamebooks use for their branching passages (see [Creating a gamebook](/tutorial/gamebook/)), but usable in a Text Adventure room. The player can save at any point in the conversation, `UNDO` steps back one choice at a time, and the whole conversation is described as linked page objects rather than nested scripts.
 
 ## Creating a page
 
@@ -14,7 +14,7 @@ A page is a special kind of object: instead of a room description, it has some t
 
 Click "+ Add" on the toolbar and choose "Add Page" (or use the "..." menu on an element in the tree). Call it `bob_chat`. On its "Page" tab, leave "Page type" set to "Text", and enter a description like `Bob rubs his chest gingerly. "What do you want to know?" he asks.`
 
-Now add some options. In the "Options" list, click "Add", and when prompted for the page name enter `bob_defib` - this creates a new page for you - and for the link text enter "Ask about the defibrillator". Add a second option pointing to a new page called `bob_heart`, with the link text "Ask about his heart attack".
+Now add some options. At the bottom of the "Options" list, click **+ New Page** and enter the name `bob_defib` - this creates the page and links to it in one go - then type "Ask about the defibrillator" into the link text box on its row. Do the same for a page called `bob_heart`, with the link text "Ask about his heart attack".
 
 Now fill in the two pages you just created:
 

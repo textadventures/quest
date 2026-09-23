@@ -26,7 +26,7 @@ A type earns its place at about three objects. Below that, setting the attribute
 2. Click **+ Add Type**.
 3. In the "Add Type" dialog, type a **Name** and click **Add Type**.
 
-Use a short lower-case name with no spaces, as you would for an object. The new type appears under _Advanced > Object Types_.
+A short lower-case name without spaces reads best here, since you will be typing it into `inherit` lists. The new type appears under _Advanced > Object Types_.
 
 A type has a single _Type_ tab, with its **Name** and the same attributes list you get on an object: _Inherited types_ at the top, _Attributes_ underneath. Everything a type does, it does through those attributes.
 
