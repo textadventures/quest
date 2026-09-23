@@ -1,5 +1,23 @@
 # Changelog
 
+## [6.0.0-rc.3](https://github.com/textadventures/quest/compare/v6.0.0-rc.2...v6.0.0-rc.3) (2026-09-23)
+
+
+### Features
+
+* **ElectronApp:** package prereleases as a separate Quest Viva Beta app ([#2322](https://github.com/textadventures/quest/issues/2322)) ([0d75413](https://github.com/textadventures/quest/commit/0d754131c42e73ccb5999fc230aaf163aa9fae75))
+
+
+### Bug Fixes
+
+* **AppShell:** make Options list "+ New Page" work for top-level gamebook pages ([#2406](https://github.com/textadventures/quest/issues/2406)) ([5e2b362](https://github.com/textadventures/quest/commit/5e2b362f77424bf1ee47c38db636e3cee5a96913))
+* **AppShell:** reset object/exit script params to empty, not quoted string ([#2404](https://github.com/textadventures/quest/issues/2404)) ([8dd2886](https://github.com/textadventures/quest/commit/8dd2886cd9c50ded843b341de2e2f2f4dfec90a8))
+* **Engine:** correct Core messages and allow .ogg in sound pickers ([#2326](https://github.com/textadventures/quest/issues/2326)) ([2c7f93c](https://github.com/textadventures/quest/commit/2c7f93c19bff7bdce346f4f75d94735fa2bcf96a))
+* **Engine:** let ScopeCommands run before game.pov is set ([#2318](https://github.com/textadventures/quest/issues/2318)) ([b4dcca5](https://github.com/textadventures/quest/commit/b4dcca54cdfa2e59b876bc6995bfa7b4f08cbb28))
+* **Engine:** point the editor's help links at the current documentation ([#2370](https://github.com/textadventures/quest/issues/2370)) ([6d51971](https://github.com/textadventures/quest/commit/6d51971799e54e2e26336319a50d9c63043901ad))
+* make Cut/Paste of tree objects correctly undoable ([#2403](https://github.com/textadventures/quest/issues/2403)) ([86d086e](https://github.com/textadventures/quest/commit/86d086e3c69baea6e08f6500488ed6e4aa1de81c))
+* **PlayerCore:** keep the Save/Load button reachable after a game finishes ([#2405](https://github.com/textadventures/quest/issues/2405)) ([de263b4](https://github.com/textadventures/quest/commit/de263b4ca808633be1f961ccb2909bd05acbcf13))
+
 ## [6.0.0-rc.2](https://github.com/textadventures/quest/compare/v6.0.0-rc.1...v6.0.0-rc.2) (2026-09-16)
 
 
