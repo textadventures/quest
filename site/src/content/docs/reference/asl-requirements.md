@@ -11,7 +11,7 @@ Quest Viva expects an ASL file to provide a few standard items. These are all pr
     -   **ScopeInventory**, returning a list of objects (used to fill the "Inventory" list)
     -   **GetPlacesObjectsList**, returning a list of objects (for the "Places and Objects" list)
     -   **ScopeExits**, returning a list of exits (for the "Places and Objects" list and Compass)
-    -   **HandleCommand**, accepting one string parameter (no return value). This handles player input.
+    -   **HandleCommand**, accepting **command** (a string) and **metadata** (a string dictionary), with no return value. This handles player input.
 
 On the "Places and Objects" list, the buttons that appear for an item are defined by the **displayverbs** attribute, which is a list of strings. On the "Inventory" list, the buttons are specified by the **inventoryverbs** attribute.
 

@@ -6,7 +6,7 @@ sidebar:
 
 ## Introduction
 
-Quest Viva is a program for writing text adventure games and gamebooks (both of which are sometimes referred to as [Interactive Fiction](http://en.wikipedia.org/wiki/Interactive_fiction)).
+Quest Viva is a program for writing text adventure games and gamebooks (both of which are sometimes referred to as [Interactive Fiction](https://en.wikipedia.org/wiki/Interactive_fiction)).
 
 You can use it in two ways:
 
@@ -31,7 +31,7 @@ You don't need fast reactions to play a text-based game. In fact, you don't even
 
 Using Quest Viva, you can play and create text-based games, which can include pictures, sounds and video. To play some games which people have created already, see [textadventures.co.uk](https://textadventures.co.uk/).
 
-If you have some time to spare, it's well worth watching the documentary [Get Lamp](http://www.youtube.com/watch?v=LRhbcDzbGSU) - it's a brilliant telling of the history of text adventure games.
+If you have some time to spare, it's well worth watching the documentary [Get Lamp](https://www.youtube.com/watch?v=LRhbcDzbGSU) - it's a brilliant telling of the history of text adventure games.
 
 You can find another great introduction for beginners at [Brass Lantern](http://www.brasslantern.org/beginners/).
 

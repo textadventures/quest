@@ -14,13 +14,13 @@ Quest Viva has a number of ways of naming things...
 
 ## The name attribute
 
-Everything in Quest Viva is identified by its name attribute; effectively this is the ID of the database record. This means everything must have a name (they are some things that get names automatically, such as exits), and each must be unique.
+Everything in Quest Viva is identified by its name attribute; effectively this is the ID of the database record. This means everything must have a name (there are some things that get names automatically, such as exits), and each must be unique.
 
-The name is also the way to reference the object in code, and this means there are certain characters that cannot be used, including most punctuation. The name attribute can contain spaces, but not at the start or end, and it cannot contain consecutive spaces. Some people do not like spaces in names, as it looks weird in code if you are familiar with programming. It can contain digits, but not start with a digit. It can contain underscores. It can also contain upper and lower case letters. Note that when you later refer to an object by its name, the name is case-sensitive.
+The name is also the way to reference the object in code, and this means there are certain characters that cannot be used, including most punctuation. The name attribute can contain spaces, but not at the start or end, and it cannot contain consecutive spaces. Some people do not like spaces in names, as it looks weird in code if you are familiar with programming. It can contain digits, but not start with a digit. It can contain underscores. It can also contain upper and lower case letters. No single word of the name may be `and`, `or`, `xor`, `not`, `if` or `in`, since those are expression keywords. Note that when you later refer to an object by its name, the name is case-sensitive.
 
 It is good practice to have a consistent naming policy, for example, always using lower case. That will make it easier to remember what you called it later.
 
-The name attribute is the only one of these attribute that is required; the rest are optional.
+The name attribute is the only one of these attributes that is required; the rest are optional.
 
 
 ## The alias attribute (and others)
@@ -73,7 +73,7 @@ The parent attribute also determines how an object is displayed in the editor. T
 
 Use the tree's "Move to..." option (in its "..." menu, or the "Move" button towards the top right) to change an object's parent. For any object you want the player to have at the start, for instance, just move them to the player.
 
-Objects can and will change there parent as the game is played. When the player picks up and then drops an item, its parent will change to the player, and then to the room. When the player moves to a different room, the parent attribute of the player changes to the new room (so the parent attribute of the player is the current room).
+Objects can and will change their parent as the game is played. When the player picks up and then drops an item, its parent will change to the player, and then to the room. When the player moves to a different room, the parent attribute of the player changes to the new room (so the parent attribute of the player is the current room).
 
 You can change the parent attribute directly in code, or use the helper functions. All three of these will move the object `ball` to the current room:
 
@@ -83,7 +83,7 @@ MoveObject (ball, player.parent)
 MoveObjectHere (ball)
 ```
 
-The `RemoveObject` function clears the parent attribute (sets it to `null`); for an item, this means it exits in limbo, rather than in a room, so the player can never get at it.
+The `RemoveObject` function clears the parent attribute (sets it to `null`); for an item, this means it exists in limbo, rather than in a room, so the player can never get at it.
 
 Even commands and turnscripts can have parent attributes. If they do, they will only apply when the player is inside that room.
 
@@ -103,7 +103,7 @@ If an object is not visible, then effectively it does not exist. The player cann
 
 This then is a good way to keep objects "off-stage". Have the object in the room already, but with visible set to false (untick the box). When the player does whatever it is, set the object be visible, and suddenly it will be there. This can be especially useful for exits (say a hole in the wall that suddenly appears, or conversely set an exit to be invisible if it is blocked).
 
-The scenery attribute can also be used to hide objects - but in this case your should set scenery to true (tick the box). An item that is scenery cannot be seen in the list of object for the room, but the player can still interact with it. It can be examined, picked up (depending on setting on the _Inventory_ tab), etc. This is best used for objects that are mention in the room description, so the player knows they exist, and so might want to interact with them.
+The scenery attribute can also be used to hide objects - but in this case you should set scenery to true (tick the box). An item that is scenery cannot be seen in the list of objects for the room, but the player can still interact with it. It can be examined, picked up (depending on setting on the _Inventory_ tab), etc. This is best used for objects that are mentioned in the room description, so the player knows they exist, and so might want to interact with them.
 
 The scenery attribute is set to false when an object is picked up. This means that if the player drops it in another room, it will appear in the list of objects in that room. If the object is picked up, it will be odd if it is still in the room description; you can use the text processor to handle that, using the scenery attribute.
 
@@ -138,7 +138,7 @@ The to attribute of an exit is an object - where the exit goes to (the parent at
 
 Obviously these determine if something is locked or open (the "open" verb uses the "open" attribute, so Quest Viva had to use "isopen" instead). Exits can be locked; containers can be opened or locked, an item that is openable/closeable can be opened.
 
-Note that Quest Viva will handle the setting of "isopen" for a container. However, for openable/closeable items, it is up to you to provide a script that will do that (this is to allow you to check if the item can be opens first). If you set a container to be lockable on the _Container_ tab, Quest Viva will likewise handle the lockable attribute for you.
+Note that Quest Viva will handle the setting of "isopen" for a container. However, for openable/closeable items, it is up to you to provide a script that will do that (this is to allow you to check whether the item can be opened first). If you set a container to be lockable on the _Container_ tab, Quest Viva will likewise handle the lockable attribute for you.
 
 
 
