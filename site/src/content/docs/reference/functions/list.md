@@ -63,11 +63,11 @@ Returns an [int](/reference/attributes/types#int) - the position of the given el
 
 ```quest
 list = Split("One;Two;Three;Four")
-msg(IndexOf(list, "One")
+msg(IndexOf(list, "One"))
 // -> 0
-msg(IndexOf(list, "Four")
+msg(IndexOf(list, "Four"))
 // -> 3
-msg(IndexOf(list, "Five")
+msg(IndexOf(list, "Five"))
 // -> -1
 ```
 
@@ -78,7 +78,7 @@ ListCombine (list, list)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Combines two [stringlists](/reference/attributes/types#stringlist) or two [objectlists](/reference/attributes/types#objectlist) or two generic lists (can cannot add a list of one type to another).
+Combines two [stringlists](/reference/attributes/types#stringlist) or two [objectlists](/reference/attributes/types#objectlist) or two generic lists (you cannot add a list of one type to another).
 
 ## ListCompact
 ```quest
@@ -165,7 +165,7 @@ Returns an empty [stringlist](/reference/attributes/types#stringlist).
 ObjectListCompact (objectlist list)
 ```
 
-Returns an [objectlist](/reference/attributes/types#list), based on the given list, but with any repeated entries removed and any entries that are null removed. The canonical use is when combining two lists that might have some entries in common:
+Returns an [objectlist](/reference/attributes/types#objectlist), based on the given list, but with any repeated entries removed and any entries that are null removed. The canonical use is when combining two lists that might have some entries in common:
 
 ```quest
 combinedlist = ObjectListCompact (list1 + list2)
@@ -183,7 +183,7 @@ Returns the [object](/reference/attributes/types#object) from the list by the sp
 You can use the [ListItem](#listitem) function if you don't know the type of the list.
 
 ### Example
-For example, to show a specific objects' name from a list, first create an [objectlist](/reference/attributes/types#objectlist) called myList, in this example it is a list of objects that can be seen currently [ScopeVisibleNotHeld](/reference/functions/scope#scopevisiblenotheld).
+For example, to show a specific object's name from a list, first create an [objectlist](/reference/attributes/types#objectlist) called myList, in this example it is a list of objects that can be seen currently [ScopeVisibleNotHeld](/reference/functions/scope#scopevisiblenotheld).
 
 ```quest
 myList = ScopeVisibleNotHeld()
@@ -195,7 +195,7 @@ Now show the name of the second item in the list. Note that the second object is
 msg ("myList item 2 is " + ObjectListItem(myList, 1).name)
 ```
 
-This could be used with [GetRandomInt](/reference/functions/random#getrandomint) to remove an item from the players inventory ([ScopeInventory](/reference/functions/scope#scopeinventory)) and place it into the current room (for example, if you're creating a poltergeist or thief).
+This could be used with [GetRandomInt](/reference/functions/random#getrandomint) to remove an item from the player's inventory ([ScopeInventory](/reference/functions/scope#scopeinventory)) and place it into the current room (for example, if you're creating a poltergeist or thief).
 
 ## ObjectListSort
 ```quest
@@ -224,11 +224,11 @@ It is important to have all the objects in the list have the same type of attrib
 
 On the other hand, if an object is missing the attribute, it will appear first in the list, which might not be what you are expecting!
 
-If you are sorting using a string attribute, the list will be sorted alphabetically. The ordering is that nothing is first, then spaces, then punctuation and underscores, followed by numbers and then letters. Letters are sorted by what the letter is first, so "a" will be first, whatever the case or accents on it, but for a specific letter, lower case, then upper, then accented.
+If you are sorting using a string attribute, the list will be sorted alphabetically. Nothing comes first, then spaces, then underscores and punctuation, then numbers, then letters. Letters are sorted by what the letter is first, so "a" will be first, whatever the case or accents on it, but for a specific letter, lower case, then upper, then accented. The order within punctuation itself is the one .NET's culture-aware comparison produces, and isn't worth relying on.
 
 So if we have a set of objects with string attributes, they would be sorted in this order:
 
-> null, "T", "T ", "T!", "T.", "T_", "T2", "Ta", "TA", "Tá", "Tb"
+> null, "T", "T ", "T_", "T!", "T.", "T2", "Ta", "TA", "Tá", "Tb"
 
 When sorting Booleans, false comes before true.
 
@@ -252,7 +252,7 @@ Returns the reversed version of [ObjectListSort](#objectlistsort) - see that pag
 ObjectListToStringList (objectlist list, string attribute name)
 ```
 
-Returns a new string list containing the values or the names attribute for each object in the given list. The value of the attribute must be a string or it will not be added. If an object does not have that attribute or it is not a string, then it will be missing from the list, so the string list that is returned could well be shorter than the object list.
+Returns a new string list containing the value of the named attribute for each object in the given list. The value must be a string or it will not be added. If an object does not have that attribute or it is not a string, then it will be missing from the list, so the string list that is returned could well be shorter than the object list.
 
 ## RemoveInvisibleObjects
 ```quest

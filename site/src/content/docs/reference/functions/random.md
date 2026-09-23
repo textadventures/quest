@@ -41,7 +41,7 @@ GetRandomDouble ()
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a random [double](/reference/attributes/types#double) value between 0.0 and 1.0.
+Returns a random [double](/reference/attributes/types#double) value from 0.0 up to but not including 1.0.
 
 ## GetRandomInt
 ```quest
@@ -50,7 +50,7 @@ GetRandomInt (integer min, integer max)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a random [int](/reference/attributes/types#int) value between the specified maximum and minimum.
+Returns a random [int](/reference/attributes/types#int) between the given minimum and maximum. Both ends are included, so `GetRandomInt(1, 6)` can return 6. (This differs from .NET's own `Random.Next`, whose upper bound is exclusive.)
 
 ## PickOneChild
 ```quest

@@ -142,7 +142,7 @@ Returns an [objectlist](/reference/attributes/types#objectlist) containing all t
 
 All objects in this scope can be interacted with directly by the player.
 
-This is the union of two lists - [ScopeReachableNotHeld](#scopereachablenotheld) (all objects the player can reach in the current room, but are not in the inventory) and [ScopeReachableInventory](#scopereachableinventory) (all the objects the player can reach in their inventory).
+This is the union of two lists - [ScopeReachableNotHeld](#scopereachablenotheld) (all objects the player can reach in the current room, but are not in the inventory) and [ScopeReachableInventory](#scopereachableinventory) (all the objects the player can reach in their inventory) - plus the player object itself, so that commands can be applied to the player.
 
 ## ScopeReachableForRoom
 ```quest
@@ -153,7 +153,7 @@ Returns an [objectlist](/reference/attributes/types#objectlist) containing all t
 
 All objects in this scope can be interacted with directly by the player.
 
-If the player is in the specified room, this function returns the union of two lists - [ScopeReachableNotHeldForRoom](#scopereachablenotheldforroom) (all objects the player can reach in the current room, but are not in the inventory) and [ScopeReachableInventory](#scopereachableinventory) (all the objects the player can reach in their inventory). Otherwise it returns [ScopeReachableNotHeldForRoom](#scopereachablenotheldforroom)
+If the player is in the specified room, this function returns the union of two lists - [ScopeReachableNotHeldForRoom](#scopereachablenotheldforroom) (all objects the player can reach in the current room, but are not in the inventory) and [ScopeReachableInventory](#scopereachableinventory) (all the objects the player can reach in their inventory) - plus the player object itself. Otherwise it returns [ScopeReachableNotHeldForRoom](#scopereachablenotheldforroom), with no player object in it.
 
 ## ScopeReachableInventory
 ```quest

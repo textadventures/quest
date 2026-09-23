@@ -56,7 +56,7 @@ Switches the current player object (point of view) to the given object, which mu
 CheckDarkness()
 ```
 
-Returns a [boolean](/reference/attributes/types#boolean) - **true** if the player is in an room, which is dark and has no strong lightsources in it.
+Returns a [boolean](/reference/attributes/types#boolean) - **true** if the player is in a room which is dark and has no strong lightsources in it. It also records the answer in the room's `darklevel` attribute as it goes.
 
 See also [SetDark](#setdark), [SetLight](#setlight), [SetObjectLightstrength](#setobjectlightstrength), [SetExitLightstrength](#setexitlightstrength)
 
@@ -107,26 +107,26 @@ Returns a [string](/reference/attributes/types#string) containing a formatted li
 
 ## FormatObjectList
 ```quest
-FormatObjectList (string pre-list, object parent, string pre-final, string post-list, boolean use inventory verbs)
+FormatObjectList (string pre-list, object parent, string pre-final, string post-list)
 ```
 
 Returns a [string](/reference/attributes/types#string) containing a formatted list of objects.
 
-Used by [ShowRoomDescription](#showroomdescription) and the "inventory" command to display lists of visible and carried objects.
+Used by [ShowRoomDescription](#showroomdescription) to list what is in the room, and by the "look at" handling to list what is inside a container. The "inventory" command uses [FormatInventoryList](#formatinventorylist) instead, because it needs scenery included.
 
 FormatObjectList will display children of listed objects within brackets, if the parent object can be seen through.
 
 For example, this:
 
 ```quest
-FormatObjectList("You can see", player.parent, "and", "in this room.", false)
+FormatObjectList("You can see", player.parent, "and", "in this room.")
 ```
 
 may return output like this:
 
 > You can see a sofa, a lamp, a box (containing a diary and a pen) and a kitten in this room.
 
-All object names will be hyperlinked to show a menu of [displayverbs](/reference/attributes/all#displayverbs). The final parameter lets you specify whether to use the [inventoryverbs](/reference/attributes/all#inventoryverbs) instead.
+All object names will be hyperlinked to show a menu of verbs - [displayverbs](/reference/attributes/all#displayverbs) for objects in the room, or [inventoryverbs](/reference/attributes/all#inventoryverbs) for anything the player is carrying, chosen automatically by [GetDisplayVerbs](#getdisplayverbs).
 
 ## GetBlockingObject
 ```quest
@@ -340,13 +340,6 @@ ShowRoomDescription ()
 
 Does not return a value.
 
-## WhereAmI
-```quest
-WhereAmI (string platform name)
-```
-
-Sets the `questplatform` attribute on `game` to the given string. Despite the name, this has nothing to do with the player's location - nothing in the current engine reads `questplatform` back, so this is a legacy hook rather than something new games need to call.
-
 ## SwitchOff
 ```quest
 SwitchOff (object)
@@ -361,3 +354,9 @@ SwitchOn (object)
 
 Switches on the specified object, simply by setting the [switchedon](/reference/attributes/all#switchedon) property to true.
 
+## WhereAmI
+```quest
+WhereAmI (string platform name)
+```
+
+Sets the `questplatform` attribute on `game` to the given string. Despite the name, this has nothing to do with the player's location - nothing in the current engine reads `questplatform` back, so this is a legacy hook rather than something new games need to call.

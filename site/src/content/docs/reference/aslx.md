@@ -11,7 +11,7 @@ Generally you have no need to look at the full code view, but just occasionally 
 Here is a simple example:
 
 ```quest
-<asl version="500">
+<asl version="600">
   <include ref="English.aslx"/>
   <include ref="Core.aslx"/>
 
@@ -31,12 +31,12 @@ Here is a simple example:
       </take>
     </object>
 
-    <exit name="east" to="hall"/>
+    <exit alias="east" to="hall"/>
   </object>
 
   <object name="hall">
-    <exit name="east" to="kitchen"/>
-    <exit name="west" to="lounge"/>
+    <exit alias="east" to="kitchen"/>
+    <exit alias="west" to="lounge"/>
   </object>
 
   <object name="kitchen">
@@ -44,7 +44,7 @@ Here is a simple example:
       <look>Just an ordinary sink</look>
     </object>
 
-    <exit name="west" to="hall"/>
+    <exit alias="west" to="hall"/>
   </object>
 
 </asl>
@@ -83,7 +83,7 @@ When Quest Viva loads the game, it will set the following additional attributes 
 
 ## More on XML
 
-A chunk of XML - called an element - typically consists of a start tag, possible with attributes, the content, and the end tag. Tags are delineated by angle brackets, with a slash before the name in the end tag:
+A chunk of XML - called an element - typically consists of a start tag, possibly with attributes, the content, and the end tag. Tags are delineated by angle brackets, with a slash before the name in the end tag:
 ```xml
 <tag name="value">The content</tag>
 ```
@@ -103,7 +103,7 @@ Valid XML should include a link at the start to a document type definition, and 
 
 ### XML and Quest Viva
 
-The outer most element of a Quest Viva document is the `asl` element; everything goes inside there. Inside that are the various parts of a Quest Viva game: include (references to libraries), game, verb, command, object, function, turnscript, walkthrough. Every game has one game object, but can have any number of the other objects. All the attributes (in Quest Viva terms) are elements inside those elements, except the `name` attribute, which is a XML attribute.
+The outermost element of a Quest Viva document is the `asl` element; everything goes inside there. Inside that are the various parts of a Quest Viva game: include (references to libraries), game, verb, command, object, function, turnscript, walkthrough. Every game has one game object, but can have any number of the other objects. All the attributes (in Quest Viva terms) are elements inside those elements, except the `name` attribute, which is a XML attribute.
 
 Looking again at the blank game, you can see the `game` object has a name attribute as an XML attribute, but `gameid`, `version` and `firstpublished` are all XML elements.
 ```xml
@@ -119,8 +119,9 @@ By default elements that hold Quest Viva attributes are strings, but the type at
 <statusattributes type="stringdictionary">
   <item>
     <key>temp</key>
-    <value>Temperure: !°C</value>
+    <value>Temperature: !°C</value>
   </item>
+</statusattributes>
 ```
 
 
@@ -128,7 +129,7 @@ By default elements that hold Quest Viva attributes are strings, but the type at
 
 HTML is the mark-up language used on web pages to control how a browser will display the page.
 
-Like XML, HTML is derived from SGML, a markup language developed 30 years ago, and uses the same scheme of tags. There are differences, but recent versions of HTML have become more XML like, and the differences are not worth discussing here. If you follow the rules for XML when writing HTML you will a step ahead of the game.
+Like XML, HTML is derived from SGML, a markup language developed 30 years ago, and uses the same scheme of tags. There are differences, but recent versions of HTML have become more XML like, and the differences are not worth discussing here. If you follow the rules for XML when writing HTML you will be a step ahead of the game.
 
 
 ### Simple formatting
@@ -154,11 +155,11 @@ Whichever you use, give it a `style` attribute, and use CSS as the value. Here i
 ```xml
 How to do <span style="color:white;background-color:black">reverse video</span>.
 ```
-CSS offers a huge range of options, see [here](http://www.w3schools.com/cssref/) for example. It can be quite fussy in the values allowed.
+CSS offers a huge range of options, see [here](https://www.w3schools.com/cssref/) for example. It can be quite fussy in the values allowed.
 
 ### CDATA
 
-HTML is not compatible with XML. If you have HTML in your strings or scripts, Quest Viva will get confused when opening your file, will try to interpret the HTML as XML, and throw an error. The solution is to put the HTML (and any test with a `<` in it) inside a CDATA section. A CDATA section is just something tagged as not XML.
+HTML is not compatible with XML. If you have HTML in your strings or scripts, Quest Viva will get confused when opening your file, will try to interpret the HTML as XML, and throw an error. The solution is to put the HTML (and any text with a `<` in it) inside a CDATA section. A CDATA section is just something tagged as not XML.
 
 Generally Quest Viva does this for you. If you are coding directly in the XML, perhaps in a library, you need to start and end the text with `<![CDATA[` and `]]>` respectively. For example:
 ```xml

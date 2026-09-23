@@ -32,6 +32,8 @@ const staleAllowlist = new Set([
 // than as an ordinary method on a class in src/Engine/Functions/.
 const specialCasedHardcodedFunctions = new Set([
   "IsDefined", // NcalcExpressionEvaluator.cs - needs the raw parameter name
+  "cast", // NcalcExpressionEvaluator.cs - needs the type name unevaluated
+  "if", // NcalcExpressionEvaluator.cs - evaluates only the branch it takes
 ]);
 
 function readCoreFunctionNames() {

@@ -25,7 +25,7 @@ There is a "gotcha" lurking here. If your object is of a type that sets an attri
 A string is a piece of text (string literal), a string variable is variable that holds text.
 
 ```quest
-myStingVar = "World"
+myStringVar = "World"
 ```
 
 Strings can be added together in any combination of string literal (enclosed in quotes) or variables.
@@ -50,7 +50,7 @@ Example:
 
 ```quest
 <look type="script">
-  if (not fridge.isopen) {
+  if (fridge.isopen) {
     msg ("The fridge is open, casting its light out into the gloomy kitchen.")
   }
   else {
@@ -101,9 +101,9 @@ There is no way to convert a string to a script during play, by the way (though 
 
 ## Boolean
 
-A Boolean can be either `true` or `false`. When using the GUI to create a script, they are called flags, and can be on or off. Boolean attributes are extremely use as they can tell us the current state of an object. It the torch on or off? Is the hat worn or not? Has the room been visited?
+A Boolean can be either `true` or `false`. When using the GUI to create a script, they are called flags, and can be on or off. Boolean attributes are extremely useful, as they can tell us the current state of an object. Is the torch on or off? Is the hat worn or not? Has the room been visited?
 
-Note that you do not need to compare a Boolean to `true` or `false`. It is already one of the other. Instead of:
+Note that you do not need to compare a Boolean to `true` or `false`. It is already one or the other. Instead of:
 
 ```quest
 if (player.is_successful = true) {
@@ -121,7 +121,7 @@ If you want to test that it is not true, just add the `not` keyword:
 if (not player.is_successful) {
 ```
 
-Also note that to do any of the you need to ensure the Boolean is initialised (i.e., it has a value at the start of the game). If `player.is_successful` has not been set, then when you do one of the comparisons above you will get an error message.
+Also note that to do any of these you need to ensure the Boolean is initialised (i.e., it has a value at the start of the game). If `player.is_successful` has not been set, then when you do one of the comparisons above you will get an error message.
 
 Alternatively, use `GetBoolean`, which returns `true` if the attribute is `true`, or `false` if it is `false` or `null` (i.e., has not been set).
 
@@ -141,7 +141,7 @@ An "int" (integer) attribute represents a whole number (which can be positive or
 
 Examples: 1, 2, -167, 37835685, 0.
 
-An "int" attribute is represented internally as a signed 32-bit variable, which means it can range from -2147483648 to 2147483647 (so up to just over 2 billion, which is probably high enough for most games). Going outside that range will lead to some funny effects, as numbers wrap around - if you add 1 to 2147483647 you will get -2147483648!
+An "int" attribute is represented internally as a signed 32-bit variable, which means it can range from -2147483648 to 2147483647 (so up to just over 2 billion, which is probably high enough for most games). Going outside that range wraps around: set an attribute to 2147483647 + 1 and it comes back as -2147483648. An intermediate result inside an expression may print the larger number, but it wraps as soon as it is stored.
 
 ## Double
 
@@ -167,27 +167,29 @@ would be another way of setting the [parent](/reference/attributes/all#parent) a
 
 A stringlist is a [list](#list) that can contain a number of elements, all have to be of type [string](#string).
 
-For Quest 5.3 and earlier, the format in an ASLX file is this:
+In Quest 5.3 and earlier, the format in an ASLX file was this:
 
 ```xml
 <mylist type="list">one; two; three</mylist>
 ```
 
-The same list is expressed like this:
+From Quest 5.4 on, that same list is written with nested values, and the type is `stringlist`:
 
 ```xml
-<mylist type="list">
+<mylist type="stringlist">
   <value>one</value>
   <value>two</value>
   <value>three</value>
 </mylist>
 ```
 
-In Quest 5.4, you can still use the older semi-colon separate format with "simplestringlist":
+You can still use the semicolon-separated format by asking for "simplestringlist":
 
 ```xml
 <mylist type="simplestringlist">one; two; three</mylist>
 ```
+
+Note that the old `type="list"` semicolon form is only converted for games whose ASL version is 530 or earlier. In a current game it is read as a generic [list](#list) instead, which for a one-line semicolon string means you get a list with a single item in it.
 
 See [Using Lists](/howto/scripting/lists).
 
@@ -245,11 +247,13 @@ For Quest 5.4 and later the format is:
 </myattribute>
 ```
 
-In Quest 5.4, you can still use the old semicolon-separated format by specifying "simpleobjectdictionary":
+You can still use the semicolon-separated format by specifying "simpleobjectdictionary":
 
 ```xml
 <myattribute type="simpleobjectdictionary">first = player; second = lounge</myattribute>
 ```
+
+Getting this wrong fails quietly: the old semicolon form is only converted for games whose ASL version is 530 or earlier, so writing it with `type="objectdictionary"` in a current game gives you an empty dictionary rather than an error.
 
 This defines:
 
@@ -346,7 +350,7 @@ For Quest 5.4 and later the format is:
 </statusattributes>
 ```
 
-In Quest 5.4, you can still use the old semicolon-separated format using "simplestringdictionary":
+You can still use the semicolon-separated format using "simplestringdictionary" - as with an object dictionary, the plain `type="stringdictionary"` semicolon form is only converted for games whose ASL version is 530 or earlier:
 
 ```xml
 <statusattributes type="simplestringdictionary">turns = You have taken ! turns; health = Health !%</statusattributes>
@@ -363,4 +367,4 @@ See [Using Dictionaries](/howto/scripting/dictionaries)
 
 ## Command pattern
 
-Quest Viva uses regular expressions to compare commands with what the player typed, and the regular expression is converted from a string in the background (see [here](/howto/commands/regular-expressions) for more on that). However, it also offers a simplified version, a "command pattern". This is essentially a string (such as "tie #object1# to #object2"), which Quest Viva will convert to another string when the game start (in this case "^tie (?.*) to (?.*)$"), which can then be converted to a regular expression when required. There is not much point to command patterns outside of commands.
+Quest Viva uses regular expressions to compare commands with what the player typed, and the regular expression is converted from a string in the background (see [here](/howto/commands/regular-expressions) for more on that). However, it also offers a simplified version, a "command pattern". This is essentially a string (such as `tie #object1# to #object2#`), which Quest Viva converts to another string when the game starts (in this case `^tie (?<object1>.*) to (?<object2>.*)$`), which can then be compiled to a regular expression when required. There is not much point to command patterns outside of commands.

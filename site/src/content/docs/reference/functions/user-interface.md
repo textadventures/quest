@@ -97,7 +97,7 @@ Ends the current [Pages](#showpage) dialogue, hiding the current page's option l
 GetCurrentFontFamily ()
 ```
 
-Returns the fonts currently in use - the [defaultwebfont](/reference/attributes/all#defaultwebfont) and [defaultfont](/reference/attributes/all#defaultfont).
+Returns a CSS font-family value for the fonts currently in use: just [defaultfont](/reference/attributes/all#defaultfont) if no [defaultwebfont](/reference/attributes/all#defaultwebfont) is set, otherwise the web font in quotes followed by the default font as a fallback, e.g. `'Lato', Arial`.
 
 ## GetInput
 ```quest
@@ -132,7 +132,7 @@ Displays the given [dialoguepage](#showpage) object: prints its description, the
 HasSeenPage (object page)
 ```
 
-Returns a [boolean](/reference/attributes/types#boolean) - **true** if the given [dialoguepage](#showpage) has been visited before (its `visited` attribute), for conditional page text or options based on what the player has already seen.
+Returns a [boolean](/reference/attributes/types#boolean) - **true** if the given [dialoguepage](#showpage) has been visited before (its `visited` attribute), for conditional page text or options based on what the player has already seen. There's also a [HasSeenPage](/reference/functions/gamebook#hasseenpage) for gamebook pages, which works the same way.
 
 ## InitUserInterface
 ```quest
@@ -304,10 +304,10 @@ options = Split("Red;Green;Blue;Yellow", ";")
 ShowMenu ("What is your favourite colour?", options, false) {
   switch (result) {
     case ("Red") {
-      msg ("You must be very passionate. Or like a teamthat play in red.")
+      msg ("You must be very passionate. Or like a team that play in red.")
     }
     case ("Yellow") {
-      msg ("What a bright, cheerful colour!.")
+      msg ("What a bright, cheerful colour!")
     }
     case ("Green", "Blue") {
       msg (result + "? Seriously?")
@@ -334,10 +334,10 @@ ShowMenu ("Select", ScopeInventory(), true) {
 
 ## ShowPage
 ```quest
-ShowPage (object page, boolean allowCancel, boolean runTurnScripts)  { script }
+ShowPage (object page, boolean allowCancel, boolean runTurnScripts)
 ```
 
-Starts a branching dialogue at the given `dialoguepage` object, for building NPC conversations or other choice-driven text out of linked pages rather than [ShowMenu](#showmenu) callbacks. Each page has a description and a set of options (added with [AddPageLink](/reference/functions/gamebook#addpagelink)) linking to other pages; choosing an option is a normal command, so - unlike a ShowMenu-based dialogue - the game is fully idle between choices and save/load/undo work throughout.
+Starts a branching dialogue at the given `dialoguepage` object, for building NPC conversations or other choice-driven text out of linked pages rather than [ShowMenu](#showmenu) callbacks. Each page has a description and a set of options (added with [AddPageLink](#addpagelink)) linking to other pages; choosing an option is a normal command, so - unlike a ShowMenu-based dialogue - the game is fully idle between choices and save/load/undo work throughout.
 
 - **allowCancel**: if true, entering any command other than a numbered option or option name ends the dialogue (via [EndPageDialogue](#endpagedialogue)) and then runs normally; if false, the player is told to choose one of the options.
 - **runTurnScripts**: whether turn scripts should fire for each choice made during the dialogue. Off by default, since each choice is a real turn and most games don't want e.g. hunger daemons ticking mid-conversation.

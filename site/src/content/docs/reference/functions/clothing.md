@@ -50,15 +50,6 @@ GetDisplayGarment (object)
 
 Returns a [string](/reference/attributes/types#string): the object's displayed name as it should appear in a worn-items listing, including its prefix (or "your" if `usedefaultprefix` is set) and any multistate descriptor (e.g. "(torn)"). Used by [ListClothes](#listclothes).
 
-## GetOuterFor
-```quest
-GetOuterFor (object character, string slot)
-```
-
-Returns an [object](/reference/attributes/types#object), the outermost garment (i.e., with the highest layer attribute) in the given slot, for the character. Returns `null` if there is nothing in that slot.
-
-For more on handling wearable objects, see [here](/howto/objects/clothing).
-
 ## GetOuter
 ```quest
 GetOuter (string slot)
@@ -68,12 +59,14 @@ Returns an [object](/reference/attributes/types#object), the outermost garment (
 
 For more on handling wearable objects, see [here](/howto/objects/clothing).
 
-## ListWornFor
+## GetOuterFor
 ```quest
-ListWornFor (object character)
+GetOuterFor (object character, string slot)
 ```
 
-Returns an [object list](/reference/attributes/types#objectlist) containing all the items worn by the character.
+Returns an [object](/reference/attributes/types#object), the outermost garment (i.e., with the highest layer attribute) in the given slot, for the character. Returns `null` if there is nothing in that slot.
+
+For more on handling wearable objects, see [here](/howto/objects/clothing).
 
 ## ListClothes
 ```quest
@@ -81,6 +74,13 @@ ListClothes ()
 ```
 
 Returns a [string](/reference/attributes/types#string) listing everything the current player is wearing (via [GetDisplayGarment](#getdisplaygarment) for each item), formatted as a comma-separated list with "and" before the last item, or "nothing" if nothing is worn.
+
+## ListWornFor
+```quest
+ListWornFor (object character)
+```
+
+Returns an [object list](/reference/attributes/types#objectlist) containing all the items worn by the character.
 
 ## RemoveGarment
 ```quest
@@ -126,6 +126,13 @@ SetVerbs ()
 
 Recalculates the wear/remove verb text for every wearable object the player is carrying that opts into adjective-qualified verbs (the `wear_adjverbs` attribute) and has both `wear_slots` and `wear_layer` set - e.g. so the menu offers "wear the *tattered* shirt" once you also have a clean one. Called automatically as garments are picked up, worn or removed.
 
+## Slots
+```quest
+Slots ()
+```
+
+Returns a [stringlist](/reference/attributes/types#stringlist) of every distinct `wear_slots` value used by any object in the game (e.g. "head", "torso", "feet") - the full set of clothing slots your game defines, gathered by scanning all objects rather than being declared anywhere centrally.
+
 ## TestGarment
 ```quest
 TestGarment (object)
@@ -146,13 +153,6 @@ UpdateArmour ()
 ```
 
 Override hook called whenever the player wears or removes a garment. The default implementation does nothing; override it to refresh a status display or store the player's current armour total (see [GetArmour](#getarmour)) on an attribute. For more, see [here](/howto/objects/clothing).
-
-## Slots
-```quest
-Slots ()
-```
-
-Returns a [stringlist](/reference/attributes/types#stringlist) of every distinct `wear_slots` value used by any object in the game (e.g. "head", "torso", "feet") - the full set of clothing slots your game defines, gathered by scanning all objects rather than being declared anywhere centrally.
 
 ## WearGarment
 ```quest

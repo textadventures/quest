@@ -12,7 +12,7 @@ For example, after picking up some flowers, a player can give them to a characte
 
 "Give" and "Use" are set up in exactly the same way – the only difference is whether the player types "give ... to ..." or "use ... on ...".
 
-In this example, we are going to revive the corpse of Bob in the lounge, using a [heart defibrillator](http://en.wikipedia.org/wiki/Defibrillation). First, we need to alter the setup of Bob so that we give a correct description whether he is dead or alive. To do this, we are going to use an **object flag**.
+In this example, we are going to revive the corpse of Bob in the lounge, using a [heart defibrillator](https://en.wikipedia.org/wiki/Defibrillation). First, we need to alter the setup of Bob so that we give a correct description whether he is dead or alive. To do this, we are going to use an **object flag**.
 
 An object flag is simply a way of accessing a boolean attribute of an object (a boolean attribute can only be either "true" or "false"). You can use it to mark certain things as "done", and is a common way to track the progress of a game.
 

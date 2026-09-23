@@ -23,4 +23,4 @@ This is a reference for the functions built in to Quest Viva, grouped by type:
 - [Internal Core.aslx functions](/reference/functions/internal-core)
 - [Mathematical functions](/reference/functions/maths)
 
-See also [Hard-coded functions and library functions](/reference/functions/hardcoded), which explains the distinction some of the notes below refer to.
+See also [Hard-coded functions and library functions](/reference/functions/hardcoded), which explains the distinction the "hard-coded" badge on these pages refers to.

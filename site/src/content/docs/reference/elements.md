@@ -46,26 +46,12 @@ Within a language library, a template may define a **templatetype** of "command"
 
 This simply is a flag to the Editor to prevent it from showing the template in the list of templates (as the way to edit it would be to edit the associated command pattern).
 
-Note that it is important to have templates defined in the right place in the code. If your template is to override an existing template, then it has to come *after* the language file include. However, it has to come *before* the template is used in the code, which should be before the core library file include. As of version 5.2 Quest Viva does not do this, so you will need to manually move the templates to the right place. Your game file should start something like this:
-
-```xml
-<!--Saved by Quest 5.2.4515.34846-->
-<asl version="520">
-  <include ref="English.aslx"/>
-  <template name="SeeListHeader">There's</template>
-  <template name="GoListHeader"> Go to </template>
-  <template name="UnrecognisedCommand">Unknown command.</template>
-  <template name="YouAreIn"></template>
-  <template name="PlacesObjectsLabel">Places / Objects</template>
-  <include ref="Core.aslx" />
-  <game name="Test_1">
-  ...
-```
+A template defined in your own game file always overrides one of the same name from a library, wherever you put it - before the language include, between the includes, or after them. The loader flags templates that come from the game file itself, and a library definition is never allowed to replace one of those. Older versions of Quest did depend on the order, and advised moving overrides in by hand to sit between the language include and the Core include; that is no longer necessary.
 
 ## dynamictemplate
 
 ```xml
-<dynamictemplate name="name">expression</template>
+<dynamictemplate name="name">expression</dynamictemplate>
 ```
 
 A dynamictemplate is used in a similar way as [template](#template), except that its value is an expression, not a static string. The expression will have access to an object called "object", which you can use to craft a response.
@@ -75,7 +61,7 @@ You can print a dynamic template using the [DynamicTemplate](/reference/function
 ## verbtemplate
 
 ```xml
-<verbtemplate name="name">text</template>
+<verbtemplate name="name">text</verbtemplate>
 ```
 
 Creates or adds to a verb template of the specified name. Specifying multiple verb templates with the same name lets you handle multiple verbs with one template.
@@ -94,10 +80,10 @@ The text can optionally include `#object#` as a stand-in for the object name; if
 ## function
 
 ```xml
-<function name="name"optional type="type"optional parameters="parameters">script</function>
+<function name="name" type="type" parameters="parameters">script</function>
 ```
 
-Creates a function.
+Creates a function. Only `name` is required; `type` and `parameters` are both optional.
 
 If no type is specified, the function does not return a value.
 
@@ -188,14 +174,16 @@ The scope attribute tells Quest Viva where to look first for objects for this co
 ## verb
 
 ```xml
-<verboptional name="name"optional pattern="pattern"optional unresolved="unresolved text"optional property="attribute name"optional response="default response text"optional template="template name">script</verb>
+<verb name="name" pattern="pattern" unresolved="unresolved text" property="attribute name" response="default response text" template="template name">script</verb>
 ```
 
 or
 
 ```xml
-<verboptional name="name">attributes</verb>
+<verb name="name">attributes</verb>
 ```
+
+All XML attributes are optional.
 
 Creates a verb, which is a specialised type of [command element](#command) - so everything that applies to a command also applies to a verb. Underneath, verbs are just commands - if you look at them in the Debugger, they are the same thing. But they are designed to be easier to use than commands for the vast majority of commands which are of the form "command object", such as "look at thing", "eat food", "sit on bench" etc.
 
@@ -581,8 +569,10 @@ This means we can specify an alt attribute without specifying the type:
 ## delegate
 
 ```xml
-<delegate name="name"optional type="type"optional parameters="parameters">properties</delegate>
+<delegate name="name" type="type" parameters="parameters">properties</delegate>
 ```
+
+Only `name` is required; `type` and `parameters` are both optional.
 
 Creates a delegate type. Delegates are script properties that can be called like functions. The delegate tag defines the function signature (the parameters passed to the function and its return type, if any), and then an object can provide its own implementation of the delegate function.
 
