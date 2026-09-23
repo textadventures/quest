@@ -68,7 +68,7 @@
     <options type="simplestringdictionary">Light = Light the lamp</options>
   </object>
   <object name="Light">
-    <description><![CDATA[The lamp catches. The lens takes the flame and throws it out across the water, and somewhere out there a boat that had given up on the night turns towards you.<br/><br/>{if nerve>3:You did not hesitate once.}{if nerve<4:You got there in the end.}<br/><br/>{b:The end.}]]></description>
+    <description><![CDATA[The lamp catches. The lens takes the flame and throws it out across the water, and somewhere out there a boat that had given up on the night turns towards you.<br/><br/>{either game.nerve > 3:You did not hesitate once.|You got there in the end.}<br/><br/>{b:The end.}]]></description>
   </object>
   <object name="Leave">
     <description><![CDATA[You walk back down the causeway in the dark, and wait on the jetty until morning. The lighthouse stays dark all night.<br/><br/>{b:The end.}]]></description>

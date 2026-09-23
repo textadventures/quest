@@ -77,10 +77,20 @@ The Lighthouse counts nerve. Add **Increase counter** with the name `nerve` to t
 Now the ending can notice. On the `Light` page:
 
 ```
+{either game.nerve > 3:You did not hesitate once.|You got there in the end.}
+```
+
+`{either}` is `{if}`'s sibling, and the difference is that it has an "otherwise": everything after the `|` is what the reader sees when the condition is false. Comparisons work with `>`, `<`, `>=`, `<=`, `=` and `<>`.
+
+Note the `game.`, which is the one catch. `{if}` knows what a bare flag or counter name means, but `{either}` takes a full [expression](/howto/scripting/writing-code#expressions-and-operators), and a counter is stored as an attribute of the game - so `{either nerve > 3:...}` is an error.
+
+You can do this with `{if}` instead, as two conditions that between them cover every case:
+
+```
 {if nerve>3:You did not hesitate once.}{if nerve<4:You got there in the end.}
 ```
 
-Comparisons work with `>`, `<`, `>=`, `<=`, `=` and `<>`. As with flags there is no "otherwise", so the two conditions between them have to cover every case - which is why the second is `<4` and not, say, `=3`.
+That works, but nothing stops you leaving a gap, and if the counter has never been set at all then neither condition matches and the reader sees the curly braces on screen. `{either}` has no gap to leave.
 
 To show a counter's value to the reader, use `{counter:name}`:
 
