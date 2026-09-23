@@ -40,7 +40,7 @@ The drop-down only lists pages this page doesn't already link to, so it gets sho
 
 The reader sees the options in the order you added them - which in this release is not the order the editor lists them in, since the list is sorted by page name ([#2394](https://github.com/textadventures/quest/issues/2394)). Preview the page to see the order the reader will get.
 
-Page2 and Page3 are now orphaned - nothing links to them any more. Delete them with the "⋯" menu beside each one in the tree; leaving pages nothing points at is the easiest way to lose track of a book.
+Page2 and Page3 are now orphaned - nothing links to them any more. Delete them with the "⋯" menu beside each one in the tree; leaving pages nothing points at is the easiest way to lose track of where your game has got to.
 
 ## Where the reader can get to
 
@@ -80,6 +80,6 @@ Preview and play it through both ways. It works - but the `Hall` description tal
 
 **Write the link, not the instruction.** "Take the lantern" is better than "Click here to take the lantern", and much better than "Page 2". The link text is part of the prose.
 
-**Let branches rejoin.** It is tempting to give every choice its own future. Three real choices that all lead back to the same corridor is a better book than one choice with two entirely separate halves, and about a tenth of the work.
+**Let branches rejoin.** It is tempting to give every choice its own future. Three real choices that all lead back to the same corridor make a better game than one choice with two entirely separate halves, and much less writing: everything after the join gets written once instead of once per branch.
 
 [Next: Pictures, sound and video](/tutorial/gamebook/pictures-and-sound)

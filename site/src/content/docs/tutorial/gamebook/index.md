@@ -23,7 +23,7 @@ Open the editor - in your browser or the desktop app - and find the "Create new 
 
 ![](/images/gb01.png)
 
-On the left is the tree, which for a gamebook is a list of **Pages**, plus a "game" entry for settings that apply to the whole book. Quest Viva starts you with three pages, and the "player" sits inside Page1, which is where the story begins.
+On the left is the tree, which for a gamebook is a list of **Pages**, plus a "game" entry for settings that apply to the whole gamebook. Quest Viva starts you with three pages, and the "player" sits inside Page1, which is where the story begins.
 
 Click "Preview" at the top right to play it. You can follow the links to pages 2 and 3, and that is as far as it goes. Close the preview to come back.
 
@@ -39,7 +39,7 @@ Select Page1 and you get two tabs, _Page_ and _Action_. Almost everything happen
 
 Try it now. Replace Page1's description with something of your own, change the wording of one of its two options, and preview again.
 
-There is also a **Name** box, tucked away under _Advanced_ at the bottom. That is the page's internal name - the one you use when linking to it - and the player never sees it. It is worth renaming pages as you go: `Page7` tells you nothing when you come back to the book next week, and `LighthouseDoor` tells you everything.
+There is also a **Name** box, tucked away under _Advanced_ at the bottom. That is the page's internal name - the one you use when linking to it - and the player never sees it. It is worth renaming pages as you go: `Page7` tells you nothing when you come back to the game next week, and `LighthouseDoor` tells you everything.
 
 ## What we are going to build
 

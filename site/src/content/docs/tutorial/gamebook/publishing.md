@@ -8,7 +8,7 @@ The Lighthouse works. Before anyone else reads it, there are two things worth do
 
 ## The look of it
 
-Select "game" at the top of the tree and open the _Display_ tab. Everything here applies to the whole book.
+Select "game" at the top of the tree and open the _Display_ tab. Everything here applies to the whole game.
 
 **Fonts.** "Base font" is a list of the fonts every device has; "Web font" is a much longer list that the player loads as it needs them. A web font wins on character and loses on speed, and either way the thing that matters is that it stays readable in a long paragraph. Set the size a little larger than you think you need - people read gamebooks on phones.
 

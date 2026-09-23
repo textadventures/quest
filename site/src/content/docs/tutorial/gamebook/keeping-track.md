@@ -6,7 +6,7 @@ sidebar:
 
 At the end of [Pages and links](/tutorial/gamebook/pages-and-links) The Lighthouse had a problem. The `Hall` page says the lantern lights up the room, whether or not the reader picked one up, and either way they can climb ninety-one pitch-dark steps.
 
-To fix that, the book has to remember what the reader has done. Quest Viva gives a gamebook two things to remember with:
+To fix that, the game has to remember what the reader has done. Quest Viva gives a gamebook two things to remember with:
 
 - a **flag**, which is either set or not - did they take the lantern?
 - a **counter**, which is a number that goes up and down - how boldly have they behaved?
@@ -21,7 +21,7 @@ Click "+ Add script", choose the **Variables** category, and pick **Set flag on*
 
 ![](/images/gb04.png)
 
-That is the whole of it. From now on, anywhere in the book, the flag `lantern` is set.
+That is the whole of it. From now on, anywhere in the game, the flag `lantern` is set.
 
 The name is yours to choose, and you will be typing it again in a moment, so keep it short and lower-case. **Set flag off** is there for when something is lost, used up or taken away.
 
@@ -100,7 +100,7 @@ And in a script, the **If…** condition "player has seen page" tests whether a 
 
 ## Where to stop
 
-That is genuinely everything most gamebooks need: some flags, a counter or two, and text that reads them. Only about one gamebook author in twenty ever writes a function, and a good book does not need one.
+That is genuinely everything most gamebooks need: some flags, a counter or two, and text that reads them. You can go a long way without ever writing a function, and most gamebooks never need one.
 
 If you do want more, the whole of Quest Viva's scripting is available to you - see [Writing code](/howto/scripting/writing-code) and the [gamebook functions](/reference/functions/gamebook) reference - and the [text processor](/howto/text/text-processor) page has the full list of what can go in curly braces.
 
