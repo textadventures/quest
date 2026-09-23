@@ -38,7 +38,7 @@ Returns an [object](/reference/attributes/types#object). Helper function for clo
 
 Objects inside the target object are also cloned, so if you clone a basket with a sandwich inside it, the clone of the basket will have a clone of the sandwich inside it (and if there is ham in the sandwich, that will be cloned, and so on).
 
-As of 5.7.2, also sets the "prototype" attribute of the clone to point to the original (unless the attribute is already set). This allows you to quickly find all copies of a specific original, or to determine whether an object is the original or a copy. Note that if the make a clone of a clone, the "prototype" attribute will point to the original still.
+As of 5.7.2, also sets the "prototype" attribute of the clone to point to the original (unless the attribute is already set). This allows you to quickly find all copies of a specific original, or to determine whether an object is the original or a copy. Note that if you make a clone of a clone, the "prototype" attribute will point to the original still.
 
 See also [CloneObjectAndMove](#cloneobjectandmove) and [CloneObjectAndMoveHere](#cloneobjectandmovehere)
 
@@ -93,7 +93,7 @@ GetExitByLink (object from room, object to room)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [string](/reference/attributes/types#string) containing the name of the exit joining the specified rooms, if it exits. If it does not exist, [null](/reference/attributes/types#null) is returned instead.
+Returns a [string](/reference/attributes/types#string) containing the name of the exit joining the specified rooms, if it exists. If it does not exist, [null](/reference/attributes/types#null) is returned instead.
 
 ## GetExitByName
 ```quest
@@ -102,7 +102,7 @@ GetExitByName (object from room, string direction name)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [string](/reference/attributes/types#string) containing the name of the exit going from the specified room in the specified direction, if it exists. If it does not exist, [null](/reference/attributes/types#null) is returned instead.
+Returns a [string](/reference/attributes/types#string) containing the name of the exit going from the specified room whose alias matches the given name - for a compass exit that is its direction, but a named exit is matched on its alias too. If there is no such exit, [null](/reference/attributes/types#null) is returned instead.
 
 ## GetObject
 ```quest

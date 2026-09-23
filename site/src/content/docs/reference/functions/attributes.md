@@ -11,14 +11,14 @@ Functions for checking and setting attributes on objects.
 DecreaseHealth (integer amount)
 ```
 
-Decreases the current player's health attribute by the specified amount.
+Decreases the current player's health attribute by the specified amount. Raises an error if health is not configured - tick "Health" on the game's _Features_ tab first.
 
 ## DecreaseMoney
 ```quest
 DecreaseMoney (integer amount)
 ```
 
-Decreases the player's money attribute by the specified amount.
+Decreases the player's money attribute by the specified amount. Raises an error if money is not configured - tick "Money" on the game's _Features_ tab first.
 
 ## DecreaseObjectCounter
 ```quest
@@ -34,7 +34,7 @@ See also [IncreaseObjectCounter](#increaseobjectcounter).
 DecreaseScore (integer amount)
 ```
 
-Decreases the game's score attribute by the specified amount.
+Decreases the game's score attribute by the specified amount. Raises an error if score is not configured - tick "Score" on the game's _Features_ tab first.
 
 ## GetAttribute
 ```quest
@@ -72,7 +72,7 @@ GetDouble (object, string attribute name)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns an [double](/reference/attributes/types#double) if the object has that double attribute, or **null** if the attribute is set to null or some other non-double value.
+Returns a [double](/reference/attributes/types#double) if the object has that double attribute. If the attribute is missing, null, or some other type, it returns **0** - not null, so testing the result against null will never match. Use [HasDouble](#hasdouble) to tell "missing" apart from a genuine zero.
 
 See also [HasDouble](#hasdouble) and [ToDouble](/reference/functions/variables#todouble)
 
@@ -83,7 +83,7 @@ GetInt (object, string attribute name)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns an [int](/reference/attributes/types#int) if the object has that integer attribute, or **null** if the attribute is set to null or some other non-integer value.
+Returns an [int](/reference/attributes/types#int) if the object has that integer attribute. If the attribute is missing, null, or some other type, it returns **0** - not null, so testing the result against null will never match. Use [HasInt](#hasint) to tell "missing" apart from a genuine zero.
 
 See also [HasInt](#hasint), [IsInt](/reference/functions/variables#isint) and [ToInt](/reference/functions/variables#toint)
 
@@ -189,14 +189,14 @@ See also [ToString](/reference/functions/variables#tostring) and [GetString](#ge
 IncreaseHealth (integer amount)
 ```
 
-Increases the current player's health attribute by the specified amount.
+Increases the current player's health attribute by the specified amount. Raises an error if health is not configured - tick "Health" on the game's _Features_ tab first.
 
 ## IncreaseMoney
 ```quest
 IncreaseMoney (integer amount)
 ```
 
-Increases the player's money attribute by the specified amount.
+Increases the player's money attribute by the specified amount. Raises an error if money is not configured - tick "Money" on the game's _Features_ tab first.
 
 ## IncreaseObjectCounter
 ```quest
@@ -212,7 +212,7 @@ See also [DecreaseObjectCounter](#decreaseobjectcounter).
 IncreaseScore (integer amount)
 ```
 
-Increases the game's score attribute by the specified amount.
+Increases the game's score attribute by the specified amount. Raises an error if score is not configured - tick "Score" on the game's _Features_ tab first.
 
 ## SetObjectFlagOff
 ```quest

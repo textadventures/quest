@@ -445,7 +445,7 @@ Valid request names, what they do, and their modern alternative:
 | `LinkForeground` | Sets the link foreground to the specified HTML colour. | [SetLinkForegroundColour](/reference/functions/internal-core#setlinkforegroundcolour) |
 | `Log` | Logs the specified text. | [Log](/reference/functions/general#log) |
 | `PanesVisible` | Shows/hides the side panes. "on"/"off" toggle them; "disabled" turns them off and removes the button to turn them back on (that button appears to no longer be available). | [JS.panesVisible(true / false)](/reference/js/#panesvisible) |
-| `Pause` | Pauses the game for the specified number of milliseconds. | — |
+| `Pause` | Pauses the game for the specified number of milliseconds. | [Pause](/reference/functions/timers-turnscripts#pause) (which is just this request, in seconds) |
 | `Quit` | Quits the game. Parameter is ignored. | [finish](#finish) |
 | `RequestSave` | Requests the UI to save the game (may prompt a "Save As" dialog). Parameter is ignored. | `requestsave()` |
 | `RunScript` | Runs the specified JavaScript function. | the [JS](/reference/js/) object, e.g. `JS.myCustomFunction(15, "some string")` |

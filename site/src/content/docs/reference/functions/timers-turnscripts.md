@@ -46,9 +46,9 @@ Returns the [timer](/reference/elements#timer) of the specified name. Returns nu
 Pause (interval)
 ```
 
-Pauses for the given number of seconds.
+Pauses for the given number of seconds, then carries on with the rest of the script.
 
-The 'Pause' request is not supported for games written for Quest 5.5 or later. Use the 'SetTimeout' function instead.
+**Note:** Quest 5.5 stopped supporting this, because pausing tied up a real thread. Quest Viva suspends the script instead, so it works again in games marked as ASL version 600. It still raises an error in a game whose version is 550 to 580; change the game's version to 600 or later to use it, or use [SetTimeout](#settimeout).
 
 ## SetTimeout
 ```quest
@@ -131,8 +131,6 @@ SetTurnTimeout (turn count){ script }
 Runs the specified script after the specified number of turns.
 
 If you may need to cancel the turnscript after creation, you can create a named turnscript using [SetTurnTimeoutID](#setturntimeoutid).
-
-**Note:** The `SetTurnTimeout` function has a script, rather than a block, which means that it is non-blocking and that local variables cannot be accessed inside the script. For a fuller discussion, see the note for [ShowMenu](/reference/functions/user-interface#showmenu).
 
 **Note:** This function is "non-blocking", and its script has no access to local variables. For a fuller discussion, see [Saving while a question is waiting](/howto/scripting/asking-the-player#saving-while-a-question-is-waiting).
 
