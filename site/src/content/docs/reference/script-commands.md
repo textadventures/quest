@@ -120,7 +120,7 @@ It is usually easier to make an exit in the normal way in the editor, but to set
 create timer (string name)
 ```
 
-Creates a timer with the specified name. You can then use `GetObject` to get the timer, and assign values to it. Here is a trivial example that will produce a timer that will tell you its name every 10 seconds:
+Creates a timer with the specified name. You can then use [GetTimer](/reference/functions/timers-turnscripts#gettimer) to get the timer, and assign values to it - [GetObject](/reference/functions/objects#getobject) does not find timers. Here is a trivial example that will produce a timer that will tell you its name every 10 seconds:
 
 ```quest
 create timer ("test_timer")
@@ -225,11 +225,11 @@ for (iterator variable, int from, int to, int step) { script }
 
 Run a script multiple times, incrementing the iterator variable between the specified limits. If a "step" parameter is specified, the iterator variable will be incremented by that amount each time (if not specified, the default step size is 1).
 
-Trandionally, i, j, k... are used as iterator varable names. This simple example runs from 1 to 5, printing each value in turn:
+Traditionally, i, j, k... are used as iterator variable names. This simple example runs from 1 to 5, printing each value in turn:
 
 ```quest
 for (i, 1, 5) {
-  msg(game.i)
+  msg(i)
 }
 ```
 
@@ -313,7 +313,7 @@ Or we can have a condition; nothing gets printed if result is between 2 and 10.
 if (result > 10) {
   msg("Great!")
 }
-else if result < 2) {
+else if (result < 2) {
   msg("Rubbish!")
 }
 ```
@@ -322,7 +322,7 @@ You can have as many `if/else` linked together as you need (but consider using [
 if (result > 10) {
   msg("Great!")
 }
-else if result > 2) {
+else if (result > 2) {
   msg("Meh...")
 }
 else {
@@ -345,7 +345,7 @@ insert (string filename)
 
 Outputs the contents of the specified HTML file.
 
-**Not supported in Quest 5.4 or later.**
+**Not supported in Quest 5.4 or later**, including Quest Viva - it raises an error rather than doing anything. Unlike [Pause](/reference/functions/timers-turnscripts#pause) and [WaitForKeyPress](/reference/functions/user-interface#waitforkeypress), this one was not brought back for ASL version 600. Output the HTML with [msg](#msg) instead.
 
 ## invoke
 ```quest
@@ -447,15 +447,15 @@ Valid request names, what they do, and their modern alternative:
 | `PanesVisible` | Shows/hides the side panes. "on"/"off" toggle them; "disabled" turns them off and removes the button to turn them back on (that button appears to no longer be available). | [JS.panesVisible(true / false)](/reference/js/#panesvisible) |
 | `Pause` | Pauses the game for the specified number of milliseconds. | [Pause](/reference/functions/timers-turnscripts#pause) (which is just this request, in seconds) |
 | `Quit` | Quits the game. Parameter is ignored. | [finish](#finish) |
-| `RequestSave` | Requests the UI to save the game (may prompt a "Save As" dialog). Parameter is ignored. | `requestsave()` |
+| `RequestSave` | Requests the UI to save the game (may prompt a "Save As" dialog). Parameter is ignored. | [requestsave](#requestsave) |
 | `RunScript` | Runs the specified JavaScript function. | the [JS](/reference/js/) object, e.g. `JS.myCustomFunction(15, "some string")` |
 | `SetCompassDirections` | Assigns compass direction names from a semicolon-separated list. | [JS.setCompassDirections(...)](/reference/js/#setcompassdirections) |
 | `SetInterfaceString` | Sets UI text via an `"ElementName=Value"` parameter. | [JS.setInterfaceString(...)](/reference/js/#setinterfacestring) |
 | `SetPanelContents` | Sets the static panel HTML contents. | [SetFramePicture](/reference/functions/user-interface#setframepicture) and [ClearFramePicture](/reference/functions/user-interface#clearframepicture) |
 | `SetStatus` | Sets the status area text (right of screen, under "Inventory"); blank removes it. | [status attributes](/reference/attributes/status) |
-| `Speak` | Was intended to read the parameter aloud. Does nothing in Quest Viva - no player implements it. | — |
 | `Show` | Turns on an interface element ("Panes", "Location" or "Command"). | [JS.uiShow(...)](/reference/js/#uishow) |
 | `ShowPicture` | Shows the specified picture file from the game directory. | [picture](#picture) |
+| `Speak` | Was intended to read the parameter aloud. Does nothing in Quest Viva - no player implements it. | — |
 | `UpdateLocation` | Updates the location bar with the parameter text. | [JS.updateLocation(location)](/reference/js/#updatelocation) |
 | `Wait` | Waits for the player to press a key. Parameter is ignored. | [WaitForKeyPress](/reference/functions/user-interface#waitforkeypress) (which is just this request) |
 
