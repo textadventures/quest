@@ -132,7 +132,7 @@ Displays the given [dialoguepage](#showpage) object: prints its description, the
 HasSeenPage (object page)
 ```
 
-Returns a [boolean](/reference/attributes/types#boolean) - **true** if the given [dialoguepage](#showpage) has been visited before (its `visited` attribute), for conditional page text or options based on what the player has already seen.
+Returns a [boolean](/reference/attributes/types#boolean) - **true** if the given [dialoguepage](#showpage) has been visited before (its `visited` attribute), for conditional page text or options based on what the player has already seen. There's also a [HasSeenPage](/reference/functions/gamebook#hasseenpage) for gamebook pages, which works the same way.
 
 ## InitUserInterface
 ```quest
