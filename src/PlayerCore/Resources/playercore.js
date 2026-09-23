@@ -426,8 +426,13 @@ var _pauseRestorePending = false;
 var _turnPending = true;
 var _gameFinished = false;
 
+// _gameFinished deliberately does NOT gate this button (only _turnPending
+// does): #cmdSave opens the combined Save/Load manager, and Load/Restart are
+// still exactly what a player needs once the game has ended - disabling the
+// whole button here previously locked those out too, with no other way back
+// in (e.g. Electron has no page-reload to fall back on). See discussion #1828.
 function updateSaveButtonEnabled() {
-    $("#cmdSave").button((_turnPending || _gameFinished) ? "disable" : "enable");
+    $("#cmdSave").button(_turnPending ? "disable" : "enable");
 }
 
 function setTurnPending(pending) {
