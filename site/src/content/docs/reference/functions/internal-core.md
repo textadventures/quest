@@ -63,7 +63,7 @@ AddExternalStylesheet(stylesheet)
 
 ## AddStatusAttributesForElement
 ```quest
-AddStatusAttributesForElement(status, element)
+AddStatusAttributesForElement (status, element, statusAttributes)
 ```
 
 ## AddToResolvedNames
@@ -93,7 +93,7 @@ ClearPageDialogueState()
 
 ## CloseObject
 ```quest
-CloseObject(object, ismultiple)
+CloseObject (object)
 ```
 
 ## CommandLink
@@ -286,7 +286,7 @@ On the custom grid drawing layer, adds a new point to a shape. To draw a custom 
 ## Grid_CalculateMapCoordinates
 
 ```quest
-Grid_CalculateMapCoordinates(room)
+Grid_CalculateMapCoordinates (room, playerobject)
 ```
 
 ## Grid_ClearCustomLayer
@@ -332,7 +332,7 @@ Grid_DrawPlayerInRoom(room)
 
 ## Grid_DrawRoom
 ```quest
-Grid_DrawRoom(room, redraw)
+Grid_DrawRoom (room, redraw, playerobject)
 ```
 
 ## Grid_DrawShape
@@ -573,7 +573,7 @@ See also: [CommandLink](#commandlink)
 
 ## OnEnterRoom
 ```quest
-OnEnterRoom ()
+OnEnterRoom (oldRoom)
 ```
 
 Does not return a value.
@@ -741,7 +741,7 @@ ResetCommandBarFormat()
 
 ## ResolveName
 ```quest
-ResolveName(value, objtype)
+ResolveName (variable, value, objtype)
 ```
 
 ## ResolveNameFromList
@@ -751,17 +751,17 @@ ResolveNameFromList(variable, value, objtype, scope, secondaryscope)
 
 ## ResolveNameInternal
 ```quest
-ResolveNameInternal(value, objtype)
+ResolveNameInternal (variable, value, objtype)
 ```
 
 ## ResolveNameList
 ```quest
-ResolveNameList(value, scope, objtype, resultdictionary)
+ResolveNameList (value, objtype)
 ```
 
 ## ResolveNameListItem
 ```quest
-ResolveNameListItem(value, scope, objtype, resultdictionary)
+ResolveNameListItem (value)
 ```
 
 ## ResolveNameListItemFinished

@@ -107,7 +107,7 @@ Returns a [string](/reference/attributes/types#string) containing a formatted li
 
 ## FormatObjectList
 ```quest
-FormatObjectList (string pre-list, object parent, string pre-final, string post-list, boolean use inventory verbs)
+FormatObjectList (string pre-list, object parent, string pre-final, string post-list)
 ```
 
 Returns a [string](/reference/attributes/types#string) containing a formatted list of objects.
@@ -119,7 +119,7 @@ FormatObjectList will display children of listed objects within brackets, if the
 For example, this:
 
 ```quest
-FormatObjectList("You can see", player.parent, "and", "in this room.", false)
+FormatObjectList("You can see", player.parent, "and", "in this room.")
 ```
 
 may return output like this:

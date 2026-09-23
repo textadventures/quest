@@ -453,12 +453,31 @@ Valid request names, what they do, and their modern alternative:
 | `SetInterfaceString` | Sets UI text via an `"ElementName=Value"` parameter. | [JS.setInterfaceString(...)](/reference/js/#setinterfacestring) |
 | `SetPanelContents` | Sets the static panel HTML contents. | [SetFramePicture](/reference/functions/user-interface#setframepicture) and [ClearFramePicture](/reference/functions/user-interface#clearframepicture) |
 | `SetStatus` | Sets the status area text (right of screen, under "Inventory"); blank removes it. | [status attributes](/reference/attributes/status) |
+| `Speak` | Was intended to read the parameter aloud. Does nothing in Quest Viva - no player implements it. | — |
 | `Show` | Turns on an interface element ("Panes", "Location" or "Command"). | [JS.uiShow(...)](/reference/js/#uishow) |
 | `ShowPicture` | Shows the specified picture file from the game directory. | [picture](#picture) |
 | `UpdateLocation` | Updates the location bar with the parameter text. | [JS.updateLocation(location)](/reference/js/#updatelocation) |
 | `Wait` | Waits for the player to press a key. Parameter is ignored. | [WaitForKeyPress](/reference/functions/user-interface#waitforkeypress) (which is just this request) |
 
 `FontName` and `FontSize` aren't listed above: they now raise an error rather than do anything, so use [SetFontName](/reference/functions/user-interface#setfontname) and [SetFontSize](/reference/functions/user-interface#setfontsize) instead.
+
+## requestsave
+```quest
+requestsave
+```
+
+Asks the player to save the game, as though they had clicked Save themselves. Takes no parameters.
+
+This replaces `request (RequestSave, "")`, which does the same thing - see [request](#request) above. There is also a [RequestSave](/reference/functions/internal-core#requestsave) function that calls it, kept for older games.
+
+## requestspeak
+```quest
+requestspeak (string text)
+```
+
+Was intended to read the given text aloud. **It does nothing in Quest Viva** - none of the players implement it - and it is documented here only because the editor still offers it, and because games written for earlier versions of Quest may contain it.
+
+This replaces `request (Speak, "some text")`, which is equally inert.
 
 ## return
 ```quest
