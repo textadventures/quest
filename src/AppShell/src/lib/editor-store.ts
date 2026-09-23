@@ -1112,6 +1112,7 @@ export async function undo() {
     refreshTree();
     refreshSelectedData();
     refreshUndoRedo();
+    refreshCutElementKeys();
     scriptVersion.update(n => n + 1);
     void warnAboutDetachedAssetOwners(beforeKeys);
 }
@@ -1122,6 +1123,7 @@ export function redo() {
     refreshTree();
     refreshSelectedData();
     refreshUndoRedo();
+    refreshCutElementKeys();
     scriptVersion.update(n => n + 1);
     void warnAboutDetachedAssetOwners(beforeKeys);
 }
@@ -1986,6 +1988,14 @@ export const clipboardVersion = writable(0);
 // a completed Paste (the element has landed at its new parent), set by Cut.
 export const cutElementKeys = writable<Set<string>>(new Set());
 
+// Cut's undo action changes EditorController's clipboard state directly (see
+// CutClipboardUndoAction), not through cutElements()/pasteElements() here, so undo()/redo() call
+// this to pull cutElementKeys back in sync with the backend's actual cut-clipboard state.
+function refreshCutElementKeys() {
+    if (!_bridge) return;
+    cutElementKeys.set(new Set(JSON.parse(_bridge.GetCutElementKeys())));
+}
+
 export function copyElements(keys: string[]) {
     _bridge?.CopyElements(JSON.stringify(keys));
     cutElementKeys.set(new Set());
@@ -1996,6 +2006,7 @@ export function cutElements(keys: string[]) {
     _bridge?.CutElements(JSON.stringify(keys));
     cutElementKeys.set(new Set(keys));
     clipboardVersion.update(n => n + 1);
+    refreshUndoRedo();
 }
 
 export function canPasteElements(parentKey: string): boolean {

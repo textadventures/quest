@@ -3103,6 +3103,15 @@ public partial class WasmEditorBridge
         _controller.CutElements(keys);
     }
 
+    // Called after Undo/Redo so the tree can resync which rows are dimmed as "cut" - clipboard
+    // state can change there via CutElements' undo action without a Cut/Paste call of its own.
+    [JSExport]
+    public static string GetCutElementKeys()
+    {
+        var keys = _controller?.GetCutElementKeys().ToList() ?? [];
+        return JsonSerializer.Serialize(keys, WasmEditorJsonContext.Default.ListString);
+    }
+
     [JSExport]
     public static bool CanPasteElements(string parentKey)
     {

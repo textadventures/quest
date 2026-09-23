@@ -138,6 +138,7 @@ export interface WasmBridge {
   GetPossibleNewObjectParentsForCurrentSelection(elementKey: string): string
   CopyElements(keysJson: string): void
   CutElements(keysJson: string): void
+  GetCutElementKeys(): string
   CanPasteElements(parentKey: string): boolean
   PasteElements(parentKey: string): string
   // New game
