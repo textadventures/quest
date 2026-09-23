@@ -18,7 +18,7 @@ The dialog offers three things it can make. All three contain the same game - wh
 If you are editing a game that is stored on textadventures.co.uk, the first option reads **Publish to textadventures.co.uk** instead. It uploads the game for you and then takes you to the site to fill in the description, category and who can see it, so you never handle the file yourself.
 
 :::note[Publishing is not backing up]
-What the Publish dialog makes is a build for players, not your source: the editor does not open a `.quest` file or an HTML export. If your game is a local draft in the browser, keep a copy of the source with **Backup…** in the **File** menu, which downloads a `.zip` of the game file and its assets that you can import again later. If your game lives in a folder, it is already on your disk.
+What the Publish dialog makes is a build for players, not your source: the editor does not open a `.quest` file or an HTML export. If your game is a local draft in the browser, keep a copy of the source with **Backup…** in the **File** menu, which downloads a `.zip` of the game file and its assets that you can import again later. If your game lives in a folder, it is already on your disk - but that's not the same as being backed up. See [Backing up your game](/howto/testing/backups).
 :::
 
 ## .quest file

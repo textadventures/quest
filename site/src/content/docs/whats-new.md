@@ -37,6 +37,8 @@ Quest 5's online editor kept your games on your textadventures.co.uk account, so
 - In the browser you can pick a folder too, if your browser supports it - Chrome and Edge do.
 - Otherwise your game is stored inside the browser itself. Use **Backup** every so often to save a copy to disk - the editor will remind you.
 
+Whichever way you store it, see [Backing up your game](/howto/testing/backups) for why it's worth keeping more than one copy as you go.
+
 If you already have games on a textadventures.co.uk account, they're still there. The editor at textadventures.co.uk can sign you in and load them, as before.
 
 ## Games run in the browser, with no server

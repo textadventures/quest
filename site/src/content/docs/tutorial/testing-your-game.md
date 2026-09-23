@@ -89,3 +89,4 @@ There is a great deal more to Quest Viva than this, but you're best off picking 
 - [Using walkthroughs](/howto/testing/walkthroughs) - recording, sub-walkthroughs, answering menus and questions, assertions
 - [Transcripts](/howto/testing/transcripts) - getting a written record of someone else's play-through
 - [Troubleshooting](/howto/testing/troubleshooting) - the errors and surprises that come up most often
+- [Backing up your game](/howto/testing/backups) - why it's worth keeping more than one copy as you go
