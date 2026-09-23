@@ -4,7 +4,7 @@ sidebar:
   order: 1
 ---
 
-A gamebook is a story the reader moves through by choosing. Each page shows some text and a handful of links, and each link leads to another page. If you have read a Choose Your Own Adventure book, or played anything made with Twine or ChoiceScript, you already know the shape of it.
+A gamebook is a story the reader moves through by choosing. Each page shows some text and a handful of links, and each link leads to another page. If you have ever read a branching story where every page ends with "turn to 47", or played anything made with Twine or ChoiceScript, you already know the shape of it.
 
 Quest Viva makes gamebooks as well as text adventures, and they are a different kind of thing to write:
 
