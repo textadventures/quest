@@ -58,6 +58,31 @@ try {
     if (stillThere) throw new Error('MyNewPage should have been deleted');
     console.log('PASS: newly-added page can be deleted');
 
+    // Regression test for #2393: the Options list's "+ New Page" button must
+    // create the new page at the top level, not try to parent it under the
+    // synthetic "_objects" tree header (which isn't a real element and made
+    // the button fail with "No element '_objects' of type 'Object'" for
+    // every top-level gamebook page).
+    await tree.getByText('Page1', { exact: true }).click();
+    await page.fill('input[placeholder="Please enter the link text"]', 'Go somewhere new');
+    await page.click('button:has-text("+ New Page")');
+    const addPageHeading = page.locator('h2').filter({ hasText: 'Add Page' });
+    await addPageHeading.waitFor({ state: 'visible', timeout: 5000 });
+    const headingText = await addPageHeading.innerText();
+    if (headingText.includes('_objects')) throw new Error(`"+ New Page" dialog should not target "_objects": "${headingText}"`);
+    await page.fill('#element-name', 'OptionsLinkedPage');
+    await page.getByRole('button', { name: 'Add Page', exact: true }).click();
+    await tree.getByText('OptionsLinkedPage', { exact: true }).waitFor({ state: 'visible', timeout: 5000 });
+    const errorToastVisible = await page.locator('[role="alert"]').isVisible().catch(() => false);
+    if (errorToastVisible) throw new Error('"+ New Page" from the Options list should not show an error toast');
+    // The new option's link text is shown in an inline-edit input right after
+    // creation (see PropertyEditor.svelte's `editingItem`), not as static
+    // text — so check its value rather than the item's read-only display.
+    const newOptionRow = page.locator('span[title="OptionsLinkedPage"]').locator('xpath=..');
+    const linkTextValue = await newOptionRow.locator('input[type="text"]').inputValue();
+    if (linkTextValue !== 'Go somewhere new') throw new Error(`Expected new option's link text to be "Go somewhere new", got "${linkTextValue}"`);
+    console.log('PASS: Options list "+ New Page" creates a top-level page and links it (#2393)');
+
     // "_advanced" only offers Function/Library/JavaScript in gamebook mode.
     await tree.getByText('Advanced', { exact: true }).click();
     for (const label of ['Add Function', 'Add Library', 'Add JavaScript']) {
