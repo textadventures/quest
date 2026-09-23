@@ -69,6 +69,24 @@ public abstract class ElementFactoryBase : IElementFactory
 
         if (addToUndoLog)
         {
+            // Elements.Add() silently displaces (not destroys - the C# object survives, just
+            // detached from the collection) any existing element already registered under this
+            // same name - this is how a cut-and-pasted element "moves" (Element.Clone reuses the
+            // cut element's own name instead of generating a unique one, see EditorController.
+            // PasteElements/_lastelementscutout). Without logging that displacement too, Undo
+            // only knew how to destroy the newly created element, freeing the name but leaving
+            // the displaced original gone for good. Log it as its own undo entry - reusing
+            // CreateDestroyLogEntry with create:false, the same as a plain element deletion -
+            // registered before the "create new" entry below so Undo (which runs entries in
+            // reverse) destroys the new element first and only then restores the displaced one
+            // into the now-free name.
+            if (WorldModel.Elements.ContainsKey(name))
+            {
+                var displacedElement = WorldModel.Elements.Get(name);
+                WorldModel.UndoLogger.AddUndoAction(() => new CreateDestroyLogEntry(name, CreateElementType,
+                    displacedElement, false, NotifyAddedElement, NotifyRemovedElement));
+            }
+
             WorldModel.UndoLogger.AddUndoAction(() => new CreateDestroyLogEntry(name, CreateElementType, newElement,
                 true, NotifyAddedElement, NotifyRemovedElement));
         }

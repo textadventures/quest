@@ -1842,6 +1842,7 @@ public sealed class EditorController : IDisposable
         string? lastPastedElement = null;
 
         var parent = GetPasteParent(parentName);
+        var previousCutOut = _lastelementscutout;
 
         WorldModel.UndoLogger.StartTransaction("Paste");
 
@@ -1865,6 +1866,15 @@ public sealed class EditorController : IDisposable
             lastPastedElement = newElement.Name;
         }
 
+        // Paste "completes" a cut by clearing the cut-in-progress flag below - log that as part
+        // of this same transaction so Undo puts the clipboard back into its "cut, not yet
+        // pasted" state (what GetCutElementKeys/the tree's dimmed styling reflect) instead of
+        // leaving it looking like nothing was ever cut. _clipboardElements itself doesn't need
+        // its own undo entry - Paste never clears or replaces it, and the displaced-element fix
+        // in ElementFactoryBase.CreateInternal already restores the very same Element instances
+        // it still references.
+        WorldModel.UndoLogger.AddUndoAction(() => new PasteClipboardUndoAction(this, previousCutOut));
+
         WorldModel.UndoLogger.EndTransaction();
 
         _lastelementscutout = false;
@@ -1872,11 +1882,46 @@ public sealed class EditorController : IDisposable
         return lastPastedElement;
     }
 
+    private class PasteClipboardUndoAction : UndoLogger.IUndoAction
+    {
+        private readonly EditorController _controller;
+        private readonly bool _previousCutOut;
+
+        public PasteClipboardUndoAction(EditorController controller, bool previousCutOut)
+        {
+            _controller = controller;
+            _previousCutOut = previousCutOut;
+        }
+
+        public void DoUndo(WorldModel worldModel)
+        {
+            _controller._lastelementscutout = _previousCutOut;
+        }
+
+        public void DoRedo(WorldModel worldModel)
+        {
+            _controller._lastelementscutout = false;
+        }
+    }
+
     public void CutElements(IEnumerable<string> elementNames)
     {
+        var previousClipboardElements = _clipboardElements;
+        var previousClipboardElementType = _clipboardElementType;
+        var previousCutOut = _lastelementscutout;
+
         WorldModel.UndoLogger.StartTransaction("Cut");
         CopyElements(elementNames);
         _lastelementscutout = true;
+
+        // Cut doesn't touch the world model at all - it only stages the clipboard, and the actual
+        // move happens on Paste (see the comment below). Without this, the "Cut" transaction would
+        // record no IUndoAction, so UndoLogger.EndTransaction would silently drop it, and an Undo
+        // right after a Cut would fall through to whatever real transaction preceded it instead of
+        // just cancelling the cut.
+        WorldModel.UndoLogger.AddUndoAction(() => new CutClipboardUndoAction(this,
+            previousClipboardElements, previousClipboardElementType, previousCutOut,
+            _clipboardElements, _clipboardElementType));
 
         /*
          * The cut out elements should be displayed in gray.
@@ -1891,6 +1936,52 @@ public sealed class EditorController : IDisposable
         */
 
         WorldModel.UndoLogger.EndTransaction();
+    }
+
+    // Currently cut-but-not-yet-pasted element names, so the frontend can resync its "cut" dimming
+    // after an Undo/Redo - those change clipboard state via CutClipboardUndoAction rather than
+    // through CutElements/PasteElements directly.
+    public IEnumerable<string> GetCutElementKeys()
+    {
+        return _lastelementscutout && _clipboardElements != null
+            ? _clipboardElements.Select(e => e.Name)
+            : [];
+    }
+
+    private class CutClipboardUndoAction : UndoLogger.IUndoAction
+    {
+        private readonly List<Element>? _cutElements;
+        private readonly ElementType _cutElementType;
+        private readonly EditorController _controller;
+        private readonly List<Element>? _previousElements;
+        private readonly ElementType _previousElementType;
+        private readonly bool _previousCutOut;
+
+        public CutClipboardUndoAction(EditorController controller, List<Element>? previousElements,
+            ElementType previousElementType, bool previousCutOut, List<Element>? cutElements,
+            ElementType cutElementType)
+        {
+            _controller = controller;
+            _previousElements = previousElements;
+            _previousElementType = previousElementType;
+            _previousCutOut = previousCutOut;
+            _cutElements = cutElements;
+            _cutElementType = cutElementType;
+        }
+
+        public void DoUndo(WorldModel worldModel)
+        {
+            _controller._clipboardElements = _previousElements;
+            _controller._clipboardElementType = _previousElementType;
+            _controller._lastelementscutout = _previousCutOut;
+        }
+
+        public void DoRedo(WorldModel worldModel)
+        {
+            _controller._clipboardElements = _cutElements;
+            _controller._clipboardElementType = _cutElementType;
+            _controller._lastelementscutout = true;
+        }
     }
 
     [MemberNotNullWhen(true, nameof(_clipboardElements))]
