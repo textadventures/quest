@@ -637,6 +637,7 @@
       <control>
         <controltype>title</controltype>
         <caption>[EditorGameLayout]</caption>
+        <advanced/>
       </control>
 
       <control>

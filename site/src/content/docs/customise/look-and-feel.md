@@ -61,7 +61,7 @@ The page is the column the text appears in, and the margins are either side of i
 These apply to menus the player chooses from with numbered links: the "Show a menu" script command, and the "Which do you mean?" menu when a command matches more than one object.
 
 - **Do not clear menus after selections are made.** - leaves the menu in the text, with its links disabled, instead of removing it.
-- **Print reponses after making menu selections.** - prints the chosen option, like an echoed command.
+- **Print responses after making menu selections.** - prints the chosen option, like an echoed command.
 
 The `ShowMenu()` function (see [Asking the player](/howto/scripting/asking-the-player#menus)) always removes its menu and prints the choice, whatever these are set to.
 

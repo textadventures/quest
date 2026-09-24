@@ -81,6 +81,15 @@ async function run() {
         throw new Error('Clicking the embedded page link must not fall through to "I don\'t understand your command."');
     }
     console.log('PASS: {page:} link in an ordinary description launches the dialogue when clicked');
+
+    // Clicking the link must not echo the target page's internal object name as
+    // if it had been typed (issue #2353) - in-dialogue option links already avoid
+    // this via HandlePageTextResponse's own echo; this is the same courtesy for
+    // the link that opens the dialogue in the first place.
+    if ((await outputSince(beforeClickLength)).includes('guard_intro')) {
+        throw new Error('Clicking the embedded page link must not echo the page\'s internal object name ("guard_intro")');
+    }
+    console.log('PASS: clicking the embedded page link does not echo the internal page name');
     await sendCommand('2'); // end the dialogue (guard_castle has no options) before the rest of the script
 
     await sendCommand('talk');

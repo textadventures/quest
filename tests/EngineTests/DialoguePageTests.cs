@@ -190,6 +190,13 @@ public class DialoguePageTests
         clickOutput.ShouldNotContain("I don't understand");
         clickOutput.ShouldContain("The guard eyes you suspiciously.");
         await AssertTrueAsync(driver, "game.currentpage = guard_intro");
+
+        // The click must not echo the page's internal object name as if it had been
+        // typed - HandlePageTextResponse's own echo (see the "By option key" case in
+        // ChoosingAnOption_ByKeyOrTypedNumber_MovesThroughThePageGraph) already prints a
+        // friendly response for in-dialogue choices; this is the same courtesy for the
+        // link that opens the dialogue in the first place.
+        clickOutput.ShouldNotContain("guard_intro");
     }
 
     [TestMethod]
