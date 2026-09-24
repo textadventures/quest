@@ -264,7 +264,7 @@
   <template name="EditorGamePutanewline4">Put a newline after the description</template>
   <template name="EditorGamePlayer">Player</template>
   <template name="EditorGamePlayerobject">Player object</template>
-  <template name="EditorGameIfnoplayer">If no player object is specified, Quest will use the object named "player" (and create one in the first room if it doesn't exist)</template>
+  <template name="EditorGameIfnoplayer">If no player object is specified, Quest Viva will use the object named "player" (and create one in the first room if it doesn't exist)</template>
   <template name="EditorGameScripttorun">Script to run when health reaches zero</template>
   <template name="EditorGamePlayerobjectStatus">Player object status attributes (values read from the current player object)</template>
   <template name="EditorGameAttributes">Attributes</template>
@@ -336,7 +336,7 @@
   <template name="EditorObjectContainerCanbelocked">Can be locked open</template>
   <template name="EditorObjectContainerAfterlocking">After locking the object</template>
   <template name="EditorObjectContainerAfterunlocking">After unlocking the object</template>
-  <template name="EditorObjectContainerOpenableNote">These scripts should turn the "isopen" flag on when the object is opened and turn it off when it is closed to ensure Quest understands what state the object is in. If you set the object to be lockable, the default scripts will be used, which will do that for you, taking account of the lock/key state.</template>
+  <template name="EditorObjectContainerOpenableNote">These scripts should turn the "isopen" flag on when the object is opened and turn it off when it is closed to ensure Quest Viva understands what state the object is in. If you set the object to be lockable, the default scripts will be used, which will do that for you, taking account of the lock/key state.</template>
   <template name="EditorObjectContainerContainerNote">These scripts will run after the object is opened or closed. You can check the "isopen" flag on this object at any time in your game to see state the object is in.</template>
   <template name="EditorObjectContainerAddScript">Script to run when trying to add an object</template>
   <template name="EditorObjectContainerAddScriptNote">By default, any object can be added; use this script to restrict that. The object being added will be called "object", and should be moved to this object if successfully added.</template>

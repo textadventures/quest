@@ -499,10 +499,9 @@
   <template name="TranscriptDisabled">End of transcript.</template>
   <template name="TranscriptAlreadyDisabled">The transcript is already disabled.</template>
   <template name="TranscriptEnterFilename">Please enter a transcript name.</template>
-  <dynamictemplate name="ToDisableTranscript"><![CDATA["<b><i>[  Enter </i>" + Template("TranscriptOffAllCaps") + "<i> to disable the transcript.  ]</i></b>"]]></dynamictemplate>
   <dynamictemplate name="TranscriptEnabledMessage"><![CDATA["<hr/>Start of a transcript of:<br/><b>TITLE: </b>" + game.gamename + "<br/><b>AUTHOR: </b>" + game.author + "<br/><b>VERSION: </b>" + game.version + (HasInt(game, "versioncode") ? (" (" + game.versioncode + ")") : "") + "<br/><b>IFID: </b>" + game.gameid]]></dynamictemplate>
   <template name="TranscriptOffAllCaps">TRANSCRIPT OFF</template>
-  <template name="TranscriptViewerMessage">Your transcripts are saved to the localStorage in your browser. You can view, download, or delete them here:</template>
+  <template name="TranscriptViewerMessage">Your transcripts are saved on this device. You can view, download, or delete them here:</template>
   <template name="TranscriptViewerLinkText">Your Transcripts</template>
   <template name="Noted">Noted.</template>
   <template name="ShowMenuResponsePrompt">>> </template>

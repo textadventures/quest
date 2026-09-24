@@ -145,7 +145,7 @@
           msg ("")
         }
         msg (SafeXML (command))
-        msg("Noted.")
+        msg (Template("Noted"))
         FinishTurn
         HandleNextCommandQueueItem
       }

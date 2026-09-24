@@ -262,7 +262,7 @@
   <template name="EditorGamePutanewline4">Añadir una línea después de la descripción</template>
   <template name="EditorGamePlayer">Jugador</template>
   <template name="EditorGamePlayerobject">Objeto jugador</template>
-  <template name="EditorGameIfnoplayer">Si ningún objeto es especificado como jugador, Quest usará el objeto  llamado "Jugador" (y lo creará en el primer lugar si no existe)</template>
+  <template name="EditorGameIfnoplayer">Si ningún objeto es especificado como jugador, Quest Viva usará el objeto  llamado "Jugador" (y lo creará en el primer lugar si no existe)</template>
   <template name="EditorGameScripttorun">Programa a ejecutar cuando la salud llega a cero</template>
   <template name="EditorGamePlayerobjectStatus">Atributos de estado del objeto jugador (valores leídos del objeto jugador actual)</template>
   <template name="EditorGameAttributes">Atributos</template>
@@ -338,7 +338,7 @@
   <template name="EditorObjectContainerCanbelocked">Puede abrirse bloqueado</template>
   <template name="EditorObjectContainerAfterlocking">Después de bloquear el objeto</template>
   <template name="EditorObjectContainerAfterunlocking">Después de desbloquear el objeto</template>
-  <template name="EditorObjectContainerOpenableNote">Estos programas deberían activar la señal "esta abierto" cuando el objeto se abre y desactivarla cuando se cierra para asegurarse que Quest entiende cual es el estado del objeto.  Si configuras el objecto como bloqueable, se usarán los programas por defecto que harán eso por tí, tomando en cuenta el estado del cerrojo.</template>
+  <template name="EditorObjectContainerOpenableNote">Estos programas deberían activar la señal "esta abierto" cuando el objeto se abre y desactivarla cuando se cierra para asegurarse que Quest Viva entiende cual es el estado del objeto.  Si configuras el objecto como bloqueable, se usarán los programas por defecto que harán eso por tí, tomando en cuenta el estado del cerrojo.</template>
   <template name="EditorObjectContainerContainerNote">Estos programas se correrán después de que se abra o se cierra el objeto.  Puedes revisar la señal "esta abierto" de este objeto en cualquier momento dentro del juego para ver el estado del objeto.</template>
   <template name="EditorObjectContainerAddScript">Programa a ejecutar cuando intentas agregar un objeto</template>
   <template name="EditorObjectContainerAddScriptNote">Por defecto, cualquier objeto puede ser agregado; usa este programa para restringirlo.  El objecto que esta siendo agregado se llamara "objeto", y debería moverse a este objecto si se agrega exitosamente.</template>

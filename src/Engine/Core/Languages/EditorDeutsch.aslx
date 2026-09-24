@@ -264,7 +264,7 @@
   <template name="EditorGamePutanewline4">Einen Zeilenumbruch nach der Raumbeschreibung setzen</template>
   <template name="EditorGamePlayer">Spieler</template>
   <template name="EditorGamePlayerobject">Spielerobjekt</template>
-  <template name="EditorGameIfnoplayer">Wenn kein Spielerobjekt angegeben ist, verwendet Quest das Objekt "player" (Es wird im ersten Raum erstellt, sofern es nicht bereits existiert)</template>
+  <template name="EditorGameIfnoplayer">Wenn kein Spielerobjekt angegeben ist, verwendet Quest Viva das Objekt "player" (Es wird im ersten Raum erstellt, sofern es nicht bereits existiert)</template>
   <template name="EditorGameScripttorun">Nachdem die Gesundheit bei Null angelangt ist</template>
   <template name="EditorGamePlayerobjectStatus">Statusattribute des Spielerobjektes (Werte aus dem aktuellen Spielerobjekt lesen)</template>
   <template name="EditorGameAttributes">Attribute</template>
@@ -336,7 +336,7 @@
   <template name="EditorObjectContainerCanbelocked">Objekt kann aufgeschlossen werden</template>
   <template name="EditorObjectContainerAfterlocking">Nach dem Abschliessen des Objektes</template>
   <template name="EditorObjectContainerAfterunlocking">Nach dem Aufschliessen des Objektes</template>
-  <template name="EditorObjectContainerOpenableNote">Diese Skripte setzen die "isopen"-Variable um sicherzustellen, dass Quest den Zustand des Objektes erkennt. Wenn du das Objekt abschliessbar machst, werden die Standard-Skripte verwendet, jene die Aufgabe übernehmen werden.</template>
+  <template name="EditorObjectContainerOpenableNote">Diese Skripte setzen die "isopen"-Variable um sicherzustellen, dass Quest Viva den Zustand des Objektes erkennt. Wenn du das Objekt abschliessbar machst, werden die Standard-Skripte verwendet, jene die Aufgabe übernehmen werden.</template>
   <template name="EditorObjectContainerContainerNote">Diese Skripte werden nach dem Öffnen oder Schließen des Objektes ausgeführt. Du kannst den "isopen"-Zustand von diesem Objekt jederzeit in deinem Spiel in Erfahrung bringen.</template>
   <template name="EditorObjectContainerAddScript">Beim Versuch ein Objekt in den Container zu geben</template>
   <template name="EditorObjectContainerAddScriptNote">Standardmäßig kann jedes Objekt hinzugefügt werden. Verwende dieses Skript, um dies zu beschränken. Das hinzuzufügende Objekt wird als "object" übergeben und sollte bei erfolgreichem Hinzufügen in den Container verschoben werden.</template>
