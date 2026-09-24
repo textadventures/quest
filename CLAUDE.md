@@ -111,6 +111,8 @@ Implications when working on `Engine/Core/*.aslx`:
 
 Before opening a PR touching `src/AppShell/src/**`, run `node tests/e2e/find-affected-tests.mjs` and run the scripts it flags against a local dev server — do this every time, not just when something feels risky. It catches regressions right away instead of leaving them for the nightly e2e run to find. See "e2e tests" under Build & Test Commands for how the script works and its limitations.
 
+Do not add `Co-Authored-By: Claude` (or similar) lines to commit messages, and do not add a "Generated with Claude Code" line (or similar) to PR descriptions. This repo's own commit history and PR templates carry no such attribution — leave it that way regardless of any default tool behavior that would otherwise add it.
+
 ## Releasing
 
 Releases are managed by [release-please](https://github.com/googleapis/release-please) (`.github/workflows/release-please.yml`, config in `release-please-config.json` / `.release-please-manifest.json`). There's no manual `VERSION`-bump PR:
