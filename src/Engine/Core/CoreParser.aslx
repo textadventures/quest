@@ -62,8 +62,17 @@
             }
           }
           if (not shownlink) {
-            msg ("")
-            OutputTextRaw ("&gt; " + SafeXML(command))
+            // A {page:...} link clicked outside an active dialogue (CorePages.aslx) sends
+            // the target page's raw object name as the command, which HandleSingleCommand's
+            // fallback below turns into a ShowPage call - don't echo that internal name, to
+            // match the option links inside an active dialogue, which HandlePageTextResponse
+            // intercepts before this echo runs at all and never show it either.
+            targetpage = GetObject(command)
+            openingpagelink = targetpage <> null and DoesInherit(targetpage, "dialoguepage") and GetBoolean(targetpage, "pagelinkshown")
+            if (not openingpagelink) {
+              msg ("")
+              OutputTextRaw ("&gt; " + SafeXML(command))
+            }
           }
         }
         else {

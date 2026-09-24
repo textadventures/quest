@@ -22,7 +22,7 @@
     }
     else if (p4 > 0) {
       sides = ToInt(Mid(dice, p1 + 1, p4 - p1 - 1))
-      total = -ToInt(Mid(dice, p4 + 1, p3 - p2))
+      total = -ToInt(Mid(dice, p4 + 1, p3 - p4))
     }
     else {
       sides = ToInt(Mid(dice, p1 + 1, p3 - p1))
