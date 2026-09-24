@@ -227,7 +227,7 @@
     // see inTemplateParamSimpleMode below, which is the only other caller of this shape.
     type SimpleValueLike = { simpleEditor: string | null; value: string | null };
 
-    function isSimpleValue(ctrl: SimpleValueLike): boolean {
+    function isSimpleValue(ctrl: SimpleValueLike, names: string[]): boolean {
         const v = ctrl.value ?? "";
         switch (ctrl.simpleEditor) {
             case "boolean":
@@ -236,8 +236,10 @@
             case "numberdouble":
                 return v !== "" && Number.isFinite(Number(v));
             case "objects":
-                // Bare identifier (object name) or empty — not a complex expression
-                return v === "" || /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(v);
+                // Checked against the picker's own list rather than an identifier regex: element
+                // names may contain spaces and non-ASCII letters, which a regex rejected, forcing
+                // e.g. MakeExitInvisible(trap door) into expression mode.
+                return v === "" || names.includes(v);
             default:
                 // textbox, dropdown, file: simple only when the *entire* value is a single
                 // quoted string literal, not just "starts and ends with a quote" - that laxer
@@ -252,7 +254,7 @@
         if (!ctrl.simpleEditor) return false;
         const key = exprKey(scriptIndex, ctrl.attribute!);
         if (expressionOverrides.has(key)) return false;
-        return isSimpleValue(ctrl);
+        return isSimpleValue(ctrl, namesForControl(ctrl));
     }
 
     // Same intent as onSwitchToSimple's inline switch below, but as a pure function (a template
@@ -278,7 +280,7 @@
     function inTemplateParamSimpleMode(overrideKey: string, ctrl: ExpressionTemplateControlData): boolean {
         if (!ctrl.simpleEditor) return false;
         if (templateParamOverrides.has(templateParamKey(overrideKey, ctrl.name))) return false;
-        return isSimpleValue(ctrl);
+        return isSimpleValue(ctrl, objectNames);
     }
 
     // Svelte action: sizes a <select> (the condition/template picker, or a template control's
@@ -396,7 +398,7 @@
     function onSwitchToSimple(scriptIndex: number, ctrl: ScriptControlData) {
         clearExpressionOverride(scriptIndex, ctrl.attribute!);
         // If the current value is not a valid simple value, reset to a default simple value
-        if (!isSimpleValue(ctrl)) {
+        if (!isSimpleValue(ctrl, namesForControl(ctrl))) {
             switch (ctrl.simpleEditor) {
                 case "boolean":
                     onSetParam(scriptIndex, ctrl.attribute!, "true");
@@ -1304,7 +1306,7 @@
                             // paramSimple is re-derived from the value's shape on every render.
                             // Reset to a blank/zero default so the switch is visible immediately,
                             // mirroring onSwitchToSimple's non-template twin.
-                            if (!isSimpleValue(ctrl)) {
+                            if (!isSimpleValue(ctrl, objectNames)) {
                                 onchange(buildTemplateExpression(tmplData!, ctrl.name, defaultSimpleValue(ctrl.simpleEditor!)));
                             }
                         }
