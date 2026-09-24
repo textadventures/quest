@@ -57,7 +57,7 @@ public class AskScript(
 
         _worldModel.PlayerUi.ShowQuestion(caption, inline);
         _worldModel.BeginDormantSuspension();
-        _worldModel.SignalTurnSuspended();
+        _worldModel.SignalTurnSuspended(resolveTurn: false);
         _ = AwaitResponseAndRunCallbackAsync(c);
     }
 

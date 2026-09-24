@@ -230,4 +230,27 @@
       }
     </script>
   </command>
+
+  <!-- ask and show menu script forms: script continues past the block, like wait and get input -->
+  <command name="cmd_askscript">
+    <pattern>askscript</pattern>
+    <script>
+      msg ("before ask")
+      ask ("Sure?") {
+        msg ("answered: " + result)
+      }
+      msg ("after ask block")
+    </script>
+  </command>
+
+  <command name="cmd_menuscript">
+    <pattern>menuscript</pattern>
+    <script>
+      msg ("before menu")
+      show menu ("Pick one", Split("Red;Green", ";"), false) {
+        msg ("picked: " + result)
+      }
+      msg ("after menu block")
+    </script>
+  </command>
 </asl>
