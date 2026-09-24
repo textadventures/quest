@@ -302,6 +302,7 @@ public partial class WorldModel : IGame, IGameDebug
 
     public async Task SetMenuResponse(string? response)
     {
+        await _turnSuspendedTcs.Task;
         var tcs = _menuTcs;
         _turnSuspendedTcs = new();
         tcs?.TrySetResult(response);
@@ -595,6 +596,7 @@ public partial class WorldModel : IGame, IGameDebug
     public async Task FinishWait()
     {
         if (State == GameState.Finished) return;
+        await _turnSuspendedTcs.Task;
         var tcs = _waitTcs;
         _turnSuspendedTcs = new();
         tcs?.TrySetResult();
@@ -605,6 +607,7 @@ public partial class WorldModel : IGame, IGameDebug
 
     public async Task FinishPause()
     {
+        await _turnSuspendedTcs.Task;
         var tcs = _pauseTcs;
         _turnSuspendedTcs = new();
         tcs?.TrySetResult();
@@ -719,6 +722,7 @@ public partial class WorldModel : IGame, IGameDebug
 
     public async Task SetQuestionResponse(bool response)
     {
+        await _turnSuspendedTcs.Task;
         var tcs = _questionTcs;
         _turnSuspendedTcs = new();
         tcs?.TrySetResult(response);
@@ -1260,7 +1264,19 @@ public partial class WorldModel : IGame, IGameDebug
         return Elements.Get(el).Fields.GetInheritedTypesDebugData();
     }
 
-    internal void SignalTurnSuspended(bool scroll = true)
+    // resolveTurn is false only where a non-blocking wait/get input/ask/show menu script has just
+    // registered its prompt: the calling script carries straight on, so resolving now would let
+    // whoever awaits the turn (SendCommand, FinishWait, ...) resume - synchronously, inside
+    // TrySetResult - and start the next command while this one is still running. That script's
+    // own execution still ends in an ordinary SignalTurnSuspended (HandleCommandAsyncInternal's
+    // finally, or the finally of the callback it was running in), which resolves the turn then.
+    // The prompt itself is already showing, though, so it can be answered before then:
+    // FinishWait, FinishPause, SetMenuResponse and SetQuestionResponse each await the running
+    // turn before starting their own, rather than replacing a _turnSuspendedTcs that turn's
+    // caller is still waiting on (which would leave it waiting forever).
+    // Seen as a debugger walkthrough whose output fell one step behind after a wait{} in a
+    // beforeenter script, since the runner answers the wait the moment it's signalled.
+    internal void SignalTurnSuspended(bool scroll = true, bool resolveTurn = true)
     {
         if (scroll && Version >= WorldModelVersion.v540)
         {
@@ -1290,7 +1306,7 @@ public partial class WorldModel : IGame, IGameDebug
         // IPlayer can flush on every suspension boundary rather than only the first one a given
         // command reaches.
         TurnSuspended?.Invoke();
-        _turnSuspendedTcs.TrySetResult();
+        if (resolveTurn) _turnSuspendedTcs.TrySetResult();
     }
 
     // A menu or yes/no question drawn as numbered links in the transcript rather than as a

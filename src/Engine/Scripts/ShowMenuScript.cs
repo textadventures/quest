@@ -99,7 +99,7 @@ public class ShowMenuScript : ScriptBase
         _worldModel.PlayerUi.ShowMenu(menuData);
 
         _worldModel.BeginDormantSuspension();
-        _worldModel.SignalTurnSuspended();
+        _worldModel.SignalTurnSuspended(resolveTurn: false);
         _ = AwaitResponseAndRunCallbackAsync(c, optionsDictionary);
     }
 

@@ -42,7 +42,7 @@ public class WaitScript : ScriptBase
         _worldModel.PlayerUi.DoWait();
         WorldModel.BeginPrompt(ref _worldModel._waitTcs);
         _worldModel.BeginDormantSuspension();
-        _worldModel.SignalTurnSuspended();
+        _worldModel.SignalTurnSuspended(resolveTurn: false);
         _ = AwaitWaitAndRunCallbackAsync(c);
         return Task.CompletedTask;
     }

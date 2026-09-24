@@ -32,7 +32,7 @@ internal sealed class GameDriver
 
     private static readonly Regex StripTags = new(@"<[^>]+>", RegexOptions.Compiled);
 
-    private GameDriver(WorldModel worldModel, Mock<IPlayer> playerMock)
+    private GameDriver(WorldModel worldModel, Mock<IPlayer> playerMock, bool yieldInRunScript)
     {
         _worldModel = worldModel;
         PlayerMock = playerMock;
@@ -47,17 +47,22 @@ internal sealed class GameDriver
                         _batch.Add(text);
                 }
             })
-            .Returns(Task.CompletedTask);
+            .Returns(() => yieldInRunScript ? YieldAsync() : Task.CompletedTask);
         worldModel.LogError += ex => _scriptError = ex;
         worldModel.RequestNextTimerTick += seconds => RequestedTimerTicks.Add(seconds);
     }
 
-    public static async Task<GameDriver> LoadAsync(string filename)
+    private static async Task YieldAsync() => await Task.Yield();
+
+    // yieldInRunScript makes RunScriptAsync genuinely yield, as WasmPlayer's does to keep the
+    // browser responsive, so a command can be left suspended mid-script rather than always
+    // running to completion synchronously.
+    public static async Task<GameDriver> LoadAsync(string filename, bool yieldInRunScript = false)
     {
         var data = await new FileGameDataProvider(filename).GetData();
         var model = new WorldModel(data, null);
         var playerMock = new Mock<IPlayer>();
-        var driver = new GameDriver(model, playerMock);
+        var driver = new GameDriver(model, playerMock, yieldInRunScript);
         var success = await model.Initialise(playerMock.Object);
         if (!success)
             throw new Exception($"Game failed to load: {string.Join("; ", model.Errors)}");
@@ -196,6 +201,43 @@ public class CallbackTests
         var phase2 = await driver.FinishWaitAsync();
         phase2.ShouldContain("wait done");
         phase2.ShouldContain("on ready");
+    }
+
+    // The script forms of wait/get input/ask/show menu don't block, so the command isn't done
+    // when the prompt opens - SendCommand must not return until the rest of the script has run.
+    // When the player yielded mid-script, it used to return at the prompt instead: a walkthrough
+    // then answered the prompt and sent its next step while this command was still running, and
+    // every step's output landed one step late from then on.
+    [TestMethod]
+    [DataRow("testwait", "after wait block")]
+    [DataRow("getinputscript", "after input block")]
+    [DataRow("askscript", "after ask block")]
+    [DataRow("menuscript", "after menu block")]
+    public async Task NonBlockingPrompt_PlayerYieldsMidScript_SendCommandWaitsForRestOfScript(string command, string afterBlock)
+    {
+        var driver = await GameDriver.LoadAsync("callbacktest.aslx", yieldInRunScript: true);
+
+        var output = await driver.SendCommandAsync(command);
+        output.ShouldContain(afterBlock);
+    }
+
+    // A non-blocking prompt is on screen before the script that opened it has finished, so the
+    // player can answer it while that command is still running. Answering it used to replace the
+    // turn signal the command's SendCommand was awaiting, so SendCommand never returned and the
+    // player's input stayed locked.
+    [TestMethod]
+    public async Task Wait_AnsweredWhileCommandStillRunning_BothComplete()
+    {
+        var driver = await GameDriver.LoadAsync("callbacktest.aslx", yieldInRunScript: true);
+        var waitShown = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        driver.PlayerMock.Setup(p => p.DoWait()).Callback(() => waitShown.TrySetResult());
+
+        var send = driver.Model.SendCommand("testwait");
+        await waitShown.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        send.IsCompleted.ShouldBeFalse();
+        var finish = driver.Model.FinishWait();
+
+        await Task.WhenAll(send, finish).WaitAsync(TimeSpan.FromSeconds(5));
     }
 
     // Regression test for #2176: a wait{} callback that chains two MoveObjects back to back

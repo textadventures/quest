@@ -43,7 +43,7 @@ public class GetInputScript : ScriptBase
         _worldModel._commandOverride = true;
         WorldModel.BeginPrompt(ref _worldModel._commandInputTcs);
         _worldModel.BeginDormantSuspension();
-        _worldModel.SignalTurnSuspended();
+        _worldModel.SignalTurnSuspended(resolveTurn: false);
         _ = AwaitResponseAndRunCallbackAsync(c);
         return Task.CompletedTask;
     }
