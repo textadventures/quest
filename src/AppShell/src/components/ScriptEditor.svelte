@@ -57,6 +57,7 @@
         ExpressionTemplate,
         ExpressionFunctionInfo,
         CaseScriptData,
+        ControlOption,
     } from "$lib/types";
 
     interface Props {
@@ -208,6 +209,10 @@
 
     function exprKey(scriptIndex: number, attr: string): string {
         return `${containerPath}/${scriptIndex}/${attr}`;
+    }
+
+    function objectOptions(names: string[]): ControlOption[] {
+        return [{ value: "", label: "" }, ...names.map(name => ({ value: name, label: name }))];
     }
 
     function namesForControl(ctrl: ScriptControlData): string[] {
@@ -930,16 +935,13 @@
             </select>
             {#if simple}
                 {#if ctrl.simpleEditor === "objects"}
-                    <select
-                        class="select text-xs py-0 px-1 max-w-40"
+                    <Combobox
                         value={ctrl.value ?? ""}
-                        onchange={(e) => onSimpleValueChange(scriptIndex, ctrl, (e.target as HTMLSelectElement).value)}
-                    >
-                        <option value=""></option>
-                        {#each namesForControl(ctrl) as name (name)}
-                            <option value={name}>{name}</option>
-                        {/each}
-                    </select>
+                        options={objectOptions(namesForControl(ctrl))}
+                        onchange={(v) => onSimpleValueChange(scriptIndex, ctrl, v)}
+                        strict
+                        class="input text-xs py-0 px-1 max-w-40"
+                    />
                 {:else if ctrl.simpleEditor === "dropdown" && ctrl.options && ctrl.freetext}
                     <!-- <freetext/> - lets the user type a value not in the list, e.g. a
                          drawing command's colour parameter. -->
@@ -1312,20 +1314,13 @@
                     <option value="expression">{t("scriptEditor.expressionOption")}</option>
                 </select>
                 {#if paramSimple && ctrl.simpleEditor === "objects"}
-                    <select
-                        class="select text-xs py-0 px-1"
-                        use:autoWidthSelect={{ text: ctrl.value ?? "", minCh: 4, maxCh: 46 }}
+                    <Combobox
                         value={ctrl.value ?? ""}
-                        onchange={(e) => {
-                            const newVal = (e.target as HTMLSelectElement).value;
-                            onchange(buildTemplateExpression(tmplData!, ctrl.name, newVal));
-                        }}
-                    >
-                        <option value=""></option>
-                        {#each objectNames as name (name)}
-                            <option value={name}>{name}</option>
-                        {/each}
-                    </select>
+                        options={objectOptions(objectNames)}
+                        onchange={(v) => onchange(buildTemplateExpression(tmplData!, ctrl.name, v))}
+                        strict
+                        class="input text-xs py-0 px-1 max-w-40"
+                    />
                 {:else if paramSimple && (ctrl.simpleEditor === "number" || ctrl.simpleEditor === "numberdouble")}
                     <input
                         type="number"

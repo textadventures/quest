@@ -79,9 +79,12 @@ async function run() {
     await addScriptDialog.getByRole('button', { name: 'OK', exact: true }).click();
     console.log('PASS: added an "Unlock exit" script command');
 
-    // The exit picker is the first <select> in the newly-added script row.
-    const exitSelect = page.locator('select').last();
-    const options = await exitSelect.locator('option').allTextContents();
+    // The exit picker is a searchable Combobox; its options live in a listbox portaled to <body>.
+    const exitPicker = page.locator('input[role="combobox"]').last();
+    await exitPicker.click();
+    const listbox = page.locator('[role="listbox"]').last();
+    await listbox.waitFor({ timeout: 5000 });
+    const options = (await listbox.locator('[role="option"]').allTextContents()).map(s => s.trim());
     if (!options.includes('gate')) {
         throw new Error(`Expected the Unlock exit picker to list the named exit "gate", got: ${JSON.stringify(options)}`);
     }

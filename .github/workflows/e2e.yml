@@ -206,6 +206,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-appshell-unlock-exit-picker.mjs http://localhost:5174
         working-directory: tests/e2e
+      - run: node verify-appshell-searchable-object-picker.mjs http://localhost:5174
+        working-directory: tests/e2e
       - run: node verify-appshell-verbs-editor.mjs http://localhost:5174
         working-directory: tests/e2e
       - run: node verify-appshell-versioncode.mjs http://localhost:5174

@@ -849,6 +849,7 @@
             value={attrValue(ctrl.attribute!) ?? ""}
             options={ctrl.options}
             onchange={(v) => $selectedKey && setObjectReference($selectedKey, ctrl.attribute!, v)}
+            strict
             class="input text-xs py-0.5 px-1.5 w-auto min-w-24"
             style={widthStyle(ctrl)}
         />
