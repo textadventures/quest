@@ -2,9 +2,13 @@
     import type { ControlOption } from "$lib/types";
     import { t } from "$lib/i18n";
 
-    let { value, options, onchange, oninput, onEnter, class: className = "", wrapperClass = "", style = "" }: {
+    let { value, options, onchange, oninput, onEnter, strict = false, class: className = "", wrapperClass = "", style = "" }: {
         value: string;
         options: ControlOption[];
+        // Only commit typed text that names one of the options (e.g. an object reference);
+        // anything else reverts to the current value. Off by default, where free text is the
+        // point (a colour parameter can be any CSS colour).
+        strict?: boolean;
         onchange: (value: string) => void;
         // Fires on every keystroke, unlike onchange (which only commits on blur/select/Enter) —
         // for callers that need the live typed text, e.g. to drive a submit button's disabled
@@ -132,6 +136,29 @@
         onchange(optValue);
     }
 
+    // Exact label/value match first, then a unique case-insensitive one.
+    function matchTyped(text: string): string | null {
+        const exact = options.find(o => o.value === text || o.label === text);
+        if (exact) return exact.value;
+        const lower = text.toLowerCase();
+        const matches = options.filter(o => o.value.toLowerCase() === lower || o.label.toLowerCase() === lower);
+        return matches.length === 1 ? matches[0].value : null;
+    }
+
+    function commitTyped(text: string) {
+        if (!strict) {
+            onchange(text);
+            return;
+        }
+        const match = matchTyped(text);
+        if (match === null) {
+            inputValue = labelFor(value);
+        } else {
+            inputValue = labelFor(match);
+            onchange(match);
+        }
+    }
+
     function handleFocus() {
         inputValue = "";
         dirty = false;
@@ -154,7 +181,7 @@
         if (!dirty || inputValue === "") {
             inputValue = labelFor(value);
         } else {
-            onchange(inputValue);
+            commitTyped(inputValue);
         }
         dirty = false;
     }
@@ -186,7 +213,8 @@
                 // Mirrors handleBlur: nothing typed since focus (which clears inputValue to "")
                 // means "leave it as-is", not "clear the field" — e.g. accepting a pre-filled
                 // default by tabbing in and pressing Enter without typing over it.
-                onchange(inputValue === "" ? value : inputValue);
+                if (inputValue === "") onchange(value);
+                else commitTyped(inputValue);
                 dirty = false;
             }
             onEnter?.();

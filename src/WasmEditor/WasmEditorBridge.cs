@@ -2175,6 +2175,11 @@ public partial class WasmEditorBridge
         return JsonSerializer.Serialize(data, WasmEditorJsonContext.Default.ScriptCommandCategoriesData);
     }
 
+    // Pickers list names alphabetically; element order is just creation order, which makes a
+    // large game's list hard to scan.
+    private static List<string> SortNames(IEnumerable<string> names) =>
+        names.Order(StringComparer.InvariantCultureIgnoreCase).ToList();
+
     [JSExport]
     public static string GetObjectNames()
     {
@@ -2183,7 +2188,7 @@ public partial class WasmEditorBridge
             return "[]";
         }
 
-        var names = _controller.GetObjectNames("object", false).ToList();
+        var names = SortNames(_controller.GetObjectNames("object", false));
         return JsonSerializer.Serialize(names, WasmEditorJsonContext.Default.ListString);
     }
 
@@ -2195,7 +2200,7 @@ public partial class WasmEditorBridge
             return "[]";
         }
 
-        var names = _controller.GetObjectNames("exit", false).ToList();
+        var names = SortNames(_controller.GetObjectNames("exit", false));
         return JsonSerializer.Serialize(names, WasmEditorJsonContext.Default.ListString);
     }
 
@@ -2438,9 +2443,8 @@ public partial class WasmEditorBridge
             return "[]";
         }
 
-        var names = _controller.GetObjectNames("object", false)
-            .Where(n => _controller.IsDialoguePage(n))
-            .ToList();
+        var names = SortNames(_controller.GetObjectNames("object", false)
+            .Where(n => _controller.IsDialoguePage(n)));
         return JsonSerializer.Serialize(names, WasmEditorJsonContext.Default.ListString);
     }
 
@@ -4333,7 +4337,7 @@ public partial class WasmEditorBridge
                 names = names.Where(n => _controller.IsRoom(n));
             }
 
-            options = names.Select(n => new ControlOption(n, n)).ToList();
+            options = SortNames(names).Select(n => new ControlOption(n, n)).ToList();
         }
         else if (ctrl.ControlType == "multi")
         {

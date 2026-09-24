@@ -157,8 +157,14 @@ async function run() {
     // The added script's page picker must list guard_intro/guard_weather only,
     // not rooms/objects/commands.
     const showPageLabel = page.getByText('Show page', { exact: true });
-    const pageValueSelect = showPageLabel.locator('xpath=following-sibling::select[2]');
-    const scriptPageOptions = (await pageValueSelect.locator('option').allTextContents()).filter(Boolean);
+    // The page picker is a searchable Combobox (after the object/expression mode <select>); its
+    // options live in a listbox portaled to <body>.
+    const pagePicker = showPageLabel.locator('xpath=following-sibling::div[.//input[@role="combobox"]][1]//input[@role="combobox"]');
+    await pagePicker.click();
+    const pageListbox = page.locator('[role="listbox"]').last();
+    await pageListbox.waitFor({ timeout: 5000 });
+    const scriptPageOptions = (await pageListbox.locator('[role="option"]').allTextContents()).map(s => s.trim()).filter(Boolean);
+    await pagePicker.press('Escape');
     if (!(scriptPageOptions.includes('guard_intro') && scriptPageOptions.includes('guard_weather'))) {
         throw new Error(`Expected "Show page"'s picker to list both pages, got: ${scriptPageOptions.join(', ')}`);
     }
