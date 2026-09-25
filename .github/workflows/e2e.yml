@@ -443,6 +443,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-wasmplayer-seed-transcript.mjs http://localhost:5175
         working-directory: tests/e2e
+      - run: node verify-wasmplayer-walkthrough-timer.mjs http://localhost:5175
+        working-directory: tests/e2e
       - run: node verify-wasmplayer-manual-clock-eval.mjs http://localhost:5175
         working-directory: tests/e2e
 

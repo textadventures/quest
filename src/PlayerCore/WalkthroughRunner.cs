@@ -12,6 +12,7 @@ public class WalkthroughRunner(IGameDebug game, string walkthrough)
     private bool _cancelled;
     private IDictionary<string, string>? _menuOptions;
     private bool _pausing;
+    private int _queuedTickSeconds;
     private bool _showingMenu;
     private bool _showingQuestion;
     private bool _waiting;
@@ -82,6 +83,44 @@ public class WalkthroughRunner(IGameDebug game, string walkthrough)
                 await _game.SendCommand(cmd);
             }
 
+            await FinishStep();
+
+            if (_cancelled)
+            {
+                break;
+            }
+
+            await Task.Delay(delay);
+        }
+
+        // Runs any tick that arrived during the last step, which would otherwise be dropped - and
+        // the player's timer only restarts once the engine asks for the next tick.
+        if (!_cancelled)
+        {
+            await FinishStep();
+        }
+    }
+
+    // The player's real-time timer keeps running during a walkthrough, since the steps don't go
+    // through its own sendCommand (which stops the timer until a turn ends). A tick arriving while
+    // a step is still running would run timer scripts in the middle of it, so the player queues
+    // ticks here instead, and FinishStep runs them once the step's command has finished.
+    public void QueueTick(int elapsedTime)
+    {
+        Interlocked.Add(ref _queuedTickSeconds, elapsedTime);
+    }
+
+    // Runs queued ticks and clicks through any wait/pause the step or a timer script opened.
+    private async Task FinishStep()
+    {
+        do
+        {
+            var elapsedTime = Interlocked.Exchange(ref _queuedTickSeconds, 0);
+            if (elapsedTime > 0)
+            {
+                await game.TickUntilSuspended(elapsedTime);
+            }
+
             if (ClearBuffer != null)
             {
                 await ClearBuffer.Invoke();
@@ -89,26 +128,21 @@ public class WalkthroughRunner(IGameDebug game, string walkthrough)
 
             if (_cancelled)
             {
-                break;
+                return;
             }
 
-            do
+            if (_waiting)
             {
-                if (_waiting)
-                {
-                    _waiting = false;
-                    await FinishWait();
-                }
+                _waiting = false;
+                await FinishWait();
+            }
 
-                if (_pausing)
-                {
-                    _pausing = false;
-                    await FinishPause();
-                }
-            } while ((_waiting || _pausing) && !_cancelled);
-
-            await Task.Delay(delay);
-        }
+            if (_pausing)
+            {
+                _pausing = false;
+                await FinishPause();
+            }
+        } while ((_waiting || _pausing) && !_cancelled);
     }
 
     public void ShowMenu(MenuData menu)

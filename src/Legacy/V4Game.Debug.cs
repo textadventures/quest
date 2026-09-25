@@ -80,6 +80,13 @@ public partial class V4Game
         return Task.FromResult("Not supported for legacy games");
     }
 
+    // Unlike WorldModel's Tick, V4Game's isn't suspended by its games' prompts, so it
+    // already returns once its timer scripts have run.
+    public Task TickUntilSuspended(int elapsedTime)
+    {
+        return Tick(elapsedTime);
+    }
+
     private DebugData GetVariableDebugData(VariableType[] variable)
     {
         if (variable == null || variable.Length == 0)
