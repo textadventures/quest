@@ -19,24 +19,24 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          # Scope is optional (requireScope unset), but when given it must
-          # match a project name exactly, so it clusters and capitalizes
-          # consistently in the release-please changelog. "main" is included
-          # because release-please's own PR titles are "chore(main): release X.Y.Z".
-          # "e2e" is included because tests/e2e/*.mjs scripts (see e2e.yml) span
-          # multiple projects (AppShell, WebPlayer, WasmPlayer, ElectronApp), so
-          # a test-only fix often doesn't belong to any single project scope.
+          # Scope is optional (requireScope unset), but when given it must be
+          # one of these audience areas, exact case, so scoped changelog
+          # entries cluster and capitalize consistently. The scope says who
+          # would notice the change, not which projects it touches: an editor
+          # fix spanning AppShell, EditorCore and Engine is just "Editor".
+          # Omit the scope when a change affects everyone or no one.
+          #   Player  - playing games (WebPlayer, WasmPlayer, PlayerCore, and
+          #             engine behaviour players see)
+          #   Editor  - authoring games (AppShell, EditorCore, WasmEditor, and
+          #             editor-facing Core library changes)
+          #   Desktop - the Electron app specifically
+          #   Site    - questviva.com (site/), including the documentation
+          #   e2e     - tests/e2e/*.mjs scripts, which span multiple areas
+          #   main    - release-please's own "chore(main): release X.Y.Z" PRs
           scopes: |
-            Common
-            Engine
-            EditorCore
-            PlayerCore
-            Legacy
-            WebPlayer
-            WasmPlayer
-            AppShell
-            WasmEditor
-            ElectronApp
+            Player
+            Editor
+            Desktop
             Site
             e2e
             main
