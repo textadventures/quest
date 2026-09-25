@@ -18,7 +18,11 @@ internal partial class GameSaver
             var allObjects = worldModel.Elements.GetElements(ElementType.Object)
                 .OrderBy(o => o.MetaFields[MetaFieldDefinitions.SortIndex]).ToArray();
 
-            foreach (var e in allObjects.Where(e => e.Parent == null && GameSaver.CanSave(e)))
+            // An object is normally written nested inside its parent's XML element. If the parent
+            // isn't written by this save (e.g. it comes from an included library in an Editor
+            // save), the object is written at the top level instead, and ObjectSaver writes its
+            // "parent" attribute explicitly so the relationship survives.
+            foreach (var e in allObjects.Where(e => GameSaver.CanSave(e) && !GameSaver.IsSavedNested(e)))
             {
                 SaveObjectAndChildren(writer, allObjects, e, elementSaver);
             }
@@ -30,7 +34,7 @@ internal partial class GameSaver
         {
             saver.StartSave(writer, e);
             var orderedChildren = from child in allObjects
-                where child.Parent == e
+                where child.Parent == e && GameSaver.CanSave(child)
                 orderby child.MetaFields[MetaFieldDefinitions.SortIndex]
                 select child;
 
@@ -113,6 +117,11 @@ internal partial class GameSaver
 
         protected override bool CanSaveAttribute(string attribute, Element e)
         {
+            if (attribute == "parent")
+            {
+                return e.Parent != null && !GameSaver.IsSavedNested(e);
+            }
+
             return base.CanSaveAttribute(attribute, e) && _savers[e.Type].CanSaveAttribute(attribute);
         }
 

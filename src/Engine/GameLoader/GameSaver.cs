@@ -148,6 +148,13 @@ internal partial class GameSaver
         }
     }
 
+    // Whether e will be written nested inside its parent's XML element, which only happens if
+    // the parent itself is written by this save.
+    private bool IsSavedNested(Element e)
+    {
+        return e.Parent != null && CanSave(e.Parent);
+    }
+
     public string SaveScript(GameXmlWriter writer, IScript script, int indent)
     {
         return Utility.IndentScript(script.Save(), writer.IndentLevel + indent, GameXmlWriter.IndentChars);
