@@ -141,6 +141,15 @@ internal sealed class GameDriver
         return TakeBatch();
     }
 
+    public async Task<IReadOnlyList<string>> TickUntilSuspendedAsync(int elapsedTime)
+    {
+        _batch = [];
+        _scriptError = null;
+        RequestedTimerTicks.Clear();
+        await _worldModel.TickUntilSuspended(elapsedTime);
+        return TakeBatch();
+    }
+
     public async Task<IReadOnlyList<string>> TickAsync(int elapsedTime)
     {
         _batch = [];
@@ -299,6 +308,30 @@ public class CallbackTests
         var afterAnswer = await driver.FinishWaitAsync().WaitAsync(TimeSpan.FromSeconds(5));
         afterAnswer.ShouldContain("event after wait");
         await sendEvent.WaitAsync(TimeSpan.FromSeconds(5));
+    }
+
+    // TickUntilSuspended returns as soon as a timer script stops at a blocking prompt, like
+    // SendCommand does, so the walkthrough runner can answer it - Tick itself waits for the answer.
+    [TestMethod]
+    public async Task TickUntilSuspended_BlockingWaitInTimerScript_ReturnsAtThePrompt()
+    {
+        var driver = await GameDriver.LoadAsync("callbacktest.aslx", yieldInRunScript: true);
+        await driver.SendCommandAsync("enableblockwaittimer");
+
+        await driver.Model.TickUntilSuspended(1).WaitAsync(TimeSpan.FromSeconds(5));
+
+        var afterAnswer = await driver.FinishWaitAsync().WaitAsync(TimeSpan.FromSeconds(5));
+        afterAnswer.ShouldContain("timer after wait");
+    }
+
+    [TestMethod]
+    public async Task TickUntilSuspended_NoPrompt_ReturnsOnceTimerScriptsHaveRun()
+    {
+        var driver = await GameDriver.LoadAsync("callbacktest.aslx", yieldInRunScript: true);
+        await driver.SendCommandAsync("enablechaintimer");
+
+        var output = await driver.TickUntilSuspendedAsync(2);
+        output.ShouldContain("chain1 ran");
     }
 
     // Regression test for #2176: a wait{} callback that chains two MoveObjects back to back

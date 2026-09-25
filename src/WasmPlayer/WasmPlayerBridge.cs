@@ -340,6 +340,11 @@ public partial class WasmPlayerBridge
     public static async Task Tick(int elapsedTime)
     {
         if (_game == null || _ui == null || _ui.IsFinished) return;
+        if (_ui.Runner != null)
+        {
+            _ui.Runner.QueueTick(elapsedTime);
+            return;
+        }
         await _game.Tick(elapsedTime);
         await _ui.FlushBufferAndYieldAsync();
     }

@@ -515,6 +515,12 @@ public class Player : IPlayerHelperUI
 
     public async Task UiTickAsync(int tickCount)
     {
+        if (Runner is { } runner)
+        {
+            runner.QueueTick(tickCount);
+            return;
+        }
+
         await UiActionAsync(async () => await PlayerHelper.Game.Tick(tickCount));
     }
 

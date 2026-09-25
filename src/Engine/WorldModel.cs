@@ -703,6 +703,26 @@ public partial class WorldModel : IGame, IGameDebug
         SendNextTimerRequest();
     }
 
+    public async Task TickUntilSuspended(int elapsedTime)
+    {
+        // Don't replace a turn signal that a still-running turn's caller is waiting on - see
+        // SignalTurnSuspended.
+        await _turnSuspendedTcs.Task;
+        var turn = new TaskCompletionSource();
+        _turnSuspendedTcs = turn;
+        _ = TickAndSignalAsync(elapsedTime, turn);
+        await turn.Task;
+    }
+
+    private async Task TickAndSignalAsync(int elapsedTime, TaskCompletionSource turn)
+    {
+        await Tick(elapsedTime);
+        // If a timer script's prompt was answered, the answer replaced the turn signal and Tick
+        // has already resolved that one - and something may since have started a new turn of
+        // its own, which this mustn't resolve.
+        if (_turnSuspendedTcs == turn) SignalTurnSuspended();
+    }
+
     // Tick and SendEvent are awaited directly rather than through _turnSuspendedTcs, so unlike a
     // command they don't end in a turn signal of their own. If their script stopped at a blocking
     // prompt and was answered, the answer (FinishWait etc.) is awaiting the _turnSuspendedTcs it

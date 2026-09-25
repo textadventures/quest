@@ -22,6 +22,12 @@ public interface IGameDebug
     // as a script the game itself could run. Returns null on success, or an
     // error message (bad syntax, unknown element, ...) on failure.
     Task<string?> SetAttributeAsync(string element, string attribute, string valueExpression);
+
+    // For the walkthrough runner, which runs the player's timer ticks itself between steps: like
+    // Tick, but returns as soon as the timer scripts finish or stop at a prompt, the way
+    // SendCommand does for a command - Tick itself doesn't return until a blocking prompt in a
+    // timer script is answered, which the runner can only do once this returns.
+    Task TickUntilSuspended(int elapsedTime);
 }
 
 public class DebugDataItem

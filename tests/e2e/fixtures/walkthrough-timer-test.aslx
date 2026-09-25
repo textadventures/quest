@@ -1,0 +1,242 @@
+<asl version="600">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="WalkthroughTimerTest">
+    <attr name="burstcount" type="int">0</attr>
+    <attr name="tickcount" type="int">0</attr>
+  </game>
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+  <!-- Prints a marked block of output, long enough that the player yields to the browser
+       part-way through it, so a real-time timer tick can land in the middle of the step. -->
+  <command name="cmd_burst">
+    <pattern>burst</pattern>
+    <script>
+      game.burstcount = game.burstcount + 1
+      msg ("burst start " + game.burstcount)
+      for (i, 1, 40) {
+        msg ("burst " + game.burstcount + " line " + i)
+      }
+      msg ("burst end " + game.burstcount)
+    </script>
+  </command>
+  <timer name="ticker">
+    <enabled />
+    <interval>1</interval>
+    <script>
+      game.tickcount = game.tickcount + 1
+      msg ("TICK " + game.tickcount)
+    </script>
+  </timer>
+  <walkthrough name="bursts">
+    <steps type="simplestringlist">
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+    </steps>
+  </walkthrough>
+  <!-- Stops at a blocking wait, so its tick doesn't finish until the walkthrough answers it -->
+  <timer name="waittimer">
+    <enabled type="boolean">false</enabled>
+    <interval>1</interval>
+    <script>
+      DisableTimer (waittimer)
+      msg ("timer before wait")
+      request (Wait, "")
+      msg ("timer after wait")
+    </script>
+  </timer>
+  <command name="cmd_enablewaittimer">
+    <pattern>enablewaittimer</pattern>
+    <script>
+      DisableTimer (ticker)
+      EnableTimer (waittimer)
+    </script>
+  </command>
+  <walkthrough name="blockingtimer">
+    <steps type="simplestringlist">
+      enablewaittimer
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+      burst
+    </steps>
+  </walkthrough>
+</asl>
