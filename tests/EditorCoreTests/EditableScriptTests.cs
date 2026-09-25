@@ -150,4 +150,38 @@ public class EditableScriptTests : EditorControllerTestBase
         Controller.Redo();
         Assert.AreEqual(newerExpectedDisplayString, newScripts.DisplayString());
     }
+
+    [TestMethod]
+    public void TestSetCodeWithTruncatedScriptThrowsAndLeavesOriginalScriptIntact()
+    {
+        var newScripts = Controller.CreateNewEditableScripts("game", "somescript", "msg (\"hello\")", true);
+
+        // Simulates a paste that got cut off mid-block - a dangling unclosed brace.
+        Assert.ThrowsException<Exception>(() => newScripts.Code = "if (x) {\nmsg (\"hi\")");
+
+        // The original script is untouched by the failed parse - not silently replaced with the
+        // unparseable text (or an opaque placeholder for it).
+        Assert.AreEqual(1, newScripts.Scripts.Count());
+        Assert.AreEqual("Print \"hello\"", newScripts[0].DisplayString());
+        Assert.AreEqual("msg (\"hello\")", newScripts.Code);
+
+        // The transaction the setter opened must have been closed even though LoadCode threw -
+        // otherwise this throws "Starting transaction when previous transaction not finished".
+        Controller.StartTransaction("Unrelated later transaction");
+        Controller.EndTransaction();
+    }
+
+    [TestMethod]
+    public void TestSetCodeWithUnrecognisedScriptThrowsAndLeavesOriginalScriptIntact()
+    {
+        var newScripts = Controller.CreateNewEditableScripts("game", "somescript", "msg (\"hello\")", true);
+
+        // An "else" with no preceding "if" is recognised as invalid but doesn't itself throw -
+        // ScriptFactory just logs it and drops the line, so this exercises that path rather than
+        // the brace-mismatch one above.
+        Assert.ThrowsException<Exception>(() => newScripts.Code = "else { msg (\"orphan\") }");
+
+        Assert.AreEqual(1, newScripts.Scripts.Count());
+        Assert.AreEqual("Print \"hello\"", newScripts[0].DisplayString());
+    }
 }

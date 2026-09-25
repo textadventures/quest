@@ -166,8 +166,40 @@ public class MultiScript : ScriptBase, IScriptParent, IMultiScript
 
     public void LoadCode(string code)
     {
-        var newScript = (IMultiScript) ScriptFactory.CreateScript(code);
+        // Parse eagerly (lazy: false) and let a parse failure throw (addExceptionsToLog: false)
+        // instead of the usual lazy path, which - in edit mode - swallows the exception into an
+        // opaque "@failed" placeholder holding the raw text (see LazyLoadScript.Initialise). That
+        // lenient fallback is right for loading old/imperfect game data, but wrong for the code
+        // view: an author who just typed or pasted something that doesn't parse needs to see why,
+        // and the caller (EditableScripts.Code) relies on this throwing so it can leave the
+        // existing scripts in place rather than replacing them with the unparseable text.
+        //
+        // A malformed line that's recognisable-but-invalid (e.g. an unrecognised command) doesn't
+        // throw at all by default - ScriptFactory just logs it via ErrorHandler and silently
+        // drops that line from the result. Collect those too, so e.g. pasting one valid command
+        // plus one garbled trailing fragment fails the whole load instead of quietly keeping only
+        // the part it understood.
+        var errors = new List<string>();
+        void OnError(object? sender, ScriptFactory.AddErrorEventArgs e) => errors.Add(e.Error);
+
+        ScriptFactory.ErrorHandler += OnError;
+        IMultiScript newScript;
+        try
+        {
+            newScript = (IMultiScript) ScriptFactory.CreateScript(code, new ScriptContext(_worldModel), false, false);
+        }
+        finally
+        {
+            ScriptFactory.ErrorHandler -= OnError;
+        }
+
         var newScriptList = new List<IScript>(newScript.Scripts);
+
+        if (errors.Count > 0)
+        {
+            throw new Exception(string.Join(Environment.NewLine, errors));
+        }
+
         if (UndoLog != null)
         {
             UndoLog.AddUndoAction(() => new UndoMultiScriptLoadCode(this, _scripts, newScriptList));
