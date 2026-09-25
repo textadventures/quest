@@ -535,7 +535,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         {
             await worldModel.EndInlinePromptAsync();
             await worldModel.EndPendingCallbackAsync();
-            worldModel.SignalTurnSuspended();
+            worldModel.SignalTurnSuspended(resolveTurn: false);
         }
     }
 
@@ -626,7 +626,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         {
             worldModel._commandOverride = false;
             await worldModel.EndPendingCallbackAsync();
-            worldModel.SignalTurnSuspended();
+            worldModel.SignalTurnSuspended(resolveTurn: false);
         }
     }
 
@@ -689,7 +689,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         {
             await worldModel.EndInlinePromptAsync();
             await worldModel.EndPendingCallbackAsync();
-            worldModel.SignalTurnSuspended();
+            worldModel.SignalTurnSuspended(resolveTurn: false);
         }
     }
 

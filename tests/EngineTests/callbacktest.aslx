@@ -253,4 +253,67 @@
       msg ("after menu block")
     </script>
   </command>
+
+  <!-- Blocking prompt forms: the script stops at the prompt and resumes once it's answered -->
+  <command name="cmd_blockwait">
+    <pattern>blockwait</pattern>
+    <script>
+      msg ("before blocking wait")
+      request (Wait, "")
+      msg ("after blocking wait")
+    </script>
+  </command>
+
+  <command name="cmd_blockpause">
+    <pattern>blockpause</pattern>
+    <script>
+      msg ("before blocking pause")
+      request (Pause, "100")
+      msg ("after blocking pause")
+    </script>
+  </command>
+
+  <command name="cmd_blockask">
+    <pattern>blockask</pattern>
+    <script>
+      msg ("before blocking ask")
+      x = Ask("Sure?")
+      msg ("after blocking ask")
+    </script>
+  </command>
+
+  <command name="cmd_blockmenu">
+    <pattern>blockmenu</pattern>
+    <script>
+      msg ("before blocking menu")
+      x = ShowMenu("Pick one", Split("Red;Green", ";"), false)
+      msg ("after blocking menu")
+    </script>
+  </command>
+
+  <!-- A blocking wait inside a timer script: Tick itself stays suspended until it's answered -->
+  <timer name="blockwaittimer">
+    <enabled type="boolean">false</enabled>
+    <interval type="int">1</interval>
+    <script>
+      DisableTimer (blockwaittimer)
+      msg ("timer before wait")
+      request (Wait, "")
+      msg ("timer after wait")
+    </script>
+  </timer>
+  <command name="cmd_enable_blockwaittimer">
+    <pattern>enableblockwaittimer</pattern>
+    <script>
+      DisableTimer (racetimer)
+      EnableTimer (blockwaittimer)
+    </script>
+  </command>
+
+  <!-- A blocking wait inside an ASLEvent handler: SendEvent stays suspended until it's answered -->
+  <function name="BlockWaitEvent" parameters="param">
+    msg ("event before wait")
+    request (Wait, "")
+    msg ("event after wait")
+  </function>
 </asl>

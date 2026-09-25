@@ -240,6 +240,67 @@ public class CallbackTests
         await Task.WhenAll(send, finish).WaitAsync(TimeSpan.FromSeconds(5));
     }
 
+    // A blocking prompt's script carries on once the prompt is answered, so answering it must not
+    // return until the rest of that script has run - it used to return as the prompt resumed,
+    // before any of it. GetInput() is answered with a command rather than its own entry point.
+    [TestMethod]
+    [DataRow("blockwait", "after blocking wait")]
+    [DataRow("blockpause", "after blocking pause")]
+    [DataRow("blockask", "after blocking ask")]
+    [DataRow("blockmenu", "after blocking menu")]
+    [DataRow("getinput", "got: John")]
+    public async Task BlockingPrompt_PlayerYieldsMidScript_AnswerWaitsForRestOfScript(string command, string afterPrompt)
+    {
+        var driver = await GameDriver.LoadAsync("callbacktest.aslx", yieldInRunScript: true);
+
+        var beforeAnswer = await driver.SendCommandAsync(command);
+        beforeAnswer.ShouldNotContain(afterPrompt);
+
+        var afterAnswer = command switch
+        {
+            "blockwait" => await driver.FinishWaitAsync(),
+            "blockpause" => await driver.FinishPauseAsync(),
+            "blockask" => await driver.SetQuestionResponseAsync(true),
+            "blockmenu" => await driver.SetMenuResponseAsync("Red"),
+            _ => await driver.SendCommandAsync("John"),
+        };
+        afterAnswer.ShouldContain(afterPrompt);
+    }
+
+    // Tick doesn't end in a turn signal of its own, unlike a command, so a blocking prompt that a
+    // timer script opens has to rely on Tick to signal once that script finishes.
+    [TestMethod]
+    public async Task BlockingWait_InTimerScript_FinishWaitWaitsForRestOfTimerScript()
+    {
+        var driver = await GameDriver.LoadAsync("callbacktest.aslx", yieldInRunScript: true);
+        await driver.SendCommandAsync("enableblockwaittimer");
+        var waitShown = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        driver.PlayerMock.Setup(p => p.DoWait()).Callback(() => waitShown.TrySetResult());
+
+        var tick = driver.Model.Tick(1);
+        await waitShown.Task.WaitAsync(TimeSpan.FromSeconds(5));
+
+        var afterAnswer = await driver.FinishWaitAsync().WaitAsync(TimeSpan.FromSeconds(5));
+        afterAnswer.ShouldContain("timer after wait");
+        await tick.WaitAsync(TimeSpan.FromSeconds(5));
+    }
+
+    // The same for a blocking wait in an ASLEvent handler, since SendEvent doesn't signal either.
+    [TestMethod]
+    public async Task BlockingWait_InEventHandler_FinishWaitWaitsForRestOfHandler()
+    {
+        var driver = await GameDriver.LoadAsync("callbacktest.aslx", yieldInRunScript: true);
+        var waitShown = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        driver.PlayerMock.Setup(p => p.DoWait()).Callback(() => waitShown.TrySetResult());
+
+        var sendEvent = driver.Model.SendEvent("BlockWaitEvent", "");
+        await waitShown.Task.WaitAsync(TimeSpan.FromSeconds(5));
+
+        var afterAnswer = await driver.FinishWaitAsync().WaitAsync(TimeSpan.FromSeconds(5));
+        afterAnswer.ShouldContain("event after wait");
+        await sendEvent.WaitAsync(TimeSpan.FromSeconds(5));
+    }
+
     // Regression test for #2176: a wait{} callback that chains two MoveObjects back to back
     // (room_a then room_b) must let room_a's changedparent -> OnEnterRoom -> 'on ready' cascade
     // - including its 'enter' script - run to completion (as if it were fully synchronous, like

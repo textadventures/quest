@@ -544,7 +544,7 @@ public partial class WorldModel : IGame, IGameDebug
             return Task.CompletedTask;
         }
 
-        return SendEventCore(eventName, param);
+        return SignalIfResumedAsync(() => SendEventCore(eventName, param));
     }
 
     private async Task SendEventCore(string eventName, string param)
@@ -699,8 +699,20 @@ public partial class WorldModel : IGame, IGameDebug
         // SetQuestionResponse, SetMenuResponse, HandleCommandAsyncInternal, SendEventCore,
         // BeginInternalAsync) already requests the next tick only after its work completes;
         // Tick() was the one exception.
-        await TickAsyncInternal(elapsedTime);
+        await SignalIfResumedAsync(() => TickAsyncInternal(elapsedTime));
         SendNextTimerRequest();
+    }
+
+    // Tick and SendEvent are awaited directly rather than through _turnSuspendedTcs, so unlike a
+    // command they don't end in a turn signal of their own. If their script stopped at a blocking
+    // prompt and was answered, the answer (FinishWait etc.) is awaiting the _turnSuspendedTcs it
+    // started - which only the rest of this script finishing can resolve, since the prompt no
+    // longer signals as it resumes.
+    private async Task SignalIfResumedAsync(Func<Task> run)
+    {
+        var turn = _turnSuspendedTcs;
+        await run();
+        if (_turnSuspendedTcs != turn) SignalTurnSuspended();
     }
 
     private async Task TickAsyncInternal(int elapsedTime)
@@ -1264,13 +1276,15 @@ public partial class WorldModel : IGame, IGameDebug
         return Elements.Get(el).Fields.GetInheritedTypesDebugData();
     }
 
-    // resolveTurn is false only where a non-blocking wait/get input/ask/show menu script has just
-    // registered its prompt: the calling script carries straight on, so resolving now would let
-    // whoever awaits the turn (SendCommand, FinishWait, ...) resume - synchronously, inside
-    // TrySetResult - and start the next command while this one is still running. That script's
-    // own execution still ends in an ordinary SignalTurnSuspended (HandleCommandAsyncInternal's
-    // finally, or the finally of the callback it was running in), which resolves the turn then.
-    // The prompt itself is already showing, though, so it can be answered before then:
+    // resolveTurn is false wherever the calling script carries straight on afterwards: a
+    // non-blocking wait/get input/ask/show menu script that has just registered its prompt, or a
+    // blocking prompt (request (Wait), Ask(), play sound with wait, ...) resuming once it's been
+    // answered. Resolving there would let whoever awaits the turn (SendCommand, FinishWait, ...)
+    // resume - synchronously, inside TrySetResult - and start the next command while this one is
+    // still running. The script's execution still ends in an ordinary SignalTurnSuspended, which
+    // resolves the turn then: HandleCommandAsyncInternal's or BeginInternalAsync's finally, the
+    // finally of the callback it was running in, or SignalIfResumedAsync for Tick and SendEvent.
+    // A non-blocking prompt is already showing before then, so it can be answered early:
     // FinishWait, FinishPause, SetMenuResponse and SetQuestionResponse each await the running
     // turn before starting their own, rather than replacing a _turnSuspendedTcs that turn's
     // caller is still waiting on (which would leave it waiting forever).
@@ -1406,7 +1420,7 @@ public partial class WorldModel : IGame, IGameDebug
         finally
         {
             await EndPendingCallbackAsync();
-            SignalTurnSuspended();
+            SignalTurnSuspended(resolveTurn: false);
         }
     }
 
@@ -1423,7 +1437,7 @@ public partial class WorldModel : IGame, IGameDebug
         finally
         {
             await EndPendingCallbackAsync();
-            SignalTurnSuspended();
+            SignalTurnSuspended(resolveTurn: false);
         }
     }
 
