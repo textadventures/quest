@@ -85,6 +85,7 @@
     let isRoot = $derived(initialData === null);
     let codeViewMode = $state(false);
     let scriptCode = $state("");
+    let codeViewError = $state<string | null>(null);
     const selectedIndices = new SvelteSet<number>();
     // Set before a move mutation so the $effect restores it instead of clearing
     let nextSelection: Set<number> | null = null;
@@ -180,6 +181,7 @@
     $effect(() => {
         if (isRoot && codeViewMode) {
             scriptCode = getScriptCode(elementKey, attribute);
+            codeViewError = null;
         }
     });
 
@@ -436,6 +438,7 @@
         codeViewMode = !codeViewMode;
         if (codeViewMode) {
             scriptCode = getScriptCode(elementKey, attribute);
+            codeViewError = null;
         } else {
             refresh();
         }
@@ -445,6 +448,12 @@
         const result = setScriptCode(elementKey, attribute, value);
         if (result === "ok") {
             scriptCode = value;
+            codeViewError = null;
+        } else {
+            // Parse failure — leave the model untouched and keep the author's text on screen
+            // (scriptCode tracks the buffer, not just the last-saved value) so it isn't lost.
+            scriptCode = value;
+            codeViewError = result;
         }
     }
 
@@ -692,6 +701,9 @@
         </div>
     {/if}
     {#if codeViewMode}
+        {#if codeViewError}
+            <div class="px-2 py-1 mb-1 bg-error-100-900 border border-error-300-700 rounded text-xs text-error-600-400 whitespace-pre-wrap">{codeViewError}</div>
+        {/if}
         <CodeEditor
             value={scriptCode}
             language="quest-script"

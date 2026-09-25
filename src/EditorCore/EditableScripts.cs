@@ -173,10 +173,16 @@ public class EditableScripts : IEditableScripts, IDataWrapper
         set
         {
             _controller.StartTransaction("Editing script in code view");
-            _underlyingScript.LoadCode(value);
-            ClearScripts();
-            InitialiseScript(_underlyingScript);
-            _controller.EndTransaction();
+            try
+            {
+                _underlyingScript.LoadCode(value);
+                ClearScripts();
+                InitialiseScript(_underlyingScript);
+            }
+            finally
+            {
+                _controller.EndTransaction();
+            }
         }
     }
 

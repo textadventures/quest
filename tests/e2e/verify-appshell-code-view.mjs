@@ -79,6 +79,23 @@ try {
     await waitForInputValue(page, 'Hello from code view');
     console.log('PASS: per-script code-view edit committed on blur and is reflected back in Visual mode');
 
+    // --- Per-script Code view: a paste that doesn't parse surfaces an error and keeps the text ---
+    await page.click('button:has-text("Code view")');
+    await page.waitForSelector('.cm-editor', { timeout: 5000 });
+    // A dangling unclosed brace, e.g. from a code sample that got cut off mid-paste.
+    await setCmContent(page, 'if (x) {\nmsg ("unsaved edit")');
+    // Blur without navigating away (clicking the toggle button would itself switch views,
+    // masking whether the error banner actually appeared while still in code view).
+    await page.evaluate(() => { if (document.activeElement instanceof HTMLElement) document.activeElement.blur(); });
+    await page.waitForSelector("text=Missing '}'", { timeout: 5000 });
+    console.log('PASS: a parse failure on blur surfaces an inline error in the code view');
+    const cmTextAfterError = await page.locator('.cm-content').first().innerText();
+    if (!cmTextAfterError.includes('unsaved edit')) throw new Error('Expected the unsaved, unparseable text to remain in the code view editor after a failed save, but it was gone');
+    console.log('PASS: the unsaved text stays in the editor after a failed save instead of being discarded');
+    await page.click('button:has-text("Visual editor")');
+    await waitForInputValue(page, 'Hello from code view');
+    console.log('PASS: the last successfully-saved script is unaffected by the abandoned failed edit');
+
     // --- Locked/inherited script: code view stays read-only, "Make editable copy" still works ---
     // (The freshly-created game's Start script is not inherited, so this checks the general
     // codeViewMode/readonly wiring instead: re-enter code view and confirm it's still editable.)
