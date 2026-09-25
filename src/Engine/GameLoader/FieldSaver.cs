@@ -148,11 +148,19 @@ internal partial class FieldSaver
         // ScriptDictionarySaver) that needs to write the start element for an attribute - list and
         // dictionary savers write their own nested XML rather than going through WriteAttribute below,
         // but still need the same <attr name="..."> fallback for names XML element names can't hold.
+        // True when an attribute name can't safely be written as a bare XML element (spaces/accented
+        // characters aren't valid element names; a name that collides with an element name the loader
+        // treats specially - e.g. "object", "command", "exit" - see GameLoader.ReservedElementNames -
+        // would be misread back as that element instead of an attribute value).
+        protected static bool RequiresAttrWrapper(string attribute) =>
+            !OnlyLettersAndNumbers().IsMatch(attribute) || GameLoader.ReservedElementNames.Contains(attribute);
+
         public static void WriteStartElementForAttribute(GameXmlWriter writer, string attribute)
         {
-            if (!OnlyLettersAndNumbers().IsMatch(attribute))
+            if (RequiresAttrWrapper(attribute))
             {
-                // For attribute names with spaces or accented characters, we output
+                // For attribute names with spaces, accented characters, or that collide with a
+                // reserved element name, we output
                 //      <attr name="my attribute" ... />
                 writer.WriteStartElement("attr");
                 writer.WriteAttributeString("name", attribute);
@@ -200,7 +208,7 @@ internal partial class FieldSaver
             var boolVal = (bool) value;
             if (boolVal)
             {
-                if (attribute.Contains(' '))
+                if (RequiresAttrWrapper(attribute))
                 {
                     WriteAttribute(writer, element, attribute, "boolean", "true");
                 }
