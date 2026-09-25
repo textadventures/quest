@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
 using QuestViva.Engine.Scripts;
@@ -18,39 +19,47 @@ internal partial class GameLoader
     private WorldModel WorldModel { get; }
     private ScriptFactory ScriptFactory { get; }
 
+    private static IXmlLoader[] CreateXmlLoaders() =>
+    [
+        new ASLElementLoader(),
+        new CommandLoader(),
+        new DelegateLoader(),
+        new DynamicTemplateLoader(),
+        new EditorControlLoader(),
+        new EditorImpliedTypeLoader(),
+        new EditorIncludeLoader(),
+        new EditorLoader(),
+        new EditorTabLoader(),
+        new ExitLoader(),
+        new FunctionLoader(),
+        new GameElementLoader(),
+        new ImpliedTypeLoader(),
+        new IncludeLoader(),
+        new InheritLoader(),
+        new JavascriptReferenceLoader(),
+        new LibraryLoader(),
+        new ObjectLoader(),
+        new OutputLoader(),
+        new ResourceLoader(),
+        new TemplateLoader(),
+        new TimerLoader(),
+        new TurnScriptLoader(),
+        new TypeLoader(),
+        new VerbLoader(),
+        new VerbTemplateLoader(),
+        new WalkthroughLoader(),
+    ];
+
+    // Element names the loader treats specially (see GetLoader/DefaultXmlLoader below), i.e. names an
+    // attribute must NOT be saved as a bare element under, or the loader would misread it as a nested
+    // element instead of an attribute value. "attr" itself is included since DefaultXmlLoader treats a
+    // bare <attr> element as the wrapper form and looks for its "name" attribute.
+    public static readonly IReadOnlySet<string> ReservedElementNames =
+        CreateXmlLoaders().Select(l => l.AppliesTo).Where(name => name != null).Append("attr").ToHashSet()!;
+
     private void AddXmlLoaders(LoadMode mode)
     {
-        IXmlLoader[] loaders =
-        [
-            new ASLElementLoader(),
-            new CommandLoader(),
-            new DelegateLoader(),
-            new DynamicTemplateLoader(),
-            new EditorControlLoader(),
-            new EditorImpliedTypeLoader(),
-            new EditorIncludeLoader(),
-            new EditorLoader(),
-            new EditorTabLoader(),
-            new ExitLoader(),
-            new FunctionLoader(),
-            new GameElementLoader(),
-            new ImpliedTypeLoader(),
-            new IncludeLoader(),
-            new InheritLoader(),
-            new JavascriptReferenceLoader(),
-            new LibraryLoader(),
-            new ObjectLoader(),
-            new OutputLoader(),
-            new ResourceLoader(),
-            new TemplateLoader(),
-            new TimerLoader(),
-            new TurnScriptLoader(),
-            new TypeLoader(),
-            new VerbLoader(),
-            new VerbTemplateLoader(),
-            new WalkthroughLoader(),
-        ];
-        foreach (var loader in loaders) AddXmlLoader(loader, mode);
+        foreach (var loader in CreateXmlLoaders()) AddXmlLoader(loader, mode);
 
         _defaultXmlLoader = new DefaultXmlLoader();
         InitXmlLoader(_defaultXmlLoader);

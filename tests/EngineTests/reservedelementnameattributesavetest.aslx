@@ -1,0 +1,19 @@
+<asl version="580">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="reservedelementnameattributesavetest"/>
+  <object name="start">
+    <object name="player">
+      <inherit name="defaultplayer" />
+      <attr name="object" type="string">a string called object</attr>
+      <attr name="exit" type="boolean">true</attr>
+    </object>
+  </object>
+  <command>
+    <pattern>addruntimeattributes</pattern>
+    <script>
+      set (player, "command", "a runtime string called command")
+      player.verb = true
+    </script>
+  </command>
+</asl>
