@@ -1,0 +1,26 @@
+<asl version="600">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <!--
+    Regression coverage for issue #2355: customising a built-in status attribute
+    (health/score/money) by adding it to the player's own statusattributes while
+    the matching Features-tab toggle is also on. InitStatusAttributes used to do
+    an unconditional 'dictionary add' of the default entry, which threw "Error
+    adding key 'health' to dictionary" at game start since the key was already
+    present. The author's own format should win instead.
+  -->
+  <game name="statusattributecustombuiltintest">
+    <showhealth type="boolean">true</showhealth>
+    <povstatusattributes type="stringdictionary">
+      <item>
+        <key>health</key>
+        <value>HP: !</value>
+      </item>
+    </povstatusattributes>
+  </game>
+  <object name="room">
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+</asl>

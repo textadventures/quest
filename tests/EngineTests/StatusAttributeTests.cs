@@ -41,4 +41,34 @@ public class StatusAttributeTests
         status.First().ShouldBe("Next interaction: <br/>Chapter: ");
         status.Last().ShouldBe("Next interaction: Della<br/>Chapter: One");
     }
+
+    // Regression coverage for issue #2355. InitStatusAttributes used to do an unconditional
+    // 'dictionary add' of the default health/score/money entry, which threw "Error adding
+    // key 'health' to dictionary" at game start whenever the author had already given that
+    // key its own format (a natural way to customise the built-in Health line) while the
+    // matching Features-tab toggle was also on. The author's own format should win instead.
+    [TestMethod]
+    public async Task CustomFormatForBuiltInStatusAttributeDoesNotErrorAndWins()
+    {
+        var gameDataProvider = new FileGameDataProvider("statusattributecustombuiltintest.aslx");
+        var gameData = await gameDataProvider.GetData();
+        var worldModel = Helpers.CreateWorldModel(gameData);
+
+        var errors = new List<string>();
+        worldModel.LogError += ex => errors.Add(ex.Message);
+
+        var status = new List<string>();
+        var player = new Mock<IPlayer>();
+        player.Setup(p => p.RunScriptAsync("updateStatus", It.IsAny<object[]>()))
+            .Callback<string, object[]>((_, parameters) => status.Add((string)parameters[0]))
+            .Returns(Task.CompletedTask);
+
+        var success = await worldModel.Initialise(player.Object);
+        Assert.IsTrue(success, "Initialisation failed");
+
+        await worldModel.Begin();
+
+        errors.ShouldBeEmpty();
+        status.Last().ShouldBe("HP: 100");
+    }
 }

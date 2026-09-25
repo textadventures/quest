@@ -41,21 +41,27 @@
         if (game.statusattributes = null) {
           game.statusattributes = NewStringDictionary()
         }
-        dictionary add (game.statusattributes, "score", "[Score]: !")
+        if (not DictionaryContains(game.statusattributes, "score")) {
+          dictionary add (game.statusattributes, "score", "[Score]: !")
+        }
       }
 
       if (game.showhealth) {
         if (game.povstatusattributes = null) {
           game.povstatusattributes = NewStringDictionary()
         }
-        dictionary add (game.povstatusattributes, "health", "[Health]: !%")
+        if (not DictionaryContains(game.povstatusattributes, "health")) {
+          dictionary add (game.povstatusattributes, "health", "[Health]: !%")
+        }
       }
 
       if (game.showmoney) {
         if (game.povstatusattributes = null) {
           game.povstatusattributes = NewStringDictionary()
         }
-        dictionary add (game.povstatusattributes, "money", "[Money]: !")
+        if (not DictionaryContains(game.povstatusattributes, "money")) {
+          dictionary add (game.povstatusattributes, "money", "[Money]: !")
+        }
       }
     ]]>
   </function>
