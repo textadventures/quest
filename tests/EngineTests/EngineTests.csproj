@@ -67,6 +67,9 @@
         <None Update="statusattributetest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="statusattributecustombuiltintest.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="gridexitvisibilitytest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
