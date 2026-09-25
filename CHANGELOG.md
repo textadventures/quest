@@ -1,5 +1,26 @@
 # Changelog
 
+## [6.0.0-rc.4](https://github.com/textadventures/quest/compare/v6.0.0-rc.3...v6.0.0-rc.4) (2026-09-25)
+
+
+### Features
+
+* **Editor:** searchable object pickers; fix names with spaces in pickers ([#2411](https://github.com/textadventures/quest/issues/2411)) ([274e840](https://github.com/textadventures/quest/commit/274e840913bf1a89b48278627637eacf8ed7ff73))
+
+
+### Bug Fixes
+
+* core text tidy-up and Quest Viva naming in editor help text ([#2407](https://github.com/textadventures/quest/issues/2407)) ([2af42fa](https://github.com/textadventures/quest/commit/2af42fa83849499cc32f2ef685e05f1389e7f2c9))
+* **Editor:** preserve an object's parent when it's defined in a library ([#2421](https://github.com/textadventures/quest/issues/2421)) ([83b3ad2](https://github.com/textadventures/quest/commit/83b3ad2cdddd93cbb54dab4d15feb5573bbed09d))
+* **Editor:** surface parse errors in the script code view instead of discarding them ([#2419](https://github.com/textadventures/quest/issues/2419)) ([9192ed9](https://github.com/textadventures/quest/commit/9192ed9548ac48edbb5676bda0baeaf145ac05da))
+* **Engine:** attributes named after a reserved element don't corrupt saves ([#2416](https://github.com/textadventures/quest/issues/2416)) ([087c1a9](https://github.com/textadventures/quest/commit/087c1a9080d49be4eee470e86773857c2349bfc9))
+* **Engine:** DiceRoll negative-branch length, page-link echo, layout heading, menu-response typo ([#2409](https://github.com/textadventures/quest/issues/2409)) ([a09130d](https://github.com/textadventures/quest/commit/a09130d7b5310c7835d5c8d452abe596d30c0845))
+* **Engine:** don't crash when a custom format overrides a built-in status attribute ([#2417](https://github.com/textadventures/quest/issues/2417)) ([4b7bb45](https://github.com/textadventures/quest/commit/4b7bb45b49a9b4e3106c1fecf21cff73e1a4087c))
+* **Engine:** don't end the turn when a blocking prompt resumes ([#2413](https://github.com/textadventures/quest/issues/2413)) ([22b00f9](https://github.com/textadventures/quest/commit/22b00f9a12c0cfd1319df3b5971987c9a5ac58cd))
+* **Engine:** don't end the turn when a non-blocking wait/get input/ask/show menu opens ([#2412](https://github.com/textadventures/quest/issues/2412)) ([ae696d4](https://github.com/textadventures/quest/commit/ae696d4b28f5b989ba97ad4145fe2c66a801c18b))
+* **PlayerCore:** add missing MIME types for embedded game files ([#2418](https://github.com/textadventures/quest/issues/2418)) ([6f2c268](https://github.com/textadventures/quest/commit/6f2c2689781415dd29208b3e945a61c0375e1b7c))
+* **PlayerCore:** run timer ticks between debugger walkthrough steps ([#2415](https://github.com/textadventures/quest/issues/2415)) ([5e0b69b](https://github.com/textadventures/quest/commit/5e0b69bd4e33ac9e75049d223a1ab65f7d1358c8))
+
 ## [6.0.0-rc.3](https://github.com/textadventures/quest/compare/v6.0.0-rc.2...v6.0.0-rc.3) (2026-09-23)
 
 
