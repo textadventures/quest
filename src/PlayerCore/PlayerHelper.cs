@@ -45,6 +45,11 @@ public class PlayerHelper
         MimeTypes.Add(".js", "application/javascript");
         MimeTypes.Add(".ttf", "application/font-woff");
         MimeTypes.Add(".svg", "image/svg+xml");
+        MimeTypes.Add(".css", "text/css");
+        MimeTypes.Add(".json", "application/json");
+        MimeTypes.Add(".txt", "text/plain");
+        MimeTypes.Add(".woff", "font/woff");
+        MimeTypes.Add(".woff2", "font/woff2");
     }
 
     public PlayerHelper(IGame game, IPlayerHelperUI playerUI)
