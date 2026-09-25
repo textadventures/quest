@@ -67,7 +67,7 @@ public class PlaySoundScript : ScriptBase
             finally
             {
                 await _worldModel.EndPendingCallbackAsync();
-                _worldModel.SignalTurnSuspended();
+                _worldModel.SignalTurnSuspended(resolveTurn: false);
             }
         }
         else
