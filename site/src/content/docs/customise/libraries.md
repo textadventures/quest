@@ -82,10 +82,6 @@ If you create a library, consider adding editor tabs and script commands to it, 
 
 If you make your library publicly available, make sure all its elements have names, so users can override them. Verb and command elements are the ones most often left unnamed.
 
-:::caution[Objects in a library have to stay in the library]
-If an object in your main game file has its `parent` set to an object or room defined in a library, that `parent` is silently dropped the next time the game is saved, and the object ends up at the top level. Keep an object and its parent in the same file.
-:::
-
 ### File name and location
 
 Library files usually end `.aslx`, like games, but you can use `.xml` instead.

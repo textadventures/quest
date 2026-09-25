@@ -1,0 +1,16 @@
+<asl version="580">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <include ref="libraryparentlib.aslx" />
+  <game name="libraryparenttest"/>
+  <object name="start">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+  <object name="lamp">
+    <parent type="object">libraryroom</parent>
+    <object name="wick" />
+  </object>
+</asl>

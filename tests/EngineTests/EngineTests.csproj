@@ -83,6 +83,12 @@
         <None Update="reservedelementnameattributesavetest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="libraryparenttest.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="libraryparentlib.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="walkthrough.aslx">
             <SubType>Designer</SubType>
         </None>

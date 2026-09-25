@@ -1,0 +1,8 @@
+<library>
+  <object name="libraryroom">
+    <inherit name="editor_room" />
+  </object>
+  <object name="libraryitem">
+    <parent type="object">start</parent>
+  </object>
+</library>
