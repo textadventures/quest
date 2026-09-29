@@ -21,7 +21,7 @@
 
   <template name="LanguageId">el</template>
   <template name="Again1">ξανά</template>
-  <template name="Again2">ξ</template>
+  <template name="Again2">γ</template>
   <template name="NothingToRepeat">Δεν υπάρχει κάτι να ξανακάνω.</template>
 
   <template name="UnresolvedObject">Δεν βλέπω κάτι τέτοιο.</template>
