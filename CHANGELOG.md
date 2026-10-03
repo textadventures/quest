@@ -1,5 +1,18 @@
 # Changelog
 
+## [6.0.0](https://github.com/textadventures/quest/compare/v6.0.0-rc.4...v6.0.0) (2026-10-03)
+
+
+### Bug Fixes
+
+* **Editor:** fix nested commas in expression templates and tidy the "player's choice from a menu" editor ([#2438](https://github.com/textadventures/quest/issues/2438)) ([b8f8d79](https://github.com/textadventures/quest/commit/b8f8d790bf8b0f27ce99b9509dc3db2b2136c094))
+* **Player:** update Greek language library ([#2423](https://github.com/textadventures/quest/issues/2423)) ([30d95c5](https://github.com/textadventures/quest/commit/30d95c532dac315293e04dfb32d02f5301ef1192))
+
+
+### Miscellaneous Chores
+
+* release 6.0.0 ([#2443](https://github.com/textadventures/quest/issues/2443)) ([32bac23](https://github.com/textadventures/quest/commit/32bac236a5c7500b42f5c7e0444ba272d9b7da10))
+
 ## [6.0.0-rc.4](https://github.com/textadventures/quest/compare/v6.0.0-rc.3...v6.0.0-rc.4) (2026-09-25)
 
 
