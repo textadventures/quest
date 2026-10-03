@@ -101,6 +101,8 @@ Either way the site asks "Who can access this game?". Choose **"Only people I gi
 
 Your game then goes into a queue for moderation, which can take a few days. Very basic games are filed under "Sandpit", games with sexual content under "Adult", and everything else in the category you chose.
 
+Once it is through moderation, your game is also listed in the **Play** tab of Quest Viva itself - at [play.questviva.com](https://play.questviva.com) and on the home screen of the desktop app. The Play tab is not a separate place to submit to: it reads the textadventures.co.uk listings live, so the games, categories and search results there are the ones from the site. An unlisted game is not shown in the Play tab either, which is why the beta-testing approach above keeps working - your testers play from the direct link you send them.
+
 To release a new version later, publish a fresh `.quest` file and use "Upload an updated game file" in the _Edit_ menu on your game's page. Read [Updating a released game](/publishing/updating-a-released-game) first - it explains why players part-way through carry on playing the old version, and what that means for how you fix things.
 
 ## Announcing your game
