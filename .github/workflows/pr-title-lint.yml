@@ -33,6 +33,7 @@ jobs:
           #   Site    - questviva.com (site/), including the documentation
           #   e2e     - tests/e2e/*.mjs scripts, which span multiple areas
           #   main    - release-please's own "chore(main): release X.Y.Z" PRs
+          #   release/6.0 - the same, for this patch branch's release PRs
           scopes: |
             Player
             Editor
@@ -40,3 +41,4 @@ jobs:
             Site
             e2e
             main
+            release/6.0
