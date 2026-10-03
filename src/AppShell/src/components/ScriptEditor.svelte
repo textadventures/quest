@@ -1259,6 +1259,10 @@
     {#if inTemplateMode && tmplData}
         <!-- Template controls (e.g. object picker for Got(#object#)) -->
         {#each tmplData.controls as ctrl (ctrl.name)}
+            {#if ctrl.breakBefore}
+                <!-- <breakbefore/> - see the matching break in the script controls loop above. -->
+                <span class="basis-full h-0"></span>
+            {/if}
             {#if ctrl.controlType === "label"}
                 <!-- Static caption between controls, e.g. RandomChance's "% of the time" -->
                 <span class="text-surface-600-400 select-none">{ctrl.caption ?? ""}</span>

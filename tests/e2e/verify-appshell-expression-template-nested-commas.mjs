@@ -61,6 +61,25 @@ try {
     if (errors !== 0) throw new Error(`Expected no field errors, found ${errors}: ${await page.locator('p.text-error-500').allTextContents()}`);
     console.log('PASS: no bracket-mismatch errors shown');
 
+    // Each ShowMenu parameter has <breakbefore/>, so caption, options and allow cancel each start
+    // a new line below the template picker rather than running on in one long row.
+    const top = async locator => (await locator.boundingBox()).y;
+    const inputTop = async predicate => {
+        const index = await page.locator('input[type=text]').evaluateAll(
+            (els, src) => els.findIndex(new Function('e', `return ${src}`)), predicate);
+        return top(page.locator('input[type=text]').nth(index));
+    };
+    const tops = {
+        picker: await top(templateSelect.first()),
+        caption: await inputTop(`e.value.trim() === 'Your character class?'`),
+        options: await inputTop(`e.value.trim().startsWith('Split(')`),
+        allowCancel: await top(page.getByRole('combobox', { name: 'allow cancel', exact: true })),
+    };
+    if (!(tops.picker < tops.caption && tops.caption < tops.options && tops.options < tops.allowCancel)) {
+        throw new Error(`Expected picker, caption, options and allow cancel on successive lines, got tops ${JSON.stringify(tops)}`);
+    }
+    console.log('PASS: template parameters each start on a new line');
+
     // allowcancel is matched without the space after its comma, so the yes/no dropdown
     // recognises it rather than falling back to an expression box holding " false".
     // It's also labelled with the parameter's name, since its options are only yes/no/expression.

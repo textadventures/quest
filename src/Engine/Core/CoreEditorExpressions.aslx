@@ -456,12 +456,14 @@
       <controltype>expression</controltype>
       <simple>caption</simple>
       <attribute>caption</attribute>
+      <breakbefore/>
     </control>
 
     <control>
       <controltype>expression</controltype>
       <simple>options</simple>
       <attribute>options</attribute>
+      <breakbefore/>
     </control>
 
     <control>
@@ -469,6 +471,7 @@
       <simple>allow cancel</simple>
       <simpleeditor>boolean</simpleeditor>
       <attribute>allowcancel</attribute>
+      <breakbefore/>
     </control>
   </editor>
 
