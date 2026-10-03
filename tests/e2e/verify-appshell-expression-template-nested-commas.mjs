@@ -80,6 +80,17 @@ try {
     }
     console.log('PASS: template parameters each start on a new line');
 
+    // options has no simple (plain text) mode, since ShowMenu needs a list - so it's labelled
+    // "options" and has no simple/expression toggle, which would otherwise read "expression".
+    const optionsLabel = page.getByText('options', { exact: true });
+    if (!await optionsLabel.isVisible()) throw new Error('Expected a visible "options" label');
+    if (Math.abs(await top(optionsLabel) - tops.options) > 8) {
+        throw new Error('Expected the "options" label on the same line as the options field');
+    }
+    const expressionToggles = await page.locator('select').evaluateAll(els => els.filter(e => e.value === 'expression').length);
+    if (expressionToggles !== 0) throw new Error(`Expected no field showing an "expression" toggle, found ${expressionToggles}`);
+    console.log('PASS: options is labelled and has no simple/expression toggle');
+
     // allowcancel is matched without the space after its comma, so the yes/no dropdown
     // recognises it rather than falling back to an expression box holding " false".
     // It's also labelled with the parameter's name, since its options are only yes/no/expression.

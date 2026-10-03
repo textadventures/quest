@@ -459,11 +459,17 @@
       <breakbefore/>
     </control>
 
+    <!-- No <simple> mode: ShowMenu needs a string list or dictionary, so a plain text value
+         can never work. A label names the field instead of the simple/expression toggle. -->
+    <control>
+      <controltype>label</controltype>
+      <caption>options</caption>
+      <breakbefore/>
+    </control>
+
     <control>
       <controltype>expression</controltype>
-      <simple>options</simple>
       <attribute>options</attribute>
-      <breakbefore/>
     </control>
 
     <control>
