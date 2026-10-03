@@ -2,12 +2,14 @@ name: release-please
 
 # Maintains an up-to-date "release PR" that bumps VERSION and CHANGELOG.md
 # from Conventional Commits-formatted PR titles merged to main. Merging that
-# release PR is the release: this job tags it directly (e.g. v6.0.0-rc.N), which
+# release PR is the release: this job tags it directly (e.g. v6.1.0-beta.N), which
 # in turn triggers docker-publish.yml, nuget-publish.yml, deploy-play.yml, and
 # the other tag-triggered workflows — no manual release.sh run needed.
 on:
   push:
-    branches: [main]
+    # Each branch keeps its own release PR: main produces 6.1 prereleases,
+    # release/6.0 produces 6.0.x patch releases. See docs/release-channels.md.
+    branches: [main, 'release/**']
 
 permissions:
   contents: write
@@ -21,6 +23,7 @@ jobs:
         id: release
         with:
           token: ${{ secrets.RELEASE_PAT }}
+          target-branch: ${{ github.ref_name }}
 
       - uses: actions/checkout@v7
         if: ${{ steps.release.outputs.release_created }}

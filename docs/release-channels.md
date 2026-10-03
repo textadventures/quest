@@ -23,7 +23,7 @@ Because `releases/latest` skips prereleases, the download buttons (AppShell's `d
 ## Branches
 
 - `main` is where development happens. After 6.0.0 it becomes the 6.1 line and keeps producing prereleases (`prerelease-type: beta`).
-- `release/6.0` is created from the `v6.0.0` tag and produces 6.0.x patch releases. It gets its own `release-please-config.json` with the default versioning strategy and `prerelease: false`. Fixes land on `main` first and are cherry-picked back.
+- `release/6.0` is created from the `v6.0.0` tag and produces 6.0.x patch releases. It gets its own `release-please-config.json` with the `always-bump-patch` versioning strategy and `prerelease: false`. Fixes land on `main` first and are cherry-picked back.
 - `release-please.yml` needs to run on pushes to both `main` and `release/**`, passing `target-branch: ${{ github.ref_name }}`, so each branch keeps its own release PR.
 - A tag push runs the workflow files as they are in the tagged commit, so a `v6.0.x` tag runs `release/6.0`'s copies. Fixes to the release workflows need backporting there too.
 
@@ -45,7 +45,7 @@ There's one docs site, questviva.com, deployed from `main`, with no per-version 
 
 1. Merge a `fix:`/`feat:` PR whose squash commit message carries a `Release-As: 6.0.0` footer. release-please skips creating a release PR when no changelog-visible commit has landed since the last release, and GitHub's default squash message won't keep the footer, so edit it in by hand when merging.
 2. Merge the resulting release PR and check that the release lands as stable everywhere in the table above.
-3. Create `release/6.0` from `v6.0.0` and give it its stable-versioning `release-please-config.json`. Add `release/**` to `release-please.yml`.
+3. Create `release/6.0` from `v6.0.0` and give it its stable-versioning `release-please-config.json` (`versioning: always-bump-patch`, so a cherry-picked `feat:` can't turn into 6.1.0). Add `release/**` to `release-please.yml` and `build-and-test.yml` on both branches, and add `release/6.0` to `pr-title-lint.yml`'s scopes on `release/6.0`, since release-please titles that branch's release PRs `chore(release/6.0): release 6.0.N`.
 4. On `main`, remove the `6.0.0-rc.*` line from `release-channel.sh`. (Done in the same PR as step 1.)
 5. On `main`, set `prerelease-type` to `beta` and land a changelog-visible commit with a `Release-As: 6.1.0-beta.1` footer. Without it, release-please works out the first prerelease after `6.0.0` by itself, which won't necessarily be `6.1.0-beta.1` (see "Releasing" in `CLAUDE.md`).
 6. Update the "perpetual prerelease" wording in `CLAUDE.md`'s Releasing section.
