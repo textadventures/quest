@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.1.0-beta.1](https://github.com/textadventures/quest/compare/v6.0.0...v6.1.0-beta.1) (2026-10-03)
+
+
+### Miscellaneous Chores
+
+* start the 6.1 beta line ([#2444](https://github.com/textadventures/quest/issues/2444)) ([42d8cbe](https://github.com/textadventures/quest/commit/42d8cbeb9877705545eb255a75712583922800f7))
+
 ## [6.0.0](https://github.com/textadventures/quest/compare/v6.0.0-rc.4...v6.0.0) (2026-10-03)
 
 
