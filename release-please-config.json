@@ -5,9 +5,8 @@
     ".": {
       "release-type": "simple",
       "version-file": "VERSION",
-      "versioning": "prerelease",
-      "prerelease-type": "rc",
-      "prerelease": true
+      "versioning": "always-bump-patch",
+      "prerelease": false
     }
   }
 }
