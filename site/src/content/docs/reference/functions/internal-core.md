@@ -281,7 +281,7 @@ Returns a [string](/reference/attributes/types#string) containing the specified 
 Grid_AddNewShapePoint (int x, int y)
 ```
 
-On the custom grid drawing layer, adds a new point to a shape. To draw a custom shape, call this function for each point on the shape, then call [Grid\_DrawShape](#grid_drawshape) to complete the drawing.
+On the map, adds a new point to a shape. To draw a custom shape, call this function for each point on the shape, then call [Grid\_DrawShape](#grid_drawshape) to complete the drawing.
 
 ## Grid_CalculateMapCoordinates
 
@@ -294,35 +294,43 @@ Grid_CalculateMapCoordinates (room, playerobject)
 Grid_ClearCustomLayer ()
 ```
 
-Clears the custom grid drawing layer - everything drawn with [Grid_DrawLine](#grid_drawline), [Grid_DrawArrow](#grid_drawarrow), [Grid_DrawSquare](#grid_drawsquare) and similar - without affecting the auto-generated room/exit layout underneath it.
+Clears the custom grid drawing layer. This currently has no effect, because nothing can be drawn onto the custom layer ([#2435](https://github.com/textadventures/quest/issues/2435)): [Grid_DrawLine](#grid_drawline), [Grid_DrawArrow](#grid_drawarrow), [Grid_DrawSquare](#grid_drawsquare) and similar draw onto the map itself. To remove everything, rooms included, use [JS.Grid_ClearAllLayers](/reference/js#grid_clearalllayers).
 
 ## Grid_DrawArrow
 ```quest
 Grid_DrawArrow (string id, int x1, int y1, int x2, int y2, string border, int borderwidth)
 ```
 
-On the custom grid drawing layer, draws an arrow of the specified border colour and thickness from (x1,y1) to (x2,y2). The id is arbitrary - if reused, the existing arrow with the same id will be removed.
+On the map, draws an arrow of the specified border colour and thickness from (x1,y1) to (x2,y2). The id is arbitrary - if reused, the existing arrow with the same id will be removed.
 
 ## Grid_DrawGridLines
 ```quest
 Grid_DrawGridLines (int x1, int y1, int x2, int y2, string border)
 ```
 
-On the custom grid drawing layer, draws a grid with line of the specified border from (x1,y1) to (x2,y2).
+On the map, draws a grid with line of the specified border from (x1,y1) to (x2,y2).
 
 ## Grid_DrawImage
 ```quest
 Grid_DrawImage (string id, string url, int x, int y, int width, int height)
 ```
 
-On the custom grid drawing layer, draws the image from the specified URL. The id is arbitrary - if you re-use the same id, the existing image will be removed.
+On the map, draws the image from the specified URL, with its top-left corner at (x,y), stretched to the given width and height. The id is arbitrary - if you re-use the same id, the existing image is moved and resized, but keeps its original picture.
+
+Positions and sizes are in grid squares, not pixels. A grid square is the map's scale in pixels across (30 by default, set on the game's _Interface_ tab), and a room is one square unless you change its size. The first room is drawn at (0,0), so this draws an image the size of a room just to the right of it:
+
+```quest
+Grid_DrawImage ("picture", GetFileURL("picture.png"), 1, 0, 1, 1)
+```
+
+The numbers must be whole - a width of 0.5 is rounded down to 0, and nothing is drawn. To draw an image at roughly its own size in pixels, choose a map scale that suits it.
 
 ## Grid_DrawLine
 ```quest
 Grid_DrawLine (int x1, int y1, int x2, int y2, string border, int borderwidth)
 ```
 
-On the custom grid drawing layer, draws a line of the specified border colour and thickness from (x1,y1) to (x2,y2).
+On the map, draws a line of the specified border colour and thickness from (x1,y1) to (x2,y2).
 
 ## Grid_DrawPlayerInRoom
 
@@ -340,21 +348,21 @@ Grid_DrawRoom (room, redraw, playerobject)
 Grid_DrawShape (string id, string border, string fill, double opacity)
 ```
 
-On the custom grid drawing layer, draws an arbitrary shape. First, specify all points using [Grid\_AddNewShapePoint](#grid_addnewshapepoint). Then call this function to place the drawing on the grid, with the specified border and fill colour and opacity between 0 and 1. The id is arbitrary - if reused, an existing shape will be replaced with this one.
+On the map, draws an arbitrary shape. First, specify all points using [Grid\_AddNewShapePoint](#grid_addnewshapepoint). Then call this function to place the drawing on the grid, with the specified border and fill colour and opacity between 0 and 1. The id is arbitrary - if reused, an existing shape will be replaced with this one.
 
 ## Grid_DrawSquare
 ```quest
 Grid_DrawSquare (string id, int x, int y, int width, int height, string text, string fill)
 ```
 
-On the custom grid drawing layer, draws a square at (x,y) with the specified width and height. A fill colour and some text to display in the centre of the square can also be specified.
+On the map, draws a square at (x,y) with the specified width and height. A fill colour and some text to display in the centre of the square can also be specified.
 
 ## Grid_DrawSvg
 ```quest
 Grid_DrawSvg (string instance id, string symbol id, int x, int y, int width, int height)
 ```
 
-On the custom grid drawing layer, draws the specified SVG file (the symbol id must have been previously loaded using [Grid\_LoadSvg](#grid_loadsvg). The instance id is arbitrary - if you re-use the same instance id, the existing symbol will be removed.
+On the map, draws the specified SVG file (the symbol id must have been previously loaded using [Grid\_LoadSvg](#grid_loadsvg)). As with [Grid\_DrawImage](#grid_drawimage), positions and sizes are in grid squares. The instance id is arbitrary - if you re-use the same instance id, the existing symbol is moved and resized, but keeps its original SVG.
 
 ## Grid_GetGridCoordinateForPlayer
 ```quest
@@ -381,7 +389,7 @@ Grid_GetRoomBooleanForPlayer(playerobject, room, attribute)
 Grid_LoadSvg (string data, string id)
 ```
 
-Loads and SVG file and associates it with an id, so it can subsequently be drawn on the custom grid drawing layer using [Grid\_DrawSvg](#grid_drawsvg).
+Loads an SVG file and associates it with an id, so it can subsequently be drawn on the map using [Grid\_DrawSvg](#grid_drawsvg).
 
 The data parameter is the raw file data for the SVG file - you can load a string with file data using the [GetFileData](/reference/functions/general#getfiledata) function.
 
@@ -419,7 +427,7 @@ Grid_SetScale(scale)
 Grid_ShowCustomLayer (boolean visible)
 ```
 
-Shows or hides the custom grid drawing layer (see [Grid_ClearCustomLayer](#grid_clearcustomlayer)), independently of the auto-generated grid map layer underneath it.
+Meant to show or hide a separate custom drawing layer in place of the map, but this currently has no effect ([#2435](https://github.com/textadventures/quest/issues/2435)). The custom layer stays hidden, and [Grid_DrawImage](#grid_drawimage), [Grid_DrawSquare](#grid_drawsquare) and the other drawing functions draw onto the map itself, on the level the player is on.
 
 ## HandleCommand
 ```quest
