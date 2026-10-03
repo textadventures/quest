@@ -6,8 +6,6 @@ Decided 2026-09-17, ahead of 6.0.0 leaving release candidate status. Until then 
 
 Each version tag is either **stable** (`v6.0.0`, `v6.0.1`) or a **prerelease** (`v6.1.0-beta.1`, `v6.1.0-rc.1`): a tag with a `-` suffix is a prerelease. `.github/scripts/release-channel.sh` makes that call, and every tag-triggered workflow asks it rather than deciding for itself.
 
-Until 6.0.0 ships, that script also treats `v6.0.0-rc.*` as stable, since those release candidates are what play.questviva.com serves today. Remove that line as part of the 6.0.0 cut (see below).
-
 | Surface | Stable | Prerelease |
 |---|---|---|
 | Web app (`deploy-play.yml`) | play.questviva.com (Cloudflare Pages project `play-questviva`) | play-beta.questviva.com (project `play-questviva-beta`) |
@@ -48,7 +46,7 @@ There's one docs site, questviva.com, deployed from `main`, with no per-version 
 1. Merge a `fix:`/`feat:` PR whose squash commit message carries a `Release-As: 6.0.0` footer. release-please skips creating a release PR when no changelog-visible commit has landed since the last release, and GitHub's default squash message won't keep the footer, so edit it in by hand when merging.
 2. Merge the resulting release PR and check that the release lands as stable everywhere in the table above.
 3. Create `release/6.0` from `v6.0.0` and give it its stable-versioning `release-please-config.json`. Add `release/**` to `release-please.yml`.
-4. On `main`, remove the `6.0.0-rc.*` line from `release-channel.sh`.
+4. On `main`, remove the `6.0.0-rc.*` line from `release-channel.sh`. (Done in the same PR as step 1.)
 5. On `main`, set `prerelease-type` to `beta` and land a changelog-visible commit with a `Release-As: 6.1.0-beta.1` footer. Without it, release-please works out the first prerelease after `6.0.0` by itself, which won't necessarily be `6.1.0-beta.1` (see "Releasing" in `CLAUDE.md`).
 6. Update the "perpetual prerelease" wording in `CLAUDE.md`'s Releasing section.
 

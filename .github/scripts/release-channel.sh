@@ -8,10 +8,6 @@ set -euo pipefail
 version="${1#v}"
 
 case "$version" in
-  # Temporary: 6.0.0's release candidates are what play.questviva.com serves
-  # until 6.0.0 itself ships, so they keep the stable behaviour. Remove this
-  # line as part of the 6.0.0 cut.
-  6.0.0-rc.*) echo stable ;;
   *-*) echo prerelease ;;
   *) echo stable ;;
 esac
