@@ -43,11 +43,11 @@ There's one docs site, questviva.com, deployed from `main`, with no per-version 
 
 ## 6.0.0 cut runbook
 
-1. Merge a `fix:`/`feat:` PR whose squash commit message carries a `Release-As: 6.0.0` footer. release-please skips creating a release PR when no changelog-visible commit has landed since the last release, and GitHub's default squash message won't keep the footer, so edit it in by hand when merging.
+1. Merge a PR whose squash commit message carries a `Release-As: 6.0.0` footer. Its commit type doesn't matter: release-please opens or updates a release PR for any commit with a `Release-As` footer, and lists a `chore:` one under "Miscellaneous Chores". GitHub's default squash message won't keep the footer, so edit it in by hand when merging.
 2. Merge the resulting release PR and check that the release lands as stable everywhere in the table above.
 3. Create `release/6.0` from `v6.0.0` and give it its stable-versioning `release-please-config.json` (`versioning: always-bump-patch`, so a cherry-picked `feat:` can't turn into 6.1.0). Add `release/**` to `release-please.yml` and `build-and-test.yml` on both branches, and add `release/6.0` to `pr-title-lint.yml`'s scopes on `release/6.0`, since release-please titles that branch's release PRs `chore(release/6.0): release 6.0.N`.
 4. On `main`, remove the `6.0.0-rc.*` line from `release-channel.sh`. (Done in the same PR as step 1.)
-5. On `main`, set `prerelease-type` to `beta` and land a changelog-visible commit with a `Release-As: 6.1.0-beta.1` footer. Without it, release-please works out the first prerelease after `6.0.0` by itself, which won't necessarily be `6.1.0-beta.1` (see "Releasing" in `CLAUDE.md`).
+5. On `main`, set `prerelease-type` to `beta` and land a commit with a `Release-As: 6.1.0-beta.1` footer. Without it, release-please works out the first prerelease after `6.0.0` by itself, which won't necessarily be `6.1.0-beta.1` (see "Releasing" in `CLAUDE.md`). That commit opens the `6.1.0-beta.1` release PR straight away, so leave that PR unmerged until the open items below are done.
 6. Update the "perpetual prerelease" wording in `CLAUDE.md`'s Releasing section.
 
 ## Open items before the first 6.1 beta
