@@ -63,9 +63,10 @@ try {
 
     // allowcancel is matched without the space after its comma, so the yes/no dropdown
     // recognises it rather than falling back to an expression box holding " false".
-    const allowCancel = page.locator('select').filter({ has: page.locator('option[value="true"]') })
-        .filter({ has: page.locator('option[value="false"]') });
-    if (await allowCancel.count() !== 1) throw new Error(`Expected one yes/no dropdown, found ${await allowCancel.count()}`);
+    // It's also labelled with the parameter's name, since its options are only yes/no/expression.
+    const allowCancel = page.getByRole('combobox', { name: 'allow cancel', exact: true });
+    if (await allowCancel.count() !== 1) throw new Error(`Expected one dropdown labelled "allow cancel", found ${await allowCancel.count()}`);
+    if (!await page.getByText('allow cancel', { exact: true }).isVisible()) throw new Error('Expected a visible "allow cancel" label');
     const allowCancelValue = await allowCancel.inputValue();
     if (allowCancelValue !== 'false') throw new Error(`Expected the allow-cancel dropdown to show "false", got "${allowCancelValue}"`);
     console.log('PASS: allow-cancel shown as the yes/no dropdown, set to No');

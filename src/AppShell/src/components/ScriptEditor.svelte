@@ -1264,9 +1264,17 @@
                 <span class="text-surface-600-400 select-none">{ctrl.caption ?? ""}</span>
             {:else if ctrl.simpleEditor === "boolean"}
                 {@const boolSimple = inTemplateParamSimpleMode(overrideKey, ctrl)}
+                {@const boolLabel = ctrl.simpleLabel ?? ctrl.caption}
                 <!-- Boolean: yes / no / expression dropdown, no separate widget - mirrors
-                     valueControl's non-template boolean handling. -->
+                     valueControl's non-template boolean handling. Other simple editors name
+                     their parameter in their mode toggle (e.g. "caption"), but this dropdown's
+                     options are the values themselves, so it needs its own label (e.g.
+                     ShowMenu's "allow cancel"). -->
+                {#if boolLabel}
+                    <span class="text-surface-600-400 select-none">{boolLabel}</span>
+                {/if}
                 <select
+                    aria-label={boolLabel ?? undefined}
                     class="select text-xs py-0 px-1 max-w-32"
                     value={boolSimple ? ctrl.value : "expression"}
                     onchange={(e) => {
