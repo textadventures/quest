@@ -6,6 +6,12 @@ sidebar:
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
+:::caution[WebPlayer is deprecated]
+WebPlayer will be removed in Quest Viva 6.1, and no new versions of its Docker image will be published after that. The 6.0 images will stay available, so an existing WebPlayer server keeps working: pin it to a 6.0 version tag (for example `ghcr.io/textadventures/quest-viva-webplayer:6.0.0`) instead of `latest`.
+
+For anything new, use [WasmPlayer](/publishing/hosting/) instead.
+:::
+
 Quest Viva's **WebPlayer** lets you serve any Quest Viva game to a web browser. The game code itself runs on the server, with the web browser sending the player's input and receiving the game's output.
 
 For most games it's recommended to use **WasmPlayer** instead, where the game code runs in the user's browser. See the [Hosting](/publishing/hosting/) guide for more details about that.
@@ -38,7 +44,7 @@ WebPlayer will now be running at <text>http://localhost:8080</text>
 
 The configuration above sets the `dev__Enabled` environment variable to `true`, which enables the developer mode. This enables uploading a game directly into the container, which is handy for testing - though you probably don't want to enable this on a production server.
 
-While Quest Viva is under active development, you may want to pass the `--pull always` flag so that Docker always fetches the latest version, instead of using a cached one:
+The `latest` tag picks up 6.0.x fixes. To fetch them instead of using a cached image, pass the `--pull always` flag:
 
 ```bash
 docker compose up --pull always

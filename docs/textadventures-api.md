@@ -26,7 +26,7 @@ Returns the `.aslx` game file content.
 - Status: `200 OK`
 - `Content-Type: application/xml`
 - `Content-Disposition: attachment; filename="My Game.aslx"` (use the actual filename)
-- `X-Preview-Url: https://textadventures.co.uk/games/play/{gameId}` (the public WebPlayer URL for this game)
+- `X-Preview-Url: https://textadventures.co.uk/games/play/{gameId}` (the public play URL for this game)
 - Body: the raw `.aslx` file bytes
 
 **Errors:** `401`, `403`, `404`
@@ -165,5 +165,5 @@ AppShell will auto-load the game. If the user is not logged in, the `GET /api/ed
 ## Notes
 
 - AppShell is served as a static site from textadventures.co.uk (e.g. at `/editor/`). All API URLs are relative to the same origin, so no CORS configuration is needed.
-- The existing "play" URL scheme (`https://play.textadventures.co.uk/editor/{gameId}/...`) is unchanged — AppShell can still send users there to test their games.
+- The old `https://play.textadventures.co.uk/editor/{gameId}/...` play URL scheme no longer exists: play.textadventures.co.uk (WebPlayer) was switched off in 2026, and textadventures.co.uk now sends players to play.questviva.com (WasmPlayer).
 - Game IDs are GUIDs, which already correspond to the existing Azure Blob Storage container structure.
