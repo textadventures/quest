@@ -11,7 +11,7 @@ Each version tag is either **stable** (`v6.0.0`, `v6.0.1`) or a **prerelease** (
 | Web app (`deploy-play.yml`) | play.questviva.com (Cloudflare Pages project `play-questviva`) | play-beta.questviva.com (project `play-questviva-beta`) |
 | textadventures.co.uk `/questviva` (`finalize-release.yml`) | Redeployed | Not touched |
 | GitHub Release (`release-please.yml`, `finalize-release.yml`) | Not flagged as a prerelease, marked Latest | Stays flagged as a prerelease, so `releases/latest` never returns it |
-| Docker image (`docker-publish.yml`) | `:<version>` and `:latest` (what play.textadventures.co.uk's prod compose file pulls) | `:<version>` and `:beta` |
+| Docker image (`docker-publish.yml`) | `:<version>` and `:latest` (WebPlayer is deprecated: 6.1 stops publishing the image, so only 6.0.x tags will exist) | `:<version>` and `:beta` |
 | npm package (`npm-publish.yml`) | dist-tag `latest` | dist-tag `beta` |
 | NuGet packages | Stable version | Prerelease version (NuGet handles this from the version string alone) |
 | Electron installers (`electron-publish.yml`) | "Quest Viva" | "Quest Viva Beta", a separate app that installs alongside the stable one |
