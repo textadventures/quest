@@ -820,6 +820,9 @@
   <template name="EditorExpressionsrandomnumber">random number</template>
   <template name="EditorExpressionsgetplayerinput">player's typed input</template>
   <template name="EditorExpressionsplayerchoosesfrommenu">player's choice from a menu</template>
+  <template name="EditorExpressionsmenucaption">caption</template>
+  <template name="EditorExpressionsmenuoptions">options</template>
+  <template name="EditorExpressionsmenuallowcancel">allow cancel</template>
   <template name="EditorExpressionsallobjects">all objects</template>
   <template name="EditorExpressionsallvisible">all visible objects</template>
   <template name="EditorExpressionstheinventory">the inventory</template>

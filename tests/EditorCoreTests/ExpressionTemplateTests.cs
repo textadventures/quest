@@ -19,19 +19,25 @@ public class ExpressionTemplateTests
     [ClassInitialize]
     public static async Task ClassInit(TestContext _)
     {
+        _controller = await LoadController("English");
+    }
+
+    private static async Task<EditorController> LoadController(string templateName)
+    {
         var templates = EditorController.GetAvailableTemplates();
-        var template = templates.Values.Single(t => t.TemplateName == "English");
+        var template = templates.Values.Single(t => t.TemplateName == templateName);
         var initialFileText = EditorController.CreateNewGameFile(template.ResourceName, "Test");
         var bytes = Encoding.UTF8.GetBytes(initialFileText);
 
-        _controller = new EditorController();
-        _controller.ClearTree += (_, _) => { };
-        _controller.BeginTreeUpdate += (_, _) => { };
-        _controller.EndTreeUpdate += (_, _) => { };
-        _controller.AddedNode += (_, _) => { };
+        var controller = new EditorController();
+        controller.ClearTree += (_, _) => { };
+        controller.BeginTreeUpdate += (_, _) => { };
+        controller.EndTreeUpdate += (_, _) => { };
+        controller.AddedNode += (_, _) => { };
 
-        var ok = await _controller.Initialise(new ByteArrayGameDataProvider(bytes, "test.aslx"));
-        Assert.IsTrue(ok, "Initialisation failed");
+        var ok = await controller.Initialise(new ByteArrayGameDataProvider(bytes, "test.aslx"));
+        Assert.IsTrue(ok, $"Initialisation failed for template '{templateName}'");
+        return controller;
     }
 
     [ClassCleanup]
@@ -113,6 +119,24 @@ public class ExpressionTemplateTests
         var data = GetParameters("Got()", "if", "Got(#object#)");
 
         Assert.AreEqual("", data.GetAttribute("object"));
+    }
+
+    // ShowMenu's field names are translation keys, resolved when the editor's language
+    // library loads - both inside <simple> and in a label control's <caption>.
+    [DataTestMethod]
+    [DataRow("English", "caption", "options", "allow cancel")]
+    [DataRow("Deutsch", "Überschrift", "Optionen", "Abbrechen erlauben")]
+    public async Task ShowMenuFieldNamesAreTranslated(string templateName, string caption, string options,
+        string allowCancel)
+    {
+        using var controller = await LoadController(templateName);
+        var definition = controller.GetExpressionEditorDefinition("""ShowMenu("", NewStringList(), false)""", "set");
+        Assert.IsNotNull(definition);
+
+        var controls = definition.Controls.ToList();
+        Assert.AreEqual(caption, controls.Single(c => c.Attribute == "caption").GetString("simple"));
+        Assert.AreEqual(options, controls.Single(c => c.ControlType == "label").Caption);
+        Assert.AreEqual(allowCancel, controls.Single(c => c.Attribute == "allowcancel").GetString("simple"));
     }
 
     [TestMethod]

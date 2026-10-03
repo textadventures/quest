@@ -454,7 +454,7 @@
 
     <control>
       <controltype>expression</controltype>
-      <simple>caption</simple>
+      <simple>[EditorExpressionsmenucaption]</simple>
       <attribute>caption</attribute>
       <breakbefore/>
     </control>
@@ -463,7 +463,7 @@
          can never work. A label names the field instead of the simple/expression toggle. -->
     <control>
       <controltype>label</controltype>
-      <caption>options</caption>
+      <caption>[EditorExpressionsmenuoptions]</caption>
       <breakbefore/>
     </control>
 
@@ -474,7 +474,7 @@
 
     <control>
       <controltype>expression</controltype>
-      <simple>allow cancel</simple>
+      <simple>[EditorExpressionsmenuallowcancel]</simple>
       <simpleeditor>boolean</simpleeditor>
       <attribute>allowcancel</attribute>
       <breakbefore/>
