@@ -309,10 +309,20 @@ internal partial class GameLoader
             }
         }
 
+        public void LoadEditorExpression(Element element, string attribute, string value)
+        {
+            LoadCommand(element, attribute, value, MatchReplaceBalanced);
+        }
+
         private void LoadCommand(Element element, string attribute, string value)
         {
+            LoadCommand(element, attribute, value, MatchReplace);
+        }
+
+        private void LoadCommand(Element element, string attribute, string value, MatchEvaluator matchReplace)
+        {
             value = value.Replace("(", @"\(").Replace(")", @"\)").Replace(".", @"\.").Replace("?", @"\?");
-            value = PatternVariableRegex().Replace(value, MatchReplace);
+            value = PatternVariableRegex().Replace(value, matchReplace);
 
             if (value.Contains('#'))
             {
@@ -341,6 +351,25 @@ internal partial class GameLoader
             return "(?<" + m.Groups[1].Value + ">.*)";
         }
 
+        // Matches only text whose brackets are balanced, treating "..." string literals as opaque,
+        // so the parameters of an expression template like "ShowMenu(#caption#,#options#,#allowcancel#)"
+        // split on top-level commas only - not on the comma inside a nested Split("a;b", ";").
+        // Bracket depth is tracked as a stack of captures on a .NET balancing group.
+        //
+        // The group is numbered rather than named because Utility.Populate and GetMatchStrength
+        // treat every non-numeric group name as a template parameter. The number is large because
+        // .NET also numbers named groups 1, 2, 3...; reusing one of those numbers would merge
+        // the depth stack into that parameter's group.
+        private const string BracketDepthGroup = "1000";
+
+        private const string BalancedExpression =
+            $$"""(?>"(?:[^"\\]|\\.)*"|[^"()\[\]{}]|[(\[{](?<{{BracketDepthGroup}}>)|[)\]}](?<-{{BracketDepthGroup}}>))*(?({{BracketDepthGroup}})(?!))""";
+
+        private static string MatchReplaceBalanced(Match m)
+        {
+            return "(?<" + m.Groups[1].Value + ">" + BalancedExpression + ")";
+        }
+
         private static void LoadVerb(Element element, string attribute, string value)
         {
             element.Fields.Set(attribute,
@@ -367,8 +396,9 @@ internal partial class GameLoader
             if (element.ElemType == ElementType.Editor)
             {
                 // For Editor elements, use the normal pattern loader to convert this
-                // simple pattern to a regex.
-                _patternLoader.Load(element, attribute, value);
+                // simple pattern to a regex. These patterns match expressions rather than player
+                // input, so their parameters must be bracket-balanced.
+                _patternLoader.LoadEditorExpression(element, attribute, value);
 
                 if (attribute == FieldDefinitions.Pattern.Property)
                 {
