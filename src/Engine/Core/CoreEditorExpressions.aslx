@@ -239,7 +239,7 @@
   </editor>
 
   <editor>
-    <pattern>Contains (#object1#,#object2#)</pattern>
+    <pattern>Contains (#object1#, #object2#)</pattern>
     <create>Contains (,)</create>
     <description>[EditorExpressionsobjectcontains]</description>
     <expressiontype>if</expressiontype>
@@ -270,7 +270,7 @@
   </editor>
 
   <editor>
-    <pattern>not Contains (#object1#,#object2#)</pattern>
+    <pattern>not Contains (#object1#, #object2#)</pattern>
     <create>not Contains (,)</create>
     <description>[EditorExpressionsobjectdoesnotcontain]</description>
     <expressiontype>if</expressiontype>
@@ -447,28 +447,37 @@
   </editor>
 
   <editor>
-    <pattern><![CDATA[ShowMenu(#caption#,#options#,#allowcancel#)]]></pattern>
+    <pattern><![CDATA[ShowMenu(#caption#, #options#, #allowcancel#)]]></pattern>
     <create><![CDATA[ShowMenu("", NewStringList(), false)]]></create>
     <description>[EditorExpressionsplayerchoosesfrommenu]</description>
     <expressiontype>set</expressiontype>
 
     <control>
       <controltype>expression</controltype>
-      <simple>caption</simple>
+      <simple>[EditorExpressionsmenucaption]</simple>
       <attribute>caption</attribute>
+      <breakbefore/>
+    </control>
+
+    <!-- No <simple> mode: ShowMenu needs a string list or dictionary, so a plain text value
+         can never work. A label names the field instead of the simple/expression toggle. -->
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorExpressionsmenuoptions]</caption>
+      <breakbefore/>
     </control>
 
     <control>
       <controltype>expression</controltype>
-      <simple>options</simple>
       <attribute>options</attribute>
     </control>
 
     <control>
       <controltype>expression</controltype>
-      <simple>allow cancel</simple>
+      <simple>[EditorExpressionsmenuallowcancel]</simple>
       <simpleeditor>boolean</simpleeditor>
       <attribute>allowcancel</attribute>
+      <breakbefore/>
     </control>
   </editor>
 
@@ -494,7 +503,7 @@
   </editor>
 
   <editor>
-    <pattern>GetRandomInt(#min#,#max#)</pattern>
+    <pattern>GetRandomInt(#min#, #max#)</pattern>
     <create>GetRandomInt(1,10)</create>
     <description>[EditorExpressionsrandomnumber]</description>
     <expressiontype>set</expressiontype>

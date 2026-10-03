@@ -166,7 +166,10 @@ internal record ExpressionTemplateControlData(
     // <minimum>/<maximum>/<increment> - bounds and step for a "number"/"numberdouble" control.
     double? Minimum = null,
     double? Maximum = null,
-    double? Increment = null
+    double? Increment = null,
+    // <breakbefore/> - same as ScriptControlData.BreakBefore, for a template's parameters
+    // (e.g. ShowMenu's caption/options/allow cancel each on their own line).
+    bool BreakBefore = false
 );
 
 internal record ExpressionTemplateData(
@@ -2299,7 +2302,8 @@ public partial class WasmEditorBridge
                     options,
                     minimum,
                     maximum,
-                    increment
+                    increment,
+                    ctrl.GetBool("breakbefore")
                 );
             })
             .ToList();

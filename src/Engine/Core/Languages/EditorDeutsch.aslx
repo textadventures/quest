@@ -821,6 +821,9 @@
   <template name="EditorExpressionsrandomnumber">Zufallszahl</template>
   <template name="EditorExpressionsgetplayerinput">die Eingabe des Spielers</template>
   <template name="EditorExpressionsplayerchoosesfrommenu">die Auswahl des Spielers aus einem Menü</template>
+  <template name="EditorExpressionsmenucaption">Überschrift</template>
+  <template name="EditorExpressionsmenuoptions">Optionen</template>
+  <template name="EditorExpressionsmenuallowcancel">Abbrechen erlauben</template>
   <template name="EditorExpressionsallobjects">Alle Objekte</template>
   <template name="EditorExpressionsallvisible">Alle sichtbaren Objekte</template>
   <template name="EditorExpressionstheinventory">Das Inventar</template>

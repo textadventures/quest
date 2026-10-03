@@ -1,5 +1,5 @@
 // Regenerates the 2 editor screenshots embedded in
-// site/src/content/docs/howto/rpg/character-creation.md. See .claude/skills/docs-screenshots/SKILL.md.
+// site/src/content/docs/howto/player/character-creation.md. See .claude/skills/docs-screenshots/SKILL.md.
 //
 // "get input" is intentionally no longer offered by the Add Script Command picker (superseded
 // by the synchronous GetInput() expression form, rendered in the Visual editor as the

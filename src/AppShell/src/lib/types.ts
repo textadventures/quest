@@ -230,6 +230,8 @@ export interface ExpressionTemplateControlData {
   minimum?: number | null
   maximum?: number | null
   increment?: number | null
+  // <breakbefore/> - starts this parameter on a new line, as for ScriptControlData.breakBefore.
+  breakBefore?: boolean
 }
 
 export interface ExpressionTemplateData {
