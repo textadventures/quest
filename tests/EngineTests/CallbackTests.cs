@@ -87,6 +87,31 @@ internal sealed class GameDriver
         return result;
     }
 
+    // Completes once the engine has registered a blocking prompt and signalled that the turn is
+    // suspended. IPlayer.DoWait fires earlier than that - before the prompt's own completion
+    // source exists and before the signal - so a test that answers on DoWait races the engine:
+    // FinishWait can find nothing to resume, or have its own turn signal resolved by the
+    // prompt's late one and return before the rest of the script has run. Tick and SendEvent
+    // start no turn of their own, so FinishWait has no unresolved signal to wait on here.
+    // The trailing yield lets the engine finish resolving the signal it is in the middle of.
+    public Task NextTurnSuspension()
+    {
+        var suspended = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        void OnSuspended()
+        {
+            _worldModel.TurnSuspended -= OnSuspended;
+            suspended.TrySetResult();
+        }
+        _worldModel.TurnSuspended += OnSuspended;
+        return AwaitAndYieldAsync(suspended.Task);
+    }
+
+    private static async Task AwaitAndYieldAsync(Task suspended)
+    {
+        await suspended;
+        await Task.Yield();
+    }
+
     public async Task<IReadOnlyList<string>> SendCommandAsync(string command)
     {
         _batch = [];
@@ -283,11 +308,10 @@ public class CallbackTests
     {
         var driver = await GameDriver.LoadAsync("callbacktest.aslx", yieldInRunScript: true);
         await driver.SendCommandAsync("enableblockwaittimer");
-        var waitShown = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        driver.PlayerMock.Setup(p => p.DoWait()).Callback(() => waitShown.TrySetResult());
+        var waitShown = driver.NextTurnSuspension();
 
         var tick = driver.Model.Tick(1);
-        await waitShown.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        await waitShown.WaitAsync(TimeSpan.FromSeconds(5));
 
         var afterAnswer = await driver.FinishWaitAsync().WaitAsync(TimeSpan.FromSeconds(5));
         afterAnswer.ShouldContain("timer after wait");
@@ -299,11 +323,10 @@ public class CallbackTests
     public async Task BlockingWait_InEventHandler_FinishWaitWaitsForRestOfHandler()
     {
         var driver = await GameDriver.LoadAsync("callbacktest.aslx", yieldInRunScript: true);
-        var waitShown = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        driver.PlayerMock.Setup(p => p.DoWait()).Callback(() => waitShown.TrySetResult());
+        var waitShown = driver.NextTurnSuspension();
 
         var sendEvent = driver.Model.SendEvent("BlockWaitEvent", "");
-        await waitShown.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        await waitShown.WaitAsync(TimeSpan.FromSeconds(5));
 
         var afterAnswer = await driver.FinishWaitAsync().WaitAsync(TimeSpan.FromSeconds(5));
         afterAnswer.ShouldContain("event after wait");
