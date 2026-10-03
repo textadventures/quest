@@ -66,7 +66,7 @@ See [Hosting your game](/publishing/hosting) for all the options.
 
 Published `.quest` files now also follow the [Treaty of Babel](https://babel.ifarchive.org/babel.html), a standard that interactive fiction catalogues and tools use to identify games. Each one carries your game's IFID - a unique ID for your game, which is the Game ID on the Setup tab - and an iFiction record of its title, author, cover and other details. Exported HTML includes the IFID too. There's also a new version code on the Setup tab, a number you increase with each release - see [Version and Game ID](/publishing/game-details#version-and-game-id).
 
-WebPlayer, the server-based player, has been rewritten for Quest Viva - Quest 5's needed Windows, and this one runs on cross-platform .NET, so you can host it wherever you like. WasmPlayer has rather overtaken it since, though, so it's a specialist choice now: worth it if you specifically don't want players to be able to download your `.quest` file, for a treasure hunt or a competition say. See the [WebPlayer guide](/publishing/webplayer).
+WebPlayer, the server-based player, has been rewritten for Quest Viva - Quest 5's needed Windows, and this one runs on cross-platform .NET, so you can host it wherever you like. WasmPlayer has rather overtaken it since, though, so it's a specialist choice now: worth it if you specifically don't want players to be able to download your `.quest` file, for a treasure hunt or a competition say. See the [WebPlayer guide](/publishing/webplayer). 6.0 is the last version that will include WebPlayer: it will be removed in 6.1.
 
 ## Players can save without an account
 

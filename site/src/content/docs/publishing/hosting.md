@@ -54,4 +54,8 @@ The zip export above is the packaged version of this. Do it by hand if you want 
 
 ## Host WebPlayer yourself
 
+:::caution[Deprecated]
+WebPlayer will be removed in Quest Viva 6.1. The 6.0 version will stay available, but it won't get new features.
+:::
+
 This option requires a bit more setup, and is only recommended if you require that end users don't download your `.quest` file. For example, some people have used this option for running online treasure hunts - the `.quest` file stays on the server, so it can't be examined. See the separate [WebPlayer](/publishing/webplayer/) guide.
