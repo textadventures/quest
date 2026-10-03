@@ -1,5 +1,5 @@
 // Regression test for issue #2343: the "player's choice from a menu" expression template
-// (ShowMenu(#caption#,#options#,#allowcancel#)) split its parameters on every comma, including
+// (ShowMenu(#caption#, #options#, #allowcancel#)) split its parameters on every comma, including
 // the one inside a nested Split("...", ";"), so the Visual editor showed three broken fields each
 // flagged with a mismatched-brackets error. Template parameters now only match bracket-balanced
 // text (see SimplePatternLoader.LoadEditorExpression), so each field gets the right argument.
@@ -60,6 +60,24 @@ try {
     const errors = await page.locator('p.text-error-500').count();
     if (errors !== 0) throw new Error(`Expected no field errors, found ${errors}: ${await page.locator('p.text-error-500').allTextContents()}`);
     console.log('PASS: no bracket-mismatch errors shown');
+
+    // allowcancel is matched without the space after its comma, so the yes/no dropdown
+    // recognises it rather than falling back to an expression box holding " false".
+    const allowCancel = page.locator('select').filter({ has: page.locator('option[value="true"]') })
+        .filter({ has: page.locator('option[value="false"]') });
+    if (await allowCancel.count() !== 1) throw new Error(`Expected one yes/no dropdown, found ${await allowCancel.count()}`);
+    const allowCancelValue = await allowCancel.inputValue();
+    if (allowCancelValue !== 'false') throw new Error(`Expected the allow-cancel dropdown to show "false", got "${allowCancelValue}"`);
+    console.log('PASS: allow-cancel shown as the yes/no dropdown, set to No');
+
+    // Changing a field rebuilds the expression from the template pattern, keeping its spacing
+    // and the other fields' values intact.
+    await allowCancel.selectOption('true');
+    await page.click('button:has-text("Code view")');
+    const rebuilt = (await page.locator('.cm-content').first().innerText()).trim();
+    const expectedCode = 'player.class = ShowMenu("Your character class?", Split("Warrior;Wizard;Priest;Thief", ";"), true)';
+    if (rebuilt !== expectedCode) throw new Error(`Expected rebuilt code:\n  ${expectedCode}\ngot:\n  ${rebuilt}`);
+    console.log('PASS: changing allow-cancel rebuilds the expression correctly');
 
     console.log('PASS: all checks passed');
 } catch (err) {

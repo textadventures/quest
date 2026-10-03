@@ -292,6 +292,9 @@ internal partial class GameLoader
         [GeneratedRegex("#([A-Za-z]\\w+)#")]
         private partial Regex PatternVariableRegex();
 
+        [GeneratedRegex(@",\s+")]
+        private partial Regex CommaWhitespaceRegex();
+
         public override void Load(Element element, string attribute, string value)
         {
             if (element.Fields.GetAsType<bool>("isverb"))
@@ -311,6 +314,10 @@ internal partial class GameLoader
 
         public void LoadEditorExpression(Element element, string attribute, string value)
         {
+            // Parameters absorb the whitespace around them (see MatchReplaceBalanced), so drop
+            // any after a comma here - otherwise "GetBoolean(#object#, #flag#)" would only match
+            // expressions with exactly one space after the comma.
+            value = CommaWhitespaceRegex().Replace(value, ",");
             LoadCommand(element, attribute, value, MatchReplaceBalanced);
         }
 
@@ -352,7 +359,7 @@ internal partial class GameLoader
         }
 
         // Matches only text whose brackets are balanced, treating "..." string literals as opaque,
-        // so the parameters of an expression template like "ShowMenu(#caption#,#options#,#allowcancel#)"
+        // so the parameters of an expression template like "ShowMenu(#caption#, #options#, #allowcancel#)"
         // split on top-level commas only - not on the comma inside a nested Split("a;b", ";").
         // Bracket depth is tracked as a stack of captures on a .NET balancing group.
         //
@@ -365,9 +372,13 @@ internal partial class GameLoader
         private const string BalancedExpression =
             $$"""(?>"(?:[^"\\]|\\.)*"|[^"()\[\]{}]|[(\[{](?<{{BracketDepthGroup}}>)|[)\]}](?<-{{BracketDepthGroup}}>))*(?({{BracketDepthGroup}})(?!))""";
 
+        // The parameter's value is trimmed: surrounding whitespace is matched outside the group,
+        // and the value itself is either empty or starts and ends with a non-space character. So
+        // "ShowMenu(caption, options, false)" gives allowcancel "false", not " false", which the
+        // editor's yes/no dropdown wouldn't recognise.
         private static string MatchReplaceBalanced(Match m)
         {
-            return "(?<" + m.Groups[1].Value + ">" + BalancedExpression + ")";
+            return @"\s*(?<" + m.Groups[1].Value + @">(?:(?!\s)" + BalancedExpression + @"(?<!\s))?)\s*";
         }
 
         private static void LoadVerb(Element element, string attribute, string value)

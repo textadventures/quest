@@ -239,7 +239,7 @@
   </editor>
 
   <editor>
-    <pattern>Contains (#object1#,#object2#)</pattern>
+    <pattern>Contains (#object1#, #object2#)</pattern>
     <create>Contains (,)</create>
     <description>[EditorExpressionsobjectcontains]</description>
     <expressiontype>if</expressiontype>
@@ -270,7 +270,7 @@
   </editor>
 
   <editor>
-    <pattern>not Contains (#object1#,#object2#)</pattern>
+    <pattern>not Contains (#object1#, #object2#)</pattern>
     <create>not Contains (,)</create>
     <description>[EditorExpressionsobjectdoesnotcontain]</description>
     <expressiontype>if</expressiontype>
@@ -447,7 +447,7 @@
   </editor>
 
   <editor>
-    <pattern><![CDATA[ShowMenu(#caption#,#options#,#allowcancel#)]]></pattern>
+    <pattern><![CDATA[ShowMenu(#caption#, #options#, #allowcancel#)]]></pattern>
     <create><![CDATA[ShowMenu("", NewStringList(), false)]]></create>
     <description>[EditorExpressionsplayerchoosesfrommenu]</description>
     <expressiontype>set</expressiontype>
@@ -494,7 +494,7 @@
   </editor>
 
   <editor>
-    <pattern>GetRandomInt(#min#,#max#)</pattern>
+    <pattern>GetRandomInt(#min#, #max#)</pattern>
     <create>GetRandomInt(1,10)</create>
     <description>[EditorExpressionsrandomnumber]</description>
     <expressiontype>set</expressiontype>
