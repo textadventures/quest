@@ -17,5 +17,7 @@ WebEditor/WebEditor/WebEditor.Publish.xml
 WebEditor/WebEditor/LogConfig.xml
 *.pubxml
 _site/
+/deploy/
+.wrangler/
 .idea
 .DS_Store

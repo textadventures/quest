@@ -92,6 +92,9 @@ jobs:
           cp -r src/AppShell/build/. deploy/
           cp -r src/WasmEditor/bin/Release/net10.0/browser-wasm/AppBundle/. deploy/AppBundle/
           cp -r src/WasmPlayer/bin/Release/net10.0/browser-wasm/AppBundle/. deploy/player/
+          # Limits Pages Functions (src/PlayFunctions) to the game-link HTML
+          # pages, so asset requests under /player/ stay plain static hits.
+          cp src/PlayFunctions/_routes.json deploy/
           cat > deploy/_headers <<'EOF'
           # Cloudflare Pages' default for a static asset is
           # `max-age=0, must-revalidate`, so without these rules a warm reload
@@ -164,12 +167,19 @@ jobs:
             Content-Type: application/javascript; charset=utf-8
           EOF
 
+      - name: Install Pages Functions dependencies
+        run: npm ci
+        working-directory: src/PlayFunctions
+
+      # Run from src/PlayFunctions: `pages deploy` only picks up the functions/
+      # directory in its working directory, not inside the uploaded one.
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy deploy --project-name=${{ steps.channel.outputs.pages_project }} --branch=main
+          workingDirectory: src/PlayFunctions
+          command: pages deploy ../../deploy --project-name=${{ steps.channel.outputs.pages_project }} --branch=main
 
       - name: Package WasmPlayer artifact
         run: (cd src/WasmPlayer/bin/Release/net10.0/browser-wasm/AppBundle && zip -r $GITHUB_WORKSPACE/WasmPlayer.zip .)

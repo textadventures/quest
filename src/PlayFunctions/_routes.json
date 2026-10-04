@@ -1,0 +1,5 @@
+{
+  "version": 1,
+  "include": ["/player/", "/player/index.html", "/play/*", "/api/*", "/game-resource/*"],
+  "exclude": ["/play/category/*", "/play/search", "/play/search/*"]
+}

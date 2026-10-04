@@ -1,0 +1,15 @@
+{
+  "name": "play-functions",
+  "private": true,
+  "description": "Cloudflare Pages Functions for play.questviva.com (link-preview meta tags for shared game links)",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler pages dev ../../deploy --port 8788 --binding DEV_PROXY=1",
+    "check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261004.1",
+    "typescript": "^7.0.2",
+    "wrangler": "^4.147.0"
+  }
+}
