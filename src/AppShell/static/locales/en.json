@@ -347,6 +347,9 @@
     "updateBanner.downloadButton": "Download",
     "updateBanner.later": "Later",
 
+    "betaBanner.message": "This is the Quest Viva beta. Local drafts and saved games here are kept separate from play.questviva.com.",
+    "betaBanner.stableLink": "Go to play.questviva.com",
+
     "fileChangedBanner.message": "This file was changed outside the editor, by another program.",
     "fileChangedBanner.reloadFromDisk": "Reload from disk",
 

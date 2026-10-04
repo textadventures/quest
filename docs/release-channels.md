@@ -16,7 +16,9 @@ Each version tag is either **stable** (`v6.0.0`, `v6.0.1`) or a **prerelease** (
 | NuGet packages | Stable version | Prerelease version (NuGet handles this from the version string alone) |
 | Electron installers (`electron-publish.yml`) | "Quest Viva" | "Quest Viva Beta", a separate app that installs alongside the stable one |
 
-A manual `workflow_dispatch` run of `deploy-play.yml` from a branch always deploys to the beta site, because `main` holds the next release's development work.
+A manual `workflow_dispatch` run of `deploy-play.yml` from a branch always deploys to the beta site, because `main` holds the next release's development work. Such a build reports the commit SHA as its version (in the browser console and as the cache-busting `?v=` on its assets), not a version number: `VERSION` still holds the last release until the next release PR merges, and reusing a future tag's version would let browsers keep that build's cached assets once the real release ships.
+
+The beta site shows a banner (`BetaBanner.svelte`) on its Play and Create tabs, saying that it's a beta and that its data is separate from play.questviva.com's. `deploy-play.yml` turns it on by setting `PUBLIC_BETA_SITE` when it deploys to the beta project.
 
 Because `releases/latest` skips prereleases, the download buttons (AppShell's `download-links.ts`, the docs site's `DownloadButton.astro`) and textadventures.co.uk's `LatestVersionService` keep pointing at the last stable release with no changes of their own.
 
@@ -52,9 +54,9 @@ There's one docs site, questviva.com, deployed from `main`, with no per-version 
 
 ## Open items before the first 6.1 beta
 
-- [ ] Create the `play-questviva-beta` Cloudflare Pages project with the same settings as `play-questviva`, and add the play-beta.questviva.com custom domain.
-- [ ] textadventures.co.uk repo: add `https://play-beta.questviva.com` to `CorsUtility.IsAllowedGamesApiOrigin`.
+- [x] Create the `play-questviva-beta` Cloudflare Pages project with the same settings as `play-questviva`, and add the play-beta.questviva.com custom domain.
+- [ ] textadventures.co.uk repo: add `https://play-beta.questviva.com` to `CorsUtility.IsAllowedGamesApiOrigin`. Until then the beta site can't load the Play tab's catalog or download any game from textadventures.co.uk: `/api/game/{id}` is blocked too, not just `/api/Catalog`.
 - [ ] textadventures.co.uk repo: make `LatestVersionService` channel-aware, so a beta Electron client (identified by the prerelease suffix in `ClientInfo.version`) is told about newer betas as well as newer stable releases. Beta installers are named `Quest Viva Beta-<version>-...`, so any asset matching there needs to allow for that.
 - [x] Separate identity for beta Electron builds (see above).
 - [x] A distinct icon for Quest Viva Beta (purple, with a "BETA" band).
-- [ ] A banner on the beta site saying it's a beta, that its data is separate from play.questviva.com's, and linking back to the stable site.
+- [x] A banner on the beta site saying it's a beta, that its data is separate from play.questviva.com's, and linking back to the stable site.
