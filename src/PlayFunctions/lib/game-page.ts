@@ -1,15 +1,18 @@
-// Rewrites the static HTML for a game link as a stream. The API call starts
-// right away, but the page isn't held back for it: everything up to the first
-// point that needs its result (including the player's modulepreload of
-// dotnet.js and its <head> scripts) reaches the browser immediately, so those
-// downloads overlap the API round trip. Every failure path (unknown id, API
-// down or slow) leaves the page as it would be without these Functions.
+// Rewrites the static HTML for a game link as a stream. The API calls start
+// right away, but the page isn't held back for them: everything up to the
+// first point that needs their results (including the player's modulepreload
+// of dotnet.js and its <head> scripts) reaches the browser immediately, so
+// those downloads overlap the API round trips. Every failure path (unknown id,
+// API down or slow) leaves the page as it would be without these Functions.
 
+import { fetchGameLocation, type GameLocation, isLinkPreviewBot, playerVersion, preloadedGameHtml } from "./game-location";
 import { escapeHtml, isHtml } from "./html";
 import { fetchGameDetails, gameTitle, metaTags } from "./onebox";
 
 export interface GamePageOptions {
     gameId: string | null;
+    preloadGame?: boolean;
+    rewriteGameUrl?: (url: string) => string;
 }
 
 // HTMLRewriter only emits its output once it has finished the input chunk it's
@@ -35,7 +38,7 @@ function inChunks(html: string): ReadableStream<Uint8Array> {
 export async function rewriteGamePage(
     request: Request,
     next: () => Promise<Response>,
-    { gameId }: GamePageOptions,
+    { gameId, preloadGame = false, rewriteGameUrl }: GamePageOptions,
 ): Promise<Response> {
     if (!gameId || request.method !== "GET") return next();
 
@@ -45,6 +48,17 @@ export async function rewriteGamePage(
 
     const html = await page.text();
     page = new Response(inChunks(html), page);
+
+    let locationPromise: Promise<GameLocation | null> = Promise.resolve(null);
+    if (preloadGame && !isLinkPreviewBot(request)) {
+        locationPromise = fetchGameLocation(gameId, playerVersion(html)).then(location =>
+            location && rewriteGameUrl
+                ? {
+                    sourceGameUrl: rewriteGameUrl(location.sourceGameUrl),
+                    resourceRoot: location.resourceRoot && rewriteGameUrl(location.resourceRoot),
+                }
+                : location);
+    }
 
     // <title> comes before the preloads, so it can't wait for the game's name.
     // It's moved to the end of <head> instead.
@@ -56,6 +70,12 @@ export async function rewriteGamePage(
             },
             element(title) {
                 title.remove();
+            },
+        })
+        .on('script[src^="wasm-player.js"]', {
+            async element(script) {
+                const location = await locationPromise;
+                if (location) script.before(preloadedGameHtml(gameId, location), { html: true });
             },
         })
         .on("head", {

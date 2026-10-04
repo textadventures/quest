@@ -431,6 +431,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-wasmplayer-runtime-preload.mjs http://localhost:5175
         working-directory: tests/e2e
+      - run: node verify-wasmplayer-preloaded-game.mjs http://localhost:5175
+        working-directory: tests/e2e
       - run: node verify-wasmplayer-sound-timer.mjs http://localhost:5175
         working-directory: tests/e2e
       - run: node verify-wasmplayer-aslevent-timer.mjs http://localhost:5175

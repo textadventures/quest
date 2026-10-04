@@ -2130,6 +2130,18 @@ function wireStartScreen() {
     urlInput.addEventListener('keydown', e => { if (e.key === 'Enter') doLoadUrl(); });
 }
 
+async function fetchGameLocation(id) {
+    const apiRoot = window.QuestVivaConfig?.textAdventuresApiRoot
+        ?? 'https://textadventures.co.uk/api/';
+    const apiResponse = await fetch(`${apiRoot}game/${id}?${clientInfoParams()}`);
+    if (!apiResponse.ok) {
+        const err = new Error(`API: HTTP ${apiResponse.status}`);
+        err.status = apiResponse.status;
+        throw err;
+    }
+    return await apiResponse.json();
+}
+
 async function fetchGameBytes(url) {
     const response = await fetch(url);
     if (!response.ok) {
@@ -2252,15 +2264,13 @@ async function fetchGameBytes(url) {
         preloadRuntime();
         let resolvedSourceUrl = null;
         const gamePromise = (async () => {
-            const apiRoot = window.QuestVivaConfig?.textAdventuresApiRoot
-                ?? 'https://textadventures.co.uk/api/';
-            const apiResponse = await fetch(`${apiRoot}game/${id}?${clientInfoParams()}`);
-            if (!apiResponse.ok) {
-                const err = new Error(`API: HTTP ${apiResponse.status}`);
-                err.status = apiResponse.status;
-                throw err;
-            }
-            const { sourceGameUrl, resourceRoot: resRoot } = await apiResponse.json();
+            // On play.questviva.com, a Pages Function (src/PlayFunctions) has
+            // usually already made this API call and inlined the result, saving
+            // a round trip before the game file download can start.
+            const preloaded = window.QuestVivaPreloadedGame;
+            const { sourceGameUrl, resourceRoot: resRoot } = preloaded?.id === id
+                ? preloaded
+                : await fetchGameLocation(id);
             resolvedSourceUrl = sourceGameUrl;
             resourceRoot = resRoot || null;
             const { bytes, filename } = await fetchGameBytes(sourceGameUrl);

@@ -13,7 +13,7 @@ export interface DevProxyEnv {
 const API_ORIGIN = "https://textadventures.co.uk";
 const GAME_RESOURCE_PREFIX = "/game-resource/";
 
-function toGameResourceUrl(url: string): string {
+export function toGameResourceUrl(url: string): string {
     return GAME_RESOURCE_PREFIX + encodeURIComponent(url);
 }
 
