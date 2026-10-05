@@ -1,4 +1,9 @@
 version: 2
+# The npm groups take only minor and patch updates, so dependabot-automerge.yml
+# can merge them once CI passes. Major updates arrive as one PR per package
+# for a human to review: lumped into a group, one breaking major (SvelteKit 3,
+# say) failed CI for every other update in it, and stopped the whole group
+# from auto-merging.
 updates:
   - package-ecosystem: "npm"
     directory: "/site"
@@ -8,6 +13,9 @@ updates:
       site-dependencies:
         patterns:
           - "*"
+        update-types:
+          - "minor"
+          - "patch"
     commit-message:
       prefix: "chore"
 
@@ -19,6 +27,9 @@ updates:
       appshell-dependencies:
         patterns:
           - "*"
+        update-types:
+          - "minor"
+          - "patch"
     commit-message:
       prefix: "chore"
 
@@ -37,6 +48,9 @@ updates:
       electronapp-dependencies:
         patterns:
           - "*"
+        update-types:
+          - "minor"
+          - "patch"
     commit-message:
       prefix: "chore"
 
@@ -51,6 +65,9 @@ updates:
       wasmplayer-dependencies:
         patterns:
           - "*"
+        update-types:
+          - "minor"
+          - "patch"
     commit-message:
       prefix: "chore"
 
@@ -62,6 +79,9 @@ updates:
       e2e-dependencies:
         patterns:
           - "*"
+        update-types:
+          - "minor"
+          - "patch"
     commit-message:
       prefix: "chore"
 
