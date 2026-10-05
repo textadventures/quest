@@ -978,7 +978,7 @@ function renderSavesList(saves, mode) {
     list.innerHTML = saves.map(s => {
         const deleteBtn = mode === 'manage'
             ? `<button type="button" class="btn-icon preset-tonal-error" data-delete-slot="${s.slotIndex}" aria-label="${deleteLabel}">`
-                + `<svg class="qv-icon" aria-hidden="true"><use href="#trash-2"></use></svg></button>`
+                + `<svg class="qv-icon" aria-hidden="true"><use href="#trash"></use></svg></button>`
             : '';
         return `<li class="flex items-center justify-between gap-2">`
             + `<button type="button" class="anchor text-left flex-1" data-slot="${s.slotIndex}">${_esc(s.name)}</button>`

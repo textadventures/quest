@@ -38,6 +38,12 @@ try {
             body: getComputedStyle(document.body).fontSize,
             slots: [...document.querySelectorAll('#qv-saves-list [data-slot]')].map(el => getComputedStyle(el).fontSize),
             btn: getComputedStyle(document.getElementById('qv-saves-save-new')).fontSize,
+            // Each delete button's sprite icon must point at a <symbol> that
+            // build-icons.mjs actually spliced into the page.
+            deleteIcons: [...document.querySelectorAll('#qv-saves-list [data-delete-slot] use')].map(use => {
+                const id = use.getAttribute('href').slice(1);
+                return { id, resolves: document.getElementById(id)?.tagName.toLowerCase() === 'symbol' };
+            }),
         };
     });
 
@@ -51,6 +57,11 @@ try {
         }
     }
     if (parseFloat(sizes.btn) !== 16) throw new Error(`expected button to be 16px, got ${sizes.btn}`);
+    if (sizes.deleteIcons.length !== 2) throw new Error(`expected 2 delete-button icons, got ${sizes.deleteIcons.length}`);
+    for (const icon of sizes.deleteIcons) {
+        if (!icon.resolves) throw new Error(`delete-button icon #${icon.id} has no matching <symbol> in the page`);
+    }
+    console.log('PASS: save-slot delete buttons\' icons resolve to a sprite symbol');
     console.log('PASS: save-slot titles stay at the dialog base size despite a large game body font');
 } catch (err) {
     console.error('FAIL:', err.message);
