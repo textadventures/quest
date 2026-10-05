@@ -30,9 +30,8 @@ internal partial class GameLoader
 
     private readonly ImplicitTypes _implicitTypes = new();
 
-    public GameLoader(WorldModel worldModel, LoadMode mode, bool? isCompiled = null)
+    public GameLoader(WorldModel worldModel, LoadMode mode)
     {
-        IsCompiledFile = isCompiled ?? false;
         WorldModel = worldModel;
         ScriptFactory = new ScriptFactory(worldModel);
         ScriptFactory.ErrorHandler += AddError;

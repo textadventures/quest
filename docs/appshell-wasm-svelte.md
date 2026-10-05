@@ -81,7 +81,7 @@ Tree nodes are collected during `Initialise` by subscribing to `EditorController
 ### Supporting types
 
 - `WasmConfig` (`src/WasmEditor/WasmConfig.cs`) — `IConfig` implementation with `UseNCalc = true`
-- `ByteArrayGameDataProvider` (`src/Common/`) — wraps a `byte[]` as a `MemoryStream` so `EditorController` can load a file passed in from the browser File API
+- `GameData` (`src/Common/`) — wraps a `byte[]` as a `MemoryStream` so `EditorController` can load a file passed in from the browser File API
 
 ### Build
 
@@ -244,7 +244,7 @@ The **read** side of `.quest` already worked before this — `PackageReader.cs` 
 
 - `game.aslx` entry ← `_worldModel.Save(SaveMode.Package, includeWalkthrough)`
 - One zip entry per `WorldModel.PackageIncludeFile` (filename + stream)
-- Round-trip covered by `tests/EngineTests/PackagerTests.cs` (create package → reload via `ByteArrayGameDataProvider` with a `.quest` filename → assert the asset is readable back out)
+- Round-trip covered by `tests/EngineTests/PackagerTests.cs` (create package → reload via `GameData` with a `.quest` filename → assert the asset is readable back out)
 
 `WasmEditorBridge` follows the bridge's existing stage-then-consume pattern (same shape as the dirty-flag polling): `AddPublishAsset(string filename, byte[] data)` stages assets one at a time (`[JSExport]` doesn't cleanly marshal an array of blobs in one call), then `CreatePublishPackage(bool includeWalkthrough)` → `byte[]` consumes the staged list, calls `EditorController.Publish(null, includeWalkthrough, staged, memoryStream)`, and returns the zip bytes (empty array on failure — a real package is never empty since it always has at least `game.aslx`).
 

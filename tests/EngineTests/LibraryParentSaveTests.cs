@@ -13,7 +13,9 @@ public class LibraryParentSaveTests
 {
     private static async Task<WorldModel> LoadForEdit(string filename)
     {
-        var gameData = await new FileDirectoryGameDataProvider(Path.GetFullPath(filename)).GetData();
+        const string library = "libraryparentlib.aslx";
+        var gameData = new GameData(File.ReadAllBytes(filename), filename,
+            new Dictionary<string, byte[]> { [library] = File.ReadAllBytes(library) });
         var worldModel = Helpers.CreateWorldModel(gameData);
         worldModel.LogError += ex => throw ex;
         Assert.IsTrue(await worldModel.InitialiseEdit(), string.Join("\n", worldModel.Errors));

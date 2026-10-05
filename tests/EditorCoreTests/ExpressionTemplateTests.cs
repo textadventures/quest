@@ -35,7 +35,7 @@ public class ExpressionTemplateTests
         controller.EndTreeUpdate += (_, _) => { };
         controller.AddedNode += (_, _) => { };
 
-        var ok = await controller.Initialise(new ByteArrayGameDataProvider(bytes, "test.aslx"));
+        var ok = await controller.Initialise(new GameData(bytes, "test.aslx"));
         Assert.IsTrue(ok, $"Initialisation failed for template '{templateName}'");
         return controller;
     }

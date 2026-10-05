@@ -315,7 +315,7 @@ public partial class WorldModel : IGame, IGameDebug
     {
         EditMode = false;
         PlayerUi = player;
-        var loader = new GameLoader.GameLoader(this, GameLoader.GameLoader.LoadMode.Play, _gameData?.IsCompiled);
+        var loader = new GameLoader.GameLoader(this, GameLoader.GameLoader.LoadMode.Play);
         var result = await InitialiseInternal(loader);
         if (result)
         {

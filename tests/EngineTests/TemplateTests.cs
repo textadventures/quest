@@ -59,7 +59,7 @@ public class TemplateTests
     [TestMethod]
     public async Task DuplicateTemplateInBaseAslxFile_LaterDefinitionWins()
     {
-        var data = await new FileGameDataProvider("duplicatetemplatetest.aslx").GetData();
+        var data = new GameData(File.ReadAllBytes("duplicatetemplatetest.aslx"), "duplicatetemplatetest.aslx");
         var model = new WorldModel(data, null);
 
         var success = await model.Initialise(new Mock<IPlayer>().Object);

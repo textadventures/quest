@@ -202,14 +202,7 @@ public class GameQuery(string filename, byte[] bytes)
 
     public async Task<bool> Initialise()
     {
-        IGameDataProvider gameDataProvider = new ByteArrayGameDataProvider(bytes, filename);
-        var gameData = await gameDataProvider.GetData();
-
-        if (gameData == null)
-        {
-            return false;
-        }
-
+        var gameData = new GameData(bytes, filename);
         var factory = new WorldModelFactory();
         var gameLauncher = new GameLauncher(factory);
 

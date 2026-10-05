@@ -184,11 +184,10 @@ public sealed class EditorController : IDisposable
     public event EventHandler<LoadStatusEventArgs>? LoadStatus;
     public event EventHandler<LibrariesUpdatedEventArgs>? LibrariesUpdated;
 
-    public async Task<bool> Initialise(IGameDataProvider gameDataProvider, bool partialInit = false)
+    public async Task<bool> Initialise(GameData gameData, bool partialInit = false)
     {
         _lastelementscutout = false;
-        var gameData = await gameDataProvider.GetData();
-        Filename = gameData?.Filename ?? string.Empty;
+        Filename = gameData.Filename;
         WorldModel = new WorldModel(gameData, null);
         _scriptFactory = new ScriptFactory(WorldModel);
         WorldModel.ElementFieldUpdated += OnWorldModelElementFieldUpdated;

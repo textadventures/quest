@@ -13,8 +13,7 @@ public class V4GameTests
     public async Task Init()
     {
         var filename = Path.Combine(["..", "..", "..", "test1.asl"]);
-        var gameDataProvider = new FileGameDataProvider(filename);
-        var gameData = await gameDataProvider.GetData();
+        var gameData = new GameData(File.ReadAllBytes(filename), filename);
         _game = new V4Game(gameData, null);
         _game.PrintText += _player.PrintText;
         await _game.Initialise(_player);

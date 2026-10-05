@@ -65,8 +65,7 @@ public class AttributeLoaderTests
                    </asl>
                    """;
 
-        var provider = new ByteArrayGameDataProvider(Encoding.UTF8.GetBytes(xml), "test.aslx");
-        var gameData = await provider.GetData();
+        var gameData = new GameData(Encoding.UTF8.GetBytes(xml), "test.aslx");
         var worldModel = Helpers.CreateWorldModel(gameData);
 
         var player = new Mock<IPlayer>();

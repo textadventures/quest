@@ -26,7 +26,7 @@ public abstract class EditorControllerTestBase
         Controller.UndoListUpdated += OnControllerUndoListUpdated;
         Controller.RedoListUpdated += OnControllerRedoListUpdated;
         var bytes = GetResourceBytes("QuestViva.EditorCoreTests.test.aslx");
-        await Controller.Initialise(new ByteArrayGameDataProvider(bytes, "test.aslx"));
+        await Controller.Initialise(new GameData(bytes, "test.aslx"));
         DoExtraInitialisation();
     }
 

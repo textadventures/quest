@@ -21,7 +21,7 @@ public class TemplateTests
 
             controller.ShowMessage += OnControllerOnShowMessage;
             var result =
-                await controller.Initialise(new ByteArrayGameDataProvider(bytes, "test.aslx"), true);
+                await controller.Initialise(new GameData(bytes, "test.aslx"), true);
 
             Assert.IsTrue(result,
                 $"Initialisation failed for template '{template.ResourceName}': {errorsRaised}");

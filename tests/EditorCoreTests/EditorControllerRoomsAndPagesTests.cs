@@ -102,7 +102,7 @@ public class EditorControllerRoomsAndPagesTests
         controller.ElementsUpdated += (_, _) => { };
         controller.Dirty += (_, _) => { };
 
-        var ok = await controller.Initialise(new ByteArrayGameDataProvider(bytes, "test.aslx"));
+        var ok = await controller.Initialise(new GameData(bytes, "test.aslx"));
         Assert.IsTrue(ok, $"Initialisation failed for template '{templateName}'");
 
         controller.UpdateTree();

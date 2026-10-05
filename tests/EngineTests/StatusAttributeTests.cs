@@ -16,8 +16,7 @@ public class StatusAttributeTests
     [TestMethod]
     public async Task StatusAttributeSetInStartScriptDoesNotError()
     {
-        var gameDataProvider = new FileGameDataProvider("statusattributetest.aslx");
-        var gameData = await gameDataProvider.GetData();
+        var gameData = new GameData(File.ReadAllBytes("statusattributetest.aslx"), "statusattributetest.aslx");
         var worldModel = Helpers.CreateWorldModel(gameData);
 
         var errors = new List<string>();
@@ -50,8 +49,7 @@ public class StatusAttributeTests
     [TestMethod]
     public async Task CustomFormatForBuiltInStatusAttributeDoesNotErrorAndWins()
     {
-        var gameDataProvider = new FileGameDataProvider("statusattributecustombuiltintest.aslx");
-        var gameData = await gameDataProvider.GetData();
+        var gameData = new GameData(File.ReadAllBytes("statusattributecustombuiltintest.aslx"), "statusattributecustombuiltintest.aslx");
         var worldModel = Helpers.CreateWorldModel(gameData);
 
         var errors = new List<string>();

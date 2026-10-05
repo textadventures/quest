@@ -35,7 +35,7 @@ internal sealed class V5BlockingGameDriver
 
     public static async Task<V5BlockingGameDriver> LoadAsync(string filename)
     {
-        var data = await new FileGameDataProvider(filename).GetData();
+        var data = new GameData(File.ReadAllBytes(filename), filename);
         var model = new WorldModel(data, null);
         var driver = new V5BlockingGameDriver(model);
         var playerMock = new Mock<IPlayer>();

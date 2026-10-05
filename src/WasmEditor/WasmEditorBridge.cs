@@ -313,12 +313,12 @@ public partial class WasmEditorBridge
         AttachControllerEvents(controller);
         _controller = controller;
 
-        var provider = new ByteArrayGameDataProvider(gameFileBytes, filename, TakePendingAdjacentFiles());
+        var gameData = new GameData(gameFileBytes, filename, TakePendingAdjacentFiles());
 
         bool ok;
         try
         {
-            ok = await controller.Initialise(provider);
+            ok = await controller.Initialise(gameData);
         }
         catch (Exception ex)
         {
@@ -382,7 +382,7 @@ public partial class WasmEditorBridge
 
         var filename = _controller.Filename;
         var bytes = System.Text.Encoding.UTF8.GetBytes(xml);
-        var provider = new ByteArrayGameDataProvider(bytes, filename, TakePendingAdjacentFiles());
+        var gameData = new GameData(bytes, filename, TakePendingAdjacentFiles());
 
         // Parse into a throwaway controller first — the shared TreeNodes cache and _isDirty flag
         // must not be touched (see AttachControllerEvents) and the live _controller must not be
@@ -395,7 +395,7 @@ public partial class WasmEditorBridge
         bool ok;
         try
         {
-            ok = await candidate.Initialise(provider);
+            ok = await candidate.Initialise(gameData);
         }
         catch (Exception ex)
         {
@@ -501,7 +501,7 @@ public partial class WasmEditorBridge
         var gameBytes = System.Text.Encoding.UTF8.GetBytes(_controller.Save());
         var adjacentFiles = TakePendingAdjacentFiles();
         adjacentFiles[filename] = System.Text.Encoding.UTF8.GetBytes(xml);
-        var provider = new ByteArrayGameDataProvider(gameBytes, _controller.Filename, adjacentFiles);
+        var gameData = new GameData(gameBytes, _controller.Filename, adjacentFiles);
 
         var candidate = new EditorController();
         string? errorMessage = null;
@@ -510,7 +510,7 @@ public partial class WasmEditorBridge
         bool ok;
         try
         {
-            ok = await candidate.Initialise(provider);
+            ok = await candidate.Initialise(gameData);
         }
         catch (Exception ex)
         {
@@ -793,7 +793,7 @@ public partial class WasmEditorBridge
     // result comes back in one shot, as a JSON LocalCoverResult: DataUrl is set when the game
     // format embeds its own resources (.quest package, legacy .asl/.cas) and the cover was
     // found inside; otherwise (a plain unpacked .aslx, where the cover lives as a sibling file
-    // GetResourceStream can't see — ByteArrayGameDataProvider has no filesystem access) DataUrl
+    // GetResourceStream can't see — GameData has no filesystem access) DataUrl
     // is null and the caller resolves Name itself via its own FileAdapter.
     [JSExport]
     public static async Task<string?> ResolveLocalCover(byte[] gameFileBytes, string filename)
@@ -834,7 +834,7 @@ public partial class WasmEditorBridge
     // time ([JSExport] can't marshal an array of blobs in one call), the same way
     // AddPublishAsset/PendingPublishAssets stage assets for CreatePublishPackage below.
     // Initialise/SetGameXml consume and clear this before constructing their
-    // ByteArrayGameDataProvider, regardless of whether the load succeeds.
+    // GameData, regardless of whether the load succeeds.
     private static readonly Dictionary<string, byte[]> PendingAdjacentFiles = [];
 
     [JSExport]

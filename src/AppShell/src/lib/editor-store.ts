@@ -225,7 +225,7 @@ export async function listSafeModeLibraryFiles(): Promise<string[]> {
 
 // Stages resolveLibraryCandidateFiles()'s result into the WASM side (WasmEditorBridge.AddAdjacentFile)
 // before Initialise/SetGameXml runs the load that needs them (see WorldModel.GetLibraryStream /
-// ByteArrayGameDataProvider).
+// GameData).
 async function preloadAdjacentLibraryAssets(adapter: FileAdapter): Promise<void> {
     const files = await resolveLibraryCandidateFiles(adapter);
     for (const [key, bytes] of Object.entries(files)) {
