@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
         <RuntimeIdentifier>browser-wasm</RuntimeIdentifier>
@@ -41,6 +41,8 @@
         <ProjectReference Include="..\PlayerCore\PlayerCore.csproj"/>
     </ItemGroup>
 
+    <Import Project="..\WasmAppBundle.targets"/>
+
     <!-- Build the scoped Skeleton/Tailwind "app chrome" stylesheet (start screen, debugger,
          save-slot manager) from styles/chrome.css, and splice the curated icon sprite (see
          scripts/build-icons.mjs) into generated/index.html, before either gets copied into
@@ -50,8 +52,10 @@
         <Exec Command="npm run build" WorkingDirectory="$(MSBuildThisFileDirectory)"/>
     </Target>
 
-    <!-- Copy static player assets into the AppBundle after it is assembled -->
-    <Target Name="CopyPlayerAssetsToAppBundle" AfterTargets="_WasmGenerateAppBundle">
+    <!-- Copy the static player UI into the AppBundle alongside _framework/ (see
+         ../WasmAppBundle.targets). The shell is identical for build and publish, so this runs once
+         per invocation, in the build phase. -->
+    <Target Name="CopyPlayerAssetsToAppBundle" AfterTargets="Build">
         <PropertyGroup>
             <_PlayerUi>$(MSBuildThisFileDirectory)player-ui\</_PlayerUi>
         </PropertyGroup>
@@ -75,16 +79,16 @@
             <_ImageAssets Include="$(_PlayerUi)lib\images\*.png"/>
             <_TranscriptViewerAssets Include="$(MSBuildThisFileDirectory)TranscriptViewer\index.html"/>
         </ItemGroup>
-        <Copy SourceFiles="@(_FlatAssets)" DestinationFolder="$(WasmAppDir)"/>
-        <Copy SourceFiles="@(_LibAssets)" DestinationFolder="$(WasmAppDir)lib\"/>
-        <Copy SourceFiles="@(_ImageAssets)" DestinationFolder="$(WasmAppDir)lib\images\"/>
-        <Copy SourceFiles="@(_TranscriptViewerAssets)" DestinationFolder="$(WasmAppDir)TranscriptViewer\"/>
+        <Copy SourceFiles="@(_FlatAssets)" DestinationFolder="$(QuestAppBundleDir)"/>
+        <Copy SourceFiles="@(_LibAssets)" DestinationFolder="$(QuestAppBundleDir)lib\"/>
+        <Copy SourceFiles="@(_ImageAssets)" DestinationFolder="$(QuestAppBundleDir)lib\images\"/>
+        <Copy SourceFiles="@(_TranscriptViewerAssets)" DestinationFolder="$(QuestAppBundleDir)TranscriptViewer\"/>
         <!-- Manifest of every non-_framework file for AppShell's zip HTML export —
              keeps that list from drifting when assets are added/removed above.
-             $(WasmAppDir) ends in a directory separator; trim it before quoting —
+             $(QuestAppBundleDir) ends in a directory separator; trim it before quoting —
              a quoted arg ending "\" is mis-parsed by Windows' argv escaping rules
              (the backslash escapes the closing quote instead of terminating it),
              which broke the windows-latest Electron build (Exec: ENOENT AppBundle"). -->
-        <Exec Command="node scripts/write-export-manifest.mjs &quot;$(WasmAppDir.TrimEnd('\').TrimEnd('/'))&quot;" WorkingDirectory="$(MSBuildThisFileDirectory)"/>
+        <Exec Command="node scripts/write-export-manifest.mjs &quot;$(QuestAppBundleDir.TrimEnd('\').TrimEnd('/'))&quot;" WorkingDirectory="$(MSBuildThisFileDirectory)"/>
     </Target>
 </Project>
