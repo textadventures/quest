@@ -17,15 +17,26 @@ jobs:
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
 
+      # electron and electron-builder are left for a human, since they're the
+      # desktop app's release-signing path. Version updates arrive as the
+      # "electron" group (see dependabot.yml), but security updates are never
+      # grouped, so the package names are checked too. That check matches
+      # whole names, so e.g. electron-to-chromium doesn't count.
       - name: Auto-merge patch and minor npm updates
         if: |
           steps.metadata.outputs.package-ecosystem == 'npm_and_yarn' &&
+          steps.metadata.outputs.dependency-group != 'electron' &&
           (steps.metadata.outputs.dependency-type == 'indirect' ||
            steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
            steps.metadata.outputs.update-type == 'version-update:semver-minor')
         run: |
+          if tr ',' '\n' <<< "$DEPENDENCY_NAMES" | tr -d ' ' | grep -qxE 'electron|electron-builder'; then
+            echo "Updates electron or electron-builder: leaving for manual review."
+            exit 0
+          fi
           gh pr review --approve "$PR_URL"
           gh pr merge --auto --squash "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
+          DEPENDENCY_NAMES: ${{ steps.metadata.outputs.dependency-names }}
           GH_TOKEN: ${{ secrets.DEPENDABOT_PAT }}

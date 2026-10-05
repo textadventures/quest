@@ -11,6 +11,71 @@ updates:
     commit-message:
       prefix: "chore"
 
+  - package-ecosystem: "npm"
+    directory: "/src/AppShell"
+    schedule:
+      interval: "weekly"
+    groups:
+      appshell-dependencies:
+        patterns:
+          - "*"
+    commit-message:
+      prefix: "chore"
+
+  # electron and electron-builder get their own group so that
+  # dependabot-automerge.yml can leave them for a human: electron-builder is
+  # the release-signing path, and a bug there has broken a release before.
+  - package-ecosystem: "npm"
+    directory: "/src/ElectronApp"
+    schedule:
+      interval: "weekly"
+    groups:
+      electron:
+        patterns:
+          - "electron"
+          - "electron-builder"
+      electronapp-dependencies:
+        patterns:
+          - "*"
+    commit-message:
+      prefix: "chore"
+
+  # Only the chrome CSS/icon build tooling. The player's vendored jQuery,
+  # jQuery UI and paper.js under player-ui/lib aren't npm packages: see
+  # player-ui/lib/README.md for why they're pinned.
+  - package-ecosystem: "npm"
+    directory: "/src/WasmPlayer"
+    schedule:
+      interval: "weekly"
+    groups:
+      wasmplayer-dependencies:
+        patterns:
+          - "*"
+    commit-message:
+      prefix: "chore"
+
+  - package-ecosystem: "npm"
+    directory: "/tests/e2e"
+    schedule:
+      interval: "weekly"
+    groups:
+      e2e-dependencies:
+        patterns:
+          - "*"
+    commit-message:
+      prefix: "chore"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+    commit-message:
+      prefix: "chore"
+
   - package-ecosystem: "nuget"
     directory: "/src"
     schedule:
