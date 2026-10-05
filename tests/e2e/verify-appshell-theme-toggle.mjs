@@ -32,8 +32,15 @@ async function htmlState(label) {
     return page.evaluate(() => ({
         dark: document.documentElement.classList.contains('dark'),
         colorScheme: document.documentElement.style.colorScheme,
-        bodyBg: getComputedStyle(document.body).backgroundColor,
-    })).then(s => { console.log(`[${label}] html.dark=${s.dark} colorScheme=${s.colorScheme} bodyBg=${s.bodyBg}`); return s; });
+        // The page (canvas) background: <html>'s if it has one, else <body>'s,
+        // which CSS propagates to the canvas when <html>'s is transparent.
+        // Skeleton 4 set it on <body>; Skeleton 5 moved it to <html>.
+        pageBg: (() => {
+            const transparent = c => c === 'rgba(0, 0, 0, 0)' || c === 'transparent' || c === '';
+            const htmlBg = getComputedStyle(document.documentElement).backgroundColor;
+            return transparent(htmlBg) ? getComputedStyle(document.body).backgroundColor : htmlBg;
+        })(),
+    })).then(s => { console.log(`[${label}] html.dark=${s.dark} colorScheme=${s.colorScheme} pageBg=${s.pageBg}`); return s; });
 }
 
 await page.goto(`${baseUrl}/`);
@@ -61,9 +68,9 @@ assert(state.colorScheme === 'dark', 'selecting Dark sets colorScheme dark');
 assert(await page.inputValue('#settings-theme') === 'dark', 'select value follows the store');
 const stored = await page.evaluate(() => localStorage.getItem('questviva-ui-theme'));
 assert(stored === 'dark', `theme persisted to localStorage, got ${JSON.stringify(stored)}`);
-const lightBg = initial.bodyBg;
-assert(lightBg !== 'rgba(0, 0, 0, 0)' && lightBg !== '', `captured a real light body background, got ${lightBg}`);
-assert(state.bodyBg !== lightBg, `body background actually re-rendered on Dark (${lightBg} → ${state.bodyBg})`);
+const lightBg = initial.pageBg;
+assert(lightBg !== 'rgba(0, 0, 0, 0)' && lightBg !== '', `captured a real light page background, got ${lightBg}`);
+assert(state.pageBg !== lightBg, `page background actually re-rendered on Dark (${lightBg} → ${state.pageBg})`);
 
 // --- 4. Reload → stored Dark re-applied pre-paint (no flash) ---
 await page.reload();
