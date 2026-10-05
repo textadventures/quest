@@ -6,6 +6,6 @@
   "description": "Playwright browser-driven verification scripts for WasmPlayer/AppShell/Electron manual QA — not part of the dotnet test suite.",
   "devDependencies": {
     "fflate": "^0.8.3",
-    "playwright": "^1.55.0"
+    "playwright": "^1.63.0"
   }
 }
