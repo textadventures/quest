@@ -32,10 +32,7 @@ public partial class WasmPlayerBridge
     [JSExport]
     public static async Task<bool> Initialise(byte[] gameFileBytes, string filename)
     {
-        var provider = new ByteArrayGameDataProvider(gameFileBytes, filename, TakePendingAdjacentFiles());
-        var gameData = await provider.GetData();
-        if (gameData == null) return false;
-
+        var gameData = new GameData(gameFileBytes, filename, TakePendingAdjacentFiles());
         return await InitialiseCore(gameData, null);
     }
 
@@ -47,10 +44,7 @@ public partial class WasmPlayerBridge
     [JSExport]
     public static async Task<bool> InitialiseWithSave(byte[] gameFileBytes, string filename, byte[] saveBytes)
     {
-        var provider = new ByteArrayGameDataProvider(gameFileBytes, filename, TakePendingAdjacentFiles());
-        var gameData = await provider.GetData();
-        if (gameData == null) return false;
-
+        var gameData = new GameData(gameFileBytes, filename, TakePendingAdjacentFiles());
         using var saveStream = new MemoryStream(saveBytes);
         return await InitialiseCore(gameData, saveStream);
     }

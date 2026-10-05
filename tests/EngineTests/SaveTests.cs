@@ -10,8 +10,7 @@ public class SaveTests
     [TestMethod]
     public async Task RunWalkthrough()
     {
-        var gameDataProvider = new FileGameDataProvider("savetest.aslx");
-        var gameData = await gameDataProvider.GetData();
+        var gameData = new GameData(File.ReadAllBytes("savetest.aslx"), "savetest.aslx");
         var worldModel = Helpers.CreateWorldModel(gameData);
 
         worldModel.LogError += ex => throw ex;
@@ -28,8 +27,7 @@ public class SaveTests
         var saveData = worldModel.Save(SaveMode.SavedGame, html: null);
         await File.WriteAllTextAsync(tempFilename, saveData);
 
-        var gameDataProvider2 = new FileGameDataProvider(tempFilename);
-        var gameData2 = await gameDataProvider2.GetData();
+        var gameData2 = new GameData(File.ReadAllBytes(tempFilename), tempFilename);
         var savedGameWorldModel = Helpers.CreateWorldModel(gameData2);
         success = await savedGameWorldModel.Initialise(player.Object);
         Assert.IsTrue(success, "Initialisation failed");

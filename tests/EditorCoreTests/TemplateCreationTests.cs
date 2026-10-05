@@ -25,7 +25,7 @@ public class TemplateCreationTests
 
         _controller = new EditorController();
         var bytes = Encoding.UTF8.GetBytes(xml);
-        await _controller.Initialise(new ByteArrayGameDataProvider(bytes, "test.aslx"));
+        await _controller.Initialise(new GameData(bytes, "test.aslx"));
     }
 
     [TestCleanup]

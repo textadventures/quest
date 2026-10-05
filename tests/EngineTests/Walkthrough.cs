@@ -9,8 +9,8 @@ public class Walkthrough
     [TestMethod]
     public async Task RunWalkthrough()
     {
-        var gameDataProvider = new FileGameDataProvider(Path.Combine("..", "..", "..", "walkthrough.aslx"));
-        var gameData = await gameDataProvider.GetData();
+        var path = Path.Combine("..", "..", "..", "walkthrough.aslx");
+        var gameData = new GameData(File.ReadAllBytes(path), path);
         var worldModel = Helpers.CreateWorldModel(gameData);
 
         worldModel.LogError += ex => throw ex;

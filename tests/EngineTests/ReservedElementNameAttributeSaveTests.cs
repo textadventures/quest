@@ -14,8 +14,7 @@ public class ReservedElementNameAttributeSaveTests
     [TestMethod]
     public async Task AttributesNamedAfterReservedElementsSurviveSaveAndReload()
     {
-        var gameDataProvider = new FileGameDataProvider("reservedelementnameattributesavetest.aslx");
-        var gameData = await gameDataProvider.GetData();
+        var gameData = new GameData(File.ReadAllBytes("reservedelementnameattributesavetest.aslx"), "reservedelementnameattributesavetest.aslx");
         var worldModel = Helpers.CreateWorldModel(gameData);
 
         worldModel.LogError += ex => throw ex;
@@ -33,8 +32,7 @@ public class ReservedElementNameAttributeSaveTests
             var saveData = worldModel.Save(SaveMode.SavedGame, html: null);
             await File.WriteAllTextAsync(tempFilename, saveData);
 
-            var reloadedGameDataProvider = new FileGameDataProvider(tempFilename);
-            var reloadedGameData = await reloadedGameDataProvider.GetData();
+            var reloadedGameData = new GameData(File.ReadAllBytes(tempFilename), tempFilename);
             var reloadedWorldModel = Helpers.CreateWorldModel(reloadedGameData);
             reloadedWorldModel.LogError += ex => throw ex;
 

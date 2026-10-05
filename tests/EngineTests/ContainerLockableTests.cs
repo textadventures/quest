@@ -13,8 +13,7 @@ public class ContainerLockableTests
     [TestMethod]
     public async Task RunWalkthrough()
     {
-        var gameDataProvider = new FileGameDataProvider("containerlockabletest.aslx");
-        var gameData = await gameDataProvider.GetData();
+        var gameData = new GameData(File.ReadAllBytes("containerlockabletest.aslx"), "containerlockabletest.aslx");
         var worldModel = Helpers.CreateWorldModel(gameData);
 
         worldModel.LogError += ex => throw ex;

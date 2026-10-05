@@ -13,8 +13,7 @@ public class PackagerTests
     [TestMethod]
     public async Task CreatePackage_RoundTripsGameAndAssets()
     {
-        var gameDataProvider = new FileGameDataProvider("savetest.aslx");
-        var gameData = await gameDataProvider.GetData();
+        var gameData = new GameData(File.ReadAllBytes("savetest.aslx"), "savetest.aslx");
         var worldModel = Helpers.CreateWorldModel(gameData);
         worldModel.LogError += ex => throw ex;
 
@@ -39,8 +38,7 @@ public class PackagerTests
         Assert.IsTrue(success, error);
 
         var packageBytes = packageStream.ToArray();
-        var packageProvider = new ByteArrayGameDataProvider(packageBytes, "game.quest");
-        var packageGameData = await packageProvider.GetData();
+        var packageGameData = new GameData(packageBytes, "game.quest");
         var reloadedWorldModel = Helpers.CreateWorldModel(packageGameData);
         reloadedWorldModel.LogError += ex => throw ex;
 
@@ -64,8 +62,7 @@ public class PackagerTests
     [TestMethod]
     public async Task CreatePackage_EmbedsIfidAsZipArchiveComment()
     {
-        var gameDataProvider = new FileGameDataProvider("savetest.aslx");
-        var gameData = await gameDataProvider.GetData();
+        var gameData = new GameData(File.ReadAllBytes("savetest.aslx"), "savetest.aslx");
         var worldModel = Helpers.CreateWorldModel(gameData);
         worldModel.LogError += ex => throw ex;
 
@@ -91,8 +88,7 @@ public class PackagerTests
     [TestMethod]
     public async Task CreatePackage_OmitsWalkthroughs()
     {
-        var gameDataProvider = new FileGameDataProvider("savetest.aslx");
-        var gameData = await gameDataProvider.GetData();
+        var gameData = new GameData(File.ReadAllBytes("savetest.aslx"), "savetest.aslx");
         var worldModel = Helpers.CreateWorldModel(gameData);
         worldModel.LogError += ex => throw ex;
 
@@ -120,8 +116,7 @@ public class PackagerTests
     [TestMethod]
     public async Task CreatePackage_WritesEntriesWithoutByteOrderMark()
     {
-        var gameDataProvider = new FileGameDataProvider("savetest.aslx");
-        var gameData = await gameDataProvider.GetData();
+        var gameData = new GameData(File.ReadAllBytes("savetest.aslx"), "savetest.aslx");
         var worldModel = Helpers.CreateWorldModel(gameData);
         worldModel.LogError += ex => throw ex;
 
@@ -152,8 +147,7 @@ public class PackagerTests
     [TestMethod]
     public async Task CreatePackage_EmbedsMetadataIFiction()
     {
-        var gameDataProvider = new FileGameDataProvider("savetest.aslx");
-        var gameData = await gameDataProvider.GetData();
+        var gameData = new GameData(File.ReadAllBytes("savetest.aslx"), "savetest.aslx");
         var worldModel = Helpers.CreateWorldModel(gameData);
         worldModel.LogError += ex => throw ex;
 
@@ -221,8 +215,7 @@ public class PackagerTests
         StringAssert.Contains(ifiction, "<releasedate>");
 
         // metadata.iFiction is a bibliographic sidecar, not a playable game resource
-        var packageProvider = new ByteArrayGameDataProvider(packageStream.ToArray(), "game.quest");
-        var packageGameData = await packageProvider.GetData();
+        var packageGameData = new GameData(packageStream.ToArray(), "game.quest");
         var reloaded = Helpers.CreateWorldModel(packageGameData);
         Assert.IsTrue(await reloaded.Initialise(player.Object), "Reloaded package failed to initialise");
         CollectionAssert.DoesNotContain(((IGame)reloaded).GetResourceNames().ToList(), "metadata.iFiction");

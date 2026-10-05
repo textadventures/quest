@@ -18,8 +18,7 @@ public class LegacyBlockingTests
     public async Task Init()
     {
         var filename = Path.Combine("..", "..", "..", "v410test.asl");
-        var gameDataProvider = new FileGameDataProvider(filename);
-        var gameData = await gameDataProvider.GetData();
+        var gameData = new GameData(File.ReadAllBytes(filename), filename);
         _game = new V4Game(gameData, null);
         _game.PrintText += _player.PrintText;
         await _game.Initialise(_player);

@@ -59,7 +59,7 @@ internal sealed class GameDriver
     // running to completion synchronously.
     public static async Task<GameDriver> LoadAsync(string filename, bool yieldInRunScript = false)
     {
-        var data = await new FileGameDataProvider(filename).GetData();
+        var data = new GameData(File.ReadAllBytes(filename), filename);
         var model = new WorldModel(data, null);
         var playerMock = new Mock<IPlayer>();
         var driver = new GameDriver(model, playerMock, yieldInRunScript);

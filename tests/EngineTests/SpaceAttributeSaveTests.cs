@@ -14,8 +14,7 @@ public class SpaceAttributeSaveTests
     [TestMethod]
     public async Task ListAndDictionaryAttributesWithSpacesInNamesSurviveSaveAndReload()
     {
-        var gameDataProvider = new FileGameDataProvider("spaceattributesavetest.aslx");
-        var gameData = await gameDataProvider.GetData();
+        var gameData = new GameData(File.ReadAllBytes("spaceattributesavetest.aslx"), "spaceattributesavetest.aslx");
         var worldModel = Helpers.CreateWorldModel(gameData);
 
         worldModel.LogError += ex => throw ex;
@@ -33,8 +32,7 @@ public class SpaceAttributeSaveTests
             var saveData = worldModel.Save(SaveMode.SavedGame, html: null);
             await File.WriteAllTextAsync(tempFilename, saveData);
 
-            var reloadedGameDataProvider = new FileGameDataProvider(tempFilename);
-            var reloadedGameData = await reloadedGameDataProvider.GetData();
+            var reloadedGameData = new GameData(File.ReadAllBytes(tempFilename), tempFilename);
             var reloadedWorldModel = Helpers.CreateWorldModel(reloadedGameData);
             reloadedWorldModel.LogError += ex => throw ex;
 

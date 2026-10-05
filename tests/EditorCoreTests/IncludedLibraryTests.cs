@@ -42,8 +42,8 @@ public class IncludedLibraryTests
     // Regression test for a bug where adding a custom Included Library, saving, then reloading
     // failed with "Library file not found" — CreateNewIncludedLibrary only records the filename
     // (see IncludeSaver, which writes <include ref="custom.aslx"/>, not the library's content), so
-    // reloading has to fetch that content again via GetAdjacentFile. WasmEditorBridge fed
-    // ByteArrayGameDataProvider with no adjacent-file lookup at all, so any non-built-in library
+    // reloading has to fetch that content again via GetAdjacentFile. WasmEditorBridge built
+    // its GameData with no adjacent files at all, so any non-built-in library
     // failed to resolve on every reload after the initial (content-free) creation.
     [TestMethod]
     public async Task TestCustomLibraryFailsToReloadWithoutAdjacentFileBytes()
@@ -55,7 +55,7 @@ public class IncludedLibraryTests
         string? errorMessage = null;
         reloadController.ShowMessage += (_, e) => errorMessage = e.Message;
 
-        var ok = await reloadController.Initialise(new ByteArrayGameDataProvider(savedBytes, "test.aslx"));
+        var ok = await reloadController.Initialise(new GameData(savedBytes, "test.aslx"));
 
         Assert.IsFalse(ok, "Reload should fail when the custom library's bytes aren't supplied");
         StringAssert.Contains(errorMessage, "Library file not found: custom.aslx");
@@ -73,7 +73,7 @@ public class IncludedLibraryTests
 
         var reloadController = new EditorController();
         var ok = await reloadController.Initialise(
-            new ByteArrayGameDataProvider(savedBytes, "test.aslx", adjacentFiles));
+            new GameData(savedBytes, "test.aslx", adjacentFiles));
 
         Assert.IsTrue(ok, "Reload should succeed once the custom library's bytes are supplied");
         reloadController.Uninitialise();
@@ -130,7 +130,7 @@ public class IncludedLibraryTests
         controller.Dirty += (_, _) => { };
         attachExtraEvents?.Invoke(controller);
 
-        var ok = await controller.Initialise(new ByteArrayGameDataProvider(bytes, "test.aslx"));
+        var ok = await controller.Initialise(new GameData(bytes, "test.aslx"));
         Assert.IsTrue(ok, $"Initialisation failed for template '{templateName}'");
 
         // Building the tree at least once (as every real caller does right after a successful

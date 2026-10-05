@@ -16,8 +16,7 @@ public class SceneryInventoryTests
     [TestMethod]
     public async Task RunWalkthrough()
     {
-        var gameDataProvider = new FileGameDataProvider("sceneryinventorytest.aslx");
-        var gameData = await gameDataProvider.GetData();
+        var gameData = new GameData(File.ReadAllBytes("sceneryinventorytest.aslx"), "sceneryinventorytest.aslx");
         var worldModel = Helpers.CreateWorldModel(gameData);
 
         worldModel.LogError += ex => throw ex;
