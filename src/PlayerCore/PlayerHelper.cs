@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Xml;
@@ -53,8 +52,6 @@ public class PlayerHelper
 
     public PlayerHelper(IGame game, IPlayerHelperUI playerUI)
     {
-        UseGameColours = true;
-        UseGameFont = true;
         _playerUI = playerUI;
         Game = game;
 
@@ -63,12 +60,6 @@ public class PlayerHelper
 
     public IGame Game { get; }
 
-    public bool UseGameColours { get; set; }
-    public bool UseGameFont { get; set; }
-
-    public string PlayerOverrideForeground { get; set; } = "";
-    public string PlayerOverrideFontFamily { get; set; } = "";
-    public float PlayerOverrideFontSize { get; set; }
 
     public async Task<(bool, IEnumerable<string>)> Initialise(IPlayer player)
     {
@@ -294,37 +285,23 @@ public class PlayerHelper
     private string GetCurrentFormat(string? linkForeground)
     {
         var style = "";
-        if (UseGameFont)
+        if (!string.IsNullOrEmpty(_font))
         {
-            if (!string.IsNullOrEmpty(_font))
-            {
-                style += string.Format("font-family:{0};", _font);
-            }
-        }
-        else
-        {
-            style += string.Format("font-family:{0};", PlayerOverrideFontFamily);
+            style += string.Format("font-family:{0};", _font);
         }
 
         string colour;
-        if (UseGameColours)
+        if (!string.IsNullOrEmpty(linkForeground))
         {
-            if (!string.IsNullOrEmpty(linkForeground))
-            {
-                colour = linkForeground;
-            }
-            else
-            {
-                colour = _foregroundOverride;
-                if (colour.Length == 0)
-                {
-                    colour = _foreground;
-                }
-            }
+            colour = linkForeground;
         }
         else
         {
-            colour = PlayerOverrideForeground;
+            colour = _foregroundOverride;
+            if (colour.Length == 0)
+            {
+                colour = _foreground;
+            }
         }
 
         if (colour.Length > 0)
@@ -332,18 +309,10 @@ public class PlayerHelper
             style += string.Format("color:{0};", colour);
         }
 
-        string fontSize;
-        if (UseGameFont)
+        var fontSize = _fontSizeOverride;
+        if (fontSize.Length == 0)
         {
-            fontSize = _fontSizeOverride;
-            if (fontSize.Length == 0)
-            {
-                fontSize = _fontSize;
-            }
-        }
-        else
-        {
-            fontSize = PlayerOverrideFontSize.ToString(CultureInfo.InvariantCulture);
+            fontSize = _fontSize;
         }
 
         if (fontSize.Length > 0)
