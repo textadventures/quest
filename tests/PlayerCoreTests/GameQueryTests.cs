@@ -5,10 +5,12 @@ namespace QuestViva.PlayerCoreTests;
 [TestClass]
 public class GameQueryTests
 {
+    private static GameQuery Query(string filename) => new(filename, File.ReadAllBytes(filename));
+
     [TestMethod]
     public async Task TestValidASL()
     {
-        var query = new GameQuery("test1.asl");
+        var query = Query("test1.asl");
         var result = await query.Initialise();
         Assert.IsTrue(result);
         Assert.AreEqual("Test ASL Game", query.GameName);
@@ -23,7 +25,7 @@ public class GameQueryTests
     [TestMethod]
     public async Task TestInvalidASL()
     {
-        var query = new GameQuery("test2.asl");
+        var query = Query("test2.asl");
         var result = await query.Initialise();
         Assert.IsFalse(result);
     }
@@ -31,7 +33,7 @@ public class GameQueryTests
     [TestMethod]
     public async Task TestValidQuest()
     {
-        var query = new GameQuery("test1.quest");
+        var query = Query("test1.quest");
         var result = await query.Initialise();
         Assert.IsTrue(result);
         Assert.AreEqual("Test ASLX Game", query.GameName);
@@ -45,7 +47,7 @@ public class GameQueryTests
     [TestMethod]
     public async Task TestLanguageId()
     {
-        var query = new GameQuery("test-de.quest");
+        var query = Query("test-de.quest");
         var result = await query.Initialise();
         Assert.IsTrue(result);
         Assert.AreEqual("de", query.LanguageId);
@@ -55,7 +57,7 @@ public class GameQueryTests
     [TestMethod]
     public async Task TestGameObjects()
     {
-        var query = new GameQuery("test-de.quest");
+        var query = Query("test-de.quest");
         var result = await query.Initialise();
         Assert.IsTrue(result);
 
@@ -80,7 +82,7 @@ public class GameQueryTests
     [TestMethod]
     public async Task TestGameObjectsASL()
     {
-        var query = new GameQuery("test1.asl");
+        var query = Query("test1.asl");
         var result = await query.Initialise();
         Assert.IsTrue(result);
         Assert.IsNull(query.GameObjects);
@@ -89,7 +91,7 @@ public class GameQueryTests
     [TestMethod]
     public async Task TestInvalidQuest()
     {
-        var query = new GameQuery("test2.quest");
+        var query = Query("test2.quest");
         var result = await query.Initialise();
         Assert.IsFalse(result);
     }
@@ -97,7 +99,7 @@ public class GameQueryTests
     [TestMethod]
     public async Task TestQuestResources()
     {
-        var query = new GameQuery("resources.quest");
+        var query = Query("resources.quest");
         var result = await query.Initialise();
         Assert.IsTrue(result);
         var resources = query.GetResourceNames()?.ToList();
