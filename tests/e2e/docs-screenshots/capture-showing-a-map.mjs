@@ -86,7 +86,7 @@ async function setReciprocalExitLength(page, roomName, destName, length) {
 
 // The player dot (and, after it, the view's pan/recentre offset) animate toward their new
 // position over several requestAnimationFrame ticks rather than snapping instantly - see
-// src/PlayerCore/Resources/grid.js's onFrame()/gridApi.drawPlayer (playerVector/offsetVector
+// src/WasmPlayer/player-ui/grid.js's onFrame()/gridApi.drawPlayer (playerVector/offsetVector
 // are plain top-level `var`s in a non-module script, so genuinely reachable as window globals).
 // sendCommand() only waits for the game-logic turn to finish, not this separate canvas
 // animation, so a screenshot taken right after the last movement command can catch the dot

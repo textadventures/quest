@@ -2772,8 +2772,7 @@ var platform = "desktop";
 // #qv-saves/Slots dialog. dict is always fully populated (every key defaults
 // to English), so a missing key here just means dict itself is null/undefined
 // (no game loaded, no snapshot available) - existing markup is left untouched
-// in that case. Shared by both players (playercore.htm's chrome is common to
-// both), called from wasm-player.js and from WebPlayer.setChromeStrings below.
+// in that case. Called from wasm-player.js.
 function applyChromeStrings(dict) {
     if (!dict) return;
     document.querySelectorAll('[data-chrome-key]').forEach(el => {
