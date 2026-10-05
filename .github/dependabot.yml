@@ -23,7 +23,28 @@ updates:
     directory: "/src/AppShell"
     schedule:
       interval: "weekly"
+    # @types/node tracks the Node major CI builds AppShell with (22, see the
+    # workflows' setup-node), not the latest Node.
+    ignore:
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+    # Packages whose majors only work together, listed before the catch-all
+    # so their majors share a PR: @sveltejs/kit 3 needs adapter-static 4 (the
+    # old adapter only accepts kit 2), and skeleton-svelte must match the
+    # skeleton CSS version. Their minor and patch updates still go through
+    # appshell-dependencies.
     groups:
+      sveltekit-major:
+        patterns:
+          - "@sveltejs/kit"
+          - "@sveltejs/adapter-*"
+        update-types:
+          - "major"
+      skeleton-major:
+        patterns:
+          - "@skeletonlabs/*"
+        update-types:
+          - "major"
       appshell-dependencies:
         patterns:
           - "*"
