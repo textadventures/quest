@@ -11,7 +11,8 @@
 //      is the one selector that *does* match the root, so this is how the
 //      theme tokens end up defined on the `.qv-chrome` element (custom
 //      properties then inherit normally to its descendants regardless of
-//      the scope boundary, which only governs selector matching).
+//      the scope boundary, which only governs selector matching). Bare
+//      `:root { --... }` blocks, which Skeleton 5 adds, are rewritten too.
 //   2. `@property` declarations are hoisted out to the top level. Chromium
 //      silently drops an entire `@scope` block's sibling content if it
 //      contains a nested `@property` rule — verified empirically, not
@@ -66,6 +67,13 @@ function extractAtRuleBlocks(css, atRuleName) {
 
 let css = fs.readFileSync(target, 'utf8');
 css = css.replace(/:root,\s*:host\s*\{/g, ':scope, :host {');
+// Skeleton 5 also declares custom properties (--text-scaling, --typo-*, ...)
+// in bare `:root { ... }` blocks, which would match nothing inside @scope.
+// Only blocks that start with a custom property are rewritten: the remaining
+// bare `:root` rules (color-scheme, tap-highlight) have always been dead
+// here, and making them live would switch the dialogs to dark mode on a
+// dark-mode system.
+css = css.replace(/:root\s*\{(?=\s*--)/g, ':scope {');
 
 const { css: withoutProperties, blocks: propertyBlocks } = extractAtRuleBlocks(css, 'property');
 
