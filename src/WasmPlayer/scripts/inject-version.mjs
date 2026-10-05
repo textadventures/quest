@@ -11,6 +11,10 @@
 // browser revalidate ~20 files on every single page load. wasm-player.js does
 // the same for the assets it fetches from JS rather than from the markup.
 //
+// QUESTVIVA_BUILD_VERSION overrides VERSION. deploy-play.yml sets it for a
+// manual (non-tag) deploy, where VERSION still holds the last release and so
+// wouldn't change between deploys.
+//
 // Run via `npm run build`, after build-icons.mjs has produced generated/index.html.
 
 import fs from 'node:fs';
@@ -21,7 +25,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '..');
 const repoRoot = path.resolve(root, '..', '..');
 
-const version = fs.readFileSync(path.join(repoRoot, 'VERSION'), 'utf8').trim();
+const version = process.env.QUESTVIVA_BUILD_VERSION
+    || fs.readFileSync(path.join(repoRoot, 'VERSION'), 'utf8').trim();
 
 const target = path.join(root, 'generated', 'index.html');
 const html = fs.readFileSync(target, 'utf8');

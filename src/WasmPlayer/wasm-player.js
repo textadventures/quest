@@ -3,7 +3,8 @@
 // then initialises the .NET WASM runtime and wires up [JSImport] callbacks.
 
 // Printed as soon as this script runs (i.e. as the start screen appears) —
-// window.QuestVivaVersion comes from the repo-root VERSION file, spliced in
+// window.QuestVivaVersion comes from the repo-root VERSION file (or a manual
+// deploy's build version, see deploy-play.yml), spliced in
 // at build time by scripts/inject-version.mjs, so this doesn't need to wait
 // for the WASM runtime to boot (which only happens once a game loads).
 console.log(
