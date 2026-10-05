@@ -52,6 +52,25 @@ jobs:
           fi
           echo "Channel: $CHANNEL"
 
+      # The version each build reports, which also becomes the `?v=` cache key
+      # on every asset (see the _headers comment below). A tag build uses the
+      # tag. A manual build can't use VERSION: that still holds the last
+      # release, so every manual deploy would share one cache key, and since
+      # the .NET output isn't byte-reproducible, edge caches would mix one
+      # deploy's _framework binaries with another's hash manifest and fail
+      # SRI. The run ID and attempt keep it unique even when the same commit
+      # is deployed twice.
+      - name: Determine the build version
+        id: version
+        run: |
+          if [ "$GITHUB_REF_TYPE" == "tag" ]; then
+            BUILD_VERSION="$GITHUB_REF_NAME"
+          else
+            BUILD_VERSION="${GITHUB_SHA::7}-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+          fi
+          echo "build_version=$BUILD_VERSION" >> "$GITHUB_OUTPUT"
+          echo "Build version: $BUILD_VERSION"
+
       - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '10.0.x'
@@ -71,6 +90,10 @@ jobs:
 
       - name: Publish WasmPlayer
         run: dotnet publish src/WasmPlayer/WasmPlayer.csproj -c Release
+        env:
+          # Read by scripts/inject-version.mjs. Left empty for a tag build,
+          # which uses VERSION (checked against the tag above).
+          QUESTVIVA_BUILD_VERSION: ${{ github.ref_type != 'tag' && steps.version.outputs.build_version || '' }}
 
       # BASE_PATH is unset (defaults to root) and PUBLIC_SHOW_HOME=true — this
       # build serves the Play/Create Home content at root and /open, plus the
@@ -82,7 +105,7 @@ jobs:
         run: npm ci && npm run build
         working-directory: src/AppShell
         env:
-          PUBLIC_APPSHELL_VERSION: ${{ github.ref_type == 'tag' && github.ref_name || github.sha }}
+          PUBLIC_APPSHELL_VERSION: ${{ steps.version.outputs.build_version }}
           PUBLIC_HAS_SERVER: false
           PUBLIC_SHOW_HOME: true
           # Shows BetaBanner.svelte on play-beta.questviva.com only.
