@@ -1,10 +1,10 @@
 <script lang="ts">
-    import { selectNode, deleteChildElement, deleteChildElements, swapElements, createExit, getExitsData, createExitInDirection, createLookExitInDirection, scriptVersion } from "$lib/editor-store";
-    import { chooseDialog } from "$lib/confirm";
-    import type { ExitsData, CompassDirectionInfo } from "$lib/types";
+    import { selectNode, deleteChildElement, deleteChildElements, swapElements, createExit, getExitsData, createExitInDirection, createLookExitInDirection, scriptVersion } from "#lib/editor-store.js";
+    import { chooseDialog } from "#lib/confirm.js";
+    import type { ExitsData, CompassDirectionInfo } from "#lib/types.js";
     import Combobox from "./Combobox.svelte";
     import Pencil from "@lucide/svelte/icons/pencil";
-    import { t } from "$lib/i18n";
+    import { t } from "#lib/i18n/index.js";
 
     interface Props {
         elementKey: string;

@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { dialogState } from "$lib/confirm";
-    import { trapFocus } from "$lib/actions/trapFocus";
+    import { dialogState } from "#lib/confirm.js";
+    import { trapFocus } from "#lib/actions/trapFocus.js";
 
     let dialogEl = $state<HTMLDivElement>();
     $effect(() => { if ($dialogState) dialogEl?.focus(); });

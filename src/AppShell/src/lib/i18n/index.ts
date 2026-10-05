@@ -1,5 +1,5 @@
 import { writable, get } from "svelte/store";
-import { base } from "$app/paths";
+import { base } from "#lib/base-path.js";
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES, type Locale } from "./locales";
 import { detectDefaultLocale } from "./detect";
 import { isElectron } from "../runtime";

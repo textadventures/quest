@@ -1,8 +1,8 @@
 <script lang="ts">
-    import { assets, uploadAsset, resolveAssetUrl, parseAssetSource, putAssetText } from "$lib/editor-store";
+    import { assets, uploadAsset, resolveAssetUrl, parseAssetSource, putAssetText } from "#lib/editor-store.js";
     import Combobox from "./Combobox.svelte";
     import FileIcon from "@lucide/svelte/icons/file";
-    import { t } from "$lib/i18n";
+    import { t } from "#lib/i18n/index.js";
 
     let { value, source = null, creatable = false, readonly = false, exclude = [], onchange, onEnter, class: className = "input text-xs py-0.5 px-1.5 w-full min-w-0", containerClass = "" }: {
         value: string;

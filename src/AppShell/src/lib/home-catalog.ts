@@ -1,4 +1,4 @@
-import { PUBLIC_APPSHELL_VERSION } from "$env/static/public";
+import { PUBLIC_APPSHELL_VERSION } from "$app/env/public";
 import { isElectron } from "./runtime";
 
 export interface CatalogGame {

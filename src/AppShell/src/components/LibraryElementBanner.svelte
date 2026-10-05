@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { selectedKey, selectedData, makeElementLocal } from "$lib/editor-store";
-    import { t } from "$lib/i18n";
+    import { selectedKey, selectedData, makeElementLocal } from "#lib/editor-store.js";
+    import { t } from "#lib/i18n/index.js";
 
     let copying = $state(false);
 

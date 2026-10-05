@@ -1,6 +1,6 @@
 import { writable, get } from "svelte/store";
 import { zipSync } from "fflate";
-import { PUBLIC_WASM_PLAYER_URL, PUBLIC_APPSHELL_VERSION } from "$env/static/public";
+import { PUBLIC_WASM_PLAYER_URL, PUBLIC_APPSHELL_VERSION } from "$app/env/public";
 import { loadWasm } from "./wasm";
 import type { WasmBridge } from "./wasm";
 import { isLibraryFilename, type AssetInfo, type FileAdapter } from "./filesystem/types";

@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { showBackupBanner, dismissBackupBanner, backupGame } from "$lib/editor-store";
-    import { t } from "$lib/i18n";
+    import { showBackupBanner, dismissBackupBanner, backupGame } from "#lib/editor-store.js";
+    import { t } from "#lib/i18n/index.js";
 
     let backingUp = $state(false);
 

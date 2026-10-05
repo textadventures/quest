@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { t } from "$lib/i18n";
+    import { t } from "#lib/i18n/index.js";
 </script>
 
 <!-- Only built in for play-beta.questviva.com (PUBLIC_BETA_SITE, set by

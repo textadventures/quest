@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { toasts, dismissToast } from "$lib/toast";
-    import { t } from "$lib/i18n";
+    import { toasts, dismissToast } from "#lib/toast.js";
+    import { t } from "#lib/i18n/index.js";
 </script>
 
 <div class="fixed bottom-4 right-4 z-[60] flex flex-col gap-2 items-end pointer-events-none">

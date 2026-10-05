@@ -7,10 +7,10 @@
     import { closeBrackets, closeBracketsKeymap, autocompletion, completionKeymap, acceptCompletion } from "@codemirror/autocomplete";
     import { searchKeymap } from "@codemirror/search";
     import { javascript } from "@codemirror/lang-javascript";
-    import { questScript } from "$lib/quest-script-lang";
-    import { xmlWithScript } from "$lib/xml-with-script-lang";
-    import { questEditorExtensions } from "$lib/codemirror-theme";
-    import { registerActiveCmView } from "$lib/code-editor-registry";
+    import { questScript } from "#lib/quest-script-lang.js";
+    import { xmlWithScript } from "#lib/xml-with-script-lang.js";
+    import { questEditorExtensions } from "#lib/codemirror-theme.js";
+    import { registerActiveCmView } from "#lib/code-editor-registry.js";
 
     interface Props {
         value: string;

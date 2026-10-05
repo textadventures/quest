@@ -1,9 +1,9 @@
 <script lang="ts">
     import Combobox from "./Combobox.svelte";
     import AssetPicker from "./AssetPicker.svelte";
-    import { t } from "$lib/i18n";
-    import { trapFocus } from "$lib/actions/trapFocus";
-    import type { ControlOption } from "$lib/types";
+    import { t } from "#lib/i18n/index.js";
+    import { trapFocus } from "#lib/actions/trapFocus.js";
+    import type { ControlOption } from "#lib/types.js";
 
     interface Props {
         title: string;

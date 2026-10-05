@@ -1,9 +1,9 @@
 <script lang="ts">
-    import { publishGame, canPublishToServer, getCurrentGameId, listPublishFiles, publishProgress, assetManagerOpen, type PublishFile, type PublishProgress } from "$lib/editor-store";
-    import { loadPublishTarget, type PublishTarget } from "$lib/publish-target";
-    import { formatFileSize } from "$lib/format-size";
-    import { t, tPlural } from "$lib/i18n";
-    import { trapFocus } from "$lib/actions/trapFocus";
+    import { publishGame, canPublishToServer, getCurrentGameId, listPublishFiles, publishProgress, assetManagerOpen, type PublishFile, type PublishProgress } from "#lib/editor-store.js";
+    import { loadPublishTarget, type PublishTarget } from "#lib/publish-target.js";
+    import { formatFileSize } from "#lib/format-size.js";
+    import { t, tPlural } from "#lib/i18n/index.js";
+    import { trapFocus } from "#lib/actions/trapFocus.js";
 
     interface Props {
         oncancel: () => void;

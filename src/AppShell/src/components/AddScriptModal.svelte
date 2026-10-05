@@ -1,9 +1,9 @@
 <script lang="ts">
-    import type { ScriptCategoryInfo, ScriptCommandInfo } from "$lib/types";
-    import { t } from "$lib/i18n";
-    import { docsUrlForScriptKeyword, scriptKeywordName } from "$lib/docs-links";
-    import { isGamebook } from "$lib/editor-store";
-    import { trapFocus } from "$lib/actions/trapFocus";
+    import type { ScriptCategoryInfo, ScriptCommandInfo } from "#lib/types.js";
+    import { t } from "#lib/i18n/index.js";
+    import { docsUrlForScriptKeyword, scriptKeywordName } from "#lib/docs-links.js";
+    import { isGamebook } from "#lib/editor-store.js";
+    import { trapFocus } from "#lib/actions/trapFocus.js";
     import Search from "@lucide/svelte/icons/search";
     import X from "@lucide/svelte/icons/x";
 

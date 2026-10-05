@@ -1,3 +1,5 @@
+import adapter from '@sveltejs/adapter-static'
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
 import { sveltekit } from '@sveltejs/kit/vite'
 import { defineConfig } from 'vite'
 import tailwindcss from '@tailwindcss/vite'
@@ -36,6 +38,9 @@ const playerPort = Number(process.env.WASM_PLAYER_PORT) || 5175
 // CI workflows set PUBLIC_APPSHELL_VERSION explicitly (to github.sha or github.ref_name);
 // locally it's blank, so fall back to the repo-root VERSION file — the same source
 // WasmPlayer's inject-version.mjs uses — so `npm run dev`/plain `npm run build` show a real version too.
+// Where the app is served from. Also exposed to the app as #lib/base-path.ts's `base`.
+const basePath = (process.env.BASE_PATH ?? '') as '' | `/${string}`
+
 if (!process.env.PUBLIC_APPSHELL_VERSION) {
   try {
     const versionFile = fileURLToPath(new URL('../../VERSION', import.meta.url))
@@ -51,9 +56,20 @@ export default defineConfig({
   // once Vite finishes starting last — this is the one place those URLs are
   // visible, so keep them on screen instead.
   clearScreen: false,
+  define: {
+    __APP_BASE_PATH__: JSON.stringify(basePath)
+  },
   plugins: [
     tailwindcss(),
-    sveltekit(),
+    // SvelteKit 3 takes its config here; there's no svelte.config.js any more.
+    sveltekit({
+      preprocess: vitePreprocess(),
+      adapter: adapter({ fallback: 'index.html' }),
+      paths: { base: basePath },
+      // SvelteKit 3 polls for new deployments hourly by default. Nothing here
+      // uses the result (updated.current), so keep SvelteKit 2's no polling.
+      version: { pollInterval: 0 }
+    }),
     {
       name: 'wasm-appbundle',
       configureServer(server) {
