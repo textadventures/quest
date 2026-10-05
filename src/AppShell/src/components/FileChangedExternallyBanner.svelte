@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { showFileChangedExternallyBanner, dismissFileChangedExternallyBanner, reloadGameFromDisk } from "$lib/editor-store";
-    import { t } from "$lib/i18n";
+    import { showFileChangedExternallyBanner, dismissFileChangedExternallyBanner, reloadGameFromDisk } from "#lib/editor-store.js";
+    import { t } from "#lib/i18n/index.js";
 
     let reloading = $state(false);
 

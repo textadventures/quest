@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { t } from "$lib/i18n";
+    import { t } from "#lib/i18n/index.js";
 
     let { page, pageCount, onPage }: { page: number; pageCount: number; onPage: (page: number) => void } = $props();
 </script>

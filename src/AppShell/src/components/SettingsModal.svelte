@@ -1,10 +1,10 @@
 <script lang="ts">
     import { Switch } from "@skeletonlabs/skeleton-svelte";
-    import { settingsModalOpen } from "$lib/settings-store";
-    import { locale, setLocale, SUPPORTED_LOCALES, t } from "$lib/i18n";
-    import { trapFocus } from "$lib/actions/trapFocus";
-    import { theme, setTheme, type ThemePreference } from "$lib/theme-store";
-    import { defaultCodeView, setDefaultCodeView } from "$lib/code-view-store";
+    import { settingsModalOpen } from "#lib/settings-store.js";
+    import { locale, setLocale, SUPPORTED_LOCALES, t } from "#lib/i18n/index.js";
+    import { trapFocus } from "#lib/actions/trapFocus.js";
+    import { theme, setTheme, type ThemePreference } from "#lib/theme-store.js";
+    import { defaultCodeView, setDefaultCodeView } from "#lib/code-view-store.js";
 
     let dialogEl = $state<HTMLDivElement>();
     $effect(() => { if ($settingsModalOpen) dialogEl?.focus(); });

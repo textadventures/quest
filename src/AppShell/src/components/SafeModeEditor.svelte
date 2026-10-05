@@ -1,14 +1,14 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { goto } from "$app/navigation";
-    import { base } from "$app/paths";
+    import { base } from "#lib/base-path.js";
     import {
         lastFailedGameBytes, lastFailedGameFilename, lastOpenGameError,
         retryFailedLoad, listSafeModeLibraryFiles, getAssetText, putAssetText,
-    } from "$lib/editor-store";
-    import { showToast } from "$lib/toast";
+    } from "#lib/editor-store.js";
+    import { showToast } from "#lib/toast.js";
     import CodeEditor from "./CodeEditor.svelte";
-    import { t } from "$lib/i18n";
+    import { t } from "#lib/i18n/index.js";
 
     interface PanelFile {
         filename: string;

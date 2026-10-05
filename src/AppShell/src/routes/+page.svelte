@@ -1,11 +1,11 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { goto } from "$app/navigation";
-    import { base } from "$app/paths";
+    import { base } from "#lib/base-path.js";
     import { get } from "svelte/store";
-    import { PUBLIC_SHOW_HOME } from "$env/static/public";
-    import { isLoaded } from "$lib/editor-store";
-    import PlayCatalog from "$components/PlayCatalog.svelte";
+    import { PUBLIC_SHOW_HOME } from "$app/env/public";
+    import { isLoaded } from "#lib/editor-store.js";
+    import PlayCatalog from "#components/PlayCatalog.svelte";
 
     const showHome = PUBLIC_SHOW_HOME === "true";
 

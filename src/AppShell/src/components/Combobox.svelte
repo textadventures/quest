@@ -1,6 +1,6 @@
 <script lang="ts">
-    import type { ControlOption } from "$lib/types";
-    import { t } from "$lib/i18n";
+    import type { ControlOption } from "#lib/types.js";
+    import { t } from "#lib/i18n/index.js";
 
     let { value, options, onchange, oninput, onEnter, strict = false, class: className = "", wrapperClass = "", style = "" }: {
         value: string;

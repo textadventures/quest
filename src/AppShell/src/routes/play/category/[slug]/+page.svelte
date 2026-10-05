@@ -1,11 +1,11 @@
 <script lang="ts">
     import { page } from "$app/state";
     import { goto } from "$app/navigation";
-    import { base } from "$app/paths";
-    import { fetchCategory, type CatalogGame } from "$lib/home-catalog";
-    import GameCard from "$components/GameCard.svelte";
-    import GamesPager from "$components/GamesPager.svelte";
-    import { t } from "$lib/i18n";
+    import { base } from "#lib/base-path.js";
+    import { fetchCategory, type CatalogGame } from "#lib/home-catalog.js";
+    import GameCard from "#components/GameCard.svelte";
+    import GamesPager from "#components/GamesPager.svelte";
+    import { t } from "#lib/i18n/index.js";
 
     let title = $state<string | null>(null);
     let games = $state<CatalogGame[]>([]);

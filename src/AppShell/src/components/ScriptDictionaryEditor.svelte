@@ -1,8 +1,8 @@
 <script lang="ts">
     import { SvelteSet } from "svelte/reactivity";
-    import { addScriptDictItem, removeScriptDictItem, renameScriptDictItem, makeScriptDictEditable, getObjectNames } from "$lib/editor-store";
+    import { addScriptDictItem, removeScriptDictItem, renameScriptDictItem, makeScriptDictEditable, getObjectNames } from "#lib/editor-store.js";
     import ScriptEditor from "./ScriptEditor.svelte";
-    import { t } from "$lib/i18n";
+    import { t } from "#lib/i18n/index.js";
 
     interface Props {
         elementKey: string;

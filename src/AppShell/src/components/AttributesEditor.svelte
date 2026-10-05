@@ -1,14 +1,14 @@
 <script lang="ts">
     import type { Snippet } from "svelte";
-    import { fullAttributeData, selectedKey, removeAttribute, addInheritedType, removeInheritedType, getTypeNames, setAttribute, setObjectReference, changeAttributeType, setPatternAttribute, getObjectNames } from "$lib/editor-store";
-    import type { AttributeDataItem } from "$lib/types";
+    import { fullAttributeData, selectedKey, removeAttribute, addInheritedType, removeInheritedType, getTypeNames, setAttribute, setObjectReference, changeAttributeType, setPatternAttribute, getObjectNames } from "#lib/editor-store.js";
+    import type { AttributeDataItem } from "#lib/types.js";
     import { Switch } from "@skeletonlabs/skeleton-svelte";
     import X from "@lucide/svelte/icons/x";
     import ScriptEditor from "./ScriptEditor.svelte";
     import ListEditor from "./ListEditor.svelte";
     import DictionaryEditor from "./DictionaryEditor.svelte";
     import ScriptDictionaryEditor from "./ScriptDictionaryEditor.svelte";
-    import { t } from "$lib/i18n";
+    import { t } from "#lib/i18n/index.js";
 
     // Some elements (e.g. the game element's "Status attributes" string
     // dictionary) have other controls alongside the "attributes" control on

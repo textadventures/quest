@@ -2,8 +2,8 @@
     import { AppBar } from "@skeletonlabs/skeleton-svelte";
     import { get } from "svelte/store";
     import { goto } from "$app/navigation";
-    import { base } from "$app/paths";
-    import { PUBLIC_WASM_PLAYER_URL, PUBLIC_SHOW_HOME } from "$env/static/public";
+    import { base } from "#lib/base-path.js";
+    import { PUBLIC_WASM_PLAYER_URL, PUBLIC_SHOW_HOME } from "$app/env/public";
     import {
         gameFilename, isLoaded, isDirty, isSaving, isEditingField, getLastEditedElement, saveError, retrySave, saveGame, saveGameAs, canSaveAs, backupGame, canBackup,
         publishModalOpen,
@@ -16,11 +16,11 @@
         assetManagerOpen,
         codeViewPanelOpen,
         codeViewCloseRequested,
-    } from "$lib/editor-store";
-    import { hasActiveCmView, cmUndo, cmRedo } from "$lib/code-editor-registry";
-    import { settingsModalOpen } from "$lib/settings-store";
-    import { t } from "$lib/i18n";
-    import type { TreeNode } from "$lib/types";
+    } from "#lib/editor-store.js";
+    import { hasActiveCmView, cmUndo, cmRedo } from "#lib/code-editor-registry.js";
+    import { settingsModalOpen } from "#lib/settings-store.js";
+    import { t } from "#lib/i18n/index.js";
+    import type { TreeNode } from "#lib/types.js";
     import Home from "@lucide/svelte/icons/home";
     import ArrowLeft from "@lucide/svelte/icons/arrow-left";
     import ArrowRight from "@lucide/svelte/icons/arrow-right";
@@ -42,12 +42,12 @@
     import FileCode from "@lucide/svelte/icons/file-code";
     import SettingsIcon from "@lucide/svelte/icons/settings";
     import BookOpen from "@lucide/svelte/icons/book-open";
-    import DiscordIcon from "$components/DiscordIcon.svelte";
-    import GithubIcon from "$components/GithubIcon.svelte";
-    import DropdownMenu from "$components/DropdownMenu.svelte";
-    import type { DropdownMenuItem } from "$components/DropdownMenu.svelte";
-    import { isNarrow } from "$lib/layout.svelte";
-    import { DOCS_URL } from "$lib/docs-links";
+    import DiscordIcon from "#components/DiscordIcon.svelte";
+    import GithubIcon from "#components/GithubIcon.svelte";
+    import DropdownMenu from "#components/DropdownMenu.svelte";
+    import type { DropdownMenuItem } from "#components/DropdownMenu.svelte";
+    import { isNarrow } from "#lib/layout.svelte.js";
+    import { DOCS_URL } from "#lib/docs-links.js";
 
     const DISCORD_URL = "https://textadventures.co.uk/community/discord";
     const GITHUB_URL = "https://github.com/textadventures/quest";

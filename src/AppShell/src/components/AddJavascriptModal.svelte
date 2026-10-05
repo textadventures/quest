@@ -1,7 +1,7 @@
 <script lang="ts">
-    import { assets, treeNodes, uniqueAssetName, putAssetText } from "$lib/editor-store";
-    import { t } from "$lib/i18n";
-    import { trapFocus } from "$lib/actions/trapFocus";
+    import { assets, treeNodes, uniqueAssetName, putAssetText } from "#lib/editor-store.js";
+    import { t } from "#lib/i18n/index.js";
+    import { trapFocus } from "#lib/actions/trapFocus.js";
     import AssetPicker from "./AssetPicker.svelte";
 
     interface Props {

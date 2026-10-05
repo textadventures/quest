@@ -1,7 +1,7 @@
 <script lang="ts">
-    import { base } from "$app/paths";
-    import { languageName, type CatalogGame } from "$lib/home-catalog";
-    import { t } from "$lib/i18n";
+    import { base } from "#lib/base-path.js";
+    import { languageName, type CatalogGame } from "#lib/home-catalog.js";
+    import { t } from "#lib/i18n/index.js";
 
     let { game }: { game: CatalogGame } = $props();
 

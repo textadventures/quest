@@ -1,9 +1,9 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { assets, treeNodes, refreshAssets, uploadAsset, deleteAssetAndOwner, resolveAssetUrl, isImageAsset } from "$lib/editor-store";
-    import { confirmDialog } from "$lib/confirm";
-    import { t } from "$lib/i18n";
-    import { trapFocus } from "$lib/actions/trapFocus";
+    import { assets, treeNodes, refreshAssets, uploadAsset, deleteAssetAndOwner, resolveAssetUrl, isImageAsset } from "#lib/editor-store.js";
+    import { confirmDialog } from "#lib/confirm.js";
+    import { t } from "#lib/i18n/index.js";
+    import { trapFocus } from "#lib/actions/trapFocus.js";
     import FileIcon from "@lucide/svelte/icons/file";
 
     interface Props {

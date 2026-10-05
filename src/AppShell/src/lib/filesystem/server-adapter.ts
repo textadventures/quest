@@ -1,5 +1,5 @@
 import type { AssetInfo, FileAdapter, LoadedFile } from "./types";
-import { loadWasm } from "$lib/wasm";
+import { loadWasm } from "#lib/wasm.js";
 
 export interface GameTemplate {
     id: string;

@@ -1,11 +1,11 @@
 <script lang="ts">
-    import { fullAttributeData, scriptVersion, setAttribute, removeAttribute, changeAttributeType, getVerbAttributesInfo, addVerb } from "$lib/editor-store";
-    import type { AttributeDataItem } from "$lib/types";
+    import { fullAttributeData, scriptVersion, setAttribute, removeAttribute, changeAttributeType, getVerbAttributesInfo, addVerb } from "#lib/editor-store.js";
+    import type { AttributeDataItem } from "#lib/types.js";
     import ScriptEditor from "./ScriptEditor.svelte";
     import ScriptDictionaryEditor from "./ScriptDictionaryEditor.svelte";
     import Combobox from "./Combobox.svelte";
     import X from "@lucide/svelte/icons/x";
-    import { t } from "$lib/i18n";
+    import { t } from "#lib/i18n/index.js";
 
     interface Props {
         elementKey: string;

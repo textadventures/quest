@@ -1,20 +1,20 @@
 <script lang="ts">
     import { onMount, onDestroy } from "svelte";
-    import { base } from "$app/paths";
+    import { base } from "#lib/base-path.js";
     import { goto } from "$app/navigation";
     import { page } from "$app/state";
-    import { fetchCatalog, type CatalogCategory, type UpdateInfo } from "$lib/home-catalog";
-    import { isElectron } from "$lib/runtime";
-    import { listRecentGames, removeRecentGame, type RecentGame } from "$lib/filesystem/electron-adapter";
-    import { playElectronFile, pickAndPlayElectronFile, closeLocalPlayChannel } from "$lib/filesystem/local-play";
-    import { pickFile } from "$lib/filesystem/file-picker";
-    import { listRecentCatalogPlays, removeRecentCatalogPlay, type RecentCatalogPlay } from "$lib/recent-catalog-plays.svelte";
-    import UpdateBanner from "$components/UpdateBanner.svelte";
-    import GameCard from "$components/GameCard.svelte";
-    import RecentGameCard from "$components/RecentGameCard.svelte";
-    import LocalFileRecentCard from "$components/LocalFileRecentCard.svelte";
+    import { fetchCatalog, type CatalogCategory, type UpdateInfo } from "#lib/home-catalog.js";
+    import { isElectron } from "#lib/runtime.js";
+    import { listRecentGames, removeRecentGame, type RecentGame } from "#lib/filesystem/electron-adapter.js";
+    import { playElectronFile, pickAndPlayElectronFile, closeLocalPlayChannel } from "#lib/filesystem/local-play.js";
+    import { pickFile } from "#lib/filesystem/file-picker.js";
+    import { listRecentCatalogPlays, removeRecentCatalogPlay, type RecentCatalogPlay } from "#lib/recent-catalog-plays.svelte.js";
+    import UpdateBanner from "#components/UpdateBanner.svelte";
+    import GameCard from "#components/GameCard.svelte";
+    import RecentGameCard from "#components/RecentGameCard.svelte";
+    import LocalFileRecentCard from "#components/LocalFileRecentCard.svelte";
     import ChevronDown from "@lucide/svelte/icons/chevron-down";
-    import { t } from "$lib/i18n";
+    import { t } from "#lib/i18n/index.js";
 
     const isElectronApp = isElectron();
 

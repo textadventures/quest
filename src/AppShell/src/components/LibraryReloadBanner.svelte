@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { showLibraryReloadBanner, dismissLibraryReloadBanner, reloadGame } from "$lib/editor-store";
-    import { t } from "$lib/i18n";
+    import { showLibraryReloadBanner, dismissLibraryReloadBanner, reloadGame } from "#lib/editor-store.js";
+    import { t } from "#lib/i18n/index.js";
 
     let reloading = $state(false);
 
