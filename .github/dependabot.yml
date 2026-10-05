@@ -28,6 +28,11 @@ updates:
     ignore:
       - dependency-name: "@types/node"
         update-types: ["version-update:semver-major"]
+      # TypeScript 7 isn't accepted by SvelteKit (2 or 3), typescript-eslint
+      # or svelte-check yet (#2482). Remove this once their peer ranges allow
+      # it. ElectronApp has none of those and is already on 7.
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
     # Packages whose majors only work together, listed before the catch-all
     # so their majors share a PR: @sveltejs/kit 3 needs adapter-static 4 (the
     # old adapter only accepts kit 2), and skeleton-svelte must match the
