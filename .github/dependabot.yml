@@ -29,6 +29,11 @@ updates:
     directory: "/src/ElectronApp"
     schedule:
       interval: "weekly"
+    # @types/node tracks the Node major that Electron bundles (24 for
+    # Electron 43 and 44), not the latest Node. Bump it by hand with Electron.
+    ignore:
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
     groups:
       electron:
         patterns:
