@@ -23,8 +23,8 @@ const wasmConfig = process.env.WASM_CONFIG === "Release" ? "Release" : "Debug";
 
 const sources = {
     editor: path.join(repoRoot, "src/AppShell/build"),
-    AppBundle: path.join(repoRoot, `src/WasmEditor/bin/${wasmConfig}/net10.0/browser-wasm/AppBundle`),
-    player: path.join(repoRoot, `src/WasmPlayer/bin/${wasmConfig}/net10.0/browser-wasm/AppBundle`),
+    AppBundle: path.join(repoRoot, `src/WasmEditor/bin/${wasmConfig}/net11.0/browser-wasm/AppBundle`),
+    player: path.join(repoRoot, `src/WasmPlayer/bin/${wasmConfig}/net11.0/browser-wasm/AppBundle`),
 };
 
 const destRoot = path.join(__dirname, "../resources/app-static");

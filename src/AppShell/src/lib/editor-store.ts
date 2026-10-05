@@ -1107,7 +1107,7 @@ async function exportHtmlZip(signal: AbortSignal): Promise<void> {
     if (!manifestResponse.ok) {
         throw new Error(`HTML export: player export manifest missing (HTTP ${manifestResponse.status}).`);
     }
-    const bootBytes = await fetchPlayerFile(playerBase, "_framework/dotnet.boot.js");
+    const bootBytes = await fetchPlayerFile(playerBase, "_framework/dotnet.js");
     if (!bootBytes) throw new Error("HTML export: WasmPlayer boot manifest missing from /player/.");
     const paths = _bridge!.GetPlayerExportFiles(await manifestResponse.text(), new TextDecoder().decode(bootBytes));
 

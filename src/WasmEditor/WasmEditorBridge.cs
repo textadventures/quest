@@ -842,10 +842,10 @@ public partial class WasmEditorBridge
             string.IsNullOrEmpty(cdnBase) ? null : cdnBase);
 
     // The player files the zip export puts beside its page, from the player's export-manifest.json
-    // and _framework/dotnet.boot.js.
+    // and _framework/dotnet.js, which holds the boot manifest.
     [JSExport]
-    public static string[] GetPlayerExportFiles(string exportManifestJson, string bootJs) =>
-        [.. PlayerExport.PlayerFiles(exportManifestJson, bootJs)];
+    public static string[] GetPlayerExportFiles(string exportManifestJson, string dotnetJs) =>
+        [.. PlayerExport.PlayerFiles(exportManifestJson, dotnetJs)];
 
     [JSExport]
     public static int GetAslVersion() => _controller?.AslVersion ?? 0;

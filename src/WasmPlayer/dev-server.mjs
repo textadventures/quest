@@ -16,7 +16,7 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const isRelease = process.argv.includes('--release');
 const config = isRelease ? 'Release' : 'Debug';
-const appBundleDir = path.resolve(__dirname, `bin/${config}/net10.0/browser-wasm/AppBundle`);
+const appBundleDir = path.resolve(__dirname, `bin/${config}/net11.0/browser-wasm/AppBundle`);
 const examplesDir = path.resolve(__dirname, '../../examples');
 const e2eFixturesDir = path.resolve(__dirname, '../../tests/e2e/fixtures');
 const port = Number(process.env.WASM_PLAYER_PORT) || 5175;

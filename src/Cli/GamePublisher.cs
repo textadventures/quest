@@ -177,8 +177,8 @@ internal static class GamePublisher
     {
         var manifest = player.Read("export-manifest.json")
                        ?? throw new InvalidOperationException("The player has no export-manifest.json.");
-        var boot = player.Read("_framework/dotnet.boot.js")
-                   ?? throw new InvalidOperationException("The player has no _framework/dotnet.boot.js.");
+        var boot = player.Read("_framework/dotnet.js")
+                   ?? throw new InvalidOperationException("The player has no _framework/dotnet.js.");
 
         var cover = world.Cover?.Trim() is { Length: > 0 } coverName
             ? folderFiles.FirstOrDefault(f => f.Name == coverName)

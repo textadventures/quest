@@ -12,7 +12,7 @@
 //
 // The _framework/ half matters twice over: those filenames aren't
 // content-hashed and the build output isn't byte-reproducible, so pairing a cached
-// dotnet.boot.js (the manifest of per-file SHA-256 hashes) with a binary from a
+// boot manifest of per-file SHA-256 hashes (inlined into dotnet.js) with a binary from a
 // different deploy fails the SRI integrity check and blocks the resource.
 //
 // Run against the WasmPlayer dev server:

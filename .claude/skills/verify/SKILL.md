@@ -26,7 +26,7 @@ after creating a script is expected: add the step, don't ignore it.
 1. Rebuild whatever project you touched, e.g.:
    `dotnet build src/WasmPlayer/WasmPlayer.csproj` (Debug — fast interpreter,
    good enough for behavior checks; static JS like `wasm-player.js` is a
-   plain copy into `bin/Debug/net10.0/browser-wasm/AppBundle/` on every
+   plain copy into `bin/Debug/net11.0/browser-wasm/AppBundle/` on every
    build, no separate step needed).
 2. Start the relevant dev server, e.g. `node src/WasmPlayer/dev-server.mjs`
    (serves `http://localhost:5175`, reads `?id=`/`?url=` query params).
