@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Quest Viva is an open-source system for creating and playing text adventure games. It's a .NET 10.0 C# application, the modern successor to Quest 5. There are two player implementations: **WebPlayer** (ASP.NET Core + Blazor Server, Docker-deployed) and **WasmPlayer** (pure browser-WASM, AOT-compiled, no server required — the long-term direction).
+Quest Viva is an open-source system for creating and playing text adventure games. It's a .NET 10.0 C# application, the modern successor to Quest 5. The player is **WasmPlayer** (pure browser-WASM, no server required). The server-side **WebPlayer** (ASP.NET Core + Blazor Server, Docker-deployed) was removed from `main` in 6.1; it lives on only on `release/6.0`, whose `docker-publish` workflow still publishes its 6.0.x images.
 
 ## Build & Test Commands
 
@@ -20,9 +20,6 @@ dotnet test tests/EngineTests
 
 # Run a specific test
 dotnet test tests/EngineTests --filter "FullyQualifiedName~TestMethodName"
-
-# Run WebPlayer with Docker
-docker compose up --build    # WebPlayer on http://localhost:8080
 
 # Build WasmPlayer (Debug — fast interpreter mode)
 dotnet build src/WasmPlayer/WasmPlayer.csproj
@@ -40,7 +37,7 @@ Tests use MSTest with Moq (mocking) and Shouldly (assertions).
 
 ### e2e tests (`tests/e2e/`)
 
-Playwright scripts (`verify-*.mjs`) exercise AppShell/WasmPlayer/WebPlayer/Electron end-to-end against a running dev server.
+Playwright scripts (`verify-*.mjs`) exercise AppShell/WasmPlayer/Electron end-to-end against a running dev server.
 
 - **Wire every new script into `.github/workflows/e2e.yml`** in the same commit that adds it: a `node verify-<topic>.mjs <baseUrl>` step in the job whose dev server it needs (e.g. `wasmplayer_chromium` for a WasmPlayer script). The nightly run only runs scripts listed there, and `check_e2e_manifest` (`tests/e2e/check-workflow-manifest.mjs`, a required check on every PR) fails the PR if one is missing. A `PostToolUse` hook in `.claude/settings.json` runs that check whenever a `verify-*.mjs` file is written, so an unwired script is flagged as soon as it's created.
 - **Assert for real.** Wrap steps in a `try`/`catch`/`finally`, `throw new Error(...)` on any mismatch, and set `process.exitCode = 1` in the `catch` — matching the ~55 existing scripts' convention. A script that only `console.log`s the actual value next to an "(expect X)" comment never compares them, so a regression prints PASS-shaped output and the script still exits 0.
@@ -67,8 +64,7 @@ npm run lint      # ESLint
 The solution (`QuestViva.sln`) has a layered architecture:
 
 ```
-WebPlayer (ASP.NET Core + Blazor Server)  ─┐
-WasmPlayer (browser-wasm)                  ─┤
+WasmPlayer (browser-wasm)                  ─┐
                                             ├─► PlayerCore ─► Engine ─► Common
 EditorCore ─────────────────────────────────┘        │
                                                      └─► Legacy
@@ -78,16 +74,15 @@ EditorCore ───────────────────────
 
 - **Common** — Shared types and interfaces used across all projects
 - **Engine** — Core game interpreter: script execution, expression evaluation, game loading, built-in functions. Contains embedded `.aslx` files (game templates, language definitions) in `Core/`
-- **PlayerCore** — Game player runtime that wraps Engine. Contains embedded UI resources (HTML, CSS, JS including jQuery UI, jPlayer)
+- **PlayerCore** — Game player runtime that wraps Engine. Its `Resources/` folder holds the player UI (HTML, CSS, JS including jQuery UI, jPlayer), which WasmPlayer copies into its AppBundle as plain files rather than embedding
 - **EditorCore** — Game editor logic (non-UI)
 - **Legacy** — Quest 4 (and earlier) backward-compatibility layer with embedded `.lib`/`.dat` files. Nullable reference types are deliberately left disabled (see the comment in `Legacy.csproj`)
-- **WebPlayer** — ASP.NET Core web app with Blazor Razor components (`Game.razor`, `Slots.razor`, debugger)
 - **WasmPlayer** — Pure browser-WASM player (`browser-wasm` target, interpreted — not AOT). Uses `JSImport`/`JSExport` for JS interop. Serves as a static site with no server-side .NET required. Shipped (like WasmEditor) via `dotnet publish -c Release`, which IL-trims the framework — **`dotnet build` never trims and `RunAOTCompilation` only applies on publish**, so a Release *build* is untrimmed (~190 files, ~7.9 MB brotli vs ~50 files, ~3.3 MB published). Game scripts can call .NET methods by reflection (`"x".StartsWith("y")`, `list.Count`); types they reach are rooted in `ScriptDispatchRoots.cs`, so a `Method '...' not found` that only happens in the Release build means a type or member needs adding there. Invariant globalization was measured and rejected: it changes `StringListSort` order and string `<` comparisons.
 - **WasmEditor** — Browser-WASM bridge (`browser-wasm` target) exposing `EditorCore` to the AppShell SvelteKit frontend via `[JSExport]` (see `WasmEditorBridge.cs`)
 - **AppShell** (`src/AppShell/`) — SvelteKit SPA (adapter-static) frontend for the game editor; talks to WasmEditor over the JS/WASM boundary and to `FileAdapter` implementations (`src/lib/filesystem/`) for storage (FSA, OPFS local drafts, server, Electron). Also serves the Play/Create Home landing page at root when `PUBLIC_SHOW_HOME=true` (play.questviva.com, Electron) — root shows a game catalog (Play tab, fetched from textadventures.co.uk's `api/Catalog`) or the editor canvas once a game is loaded; `/open` (Create tab) is unchanged; `/play/[id]` is a new game-detail route. Unset (textadventures.co.uk) keeps the previous editor-only root behavior. See `docs/appshell-wasm-svelte.md` and `docs/deployment-domains.md`
 - **ElectronApp** (`src/ElectronApp/`) — Electron main-process shell (desktop app) wrapping the AppShell SPA over a local loopback HTTP server; no Svelte/UI code of its own. See `docs/electron-desktop-app.md`
 
-**Test projects in `tests/`:** EngineTests, PlayerCoreTests, EditorCoreTests, LegacyTests, WebPlayerTests
+**Test projects in `tests/`:** EngineTests, PlayerCoreTests, EditorCoreTests, LegacyTests
 
 ## Core Library Semantics (Core.aslx and friends)
 
@@ -119,9 +114,9 @@ Releases are managed by [release-please](https://github.com/googleapis/release-p
 
 1. PRs must have a [Conventional Commits](https://www.conventionalcommits.org/)-prefixed title (`fix:`, `feat:`, `chore:`, etc.) — enforced by `pr-title-lint.yml`, which also restricts the optional scope to an exact-case allowlist of audience areas — `Player`, `Editor`, `Desktop`, `Site` (plus `e2e`, and `main` — or `release/6.0` on that branch — for release-please's own PRs) — so scoped changelog entries cluster and capitalize consistently. **Pick the scope by who would notice the change, not by which projects the diff touches**: an authoring fix spanning AppShell, EditorCore and Engine is `fix(Editor): ...`; a Core.aslx change to what players see is `Player`; omit the scope when a change affects everyone or no one. Since PRs are squash-merged, the PR title becomes the commit message on `main` that release-please parses. release-please's default changelog config surfaces `fix:` commits under "Bug Fixes" but hides `test:` (and `chore:`/`docs:`/etc.) from release notes entirely — a PR that only changes test files (e.g. a stale `tests/e2e/*.mjs` locator) should be titled `test:`, not `fix:`, even when it fixes a bug in the test, so the changelog doesn't fill up with things no user could observe. The `e2e` scope exists for exactly this, since e2e scripts span multiple areas and don't belong to one.
 2. Every push to `main` (or a `release/**` branch) updates that branch's standing "release PR" that bumps `VERSION` and `CHANGELOG.md` from the commits merged since the last release.
-3. Merging that release PR *is* the release: release-please tags it directly (e.g. `v6.1.0-beta.3` from `main`, `v6.0.1` from `release/6.0`), which triggers `docker-publish`, `nuget-publish`, `npm-publish`, `deploy-play`, and `electron-publish`, which build/push the Docker image, publish NuGet and npm packages, deploy play.questviva.com (or play-beta.questviva.com for a prerelease), package the Electron desktop app, and attach a GitHub Release with a changelog generated from the PR titles. The version is also embedded in the binary at build time and displayed at `/about`.
+3. Merging that release PR *is* the release: release-please tags it directly (e.g. `v6.1.0-beta.3` from `main`, `v6.0.1` from `release/6.0`), which triggers `nuget-publish`, `npm-publish`, `deploy-play`, and `electron-publish`, which publish NuGet and npm packages, deploy play.questviva.com (or play-beta.questviva.com for a prerelease), package the Electron desktop app, and attach a GitHub Release with a changelog generated from the PR titles. The version is also embedded in the binary at build time and displayed at `/about`.
 
-**Release channels:** every tag-triggered workflow asks `.github/scripts/release-channel.sh` whether a tag is stable or a prerelease, and routes it accordingly. Stable releases go to play.questviva.com and textadventures.co.uk, and get the GitHub "Latest" release and Docker/npm `latest`. Prereleases go to play-beta.questviva.com and get Docker/npm `beta`. See `docs/release-channels.md` for the full table, the `release/6.0` branch model, and the 6.0.0 cut runbook.
+**Release channels:** every tag-triggered workflow asks `.github/scripts/release-channel.sh` whether a tag is stable or a prerelease, and routes it accordingly. Stable releases go to play.questviva.com and textadventures.co.uk, and get the GitHub "Latest" release and npm `latest`. Prereleases go to play-beta.questviva.com and get npm `beta`. See `docs/release-channels.md` for the full table, the `release/6.0` branch model, and the 6.0.0 cut runbook.
 
 The GitHub Release itself is created as a **draft** (`release-please.yml`'s follow-up `gh release edit ... --draft=true` step) rather than published immediately — `electron-publish`'s slowest leg (macOS code signing + notarization) can take 15+ minutes to attach its installer, and a public visitor hitting `releases/latest` in that window would otherwise see a release missing some/all installers (this is what feeds the desktop update-check banner and questviva.com's `/download` page). `deploy-play` and `electron-publish` are separate workflow files, both independently triggered by the same tag push, so neither can express "wait for the other" as a plain job `needs:` — instead, `finalize-release.yml` reacts to either one completing (`workflow_run`) and checks (via `gh api .../runs?head_sha=...`) whether the *other* has also already succeeded for the same commit before un-drafting the release (and, for a stable release, marking it `--latest`); if only one has finished, or either failed, it no-ops and leaves the release as a draft. A `workflow_dispatch` input (`tag`) exists as a manual escape hatch if the automatic check ever misses a release (e.g. after manually re-running a failed leg).
 

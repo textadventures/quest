@@ -1,4 +1,4 @@
-// WasmPlayer JS bootstrap — replaces playerweb.js for the WASM-hosted player.
+// WasmPlayer JS bootstrap.
 // Defines the WebPlayer object surface that playercore.js / player.js call into,
 // then initialises the .NET WASM runtime and wires up [JSImport] callbacks.
 
@@ -367,8 +367,8 @@ async function maybeGateOnActivation(gameBytes) {
     if (gate) gate.style.display = 'none';
 }
 
-// The WebPlayer object — same surface API as playerweb.js so that playercore.js
-// and player.js can call into it without modification.
+// The WebPlayer object — the host API that the shared playercore.js and
+// player.js call into. The name predates WasmPlayer and is kept as-is.
 window.WebPlayer = {
     gameId: null,
     chromeStrings: null,
@@ -1143,11 +1143,9 @@ async function openSavesDialog(mode, gameId = WebPlayer.gameId) {
 // Only ever opened in editor-preview sessions, or a source=local play session
 // for a raw .aslx file (see WebPlayer.setCanDebug's call sites in
 // initWasmPlayer/restartGame) — element browser, per-tab attribute inspector
-// with a "hack your own game" override, and a walkthrough runner. Mirrors
-// WebPlayer's Debugger/Attributes/Walkthrough.razor, which
-// drive IGameDebug directly as Blazor components; here the same data comes
-// over the bridge as JSON (Bridge.Get*Json — see WasmPlayerBridge.cs) for
-// plain-DOM rendering instead.
+// with a "hack your own game" override, and a walkthrough runner. The
+// IGameDebug data comes over the bridge as JSON (Bridge.Get*Json — see
+// WasmPlayerBridge.cs) for plain-DOM rendering.
 
 let debuggerWired = false;
 let debuggerActiveTab = 'Walkthrough';
@@ -1851,12 +1849,9 @@ function wireDebuggerButton() {
     if (!cmdDebug) return;
     cmdDebug.addEventListener('click', () => {
         // playercore.js's own click listener (registered first — see this
-        // function's doc comment — and shared with WebPlayer, whose separate
-        // Blazor Debugger.razor still wants the native modal behavior it
-        // gives) has already opened this as a *modal* dialog by the time
-        // this listener runs. Reopen it non-modally instead of touching that
-        // shared file: unlike WebPlayer's dialog, this one is resizable and
-        // movable (wireDebuggerMoveResize) rather than a fixed centered
+        // function's doc comment) has already opened this as a *modal*
+        // dialog by the time this listener runs. Reopen it non-modally: this
+        // dialog is resizable and movable (wireDebuggerMoveResize) rather than a fixed centered
         // overlay, so keeping it modal only got in the way of the thing a
         // dev tool window is actually for — leaving it open while still
         // playing (refreshDebuggerAfterTurn keeps it in sync as turns

@@ -8,7 +8,7 @@ name: e2e
 # path. The nightly run is what catches drift between the scripts and the UI
 # (locator text/structure changes, timing assumptions) before it piles up
 # unnoticed; workflow_dispatch is still there for an on-demand run before
-# cutting a release, or after touching AppShell/WasmPlayer/WebPlayer/
+# cutting a release, or after touching AppShell/WasmPlayer/
 # ElectronApp. Each job below matches one of the distinct local setups
 # documented in the individual scripts' header comments — see those for the
 # "why" behind each one.
@@ -448,50 +448,6 @@ jobs:
       - run: node verify-wasmplayer-walkthrough-timer.mjs http://localhost:5175
         working-directory: tests/e2e
       - run: node verify-wasmplayer-manual-clock-eval.mjs http://localhost:5175
-        working-directory: tests/e2e
-
-  # WebPlayer (ASP.NET Core + Blazor Server), Development mode with Dev:Enabled
-  # (appsettings.Development.json already sets this — see /dev/open's
-  # RequiresConfig("Dev:Enabled") gate).
-  webplayer_chromium:
-    runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request'
-    steps:
-      - uses: actions/checkout@v7
-
-      - uses: actions/setup-dotnet@v5
-        with:
-          dotnet-version: '10.0.x'
-
-      - uses: actions/setup-node@v6
-        with:
-          node-version: '22'
-          cache: 'npm'
-          cache-dependency-path: tests/e2e/package-lock.json
-
-      - run: npm ci
-        working-directory: tests/e2e
-      - run: npx playwright install --with-deps chromium
-        working-directory: tests/e2e
-
-      - name: Start WebPlayer (5099, Development)
-        run: dotnet run --configuration Release --no-launch-profile --urls http://localhost:5099 --project src/WebPlayer &
-        env:
-          ASPNETCORE_ENVIRONMENT: Development
-
-      - name: Wait for WebPlayer
-        run: |
-          for i in $(seq 1 60); do
-            curl -sf "http://localhost:5099/" > /dev/null && break
-            [ "$i" -eq 60 ] && { echo "port 5099 never came up"; exit 1; }
-            sleep 2
-          done
-
-      - run: node verify-webplayer-legacy-save.mjs http://localhost:5099
-        working-directory: tests/e2e
-      - run: node verify-webplayer-restart-chrome-reset.mjs http://localhost:5099
-        working-directory: tests/e2e
-      - run: node verify-webplayer-quit-command.mjs http://localhost:5099
         working-directory: tests/e2e
 
   # Real, packaged Electron app (Playwright's _electron launcher) — macos-

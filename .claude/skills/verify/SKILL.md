@@ -1,6 +1,6 @@
 ---
 name: verify
-description: How to runtime-verify changes in this repo (WasmPlayer/WebPlayer/AppShell/ElectronApp) via Playwright scripts in tests/e2e, and wire new ones into the nightly e2e workflow
+description: How to runtime-verify changes in this repo (WasmPlayer/AppShell/ElectronApp) via Playwright scripts in tests/e2e, and wire new ones into the nightly e2e workflow
 ---
 
 # Verifying changes in Quest Viva
@@ -13,7 +13,7 @@ it checked in.
 
 **Every new script must also get a step in `.github/workflows/e2e.yml`**, in
 the job whose dev server it needs (`wasmplayer_chromium`, `appshell_chromium`,
-`webplayer_chromium`, `electron`, ...), copying a neighbouring step's `node
+`electron`, ...), copying a neighbouring step's `node
 verify-<topic>.mjs <baseUrl>` + `working-directory: tests/e2e` shape. The
 nightly run only runs listed scripts, and the required `check_e2e_manifest` PR
 check (`node tests/e2e/check-workflow-manifest.mjs`) fails otherwise. A
@@ -21,7 +21,7 @@ check (`node tests/e2e/check-workflow-manifest.mjs`) fails otherwise. A
 write a `verify-*.mjs` file, so its "Not wired into e2e.yml" message right
 after creating a script is expected: add the step, don't ignore it.
 
-## Browser surface (WasmPlayer / WebPlayer / AppShell)
+## Browser surface (WasmPlayer / AppShell)
 
 1. Rebuild whatever project you touched, e.g.:
    `dotnet build src/WasmPlayer/WasmPlayer.csproj` (Debug — fast interpreter,

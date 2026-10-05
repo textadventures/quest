@@ -3,7 +3,7 @@ name: release-please
 # Maintains an up-to-date "release PR" that bumps VERSION and CHANGELOG.md
 # from Conventional Commits-formatted PR titles merged to main. Merging that
 # release PR is the release: this job tags it directly (e.g. v6.1.0-beta.N), which
-# in turn triggers docker-publish.yml, nuget-publish.yml, deploy-play.yml, and
+# in turn triggers nuget-publish.yml, deploy-play.yml, and
 # the other tag-triggered workflows — no manual release.sh run needed.
 on:
   push:

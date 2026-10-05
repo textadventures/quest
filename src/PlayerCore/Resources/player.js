@@ -204,7 +204,7 @@ function saveGame() {
 // page-load semantics.
 //
 // A restart also wipes and rebuilds the whole player chrome first (see
-// WasmPlayer's swapInPlayerUi() / WebPlayer's resetPlayerUi()), so by the
+// WasmPlayer's swapInPlayerUi()), so by the
 // time Initialise() re-registers scripts against that fresh DOM, the
 // "already set up on the previous run" premise above no longer holds — the
 // old elements are gone, and the dedupe would wrongly skip re-running setup

@@ -365,11 +365,9 @@ public partial class WasmPlayerBridge
     public static byte[] GetSaveGameBytes() => _pendingSaveBytes ?? [];
 
     // ── Debugger ─────────────────────────────────────────────────────────────
-    // Mirrors WebPlayer's Debugger.razor/Attributes.razor/Walkthrough.razor,
-    // which drive IGameDebug directly as Blazor components — WasmPlayer has no
-    // Blazor runtime, so the same data is surfaced here as JSON strings for a
-    // plain-JS dialog (see wasm-player.js) to render, following the existing
-    // convention for structured cross-boundary payloads (JsUpdateList etc).
+    // Surfaces IGameDebug's data as JSON strings for a plain-JS dialog (see
+    // wasm-player.js) to render, following the existing convention for
+    // structured cross-boundary payloads (JsUpdateList etc).
 
     private static IGameDebug? GameDebug => _game as IGameDebug;
 
@@ -568,8 +566,7 @@ public partial class WasmPlayerBridge
         // Non-null while a debugger walkthrough is running — see RunWalkthrough
         // JSExport. When set, IPlayer calls that would normally prompt the user
         // (menu/wait/pause/question/synchronous sound) are instead answered by
-        // the runner's own recorded steps, exactly mirroring WebPlayer's
-        // Player.cs Runner property/branching.
+        // the runner's own recorded steps.
         private WalkthroughRunner? _runner;
 
         public WalkthroughRunner? Runner
@@ -668,7 +665,7 @@ public partial class WasmPlayerBridge
             var actions = _uiBuffer.ToArray();
             _uiBuffer.Clear();
 
-            // Isolate each call, matching WebPlayer's runJs and Quest 5's one-call-at-a-time JS
+            // Isolate each call, matching Quest 5's one-call-at-a-time JS
             // bridge: a single throwing UI function (e.g. setBackground given a colour name
             // playercore.js doesn't know) must not skip every call queued after it - including
             // the turn's scroll and timer request - which leaves the session unable to accept
@@ -876,7 +873,7 @@ public partial class WasmPlayerBridge
 
         private static long _lastYieldMs = 0;
 
-        // Buffered rather than run immediately (matching WebPlayer's AddJavaScriptToBuffer),
+        // Buffered rather than run immediately,
         // so a turn issuing many JS.xxx(...) calls (e.g. a game's custom status/HUD refresh)
         // paints as one batch at end-of-turn (FlushBufferAndYieldAsync) instead of a browser
         // repaint per call. Still throttle-yields here (without flushing) so a turn/walkthrough
@@ -890,12 +887,12 @@ public partial class WasmPlayerBridge
             if (function == "addText" && parameters is { Length: > 0 })
                 CaptureTranscript("text", parameters[0]?.ToString() ?? "");
 
-            // Strip newlines from string parameters — some games depend on this (matching WebPlayer behaviour)
+            // Strip newlines from string parameters — some games depend on this (matching Quest 5 and the old WebPlayer)
             var processedParams = parameters?.Select(p =>
                 p is string s ? (object)s.Replace("\r", "").Replace("\n", "") : p).ToArray();
 
             // When function is "eval", pass the code directly rather than wrapping it in eval(...)
-            // so it runs in global scope (matching WebPlayer behaviour; e.g. spondre defines global functions this way)
+            // so it runs in global scope (matching Quest 5 and the old WebPlayer; e.g. spondre defines global functions this way)
             if (function == "eval" && processedParams is [string evalCode])
             {
                 _uiBuffer.Add(() => JsRunScript(evalCode));

@@ -14,8 +14,7 @@ public interface IPlayerHelperUI : IPlayer
 }
 
 /// <summary>
-///     Helper class for wrapping functionality that is common to the UIs for both the desktop-based Player
-///     component and WebPlayer.
+///     Helper class for wrapping functionality that is common to the player UIs.
 /// </summary>
 public class PlayerHelper
 {
