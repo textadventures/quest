@@ -8,8 +8,10 @@
 // reliably supported by browsers (notably Chrome), so the sprite defs must
 // live in the same document as the <use> elements that reference them.
 //
-// Add new icon names to ICONS below as needed — they must match a filename
-// in lucide-static/icons/ (e.g. "trash-2" -> icons/trash-2.svg).
+// Add new icon names to ICONS below as needed — they must match a <symbol id>
+// in lucide-static/sprite.svg. A file in lucide-static/icons/ isn't enough:
+// renamed icons keep an alias file there (e.g. icons/trash-2.svg, now "trash")
+// but have no symbol in the sprite.
 //
 // Run via `npm run build`, not directly.
 
@@ -20,7 +22,7 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '..');
 
-const ICONS = ['x', 'trash-2', 'folder-open', 'square'];
+const ICONS = ['x', 'trash', 'folder-open', 'square'];
 
 const sprite = fs.readFileSync(path.join(root, 'node_modules/lucide-static/sprite.svg'), 'utf8');
 
