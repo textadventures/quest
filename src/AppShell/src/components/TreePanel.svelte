@@ -5,7 +5,7 @@
     import X from "@lucide/svelte/icons/x";
     import SlidersHorizontal from "@lucide/svelte/icons/sliders-horizontal";
     import Check from "@lucide/svelte/icons/check";
-    import { nodeIcon } from "$lib/node-icons";
+    import { nodeIcon } from "#lib/node-icons.js";
     import DropdownMenu from "./DropdownMenu.svelte";
     import type { DropdownMenuItem } from "./DropdownMenu.svelte";
     import {
@@ -19,10 +19,10 @@
         swapElements, getCurrentGameId,
         canMoveFunctionUp, canMoveFunctionDown,
         canMoveFunctionFolderUp, canMoveFunctionFolderDown, moveFunctionFolderUp, moveFunctionFolderDown,
-    } from "$lib/editor-store";
-    import type { TreeNode } from "$lib/types";
-    import { t } from "$lib/i18n";
-    import { loadTreeState, saveTreeState } from "$lib/tree-state";
+    } from "#lib/editor-store.js";
+    import type { TreeNode } from "#lib/types.js";
+    import { t } from "#lib/i18n/index.js";
+    import { loadTreeState, saveTreeState } from "#lib/tree-state.js";
 
     let { width, onactivate }: { width?: number; onactivate?: () => void } = $props();
 

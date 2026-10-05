@@ -16,11 +16,11 @@
         assetManagerOpen,
         codeViewPanelOpen,
         codeViewCloseRequested,
-    } from "$lib/editor-store";
-    import { hasActiveCmView, cmUndo, cmRedo } from "$lib/code-editor-registry";
-    import { settingsModalOpen } from "$lib/settings-store";
-    import { t } from "$lib/i18n";
-    import type { TreeNode } from "$lib/types";
+    } from "#lib/editor-store.js";
+    import { hasActiveCmView, cmUndo, cmRedo } from "#lib/code-editor-registry.js";
+    import { settingsModalOpen } from "#lib/settings-store.js";
+    import { t } from "#lib/i18n/index.js";
+    import type { TreeNode } from "#lib/types.js";
     import Home from "@lucide/svelte/icons/home";
     import ArrowLeft from "@lucide/svelte/icons/arrow-left";
     import ArrowRight from "@lucide/svelte/icons/arrow-right";
@@ -46,8 +46,8 @@
     import GithubIcon from "$components/GithubIcon.svelte";
     import DropdownMenu from "$components/DropdownMenu.svelte";
     import type { DropdownMenuItem } from "$components/DropdownMenu.svelte";
-    import { isNarrow } from "$lib/layout.svelte";
-    import { DOCS_URL } from "$lib/docs-links";
+    import { isNarrow } from "#lib/layout.svelte.js";
+    import { DOCS_URL } from "#lib/docs-links.js";
 
     const DISCORD_URL = "https://textadventures.co.uk/community/discord";
     const GITHUB_URL = "https://github.com/textadventures/quest";

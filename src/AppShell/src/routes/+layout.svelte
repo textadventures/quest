@@ -7,11 +7,11 @@
     import { base } from "$app/paths";
     import { page } from "$app/state";
     import { PUBLIC_APPSHELL_VERSION, PUBLIC_BETA_SITE, PUBLIC_SHOW_HOME } from "$env/static/public";
-    import { isLoaded, saveGame, saveGameAs, undo, redo, canUndo, canRedo, markFileChangedExternally } from "$lib/editor-store";
-    import { isElectron } from "$lib/runtime";
-    import { initI18n, localeReady } from "$lib/i18n";
-    import { initTheme } from "$lib/theme-store";
-    import { initDefaultCodeView } from "$lib/code-view-store";
+    import { isLoaded, saveGame, saveGameAs, undo, redo, canUndo, canRedo, markFileChangedExternally } from "#lib/editor-store.js";
+    import { isElectron } from "#lib/runtime.js";
+    import { initI18n, localeReady } from "#lib/i18n/index.js";
+    import { initTheme } from "#lib/theme-store.js";
+    import { initDefaultCodeView } from "#lib/code-view-store.js";
     import HomeHeader from "$components/HomeHeader.svelte";
     import HomeTabs from "$components/HomeTabs.svelte";
     import BetaBanner from "$components/BetaBanner.svelte";

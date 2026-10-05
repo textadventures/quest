@@ -4,8 +4,8 @@
     import { goto } from "$app/navigation";
     import { base } from "$app/paths";
     import { get } from "svelte/store";
-    import { isLoaded, isDirty, isEditingField, markFieldEditing, clearFieldEditing, saveGame, loadingStatus, addElementModal, addJavascriptModalOpen, addLibraryModalOpen, assetManagerOpen, publishModalOpen, codeViewPanelOpen, openGame, lastOpenGameError, lastFailedGameBytes, lastFailedGameFilename, createRoom, createObject, createPage, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType, createJavascript, createIncludedLibrary, moveElementModal, moveElement, moveToFolderModal, setFunctionFolder } from "$lib/editor-store";
-    import { loadFromServer } from "$lib/filesystem/server-adapter";
+    import { isLoaded, isDirty, isEditingField, markFieldEditing, clearFieldEditing, saveGame, loadingStatus, addElementModal, addJavascriptModalOpen, addLibraryModalOpen, assetManagerOpen, publishModalOpen, codeViewPanelOpen, openGame, lastOpenGameError, lastFailedGameBytes, lastFailedGameFilename, createRoom, createObject, createPage, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType, createJavascript, createIncludedLibrary, moveElementModal, moveElement, moveToFolderModal, setFunctionFolder } from "#lib/editor-store.js";
+    import { loadFromServer } from "#lib/filesystem/server-adapter.js";
     import Toolbar from "$components/Toolbar.svelte";
     import BackupBanner from "$components/BackupBanner.svelte";
     import LibraryReloadBanner from "$components/LibraryReloadBanner.svelte";
@@ -14,7 +14,7 @@
     import PropertyEditor from "$components/PropertyEditor.svelte";
     import CodeViewPanel from "$components/CodeViewPanel.svelte";
     import SafeModeEditor from "$components/SafeModeEditor.svelte";
-    import { isNarrow } from "$lib/layout.svelte";
+    import { isNarrow } from "#lib/layout.svelte.js";
     import AddElementModal from "$components/AddElementModal.svelte";
     import AddJavascriptModal from "$components/AddJavascriptModal.svelte";
     import AddLibraryModal from "$components/AddLibraryModal.svelte";
@@ -22,7 +22,7 @@
     import MoveToFolderModal from "$components/MoveToFolderModal.svelte";
     import AssetManagerModal from "$components/AssetManagerModal.svelte";
     import PublishModal from "$components/PublishModal.svelte";
-    import { t } from "$lib/i18n";
+    import { t } from "#lib/i18n/index.js";
 
     let serverLoadError = $state<string | null>(null);
 

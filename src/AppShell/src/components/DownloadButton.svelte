@@ -1,8 +1,8 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import DownloadIcon from "@lucide/svelte/icons/download";
-    import { fetchDownloadLinks, type DownloadLinks } from "$lib/download-links";
-    import { t } from "$lib/i18n";
+    import { fetchDownloadLinks, type DownloadLinks } from "#lib/download-links.js";
+    import { t } from "#lib/i18n/index.js";
 
     // compact renders as a small labeled header button with a dropdown, for
     // HomeHeader.svelte (shown on both the Play and Create tabs). The

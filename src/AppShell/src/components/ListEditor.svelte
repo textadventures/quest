@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { addListItem, removeListItem, updateListItem, recordWalkthrough, playWalkthrough } from "$lib/editor-store";
-    import { t } from "$lib/i18n";
+    import { addListItem, removeListItem, updateListItem, recordWalkthrough, playWalkthrough } from "#lib/editor-store.js";
+    import { t } from "#lib/i18n/index.js";
 
     interface Props {
         elementKey: string;

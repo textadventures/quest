@@ -5,31 +5,31 @@
     import { page } from "$app/state";
     import { base } from "$app/paths";
     import { PUBLIC_HAS_SERVER } from "$env/static/public";
-    import { openGame, loadingStatus, lastOpenGameError, lastFailedGameBytes } from "$lib/editor-store";
-    import { confirmDialog } from "$lib/confirm";
-    import { hasFSA, openDirectory, loadFileFromDirectory, createLocalGame } from "$lib/filesystem/browser-adapter";
+    import { openGame, loadingStatus, lastOpenGameError, lastFailedGameBytes } from "#lib/editor-store.js";
+    import { confirmDialog } from "#lib/confirm.js";
+    import { hasFSA, openDirectory, loadFileFromDirectory, createLocalGame } from "#lib/filesystem/browser-adapter.js";
     import {
         openElectronFile, loadElectronFile, createElectronGame, getDefaultGamesDir, pickGameLocation,
         listRecentGames, removeRecentGame, showItemInFolder,
-    } from "$lib/filesystem/electron-adapter";
-    import type { RecentGame } from "$lib/filesystem/electron-adapter";
-    import { isElectron } from "$lib/runtime";
-    import { getGameTemplates } from "$lib/filesystem/server-adapter";
-    import type { GameTemplate } from "$lib/filesystem/server-adapter";
-    import { pickFile } from "$lib/filesystem/file-picker";
+    } from "#lib/filesystem/electron-adapter.js";
+    import type { RecentGame } from "#lib/filesystem/electron-adapter.js";
+    import { isElectron } from "#lib/runtime.js";
+    import { getGameTemplates } from "#lib/filesystem/server-adapter.js";
+    import type { GameTemplate } from "#lib/filesystem/server-adapter.js";
+    import { pickFile } from "#lib/filesystem/file-picker.js";
     import {
         listLocalDrafts, loadLocalDraft, deleteLocalDraft, createLocalDraft, createLocalDraftFromFile,
         createLocalDraftFromZipEntry, parseGameIdFromAslx,
-    } from "$lib/filesystem/local-adapter";
-    import type { LocalDraftSummary, ZipEntries } from "$lib/filesystem/local-adapter";
-    import { loadWasm } from "$lib/wasm";
-    import { triggerDownload } from "$lib/filesystem/download";
+    } from "#lib/filesystem/local-adapter.js";
+    import type { LocalDraftSummary, ZipEntries } from "#lib/filesystem/local-adapter.js";
+    import { loadWasm } from "#lib/wasm.js";
+    import { triggerDownload } from "#lib/filesystem/download.js";
     import { zipSync } from "fflate";
     import FolderOpen from "@lucide/svelte/icons/folder-open";
     import Trash2 from "@lucide/svelte/icons/trash-2";
     import Download from "@lucide/svelte/icons/download";
-    import { t, locale } from "$lib/i18n";
-    import { DOCS_TUTORIAL_URL } from "$lib/docs-links";
+    import { t, locale } from "#lib/i18n/index.js";
+    import { DOCS_TUTORIAL_URL } from "#lib/docs-links.js";
 
     const hasServer = PUBLIC_HAS_SERVER === "true";
 

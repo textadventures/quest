@@ -1,9 +1,9 @@
 <script lang="ts">
     import { base } from "$app/paths";
-    import { languageName } from "$lib/home-catalog";
-    import type { RecentCatalogPlay } from "$lib/recent-catalog-plays.svelte";
-    import { isElectron } from "$lib/runtime";
-    import { t } from "$lib/i18n";
+    import { languageName } from "#lib/home-catalog.js";
+    import type { RecentCatalogPlay } from "#lib/recent-catalog-plays.svelte.js";
+    import { isElectron } from "#lib/runtime.js";
+    import { t } from "#lib/i18n/index.js";
 
     let { game, onremove }: { game: RecentCatalogPlay; onremove: () => void } = $props();
 

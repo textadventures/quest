@@ -6,8 +6,8 @@
     import CodeEditor from "./CodeEditor.svelte";
     import Combobox from "./Combobox.svelte";
     import ExpressionInput from "./ExpressionInput.svelte";
-    import { t } from "$lib/i18n";
-    import { docsUrlForScriptKeyword } from "$lib/docs-links";
+    import { t } from "#lib/i18n/index.js";
+    import { docsUrlForScriptKeyword } from "#lib/docs-links.js";
     import {
         scriptVersion,
         scriptClipboardHasContent,
@@ -44,9 +44,9 @@
         removeScriptDictCase,
         renameScriptDictCase,
         isGamebook,
-    } from "$lib/editor-store";
-    import { defaultCodeView } from "$lib/code-view-store";
-    import { measureTextPx } from "$lib/text-measure";
+    } from "#lib/editor-store.js";
+    import { defaultCodeView } from "#lib/code-view-store.js";
+    import { measureTextPx } from "#lib/text-measure.js";
     import type {
         ScriptBlockData,
         ScriptNodeData,
@@ -58,7 +58,7 @@
         ExpressionFunctionInfo,
         CaseScriptData,
         ControlOption,
-    } from "$lib/types";
+    } from "#lib/types.js";
 
     interface Props {
         elementKey: string;

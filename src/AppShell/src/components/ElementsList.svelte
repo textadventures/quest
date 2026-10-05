@@ -1,9 +1,9 @@
 <script lang="ts">
     import { SvelteSet } from "svelte/reactivity";
-    import { treeNodes, selectedKey, selectNode, deleteElement, openAddModal, createVerb, createCommand, createTurnScript, openAddLibraryModal, openAddJavascriptModal, swapElements, isGamebook, openMoveToFolderModal, canMoveFunctionUp, canMoveFunctionDown, canMoveFunctionFolderUp, canMoveFunctionFolderDown, moveFunctionFolderUp, moveFunctionFolderDown } from "$lib/editor-store";
-    import { nodeIcon } from "$lib/node-icons";
+    import { treeNodes, selectedKey, selectNode, deleteElement, openAddModal, createVerb, createCommand, createTurnScript, openAddLibraryModal, openAddJavascriptModal, swapElements, isGamebook, openMoveToFolderModal, canMoveFunctionUp, canMoveFunctionDown, canMoveFunctionFolderUp, canMoveFunctionFolderDown, moveFunctionFolderUp, moveFunctionFolderDown } from "#lib/editor-store.js";
+    import { nodeIcon } from "#lib/node-icons.js";
     import Folder from "@lucide/svelte/icons/folder";
-    import { t } from "$lib/i18n";
+    import { t } from "#lib/i18n/index.js";
 
     interface Props {
         elementKey: string;

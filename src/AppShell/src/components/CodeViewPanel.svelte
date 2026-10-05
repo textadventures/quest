@@ -1,9 +1,9 @@
 <script lang="ts">
     import { onMount, untrack } from "svelte";
-    import { getGameXml, setGameXml, setLibraryXml, getLibraryXml, isBuiltInLibrary, codeViewCloseRequested, treeNodes, gameFilename, getAssetText } from "$lib/editor-store";
-    import { chooseDialog, confirmDialog } from "$lib/confirm";
+    import { getGameXml, setGameXml, setLibraryXml, getLibraryXml, isBuiltInLibrary, codeViewCloseRequested, treeNodes, gameFilename, getAssetText } from "#lib/editor-store.js";
+    import { chooseDialog, confirmDialog } from "#lib/confirm.js";
     import CodeEditor from "./CodeEditor.svelte";
-    import { t } from "$lib/i18n";
+    import { t } from "#lib/i18n/index.js";
 
     interface Props {
         onclose: () => void;

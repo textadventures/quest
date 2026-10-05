@@ -1,9 +1,9 @@
 <script lang="ts">
-    import { getMovePossibleParents, treeNodes } from "$lib/editor-store";
-    import { t } from "$lib/i18n";
-    import { trapFocus } from "$lib/actions/trapFocus";
+    import { getMovePossibleParents, treeNodes } from "#lib/editor-store.js";
+    import { t } from "#lib/i18n/index.js";
+    import { trapFocus } from "#lib/actions/trapFocus.js";
     import Combobox from "$components/Combobox.svelte";
-    import type { ControlOption } from "$lib/types";
+    import type { ControlOption } from "#lib/types.js";
 
     interface Props {
         elementKey: string;

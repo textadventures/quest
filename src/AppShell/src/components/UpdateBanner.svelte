@@ -1,8 +1,8 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import type { UpdateInfo } from "$lib/home-catalog";
-    import { t } from "$lib/i18n";
-    import { isElectron } from "$lib/runtime";
+    import type { UpdateInfo } from "#lib/home-catalog.js";
+    import { t } from "#lib/i18n/index.js";
+    import { isElectron } from "#lib/runtime.js";
 
     let { update }: { update: UpdateInfo } = $props();
 

@@ -1,9 +1,9 @@
 <script lang="ts">
     import Wand2 from "@lucide/svelte/icons/wand-2";
-    import { getExpressionFunctions, validateExpression } from "$lib/editor-store";
-    import { t } from "$lib/i18n";
-    import { measureTextPx } from "$lib/text-measure";
-    import type { ExpressionFunctionInfo } from "$lib/types";
+    import { getExpressionFunctions, validateExpression } from "#lib/editor-store.js";
+    import { t } from "#lib/i18n/index.js";
+    import { measureTextPx } from "#lib/text-measure.js";
+    import type { ExpressionFunctionInfo } from "#lib/types.js";
 
     interface Props {
         value: string;

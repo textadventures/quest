@@ -2,8 +2,8 @@
     import { page } from "$app/state";
     import { goto } from "$app/navigation";
     import { base } from "$app/paths";
-    import { searchGames, type CatalogGame } from "$lib/home-catalog";
-    import { t, tPlural } from "$lib/i18n";
+    import { searchGames, type CatalogGame } from "#lib/home-catalog.js";
+    import { t, tPlural } from "#lib/i18n/index.js";
     import GameCard from "$components/GameCard.svelte";
     import GamesPager from "$components/GamesPager.svelte";
 

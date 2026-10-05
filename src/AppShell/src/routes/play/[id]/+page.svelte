@@ -2,10 +2,10 @@
     import { onMount } from "svelte";
     import { page } from "$app/state";
     import { base } from "$app/paths";
-    import { fetchGameDetails, languageName, type GameDetails } from "$lib/home-catalog";
-    import { isElectron } from "$lib/runtime";
-    import { recordCatalogPlay } from "$lib/recent-catalog-plays.svelte";
-    import { t } from "$lib/i18n";
+    import { fetchGameDetails, languageName, type GameDetails } from "#lib/home-catalog.js";
+    import { isElectron } from "#lib/runtime.js";
+    import { recordCatalogPlay } from "#lib/recent-catalog-plays.svelte.js";
+    import { t } from "#lib/i18n/index.js";
 
     const isElectronApp = isElectron();
 

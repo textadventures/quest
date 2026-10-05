@@ -1,12 +1,12 @@
 <script lang="ts">
-    import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, removeAttribute, setDropdownType, setMultiType, setObjectReference, setSelectedFilter, addDictItem, removeDictItem, updateDictItem, getObjectNames, getExitNames, getPageNames, selectNode, createPageSilent, openAddModal, openAddLibraryModal, openAddJavascriptModal, getAssetText, putAssetText, putLibraryAssetText, isBuiltInLibrary, getLibraryXml, setPatternAttribute } from "$lib/editor-store";
-    import { showToast } from "$lib/toast";
-    import { isLibraryFilename } from "$lib/filesystem/types";
-    import { t } from "$lib/i18n";
-    import { docsUrlForPath } from "$lib/docs-links";
-    import { HELP_PAGE_TITLES } from "$lib/docs-index.generated";
-    import type { ControlInfo, ControlOption, TextProcessorCommand } from "$lib/types";
-    import type { TreeNode } from "$lib/types";
+    import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, removeAttribute, setDropdownType, setMultiType, setObjectReference, setSelectedFilter, addDictItem, removeDictItem, updateDictItem, getObjectNames, getExitNames, getPageNames, selectNode, createPageSilent, openAddModal, openAddLibraryModal, openAddJavascriptModal, getAssetText, putAssetText, putLibraryAssetText, isBuiltInLibrary, getLibraryXml, setPatternAttribute } from "#lib/editor-store.js";
+    import { showToast } from "#lib/toast.js";
+    import { isLibraryFilename } from "#lib/filesystem/types.js";
+    import { t } from "#lib/i18n/index.js";
+    import { docsUrlForPath } from "#lib/docs-links.js";
+    import { HELP_PAGE_TITLES } from "#lib/docs-index.generated.js";
+    import type { ControlInfo, ControlOption, TextProcessorCommand } from "#lib/types.js";
+    import type { TreeNode } from "#lib/types.js";
     import ChevronLeft from "@lucide/svelte/icons/chevron-left";
     import ArrowRight from "@lucide/svelte/icons/arrow-right";
     import Bold from "@lucide/svelte/icons/bold";

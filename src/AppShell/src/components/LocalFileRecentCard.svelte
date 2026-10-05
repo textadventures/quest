@@ -1,8 +1,8 @@
 <script lang="ts">
-    import type { RecentGame } from "$lib/filesystem/electron-adapter";
-    import { resolveAndCacheCover } from "$lib/local-cover";
+    import type { RecentGame } from "#lib/filesystem/electron-adapter.js";
+    import { resolveAndCacheCover } from "#lib/local-cover.js";
     import Gamepad2 from "@lucide/svelte/icons/gamepad-2";
-    import { t } from "$lib/i18n";
+    import { t } from "#lib/i18n/index.js";
 
     // Electron only — there's no browser equivalent (see PlayCatalog.svelte),
     // so unlike RecentGameCard this never needs a non-Electron branch.

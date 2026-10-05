@@ -4,7 +4,7 @@
     import { base } from "$app/paths";
     import { get } from "svelte/store";
     import { PUBLIC_SHOW_HOME } from "$env/static/public";
-    import { isLoaded } from "$lib/editor-store";
+    import { isLoaded } from "#lib/editor-store.js";
     import PlayCatalog from "$components/PlayCatalog.svelte";
 
     const showHome = PUBLIC_SHOW_HOME === "true";
