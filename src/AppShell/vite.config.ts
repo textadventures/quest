@@ -1,3 +1,5 @@
+import adapter from '@sveltejs/adapter-static'
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
 import { sveltekit } from '@sveltejs/kit/vite'
 import { defineConfig } from 'vite'
 import tailwindcss from '@tailwindcss/vite'
@@ -53,7 +55,15 @@ export default defineConfig({
   clearScreen: false,
   plugins: [
     tailwindcss(),
-    sveltekit(),
+    // SvelteKit 3 takes its config here; there's no svelte.config.js any more.
+    sveltekit({
+      preprocess: vitePreprocess(),
+      adapter: adapter({ fallback: 'index.html' }),
+      paths: { base: process.env.BASE_PATH ?? '' },
+      alias: {
+        $components: 'src/components'
+      }
+    }),
     {
       name: 'wasm-appbundle',
       configureServer(server) {
