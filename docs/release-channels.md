@@ -55,8 +55,8 @@ There's one docs site, questviva.com, deployed from `main`, with no per-version 
 ## Open items before the first 6.1 beta
 
 - [x] Create the `play-questviva-beta` Cloudflare Pages project with the same settings as `play-questviva`, and add the play-beta.questviva.com custom domain.
-- [ ] textadventures.co.uk repo: add `https://play-beta.questviva.com` to `CorsUtility.IsAllowedGamesApiOrigin`. Until then the beta site can't load the Play tab's catalog or download any game from textadventures.co.uk: `/api/game/{id}` is blocked too, not just `/api/Catalog`.
-- [ ] textadventures.co.uk repo: make `LatestVersionService` channel-aware, so a beta Electron client (identified by the prerelease suffix in `ClientInfo.version`) is told about newer betas as well as newer stable releases. Beta installers are named `Quest Viva Beta-<version>-...`, so any asset matching there needs to allow for that.
+- [x] textadventures.co.uk repo: allow `https://play-beta.questviva.com` through CORS. That took two changes: `CorsUtility.IsAllowedGamesApiOrigin` (the catalog and `/api/game/{id}`), and the playtextadventures.com Cloudflare Worker in `worker/src/index.js`, which serves the game files themselves.
+- [x] textadventures.co.uk repo: make `LatestVersionService` channel-aware. A desktop client reporting a prerelease version is offered the highest-versioned published release, prerelease or stable, from GitHub's releases list, so a 6.0.x patch is never offered to a 6.1 beta. Installers are still matched by file extension, which covers the "Quest Viva Beta" names. Stable clients still only see `releases/latest`.
 - [x] Separate identity for beta Electron builds (see above).
 - [x] A distinct icon for Quest Viva Beta (purple, with a "BETA" band).
 - [x] A banner on the beta site saying it's a beta, that its data is separate from play.questviva.com's, and linking back to the stable site.
