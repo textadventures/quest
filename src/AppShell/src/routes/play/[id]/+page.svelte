@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { page } from "$app/state";
-    import { base } from "$app/paths";
+    import { base } from "#lib/base-path.js";
     import { fetchGameDetails, languageName, type GameDetails } from "#lib/home-catalog.js";
     import { isElectron } from "#lib/runtime.js";
     import { recordCatalogPlay } from "#lib/recent-catalog-plays.svelte.js";

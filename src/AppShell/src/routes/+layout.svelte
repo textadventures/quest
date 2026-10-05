@@ -4,20 +4,20 @@
     import { onMount } from "svelte";
     import { get } from "svelte/store";
     import { goto } from "$app/navigation";
-    import { base } from "$app/paths";
+    import { base } from "#lib/base-path.js";
     import { page } from "$app/state";
-    import { PUBLIC_APPSHELL_VERSION, PUBLIC_BETA_SITE, PUBLIC_SHOW_HOME } from "$env/static/public";
+    import { PUBLIC_APPSHELL_VERSION, PUBLIC_BETA_SITE, PUBLIC_SHOW_HOME } from "$app/env/public";
     import { isLoaded, saveGame, saveGameAs, undo, redo, canUndo, canRedo, markFileChangedExternally } from "#lib/editor-store.js";
     import { isElectron } from "#lib/runtime.js";
     import { initI18n, localeReady } from "#lib/i18n/index.js";
     import { initTheme } from "#lib/theme-store.js";
     import { initDefaultCodeView } from "#lib/code-view-store.js";
-    import HomeHeader from "$components/HomeHeader.svelte";
-    import HomeTabs from "$components/HomeTabs.svelte";
-    import BetaBanner from "$components/BetaBanner.svelte";
-    import ConfirmDialog from "$components/ConfirmDialog.svelte";
-    import Toast from "$components/Toast.svelte";
-    import SettingsModal from "$components/SettingsModal.svelte";
+    import HomeHeader from "#components/HomeHeader.svelte";
+    import HomeTabs from "#components/HomeTabs.svelte";
+    import BetaBanner from "#components/BetaBanner.svelte";
+    import ConfirmDialog from "#components/ConfirmDialog.svelte";
+    import Toast from "#components/Toast.svelte";
+    import SettingsModal from "#components/SettingsModal.svelte";
 
     let { children }: { children: Snippet } = $props();
 

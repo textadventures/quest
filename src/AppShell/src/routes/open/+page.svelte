@@ -3,8 +3,8 @@
     import { get } from "svelte/store";
     import { goto } from "$app/navigation";
     import { page } from "$app/state";
-    import { base } from "$app/paths";
-    import { PUBLIC_HAS_SERVER } from "$env/static/public";
+    import { base } from "#lib/base-path.js";
+    import { PUBLIC_HAS_SERVER } from "$app/env/public";
     import { openGame, loadingStatus, lastOpenGameError, lastFailedGameBytes } from "#lib/editor-store.js";
     import { confirmDialog } from "#lib/confirm.js";
     import { hasFSA, openDirectory, loadFileFromDirectory, createLocalGame } from "#lib/filesystem/browser-adapter.js";

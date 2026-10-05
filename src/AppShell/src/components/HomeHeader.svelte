@@ -1,11 +1,11 @@
 <script lang="ts">
-    import { base } from "$app/paths";
+    import { base } from "#lib/base-path.js";
     import { isElectron } from "#lib/runtime.js";
     import { settingsModalOpen } from "#lib/settings-store.js";
     import { t } from "#lib/i18n/index.js";
-    import DiscordIcon from "$components/DiscordIcon.svelte";
-    import GithubIcon from "$components/GithubIcon.svelte";
-    import DownloadButton from "$components/DownloadButton.svelte";
+    import DiscordIcon from "#components/DiscordIcon.svelte";
+    import GithubIcon from "#components/GithubIcon.svelte";
+    import DownloadButton from "#components/DownloadButton.svelte";
     import SettingsIcon from "@lucide/svelte/icons/settings";
     import BookOpen from "@lucide/svelte/icons/book-open";
     import { DOCS_URL } from "#lib/docs-links.js";

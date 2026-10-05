@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { goto } from "$app/navigation";
-    import { base } from "$app/paths";
+    import { base } from "#lib/base-path.js";
     import {
         lastFailedGameBytes, lastFailedGameFilename, lastOpenGameError,
         retryFailedLoad, listSafeModeLibraryFiles, getAssetText, putAssetText,

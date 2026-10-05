@@ -1,6 +1,6 @@
 <script lang="ts">
     import { page } from "$app/state";
-    import { base } from "$app/paths";
+    import { base } from "#lib/base-path.js";
     import { t } from "#lib/i18n/index.js";
 
     let { forceDark = false }: { forceDark?: boolean } = $props();

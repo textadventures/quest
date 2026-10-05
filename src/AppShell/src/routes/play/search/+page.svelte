@@ -1,11 +1,11 @@
 <script lang="ts">
     import { page } from "$app/state";
     import { goto } from "$app/navigation";
-    import { base } from "$app/paths";
+    import { base } from "#lib/base-path.js";
     import { searchGames, type CatalogGame } from "#lib/home-catalog.js";
     import { t, tPlural } from "#lib/i18n/index.js";
-    import GameCard from "$components/GameCard.svelte";
-    import GamesPager from "$components/GamesPager.svelte";
+    import GameCard from "#components/GameCard.svelte";
+    import GamesPager from "#components/GamesPager.svelte";
 
     let queryInput = $state("");
     let games = $state<CatalogGame[]>([]);

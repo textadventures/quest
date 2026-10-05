@@ -1,4 +1,4 @@
-import { PUBLIC_APPSHELL_VERSION } from "$env/static/public";
+import { PUBLIC_APPSHELL_VERSION } from "$app/env/public";
 
 // Cache key for the WasmEditor AppBundle, mirroring what WasmPlayer's
 // inject-version.mjs/wasm-player.js do for /player — see the _headers block in

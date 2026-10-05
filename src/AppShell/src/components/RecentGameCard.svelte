@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { base } from "$app/paths";
+    import { base } from "#lib/base-path.js";
     import { languageName } from "#lib/home-catalog.js";
     import type { RecentCatalogPlay } from "#lib/recent-catalog-plays.svelte.js";
     import { isElectron } from "#lib/runtime.js";

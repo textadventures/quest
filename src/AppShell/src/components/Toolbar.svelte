@@ -2,8 +2,8 @@
     import { AppBar } from "@skeletonlabs/skeleton-svelte";
     import { get } from "svelte/store";
     import { goto } from "$app/navigation";
-    import { base } from "$app/paths";
-    import { PUBLIC_WASM_PLAYER_URL, PUBLIC_SHOW_HOME } from "$env/static/public";
+    import { base } from "#lib/base-path.js";
+    import { PUBLIC_WASM_PLAYER_URL, PUBLIC_SHOW_HOME } from "$app/env/public";
     import {
         gameFilename, isLoaded, isDirty, isSaving, isEditingField, getLastEditedElement, saveError, retrySave, saveGame, saveGameAs, canSaveAs, backupGame, canBackup,
         publishModalOpen,
@@ -42,10 +42,10 @@
     import FileCode from "@lucide/svelte/icons/file-code";
     import SettingsIcon from "@lucide/svelte/icons/settings";
     import BookOpen from "@lucide/svelte/icons/book-open";
-    import DiscordIcon from "$components/DiscordIcon.svelte";
-    import GithubIcon from "$components/GithubIcon.svelte";
-    import DropdownMenu from "$components/DropdownMenu.svelte";
-    import type { DropdownMenuItem } from "$components/DropdownMenu.svelte";
+    import DiscordIcon from "#components/DiscordIcon.svelte";
+    import GithubIcon from "#components/GithubIcon.svelte";
+    import DropdownMenu from "#components/DropdownMenu.svelte";
+    import type { DropdownMenuItem } from "#components/DropdownMenu.svelte";
     import { isNarrow } from "#lib/layout.svelte.js";
     import { DOCS_URL } from "#lib/docs-links.js";
 
