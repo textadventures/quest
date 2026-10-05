@@ -53,26 +53,26 @@
     <!-- Copy static player assets into the AppBundle after it is assembled -->
     <Target Name="CopyPlayerAssetsToAppBundle" AfterTargets="_WasmGenerateAppBundle">
         <PropertyGroup>
-            <_PCRes>$(MSBuildThisFileDirectory)..\PlayerCore\Resources\</_PCRes>
+            <_PlayerUi>$(MSBuildThisFileDirectory)player-ui\</_PlayerUi>
         </PropertyGroup>
         <ItemGroup>
-            <_FlatAssets Include="$(_PCRes)playercore.htm"/>
-            <_FlatAssets Include="$(_PCRes)player.js"/>
-            <_FlatAssets Include="$(_PCRes)playercore.js"/>
-            <_FlatAssets Include="$(_PCRes)playercore.css"/>
-            <_FlatAssets Include="$(_PCRes)grid.js"/>
+            <_FlatAssets Include="$(_PlayerUi)playercore.htm"/>
+            <_FlatAssets Include="$(_PlayerUi)player.js"/>
+            <_FlatAssets Include="$(_PlayerUi)playercore.js"/>
+            <_FlatAssets Include="$(_PlayerUi)playercore.css"/>
+            <_FlatAssets Include="$(_PlayerUi)grid.js"/>
             <_FlatAssets Include="$(MSBuildThisFileDirectory)wasm-player.js"/>
             <_FlatAssets Include="$(MSBuildThisFileDirectory)generated\index.html"/>
             <_FlatAssets Include="$(MSBuildThisFileDirectory)favicon.svg"/>
             <_FlatAssets Include="$(MSBuildThisFileDirectory)logo.svg"/>
             <_FlatAssets Include="$(MSBuildThisFileDirectory)quest-config.js"/>
             <_FlatAssets Include="$(MSBuildThisFileDirectory)generated\chrome.css"/>
-            <_LibAssets Include="$(_PCRes)lib\jquery-2.1.1.min.js"/>
-            <_LibAssets Include="$(_PCRes)lib\jquery-ui.min.js"/>
-            <_LibAssets Include="$(_PCRes)lib\jquery-ui.min.css"/>
-            <_LibAssets Include="$(_PCRes)lib\jquery.multi-open-accordion-1.5.3.js"/>
-            <_LibAssets Include="$(_PCRes)lib\paper.js"/>
-            <_ImageAssets Include="$(_PCRes)lib\images\*.png"/>
+            <_LibAssets Include="$(_PlayerUi)lib\jquery-2.1.1.min.js"/>
+            <_LibAssets Include="$(_PlayerUi)lib\jquery-ui.min.js"/>
+            <_LibAssets Include="$(_PlayerUi)lib\jquery-ui.min.css"/>
+            <_LibAssets Include="$(_PlayerUi)lib\jquery.multi-open-accordion-1.5.3.js"/>
+            <_LibAssets Include="$(_PlayerUi)lib\paper.js"/>
+            <_ImageAssets Include="$(_PlayerUi)lib\images\*.png"/>
             <_TranscriptViewerAssets Include="$(MSBuildThisFileDirectory)TranscriptViewer\index.html"/>
         </ItemGroup>
         <Copy SourceFiles="@(_FlatAssets)" DestinationFolder="$(WasmAppDir)"/>
