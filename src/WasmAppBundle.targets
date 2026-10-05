@@ -1,0 +1,45 @@
+<Project>
+    <!-- Shared by WasmPlayer and WasmEditor, which build with Microsoft.NET.Sdk.WebAssembly.
+
+         Both used to be plain Microsoft.NET.Sdk projects with RuntimeIdentifier=browser-wasm, for
+         which the wasm workload assembled a self-contained "AppBundle" directory (_framework/ plus
+         anything copied alongside it). .NET 11 drops that path - WasmGenerateAppBundle is an empty
+         target there - leaving the WebAssembly SDK, which emits _framework/ under wwwroot/ as
+         static web assets instead. Everything downstream (dev-server.mjs, AppShell's Vite
+         middleware, the Electron packager, deploy-play, npm-publish) serves one physical
+         directory, so this recreates the AppBundle at its old path from the SDK's output. -->
+    <PropertyGroup>
+        <QuestAppBundleDir>$(MSBuildProjectDirectory)\bin\$(Configuration)\$(TargetFramework)\browser-wasm\AppBundle\</QuestAppBundleDir>
+        <!-- Keep the AppBundle's _framework/ as it was: stable file names (cache busting is the
+             ?v= query in wasm-player.js and AppShell's wasm.ts, which lets _framework/* be served
+             `immutable`), and a separate dotnet.boot.js, which AppShell's HTML zip export reads
+             to enumerate _framework/. -->
+        <WasmFingerprintAssets>false</WasmFingerprintAssets>
+        <WasmInlineBootConfig>false</WasmInlineBootConfig>
+        <!-- Precompressed .gz/.br copies are for ASP.NET Core's static file middleware; the
+             AppBundle is served by plain static hosts and Electron's loopback server. -->
+        <CompressionEnabled>false</CompressionEnabled>
+        <!-- Nothing here runs the dotnet-watch hot reload agent, and the package it adds would
+             otherwise ship in every Debug _framework/. -->
+        <WasmEnableHotReload>false</WasmEnableHotReload>
+    </PropertyGroup>
+
+    <!-- `dotnet build`: untrimmed framework, for the dev servers. Skipped during `dotnet publish`'s
+         own build phase so the publish below is the only thing writing the shipped AppBundle. -->
+    <Target Name="CopyFrameworkToAppBundleAfterBuild" AfterTargets="Build" Condition="'$(_IsPublishing)' != 'true'">
+        <ItemGroup>
+            <_AppBundleFramework Include="$(OutDir)wwwroot\_framework\**\*"/>
+        </ItemGroup>
+        <RemoveDir Directories="$(QuestAppBundleDir)_framework"/>
+        <Copy SourceFiles="@(_AppBundleFramework)" DestinationFiles="@(_AppBundleFramework->'$(QuestAppBundleDir)_framework\%(RecursiveDir)%(Filename)%(Extension)')"/>
+    </Target>
+
+    <!-- `dotnet publish`: the IL-trimmed framework that ships. -->
+    <Target Name="CopyFrameworkToAppBundleAfterPublish" AfterTargets="Publish">
+        <ItemGroup>
+            <_AppBundleFramework Include="$(PublishDir)wwwroot\_framework\**\*"/>
+        </ItemGroup>
+        <RemoveDir Directories="$(QuestAppBundleDir)_framework"/>
+        <Copy SourceFiles="@(_AppBundleFramework)" DestinationFiles="@(_AppBundleFramework->'$(QuestAppBundleDir)_framework\%(RecursiveDir)%(Filename)%(Extension)')"/>
+    </Target>
+</Project>
