@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
         <RuntimeIdentifier>browser-wasm</RuntimeIdentifier>
@@ -21,9 +21,9 @@
              Our own projects' trim warnings are still reported individually, and
              TreatWarningsAsErrors fails the publish on them. -->
         <NoWarn>$(NoWarn);IL2104</NoWarn>
-        <!-- Debug only: in a Release publish dotnet.native.js.symbols (~720 KB) is listed in the boot
-             manifest and fetched on every load. -->
-        <WasmEmitSymbolMap Condition="'$(Configuration)' != 'Release'">true</WasmEmitSymbolMap>
+        <!-- If emitted, dotnet.native.js.symbols (~720 KB) is listed in the boot manifest and fetched
+             on every load. The WebAssembly SDK doesn't ship it today even when asked (so Debug builds
+             have lost it too), but keep Release explicit in case that changes. -->
         <WasmEmitSymbolMap Condition="'$(Configuration)' == 'Release'">false</WasmEmitSymbolMap>
         <!-- Release is what ships (Electron, static hosting, often offline). Shipping .pdb files
              embeds SourceLink metadata pointing at raw.githubusercontent.com, which Chrome DevTools'
@@ -41,4 +41,6 @@
         <ProjectReference Include="..\Common\Common.csproj"/>
         <ProjectReference Include="..\PlayerCore\PlayerCore.csproj"/>
     </ItemGroup>
+
+    <Import Project="..\WasmAppBundle.targets"/>
 </Project>
