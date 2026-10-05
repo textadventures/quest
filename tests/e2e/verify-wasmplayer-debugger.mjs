@@ -102,6 +102,10 @@ check(
     dialogSize.width > viewport.width * 0.6 && dialogSize.height > viewport.height * 0.6
 );
 
+// Non-modal, so the game stays playable with the debugger open.
+const isModal = await previewPage.$eval('#questVivaDebugger', el => el.matches(':modal'));
+check('Debugger opens non-modally', !isModal);
+
 const tabLabels = await previewPage.$$eval('#qv-debugger-tabs button', els => els.map(el => el.textContent));
 check('Tabs include Walkthrough/Objects/Game', ['Walkthrough', 'Objects', 'Game'].every(t => tabLabels.includes(t)));
 

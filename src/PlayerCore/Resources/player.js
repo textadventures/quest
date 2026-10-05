@@ -1,4 +1,6 @@
 var $_GET = {};
+// Unused by the player itself. Kept because Quest 5 games' own JavaScript may
+// test it (Quest 5's WebPlayer set it to true), and removing it would throw.
 var webPlayer = false;
 var tmrTick = null;
 var tickCount = 0;

@@ -176,11 +176,11 @@
 
 <!-- Debugger — only ever shown in editor-preview sessions (see wasm-player.js's
      WebPlayer.setCanDebug call in initWasmPlayer). #cmdDebug (in playercore.htm,
-     part of the shared player chrome) already opens this dialog
-     by id via showModal() — see playercore.js's initPlayerUI.
+     part of the shared player chrome) opens it non-modally — see
+     wasm-player.js's wireDebuggerButton.
 
-     Position/size are entirely JS-driven (wireDebuggerMoveResize in
-     wasm-player.js applies them right after every showModal(), before the
+     Position/size are entirely JS-driven (applyDebuggerRect in
+     wasm-player.js applies them right after every open, before the
      first paint) rather than left to the browser's default dialog centering,
      so the whole card is a flex column filling exactly the applied
      width/height — #qv-debugger-panes (and List/Detail inside it) flex-fill
