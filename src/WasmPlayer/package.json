@@ -7,7 +7,7 @@
     "build": "tailwindcss -i styles/chrome.css -o generated/chrome.css --minify && node scripts/scope-css.mjs generated/chrome.css && node scripts/build-icons.mjs && node scripts/inject-version.mjs"
   },
   "devDependencies": {
-    "@skeletonlabs/skeleton": "^4.15.2",
+    "@skeletonlabs/skeleton": "^5.0.1",
     "@tailwindcss/cli": "^4.3.3",
     "lucide-static": "^1.52.0",
     "tailwindcss": "^4.2.4"
