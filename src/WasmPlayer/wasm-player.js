@@ -263,6 +263,19 @@ function sendEndWait() {
     }, 100);
 }
 
+function sendEndPause() {
+    // Same short paint-yield as sendEndWait() above.
+    window.setTimeout(async function () {
+        try {
+            await WebPlayer.uiEndPause();
+        } finally {
+            // Like uiEndWait, uiEndPause only resolves once the resumed turn
+            // has reached its next stopping point - see pauseEnded().
+            pauseEnded();
+        }
+    }, 100);
+}
+
 function afterSendCommand() { }
 
 function playSound(url, synchronous, looped) {
@@ -1261,8 +1274,8 @@ function clamp(value, min, max) {
     return Math.min(Math.max(value, min), Math.max(min, max));
 }
 
-// Applied right after every showModal() (see wireDebuggerButton/restartGame's
-// call sites), before the browser gets a chance to paint — so the dialog
+// Applied right after the dialog is opened (see wireDebuggerButton) and on
+// viewport resize, before the browser gets a chance to paint — so the dialog
 // never visibly flashes at its old browser-default centered position first.
 // Computes a centered default the very first time it's called; every
 // subsequent call (reopening the dialog, or after the user drags/resizes)
@@ -1842,25 +1855,16 @@ function ensureDebuggerWired() {
 
 // Called after every WebPlayer.initUI() — #cmdDebug is part of playercore.htm,
 // which is fully replaced on every boot/restart (see swapInPlayerUi), so its
-// showModal() listener (wired in the shared playercore.js) is fresh each time
-// and this "populate on open" listener needs re-attaching alongside it.
+// click listener needs re-attaching each time.
 function wireDebuggerButton() {
     const cmdDebug = document.getElementById('cmdDebug');
     if (!cmdDebug) return;
     cmdDebug.addEventListener('click', () => {
-        // playercore.js's own click listener (registered first — see this
-        // function's doc comment) has already opened this as a *modal*
-        // dialog by the time this listener runs. Reopen it non-modally: this
-        // dialog is resizable and movable (wireDebuggerMoveResize) rather than a fixed centered
-        // overlay, so keeping it modal only got in the way of the thing a
-        // dev tool window is actually for — leaving it open while still
-        // playing (refreshDebuggerAfterTurn keeps it in sync as turns
-        // happen). close()+show() in the same synchronous click handler,
-        // before the browser gets a chance to paint the modal state — same
-        // reasoning as applyDebuggerRect's doc comment — so there's no
-        // visible flash of the modal backdrop.
+        // Non-modal: the dialog is resizable and movable
+        // (wireDebuggerMoveResize), and the point of a dev tool window is
+        // leaving it open while still playing (refreshDebuggerAfterTurn keeps
+        // it in sync as turns happen). show() is a no-op if it's already open.
         const dlg = document.getElementById('questVivaDebugger');
-        dlg.close();
         dlg.show();
         ensureDebuggerWired();
         applyDebuggerRect();

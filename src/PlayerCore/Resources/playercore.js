@@ -74,12 +74,6 @@ function initPlayerUI() {
         await GameSaver.save();
     }));
 
-    const cmdDebug = document.getElementById("cmdDebug");
-    cmdDebug.addEventListener("click", () => {
-        const dialog = document.getElementById("questVivaDebugger");
-        dialog.showModal();
-    });
-
     $("#lstInventory").selectable({
         selected: function (event, ui) {
             $(ui.selected).siblings().removeClass("ui-selected");
@@ -454,20 +448,12 @@ function endPause() {
     // here made it flash into view for the length of the round trip whenever the
     // resumed script went straight into another pause (same bug as endWait()).
     _pauseRestorePending = true;
-
-    // TODO: This is WebPlayer-specific, so shouldn't be in this shared file
-    window.setTimeout(async function () {
-        try {
-            await WebPlayer.uiEndPause();
-        } finally {
-            pauseEnded();
-        }
-    }, 100);
+    sendEndPause();
 }
 
-// Called once the engine has resumed the paused turn and run on to its next
-// stopping point, so anything that turn did to the command bar has already
-// happened: another pause (beginPause), the end of the game (disableInterface)
+// Called by the platform's sendEndPause() once the engine has resumed the
+// paused turn and run on to its next stopping point, so anything that turn did
+// to the command bar has already happened: another pause (beginPause), the end of the game (disableInterface)
 // or a synchronous sound (playSound), each of which owns the command bar until
 // it restores it itself.
 function pauseEnded() {
