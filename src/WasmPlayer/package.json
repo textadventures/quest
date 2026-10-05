@@ -8,7 +8,7 @@
   },
   "devDependencies": {
     "@skeletonlabs/skeleton": "^4.15.2",
-    "@tailwindcss/cli": "^4.2.4",
+    "@tailwindcss/cli": "^4.3.3",
     "lucide-static": "^1.52.0",
     "tailwindcss": "^4.2.4"
   }
