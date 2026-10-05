@@ -291,6 +291,8 @@
     "updateBanner.availableMessage": "[Qúést Vívá {version} ís áváíláblé.]",
     "updateBanner.downloadButton": "[Dównlóád]",
     "updateBanner.later": "[Látér]",
+    "betaBanner.message": "[Thís ís thé Qúést Vívá bétá. Lócál dráfts ánd sávéd gámés héré áré képt sépáráté fróm pláy.qúéstvívá.cóm.]",
+    "betaBanner.stableLink": "[Gó tó pláy.qúéstvívá.cóm]",
     "fileChangedBanner.message": "[Thís fílé wás chángéd óútsídé thé édítór, by ánóthér prógrám.]",
     "fileChangedBanner.reloadFromDisk": "[Rélóád fróm dísk]",
     "libraryElementBanner.message": "[Thís élémént cómés fróm á líbráry{filename} ánd cán't bé édítéd díréctly.]",

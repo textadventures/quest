@@ -85,6 +85,8 @@ jobs:
           PUBLIC_APPSHELL_VERSION: ${{ github.ref_type == 'tag' && github.ref_name || github.sha }}
           PUBLIC_HAS_SERVER: false
           PUBLIC_SHOW_HOME: true
+          # Shows BetaBanner.svelte on play-beta.questviva.com only.
+          PUBLIC_BETA_SITE: ${{ steps.channel.outputs.pages_project == 'play-questviva-beta' }}
 
       - name: Assemble deploy directory
         run: |

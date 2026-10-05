@@ -347,6 +347,9 @@
     "updateBanner.downloadButton": "Descargar",
     "updateBanner.later": "Más tarde",
 
+    "betaBanner.message": "Esta es la beta de Quest Viva. Los borradores locales y las partidas guardadas aquí se guardan aparte de los de play.questviva.com.",
+    "betaBanner.stableLink": "Ir a play.questviva.com",
+
     "fileChangedBanner.message": "Este archivo fue modificado fuera del editor, por otro programa.",
     "fileChangedBanner.reloadFromDisk": "Recargar desde el disco",
 

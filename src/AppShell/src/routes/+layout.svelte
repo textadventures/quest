@@ -6,7 +6,7 @@
     import { goto } from "$app/navigation";
     import { base } from "$app/paths";
     import { page } from "$app/state";
-    import { PUBLIC_APPSHELL_VERSION, PUBLIC_SHOW_HOME } from "$env/static/public";
+    import { PUBLIC_APPSHELL_VERSION, PUBLIC_BETA_SITE, PUBLIC_SHOW_HOME } from "$env/static/public";
     import { isLoaded, saveGame, saveGameAs, undo, redo, canUndo, canRedo, markFileChangedExternally } from "$lib/editor-store";
     import { isElectron } from "$lib/runtime";
     import { initI18n, localeReady } from "$lib/i18n";
@@ -14,6 +14,7 @@
     import { initDefaultCodeView } from "$lib/code-view-store";
     import HomeHeader from "$components/HomeHeader.svelte";
     import HomeTabs from "$components/HomeTabs.svelte";
+    import BetaBanner from "$components/BetaBanner.svelte";
     import ConfirmDialog from "$components/ConfirmDialog.svelte";
     import Toast from "$components/Toast.svelte";
     import SettingsModal from "$components/SettingsModal.svelte";
@@ -21,6 +22,7 @@
     let { children }: { children: Snippet } = $props();
 
     const showHome = PUBLIC_SHOW_HOME === "true";
+    const isBetaSite = PUBLIC_BETA_SITE === "true";
     const rootPath = base || "/";
 
     // The editor lives at /edit, never at root or /open — so the tab bar's
@@ -153,7 +155,13 @@
 
 {#if $localeReady}
     {#if showTabs}
+        <!-- The beta banner goes inside the measured bar, so /open's centering
+             allows for it. It isn't shown in the editor (/edit), which fills
+             the whole window. -->
         <div class={isPlayContext ? "bg-surface-950" : ""} bind:clientHeight={homeBarHeight}>
+            {#if isBetaSite}
+                <BetaBanner />
+            {/if}
             <HomeHeader forceDark={isPlayContext} />
             <HomeTabs forceDark={isPlayContext} />
         </div>
