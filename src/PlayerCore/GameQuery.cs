@@ -4,11 +4,11 @@ using QuestViva.Legacy;
 
 namespace QuestViva.PlayerCore;
 
-// With bytes null, the game is read straight off disk via FileGameDataProvider (as the tests
-// do); WasmEditorBridge's cover-art lookup runs in-browser with no
-// filesystem access, so it passes the game's already-read bytes and gets a ByteArrayGameDataProvider
-// instead — same GameData shape either way, just a different source stream.
-public class GameQuery(string filename, byte[]? bytes = null)
+// Takes the game's bytes rather than a path, since neither caller has the game on disk:
+// WasmEditorBridge's cover-art lookup runs in-browser, and textadventures.co.uk queries
+// uploaded games. filename needn't exist on disk: its extension picks the engine (.aslx/.quest
+// or legacy .asl/.cas), and it identifies the game, but nothing is read from it.
+public class GameQuery(string filename, byte[] bytes)
 {
     private readonly GameQueryUi _dummyUi = new();
     private readonly List<string> _errors = [];
@@ -202,9 +202,7 @@ public class GameQuery(string filename, byte[]? bytes = null)
 
     public async Task<bool> Initialise()
     {
-        IGameDataProvider gameDataProvider = bytes != null
-            ? new ByteArrayGameDataProvider(bytes, filename)
-            : new FileGameDataProvider(filename);
+        IGameDataProvider gameDataProvider = new ByteArrayGameDataProvider(bytes, filename);
         var gameData = await gameDataProvider.GetData();
 
         if (gameData == null)
