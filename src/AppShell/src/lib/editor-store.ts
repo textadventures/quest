@@ -979,7 +979,7 @@ function frameworkPathsFromBoot(bootJs: string): string[] {
     const config = JSON.parse(bootJs.slice(start + startMarker.length, end)) as {
         resources: Record<string, unknown>;
     };
-    const names = new Set<string>(["dotnet.boot.js", "dotnet.js"]);
+    const names = new Set<string>(["dotnet.js"]);
     for (const [group, value] of Object.entries(config.resources)) {
         if (group === "hash") continue;
         if (!Array.isArray(value)) continue;
@@ -1042,8 +1042,9 @@ async function exportHtmlZip(signal: AbortSignal): Promise<void> {
     // tag, so omit it from the zip rather than shipping an unused file.
     const shellPaths = (shellFiles as string[]).filter(p => p !== "quest-config.js");
 
-    const bootBytes = await fetchPlayerFile(playerBase, "_framework/dotnet.boot.js");
-    if (!bootBytes) throw new Error("HTML export: WasmPlayer boot manifest missing from /player/.");
+    // The boot manifest is inlined into dotnet.js (the WebAssembly SDK's only mode since .NET 11).
+    const bootBytes = await fetchPlayerFile(playerBase, "_framework/dotnet.js");
+    if (!bootBytes) throw new Error("HTML export: WasmPlayer dotnet.js missing from /player/.");
     const frameworkPaths = frameworkPathsFromBoot(new TextDecoder().decode(bootBytes));
 
     const paths = [...new Set([...shellPaths, ...frameworkPaths])];

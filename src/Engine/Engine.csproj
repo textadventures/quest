@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net10.0</TargetFramework>
+        <TargetFramework>net11.0</TargetFramework>
         <OutputType>Library</OutputType>
         <RootNamespace>QuestViva.Engine</RootNamespace>
         <PackageId>QuestViva.Engine</PackageId>
@@ -32,7 +32,6 @@
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="NCalcAsync" Version="6.3.2" />
-        <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     </ItemGroup>
     <ItemGroup>
         <None Remove="Core\Core.aslx" />

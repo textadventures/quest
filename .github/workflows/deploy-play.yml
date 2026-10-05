@@ -73,7 +73,8 @@ jobs:
 
       - uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: '11.0.x'
+          dotnet-quality: 'preview'
 
       - uses: actions/setup-node@v7
         with:
@@ -84,7 +85,7 @@ jobs:
 
       # `publish`, not `build`: only publish IL-trims the unused .NET framework
       # out of the AppBundle (~190 files down to ~50, less than half the
-      # download). It still writes to bin/Release/net10.0/browser-wasm/AppBundle.
+      # download). It still writes to bin/Release/net11.0/browser-wasm/AppBundle.
       - name: Publish WasmEditor
         run: dotnet publish src/WasmEditor/WasmEditor.csproj -c Release
 
@@ -115,8 +116,8 @@ jobs:
         run: |
           mkdir -p deploy/AppBundle deploy/player
           cp -r src/AppShell/build/. deploy/
-          cp -r src/WasmEditor/bin/Release/net10.0/browser-wasm/AppBundle/. deploy/AppBundle/
-          cp -r src/WasmPlayer/bin/Release/net10.0/browser-wasm/AppBundle/. deploy/player/
+          cp -r src/WasmEditor/bin/Release/net11.0/browser-wasm/AppBundle/. deploy/AppBundle/
+          cp -r src/WasmPlayer/bin/Release/net11.0/browser-wasm/AppBundle/. deploy/player/
           cat > deploy/_headers <<'EOF'
           # Cloudflare Pages' default for a static asset is
           # `max-age=0, must-revalidate`, so without these rules a warm reload
@@ -130,8 +131,8 @@ jobs:
           # For _framework/* the version is also what makes this *safe*, and it
           # replaces the blanket `Cache-Control: no-cache` that used to sit
           # here: those filenames aren't content-hashed and the build output isn't
-          # byte-reproducible, so a browser pairing a cached dotnet.boot.js
-          # (the manifest of per-file SHA-256 hashes) with a binary from a
+          # byte-reproducible, so a browser pairing a cached boot manifest of
+          # per-file SHA-256 hashes (now inlined into dotnet.js) with a binary from a
           # later deploy got an SRI failure. Stamping both with the same
           # version means they can't come from different deploys.
           #
@@ -197,7 +198,7 @@ jobs:
           command: pages deploy deploy --project-name=${{ steps.channel.outputs.pages_project }} --branch=main
 
       - name: Package WasmPlayer artifact
-        run: (cd src/WasmPlayer/bin/Release/net10.0/browser-wasm/AppBundle && zip -r $GITHUB_WORKSPACE/WasmPlayer.zip .)
+        run: (cd src/WasmPlayer/bin/Release/net11.0/browser-wasm/AppBundle && zip -r $GITHUB_WORKSPACE/WasmPlayer.zip .)
 
       # AppShell's build bakes BASE_PATH into its assets, so it needs a second
       # build for textadventures.co.uk's /questviva path (WasmEditor's output
@@ -214,7 +215,7 @@ jobs:
       - name: Package editor artifacts for textadventures.co.uk
         if: github.ref_type == 'tag'
         run: |
-          (cd src/WasmEditor/bin/Release/net10.0/browser-wasm/AppBundle && zip -r $GITHUB_WORKSPACE/AppBundle.zip .)
+          (cd src/WasmEditor/bin/Release/net11.0/browser-wasm/AppBundle && zip -r $GITHUB_WORKSPACE/AppBundle.zip .)
           (cd src/AppShell/build && zip -r $GITHUB_WORKSPACE/WebEditor.zip .)
 
       - name: Attach player and editor builds to GitHub Release

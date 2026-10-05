@@ -5,8 +5,9 @@ import { PUBLIC_APPSHELL_VERSION } from "$app/env/public";
 // .github/workflows/deploy-play.yml. Two things need it: the version makes each
 // deploy a distinct URL so /AppBundle/_framework/* can be served `immutable`
 // instead of revalidating ~190 files on every editor load, and it keeps
-// dotnet.boot.js (the manifest of per-file SHA-256 hashes) from ever being
-// paired with a binary from a different deploy, which fails the SRI check.
+// the boot manifest of per-file SHA-256 hashes (inlined into dotnet.js) from
+// ever being paired with a binary from a different deploy, which fails the SRI
+// check.
 // Blank in a dev build, where the assets aren't cached anyway.
 const versionQuery = PUBLIC_APPSHELL_VERSION ? `?v=${encodeURIComponent(PUBLIC_APPSHELL_VERSION)}` : "";
 
@@ -173,8 +174,8 @@ export async function loadWasm(): Promise<WasmBridge> {
         // the URL at build time — it only exists as a runtime-served file.
         const loadModule = new Function("url", "return import(url)");
         // dotnet.js reads the query back off its own import.meta.url and
-        // propagates it to the JS modules it imports and to dotnet.boot.js
-        // (`modulesUniqueQuery`), so only the remaining assets — assemblies,
+        // propagates it to the JS modules it imports (`modulesUniqueQuery`),
+        // so only the remaining assets — assemblies,
         // dotnet.native.wasm, ICU data — need stamping in withResourceLoader.
         const { dotnet } = (await loadModule(`/AppBundle/_framework/dotnet.js${versionQuery}`)) as { dotnet: any };
 
