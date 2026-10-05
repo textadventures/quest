@@ -33,7 +33,7 @@ This builds the whole solution (`QuestViva.sln`). To run the tests:
 dotnet test --configuration Release
 ```
 
-There are several hundred tests across the test projects (`tests/EngineTests`, `tests/PlayerCoreTests`, `tests/EditorCoreTests`, `tests/LegacyTests`, `tests/WebPlayerTests`) - they should all pass.
+There are several hundred tests across the test projects (`tests/EngineTests`, `tests/PlayerCoreTests`, `tests/EditorCoreTests`, `tests/LegacyTests`) - they should all pass.
 
 To run a single test project, or filter to a specific test:
 
@@ -65,20 +65,7 @@ It's worth testing against that one before you open a pull request that touches 
 
 ### WebPlayer
 
-WebPlayer is deprecated and will be removed in 6.1.
-
-```bash
-docker compose up --build
-```
-
-This runs WebPlayer at `http://localhost:8080`. Alternatively, run it directly from source:
-
-```bash
-dotnet run --project src/WebPlayer/WebPlayer.csproj
-```
-
-See [WebPlayer](/publishing/webplayer) for configuration options.
-
+WebPlayer, the server-side player, was removed in 6.1. Its source is still on the `release/6.0` branch, and its 6.0 Docker images are still published - see [WebPlayer](/publishing/webplayer).
 
 ## Running the editor (AppShell)
 
@@ -135,7 +122,7 @@ These exist because the editor links into this site: the help link on an element
 
 ### End-to-end tests
 
-`tests/e2e/` holds Playwright scripts (`verify-*.mjs`) that drive the real thing - WasmPlayer, the AppShell editor, WebPlayer and the packaged Electron app - against a local dev server. They're too slow to run on every pull request, so they run nightly, and on demand from the Actions tab.
+`tests/e2e/` holds Playwright scripts (`verify-*.mjs`) that drive the real thing - WasmPlayer, the AppShell editor and the packaged Electron app - against a local dev server. They're too slow to run on every pull request, so they run nightly, and on demand from the Actions tab.
 
 Install the tooling once, inside `tests/e2e/`:
 

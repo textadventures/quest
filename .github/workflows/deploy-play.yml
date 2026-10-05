@@ -2,8 +2,8 @@ name: Deploy play.questviva.com and AppShell
 
 # Runs when a version tag is pushed (e.g. v6.0.0-rc.3, normally via
 # release-please merging its release PR), keeping play.questviva.com (stable
-# releases) and play-beta.questviva.com (prereleases) on the same release
-# cadence as the WebPlayer Docker image. Tag pushes also attach
+# releases) and play-beta.questviva.com (prereleases) on the release
+# cadence. Tag pushes also attach
 # WasmPlayer/AppBundle/AppShell build artifacts to the GitHub Release
 # release-please already created, which finalize-release.yml then uses to
 # redeploy textadventures.co.uk (stable releases only), so a single release

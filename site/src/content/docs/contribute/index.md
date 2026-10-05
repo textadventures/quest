@@ -31,7 +31,7 @@ Two things follow from this if you're editing `src/Engine/Core/*.aslx`:
 
 ## How the pieces fit together
 
-![Diagram of the Quest Viva projects: ElectronApp, WebPlayer, WasmPlayer and AppShell on top; WasmEditor, PlayerCore, EditorCore, Engine and Legacy beneath them; Common at the bottom](/images/architecture.svg)
+![Diagram of the Quest Viva projects: ElectronApp, WasmPlayer and AppShell on top; WasmEditor, PlayerCore, EditorCore, Engine and Legacy beneath them; Common at the bottom](/images/architecture.svg)
 
 Everything below the players and the editor is C# on .NET 10. **Engine** is the interpreter - script execution, expression evaluation, game loading, the built-in functions and the Core library. **Legacy** handles games written for Quest 1.x to 4.x. **PlayerCore** and **EditorCore** wrap the engine for playing and for editing.
 
@@ -39,7 +39,6 @@ On top of those:
 
 - **WasmPlayer** is the player people actually use. It's the engine compiled to WebAssembly, running the whole game in the browser with no server involved.
 - **AppShell** is the editor's user interface - a SvelteKit app written in TypeScript, which talks to EditorCore through the **WasmEditor** bridge across the JavaScript/WebAssembly boundary.
-- **WebPlayer** is a server-side player (ASP.NET Core and Blazor Server), for the cases where you don't want players to be able to download the game file at all. It is deprecated and will be removed in 6.1. See [WebPlayer](/publishing/webplayer).
 - **ElectronApp** wraps AppShell as a desktop app.
 
 The repository's own `README.md` and its `docs/` folder go further than this page usefully can: `docs/appshell-wasm-svelte.md` for the editor and the WASM boundary, `docs/electron-desktop-app.md` for the desktop app, `docs/deployment-domains.md` for which build is deployed where, and `docs/release-channels.md` for how releases are cut.

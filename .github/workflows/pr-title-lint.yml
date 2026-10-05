@@ -25,7 +25,7 @@ jobs:
           # would notice the change, not which projects it touches: an editor
           # fix spanning AppShell, EditorCore and Engine is just "Editor".
           # Omit the scope when a change affects everyone or no one.
-          #   Player  - playing games (WebPlayer, WasmPlayer, PlayerCore, and
+          #   Player  - playing games (WasmPlayer, PlayerCore, and
           #             engine behaviour players see)
           #   Editor  - authoring games (AppShell, EditorCore, WasmEditor, and
           #             editor-facing Core library changes)

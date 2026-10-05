@@ -13,7 +13,6 @@
     <line x1="560" y1="185" x2="560" y2="228" />
     <line x1="560" y1="285" x2="560" y2="328" />
     <line x1="500" y1="285" x2="382" y2="328" />
-    <line x1="120" y1="185" x2="322" y2="328" />
     <line x1="340" y1="185" x2="340" y2="328" />
     <line x1="340" y1="385" x2="340" y2="428" />
     <line x1="400" y1="385" x2="522" y2="428" />
@@ -28,11 +27,6 @@
     <rect x="470" y="20" width="180" height="55" rx="6" fill="#dce8f7" stroke="#333333"/>
     <text x="560" y="43">ElectronApp</text>
     <text x="560" y="61" font-size="11" font-weight="normal">desktop wrapper</text>
-
-    <!-- WebPlayer -->
-    <rect x="30" y="130" width="180" height="55" rx="6" fill="#dce8f7" stroke="#333333"/>
-    <text x="120" y="153">WebPlayer</text>
-    <text x="120" y="171" font-size="11" font-weight="normal">ASP.NET Core + Blazor</text>
 
     <!-- WasmPlayer -->
     <rect x="250" y="130" width="180" height="55" rx="6" fill="#dce8f7" stroke="#333333"/>

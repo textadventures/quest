@@ -13,12 +13,11 @@ var beginningOfCurrentTurnScrollPosition = 0;
 // that hasn't been saved anywhere (slot or file) yet, so an accidental
 // refresh/close can warn before silently discarding it (see beforeunload
 // listener below). canSave mirrors the last value passed to
-// WebPlayer.setCanSave (both playerweb.js's and wasm-player.js's versions
-// keep this in sync) — if saving isn't even offered, there's nothing the
-// player could do about unsaved progress, so the warning is pointless. This
-// is what keeps the legacy editor's preview page (Editor.razor's
-// EnableSave="false") and WasmPlayer's editor-preview mode — both of which
-// reload on every edit — from being nagged by the warning on every reload.
+// WebPlayer.setCanSave (wasm-player.js keeps this in sync) — if saving isn't
+// even offered, there's nothing the player could do about unsaved progress,
+// so the warning is pointless. This is what keeps WasmPlayer's editor-preview
+// mode, which reloads on every edit, from being nagged by the warning on
+// every reload.
 var hasUnsavedProgress = false;
 var canSave = true;
 

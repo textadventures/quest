@@ -1,8 +1,8 @@
 name: Publish Electron desktop app
 
 # Runs when a version tag is pushed (e.g. v6.0.0-rc.3, normally via
-# release-please merging its release PR), same trigger as docker-publish.yml,
-# nuget-publish.yml, and deploy-play.yml — builds on all three OSes and
+# release-please merging its release PR), same trigger as nuget-publish.yml
+# and deploy-play.yml — builds on all three OSes and
 # attaches the unsigned installers/AppImage to the GitHub Release
 # release-please already created. See docs/electron-desktop-app.md.
 on:

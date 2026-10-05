@@ -67,6 +67,6 @@ if (unmapped.length > 0) {
 }
 
 if (otherChanges.length > 0) {
-    console.log(`\n${otherChanges.length} changed file(s) outside src/AppShell/src/ (Engine/EditorCore/WasmEditor/WasmPlayer/WebPlayer/etc.) aren't covered by this map at all — it only sees the browser-visible AppShell layer. Use judgment or run the relevant e2e job's scripts manually:`);
+    console.log(`\n${otherChanges.length} changed file(s) outside src/AppShell/src/ (Engine/EditorCore/WasmEditor/WasmPlayer/etc.) aren't covered by this map at all — it only sees the browser-visible AppShell layer. Use judgment or run the relevant e2e job's scripts manually:`);
     console.log(`  ${otherChanges.join('\n  ')}`);
 }
