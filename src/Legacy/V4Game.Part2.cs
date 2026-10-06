@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Diagnostics;
 using System.Text;
 using Microsoft.VisualBasic;
@@ -54,11 +55,7 @@ public partial class V4Game
 
     public event PrintTextHandler PrintText;
 
-    // Legacy V4 games have no wait/get-input/ask/show-menu suspension concept for a buffering
-    // IPlayer to flush on mid-command - never raised, but IGame requires the member.
-#pragma warning disable CS0067
     public event Action TurnSuspended;
-#pragma warning restore CS0067
 
     public Task SendCommand(string command)
     {
@@ -529,7 +526,7 @@ public partial class V4Game
         // Now, set the contents
         _numericVariable[numNumber].VariableName = name;
         Array.Resize(ref _numericVariable[numNumber].VariableContents, _numericVariable[numNumber].VariableUBound + 1);
-        _numericVariable[numNumber].VariableContents[arrayIndex] = content.ToString();
+        _numericVariable[numNumber].VariableContents[arrayIndex] = content.ToString(CultureInfo.InvariantCulture);
 
         if (!string.IsNullOrEmpty(_numericVariable[numNumber].OnChangeScript) & !_gameIsRestoring)
         {
@@ -2991,7 +2988,7 @@ public partial class V4Game
         for (i = 1; i <= loopTo5; i++)
         {
             lines.Add(_numericVariable[i].VariableName + ";" +
-                      Conversion.Str(Conversions.ToDouble(_numericVariable[i].VariableContents[0])));
+                      Conversion.Str(Conversion.Val(_numericVariable[i].VariableContents[0])));
         }
 
         lines.Add("!e");
@@ -6120,7 +6117,7 @@ public partial class V4Game
                 }
 
                 var name = Strings.Trim(Strings.Left(interval, scp - 1));
-                interval = Conversion.Val(Strings.Trim(Strings.Mid(interval, scp + 1))).ToString();
+                interval = Conversion.Val(Strings.Trim(Strings.Mid(interval, scp + 1))).ToString(CultureInfo.InvariantCulture);
                 var found = false;
 
                 for (int i = 1, loopTo = _numberTimers; i <= loopTo; i++)

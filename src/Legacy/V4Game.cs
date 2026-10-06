@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text;
 using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
@@ -3236,8 +3237,8 @@ public partial class V4Game : IGame, IGameDebug
 
             if (opNum != 0)
             {
-                var val1 = Conversions.ToDouble(elements[opNum]);
-                var val2 = Conversions.ToDouble(elements[opNum + 1]);
+                var val1 = Conversion.Val(elements[opNum]);
+                var val2 = Conversion.Val(elements[opNum + 1]);
 
                 switch (operators[opNum] ?? "")
                 {
@@ -3270,7 +3271,7 @@ public partial class V4Game : IGame, IGameDebug
                     }
                 }
 
-                elements[opNum] = result.ToString();
+                elements[opNum] = result.ToString(CultureInfo.InvariantCulture);
 
                 // Remove this operator, and Elements(OpNum+1) from the arrays
                 for (int i = opNum, loopTo5 = numOperators - 1; i <= loopTo5; i++)
@@ -3668,6 +3669,9 @@ public partial class V4Game : IGame, IGameDebug
     private void SignalTurnSuspended()
     {
         _readyForCommand = true;
+        // Fires on every suspension, including one inside Begin() (an "enter" in the start script
+        // never lets Begin() return), so a buffering IPlayer flushes the prompt that led to it.
+        TurnSuspended?.Invoke();
         _turnSuspendedTcs?.TrySetResult();
     }
 
@@ -4902,7 +4906,7 @@ public partial class V4Game : IGame, IGameDebug
                 var afterStar = Strings.Mid(displayData, secondStar + 1);
                 var betweenStar = Strings.Mid(displayData, firstStar + 1, secondStar - firstStar - 1);
 
-                if (Conversions.ToDouble(_numericVariable[id].VariableContents[0]) != 1d)
+                if (Conversion.Val(_numericVariable[id].VariableContents[0]) != 1d)
                 {
                     displayData = beforeStar + betweenStar + afterStar;
                 }
@@ -6983,8 +6987,8 @@ public partial class V4Game : IGame, IGameDebug
         {
             return Conversion.Str(
                 Conversion.Int(_random.NextDouble() *
-                               (Conversions.ToDouble(parameters[2]) - Conversions.ToDouble(parameters[1]) + 1d)) +
-                Conversions.ToDouble(parameters[1]));
+                               (Conversion.Val(parameters[2]) - Conversion.Val(parameters[1]) + 1d)) +
+                Conversion.Val(parameters[1]));
         }
         else if (name == "instr")
         {
