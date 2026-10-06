@@ -10,6 +10,11 @@ define game <Unit Test 1>
 		display <Test variable: !>
 	end define
 
+	define variable <fracvar>
+		type numeric
+		value <2000>
+	end define
+
 	background <black>
 	foreground <white>
 
@@ -45,6 +50,11 @@ define room <room>
 	}
 
 	command <setstatus> inc <testvar>
+
+	command <incfrac> {
+		inc <fracvar; 0.25>
+		msg <Fraction: %fracvar%>
+	}
 
 	define object <object>
 		look <object look desc>

@@ -1,3 +1,4 @@
+using System.Globalization;
 using QuestViva.Common;
 using QuestViva.Legacy;
 
@@ -106,5 +107,27 @@ public class V4GameTests
         Assert.AreEqual("#FFFFFF", _player.Foreground);
         Assert.AreEqual("TestFont", _player.FontName);
         Assert.AreEqual("30", _player.FontSize);
+    }
+
+    [TestMethod]
+    [DataRow("sv-SE")]
+    [DataRow("de-DE")]
+    [DataRow("en-US")]
+    public async Task TestFractionalNumbersUnderDecimalCommaCulture(string culture)
+    {
+        var original = CultureInfo.CurrentCulture;
+        try
+        {
+            CultureInfo.CurrentCulture = new CultureInfo(culture);
+            _player.ClearBuffer();
+            await _game.SendCommand("incfrac");
+            await _game.SendCommand("incfrac");
+            var output = Enumerable.Range(0, _player.BufferLength).Select(_player.Buffer).Where(line => line.StartsWith("Fraction:")).ToList();
+            CollectionAssert.AreEqual(new[] { "Fraction: 2000.25", "Fraction: 2000.5" }, output);
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = original;
+        }
     }
 }
