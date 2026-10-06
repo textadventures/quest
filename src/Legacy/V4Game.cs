@@ -3668,6 +3668,9 @@ public partial class V4Game : IGame, IGameDebug
     private void SignalTurnSuspended()
     {
         _readyForCommand = true;
+        // Fires on every suspension, including one inside Begin() (an "enter" in the start script
+        // never lets Begin() return), so a buffering IPlayer flushes the prompt that led to it.
+        TurnSuspended?.Invoke();
         _turnSuspendedTcs?.TrySetResult();
     }
 
