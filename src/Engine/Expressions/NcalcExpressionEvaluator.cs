@@ -27,7 +27,13 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         _expression = Utility.ResolveElementName(expression);
 
         _nCalcExpression = new QuestNCalcExpression(expression,
-            new ExpressionContext { Options = ExpressionOptions.NoStringTypeCoercion },
+            // Invariant so "text" + 100.4 prints "100.4" whatever the host's locale (the default is
+            // CultureInfo.CurrentCulture, which gives "100,4" on e.g. a Swedish machine).
+            new ExpressionContext
+            {
+                Options = ExpressionOptions.NoStringTypeCoercion,
+                CultureInfo = CultureInfo.InvariantCulture
+            },
             QuestNCalcExpressionFactory.GetInstance(),
             LogicalExpressionCache.GetInstance());
 
