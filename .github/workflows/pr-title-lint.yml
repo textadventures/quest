@@ -1,9 +1,10 @@
 name: Lint PR title
 
-# PRs are squash-merged, so the PR title becomes the commit message on main
-# that release-please parses to decide what changed and how to version it.
-# This enforces the Conventional Commits prefix (fix:, feat:, chore:, etc.)
-# that release-please needs to do that.
+# The PR title becomes the commit message release-please parses (directly when
+# squash-merged, via the merge commit body otherwise), and a commit without a
+# Conventional Commits prefix (fix:, feat:, chore:, etc.) never triggers a
+# release. This enforces the prefix only. Scopes are deliberately not enforced:
+# see the release notes convention in CLAUDE.md.
 on:
   pull_request_target:
     types: [opened, edited, synchronize, reopened]
@@ -18,25 +19,3 @@ jobs:
       - uses: amannn/action-semantic-pull-request@v6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          # Scope is optional (requireScope unset), but when given it must be
-          # one of these audience areas, exact case, so scoped changelog
-          # entries cluster and capitalize consistently. The scope says who
-          # would notice the change, not which projects it touches: an editor
-          # fix spanning AppShell, EditorCore and Engine is just "Editor".
-          # Omit the scope when a change affects everyone or no one.
-          #   Player  - playing games (WasmPlayer, PlayerCore, and
-          #             engine behaviour players see)
-          #   Editor  - authoring games (AppShell, EditorCore, WasmEditor, and
-          #             editor-facing Core library changes)
-          #   Desktop - the Electron app specifically
-          #   Site    - questviva.com (site/), including the documentation
-          #   e2e     - tests/e2e/*.mjs scripts, which span multiple areas
-          #   main    - release-please's own "chore(main): release X.Y.Z" PRs
-          scopes: |
-            Player
-            Editor
-            Desktop
-            Site
-            e2e
-            main
