@@ -1,3 +1,4 @@
+using System.Globalization;
 using QuestViva.Engine;
 using QuestViva.Engine.Functions;
 using QuestViva.Engine.Scripts;
@@ -78,6 +79,22 @@ public class ExpressionTests
         function.Fields[FieldDefinitions.ReturnType] = returnType;
         function.Fields[FieldDefinitions.ParamNames] = [.. parameters];
         function.Fields[FieldDefinitions.Script] = _scriptFactory.CreateScript(script, _scriptContext);
+    }
+
+    [TestMethod]
+    public async Task StringConcatenationFormatsDoublesInvariantly()
+    {
+        var original = CultureInfo.CurrentCulture;
+        try
+        {
+            CultureInfo.CurrentCulture = new CultureInfo("sv-SE");
+            (await RunExpression<string>("\"v=\" + 100.4")).ShouldBe("v=100.4");
+            (await RunExpression<string>($"\"v=\" + object.{DoubleAttributeName}")).ShouldBe("v=23.45");
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = original;
+        }
     }
 
     private Task<T> RunExpression<T>(string expression)
