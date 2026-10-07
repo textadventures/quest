@@ -11,8 +11,17 @@
 # Two dynamic rules, well inside Cloudflare's limit, forwarding the whole dead
 # namespace into /reference/functions/ where the fine-grained legacy mappings
 # in src/redirects.mjs can take over.
+#
+# Quest 5's docs had one mixed-case page. Its lowercase twin is already a
+# redirect page in src/redirects.mjs, and the two would collide in dist/ on a
+# case-insensitive filesystem (macOS), so this one lives here instead. It has
+# to come before the /functions/* wildcard, since the first matching rule wins.
+/functions/currentDateUTC /reference/functions/general#currentdateutc 301
 /functions /reference/functions 301
 /functions/* /reference/functions/:splat 301
 
-# Cross-hostname wildcard from the retired docs domain:
-docs.textadventures.co.uk/quest/* https://questviva.com/:splat 301
+# The retired docs.textadventures.co.uk/quest/ site can't be redirected from
+# this file: _redirects only matches paths on this Pages project's own
+# hostname. That redirect is a Cloudflare Redirect Rule on the
+# textadventures.co.uk zone, which strips the /quest prefix and the .html
+# suffix and lands here, where the rules above and src/redirects.mjs take over.
