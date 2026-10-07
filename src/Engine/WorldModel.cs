@@ -1138,7 +1138,11 @@ public partial class WorldModel : IGame, IGameDebug
     private async Task UpdateObjectsListAsync()
     {
         await UpdateObjectsListAsync("GetPlacesObjectsList", ListType.ObjectsList);
-        await UpdateObjectsListAsync("ScopeInventory", ListType.InventoryList);
+        // GetInventoryObjectsList filters out "hidefrominventory" objects for display only.
+        // Games saved before it existed don't carry it, so fall back to the parser scope.
+        await UpdateObjectsListAsync(
+            Elements.ContainsKey(ElementType.Function, "GetInventoryObjectsList") ? "GetInventoryObjectsList" : "ScopeInventory",
+            ListType.InventoryList);
         await UpdateElementMenuVerbsAsync();
     }
 
@@ -1200,7 +1204,7 @@ public partial class WorldModel : IGame, IGameDebug
         {
             if (Version <= WorldModelVersion.v520 || !Elements.ContainsKey(ElementType.Function, "GetDisplayVerbs"))
             {
-                if (scope == "ScopeInventory")
+                if (listType == ListType.InventoryList)
                 {
                     objects.Add(new ListData(await GetListDisplayAliasAsync(obj), obj.Fields[FieldDefinitions.InventoryVerbs]!,
                         obj.Name, await GetDisplayAliasAsync(obj)));

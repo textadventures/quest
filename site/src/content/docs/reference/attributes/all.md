@@ -426,6 +426,10 @@ The attribute value itself encodes the sides as individual bits (for NESW).
 
 "hidechildren" is a [boolean](/reference/attributes/types#boolean) attribute. On a container object, when set to "true" it specifies that children of this object are not in scope until this object has been looked at. When the object is looked at, "hidechildren" is automatically set to "false" so the children become in scope.
 
+## hidefrominventory
+
+"hidefrominventory" is a [boolean](/reference/attributes/types#boolean) attribute. If set to true, the object is left out of the "inventory" command's output and the "Inventory" pane while the player is carrying it, along with anything inside it. It stays in [ScopeInventory](/reference/functions/scope#scopeinventory), so the player can still refer to it and drop it.
+
 ## inventoryverbs
 
 "inventoryverbs" is a [stringlist](/reference/attributes/types#stringlist) attribute, defining the verbs that appear when the object's hyperlink is clicked (when the object is in the inventory, so after the user types "inventory"). The verbs also appear as buttons when the object is selected in the "Inventory" pane.

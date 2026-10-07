@@ -228,7 +228,7 @@
       result = ""
       count = 0
       if (includeScenery) {
-        list = RemoveInvisibleObjects(GetDirectChildren(parent))
+        list = RemoveInventoryHiddenObjects(RemoveInvisibleObjects(GetDirectChildren(parent)))
       }
       else {
         list = RemoveSceneryObjects(GetDirectChildren(parent))
@@ -277,6 +277,23 @@
       result = NewObjectList()
       foreach (obj, list) {
         if (obj <> game.pov and obj.visible) {
+          list add (result, obj)
+        }
+      }
+      return (result)
+    ]]>
+  </function>
+
+  <!--
+    Drops objects flagged "hidefrominventory": things the player carries so that
+    commands can refer to them (a bladder, a sense of smell) but that should never
+    be listed as possessions. Unlike "visible = false", they stay in parser scope.
+  -->
+  <function name="RemoveInventoryHiddenObjects" type="objectlist" parameters="list">
+    <![CDATA[
+      result = NewObjectList()
+      foreach (obj, list) {
+        if (not GetBoolean(obj, "hidefrominventory")) {
           list add (result, obj)
         }
       }

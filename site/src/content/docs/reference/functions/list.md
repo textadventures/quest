@@ -254,6 +254,13 @@ ObjectListToStringList (objectlist list, string attribute name)
 
 Returns a new string list containing the value of the named attribute for each object in the given list. The value must be a string or it will not be added. If an object does not have that attribute or it is not a string, then it will be missing from the list, so the string list that is returned could well be shorter than the object list.
 
+## RemoveInventoryHiddenObjects
+```quest
+RemoveInventoryHiddenObjects(objectlist)
+```
+
+Returns a list where any objects flagged [hidefrominventory](/reference/attributes/all#hidefrominventory) are removed from the list **objectlist**. Used when building the "inventory" list.
+
 ## RemoveInvisibleObjects
 ```quest
 RemoveInvisibleObjects(objectlist)
