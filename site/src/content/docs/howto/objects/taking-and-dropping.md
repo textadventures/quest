@@ -71,6 +71,12 @@ if (successful) {
 
 If the player successfully takes an object that was marked as [scenery](/howto/rooms/objects-and-rooms#the-setup-tab), Quest Viva clears the scenery flag for you. An object the player is carrying is not scenery any more, and would otherwise vanish from the room description of wherever they eventually dropped it.
 
+## Hiding carried objects
+
+Anything the player is carrying is listed by the `INVENTORY` command and in the inventory pane, including scenery. For something the player carries that shouldn't count as a possession, like a full bladder or a sense of smell, open the _Advanced_ section at the bottom of the tab and tick **Hide from inventory**.
+
+The object, and anything inside it, is left out of both lists, but the player still holds it: commands can refer to it, `Got` returns true for it, and `DROP` runs its own drop script. That's the difference from unticking **Visible**, which takes the object out of play altogether.
+
 ## Price
 
 With the "Money" game feature enabled, a "Price" box appears on this tab. It holds what the object costs, for use with a shop. Setting it does not by itself make the object buyable — see [Setting up a shop](/howto/score/shop) for the rest.

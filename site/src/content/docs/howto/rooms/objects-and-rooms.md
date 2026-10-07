@@ -36,6 +36,8 @@ The player can refer to the object by its alias, or by any of the other names yo
 
 As a rule: describe it in the room description, mark it as scenery, and let the curious player find it. If the player does manage to take a scenery object, Quest Viva clears the scenery flag automatically.
 
+Scenery only hides an object in a room. Anything the player is carrying is listed in their inventory, scenery or not. To keep a carried object out of the inventory, see [hiding carried objects](/howto/objects/taking-and-dropping#hiding-carried-objects).
+
 ### Prefix and suffix
 
 Quest Viva writes an object into a room description as something like "a brass key". The **prefix** is what comes before ("a", "an", "some") and the **suffix** is what comes after.
