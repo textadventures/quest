@@ -131,7 +131,7 @@ ScopeInventory ()
 
 Returns an [objectlist](/reference/attributes/types#objectlist) containing all the visible objects which the player has in their inventory.
 
-Used to populate the "Inventory" list, and the list of objects returned by the "inventory" command
+This is the parser's scope for held objects, so it includes objects flagged [hidefrominventory](/reference/attributes/all#hidefrominventory). The "Inventory" pane uses [GetInventoryObjectsList](/reference/functions/internal-core#getinventoryobjectslist) instead, which leaves them out.
 
 ## ScopeReachable
 ```quest
