@@ -1,5 +1,6 @@
 import { loadElectronFile, openElectronPlayFile, listRecentGames } from "./electron-adapter";
 import type { FileAdapter } from "./types";
+import { withGuessedMimeType } from "./mime";
 import { resolveAndCacheCover } from "../local-cover";
 
 function blobToDataUrl(blob: Blob): Promise<string> {
@@ -59,7 +60,7 @@ export async function playElectronFile(dirPath: string, filename: string, onPlay
         } else if (data.type === "resource-request") {
             const blob = await adapter.getAsset(data.name);
             if (blob) {
-                const dataUrl = await blobToDataUrl(blob);
+                const dataUrl = await blobToDataUrl(withGuessedMimeType(blob, data.name));
                 bc.postMessage({ type: "resource-response", id: data.id, dataUrl });
             }
         }
