@@ -28,6 +28,11 @@
 
 set -euo pipefail
 
+# The dotnet CLI can hang after a build on its workload-update and telemetry
+# network checks. Neither is needed here; set either to 0 beforehand to opt back in.
+export DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE="${DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE:-1}"
+export DOTNET_CLI_TELEMETRY_OPTOUT="${DOTNET_CLI_TELEMETRY_OPTOUT:-1}"
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
