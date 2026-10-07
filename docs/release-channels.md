@@ -27,6 +27,16 @@ Because `releases/latest` skips prereleases, the download buttons (AppShell's `d
 - `release-please.yml` needs to run on pushes to both `main` and `release/**`, passing `target-branch: ${{ github.ref_name }}`, so each branch keeps its own release PR.
 - A tag push runs the workflow files as they are in the tagged commit, so a `v6.0.x` tag runs `release/6.0`'s copies. Fixes to the release workflows need backporting there too.
 
+## Backporting
+
+Fixes land on `main` first, then go to `release/6.0` through a PR of their own:
+
+1. Branch from `release/6.0` and `git cherry-pick -x` the squash commit from `main`. Several related fixes can go in one PR.
+2. Title the PR `chore(release/6.0): backport #1234` (listing every PR it brings in). `pr-title-lint.yml` rejects any other title for a PR into a `release/**` branch.
+3. Merge it with a **merge commit**, not a squash.
+
+Why it works this way: release-please builds the changelog from every commit since the last tag, merge commits included. Merging keeps each cherry-picked commit with its original title and PR number, so the 6.0.N changelog lists the actual fixes. The merge commit is titled with the PR title, so with a `fix:` title it would show up in the changelog as a second entry for the same fix. A `chore:` title is left out of the changelog. Changing the repo's merge commit title setting doesn't avoid this: the only alternative GitHub allows puts the PR title in the merge commit's body, and release-please also reads conventional-commit lines from commit bodies.
+
 ## Keeping 6.0 users safe from betas
 
 - **Browser storage:** play-beta.questviva.com is a separate origin, so it has its own OPFS drafts, IndexedDB saves and localStorage. A beta can't migrate or damage data that 6.0 needs to read. The flip side is that beta users don't see their stable drafts, so the beta site should say so.
