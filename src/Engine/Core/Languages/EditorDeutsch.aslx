@@ -358,6 +358,7 @@
   <template name="EditorObjectInventoryTakemessage">Beim nehmen des Objektes (Ohne Eingabe = Standardverhalten)</template>
   <template name="EditorObjectInventoryAftertaking">Nachdem das Objekt genommen wurde</template>
   <template name="EditorObjectInventoryExcludedTakeAll">Objekt wird bei der Eingabe von NIMM ALLES ausgeschlossen</template>
+  <template name="EditorObjectInventoryHidefrominventory">Im Inventar verbergen (wird getragen, aber nicht aufgelistet)</template>
   <template name="EditorObjectInventoryDrop">Lege</template>
   <template name="EditorObjectInventoryDrop2">Lege</template>
   <template name="EditorObjectInventoryDropmessage">Beim ablegen des Objektes (Ohne Eingabe = Standardverhalten)</template>

@@ -46,6 +46,13 @@
     </control>
 
     <control>
+      <controltype>checkbox</controltype>
+      <caption>[EditorObjectInventoryHidefrominventory]</caption>
+      <attribute>hidefrominventory</attribute>
+      <advanced/>
+    </control>
+
+    <control>
       <controltype>title</controltype>
       <caption>[EditorObjectInventoryDrop]</caption>
     </control>

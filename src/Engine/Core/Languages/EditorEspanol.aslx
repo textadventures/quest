@@ -361,6 +361,7 @@
   <template name="EditorObjectInventoryTakemessage">Mensaje al cogerlo (dejar en blanco por defecto)</template>
   <template name="EditorObjectInventoryAftertaking">Después de coger el objeto</template>
   <template name="EditorObjectInventoryExcludedTakeAll">El objeto se excluye al usar COGER TODO</template>
+  <template name="EditorObjectInventoryHidefrominventory">Ocultar del inventario (se lleva, pero no aparece en la lista)</template>
   <template name="EditorObjectInventoryDrop">Dejar</template>
   <template name="EditorObjectInventoryDrop2">Dejar</template>
   <template name="EditorObjectInventoryDropmessage">Mensaje al soltarlo (dejar en blanco por defecto)</template>

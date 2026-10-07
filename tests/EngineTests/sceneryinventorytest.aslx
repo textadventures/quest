@@ -27,6 +27,27 @@
           <scenery type="boolean">true</scenery>
         </object>
       </object>
+      <!--
+        Carried, but flagged hidefrominventory (issue #2492): unlisted by both
+        INVENTORY and the pane, yet still in parser scope, so DROP reaches its
+        own drop script.
+      -->
+      <object name="bladder">
+        <inherit name="editor_object"/>
+        <hidefrominventory/>
+        <drop type="script">
+          game.droppedbladder = true
+        </drop>
+      </object>
+      <!-- Anything inside a hidden object is hidden with it. -->
+      <object name="pouch">
+        <inherit name="editor_object"/>
+        <inherit name="container_open"/>
+        <hidefrominventory/>
+        <object name="coin">
+          <inherit name="editor_object"/>
+        </object>
+      </object>
       <!-- Carried but invisible: must stay unlisted either way. -->
       <object name="ghost">
         <inherit name="editor_object"/>
@@ -58,6 +79,18 @@
       assert:Instr(InvList(), "poster") > 0
       assert:Instr(InvList(), "receipt") > 0
       assert:Instr(InvList(), "ghost") = 0
+      assert:Instr(InvList(), "bladder") = 0
+      assert:Instr(InvList(), "pouch") = 0
+      assert:Instr(InvList(), "coin") = 0
+      assert:ListContains(GetInventoryObjectsList(), lamp)
+      assert:ListContains(GetInventoryObjectsList(), poster)
+      assert:not ListContains(GetInventoryObjectsList(), bladder)
+      assert:not ListContains(GetInventoryObjectsList(), pouch)
+      assert:not ListContains(GetInventoryObjectsList(), coin)
+      assert:ListContains(ScopeInventory(), bladder)
+      assert:Got(bladder)
+      drop bladder
+      assert:GetBoolean(game, "droppedbladder")
       assert:Instr(RoomList(), "rock") > 0
       assert:Instr(RoomList(), "mural") = 0
       ]]>

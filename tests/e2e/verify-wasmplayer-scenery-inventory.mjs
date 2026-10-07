@@ -10,6 +10,10 @@
 // the reported symptom and the part a unit test on the formatter alone can't
 // cover.
 //
+// Issue #2492 adds "hidefrominventory", the opt-out authors had been using
+// scenery for: a carried object kept out of both the pane and INVENTORY that
+// the parser still treats as held, so DROP reaches its own drop script.
+//
 // Requires the WasmPlayer dev server running locally:
 //   node src/WasmPlayer/dev-server.mjs
 import { chromium } from 'playwright';
@@ -71,6 +75,7 @@ async function run() {
     assertContains(pane, 'lamp', 'objects pane');
     assertContains(pane, 'poster', 'objects pane');
     assertOmits(pane, 'ghost', 'objects pane');
+    assertOmits(pane, 'bladder', 'objects pane');
 
     // The INVENTORY command, which is the half that changed.
     await page.evaluate(() => { document.querySelector('#divOutput').innerHTML = ''; });
@@ -80,6 +85,14 @@ async function run() {
     assertContains(inv, 'lamp', 'INVENTORY command');
     assertContains(inv, 'poster', 'INVENTORY command');
     assertOmits(inv, 'ghost', 'INVENTORY command');
+    assertOmits(inv, 'bladder', 'INVENTORY command');
+
+    // Hidden from the lists, but still held as far as the parser is concerned.
+    await page.evaluate(() => { document.querySelector('#divOutput').innerHTML = ''; });
+    await sendCommand('drop bladder');
+    const drop = (await page.$eval('#divOutput', el => el.innerText)).trim();
+    console.log(`drop output: ${drop.replace(/\n/g, ' | ')}`);
+    assertContains(drop, "You can't drop your bladder.", 'DROP command');
 
     // Room listings must be unaffected - scenery still stays out of them.
     await page.evaluate(() => { document.querySelector('#divOutput').innerHTML = ''; });
