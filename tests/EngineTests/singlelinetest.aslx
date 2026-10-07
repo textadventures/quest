@@ -1,0 +1,75 @@
+<asl version="600">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <template name="CustomGreeting">Hello there.</template>
+  <verbtemplate name="polish">polish</verbtemplate>
+  <dynamictemplate name="CustomDynamic">"Dynamic " + object.name</dynamictemplate>
+  <game name="singlelinetest">
+    <counter type="int">3</counter>
+  </game>
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <object name="key">
+      <inherit name="editor_object" />
+      <take type="boolean">true</take>
+    </object>
+    <object name="lamp">
+      <inherit name="editor_object" />
+      <scenery />
+      <weight type="double">1.5</weight>
+      <colours type="stringlist">
+        <value>red</value>
+        <value>green</value>
+      </colours>
+      <mixed type="list">
+        <value type="int">1</value>
+        <value>two</value>
+      </mixed>
+      <labels type="simplestringdictionary">a = one;b = two</labels>
+      <names type="stringdictionary">
+        <item>
+          <key>x</key>
+          <value>ex</value>
+        </item>
+      </names>
+      <reactions type="scriptdictionary">
+        <item key="hello">
+          msg ("Hi")
+        </item>
+      </reactions>
+      <look type="script">
+        msg ("A lamp.")
+      </look>
+    </object>
+    <object name="box">
+      <inherit name="editor_object" />
+      <object name="coin">
+        <inherit name="editor_object" />
+        <alias>gold coin</alias>
+      </object>
+    </object>
+    <exit name="northexit" alias="north" to="hall">
+      <inherit name="northdirection" />
+      <locked />
+      <lockmessage>The door is locked.</lockmessage>
+    </exit>
+  </object>
+  <object name="hall">
+    <inherit name="editor_room" />
+  </object>
+  <command name="gc">
+    <pattern>givecloak</pattern>
+    <script>
+      game.counter = game.counter + 1
+    </script>
+  </command>
+  <type name="shiny">
+    <shininess type="int">10</shininess>
+  </type>
+  <function name="Twice" parameters="n" type="int">
+    return (n * 2)
+  </function>
+</asl>

@@ -608,7 +608,7 @@ internal partial class GameLoader
         public override object? Load(XmlReader reader, ref Element? current)
         {
             var isCommandTemplate = reader.GetAttribute("templatetype") == "command";
-            return AddTemplate(reader.GetAttribute("name"), reader.ReadElementContentAsString(), isCommandTemplate);
+            return AddTemplate(reader.GetAttribute("name"), reader.ReadElementContentLeavingEndTag(), isCommandTemplate);
         }
 
         private Element? AddTemplate(string? t, string text, bool isCommandTemplate)
@@ -629,7 +629,7 @@ internal partial class GameLoader
 
         public override object Load(XmlReader reader, ref Element? current)
         {
-            return AddVerbTemplate(reader.GetAttribute("name"), reader.ReadElementContentAsString());
+            return AddVerbTemplate(reader.GetAttribute("name"), reader.ReadElementContentLeavingEndTag());
         }
 
         private Element AddVerbTemplate(string? c, string text)
@@ -646,7 +646,7 @@ internal partial class GameLoader
 
         public override object? Load(XmlReader reader, ref Element? current)
         {
-            return AddDynamicTemplate(reader.GetAttribute("name"), reader.ReadElementContentAsString());
+            return AddDynamicTemplate(reader.GetAttribute("name"), reader.ReadElementContentLeavingEndTag());
         }
 
         private Element? AddDynamicTemplate(string? t, string expression)
