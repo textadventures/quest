@@ -261,6 +261,52 @@ public class DialoguePageTests
         output.ShouldContain("Please choose one of the options above.");
     }
 
+    // Issue #2386: choosing an option hides the previous page's links (a DOM change undo can't
+    // reverse), so undoing back into a dialogue left a live dialogue with no visible options.
+    [TestMethod]
+    public async Task UndoBackIntoADialogue_ReprintsTheCurrentPagesOptions()
+    {
+        var driver = await LoadGameAsync();
+        await driver.SendCommandAsync("talk");
+        // guard_castle has no options, so choosing it ends the dialogue
+        await driver.SendCommandAsync("guard_castle");
+        await AssertTrueAsync(driver, "game.currentpage = null");
+
+        var output = string.Join("\n", await driver.SendCommandAsync("undo"));
+
+        await AssertTrueAsync(driver, "game.currentpage = guard_intro");
+        output.ShouldContain("1: Ask about the weather");
+        output.ShouldContain("2: Ask about the castle");
+
+        output = string.Join("\n", await driver.SendCommandAsync("1"));
+        output.ShouldContain("Nice weather today.");
+    }
+
+    [TestMethod]
+    public async Task UndoOutOfACancellableDialogue_ReprintsTheRestoredPagesOptions()
+    {
+        var driver = await LoadGameAsync();
+        await driver.SendCommandAsync("talkcancel");
+        await driver.SendCommandAsync("guard_weather");
+
+        // with cancel allowed, "undo" ends the dialogue and then runs as a normal command
+        var output = string.Join("\n", await driver.SendCommandAsync("undo"));
+
+        await AssertTrueAsync(driver, "game.currentpage = guard_intro");
+        output.ShouldContain("1: Ask about the weather");
+    }
+
+    [TestMethod]
+    public async Task UndoOutsideADialogue_PrintsNoOptions()
+    {
+        var driver = await LoadGameAsync();
+        await driver.SendCommandAsync("marker");
+
+        var output = string.Join("\n", await driver.SendCommandAsync("undo"));
+
+        output.ShouldNotContain("Ask about the weather");
+    }
+
     [TestMethod]
     public async Task SaveAndLoadMidDialogue_PreservesDialogueStateAndOptions()
     {
