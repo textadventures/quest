@@ -46,7 +46,7 @@ Making a character a transparent container, as Mary is here, is a good way to sh
 
 ### Excluding an object
 
-To keep an object out of ALL, tick "Object is excluded when entering TAKE ALL" on its _Inventory_ tab. The player can still take it by naming it. Behind the scenes this sets a Boolean attribute called `not_all`.
+To keep an object out of ALL, tick "Object is excluded when entering TAKE ALL" in the _Advanced_ section of its _Inventory_ tab. The player can still take it by naming it. Behind the scenes this sets a Boolean attribute called `not_all`.
 
 Anything inside an excluded object is excluded too. If that isn't what you want, flag the container as scenery on its _Setup_ tab instead.
 

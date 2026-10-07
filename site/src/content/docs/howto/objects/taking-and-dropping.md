@@ -43,7 +43,7 @@ EnableTurnScript (templecollapse)
 
 ### Objects excluded from TAKE ALL
 
-`TAKE ALL` picks up everything the player can reach. Tick "Object is excluded when entering TAKE ALL" for anything that should not be swept up that way — something enormous, something that belongs to somebody, something whose taking should be a deliberate act.
+`TAKE ALL` picks up everything the player can reach. Open the _Advanced_ section at the bottom of the tab and tick "Object is excluded when entering TAKE ALL" for anything that should not be swept up that way — something enormous, something that belongs to somebody, something whose taking should be a deliberate act.
 
 The object can still be taken by name; it is only excluded from `ALL`. Scenery is excluded automatically, so you do not need this for that.
 

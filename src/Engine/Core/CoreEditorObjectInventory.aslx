@@ -43,6 +43,7 @@
       <caption>[EditorObjectInventoryExcludedTakeAll]</caption>
       <attribute>not_all</attribute>
       <mustnotinherit>editor_room</mustnotinherit>
+      <advanced/>
     </control>
 
     <control>
