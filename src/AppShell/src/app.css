@@ -19,6 +19,18 @@
     color-scheme: dark;
 }
 
+/* Tailwind v4's preflight gives buttons the default arrow cursor
+   (https://tailwindcss.com/docs/upgrade-guide#buttons-use-the-default-cursor).
+   Skeleton 4's globals.css put the hand cursor back; Skeleton 5 dropped that
+   rule, so restore it here. Skeleton's own `*:disabled` not-allowed cursor
+   still wins for disabled buttons. */
+@layer base {
+    button:not(:disabled),
+    [role='button']:not(:disabled) {
+        cursor: pointer;
+    }
+}
+
 [data-scope='app-bar'] {
     background: light-dark(white, var(--color-surface-800));
 }
