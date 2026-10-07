@@ -31,6 +31,9 @@
         <ProjectReference Include="..\..\src\Engine\Engine.csproj" />
     </ItemGroup>
     <ItemGroup>
+        <None Update="commandbarformattest.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="callbacktest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>

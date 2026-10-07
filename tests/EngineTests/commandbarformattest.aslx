@@ -1,0 +1,13 @@
+<asl version="600">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="commandbarformattest">
+    <defaultfont>Georgia</defaultfont>
+    <defaultforeground>DarkRed</defaultforeground>
+  </game>
+  <object name="room">
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+</asl>

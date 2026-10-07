@@ -79,6 +79,9 @@
       if (not game.underlinehyperlinks) {
         JS.TurnOffHyperlinksUnderline ()
       }
+      // The cached format is saved with the game, so after a load it would already match
+      // and the style would never be applied to the new page
+      game.commandbarformat = ""
       ResetCommandBarFormat
       if (game.showcommandbar) {
         JS.uiShow("#txtCommandDiv")
