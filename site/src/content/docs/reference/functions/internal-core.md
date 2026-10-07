@@ -231,6 +231,13 @@ Should be defined by the language library (but is only used within the language 
 GetDescriptor(object)
 ```
 
+## GetInventoryObjectsList
+```quest
+GetInventoryObjectsList()
+```
+
+Used by Quest Viva to display the "Inventory" pane. Returns [ScopeInventory](/reference/functions/scope#scopeinventory) without any object flagged [hidefrominventory](/reference/attributes/all#hidefrominventory), or anything inside one. Games saved before this function existed fall back to ScopeInventory.
+
 ## GetKeywordsMatchStrength
 ```quest
 GetKeywordsMatchStrength(keywords, input)

@@ -21,6 +21,17 @@
         <inherit name="editor_object"/>
         <scenery type="boolean">true</scenery>
       </object>
+      <!--
+        Issue #2492: carried and flagged hidefrominventory. Out of both the pane
+        and INVENTORY, but still in parser scope, so DROP runs its own script.
+      -->
+      <object name="bladder">
+        <inherit name="editor_object"/>
+        <hidefrominventory/>
+        <drop type="script">
+          msg ("You can't drop your bladder.")
+        </drop>
+      </object>
       <!-- Carried but invisible: must stay out of both. -->
       <object name="ghost">
         <inherit name="editor_object"/>

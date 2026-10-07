@@ -17,6 +17,32 @@
     return (result)
   </function>
 
+  <!--
+    Feeds the inventory pane. ScopeInventory itself must stay unfiltered: it's the
+    parser scope for held objects, so a "hidefrominventory" object still resolves for
+    DROP, Got() and friends. Anything inside a hidden object is hidden with it, as the
+    INVENTORY command never reaches it either.
+  -->
+  <function name="GetInventoryObjectsList" type="objectlist">
+    <![CDATA[
+      result = NewObjectList()
+      foreach (obj, ScopeInventory()) {
+        hidden = false
+        current = obj
+        while (not hidden and current <> game.pov and current <> null) {
+          if (GetBoolean(current, "hidefrominventory")) {
+            hidden = true
+          }
+          current = current.parent
+        }
+        if (not hidden) {
+          list add(result, obj)
+        }
+      }
+      return (result)
+    ]]>
+  </function>
+
   <function name="ScopeReachableInventory" type="objectlist">
     result = NewObjectList()
     foreach (obj, GetAllChildObjects(game.pov)) {
