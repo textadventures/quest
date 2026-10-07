@@ -107,7 +107,7 @@ Implications when working on `Engine/Core/*.aslx`:
 
 ## Git Workflow
 
-`main` is a protected branch (required status check `build_and_test`, required PR review, `enforce_admins` on) — direct pushes are rejected outright, including from repo admins. All changes, however small, go through a feature branch + PR.
+`main` is a protected branch (required status check `build_and_test`, required PR review, `enforce_admins` on) — direct pushes are rejected outright, including from repo admins. All changes, however small, go through a feature branch + PR. `release/6.0` holds the 6.0.x patch line: fixes land on `main` first and are cherry-picked there through their own PR, titled `chore(release/6.0): backport #N` and merged with a merge commit, not squashed (see "Backporting" in `docs/release-channels.md` for why; `pr-title-lint.yml` enforces the title).
 
 Before opening a PR touching `src/AppShell/src/**`, run `node tests/e2e/find-affected-tests.mjs` and run the scripts it flags against a local dev server — do this every time, not just when something feels risky. It catches regressions right away instead of leaving them for the nightly e2e run to find. See "e2e tests" under Build & Test Commands for how the script works and its limitations.
 

@@ -42,3 +42,21 @@ jobs:
             e2e
             main
             release/6.0
+
+      # A backport into a release branch is merged with a merge commit (so the
+      # cherry-picked commits keep their own titles), and that merge commit is
+      # titled with the PR title. release-please reads it as a commit too, so a
+      # fix: title would list the backport in the changelog a second time. A
+      # chore(<branch>): title is left out of the changelog instead, which also
+      # matches release-please's own "chore(release/6.0): release 6.0.N" PRs.
+      # See "Backporting" in docs/release-channels.md.
+      - name: Require chore(<branch>) titles on release branches
+        if: startsWith(github.event.pull_request.base.ref, 'release/')
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+          BASE: ${{ github.event.pull_request.base.ref }}
+        run: |
+          if [[ "$TITLE" != "chore($BASE): "* ]]; then
+            echo "::error::PRs into $BASE must be titled \"chore($BASE): ...\", e.g. \"chore($BASE): backport #1234\". See \"Backporting\" in docs/release-channels.md."
+            exit 1
+          fi
