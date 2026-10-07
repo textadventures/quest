@@ -14,6 +14,9 @@
 //     making the redirect dead)
 //   - a redirect points at another redirect, which costs the reader an extra
 //     hop and drops any #anchor on the way through
+//   - a page of the old Quest 5 docs site (listed in quest5-docs-paths.txt)
+//     doesn't resolve, through public/_redirects or src/redirects.mjs, to a
+//     built page
 
 import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -88,6 +91,31 @@ for (const [source, target] of entries) {
   }
 }
 
+// --- Quest 5 docs coverage ---
+// Follow public/_redirects the way Cloudflare does (first match wins, `*`
+// captured into :splat), then require a built page - real or redirect stub,
+// whose own target the loop above has already checked.
+const rules = pathRules.map((l) => {
+  const [from, to] = l.split(/\s+/);
+  const prefix = from.endsWith("/*") ? from.slice(0, -1) : null;
+  return { from, to, prefix };
+});
+const applyRules = (path) => {
+  for (const { from, to, prefix } of rules) {
+    if (path === from) return to;
+    if (prefix && path.startsWith(prefix)) return to.replace(":splat", path.slice(prefix.length));
+  }
+  return path;
+};
+const quest5Paths = readFileSync(join(__dirname, "quest5-docs-paths.txt"), "utf8")
+  .split("\n")
+  .map((l) => l.trim())
+  .filter((l) => l && !l.startsWith("#"));
+for (const path of quest5Paths) {
+  const target = applyRules(path.replace(/(.)\/$/, "$1"));
+  if (!pageFor(target)) problems.push(`Quest 5 docs page does not resolve: ${path} -> ${target}`);
+}
+
 if (problems.length > 0) {
   console.error(`\n${problems.length} redirect problem(s):\n`);
   for (const p of problems) console.error(`  - ${p}`);
@@ -96,6 +124,6 @@ if (problems.length > 0) {
 }
 
 console.log(
-  `OK: ${entries.length} redirects resolve, and public/_redirects has ${pathRules.length} ` +
-  `path rule(s) (limit ${CLOUDFLARE_REDIRECTS_LIMIT}).`
+  `OK: ${entries.length} redirects resolve, all ${quest5Paths.length} Quest 5 docs pages resolve, ` +
+  `and public/_redirects has ${pathRules.length} path rule(s) (limit ${CLOUDFLARE_REDIRECTS_LIMIT}).`
 );
