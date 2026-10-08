@@ -56,7 +56,7 @@ if (!document.getElementById("game-css")) {
 
 The file is loaded every time the game starts or a saved game is loaded, before the interface is set up, so you don't need to call anything from the initialisation script. The `if` stops the rules being added twice when the player loads a game without leaving the page.
 
-A separate `.css` file in your game folder, loaded with `JS.addExternalStylesheet(GetFileURL("style.css"))`, works while you test from the editor but not in a published `.quest` file, so use a Javascript element instead.
+You can also keep the CSS in a separate `.css` file in your game folder, and load it from the initialisation script with `AddExternalStylesheet (GetFileURL("style.css"))`. Every file in the game folder goes into the published `.quest` file, so this works in a published game too.
 
 ### When a rule has no effect
 
