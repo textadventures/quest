@@ -9,9 +9,12 @@ name: e2e
 # (locator text/structure changes, timing assumptions) before it piles up
 # unnoticed; workflow_dispatch is still there for an on-demand run before
 # cutting a release, or after touching AppShell/WasmPlayer/WebPlayer/
-# ElectronApp. Each job below matches one of the distinct local setups
-# documented in the individual scripts' header comments — see those for the
-# "why" behind each one.
+# ElectronApp. Release branches (release/**) also run on every push: GitHub
+# only fires `schedule` on the default branch, and a push there means a
+# backport just merged, so a backport that behaves differently on the older
+# branch is caught when it lands, not at release time. Each job below
+# matches one of the distinct local setups documented in the individual
+# scripts' header comments — see those for the "why" behind each one.
 #
 # check_e2e_manifest is the one exception to "nightly + manual": it's a
 # required status check on main, so it has to run — and report a result — on
@@ -38,6 +41,16 @@ on:
   # other job is gated on `if: github.event_name != 'pull_request'` below, so
   # they just report "skipped" for a PR at effectively no cost.
   pull_request:
+  # Release branches only change through backport PRs (usually several
+  # bundled into one) and release-please's release PRs, so this runs rarely.
+  # A release PR's merge touches only these files and is tagged as soon as it
+  # lands, so a run then would be too late to matter.
+  push:
+    branches: ['release/**']
+    paths-ignore:
+      - VERSION
+      - CHANGELOG.md
+      - .release-please-manifest.json
 
 jobs:
   # No servers, no npm install — just verifies the scripts and the workflow
