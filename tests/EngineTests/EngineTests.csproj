@@ -34,6 +34,12 @@
         <None Update="commandbarformattest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="multistatewearabletest.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="singlelinetest.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="textprocessoriftest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>

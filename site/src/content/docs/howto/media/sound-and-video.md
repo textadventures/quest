@@ -108,13 +108,15 @@ ShowYouTube ("7vIi0U4rSX4")
 
 The video appears where the text has got to, set to play automatically, and scrolls away with the text like anything else. Nothing stops you embedding several.
 
-The embed is a fixed 425 by 344 pixels, which is wider than a phone screen - the page ends up scrolling sideways. Until that's fixed, write the embed yourself when phone players matter. This version fills the width it's given, at the usual widescreen shape, whatever the screen:
+The video fills the width of the text, up to 560 pixels, at the usual widescreen shape, so it fits a phone screen too.
+
+If you'd rather write the embed yourself - to change its size, say - this is the equivalent:
 
 ```quest
-msg ("<iframe src='https://www.youtube.com/embed/7vIi0U4rSX4' style='width:100%; aspect-ratio:16/9; border:0;' allow='autoplay; fullscreen' allowfullscreen></iframe>")
+msg ("<iframe src='https://www.youtube.com/embed/7vIi0U4rSX4?autoplay=1&rel=0' style='width:100%; max-width:560px; aspect-ratio:16/9; border:0;' allow='autoplay; fullscreen' allowfullscreen></iframe>")
 ```
 
-Add `?autoplay=1&rel=0` to the address to match what **Play YouTube video** does - start playing at once, and don't suggest other people's videos at the end. Autoplay here is subject to the same browser rules as sound.
+`?autoplay=1&rel=0` matches what **Play YouTube video** does - start playing at once, and don't suggest other people's videos at the end. Autoplay here is subject to the same browser rules as sound.
 
 Either way, the video is fetched from YouTube while the game is played, so it needs an internet connection and it disappears if the video is ever taken down. There's no equivalent command for Vimeo.
 
@@ -128,7 +130,7 @@ msg ("<video src='" + GetFileURL("cutscene.mp4") + "' controls style='width:100%
 
 Use MP4 (H.264) - it's the one format every browser plays. Don't use Ogg Video: Safari won't play it at all.
 
-Unlike pictures, a video isn't scaled to fit the text automatically, so always set a width as above: `width:100%` keeps it inside the text column on a phone, and `max-width` stops it stretching absurdly wide on a desktop.
+A video that's too wide for the text column is scaled down to fit, like a picture, but it's still worth setting a width as above: `width:100%` makes it fill the column on a phone, and `max-width` stops it stretching absurdly wide on a desktop.
 
 `controls` gives the player play, pause and volume. You can add `autoplay` and `loop` as well, and control the video from a script exactly as with `<audio>` - give it an `id` and use `JS.eval`. Clearing the screen removes it, the same way.
 
