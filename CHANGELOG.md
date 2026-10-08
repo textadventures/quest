@@ -1,5 +1,27 @@
 # Changelog
 
+## [6.0.1](https://github.com/textadventures/quest/compare/v6.0.0...v6.0.1) (2026-10-08)
+
+
+### Bug Fixes
+
+* **Desktop:** apply a game's own stylesheets when playing from the desktop app ([#2531](https://github.com/textadventures/quest/issues/2531)) ([b5804bb](https://github.com/textadventures/quest/commit/b5804bba1cdb1022fe47b1f68412cc755c13a9f4))
+* **Editor:** correct the clash message for adding an "enter" verb ([#2527](https://github.com/textadventures/quest/issues/2527)) ([a1fa01b](https://github.com/textadventures/quest/commit/a1fa01b7c4d8e1890e46ab05e6b7efa04eae1a0d))
+* load game elements written on a single line ([#2522](https://github.com/textadventures/quest/issues/2522)) ([5ec6f46](https://github.com/textadventures/quest/commit/5ec6f46ce4a822c74f2b9170d10c5a9f419ab7c9))
+* **Player:** allow multi-state garments with no attribute bonuses ([#2525](https://github.com/textadventures/quest/issues/2525)) ([2d4de6d](https://github.com/textadventures/quest/commit/2d4de6deb00e7c3618c3d7c5028a9b98fdb51f9b))
+* **Player:** backport hide-from-inventory option to 6.0 ([#2517](https://github.com/textadventures/quest/issues/2517)) ([cb10437](https://github.com/textadventures/quest/commit/cb104378a872cd903cdbceb1fc866cc1bc7bf4d3))
+* **Player:** backport Quest 4 / invariant-number fixes to 6.0 ([#2508](https://github.com/textadventures/quest/issues/2508)) ([7b1678d](https://github.com/textadventures/quest/commit/7b1678d8c81218ffdb1daa5ce908807bc05b164d))
+* **Player:** call ASLEvent handlers that take no parameters ([#2524](https://github.com/textadventures/quest/issues/2524)) ([6ac1065](https://github.com/textadventures/quest/commit/6ac106519042f7964151ee3a712df41dd10f5530))
+* **Player:** explain an unset attribute used as a condition ([#2529](https://github.com/textadventures/quest/issues/2529)) ([6fd3cbf](https://github.com/textadventures/quest/commit/6fd3cbfe05b876ffc2c7b6d919e747c28cdaab15))
+* **Player:** fit embedded videos to narrow screens ([#2526](https://github.com/textadventures/quest/issues/2526)) ([c83cf8a](https://github.com/textadventures/quest/commit/c83cf8a02cd7bda6fae78e9e4c227377f8a85493))
+* **Player:** format numbers invariantly in string concatenation ([#2501](https://github.com/textadventures/quest/issues/2501)) ([9917b29](https://github.com/textadventures/quest/commit/9917b29c38e710913b76bcbc5f9901bdee0587a4))
+* **Player:** format Quest 4 numeric variables with the invariant culture ([#2502](https://github.com/textadventures/quest/issues/2502)) ([0a52db2](https://github.com/textadventures/quest/commit/0a52db23104debecfb5d8828e2144b439c50939c))
+* **Player:** let authors hide carried objects from the inventory ([#2516](https://github.com/textadventures/quest/issues/2516)) ([6fac24b](https://github.com/textadventures/quest/commit/6fac24bd6df3064c2a5666abc90910a3bdb303eb))
+* **Player:** restore the command bar's style after loading a save ([#2528](https://github.com/textadventures/quest/issues/2528)) ([52cf6f7](https://github.com/textadventures/quest/commit/52cf6f795ddeae9c14e8c224bf3141f20635ab76))
+* **Player:** show a dialogue's options again after undoing back into it ([#2530](https://github.com/textadventures/quest/issues/2530)) ([2d20a41](https://github.com/textadventures/quest/commit/2d20a4106df8260115dfde794fb899fd0da7467e))
+* **Player:** show a Quest 4 start script's enter prompt ([#2503](https://github.com/textadventures/quest/issues/2503)) ([5388f2b](https://github.com/textadventures/quest/commit/5388f2b93668614b58f3cf76333a470545ee39f9))
+* **Player:** stop {if} replacing "this" inside other words ([#2523](https://github.com/textadventures/quest/issues/2523)) ([8ef4b83](https://github.com/textadventures/quest/commit/8ef4b83610be0effed22f0a222acb8cfbf590e44))
+
 ## [6.0.0](https://github.com/textadventures/quest/compare/v6.0.0-rc.4...v6.0.0) (2026-10-03)
 
 
