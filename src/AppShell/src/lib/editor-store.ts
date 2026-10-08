@@ -7,6 +7,7 @@ import { isLibraryFilename, type AssetInfo, type FileAdapter } from "./filesyste
 import { LocalDraftAdapter, shouldShowBackupBanner, markBackupBannerResolved } from "./filesystem/local-adapter";
 import { ServerFileAdapter } from "./filesystem/server-adapter";
 import { triggerDownload } from "./filesystem/download";
+import { withGuessedMimeType } from "./filesystem/mime";
 import { savePublishTarget, type PublishTarget } from "./publish-target";
 import { confirmDialog } from "./confirm";
 import { showToast } from "./toast";
@@ -589,7 +590,7 @@ export async function previewInWasmPlayer(wasmPlayerUrl: string, opts?: { record
         } else if (data.type === "resource-request") {
             const blob = await adapter.getAsset(data.name);
             if (blob) {
-                const dataUrl = await blobToDataUrl(blob);
+                const dataUrl = await blobToDataUrl(withGuessedMimeType(blob, data.name));
                 bc.postMessage({ type: "resource-response", id: data.id, dataUrl });
             }
         } else if (data.type === "walkthrough-recorded") {
