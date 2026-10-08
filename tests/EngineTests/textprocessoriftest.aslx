@@ -1,0 +1,37 @@
+<asl version="600">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="textprocessoriftest"/>
+  <object name="room">
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <object name="teapot">
+      <inherit name="editor_object"/>
+      <colour>thistle</colour>
+      <hot/>
+      <owner type="object">teapot</owner>
+    </object>
+  </object>
+
+  <!-- Runs the text processor with "this" set to teapot, as it is during a command -->
+  <function name="WithThis" parameters="text" type="string">
+    game.text_processor_this = teapot
+    result = ProcessText(text)
+    game.text_processor_this = null
+    return (result)
+  </function>
+
+  <walkthrough name="verify">
+    <steps>
+      <![CDATA[
+      assert:WithThis("{if this.colour=thistle:yes}") = "yes"
+      assert:WithThis("{if this.colour<>thistle:yes}") = ""
+      assert:WithThis("{if this.hot:yes}") = "yes"
+      assert:WithThis("{if not this.hot:yes}") = ""
+      assert:WithThis("{if this.owner=this:yes}") = "yes"
+      assert:WithThis("{if teapot.colour=thistle:yes}") = "yes"
+      ]]>
+    </steps>
+  </walkthrough>
+</asl>

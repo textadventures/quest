@@ -304,7 +304,6 @@
       else {
         text = Mid(command, colon + 1)
         condition = Left(command, colon - 1)
-        if (not game.text_processor_this = null) condition = Replace(condition, "this", game.text_processor_this.name)
         operator = Instr(condition, "<=")
         if (operator <> 0) {
           operatorlength = 2
@@ -371,6 +370,9 @@
           lhs = Left(condition, operator - 1)
           rhs = Mid(condition, operator + operatorlength)
           op = Mid(condition, operator, operatorlength)
+          // ObjectForTextProcessor resolves "this" as the object name, so only a value of
+          // exactly "this" needs replacing - never "this" inside another word
+          if (rhs = "this" and not game.text_processor_this = null) rhs = game.text_processor_this.name
           dot = Instr(lhs, ".")
           if (dot = 0) {
             objectname = ""
