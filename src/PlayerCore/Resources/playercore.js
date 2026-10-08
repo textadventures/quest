@@ -1390,7 +1390,8 @@ function setInterfaceString(name, text) {
 
 function AddYouTube(id) {
     var url = "https://www.youtube.com/embed/" + id + "?autoplay=1&rel=0";
-    var embedHTML = "<iframe width=\"425\" height=\"344\" src=\"" + url + "\" frameborder=\"0\" allowfullscreen></iframe>";
+    // Sized by aspect ratio rather than fixed pixels, so it fits a phone screen
+    var embedHTML = "<iframe style=\"width:100%; max-width:560px; aspect-ratio:16/9; border:0;\" src=\"" + url + "\" allow=\"autoplay; fullscreen\" allowfullscreen></iframe>";
     addText(embedHTML);
 }
 
@@ -1400,7 +1401,7 @@ function AddYouTube(id) {
 // working regardless of what Core.aslx currently offers. See Core Library Semantics in CLAUDE.md.
 function AddVimeo(id) {
     var url = "https://player.vimeo.com/video/" + id + "?autoplay=1";
-    var embedHTML = "<iframe sandbox=\"allow-same-origin allow-scripts allow-popups\" src=\"" + url + "\" width=\"500\" height=\"281\" frameborder=\"0\" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>";
+    var embedHTML = "<iframe sandbox=\"allow-same-origin allow-scripts allow-popups\" src=\"" + url + "\" style=\"width:100%; max-width:500px; aspect-ratio:16/9; border:0;\" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>";
     addText(embedHTML);
 }
 
