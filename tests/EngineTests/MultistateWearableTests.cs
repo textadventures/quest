@@ -13,7 +13,7 @@ public class MultistateWearableTests
     [TestMethod]
     public async Task RunWalkthrough()
     {
-        var gameData = new GameData(File.ReadAllBytes("multistatewearabletest.aslx"), "multistatewearabletest.aslx");
+        var gameData = await new ByteArrayGameDataProvider(File.ReadAllBytes("multistatewearabletest.aslx"), "multistatewearabletest.aslx").GetData();
         var worldModel = Helpers.CreateWorldModel(gameData);
 
         worldModel.LogError += ex => throw ex;

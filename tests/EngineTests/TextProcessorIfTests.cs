@@ -12,7 +12,7 @@ public class TextProcessorIfTests
     [TestMethod]
     public async Task RunWalkthrough()
     {
-        var gameData = new GameData(File.ReadAllBytes("textprocessoriftest.aslx"), "textprocessoriftest.aslx");
+        var gameData = await new ByteArrayGameDataProvider(File.ReadAllBytes("textprocessoriftest.aslx"), "textprocessoriftest.aslx").GetData();
         var worldModel = Helpers.CreateWorldModel(gameData);
 
         worldModel.LogError += ex => throw ex;

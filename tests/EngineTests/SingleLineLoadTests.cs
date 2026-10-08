@@ -20,7 +20,7 @@ public partial class SingleLineLoadTests
 
     private static async Task<WorldModel> LoadAsync(string xml)
     {
-        var worldModel = Helpers.CreateWorldModel(new GameData(Encoding.UTF8.GetBytes(xml), "singlelinetest.aslx"));
+        var worldModel = Helpers.CreateWorldModel(await new ByteArrayGameDataProvider(Encoding.UTF8.GetBytes(xml), "singlelinetest.aslx").GetData());
         var success = await worldModel.Initialise(new Mock<IPlayer>().Object);
         success.ShouldBeTrue(string.Join("; ", worldModel.Errors));
         return worldModel;
