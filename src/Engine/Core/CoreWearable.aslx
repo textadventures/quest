@@ -502,7 +502,13 @@
         else {
           object.wornverbs = wv
         }
-        ba = StringListItem(object.multistate_bonusatts, object.multistate_status - 1)
+        // Bonuses are optional: with no entry for this state, keep the garment's own bonusatts
+        ba = "*"
+        if (HasAttribute(object, "multistate_bonusatts")) {
+          if (ListCount(object.multistate_bonusatts) >= object.multistate_status) {
+            ba = StringListItem(object.multistate_bonusatts, object.multistate_status - 1)
+          }
+        }
         if (ba = "*") {
           object.bonusatts = object.original_bonusatts
         }

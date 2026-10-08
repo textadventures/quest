@@ -1,0 +1,67 @@
+<asl version="600">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="multistatewearabletest"/>
+  <object name="room">
+    <object name="player">
+      <inherit name="defaultplayer" />
+      <!-- Multi-state garment with no "Bonus to attributes" list at all. -->
+      <object name="coat">
+        <inherit name="editor_object"/>
+        <inherit name="wearable"/>
+        <wear_slots type="stringlist"><value>torso</value></wear_slots>
+        <multistate/>
+        <multistate_descriptors type="stringlist"><value>buttoned</value><value>open</value></multistate_descriptors>
+        <multistate_verbs type="stringlist"><value>*</value><value>*</value></multistate_verbs>
+        <multistate_wearslots type="stringlist"><value>*</value><value>*</value></multistate_wearslots>
+      </object>
+      <!-- The same with an empty list, as the editor saves it once cleared. -->
+      <object name="cape">
+        <inherit name="editor_object"/>
+        <inherit name="wearable"/>
+        <wear_slots type="stringlist"><value>shoulders</value></wear_slots>
+        <multistate/>
+        <multistate_descriptors type="stringlist"><value>fastened</value><value>loose</value></multistate_descriptors>
+        <multistate_verbs type="stringlist"><value>*</value><value>*</value></multistate_verbs>
+        <multistate_wearslots type="stringlist"><value>*</value><value>*</value></multistate_wearslots>
+        <multistate_bonusatts type="stringlist"/>
+      </object>
+      <!-- A list that does give per-state bonuses still applies them. -->
+      <object name="hat">
+        <inherit name="editor_object"/>
+        <inherit name="wearable"/>
+        <wear_slots type="stringlist"><value>head</value></wear_slots>
+        <bonusatts>charm+1</bonusatts>
+        <multistate/>
+        <multistate_descriptors type="stringlist"><value>straight</value><value>tilted</value></multistate_descriptors>
+        <multistate_verbs type="stringlist"><value>*</value><value>*</value></multistate_verbs>
+        <multistate_wearslots type="stringlist"><value>*</value><value>*</value></multistate_wearslots>
+        <multistate_bonusatts type="stringlist"><value>*</value><value>charm+3</value></multistate_bonusatts>
+      </object>
+      <charm type="int">0</charm>
+    </object>
+  </object>
+
+  <walkthrough name="verify">
+    <steps>
+      <![CDATA[
+      wear coat
+      assert:coat.worn
+      assert:coat.multistate_status = 1
+      wear cape
+      assert:cape.worn
+      wear hat
+      assert:hat.worn
+      assert:player.charm = 1
+      assert:SetMultistateAndReturn(coat, 2)
+      assert:SetMultistateAndReturn(hat, 2)
+      assert:player.charm = 3
+      ]]>
+    </steps>
+  </walkthrough>
+
+  <function name="SetMultistateAndReturn" parameters="obj, state" type="boolean">
+    SetMultistate (obj, state)
+    return (obj.multistate_status = state)
+  </function>
+</asl>
