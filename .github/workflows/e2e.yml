@@ -12,9 +12,9 @@ name: e2e
 # ElectronApp. Release branches (release/**) also run on every push: GitHub
 # only fires `schedule` on the default branch, and a push there means a
 # backport just merged, so a backport that behaves differently on the older
-# branch is caught when it lands, not at release time. Each job below matches one of the distinct local setups
-# documented in the individual scripts' header comments — see those for the
-# "why" behind each one.
+# branch is caught when it lands, not at release time. Each job below
+# matches one of the distinct local setups documented in the individual
+# scripts' header comments — see those for the "why" behind each one.
 #
 # check_e2e_manifest is the one exception to "nightly + manual": it's a
 # required status check on main, so it has to run — and report a result — on
