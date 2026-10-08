@@ -1,3 +1,9 @@
+<!--
+  Written over several lines on purpose: SingleLineLoadTests loads this file as it is, and again
+  with all whitespace between tags removed (so the whole game is on one line), and checks the two
+  load the same. Each element here is one that used to lose content, or swallow what followed it,
+  when written on one line - see issue #2345.
+-->
 <asl version="600">
   <include ref="English.aslx" />
   <include ref="Core.aslx" />
