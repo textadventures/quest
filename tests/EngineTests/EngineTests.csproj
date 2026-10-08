@@ -34,6 +34,9 @@
         <None Update="multistatewearabletest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="textprocessoriftest.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="callbacktest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
