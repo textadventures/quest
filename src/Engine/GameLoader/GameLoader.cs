@@ -195,15 +195,29 @@ internal partial class GameLoader
                 case XmlNodeType.Element:
                     currentLoader = GetLoader(reader.Name, current);
                     currentLoader.StartElement(reader, ref current);
+                    // A loader that reads the element's content itself leaves the reader on its end
+                    // tag (or on the element, if it's empty), so there's no text to come for it
+                    if (reader.NodeType == XmlNodeType.EndElement || reader.IsEmptyElement)
+                    {
+                        currentLoader = null;
+                    }
                     break;
                 case XmlNodeType.EndElement:
                     GetLoader(reader.Name, current).EndElement(reader, ref current);
+                    currentLoader = null;
                     break;
                 case XmlNodeType.Text:
                 case XmlNodeType.CDATA:
-                    currentLoader?.SetText(reader.ReadContentAsString(), ref current);
-                    // if we've eaten the content of this element, then the reader will have gone
-                    // past the EndElement already, so we need to trigger the EndElement here
+                    if (currentLoader == null)
+                    {
+                        // Stray text between elements, e.g. a typo after a closing tag. Ignore it,
+                        // rather than letting ReadContentAsString run on into the next element.
+                        break;
+                    }
+
+                    currentLoader.SetText(reader.ReadContentAsString(), ref current);
+                    // ReadContentAsString leaves the reader on this element's end tag, which the
+                    // next Read() moves past, so we need to trigger the EndElement here
                     GetLoader(reader.Name, current).EndElement(reader, ref current);
                     currentLoader = null;
                     break;
@@ -263,7 +277,7 @@ internal partial class GameLoader
 
     private string GetTemplateContents(XmlReader reader)
     {
-        return GetTemplate(reader.ReadElementContentAsString());
+        return GetTemplate(reader.ReadElementContentLeavingEndTag());
     }
 
     [return: System.Diagnostics.CodeAnalysis.NotNullIfNotNull(nameof(text))]
