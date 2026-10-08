@@ -637,6 +637,11 @@ Passing this to the Populate function with an input "put book on shelf" will ret
 
 See also [GetMatchStrength](/reference/functions/string#getmatchstrength), [IsRegexMatch](/reference/functions/string#isregexmatch)
 
+## PrintPageOptions
+```quest
+PrintPageOptions(page)
+```
+
 ## ProcessTextCommand
 ```quest
 ProcessTextCommand(section, data)
