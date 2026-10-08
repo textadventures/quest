@@ -438,6 +438,7 @@ jobs:
       - run: node verify-wasmplayer-sound-timer.mjs http://localhost:5175
         working-directory: tests/e2e
       - run: node verify-wasmplayer-aslevent-timer.mjs http://localhost:5175
+        working-directory: tests/e2e
       - run: node verify-wasmplayer-legacy-start-enter.mjs http://localhost:5175
         working-directory: tests/e2e
       - run: node verify-wasmplayer-scenery-inventory.mjs http://localhost:5175
