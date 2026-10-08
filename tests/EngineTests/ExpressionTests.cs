@@ -811,6 +811,26 @@ public class ExpressionTests
     }
 
     [TestMethod]
+    public async Task TestUnsetAttribute_UsedAsBoolean_ThrowsFriendlyErrorInsteadOfNullReferenceException()
+    {
+        // Regression test for https://github.com/textadventures/quest/issues/2381 - the boolean
+        // equivalent of the arithmetic case above: 'if (obj.flag)' for a flag that hasn't been set.
+        var ex = await Should.ThrowAsync<Exception>(() => RunExpression<bool>($"{ObjectName}.unsetattribute"));
+        ex.Message.ShouldNotContain("Object reference not set");
+        ex.Message.ShouldContain($"'{ObjectName}.unsetattribute' is null");
+    }
+
+    [TestMethod]
+    public async Task TestUnsetAttribute_InLogicalOperators_TreatedAsFalse()
+    {
+        // Unlike a bare 'if (obj.flag)', the logical operators have always treated an unset
+        // operand as false, and 'if (not obj.flag)' for a flag that's never been set is common.
+        (await RunExpression<bool>($"not {ObjectName}.unsetattribute")).ShouldBeTrue();
+        (await RunExpression<bool>($"{ObjectName}.unsetattribute and true")).ShouldBeFalse();
+        (await RunExpression<bool>($"{ObjectName}.unsetattribute or true")).ShouldBeTrue();
+    }
+
+    [TestMethod]
     public async Task TestUnsetAttribute_ConcatenatedWithString_TreatedAsEmptyString()
     {
         // '+' with a string on either side is concatenation, not arithmetic, so an unset attribute
