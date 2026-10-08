@@ -316,4 +316,13 @@
     request (Wait, "")
     msg ("event after wait")
   </function>
+
+  <!-- ASLEvent handlers with and without a parameter -->
+  <function name="OneParamEvent" parameters="value">
+    msg ("one param: " + value)
+  </function>
+
+  <function name="NoParamEvent">
+    msg ("no param event ran")
+  </function>
 </asl>
