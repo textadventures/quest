@@ -1,0 +1,16 @@
+<asl version="600">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="External stylesheet">
+    <inituserinterface type="script">
+      AddExternalStylesheet (GetFileURL("external-stylesheet-test.css"))
+    </inituserinterface>
+  </game>
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="editor_object" />
+      <inherit name="editor_player" />
+    </object>
+  </object>
+</asl>

@@ -507,6 +507,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-electron-play-local-file.mjs
         working-directory: tests/e2e
+      - run: node verify-electron-external-stylesheet.mjs
+        working-directory: tests/e2e
       - run: node verify-electron-open-game-no-window.mjs
         working-directory: tests/e2e
       - run: node verify-electron-selectall-textbox.mjs
