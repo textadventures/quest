@@ -1,0 +1,20 @@
+<asl version="600">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="Media embeds test">
+    <start type="script"><![CDATA[
+      ShowYouTube ("7vIi0U4rSX4")
+      JS.AddVimeo ("76979871")
+      msg ("<iframe id='authoriframe' src='about:blank' width='800' height='300'></iframe>")
+      msg ("<video id='authorvideo' width='800'></video>")
+      msg ("Embeds done.")
+    ]]></start>
+  </game>
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="editor_object" />
+      <inherit name="editor_player" />
+    </object>
+  </object>
+</asl>
