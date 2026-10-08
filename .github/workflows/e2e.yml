@@ -1,6 +1,6 @@
 name: e2e
 
-# Nightly + manual, not on every push/PR — these are Playwright browser/
+# Nightly + manual + release-branch pushes — these are Playwright browser/
 # Electron-driven verification scripts (tests/e2e/*.mjs), not the dotnet test
 # suite. They drive real dev servers / a packaged Electron app end-to-end
 # rather than mocking anything, so they're slower and younger than dotnet
