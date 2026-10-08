@@ -557,7 +557,10 @@ public partial class WorldModel : IGame, IGameDebug
             return;
         }
 
-        var parameters = new Parameters {{(string) handler.Fields[FieldDefinitions.ParamNames]![0]!, param}};
+        // A handler that takes no parameters is called without one, rather than failing on the
+        // missing parameter name.
+        var paramNames = handler.Fields[FieldDefinitions.ParamNames]!;
+        var parameters = paramNames.Count > 0 ? new Parameters {{(string) paramNames[0]!, param}} : null;
 
         await RunProcedureAsync(eventName, parameters, false);
 
