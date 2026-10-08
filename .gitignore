@@ -19,3 +19,5 @@ WebEditor/WebEditor/LogConfig.xml
 _site/
 .idea
 .DS_Store
+# Wrangler CLI local cache (Cloudflare account/project lookups)
+.wrangler/
