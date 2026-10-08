@@ -88,21 +88,7 @@
         if (game.currentpage = page and not GetBoolean(page, "runscriptonly")) {
           msg (page.description)
           msg ("")
-          game.currentpageoptionkeys = NewStringList()
-          game.pageoptionsoutputsection = StartNewOutputSection()
-          if (TypeOf(page, "options") = "stringdictionary") {
-            foreach (key, page.options) {
-              destination = GetObject(key)
-              if (destination = null) {
-                msg (StringDictionaryItem(page.options, key) + " (broken link)")
-              }
-              else {
-                list add (game.currentpageoptionkeys, key)
-                msg (ListCount(game.currentpageoptionkeys) + ": " + CommandLink(key, StringDictionaryItem(page.options, key)))
-              }
-            }
-          }
-          EndOutputSection (game.pageoptionsoutputsection)
+          PrintPageOptions (page)
           if (ListCount(game.currentpageoptionkeys) = 0) {
             // a page with no options to choose from ends the dialogue; leave its text
             // visible (don't hide the section - it may contain broken-link lines)
@@ -115,6 +101,32 @@
         }
       }
       page.visited = true
+    ]]>
+  </function>
+
+  <!--
+  Prints a page's options as numbered links, in their own output section so they can be
+  hidden once one is chosen. Also used by the undo command: hiding the links removes them
+  from the page, which undo can't reverse, so an undo that lands back inside a dialogue
+  prints them again.
+  -->
+  <function name="PrintPageOptions" parameters="page">
+    <![CDATA[
+      game.currentpageoptionkeys = NewStringList()
+      game.pageoptionsoutputsection = StartNewOutputSection()
+      if (TypeOf(page, "options") = "stringdictionary") {
+        foreach (key, page.options) {
+          destination = GetObject(key)
+          if (destination = null) {
+            msg (StringDictionaryItem(page.options, key) + " (broken link)")
+          }
+          else {
+            list add (game.currentpageoptionkeys, key)
+            msg (ListCount(game.currentpageoptionkeys) + ": " + CommandLink(key, StringDictionaryItem(page.options, key)))
+          }
+        }
+      }
+      EndOutputSection (game.pageoptionsoutputsection)
     ]]>
   </function>
 

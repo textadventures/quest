@@ -5,7 +5,8 @@
 // dialogue, typed option numbers work, a non-option command is refused while
 // allowCancel is off, a page with no options ends the dialogue, and — the design's
 // whole point — the Save button stays enabled mid-dialogue, because the game is
-// genuinely idle between choices. Also covers a {page:} link embedded in an
+// genuinely idle between choices. Undoing back into a dialogue shows its options
+// again (issue #2386). Also covers a {page:} link embedded in an
 // ordinary object's description (signpost) - clicking it from outside any active
 // dialogue must launch that page, not fall through to "I don't understand".
 // Requires the WasmPlayer dev server running locally:
@@ -140,6 +141,25 @@ async function run() {
     await expectInOutput('The castle is closed.', 'terminal page renders');
     await sendCommand('marker');
     await expectInOutput('marker ran', 'ordinary commands work again after the dialogue ends');
+
+    // Undo back into the dialogue (issue #2386): the first undo reverses "marker", the second the
+    // choice that ended the dialogue. Undo restores the dialogue state, but not the option links
+    // a choice removed from the page, so the undo command prints them again.
+    await sendCommand('undo');
+    await sendCommand('undo');
+    await page.waitForTimeout(700); // let any earlier section's hide animation finish
+    const restoredLink = page.locator('a.cmdlink[data-command="guard_weather"]');
+    if (!(await restoredLink.last().isVisible())) {
+        throw new Error('Expected the intro page\'s options to be visible again after undoing back into the dialogue');
+    }
+    console.log('PASS: undoing back into the dialogue shows its options again');
+    const beforeRestoredClick = (await output()).length;
+    await restoredLink.last().click();
+    await waitUntilCanSendCommand();
+    if (!(await outputSince(beforeRestoredClick)).includes('Nice weather today.')) {
+        throw new Error('Clicking a re-shown option link must advance the dialogue');
+    }
+    console.log('PASS: a re-shown option link still works');
 
     console.log('PASS: all checks passed');
 }
