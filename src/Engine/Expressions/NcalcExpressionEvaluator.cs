@@ -50,6 +50,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
     public async Task<T> EvaluateAsync(Context c)
     {
         _context = c;
+        _lastNullPropertyAccessDescription = null;
         try
         {
             var result = CoerceLong(await _nCalcExpression.EvaluateAsync());
@@ -57,6 +58,16 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
             if (typeof(T) == typeof(double) && result is int i)
             {
                 return (T) (object) (double) i;
+            }
+
+            // Unboxing null to a value type throws a raw NullReferenceException - typically this
+            // is an attribute that has never been set, as in 'if (obj.flag)'.
+            if (result is null && default(T) is not null)
+            {
+                var usage = typeof(T) == typeof(bool) ? "as true or false" : "here";
+                throw new Exception(_lastNullPropertyAccessDescription != null
+                    ? $"'{_lastNullPropertyAccessDescription}' is null (it has not been set) and cannot be used {usage}."
+                    : $"This value cannot be used {usage} because it has not been set - check whether an attribute or variable has been assigned a value before using it.");
             }
 
             // T is unconstrained, so a null result (e.g. for Expression<object>) is passed through as-is

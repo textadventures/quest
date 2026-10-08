@@ -300,8 +300,16 @@ div#gamePanel img {
     max-width: 100%;
 }
 
-div#divOutput img {
+div#divOutput img,
+div#divOutput video,
+div#divOutput iframe {
     max-width: 100%;
+}
+
+/* An iframe has a border by default, which would otherwise take it past the text width */
+div#divOutput video,
+div#divOutput iframe {
+    box-sizing: border-box;
 }
 
 div.jjmenu {

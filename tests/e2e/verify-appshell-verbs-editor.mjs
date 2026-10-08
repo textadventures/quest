@@ -66,6 +66,17 @@ async function run() {
     await page.waitForSelector('text=Use the Inventory tab', { timeout: 10000 });
     console.log('PASS: adding a verb that clashes with a built-in command shows the specific clash message');
 
+    // "enter" on its own is the built-in enter verb, but in a list of patterns it would become an
+    // "enter" attribute, clashing with a room's enter script. Issue #2374: the message used to
+    // suggest an "enter_verb" attribute, which does nothing.
+    await comboInput.click();
+    await comboInput.fill('enter; climb in');
+    await page.keyboard.press('Tab');
+    await page.click('button:has-text("Add Verb")');
+    await page.waitForSelector('text=already a built-in verb', { timeout: 10000 });
+    if (await page.locator('text=enter_verb').count() > 0) throw new Error('Clash message still suggests the non-existent "enter_verb" attribute');
+    console.log('PASS: "enter" in a list of patterns shows the corrected clash message');
+
     // Add a genuine custom verb.
     await comboInput.click();
     await comboInput.fill('smell');

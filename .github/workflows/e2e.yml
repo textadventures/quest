@@ -405,6 +405,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-wasmplayer-showmenu-long-options.mjs http://localhost:5175
         working-directory: tests/e2e
+      - run: node verify-wasmplayer-media-embeds.mjs http://localhost:5175
+        working-directory: tests/e2e
       - run: node verify-wasmplayer-inline-sync-prompts.mjs http://localhost:5175
         working-directory: tests/e2e
       - run: node verify-game-load-error.mjs http://localhost:5175
@@ -548,6 +550,8 @@ jobs:
       - run: node verify-electron-recent-games.mjs
         working-directory: tests/e2e
       - run: node verify-electron-play-local-file.mjs
+        working-directory: tests/e2e
+      - run: node verify-electron-external-stylesheet.mjs
         working-directory: tests/e2e
       - run: node verify-electron-open-game-no-window.mjs
         working-directory: tests/e2e

@@ -175,6 +175,14 @@ internal sealed class GameDriver
         return TakeBatch();
     }
 
+    public async Task<IReadOnlyList<string>> SendEventAsync(string eventName, string param)
+    {
+        _batch = [];
+        _scriptError = null;
+        await _worldModel.SendEvent(eventName, param);
+        return TakeBatch();
+    }
+
     public async Task<IReadOnlyList<string>> TickAsync(int elapsedTime)
     {
         _batch = [];
@@ -331,6 +339,26 @@ public class CallbackTests
         var afterAnswer = await driver.FinishWaitAsync().WaitAsync(TimeSpan.FromSeconds(5));
         afterAnswer.ShouldContain("event after wait");
         await sendEvent.WaitAsync(TimeSpan.FromSeconds(5));
+    }
+
+    [TestMethod]
+    public async Task SendEvent_HandlerWithOneParameter_ReceivesTheValue()
+    {
+        var driver = await GameDriver.LoadAsync("callbacktest.aslx");
+
+        var output = await driver.SendEventAsync("OneParamEvent", "hello");
+        output.ShouldContain("one param: hello");
+    }
+
+    // ASLEvent aimed at a function with no parameters used to throw IndexOutOfRangeException
+    // reading the first parameter name.
+    [TestMethod]
+    public async Task SendEvent_HandlerWithNoParameters_IsCalledWithoutTheValue()
+    {
+        var driver = await GameDriver.LoadAsync("callbacktest.aslx");
+
+        var output = await driver.SendEventAsync("NoParamEvent", "ignored");
+        output.ShouldContain("no param event ran");
     }
 
     // TickUntilSuspended returns as soon as a timer script stops at a blocking prompt, like

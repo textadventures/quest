@@ -346,6 +346,10 @@
     <script>
       undo
       game.suppressturnscripts = true
+      if (not game.currentpage = null) {
+        msg ("")
+        PrintPageOptions (game.currentpage)
+      }
       if (GetBoolean (game, "gridmap")){
         Grid_DrawPlayerInRoom (game.pov.parent)
       }

@@ -62,7 +62,7 @@
         </item>
         <item>
           <key>enter</key>
-          <value>Input the verb name as "enter_verb". It will appear as "enter" to the player.</value>
+          <value>"enter" is already a built-in verb - add it on its own, without other patterns. It also covers "go in", "go into", "get in" and "get into".</value>
         </item>
       </clashmessages>
       <defaultexpression>[EditorVerbDefaultExpression]</defaultexpression>

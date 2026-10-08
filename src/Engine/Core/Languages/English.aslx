@@ -100,8 +100,8 @@
   <dynamictemplate name="AlreadyLocked">WriteVerb(object, "be") + " already locked."</dynamictemplate>
   <dynamictemplate name="AlreadyUnlocked">WriteVerb(object, "be") + " already unlocked."</dynamictemplate>
   <dynamictemplate name="CannotLockOpen">WriteVerb(game.pov, "cannot") + " lock " + object.article + " when " + object.gender + " " + Conjugate(object, "be") + " open."</dynamictemplate>
-  <dynamictemplate name="AlreadySwitchedOn">WriteVerb(object, "be") + " already switched on."</dynamictemplate>"
-  <dynamictemplate name="AlreadySwitchedOff">WriteVerb(object, "be") + " already switched off."</dynamictemplate>"
+  <dynamictemplate name="AlreadySwitchedOn">WriteVerb(object, "be") + " already switched on."</dynamictemplate>
+  <dynamictemplate name="AlreadySwitchedOff">WriteVerb(object, "be") + " already switched off."</dynamictemplate>
   <dynamictemplate name="SwitchedOn">WriteVerb(game.pov, "switch") + " " + object.article + " on."</dynamictemplate>
   <dynamictemplate name="SwitchedOff">WriteVerb(game.pov, "switch") + " " + object.article + " off."</dynamictemplate>
   <dynamictemplate name="Eaten">WriteVerb(game.pov, "eat") + " " + object.article + "."</dynamictemplate>
