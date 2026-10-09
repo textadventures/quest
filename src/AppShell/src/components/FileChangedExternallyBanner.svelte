@@ -22,10 +22,10 @@
         <span class="flex-1">{t("fileChangedBanner.message")}</span>
         <button
             type="button"
-            class="btn btn-sm preset-filled-warning-500"
+            class="btn btn-xs preset-filled-warning-500"
             onclick={handleReload}
             disabled={reloading}
         >{reloading ? t("common.reloading") : t("fileChangedBanner.reloadFromDisk")}</button>
-        <button type="button" class="btn btn-sm preset-tonal" onclick={dismissFileChangedExternallyBanner}>{t("common.dismiss")}</button>
+        <button type="button" class="btn btn-xs preset-tonal" onclick={dismissFileChangedExternallyBanner}>{t("common.dismiss")}</button>
     </div>
 {/if}

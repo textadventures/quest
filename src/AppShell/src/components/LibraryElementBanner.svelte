@@ -19,7 +19,7 @@
         </span>
         <button
             type="button"
-            class="btn btn-sm preset-filled-warning-500"
+            class="btn btn-xs preset-filled-warning-500"
             onclick={handleCopy}
             disabled={copying}
         >{copying ? t("libraryElementBanner.copying") : t("libraryElementBanner.copyIntoGame")}</button>

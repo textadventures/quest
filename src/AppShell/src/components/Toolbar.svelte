@@ -274,7 +274,7 @@
                     {#snippet trigger(toggle, open)}
                         <button
                             type="button"
-                            class="btn btn-sm preset-outlined-primary-500"
+                            class="btn btn-xs preset-outlined-primary-500"
                             onclick={toggle}
                             disabled={$codeViewPanelOpen}
                             title={t("toolbar.addElement")}
@@ -289,7 +289,7 @@
                      Desktop only — folded into the ⋯ menu on mobile. -->
                 <button
                     type="button"
-                    class="btn btn-sm preset-outlined-error-500 hidden md:inline-flex"
+                    class="btn btn-xs preset-outlined-error-500 hidden md:inline-flex"
                     onclick={() => selectedNode && deleteElement(selectedNode.key)}
                     disabled={$codeViewPanelOpen || !canDelete}
                     title={canDelete ? t("toolbar.deleteTitleNamed", { name: selectedNode?.text ?? "" }) : t("toolbar.deleteTitle")}
@@ -304,7 +304,7 @@
                     <div class="hidden md:block">
                         <DropdownMenu items={fileMenuItems}>
                             {#snippet trigger(toggle, open)}
-                                <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={toggle} disabled={saving} title={t("toolbar.file")}
+                                <button type="button" class="btn btn-xs preset-outlined-primary-500" onclick={toggle} disabled={saving} title={t("toolbar.file")}
                                     aria-haspopup="menu" aria-expanded={open}
                                 >{t("toolbar.file")} <ChevronDown size={12} /></button>
                             {/snippet}
@@ -312,7 +312,7 @@
                     </div>
                 {/if}
                 {#if $gameFilename}
-                    <button type="button" class="btn btn-sm preset-filled-primary-500" onclick={handlePreview} title={t("toolbar.previewGame")}><Play size={14} /> <span class="hidden md:inline">{t("toolbar.preview")}</span></button>
+                    <button type="button" class="btn btn-xs preset-filled-primary-500" onclick={handlePreview} title={t("toolbar.previewGame")}><Play size={14} /> <span class="hidden md:inline">{t("toolbar.preview")}</span></button>
                 {/if}
                 <!-- Overflow menu: community links + Settings on desktop; also Delete/Assets/
                      Undo/Redo/File-menu items on mobile (see overflowItems) -->

@@ -91,13 +91,13 @@
     <div class="card bg-surface-50-950 rounded-xl shadow-xl w-full max-w-[32rem] max-h-[85dvh] p-6 flex flex-col gap-4">
         <div class="flex items-center justify-between">
             <h2 class="text-base font-semibold">{t("assetManager.title")}</h2>
-            <button class="btn btn-sm preset-tonal" onclick={oncancel}>{t("common.close")}</button>
+            <button class="btn btn-xs preset-tonal" onclick={oncancel}>{t("common.close")}</button>
         </div>
 
         <div class="flex items-center gap-2">
             <button
                 type="button"
-                class="btn btn-sm preset-filled-primary-500"
+                class="btn btn-xs preset-filled-primary-500"
                 onclick={() => inputEl.click()}
                 disabled={uploading}
             >{uploading ? t("assetManager.uploading") : t("assetManager.upload")}</button>
@@ -119,7 +119,7 @@
                     <span class="text-xs flex-1 truncate" title={asset.key}>{asset.key}</span>
                     <button
                         type="button"
-                        class="btn btn-sm preset-outlined-error-500 text-xs px-2 py-0.5"
+                        class="btn btn-xs preset-outlined-error-500 text-xs px-2 py-0.5"
                         onclick={() => handleDelete(asset.key)}
                     >{t("common.delete")}</button>
                 </div>

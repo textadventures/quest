@@ -379,7 +379,7 @@
                                 type="button"
                                 disabled={!addTypeValue}
                                 onclick={onAddType}
-                                class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0 h-6 flex-shrink-0"
+                                class="btn btn-xs preset-outlined-primary-500 text-xs px-2 py-0 h-6 flex-shrink-0"
                             >{t("common.add")}</button>
                         </div>
                     </div>
@@ -499,13 +499,13 @@
                         <button
                             type="button"
                             onclick={() => onAddChangeScript(attr)}
-                            class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0 h-6 self-start flex-shrink-0"
+                            class="btn btn-xs preset-outlined-primary-500 text-xs px-2 py-0 h-6 self-start flex-shrink-0"
                         >{t("attributesEditor.addChangeScript")}</button>
                     {:else if canGoToChangeScript(attr)}
                         <button
                             type="button"
                             onclick={() => selectChangeScript(attr.name)}
-                            class="btn btn-sm preset-outlined-surface-500 text-xs px-2 py-0 h-6 self-start flex-shrink-0"
+                            class="btn btn-xs preset-outlined-surface-500 text-xs px-2 py-0 h-6 self-start flex-shrink-0"
                         >{t("attributesEditor.goToChangeScript")}</button>
                     {/if}
 
@@ -604,7 +604,7 @@
                 type="button"
                 disabled={!newAttrName.trim()}
                 onclick={onAddAttribute}
-                class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0 h-6 flex-shrink-0"
+                class="btn btn-xs preset-outlined-primary-500 text-xs px-2 py-0 h-6 flex-shrink-0"
             >{t("common.add")}</button>
         </div>
     </div>

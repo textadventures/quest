@@ -71,9 +71,9 @@
         </div>
 
         <div class="flex justify-end gap-2">
-            <button class="btn btn-sm preset-tonal" onclick={oncancel}>{t("common.cancel")}</button>
+            <button class="btn btn-xs preset-tonal" onclick={oncancel}>{t("common.cancel")}</button>
             <button
-                class="btn btn-sm preset-filled-primary-500"
+                class="btn btn-xs preset-filled-primary-500"
                 onclick={confirm}
                 disabled={!target}
             >

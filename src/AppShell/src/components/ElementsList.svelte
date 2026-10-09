@@ -193,21 +193,21 @@
         {#if addLabel !== null}
             <button
                 type="button"
-                class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
+                class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5"
                 onclick={addPrimary}
             >+ {addLabel}</button>
         {/if}
         {#if showRoomButton}
             <button
                 type="button"
-                class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
+                class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5"
                 onclick={addRoom}
             >+ {t("elementAdders.room")}</button>
         {/if}
         {#if showPageButton}
             <button
                 type="button"
-                class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
+                class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5"
                 onclick={addPage}
             >+ {t("elementAdders.page")}</button>
         {/if}
@@ -228,20 +228,20 @@
                         <div class="absolute right-1 top-1/2 -translate-y-1/2 flex gap-0.5 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-10">
                             <button
                                 type="button"
-                                class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
+                                class="btn btn-xs preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
                                 title={t("elementAdders.functionHere")}
                                 onclick={() => openAddModal("function", null, row.label)}
                             >+</button>
                             <button
                                 type="button"
-                                class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
+                                class="btn btn-xs preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
                                 title={t("common.moveUp")}
                                 disabled={!canMoveFunctionFolderUp(row.label)}
                                 onclick={() => moveFunctionFolderUp(row.label)}
                             >↑</button>
                             <button
                                 type="button"
-                                class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
+                                class="btn btn-xs preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
                                 title={t("common.moveDown")}
                                 disabled={!canMoveFunctionFolderDown(row.label)}
                                 onclick={() => moveFunctionFolderDown(row.label)}
@@ -278,28 +278,28 @@
                         {#if supportsFolders && !item.isLibrary}
                             <button
                                 type="button"
-                                class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
+                                class="btn btn-xs preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
                                 title={t("common.moveToFolder")}
                                 onclick={() => openMoveToFolderModal(item.key)}
                             ><Folder size={11} /></button>
                         {/if}
                         <button
                             type="button"
-                            class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
+                            class="btn btn-xs preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
                             title={t("common.moveUp")}
                             disabled={!canMoveUp(i)}
                             onclick={() => moveUp(i)}
                         >↑</button>
                         <button
                             type="button"
-                            class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
+                            class="btn btn-xs preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
                             title={t("common.moveDown")}
                             disabled={!canMoveDown(i)}
                             onclick={() => moveDown(i)}
                         >↓</button>
                         <button
                             type="button"
-                            class="btn btn-sm preset-tonal-error px-1 py-0 text-xs leading-none"
+                            class="btn btn-xs preset-tonal-error px-1 py-0 text-xs leading-none"
                             title={item.canDelete ? t("common.delete") : t("elementsList.cannotDelete")}
                             disabled={!item.canDelete}
                             onclick={() => onDeleteItem(item.key)}
@@ -316,7 +316,7 @@
         <div class="flex items-center gap-1 mt-1 px-1 py-1 bg-surface-100-900 rounded border border-surface-200-800 text-xs">
             <button
                 type="button"
-                class="btn btn-sm preset-tonal-error text-xs py-0.5"
+                class="btn btn-xs preset-tonal-error text-xs py-0.5"
                 disabled={!sel.some(key => items.find(i => i.key === key)?.canDelete)}
                 onclick={onDeleteSelected}
             >{t("common.delete")}</button>
@@ -325,13 +325,13 @@
                 <span class="w-px h-4 bg-surface-300-700 mx-0.5"></span>
                 <button
                     type="button"
-                    class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
+                    class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5"
                     disabled={!canMoveUp(idx)}
                     onclick={onMoveUpSelected}
                 >↑ {t("common.moveUp")}</button>
                 <button
                     type="button"
-                    class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
+                    class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5"
                     disabled={!canMoveDown(idx)}
                     onclick={onMoveDownSelected}
                 >↓ {t("common.moveDown")}</button>
