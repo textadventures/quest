@@ -1,7 +1,8 @@
 // Verifies File > Publish…: modal radios, the .quest download, and the zip HTML
 // target — zip export embeds the game with relative player assets (no CDN
 // <base href>), includes _framework + shell files, and boots when served locally
-// with the CDN blocked (issue #2234).
+// with the CDN blocked (issue #2234). Also checks the zip's link-preview tags describe the game,
+// with its cover art shipped beside index.html as og:image.
 // Requires AppShell + WasmPlayer: ./dev.sh (or AppShell on :5174 with player proxied).
 import { chromium } from './lib/tracked-chromium.mjs';
 import { unzipSync } from 'fflate';
@@ -30,6 +31,26 @@ try {
     await page.click('button:has-text("Create local draft")');
     await page.waitForSelector('button[title="Preview game"]', { timeout: 60000 });
     console.log('PASS: local draft created');
+
+    // Cover art via the game's Setup tab (selected at load) — the zip should ship it as og:image.
+    const coverPng = Buffer.from(
+        'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg==',
+        'base64');
+    const coverDir = join(tmpdir(), `qv-export-cover-${Date.now()}`);
+    mkdirSync(coverDir, { recursive: true });
+    const coverFile = join(coverDir, 'my-cover.png');
+    writeFileSync(coverFile, coverPng);
+    await page.waitForSelector('text=Cover art:', { timeout: 10000 });
+    const [coverChooser] = await Promise.all([
+        page.waitForEvent('filechooser'),
+        page.locator('button:has-text("Upload…")').first().click(),
+    ]);
+    await coverChooser.setFiles(coverFile);
+    await page.waitForFunction(
+        () => [...document.querySelectorAll('input, select')].some(el => el.value === 'my-cover.png'),
+        null, { timeout: 10000 });
+    rmSync(coverDir, { recursive: true, force: true });
+    console.log('PASS: cover art uploaded');
 
     // File menu (see Toolbar.svelte) — prefer label over fragile button index.
     await page.click('button:has-text("File")');
@@ -123,6 +144,28 @@ try {
     if (!titleMatch) throw new Error('zip index.html missing <title>');
     if (titleMatch[1] !== gameName) throw new Error(`expected <title>${gameName}</title>, got <title>${titleMatch[1]}</title>`);
     console.log('PASS: exported <title> matches game name');
+
+    // Link-preview tags should describe the game, not Quest Viva — a new draft has no
+    // description, so only og:title and the cover uploaded above survive.
+    if (!html.includes(`<meta property="og:title" content="${gameName}" />`)) {
+        throw new Error('zip index.html missing og:title for the game');
+    }
+    if (html.includes('og:site_name') || html.includes('Play and create text adventure games')) {
+        throw new Error('zip index.html still carries the Quest Viva site preview tags');
+    }
+    if (html.includes('og:description') || html.includes('name="description"')) {
+        throw new Error('zip index.html has a description meta for a game without a description');
+    }
+    if (!html.includes('<meta property="og:image" content="cover.png" />')) {
+        throw new Error('zip index.html missing og:image for the cover');
+    }
+    if (!html.includes('<meta name="twitter:card" content="summary" />')) {
+        throw new Error('zip index.html missing twitter:card for the cover');
+    }
+    if (!entries['cover.png'] || !Buffer.from(entries['cover.png']).equals(coverPng)) {
+        throw new Error('zip missing cover.png, or its bytes differ from the uploaded cover');
+    }
+    console.log('PASS: exported link-preview tags describe the game, with its cover as og:image');
 
     // Modal should close after a successful export.
     await page.waitForSelector('div[role="dialog"]', { state: 'detached', timeout: 10000 });

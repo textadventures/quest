@@ -136,6 +136,10 @@ public sealed class EditorController : IDisposable
 
     public string? GameName => WorldModel.GameName;
 
+    public string? GameDescription => WorldModel.Description;
+
+    public string? GameCover => WorldModel.Cover;
+
     // Set by Initialise
     internal EditableScriptFactory ScriptFactory { get; private set; } = null!;
 

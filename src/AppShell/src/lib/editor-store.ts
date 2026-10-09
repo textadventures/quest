@@ -858,7 +858,17 @@ function playerBaseUrl(): string {
     return base.endsWith("/") ? base : base + "/";
 }
 
-async function buildPublishPackageBytes(signal: AbortSignal): Promise<{ packageBytes: Uint8Array; baseName: string; embeddedFilename: string; gameTitle: string }> {
+interface PublishPackage {
+    packageBytes: Uint8Array;
+    baseName: string;
+    embeddedFilename: string;
+    gameTitle: string;
+    gameDescription: string;
+    // The game's cover art (its `cover` attribute, matched against its own assets), when set.
+    cover: { name: string; bytes: Uint8Array } | null;
+}
+
+async function buildPublishPackageBytes(signal: AbortSignal): Promise<PublishPackage> {
     if (!_bridge || !_adapter) throw new Error("No game loaded.");
     // Read everything before staging anything, so cancelling mid-read leaves nothing half-staged
     // in the bridge for the next publish to pick up.
@@ -878,7 +888,16 @@ async function buildPublishPackageBytes(signal: AbortSignal): Promise<{ packageB
     if (packageBytes.length === 0) throw new Error("Failed to build the .quest package.");
     const baseName = _adapter.filename.replace(/\.aslx$/i, "");
     const gameTitle = _bridge.GetGameName().trim() || baseName;
-    return { packageBytes, baseName, embeddedFilename: baseName + ".quest", gameTitle };
+    // Plain text for link-preview meta tags — the Description field is rich text, and its markup
+    // or entities would show up literally in a preview card.
+    const descriptionHtml = _bridge.GetGameDescription();
+    const gameDescription = (descriptionHtml
+        ? new DOMParser().parseFromString(descriptionHtml, "text/html").body.textContent ?? ""
+        : "").replace(/\s+/g, " ").trim();
+    const coverName = _bridge.GetGameCover().trim();
+    const coverFile = coverName ? files.find(f => f.key === coverName) : undefined;
+    const cover = coverFile ? { name: coverFile.key, bytes: coverFile.bytes } : null;
+    return { packageBytes, baseName, embeddedFilename: baseName + ".quest", gameTitle, gameDescription, cover };
 }
 
 // Same transforms as export-embedded.mjs — see that file's comments for why each is needed.
@@ -888,7 +907,11 @@ async function buildPublishPackageBytes(signal: AbortSignal): Promise<{ packageB
 //
 // cdnBase: when set, insert <base href> + crossorigin on stylesheets (CDN-linked small HTML).
 // when unset, leave relative URLs alone (zip that includes the player next to index.html).
-function buildEmbeddedPlayerHtml(template: string, packageBytes: Uint8Array, embeddedFilename: string, cdnBase: string | null, gameTitle: string): string {
+//
+// coverUrl: og:image for the game's cover art. Relative, since an export doesn't know where it'll be
+// hosted — Discourse and most unfurlers resolve it against the page URL. Only the zip can ship the
+// cover as its own file, so the single-file export passes null.
+function buildEmbeddedPlayerHtml(template: string, packageBytes: Uint8Array, embeddedFilename: string, cdnBase: string | null, gameTitle: string, gameDescription: string, coverUrl: string | null): string {
     const scriptLine = (file: string) => new RegExp(
         `^[ \\t]*<script type="text/javascript" src="${file.replace(/\./g, "\\.")}(?:\\?[^"]*)?"></script>\\r?\\n`,
         "m");
@@ -901,13 +924,28 @@ function buildEmbeddedPlayerHtml(template: string, packageBytes: Uint8Array, emb
         return haystack.slice(0, match.index) + replacement(match[0]) + haystack.slice(match.index + match[0].length);
     }
 
+    const escapeAttr = (value: string) => value
+        .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
     let html = template;
     html = html.replace('<html lang="en">', '<html lang="en" class="qv-booting">');
     // Retitle from the shared shell's "Quest Viva" to the game's own name.
     if (gameTitle) {
-        const escapedTitle = gameTitle.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        html = replaceOrFail(html, /<title>[^<]*<\/title>/, () => `<title>${escapedTitle}</title>`, "the <title> tag");
+        html = replaceOrFail(html, /<title>[^<]*<\/title>/, () => `<title>${escapeAttr(gameTitle)}</title>`, "the <title> tag");
     }
+    // The shell's link-preview tags describe Quest Viva itself. An export is the author's own
+    // game, hosted wherever they put it, so swap them for the game's title and description
+    // (no og:site_name — the site isn't ours).
+    html = html.replace(/^[ \t]*<meta (?:name="description"|property="og:[^"]*"|name="twitter:[^"]*")[^>]*\/>\r?\n/gm, "");
+    const previewTags = [
+        gameDescription ? `    <meta name="description" content="${escapeAttr(gameDescription)}" />` : null,
+        "    <meta property=\"og:type\" content=\"website\" />",
+        gameTitle ? `    <meta property="og:title" content="${escapeAttr(gameTitle)}" />` : null,
+        gameDescription ? `    <meta property="og:description" content="${escapeAttr(gameDescription)}" />` : null,
+        coverUrl ? `    <meta property="og:image" content="${escapeAttr(coverUrl)}" />` : null,
+        coverUrl ? "    <meta name=\"twitter:card\" content=\"summary\" />" : null,
+    ].filter(Boolean).join("\n");
+    html = replaceOrFail(html, /<\/title>\r?\n/, (line) => `${line}${previewTags}\n`, "the </title> line");
     // Babel Treaty §"The IFID for an HTML story file": expose <gameid> as an
     // ifiction:ifid meta so IFDB/babel/etc. can identify the export without
     // unpacking the embedded .quest. Uppercase matches the UUID:// form the
@@ -957,7 +995,7 @@ async function exportHtmlCdn(signal: AbortSignal): Promise<void> {
     const version = PUBLIC_APPSHELL_VERSION?.replace(/^v/, "");
     if (!version) throw new Error("No release version available to pin the CDN runtime to — the small HTML export only works in a deployed build.");
 
-    const { packageBytes, baseName, embeddedFilename, gameTitle } = await buildPublishPackageBytes(signal);
+    const { packageBytes, baseName, embeddedFilename, gameTitle, gameDescription } = await buildPublishPackageBytes(signal);
     publishProgress.set({ step: "fetchingPlayer" });
     const templateResponse = await fetch(`${playerBaseUrl()}index.html`);
     if (!templateResponse.ok) throw new Error(`Failed to fetch WasmPlayer template: HTTP ${templateResponse.status}`);
@@ -967,6 +1005,8 @@ async function exportHtmlCdn(signal: AbortSignal): Promise<void> {
         embeddedFilename,
         `https://cdn.jsdelivr.net/npm/@textadventures/quest-viva-wasmplayer@${version}/`,
         gameTitle,
+        gameDescription,
+        null,
     );
     triggerDownload(html, baseName + ".html");
 }
@@ -1020,14 +1060,18 @@ async function fetchPlayerFiles(playerBase: string, paths: string[]): Promise<Re
 // WasmPlayer.zip from a GitHub Release, ready to upload to any static host. Uses the
 // /player/ copy already deployed alongside AppShell (no CDN, works offline once hosted).
 async function exportHtmlZip(signal: AbortSignal): Promise<void> {
-    const { packageBytes, baseName, embeddedFilename, gameTitle } = await buildPublishPackageBytes(signal);
+    const { packageBytes, baseName, embeddedFilename, gameTitle, gameDescription, cover } = await buildPublishPackageBytes(signal);
     const playerBase = playerBaseUrl();
+    // Ship the cover beside index.html under a fixed name so it can't collide with a shell file
+    // (the game's own copy stays embedded in the .quest package, which is what the player uses).
+    const coverExt = cover ? (/\.[A-Za-z0-9]+$/.exec(cover.name)?.[0] ?? "").toLowerCase() : "";
+    const coverPath = cover ? `cover${coverExt}` : null;
     publishProgress.set({ step: "fetchingPlayer" });
 
     const templateResponse = await fetch(`${playerBase}index.html`);
     if (!templateResponse.ok) throw new Error(`Failed to fetch WasmPlayer template: HTTP ${templateResponse.status}`);
     const template = await templateResponse.text();
-    const html = buildEmbeddedPlayerHtml(template, packageBytes, embeddedFilename, null, gameTitle);
+    const html = buildEmbeddedPlayerHtml(template, packageBytes, embeddedFilename, null, gameTitle, gameDescription, coverPath);
 
     // Shell file list is generated into the AppBundle at WasmPlayer build time
     // (scripts/write-export-manifest.mjs) so it can't drift from the layout.
@@ -1056,6 +1100,10 @@ async function exportHtmlZip(signal: AbortSignal): Promise<void> {
     }
     // Embedded index replaces the stock start-screen template.
     zipEntries["index.html"] = new TextEncoder().encode(html);
+    if (cover && coverPath) {
+        if (zipEntries[coverPath]) throw new Error(`HTML export: cover path ${coverPath} collides with a player file`);
+        zipEntries[coverPath] = cover.bytes;
+    }
 
     publishProgress.set({ step: "zipping" });
     await yieldToPaint();

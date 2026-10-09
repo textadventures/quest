@@ -28,6 +28,8 @@ export interface WasmBridge {
   SetGameXml(xml: string): Promise<string>
   GetGameId(): string
   GetGameName(): string
+  GetGameDescription(): string
+  GetGameCover(): string
   IsGamebook(): boolean
   IsBuiltInLibrary(filename: string): boolean
   GetLibraryXml(filename: string): string | null

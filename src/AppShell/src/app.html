@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
     <title>Quest Viva</title>
     <link rel="icon" type="image/svg+xml" href="%sveltekit.assets%/favicon.svg" />
+    <!-- Site-level link-preview tags. Static, so a shared /play/<id> link gets the
+         same generic card as the homepage — no og:url or canonical, which would tell
+         scrapers every such link *is* the homepage. og:image must be an absolute URL
+         and a raster image (scrapers ignore SVG). -->
+    <meta name="description" content="Play and create text adventure games in your browser." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Quest Viva" />
+    <meta property="og:title" content="Quest Viva" />
+    <meta property="og:description" content="Play and create text adventure games in your browser." />
+    <meta property="og:image" content="https://play.questviva.com/og-image.png" />
+    <meta name="twitter:card" content="summary" />
     <!-- Applies the stored Light/Dark/Match-system theme before first paint —
          same logic as theme-store.ts's applyTheme, but runs synchronously while
          the head is still parsing so there's no flash of the wrong theme. -->

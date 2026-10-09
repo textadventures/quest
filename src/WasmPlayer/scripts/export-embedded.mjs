@@ -93,6 +93,41 @@ function parseGameNameFromXml(xml) {
     return name || null;
 }
 
+// The game's description is a <description> child of the <game> element (the
+// game's own attributes are its only children, so the first match inside it is
+// the right one). GameXmlWriter writes CDATA for values containing markup.
+function extractGameDescription(bytes, filename) {
+    const ext = path.extname(filename).toLowerCase();
+    if (ext === '.aslx' || ext === '.asl') {
+        return parseGameDescriptionFromXml(bytes.toString('utf8'));
+    }
+    if (ext === '.quest') {
+        const aslx = readZipEntry(bytes, 'game.aslx');
+        return aslx ? parseGameDescriptionFromXml(aslx.toString('utf8')) : null;
+    }
+    return null;
+}
+
+function parseGameDescriptionFromXml(xml) {
+    const game = /<game\s[^>]*>([\s\S]*?)<\/game>/i.exec(xml);
+    if (!game) return null;
+    const match = /<description>([\s\S]*?)<\/description>/i.exec(game[1]);
+    if (!match) return null;
+    const cdata = /^\s*<!\[CDATA\[([\s\S]*?)\]\]>\s*$/.exec(match[1]);
+    const text = cdata
+        ? cdata[1]
+        : match[1]
+            .replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+            .replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, '&');
+    // Plain text for link-preview meta tags — the Description field is rich text, and its markup
+    // or entities would show up literally in a preview card.
+    return text
+        .replace(/<[^>]*>/g, '')
+        .replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&amp;/g, '&')
+        .replace(/\s+/g, ' ').trim() || null;
+}
+
 // Minimal ZIP local-file-header walk — enough to pull game.aslx without adding
 // a dependency. Stored (method 0) and deflated (method 8) only.
 function readZipEntry(buf, entryName) {
@@ -126,6 +161,7 @@ function readZipEntry(buf, entryName) {
 const gameId = extractGameId(gameBytes, gameFilename);
 const ifid = gameId ? gameId.toUpperCase() : null;
 const gameName = extractGameName(gameBytes, gameFilename);
+const gameDescription = extractGameDescription(gameBytes, gameFilename);
 
 const cdnBase = `https://cdn.jsdelivr.net/npm/@textadventures/quest-viva-wasmplayer@${version}/`;
 
@@ -170,10 +206,23 @@ const headOpen = ifid
 html = html.replace('<head>', headOpen);
 
 // 2b. Retitle from the shared shell's "Quest Viva" to the game's own name.
+const escapeAttr = (value) => value
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 if (gameName) {
-    const escapedTitle = gameName.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    html = replaceOrFail(html, /<title>[^<]*<\/title>/, () => `<title>${escapedTitle}</title>`, 'the <title> tag');
+    html = replaceOrFail(html, /<title>[^<]*<\/title>/, () => `<title>${escapeAttr(gameName)}</title>`, 'the <title> tag');
 }
+
+// 2c. The shell's link-preview tags describe Quest Viva itself. An export is
+//     the author's own game, hosted wherever they put it, so swap them for
+//     the game's title and description (no og:site_name — the site isn't ours).
+html = html.replace(/^[ \t]*<meta (?:name="description"|property="og:[^"]*"|name="twitter:[^"]*")[^>]*\/>\r?\n/gm, '');
+const previewTags = [
+    gameDescription ? `    <meta name="description" content="${escapeAttr(gameDescription)}" />` : null,
+    `    <meta property="og:type" content="website" />`,
+    gameName ? `    <meta property="og:title" content="${escapeAttr(gameName)}" />` : null,
+    gameDescription ? `    <meta property="og:description" content="${escapeAttr(gameDescription)}" />` : null,
+].filter(Boolean).join('\n');
+html = replaceOrFail(html, /<\/title>\r?\n/, (line) => `${line}${previewTags}\n`, 'the </title> line');
 
 // 3. quest-config.js is local-hosting config (API root, defaultGameUrl) —
 //    nothing in this flavor is local, so drop the tag entirely rather than
