@@ -91,7 +91,7 @@
             <span class="flex-1">{t("scriptDictionaryEditor.inheritedReadOnly")}</span>
             <button
                 type="button"
-                class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5 flex-shrink-0 not-italic"
+                class="btn btn-xs preset-outlined-primary-500 text-xs px-2 py-0.5 flex-shrink-0 not-italic"
                 onclick={() => makeScriptDictEditable(elementKey, attribute)}
             >{t("common.makeEditableCopy")}</button>
         </div>
@@ -128,12 +128,12 @@
                         </button>
                         <button
                             type="button"
-                            class="btn btn-sm preset-outlined-primary-500 text-xs px-1.5 py-0.5 flex-shrink-0"
+                            class="btn btn-xs preset-outlined-primary-500 text-xs px-1.5 py-0.5 flex-shrink-0"
                             onclick={() => startRename(key)}
                         >{t("scriptDictionaryEditor.editKey")}</button>
                         <button
                             type="button"
-                            class="btn btn-sm preset-outlined-error-500 text-xs px-1.5 py-0.5 flex-shrink-0"
+                            class="btn btn-xs preset-outlined-error-500 text-xs px-1.5 py-0.5 flex-shrink-0"
                             onclick={() => removeScriptDictItem(elementKey, attribute, key)}
                         >✕</button>
                     {/if}
@@ -172,7 +172,7 @@
             {/if}
             <button
                 type="button"
-                class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5 flex-shrink-0"
+                class="btn btn-xs preset-outlined-primary-500 text-xs px-2 py-0.5 flex-shrink-0"
                 disabled={!newKey.trim()}
                 onclick={onAdd}
             >{t("common.add")}</button>

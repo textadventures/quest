@@ -212,7 +212,7 @@
         <button
             bind:this={buttonEl}
             type="button"
-            class="btn btn-sm preset-outlined-primary-500 px-1 py-0.5 flex-shrink-0"
+            class="btn btn-xs preset-outlined-primary-500 px-1 py-0.5 flex-shrink-0"
             title={t("expressionInput.insertTitle")}
             onclick={toggle}
         ><Wand2 size={13} aria-hidden="true" /></button>

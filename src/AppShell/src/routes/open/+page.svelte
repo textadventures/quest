@@ -565,7 +565,7 @@
             {#if error}
                 <p class="text-error-500 text-sm whitespace-pre-wrap">{error}</p>
                 {#if $lastFailedGameBytes}
-                    <button type="button" class="btn btn-sm preset-tonal" onclick={() => goto(`${base}/edit`)}>
+                    <button type="button" class="btn btn-xs preset-tonal" onclick={() => goto(`${base}/edit`)}>
                         {t("openPage.fixInSafeMode")}
                     </button>
                 {/if}
@@ -579,7 +579,7 @@
                         <div class="flex items-center gap-2 w-full">
                             <button
                                 type="button"
-                                class="btn btn-sm preset-outlined-primary-500 flex-1 min-w-0 flex-col! items-start! h-auto! py-2 gap-0.5"
+                                class="btn btn-xs preset-outlined-primary-500 flex-1 min-w-0 flex-col! items-start! h-auto! py-2 gap-0.5"
                                 onclick={() => loadFromElectron(game.dirPath, game.filename)}
                             >
                                 <span class="w-full truncate text-left">{game.filename}</span>
@@ -587,14 +587,14 @@
                             </button>
                             <button
                                 type="button"
-                                class="btn-icon btn-icon-sm preset-outlined-surface-500 shrink-0"
+                                class="btn-icon btn-icon-xs preset-outlined-surface-500 shrink-0"
                                 title={showInFolderLabel}
                                 aria-label={showInFolderLabel}
                                 onclick={() => showItemInFolder(game.dirPath, game.filename)}
                             ><FolderOpen size={14} /></button>
                             <button
                                 type="button"
-                                class="btn-icon btn-icon-sm preset-outlined-error-500 shrink-0"
+                                class="btn-icon btn-icon-xs preset-outlined-error-500 shrink-0"
                                 title={t("openPage.removeFromRecent")}
                                 aria-label={t("openPage.removeFromRecent")}
                                 onclick={() => handleRemoveRecent(game)}
@@ -612,7 +612,7 @@
                         <div class="flex items-center gap-2 w-full">
                             <button
                                 type="button"
-                                class="btn btn-sm preset-outlined-primary-500 flex-1 min-w-0 justify-between"
+                                class="btn btn-xs preset-outlined-primary-500 flex-1 min-w-0 justify-between"
                                 onclick={() => handleOpenDraft(draft.gameId)}
                             >
                                 <span class="truncate min-w-0">{draft.filename}</span>
@@ -620,14 +620,14 @@
                             </button>
                             <button
                                 type="button"
-                                class="btn-icon btn-icon-sm preset-outlined-surface-500 shrink-0"
+                                class="btn-icon btn-icon-xs preset-outlined-surface-500 shrink-0"
                                 title={t("openPage.downloadDraftTitle")}
                                 aria-label={t("openPage.downloadDraftAriaLabel")}
                                 onclick={() => handleDownloadDraft(draft.gameId, draft.filename)}
                             ><Download size={14} /></button>
                             <button
                                 type="button"
-                                class="btn-icon btn-icon-sm preset-outlined-error-500 shrink-0"
+                                class="btn-icon btn-icon-xs preset-outlined-error-500 shrink-0"
                                 title={t("openPage.deleteDraft")}
                                 aria-label={t("openPage.deleteDraft")}
                                 onclick={() => handleDeleteDraft(draft.gameId, draft.filename)}
@@ -763,7 +763,7 @@
                     {#if createLocalError}
                         <p class="text-error-500 text-sm whitespace-pre-wrap">{createLocalError}</p>
                         {#if $lastFailedGameBytes}
-                            <button type="button" class="btn btn-sm preset-tonal" onclick={() => goto(`${base}/edit`)}>
+                            <button type="button" class="btn btn-xs preset-tonal" onclick={() => goto(`${base}/edit`)}>
                                 {t("openPage.fixInSafeMode")}
                             </button>
                         {/if}

@@ -242,8 +242,8 @@
         {/if}
 
         <div class="flex items-center justify-end gap-2 px-4 py-2 border-t border-surface-200-800">
-            <button type="button" class="btn btn-sm preset-tonal" onclick={attemptClose}>{t("common.cancel")}</button>
-            <button type="button" class="btn btn-sm preset-filled-primary-500" onclick={handleApplyButton} disabled={applying || loading || isReadOnly}>{t("codeViewPanel.applyLabel")}</button>
+            <button type="button" class="btn btn-xs preset-tonal" onclick={attemptClose}>{t("common.cancel")}</button>
+            <button type="button" class="btn btn-xs preset-filled-primary-500" onclick={handleApplyButton} disabled={applying || loading || isReadOnly}>{t("codeViewPanel.applyLabel")}</button>
         </div>
     </div>
 {/if}

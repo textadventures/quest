@@ -57,7 +57,7 @@
          under a light-mode system. -->
     <div class="flex items-center gap-3 px-4 py-2 bg-primary-900 border-b border-primary-700 text-sm">
         <span class="flex-1">{t("updateBanner.availableMessage", { version: update.latestVersion })}</span>
-        <a href={update.url} target="_blank" rel="noopener" class="btn btn-sm preset-filled-primary-500">{t("updateBanner.downloadButton")}</a>
-        <button type="button" class="btn btn-sm preset-outlined-surface-500" onclick={handleDismiss}>{t("updateBanner.later")}</button>
+        <a href={update.url} target="_blank" rel="noopener" class="btn btn-xs preset-filled-primary-500">{t("updateBanner.downloadButton")}</a>
+        <button type="button" class="btn btn-xs preset-outlined-surface-500" onclick={handleDismiss}>{t("updateBanner.later")}</button>
     </div>
 {/if}

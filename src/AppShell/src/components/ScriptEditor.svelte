@@ -690,12 +690,12 @@
             <span class="flex-1">{t("scriptEditor.inheritedReadOnly")}</span>
             <button
                 type="button"
-                class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5 flex-shrink-0 not-italic"
+                class="btn btn-xs preset-outlined-primary-500 text-xs px-2 py-0.5 flex-shrink-0 not-italic"
                 onclick={onToggleCodeView}
             >{codeViewMode ? t("scriptEditor.visualView") : t("scriptEditor.codeView")}</button>
             <button
                 type="button"
-                class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5 flex-shrink-0 not-italic"
+                class="btn btn-xs preset-outlined-primary-500 text-xs px-2 py-0.5 flex-shrink-0 not-italic"
                 onclick={() => makeScriptEditable(elementKey, attribute)}
             >{t("common.makeEditableCopy")}</button>
         </div>
@@ -732,7 +732,7 @@
                             {#if docsUrl}
                                 <button
                                     type="button"
-                                    class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
+                                    class="btn btn-xs preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
                                     title={t("scriptEditor.helpForCommand", { command: script.displayString ?? "" })}
                                     aria-label={t("scriptEditor.helpForCommand", { command: script.displayString ?? "" })}
                                     onclick={() => openDocs(docsUrl)}
@@ -740,21 +740,21 @@
                             {/if}
                             <button
                                 type="button"
-                                class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
+                                class="btn btn-xs preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
                                 title={t("common.moveUp")}
                                 disabled={i === 0}
                                 onclick={() => onMoveUp(i)}
                             >↑</button>
                             <button
                                 type="button"
-                                class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
+                                class="btn btn-xs preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
                                 title={t("common.moveDown")}
                                 disabled={i === scripts().length - 1}
                                 onclick={() => onMoveDown(i)}
                             >↓</button>
                             <button
                                 type="button"
-                                class="btn btn-sm preset-tonal-error px-1 py-0 text-xs leading-none"
+                                class="btn btn-xs preset-tonal-error px-1 py-0 text-xs leading-none"
                                 title={t("common.delete")}
                                 onclick={() => onDelete(i)}
                             >×</button>
@@ -777,30 +777,30 @@
                 <div class="flex items-center gap-1 mb-1 px-1 py-1 bg-surface-100-900/60 rounded border border-surface-200-800 text-xs overflow-x-auto">
                     <button
                         type="button"
-                        class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
+                        class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
                         onclick={onCutSelected}
                     >{t("common.cut")}</button>
                     <button
                         type="button"
-                        class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
+                        class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
                         onclick={onCopySelected}
                     >{t("common.copy")}</button>
                     <button
                         type="button"
-                        class="btn btn-sm preset-tonal-error text-xs py-0.5 flex-shrink-0"
+                        class="btn btn-xs preset-tonal-error text-xs py-0.5 flex-shrink-0"
                         onclick={onDeleteSelected}
                     >{t("common.delete")}</button>
                     {#if sel.length === 1}
                         <span class="w-px h-4 bg-surface-300-700 mx-0.5 flex-shrink-0"></span>
                         <button
                             type="button"
-                            class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
+                            class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
                             disabled={sel[0] === 0}
                             onclick={onMoveUpSelected}
                         >↑ {t("common.moveUp")}</button>
                         <button
                             type="button"
-                            class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
+                            class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
                             disabled={sel[0] === scripts().length - 1}
                             onclick={onMoveDownSelected}
                         >↓ {t("common.moveDown")}</button>
@@ -810,7 +810,7 @@
                         {#if selDocsUrl}
                             <button
                                 type="button"
-                                class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
+                                class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
                                 onclick={() => openDocs(selDocsUrl)}
                             >{t("common.help")}</button>
                         {/if}
@@ -827,7 +827,7 @@
             {#if !codeViewMode && categories.length > 0}
                 <button
                     type="button"
-                    class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
+                    class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5"
                     onclick={() => (showAddModal = true)}
                 >+ {t("scriptEditor.addScript")}</button>
             {:else if !codeViewMode && isRoot}
@@ -836,14 +836,14 @@
             {#if $scriptClipboardHasContent && !codeViewMode}
                 <button
                     type="button"
-                    class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
+                    class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5"
                     onclick={onPaste}
                 >{t("common.paste")}</button>
             {/if}
             {#if isRoot}
                 <button
                     type="button"
-                    class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
+                    class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5"
                     onclick={onToggleCodeView}
                 >{codeViewMode ? t("scriptEditor.visualEditor") : t("scriptEditor.codeView")}</button>
             {/if}
@@ -1041,7 +1041,7 @@
              CoreEditorScriptsScripts.aslx's "addparametersbutton" controls. -->
         <button
             type="button"
-            class="btn btn-sm preset-outlined-primary-500 text-xs py-0 px-1.5 leading-none"
+            class="btn btn-xs preset-outlined-primary-500 text-xs py-0 px-1.5 leading-none"
             onclick={() => onSetParam(scriptIndex, ctrl.attribute!, "{}")}
         >+ {ctrl.caption}</button>
     {:else if ctrl.controlType === "textbox" && ctrl.isFunctionPicker}
@@ -1139,7 +1139,7 @@
                     />
                     <button
                         type="button"
-                        class="btn btn-sm preset-tonal-error px-1 py-0 text-xs leading-none"
+                        class="btn btn-xs preset-tonal-error px-1 py-0 text-xs leading-none"
                         title={t("scriptEditor.removeParameter")}
                         onclick={() => onRemoveParam(scriptIndex, ctrl.attribute!, item.key)}
                     >×</button>
@@ -1147,7 +1147,7 @@
             {/each}
             <button
                 type="button"
-                class="btn btn-sm preset-outlined-primary-500 text-xs py-0 px-1.5 leading-none"
+                class="btn btn-xs preset-outlined-primary-500 text-xs py-0 px-1.5 leading-none"
                 onclick={() => onAddParam(scriptIndex, ctrl.attribute!, "")}
             >+ {t("scriptEditor.addParam")}</button>
         </span>
@@ -1177,7 +1177,7 @@
                     />
                     <button
                         type="button"
-                        class="btn btn-sm preset-tonal-error px-1 py-0 text-xs leading-none"
+                        class="btn btn-xs preset-tonal-error px-1 py-0 text-xs leading-none"
                         title={t("scriptEditor.removeCase")}
                         onclick={() => onRemoveCase(scriptIndex, paramAttribute, item.key)}
                     >×</button>
@@ -1208,7 +1208,7 @@
             />
             <button
                 type="button"
-                class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5"
+                class="btn btn-xs preset-outlined-primary-500 text-xs px-2 py-0.5"
                 disabled={!(newCaseKeys[groupKey] ?? "").trim()}
                 onclick={() => onAddCase(scriptIndex, paramAttribute)}
             >{t("common.add")}</button>
@@ -1445,7 +1445,7 @@
                 <span class="text-surface-600-400 select-none">{t("scriptEditor.thenKeyword")}</span>
                 <button
                     type="button"
-                    class="btn btn-sm preset-tonal-error px-1 py-0 text-xs leading-none ml-auto"
+                    class="btn btn-xs preset-tonal-error px-1 py-0 text-xs leading-none ml-auto"
                     title={t("scriptEditor.removeElseIf")}
                     onclick={() => onRemoveElseIf(i, ei)}
                 >×</button>
@@ -1467,7 +1467,7 @@
                 <span class="text-surface-600-400 font-medium select-none">{t("scriptEditor.elseKeyword")}</span>
                 <button
                     type="button"
-                    class="btn btn-sm preset-tonal-error px-1 py-0 text-xs leading-none ml-auto"
+                    class="btn btn-xs preset-tonal-error px-1 py-0 text-xs leading-none ml-auto"
                     title={t("scriptEditor.removeElse")}
                     onclick={() => onRemoveElse(i)}
                 >×</button>
@@ -1487,13 +1487,13 @@
         <div class="flex gap-1 mt-1">
             <button
                 type="button"
-                class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
+                class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5"
                 onclick={() => onAddElseIf(i)}
             >+ {t("scriptEditor.addElseIf")}</button>
             {#if script.elseScripts === null || script.elseScripts === undefined}
                 <button
                     type="button"
-                    class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
+                    class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5"
                     onclick={() => onAddElse(i)}
                 >+ {t("scriptEditor.addElse")}</button>
             {/if}

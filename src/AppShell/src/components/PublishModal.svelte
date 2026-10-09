@@ -118,7 +118,7 @@
     <div class="card bg-surface-50-950 rounded-xl shadow-xl w-full max-w-[28rem] p-6 flex flex-col gap-4">
         <div class="flex items-center justify-between">
             <h2 class="text-base font-semibold">{t("publishModal.title")}</h2>
-            <button class="btn btn-sm preset-tonal" onclick={close}>{t("common.close")}</button>
+            <button class="btn btn-xs preset-tonal" onclick={close}>{t("common.close")}</button>
         </div>
 
         <p class="text-sm text-surface-600-400">{t("publishModal.description")}</p>
@@ -193,12 +193,12 @@
 
         <div class="flex items-center gap-3">
             {#if publishing}
-                <button type="button" class="btn btn-sm preset-tonal" onclick={close}>{t("common.cancel")}</button>
+                <button type="button" class="btn btn-xs preset-tonal" onclick={close}>{t("common.cancel")}</button>
                 <p class="publish-progress text-sm text-surface-600-400" role="status">{progressLabel($publishProgress)}</p>
             {:else}
                 <button
                     type="button"
-                    class="btn btn-sm preset-filled-primary-500"
+                    class="btn btn-xs preset-filled-primary-500"
                     onclick={handlePublish}
                 >{target === "quest" && $canPublishToServer ? t("publishModal.publishToServer") : t("publishModal.publishButton")}</button>
             {/if}

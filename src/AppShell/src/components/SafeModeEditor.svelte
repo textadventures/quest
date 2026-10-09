@@ -155,10 +155,10 @@
             <p class="text-xs text-surface-600-400">{t("safeMode.description")}</p>
         </div>
         <div class="flex items-center gap-2 shrink-0">
-            <button type="button" class="btn btn-sm preset-filled-primary-500" onclick={handleTryAgain} disabled={applying || loading}>
+            <button type="button" class="btn btn-xs preset-filled-primary-500" onclick={handleTryAgain} disabled={applying || loading}>
                 {applying ? t("safeMode.tryingAgain") : t("safeMode.tryAgainLabel")}
             </button>
-            <button type="button" class="btn btn-sm preset-tonal" onclick={() => goto(`${base}/open`)}>{t("editPage.backToHome")}</button>
+            <button type="button" class="btn btn-xs preset-tonal" onclick={() => goto(`${base}/open`)}>{t("editPage.backToHome")}</button>
         </div>
     </div>
 
@@ -206,7 +206,7 @@
 
         {#if currentFile && !currentFile.isMain}
             <div class="flex items-center justify-end gap-2 px-4 py-2 border-t border-surface-200-800">
-                <button type="button" class="btn btn-sm preset-filled-primary-500" onclick={handleSaveLibrary} disabled={saving || loading}>
+                <button type="button" class="btn btn-xs preset-filled-primary-500" onclick={handleSaveLibrary} disabled={saving || loading}>
                     {saving ? t("safeMode.saving") : t("safeMode.saveLabel")}
                 </button>
             </div>

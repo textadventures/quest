@@ -31,6 +31,17 @@
     }
 }
 
+/* Skeleton 5 sizes every <svg> directly inside a .btn/.btn-icon to the
+   button's text size, overriding the explicit size we give each Lucide icon
+   (which Skeleton 4 left alone). Defer to the icon's own width/height
+   attributes again. Deliberately unlayered, so it beats Skeleton's
+   utilities-layer rule. */
+.btn > svg[width],
+.btn-icon > svg[width] {
+    width: auto;
+    height: auto;
+}
+
 [data-scope='app-bar'] {
     background: light-dark(white, var(--color-surface-800));
 }

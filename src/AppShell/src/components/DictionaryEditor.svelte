@@ -68,7 +68,7 @@
             {/if}
             <button
                 type="button"
-                class="btn btn-sm preset-outlined-error-500 text-xs px-1.5 py-0.5 flex-shrink-0"
+                class="btn btn-xs preset-outlined-error-500 text-xs px-1.5 py-0.5 flex-shrink-0"
                 onclick={() => removeDictItem(elementKey, attribute, item.key)}
             >✕</button>
         </div>
@@ -94,7 +94,7 @@
         />
         <button
             type="button"
-            class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5 flex-shrink-0"
+            class="btn btn-xs preset-outlined-primary-500 text-xs px-2 py-0.5 flex-shrink-0"
             onclick={onAdd}
         >{t("common.add")}</button>
     </div>

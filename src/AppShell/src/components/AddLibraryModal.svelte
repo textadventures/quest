@@ -87,7 +87,7 @@
                 {/if}
                 <button
                     type="button"
-                    class="btn btn-sm preset-outlined-primary-500 text-xs px-1.5 py-0.5 whitespace-nowrap shrink-0"
+                    class="btn btn-xs preset-outlined-primary-500 text-xs px-1.5 py-0.5 whitespace-nowrap shrink-0"
                     onclick={() => inputEl.click()}
                     disabled={uploading}
                 >{uploading ? t("assetManager.uploading") : filename ? t("addLibraryModal.change") : t("assetManager.upload")}</button>
@@ -97,9 +97,9 @@
         </div>
 
         <div class="flex justify-end gap-2">
-            <button class="btn btn-sm preset-tonal" onclick={oncancel}>{t("common.cancel")}</button>
+            <button class="btn btn-xs preset-tonal" onclick={oncancel}>{t("common.cancel")}</button>
             <button
-                class="btn btn-sm preset-filled-primary-500"
+                class="btn btn-xs preset-filled-primary-500"
                 onclick={confirm}
                 disabled={!filename || uploading}
             >

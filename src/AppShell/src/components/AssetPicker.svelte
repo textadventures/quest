@@ -92,7 +92,7 @@
         <Combobox {value} {options} onchange={handleComboboxChange} {onEnter} class={className} wrapperClass="flex-1 min-w-0" />
         <button
             type="button"
-            class="btn btn-sm preset-outlined-primary-500 text-xs px-1.5 py-0.5 whitespace-nowrap shrink-0"
+            class="btn btn-xs preset-outlined-primary-500 text-xs px-1.5 py-0.5 whitespace-nowrap shrink-0"
             onclick={() => inputEl?.click()}
             disabled={uploading}
             title={t("assetPicker.uploadTitle")}

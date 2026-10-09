@@ -45,7 +45,7 @@
                 {#each state.choices as choice, i (choice.label)}
                     {@const isPrimary = i === state.choices.length - 1}
                     <button
-                        class={`btn btn-sm ${isPrimary ? (choice.danger ? "preset-filled-error-500" : "preset-filled-primary-500") : "preset-tonal"}`}
+                        class={`btn btn-xs ${isPrimary ? (choice.danger ? "preset-filled-error-500" : "preset-filled-primary-500") : "preset-tonal"}`}
                         onclick={() => respond(choice.value)}
                     >{choice.label}</button>
                 {/each}

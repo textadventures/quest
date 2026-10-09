@@ -153,7 +153,7 @@
                 {/if}
                 <button
                     type="button"
-                    class="btn btn-sm preset-outlined-error-500 px-1 py-0 text-xs leading-none flex-shrink-0"
+                    class="btn btn-xs preset-outlined-error-500 px-1 py-0 text-xs leading-none flex-shrink-0"
                     title={t("common.delete")}
                     aria-label={t("common.delete")}
                     onclick={() => void deleteExit(dir.exitKey!, dir.direction, dir.to, dir.lookOnly)}
@@ -215,7 +215,7 @@
                 <div class="flex items-center gap-3">
                     <button
                         type="button"
-                        class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
+                        class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5"
                         disabled={!createTo}
                         onclick={() => doCreate(openDirection!)}
                     >{t("exitsEditor.createExitButton")}</button>
@@ -235,7 +235,7 @@
             <div class="flex items-center gap-1 mb-2">
                 <button
                     type="button"
-                    class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
+                    class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5"
                     onclick={addExit}
                 >+ {t("elementAdders.exit")}</button>
             </div>
@@ -257,14 +257,14 @@
                         <div class="absolute right-1 top-1/2 -translate-y-1/2 flex gap-0.5 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:pointer-events-auto transition-opacity z-10">
                             <button
                                 type="button"
-                                class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none flex items-center"
+                                class="btn btn-xs preset-outlined-primary-500 px-1 py-0 text-xs leading-none flex items-center"
                                 title={t("exitsEditor.editExit")}
                                 aria-label={t("exitsEditor.editExit")}
                                 onclick={() => selectNode(exit.key)}
                             ><Pencil size={12} /></button>
                             <button
                                 type="button"
-                                class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
+                                class="btn btn-xs preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
                                 title={t("common.moveUp")}
                                 aria-label={t("common.moveUp")}
                                 disabled={i === 0}
@@ -272,7 +272,7 @@
                             >↑</button>
                             <button
                                 type="button"
-                                class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
+                                class="btn btn-xs preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
                                 title={t("common.moveDown")}
                                 aria-label={t("common.moveDown")}
                                 disabled={i === data.allExits.length - 1}
@@ -280,7 +280,7 @@
                             >↓</button>
                             <button
                                 type="button"
-                                class="btn btn-sm preset-tonal-error px-1 py-0 text-xs leading-none"
+                                class="btn btn-xs preset-tonal-error px-1 py-0 text-xs leading-none"
                                 title={t("common.delete")}
                                 aria-label={t("common.delete")}
                                 onclick={() => void deleteExit(exit.key, exit.alias, exit.to, exit.lookOnly)}

@@ -15,10 +15,10 @@
         <span class="flex-1">{t("backupBanner.message")}</span>
         <button
             type="button"
-            class="btn btn-sm preset-filled-primary-500"
+            class="btn btn-xs preset-filled-primary-500"
             onclick={handleBackup}
             disabled={backingUp}
         >{backingUp ? t("backupBanner.backingUp") : t("toolbar.backup")}</button>
-        <button type="button" class="btn btn-sm preset-tonal" onclick={dismissBackupBanner}>{t("common.dismiss")}</button>
+        <button type="button" class="btn btn-xs preset-tonal" onclick={dismissBackupBanner}>{t("common.dismiss")}</button>
     </div>
 {/if}

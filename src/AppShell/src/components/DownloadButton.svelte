@@ -42,7 +42,7 @@
         <div class="download-dropdown relative">
             <button
                 type="button"
-                class="btn btn-sm preset-outlined-primary-500 gap-1"
+                class="btn btn-xs preset-outlined-primary-500 gap-1"
                 onclick={() => (expanded = !expanded)}
                 title={links.primary ? t("downloadButton.titleWithLabel", { label: links.primary.label }) : t("downloadButton.titleGeneric")}
                 aria-label={t("downloadButton.titleGeneric")}
@@ -74,7 +74,7 @@
                 <p class="text-surface-500 text-xs">{versionLine}</p>
             {/if}
             {#if links.primary}
-                <a href={links.primary.url} class="btn btn-sm preset-outlined-primary-500">
+                <a href={links.primary.url} class="btn btn-xs preset-outlined-primary-500">
                     {links.primary.label}
                 </a>
             {/if}

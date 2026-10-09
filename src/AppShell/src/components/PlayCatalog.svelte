@@ -300,7 +300,7 @@
             {:else}
                 <div class="flex items-center gap-2">
                     <span class="text-sm text-surface-300 truncate max-w-[20ch]">{pickedFile.name}</span>
-                    <button type="button" class="btn btn-sm preset-outlined-surface-500" onclick={handleClearPicked} disabled={starting}>
+                    <button type="button" class="btn btn-xs preset-outlined-surface-500" onclick={handleClearPicked} disabled={starting}>
                         {t("playCatalog.change")}
                     </button>
                     <button type="button" class="btn preset-filled-primary-500" onclick={handleBrowserStart} disabled={starting}>

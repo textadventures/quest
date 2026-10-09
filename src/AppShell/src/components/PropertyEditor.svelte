@@ -443,7 +443,7 @@
             {#each ADVANCED_ADDERS as adder (adder.label)}
                 <button
                     type="button"
-                    class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
+                    class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5"
                     onclick={adder.action}
                 >+ {adder.label}</button>
             {/each}
@@ -546,7 +546,7 @@
             {#if Icon}
                 <button
                     type="button"
-                    class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5"
+                    class="btn btn-xs preset-outlined-primary-500 text-xs px-2 py-0.5"
                     title="{cmd.command} {cmd.info}"
                     aria-label={cmd.command}
                     onclick={() => activateTextProcessorCommand(cmd, attribute, controlType)}
@@ -558,7 +558,7 @@
             {#snippet trigger(toggle, open)}
                 <button
                     type="button"
-                    class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5 gap-1"
+                    class="btn btn-xs preset-outlined-primary-500 text-xs px-2 py-0.5 gap-1"
                     onclick={toggle}
                     aria-haspopup="menu"
                     aria-expanded={open}
@@ -568,7 +568,7 @@
         <a
             href={docsUrlForPath("/howto/text/text-processor/")}
             target="_blank"
-            class="btn btn-sm text-xs px-2 py-0.5 text-surface-600-400 ml-auto"
+            class="btn btn-xs text-xs px-2 py-0.5 text-surface-600-400 ml-auto"
             title={t("propertyEditor.textProcessorHelp")}
             aria-label={t("propertyEditor.textProcessorHelp")}
         ><LifeBuoy size={14} aria-hidden="true" /></a>
@@ -690,7 +690,7 @@
             />
             <button
                 type="button"
-                class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5 whitespace-nowrap"
+                class="btn btn-xs preset-outlined-primary-500 text-xs px-2 py-0.5 whitespace-nowrap"
                 onclick={() => onTextChange(ctrl.attribute!, "textbox", crypto.randomUUID())}
             >{t("propertyEditor.generateButton")}</button>
         </div>
@@ -750,14 +750,14 @@
                     {#if isObjectSource}
                         <button
                             type="button"
-                            class="btn btn-sm preset-outlined-primary-500 text-xs px-1.5 py-0.5 flex-shrink-0"
+                            class="btn btn-xs preset-outlined-primary-500 text-xs px-1.5 py-0.5 flex-shrink-0"
                             title={t("propertyEditor.goTo", { name: item.key })}
                             onclick={() => selectNode(item.key)}
                         ><ArrowRight size={11} /></button>
                     {/if}
                     <button
                         type="button"
-                        class="btn btn-sm preset-outlined-error-500 text-xs px-1.5 py-0.5 flex-shrink-0"
+                        class="btn btn-xs preset-outlined-error-500 text-xs px-1.5 py-0.5 flex-shrink-0"
                         onclick={() => $selectedKey && removeDictItem($selectedKey, dk, item.key)}
                     >✕</button>
                 </div>
@@ -805,7 +805,7 @@
                 />
                 <button
                     type="button"
-                    class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5 flex-shrink-0"
+                    class="btn btn-xs preset-outlined-primary-500 text-xs px-2 py-0.5 flex-shrink-0"
                     onclick={() => {
                         if ($selectedKey && newDictItems[dk]?.key?.trim()) {
                             addDictItem($selectedKey, dk, newDictItems[dk].key.trim(), newDictItems[dk].value ?? "");
@@ -816,7 +816,7 @@
                 {#if ctrl.controlType === "gamebookoptions"}
                     <button
                         type="button"
-                        class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5 flex-shrink-0 whitespace-nowrap"
+                        class="btn btn-xs preset-outlined-primary-500 text-xs px-2 py-0.5 flex-shrink-0 whitespace-nowrap"
                         onclick={() => { newPageModalFor = dk; }}
                     >+ {t("propertyEditor.newPageButton")}</button>
                 {/if}

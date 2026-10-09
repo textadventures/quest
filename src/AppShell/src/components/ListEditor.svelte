@@ -39,14 +39,14 @@
         <div class="flex justify-end gap-1 mb-1">
             <button
                 type="button"
-                class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5"
+                class="btn btn-xs preset-outlined-primary-500 text-xs px-2 py-0.5"
                 onclick={() => playWalkthrough(elementKey)}
                 disabled={items.length === 0}
                 title={t("listEditor.playTitle")}
             >▶ {t("listEditor.playButton")}</button>
             <button
                 type="button"
-                class="btn btn-sm preset-outlined-error-500 text-xs px-2 py-0.5"
+                class="btn btn-xs preset-outlined-error-500 text-xs px-2 py-0.5"
                 onclick={() => recordWalkthrough(elementKey)}
                 title={t("listEditor.recordTitle")}
             >● {t("listEditor.recordButton")}</button>
@@ -76,7 +76,7 @@
             {/if}
             <button
                 type="button"
-                class="btn btn-sm preset-outlined-error-500 text-xs px-1.5 py-0.5"
+                class="btn btn-xs preset-outlined-error-500 text-xs px-1.5 py-0.5"
                 title={t("common.delete")}
                 aria-label={t("common.delete")}
                 onclick={() => removeListItem(elementKey, attribute, item.key)}
@@ -95,7 +95,7 @@
         />
         <button
             type="button"
-            class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5"
+            class="btn btn-xs preset-outlined-primary-500 text-xs px-2 py-0.5"
             onclick={onAdd}
         >{t("common.add")}</button>
     </div>

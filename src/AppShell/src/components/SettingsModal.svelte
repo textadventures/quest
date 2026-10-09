@@ -64,7 +64,7 @@
         <div class="card bg-surface-50-950 rounded-xl shadow-xl w-full max-w-80 p-6 flex flex-col gap-4">
             <div class="flex items-center justify-between">
                 <h2 class="text-base font-semibold">{t("settingsModal.title")}</h2>
-                <button class="btn btn-sm preset-tonal" onclick={close}>{t("common.close")}</button>
+                <button class="btn btn-xs preset-tonal" onclick={close}>{t("common.close")}</button>
             </div>
 
             <div class="flex flex-col gap-1">

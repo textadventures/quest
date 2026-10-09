@@ -15,10 +15,10 @@
         <span class="flex-1">{t("libraryReloadBanner.message")}</span>
         <button
             type="button"
-            class="btn btn-sm preset-filled-primary-500"
+            class="btn btn-xs preset-filled-primary-500"
             onclick={handleReload}
             disabled={reloading}
         >{reloading ? t("common.reloading") : t("libraryReloadBanner.reloadButton")}</button>
-        <button type="button" class="btn btn-sm preset-tonal" onclick={dismissLibraryReloadBanner}>{t("common.dismiss")}</button>
+        <button type="button" class="btn btn-xs preset-tonal" onclick={dismissLibraryReloadBanner}>{t("common.dismiss")}</button>
     </div>
 {/if}

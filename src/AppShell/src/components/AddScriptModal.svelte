@@ -243,7 +243,7 @@
                         <button
                             type="button"
                             onclick={() => onShortcutClick(shortcut.createString)}
-                            class="btn btn-sm preset-outlined-primary-500 rounded-full px-3 py-0.5 text-xs font-medium flex-shrink-0 whitespace-nowrap"
+                            class="btn btn-xs preset-outlined-primary-500 rounded-full px-3 py-0.5 text-xs font-medium flex-shrink-0 whitespace-nowrap"
                         >{shortcut.label}</button>
                     {/each}
                 </div>
@@ -388,11 +388,11 @@
                     class="anchor text-xs mr-auto"
                 >{learnMoreParts[0]}<code class="font-mono">{scriptKeywordName(selectedCommand!.keyword)}</code>{learnMoreParts[1] ?? ""}</a>
             {/if}
-            <button type="button" onclick={onClose} class="btn btn-sm preset-tonal text-xs">{t("common.cancel")}</button>
+            <button type="button" onclick={onClose} class="btn btn-xs preset-tonal text-xs">{t("common.cancel")}</button>
             <button
                 type="button"
                 onclick={onOk}
-                class="btn btn-sm preset-filled-primary-500 text-xs"
+                class="btn btn-xs preset-filled-primary-500 text-xs"
                 disabled={!selectedCommand}
             >{t("common.ok")}</button>
         </div>
