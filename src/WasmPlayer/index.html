@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quest Viva</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <!-- Site-level link-preview tags. This page is static and only learns which game
+         it's playing after boot, so a shared ?id= link can't name the game — keep the
+         card small and generic: no og:image, and no og:url or canonical, which would
+         tell scrapers every game link *is* one page. -->
+    <meta name="description" content="Play and create text adventure games in your browser." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Quest Viva" />
+    <meta property="og:title" content="Quest Viva" />
+    <meta property="og:description" content="Play and create text adventure games in your browser." />
     <!-- Lets the preload scanner start the runtime loader before the parser has
          even reached wasm-player.js, which as the last script in this head only
          executes once jQuery/jQuery UI/paper.js have all downloaded *and* run.

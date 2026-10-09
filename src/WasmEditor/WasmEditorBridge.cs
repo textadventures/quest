@@ -782,6 +782,12 @@ public partial class WasmEditorBridge
     public static string GetGameName() => _controller?.GameName ?? string.Empty;
 
     [JSExport]
+    public static string GetGameDescription() => _controller?.GameDescription ?? string.Empty;
+
+    [JSExport]
+    public static string GetGameCover() => _controller?.GameCover ?? string.Empty;
+
+    [JSExport]
     public static bool IsGamebook() => _controller?.EditorStyle == EditorStyle.GameBook;
 
     // Play tab "Recently played" cover art for local files — entirely independent of
