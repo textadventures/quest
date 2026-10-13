@@ -556,6 +556,16 @@
             }
           }
         }
+        // Pronouns too, so "it" reaches an object outside the command's own scope, the
+        // same as its name would - e.g. GET IT for an object already held (issue #2543)
+        if (objtype = "object" and game.lastobjects <> null) {
+          foreach (obj, game.lastobjects) {
+            if (ListContains (secondaryscope, obj)) {
+              CompareNames (LCase(obj.article), value, obj, fullmatches, partialmatches)
+              CompareNames (LCase(obj.gender), value, obj, fullmatches, partialmatches)
+            }
+          }
+        }
       }
 
       if (ListCount(fullmatches) = 1) {
