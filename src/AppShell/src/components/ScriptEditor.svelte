@@ -67,6 +67,9 @@
         // Pre-loaded data for nested blocks (avoids extra WASM round-trips)
         initialData?: ScriptNodeData[] | null;
         depth?: number;
+        // False when the caller already draws its own nesting frame (a switch case's
+        // bordered box), so the nested editor doesn't add a second indent inside it.
+        indent?: boolean;
         isLocked?: boolean;
     }
 
@@ -76,6 +79,7 @@
         containerPath = "",
         initialData = null,
         depth = 0,
+        indent = true,
         isLocked = false,
     }: Props = $props();
 
@@ -662,7 +666,7 @@
         return `${base}/case/${paramAttr}/${encodeURIComponent(key)}`;
     }
 
-    const indentClass = $derived(depth > 0 ? "ml-4 border-l border-surface-300-700 pl-2" : "");
+    const indentClass = $derived(depth > 0 && indent ? "ml-4 border-l border-surface-300-700 pl-2" : "");
 
     // Null for commands with no reference entry (syntax like `=` and `//`), which
     // is what hides the help affordance for them rather than linking to a 404.
@@ -671,13 +675,21 @@
     }
 
     // Right padding reserving room for the hover action cluster, so it never
-    // overlaps the row's own controls. pr-16 (64px) is an exact fit for the
-    // original three buttons; the help button adds ~19px, hence pr-24 (96px)
-    // when it's present. pointer-coarse drops both to pr-2 - the whole cluster
+    // overlaps the row's own controls. 4rem (64px) is an exact fit for the
+    // original three buttons; the help button adds ~19px, hence 6rem (96px)
+    // when it's present. pointer-coarse drops both to 0.5rem - the whole cluster
     // is hover-only, so there's nothing to reserve space for on touch.
+    // Set as --row-actions-pad so full-width nested blocks below the first line
+    // (nestedBlockWidth) can reclaim it: the cluster only sits at the top-right,
+    // and reserving it at every nesting level squeezed deep nesting (#2544).
     function rowActionsPadding(script: ScriptNodeData): string {
-        return docsUrlFor(script) ? "pr-24" : "pr-16";
+        return (docsUrlFor(script) ? "[--row-actions-pad:6rem]" : "[--row-actions-pad:4rem]")
+            + " pointer-coarse:[--row-actions-pad:0.5rem]";
     }
+
+    // Widens a full-width nested block (script/case editor) back out over the
+    // row's reserved action-cluster padding, leaving the same 0.5rem inset as the left.
+    const nestedBlockWidth = "shrink-0 w-[calc(100%_+_var(--row-actions-pad,0.5rem)_-_0.5rem)]";
 
     function openDocs(url: string) {
         window.open(url, "_blank", "noopener,noreferrer");
@@ -860,7 +872,7 @@
 </div>
 
 {#snippet normalBlock(script: ScriptNodeData, i: number)}
-    <div class="px-2 py-1 {rowActionsPadding(script)} pointer-coarse:pr-2 flex flex-wrap items-center gap-x-1 gap-y-0.5 text-xs">
+    <div class="px-2 py-1 {rowActionsPadding(script)} pr-(--row-actions-pad) flex flex-wrap items-center gap-x-1 gap-y-0.5 text-xs">
         {#each script.controls ?? [] as ctrl, ci (ci)}
             {@render inlineControl(ctrl, i, script.controls ?? [], ci)}
         {/each}
@@ -882,7 +894,7 @@
         {/if}
     {:else if ctrl.controlType === "script" && ctrl.attribute !== null}
         <!-- Nested script block for commands like for/while/foreach/firsttime -->
-        <div class="w-full mt-0.5">
+        <div class="{nestedBlockWidth} mt-0.5">
             {#if ctrl.caption}
                 <span class="text-surface-600-400 text-xs italic">{ctrl.caption}:</span>
             {/if}
@@ -1158,7 +1170,7 @@
     {@const paramAttribute = ctrl.attribute!}
     {@const groupKey = caseGroupKey(scriptIndex, paramAttribute)}
     {@const items = parseListItems(ctrl.value)}
-    <div class="w-full flex flex-col gap-1 mt-0.5">
+    <div class="{nestedBlockWidth} flex flex-col gap-1 mt-0.5">
         {#each items as item (item.key)}
             {@const expanded = expandedCases.has(`${groupKey}:${item.key}`)}
             <div class="border border-surface-200-800 rounded">
@@ -1183,13 +1195,14 @@
                     >×</button>
                 </div>
                 {#if expanded}
-                    <div class="pl-2 pb-1 border-t border-surface-100-900">
+                    <div class="px-1 pt-1 pb-1 border-t border-surface-100-900">
                         <ScriptEditor
                             {elementKey}
                             {attribute}
                             containerPath={casePath(scriptIndex, paramAttribute, item.key)}
                             initialData={scriptsForCase(ctrl, item.key)}
                             depth={depth + 1}
+                            indent={false}
                         />
                     </div>
                 {/if}
@@ -1406,9 +1419,9 @@
 {/snippet}
 
 {#snippet ifBlock(script: ScriptNodeData, i: number)}
-    <div class="px-2 py-1 {rowActionsPadding(script)} pointer-coarse:pr-2 text-xs">
-        <!-- If condition -->
-        <div class="flex items-center gap-1 flex-wrap">
+    <div class="px-2 py-1 text-xs {rowActionsPadding(script)}">
+        <!-- If condition - the only line the hover action cluster can overlap -->
+        <div class="flex items-center gap-1 flex-wrap pr-[calc(var(--row-actions-pad)_-_0.5rem)]">
             <span class="text-surface-600-400 font-medium select-none">{t("scriptEditor.ifKeyword")}</span>
             {@render expressionField(
                 script.expression ?? "",

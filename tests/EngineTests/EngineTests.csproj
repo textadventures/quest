@@ -76,6 +76,9 @@
         <None Update="sceneryinventorytest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="pronounscopetest.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="statusattributetest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
