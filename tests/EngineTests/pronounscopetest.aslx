@@ -1,0 +1,51 @@
+<asl version="600">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="pronounscopetest"/>
+  <object name="room">
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <!-- Examining it moves it out of sight, so "it" must then stop resolving to it -->
+    <object name="rock">
+      <inherit name="editor_object"/>
+      <take />
+      <look type="script">
+        msg ("The rock crumbles away.")
+        MoveObject (this, elsewhere)
+      </look>
+    </object>
+    <object name="stick">
+      <inherit name="editor_object"/>
+      <take />
+      <look>A short stick.</look>
+    </object>
+  </object>
+  <object name="elsewhere"/>
+
+  <walkthrough name="verify">
+    <steps>
+      <![CDATA[
+      x stick
+      get it
+      assert:stick.parent = player
+      assert:game.unresolvedcommand = null
+      get it
+      assert:game.unresolvedcommand = null
+      drop it
+      assert:stick.parent = room
+      get it
+      assert:stick.parent = player
+      get it
+      assert:game.unresolvedcommand = null
+      x rock
+      assert:rock.parent = elsewhere
+      assert:ListContains(game.lastobjects, rock)
+      get it
+      assert:game.unresolvedcommand <> null
+      x it
+      assert:game.unresolvedcommand <> null
+      ]]>
+    </steps>
+  </walkthrough>
+</asl>
