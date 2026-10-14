@@ -16,7 +16,7 @@
     "dist": "npm run build && node scripts/dist.mjs"
   },
   "devDependencies": {
-    "@types/node": "^24.19.1",
+    "@types/node": "^24.19.2",
     "electron": "^44.5.1",
     "electron-builder": "^26.15.3",
     "typescript": "^7.0.2"
