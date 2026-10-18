@@ -1,5 +1,13 @@
 # Changelog
 
+## [6.0.2](https://github.com/textadventures/quest/compare/v6.0.1...v6.0.2) (2026-10-13)
+
+
+### Bug Fixes
+
+* **Editor:** stop nested script blocks squeezing at each level ([#2546](https://github.com/textadventures/quest/issues/2546)) ([4d59f56](https://github.com/textadventures/quest/commit/4d59f56cb3e177d34338ddc959af2fe4368568af))
+* **Player:** let pronouns resolve to visible objects outside a command's scope ([#2545](https://github.com/textadventures/quest/issues/2545)) ([a4fc616](https://github.com/textadventures/quest/commit/a4fc6168acf7b270d3450bba1cee5b405230a333))
+
 ## [6.0.1](https://github.com/textadventures/quest/compare/v6.0.0...v6.0.1) (2026-10-08)
 
 
