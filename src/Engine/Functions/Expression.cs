@@ -54,6 +54,29 @@ public class Expression<T> : ExpressionBase, IFunction<T>
     }
 }
 
+// An expression that is only parsed when it's first run, so a malformed one that is never used doesn't stop
+// the game loading
+public class DeferredExpression<T>(string expression, ScriptContext scriptContext) : IFunction<T>
+{
+    private Expression<T>? _expression;
+
+    public Task<T> ExecuteAsync(Context c)
+    {
+        _expression ??= new Expression<T>(expression, scriptContext);
+        return _expression.ExecuteAsync(c);
+    }
+
+    public string Save()
+    {
+        return expression;
+    }
+
+    public IFunction<T> Clone()
+    {
+        return new DeferredExpression<T>(expression, scriptContext);
+    }
+}
+
 public class ExpressionDynamic : ExpressionBase, IFunctionDynamic
 {
     private readonly IDynamicExpressionEvaluator _dynamicExpressionEvaluator;

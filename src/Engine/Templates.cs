@@ -150,8 +150,10 @@ public partial class Template
 
         if (!_worldModel.EditMode)
         {
+            // Deferred as Quest 5.0 and 5.1 didn't check a template's quotes at load, so some games published
+            // with them ship a malformed template
             template.Fields[FieldDefinitions.Function] =
-                new Expression<string>(expression, new ScriptContext(_worldModel));
+                new DeferredExpression<string>(expression, new ScriptContext(_worldModel));
         }
         else
         {

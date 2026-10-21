@@ -52,6 +52,9 @@
         <None Update="duplicatetemplatetest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="malformeddynamictemplatetest.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="v500test.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
