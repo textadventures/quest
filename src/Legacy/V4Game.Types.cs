@@ -24,6 +24,11 @@ public partial class V4Game
         return result;
     }
 
+    private static T[] CopyAll<T>(T[] source, Func<T, T> copy) where T : class
+    {
+        return source?.Select(item => item == null ? null : copy(item)).ToArray();
+    }
+
     private class DefineBlock
     {
         public int EndLine;
@@ -89,12 +94,16 @@ public partial class V4Game
     {
         public string PropertyName;
         public string PropertyValue;
+
+        public PropertyType Copy() => (PropertyType)MemberwiseClone();
     }
 
     internal class ActionType
     {
         public string ActionName;
         public string Script;
+
+        public ActionType Copy() => (ActionType)MemberwiseClone();
     }
 
     internal class UseDataType
@@ -102,6 +111,8 @@ public partial class V4Game
         public string UseObject;
         public string UseScript;
         public UseType UseType;
+
+        public UseDataType Copy() => (UseDataType)MemberwiseClone();
     }
 
     internal class GiveDataType
@@ -109,6 +120,8 @@ public partial class V4Game
         public string GiveObject;
         public string GiveScript;
         public GiveType GiveType;
+
+        public GiveDataType Copy() => (GiveDataType)MemberwiseClone();
     }
 
     private class PropertiesActions
@@ -150,12 +163,16 @@ public partial class V4Game
     {
         public string CommandScript;
         public string CommandText;
+
+        public UserDefinedCommandType Copy() => (UserDefinedCommandType)MemberwiseClone();
     }
 
     internal class TextAction
     {
         public string Data;
         public TextActionType Type;
+
+        public TextAction Copy() => (TextAction)MemberwiseClone();
     }
 
     internal enum TextActionType
@@ -170,6 +187,8 @@ public partial class V4Game
     {
         public string Script;
         public string Text;
+
+        public ScriptText Copy() => (ScriptText)MemberwiseClone();
     }
 
     internal class PlaceType
@@ -177,6 +196,8 @@ public partial class V4Game
         public string PlaceName;
         public string Prefix;
         public string Script;
+
+        public PlaceType Copy() => (PlaceType)MemberwiseClone();
     }
 
     internal class RoomType
@@ -209,6 +230,29 @@ public partial class V4Game
         public TextAction Up = new();
         public ScriptText[] Use;
         public TextAction West = new();
+
+        // VB6 Quest's RoomType was a value type, so assigning one copied it. Exits stays shared, as it was a
+        // class there too.
+        public RoomType Copy()
+        {
+            var copy = (RoomType)MemberwiseClone();
+            copy.Commands = CopyAll(Commands, c => c.Copy());
+            copy.Description = Description?.Copy();
+            copy.Down = Down?.Copy();
+            copy.East = East?.Copy();
+            copy.North = North?.Copy();
+            copy.NorthEast = NorthEast?.Copy();
+            copy.NorthWest = NorthWest?.Copy();
+            copy.Out = Out?.Copy();
+            copy.Places = CopyAll(Places, p => p.Copy());
+            copy.South = South?.Copy();
+            copy.SouthEast = SouthEast?.Copy();
+            copy.SouthWest = SouthWest?.Copy();
+            copy.Up = Up?.Copy();
+            copy.Use = CopyAll(Use, u => u.Copy());
+            copy.West = West?.Copy();
+            return copy;
+        }
     }
 
     internal class ObjectType
@@ -256,6 +300,25 @@ public partial class V4Game
         public UseDataType[] UseData;
         public string UseOnAnything;
         public bool Visible;
+
+        // VB6 Quest's ObjectType was a value type, so assigning one copied it
+        public ObjectType Copy()
+        {
+            var copy = (ObjectType)MemberwiseClone();
+            copy.Actions = CopyAll(Actions, a => a.Copy());
+            copy.AddScript = AddScript?.Copy();
+            copy.AltNames = CopyAll(AltNames, n => n);
+            copy.CloseScript = CloseScript?.Copy();
+            copy.GiveData = CopyAll(GiveData, g => g.Copy());
+            copy.OpenScript = OpenScript?.Copy();
+            copy.Properties = CopyAll(Properties, p => p.Copy());
+            copy.RemoveScript = RemoveScript?.Copy();
+            copy.Speak = Speak?.Copy();
+            copy.Take = Take?.Copy();
+            copy.TypesIncluded = CopyAll(TypesIncluded, t => t);
+            copy.UseData = CopyAll(UseData, u => u.Copy());
+            return copy;
+        }
     }
 
     private class ChangeType
