@@ -1,0 +1,19 @@
+<asl version="580">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <game name="Culture numbers test">
+    <start type="script">
+      x = 100.4
+      msg (x)
+      msg ("Concat: " + x)
+    </start>
+  </game>
+
+  <object name="room">
+    <object name="player">
+    </object>
+  </object>
+
+</asl>

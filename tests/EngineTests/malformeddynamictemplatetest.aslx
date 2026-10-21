@@ -1,0 +1,5 @@
+<asl version="550">
+  <dynamictemplate name="BrokenTemplate">"No puedes tirar de eso"."</dynamictemplate>
+  <dynamictemplate name="GoodTemplate">"You said " + text</dynamictemplate>
+  <game name="malformeddynamictemplatetest"/>
+</asl>

@@ -1,0 +1,46 @@
+<asl version="580">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <game name="Undo after command test">
+    <count type="int">0</count>
+  </game>
+
+  <command name="first">
+    <pattern>first</pattern>
+    <script>
+      game.count = 1
+      msg ("Count is now " + game.count)
+    </script>
+  </command>
+
+  <command name="second">
+    <pattern>second</pattern>
+    <script>
+      game.count = 2
+      msg ("Count is now " + game.count)
+    </script>
+  </command>
+
+  <command name="third">
+    <pattern>third</pattern>
+    <script>
+      game.count = 3
+      msg ("Count is now " + game.count)
+    </script>
+  </command>
+
+  <command name="showcount">
+    <pattern>showcount</pattern>
+    <script>
+      msg ("Final count: " + game.count)
+    </script>
+  </command>
+
+  <object name="room">
+    <object name="player">
+    </object>
+  </object>
+
+</asl>
