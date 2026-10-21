@@ -81,6 +81,57 @@ public class EditorControllerRoomsAndPagesTests
         controller.Uninitialise();
     }
 
+    // Issue #2392: the tree node for a new room was emitted before editor_room was added to it,
+    // so it kept the "object" node type (wrong icon, no room-only "Add" options) until a rebuild.
+    [TestMethod]
+    public async Task TestCreateNewRoom_TreeNodeHasRoomType()
+    {
+        var controller = await LoadTemplateController("English");
+        var nodeTypes = TrackNodeTypes(controller);
+
+        controller.CreateNewRoom("aRoom", null, null);
+
+        Assert.AreEqual("room", nodeTypes["aRoom"]);
+
+        controller.Uninitialise();
+    }
+
+    [TestMethod]
+    public async Task TestCreateNewPage_TreeNodeHasPageType()
+    {
+        var controller = await LoadTemplateController("English");
+        var nodeTypes = TrackNodeTypes(controller);
+
+        controller.CreateNewPage("aPage", null, null);
+
+        Assert.AreEqual("page", nodeTypes["aPage"]);
+
+        controller.Uninitialise();
+    }
+
+    [TestMethod]
+    public async Task TestCreateNewRoom_RedoRestoresRoomType()
+    {
+        var controller = await LoadTemplateController("English");
+        var nodeTypes = TrackNodeTypes(controller);
+
+        controller.CreateNewRoom("aRoom", null, null);
+        await controller.Undo();
+        nodeTypes.Clear();
+        controller.Redo();
+
+        Assert.AreEqual("room", nodeTypes["aRoom"]);
+
+        controller.Uninitialise();
+    }
+
+    private static Dictionary<string, string?> TrackNodeTypes(EditorController controller)
+    {
+        var nodeTypes = new Dictionary<string, string?>();
+        controller.AddedNode += (_, e) => nodeTypes[e.Key] = e.NodeType;
+        return nodeTypes;
+    }
+
     private static async Task<EditorController> LoadTemplateController(string templateName)
     {
         var templates = EditorController.GetAvailableTemplates();
