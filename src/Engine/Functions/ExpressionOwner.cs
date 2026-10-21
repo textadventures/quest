@@ -588,7 +588,7 @@ internal class ExpressionOwner(WorldModel worldModel)
     public string? ToString(object? obj)
     {
         ArgumentNullException.ThrowIfNull(obj);
-        return obj.ToString();
+        return Convert.ToString(obj, CultureInfo.InvariantCulture);
     }
 
     public bool IsInt(string? number)
