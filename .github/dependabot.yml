@@ -59,9 +59,8 @@ updates:
     commit-message:
       prefix: "chore"
 
-  # electron and electron-builder get their own group so that
-  # dependabot-automerge.yml can leave them for a human: electron-builder is
-  # the release-signing path, and a bug there has broken a release before.
+  # electron and electron-builder get their own group so that a major bump of
+  # either arrives as its own PR rather than inside the weekly batch.
   - package-ecosystem: "npm"
     directory: "/src/ElectronApp"
     schedule:
