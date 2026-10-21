@@ -15,7 +15,7 @@ charset = utf-8-bom
 dotnet_diagnostic.IDE1006.severity = warning
 
 # Code style rules, also enforced at build time. Most can be auto-fixed with e.g.
-#   dotnet format style QuestViva.sln --diagnostics IDE0028 IDE1005
+#   dotnet format style QuestViva.sln --diagnostics IDE0300 IDE1005
 # Raise events with ?.Invoke rather than an explicit null check
 csharp_style_conditional_delegate_call = true
 dotnet_diagnostic.IDE1005.severity = warning
@@ -25,7 +25,11 @@ dotnet_diagnostic.IDE1005.severity = warning
 # produce a different runtime type, which would break code that casts it back and mutates it.
 dotnet_style_collection_initializer = true
 dotnet_style_prefer_collection_expression = when_types_exactly_match
-dotnet_diagnostic.IDE0028.severity = warning
+# Off (it was enforced until .NET 11): C# 15's collection expression arguments make it also flag
+# constructor calls with arguments, rewriting e.g. `new Parameters(new Dictionary<string, string>
+# {{"text", text}})` to `[with(new Dictionary<string, string> {{"text", text}})]`, which hides
+# the type being created. There's no option to exclude just those.
+dotnet_diagnostic.IDE0028.severity = none
 dotnet_diagnostic.IDE0300.severity = warning
 dotnet_diagnostic.IDE0301.severity = warning
 dotnet_diagnostic.IDE0302.severity = warning

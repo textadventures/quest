@@ -27,7 +27,8 @@ jobs:
       - name: Set up .NET
         uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: '11.0.x'
+          dotnet-quality: 'preview'
 
       - name: Install wasm-tools workload
         run: dotnet workload install wasm-tools
@@ -58,7 +59,7 @@ jobs:
       # at pack time) rather than hand-maintaining a version in a checked-in file.
       - name: Generate package.json for the AppBundle
         run: |
-          cat > src/WasmPlayer/bin/Release/net10.0/browser-wasm/AppBundle/package.json <<EOF
+          cat > src/WasmPlayer/bin/Release/net11.0/browser-wasm/AppBundle/package.json <<EOF
           {
             "name": "@textadventures/quest-viva-wasmplayer",
             "version": "${{ env.VERSION }}",
@@ -89,6 +90,6 @@ jobs:
 
       - name: Publish to npm
         run: npm publish --access public --tag ${{ env.DIST_TAG }}
-        working-directory: src/WasmPlayer/bin/Release/net10.0/browser-wasm/AppBundle
+        working-directory: src/WasmPlayer/bin/Release/net11.0/browser-wasm/AppBundle
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

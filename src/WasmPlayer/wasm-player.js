@@ -37,8 +37,8 @@ const wasmPlayerScriptUrl = document.currentScript?.src;
 //
 // For _framework/ specifically the version is also what makes `immutable`
 // *safe*. None of those filenames are content-hashed and the build output isn't
-// byte-reproducible, so a browser holding dotnet.boot.js (the manifest of
-// per-file SHA-256 hashes) from one deploy alongside a binary from the next
+// byte-reproducible, so a browser holding the boot manifest of per-file
+// SHA-256 hashes (inlined into dotnet.js) from one deploy alongside a binary from the next
 // gets an SRI mismatch and the resource is blocked. Stamping manifest and
 // binaries with the same version means they can never come from different
 // deploys — which is what the blanket `Cache-Control: no-cache` on
@@ -546,8 +546,8 @@ function loadRuntimeBuilder() {
     // (the CDN-linked single-file export) — see wasmPlayerScriptUrl's comment.
     // The version query is load-bearing beyond its own cache key too: the
     // loader reads it back off its own import.meta.url and propagates it to
-    // the JS modules it imports and to dotnet.boot.js (`modulesUniqueQuery`),
-    // so those need no further handling in withResourceLoader below.
+    // the JS modules it imports (`modulesUniqueQuery`), so those need no
+    // further handling in withResourceLoader below.
     const dotnetJsUrl = versioned(wasmPlayerScriptUrl
         ? new URL('_framework/dotnet.js', wasmPlayerScriptUrl).href
         : './_framework/dotnet.js');

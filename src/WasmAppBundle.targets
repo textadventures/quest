@@ -10,12 +10,9 @@
          directory, so this recreates the AppBundle at its old path from the SDK's output. -->
     <PropertyGroup>
         <QuestAppBundleDir>$(MSBuildProjectDirectory)\bin\$(Configuration)\$(TargetFramework)\browser-wasm\AppBundle\</QuestAppBundleDir>
-        <!-- Keep the AppBundle's _framework/ as it was: stable file names (cache busting is the
-             ?v= query in wasm-player.js and AppShell's wasm.ts, which lets _framework/* be served
-             `immutable`), and a separate dotnet.boot.js, which AppShell's HTML zip export reads
-             to enumerate _framework/. -->
+        <!-- Keep the AppBundle's _framework/ file names stable: cache busting is the ?v= query in
+             wasm-player.js and AppShell's wasm.ts, which lets _framework/* be served `immutable`. -->
         <WasmFingerprintAssets>false</WasmFingerprintAssets>
-        <WasmInlineBootConfig>false</WasmInlineBootConfig>
         <!-- Precompressed .gz/.br copies are for ASP.NET Core's static file middleware; the
              AppBundle is served by plain static hosts and Electron's loopback server. -->
         <CompressionEnabled>false</CompressionEnabled>
@@ -25,13 +22,18 @@
     </PropertyGroup>
 
     <!-- `dotnet build`: untrimmed framework, for the dev servers. Skipped during `dotnet publish`'s
-         own build phase so the publish below is the only thing writing the shipped AppBundle. -->
+         own build phase so the publish below is the only thing writing the shipped AppBundle.
+         A build doesn't lay _framework/ out on disk (since .NET 11 only dotnet.js reaches
+         bin/wwwroot/; the rest stays where it was generated under obj/ and the SDK's own dev
+         server maps it via the static web assets manifest), so copy from those same
+         StaticWebAsset items: Identity is the file, RelativePath where it's served. -->
     <Target Name="CopyFrameworkToAppBundleAfterBuild" AfterTargets="Build" Condition="'$(_IsPublishing)' != 'true'">
         <ItemGroup>
-            <_AppBundleFramework Include="$(OutDir)wwwroot\_framework\**\*"/>
+            <_AppBundleFramework Include="@(StaticWebAsset)" Condition="$([System.String]::Copy('%(StaticWebAsset.RelativePath)').StartsWith('_framework/')) and '%(StaticWebAsset.AssetKind)' != 'Publish'"/>
         </ItemGroup>
+        <Error Condition="'@(_AppBundleFramework)' == ''" Text="No _framework/ static web assets found to copy into the AppBundle."/>
         <RemoveDir Directories="$(QuestAppBundleDir)_framework"/>
-        <Copy SourceFiles="@(_AppBundleFramework)" DestinationFiles="@(_AppBundleFramework->'$(QuestAppBundleDir)_framework\%(RecursiveDir)%(Filename)%(Extension)')"/>
+        <Copy SourceFiles="@(_AppBundleFramework)" DestinationFiles="@(_AppBundleFramework->'$(QuestAppBundleDir)%(RelativePath)')"/>
     </Target>
 
     <!-- `dotnet publish`: the IL-trimmed framework that ships. -->

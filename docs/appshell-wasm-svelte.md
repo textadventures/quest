@@ -33,7 +33,7 @@ All data crossing the JS/WASM boundary is JSON. The Svelte layer calls `[JSExpor
 
 ## WasmEditor project
 
-`src/WasmEditor/` targets `net10.0` with `<RuntimeIdentifier>browser-wasm</RuntimeIdentifier>`. It depends on `EditorCore` and `Common`.
+`src/WasmEditor/` targets `net11.0` with `<RuntimeIdentifier>browser-wasm</RuntimeIdentifier>`. It depends on `EditorCore` and `Common`.
 
 ### Bridge API (`WasmEditorBridge.cs`)
 
@@ -89,7 +89,7 @@ Tree nodes are collected during `Initialise` by subscribing to `EditorController
 dotnet build src/WasmEditor --configuration Debug
 ```
 
-Output lands in `src/WasmEditor/bin/Debug/net10.0/browser-wasm/AppBundle/`. The Vite dev server serves this directory at `/AppBundle/` (see `vite.config.ts`). Set `WASM_CONFIG=Release` to serve the AOT-compiled build instead (e.g. for profiling).
+Output lands in `src/WasmEditor/bin/Debug/net11.0/browser-wasm/AppBundle/`. The Vite dev server serves this directory at `/AppBundle/` (see `vite.config.ts`). Set `WASM_CONFIG=Release` to serve the AOT-compiled build instead (e.g. for profiling).
 
 ---
 
