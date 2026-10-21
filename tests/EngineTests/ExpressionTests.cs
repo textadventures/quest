@@ -97,6 +97,22 @@ public class ExpressionTests
         }
     }
 
+    [TestMethod]
+    public void ExpressionResultFormatsDoublesInvariantly()
+    {
+        var original = CultureInfo.CurrentCulture;
+        try
+        {
+            CultureInfo.CurrentCulture = new CultureInfo("sv-SE");
+            Utility.ExpressionResultToString(100.4).ShouldBe("100.4");
+            Utility.ExpressionResultToString(-10.5).ShouldBe("-10.5");
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = original;
+        }
+    }
+
     private Task<T> RunExpression<T>(string expression)
     {
         var expr = new Expression<T>(expression, _scriptContext);

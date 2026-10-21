@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -434,7 +435,8 @@ public static partial class Utility
                 "Cannot convert this value to a string because it has not been set - check whether an attribute or variable has been assigned a value before using it.");
         }
 
-        return value.ToString()!;
+        // Invariant so msg (100.4) prints "100.4" whatever the host's locale, matching string concatenation
+        return Convert.ToString(value, CultureInfo.InvariantCulture)!;
     }
 
     public static string[] ListSplit(string value)
