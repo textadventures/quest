@@ -130,4 +130,25 @@ public class V4GameTests
             CultureInfo.CurrentCulture = original;
         }
     }
+
+    [TestMethod]
+    [DataRow("sv-SE")]
+    [DataRow("en-US")]
+    public async Task TestNegativeNumbersUnderCultureWithUnicodeMinusSign(string culture)
+    {
+        // sv-SE's negative sign is U+2212, which Conversion.Val reads back as 0
+        var original = CultureInfo.CurrentCulture;
+        try
+        {
+            CultureInfo.CurrentCulture = new CultureInfo(culture);
+            _player.ClearBuffer();
+            await _game.SendCommand("negcalc");
+            var output = Enumerable.Range(0, _player.BufferLength).Select(_player.Buffer).Where(line => line.StartsWith("Negative:")).ToList();
+            CollectionAssert.AreEqual(new[] { "Negative: -10" }, output);
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = original;
+        }
+    }
 }
