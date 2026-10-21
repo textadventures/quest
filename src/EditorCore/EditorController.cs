@@ -426,6 +426,15 @@ public sealed class EditorController : IDisposable
     {
         if (_initialised)
         {
+            // Raised when an element's inherited types change, which can change its node type
+            // (e.g. CreateNewRoom adds editor_room after the object's AddedNode has already fired
+            // as a plain "object"), so refresh the node in place, as for "editorfolder" above.
+            var name = e.Element.Name;
+            if (name != null && WorldModel.Elements.ContainsKey(name))
+            {
+                AddElementToTree(e.Element);
+            }
+
             ElementRefreshed?.Invoke(this, new ElementRefreshedEventArgs(e.Element.Name));
         }
     }
