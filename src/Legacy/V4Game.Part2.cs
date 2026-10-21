@@ -202,7 +202,7 @@ public partial class V4Game
         // Decrypt file
         for (int i = 1, loopTo = Strings.Len(fileData); i <= loopTo; i++)
         {
-            decryptedFile.Append(Strings.Chr(255 - Strings.Asc(Strings.Mid(fileData, i, 1))));
+            decryptedFile.Append(InvariantStrings.Chr(255 - InvariantStrings.Asc(Strings.Mid(fileData, i, 1))));
         }
 
         _fileData = decryptedFile.ToString();
@@ -2632,7 +2632,7 @@ public partial class V4Game
 
         if (arrayIndex > _stringVariable[id].VariableUBound)
         {
-            LogASLError("Array index of '" + name + "[" + Strings.Trim(Conversion.Str(arrayIndex)) + "]' too big.",
+            LogASLError("Array index of '" + name + "[" + Strings.Trim(InvariantStrings.Str(arrayIndex)) + "]' too big.",
                 LogType.WarningError);
             return "";
         }
@@ -2954,7 +2954,7 @@ public partial class V4Game
         var loopTo = _numCollectables;
         for (i = 1; i <= loopTo; i++)
         {
-            lines.Add(_collectables[i].Name + ";" + Conversion.Str(_collectables[i].Value));
+            lines.Add(_collectables[i].Name + ";" + InvariantStrings.Str(_collectables[i].Value));
         }
 
         lines.Add("!i");
@@ -2992,7 +2992,7 @@ public partial class V4Game
         for (i = 1; i <= loopTo5; i++)
         {
             lines.Add(_numericVariable[i].VariableName + ";" +
-                      Conversion.Str(Conversion.Val(_numericVariable[i].VariableContents[0])));
+                      InvariantStrings.Str(Conversion.Val(_numericVariable[i].VariableContents[0])));
         }
 
         lines.Add("!e");
@@ -3105,7 +3105,7 @@ public partial class V4Game
         if (arrayIndex < 0)
         {
             LogASLError(
-                "'" + name + "[" + Strings.Trim(Conversion.Str(arrayIndex)) + "]' is invalid - did not assign to array",
+                "'" + name + "[" + Strings.Trim(InvariantStrings.Str(arrayIndex)) + "]' is invalid - did not assign to array",
                 LogType.WarningError);
             return;
         }
@@ -4036,7 +4036,7 @@ public partial class V4Game
 
         if (_collectables[id].Display == "<def>")
         {
-            display = "You have " + Strings.Trim(Conversion.Str(_collectables[id].Value)) + " " +
+            display = "You have " + Strings.Trim(InvariantStrings.Str(_collectables[id].Value)) + " " +
                       _collectables[id].Name;
         }
         else if (string.IsNullOrEmpty(_collectables[id].Display))
@@ -4054,7 +4054,7 @@ public partial class V4Game
             {
                 var firstBit = Strings.Left(_collectables[id].Display, ep - 1);
                 var nextBit = Strings.Right(_collectables[id].Display, Strings.Len(_collectables[id].Display) - ep);
-                display = firstBit + Strings.Trim(Conversion.Str(_collectables[id].Value)) + nextBit;
+                display = firstBit + Strings.Trim(InvariantStrings.Str(_collectables[id].Value)) + nextBit;
             }
 
             if (Strings.InStr(display, "*") > 0)

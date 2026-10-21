@@ -1262,7 +1262,7 @@ public partial class V4Game : IGame, IGameDebug
         {
             if ((Strings.LCase(KWord) ?? "") == (Strings.LCase(_casKeywords[i]) ?? ""))
             {
-                return Conversions.ToString(Strings.Chr(i));
+                return Conversions.ToString(InvariantStrings.Chr(i));
             }
         }
 
@@ -1963,7 +1963,7 @@ public partial class V4Game : IGame, IGameDebug
                 if (textMode)
                 {
                     var textData = Strings.Mid(fileData, i,
-                        Strings.InStr(i, fileData, Conversions.ToString(Strings.Chr(253))) - (i - 1));
+                        Strings.InStr(i, fileData, Conversions.ToString(InvariantStrings.Chr(253))) - (i - 1));
                     textData = Strings.Left(textData, Strings.Len(textData) - 1);
                     var cpos = 1;
                     var finished = false;
@@ -1986,7 +1986,7 @@ public partial class V4Game : IGame, IGameDebug
                     }
 
                     textMode = false;
-                    i = Strings.InStr(i, fileData, Conversions.ToString(Strings.Chr(253)));
+                    i = Strings.InStr(i, fileData, Conversions.ToString(InvariantStrings.Chr(253)));
                 }
 
                 j = i;
@@ -2037,7 +2037,7 @@ public partial class V4Game : IGame, IGameDebug
                                 {
                                     j = j + 1;
                                     d = Strings.Mid(fileData, j, 1);
-                                    if (d != Conversions.ToString(Strings.Chr(254)))
+                                    if (d != Conversions.ToString(InvariantStrings.Chr(254)))
                                     {
                                         curLin += d;
                                     }
@@ -2078,7 +2078,7 @@ public partial class V4Game : IGame, IGameDebug
         for (int i = 1, loopTo = Strings.Len(s); i <= loopTo; i++)
         {
             var v = Encoding.GetEncoding(1252).GetBytes(Strings.Mid(s, i, 1))[0];
-            output = output + Strings.Chr(v ^ 255);
+            output = output + InvariantStrings.Chr(v ^ 255);
         }
 
         return output;
@@ -6352,7 +6352,7 @@ public partial class V4Game : IGame, IGameDebug
         if (Strings.InStr(name, "[") > 0)
         {
             var idx = GetArrayIndex(name, ctx);
-            name = name + Strings.Trim(Conversion.Str(idx.Index));
+            name = name + Strings.Trim(InvariantStrings.Str(idx.Index));
         }
 
         for (int i = 1, loopTo = _numberRooms; i <= loopTo; i++)
@@ -6498,7 +6498,7 @@ public partial class V4Game : IGame, IGameDebug
 
         // <<< OBJECT CREATE/CHANGE DATA >>>
 
-        data.Append(Strings.Trim(Conversion.Str(numObjectData + _changeLogObjects.Changes.Count)) + '\0');
+        data.Append(Strings.Trim(InvariantStrings.Str(numObjectData + _changeLogObjects.Changes.Count)) + '\0');
 
         for (int i = 1, loopTo1 = numObjectData; i <= loopTo1; i++)
         {
@@ -6515,7 +6515,7 @@ public partial class V4Game : IGame, IGameDebug
 
         // <<< OBJECT EXIST/VISIBLE/ROOM DATA >>>
 
-        data.Append(Strings.Trim(Conversion.Str(_numberObjs)) + '\0');
+        data.Append(Strings.Trim(InvariantStrings.Str(_numberObjs)) + '\0');
 
         for (int i = 1, loopTo2 = _numberObjs; i <= loopTo2; i++)
         {
@@ -6545,7 +6545,7 @@ public partial class V4Game : IGame, IGameDebug
 
         // <<< ROOM CREATE/CHANGE DATA >>>
 
-        data.Append(Strings.Trim(Conversion.Str(numRoomData)) + '\0');
+        data.Append(Strings.Trim(InvariantStrings.Str(numRoomData)) + '\0');
 
         for (int i = 1, loopTo3 = numRoomData; i <= loopTo3; i++)
         {
@@ -6554,7 +6554,7 @@ public partial class V4Game : IGame, IGameDebug
 
         // <<< TIMER STATE DATA >>>
 
-        data.Append(Strings.Trim(Conversion.Str(_numberTimers)) + '\0');
+        data.Append(Strings.Trim(InvariantStrings.Str(_numberTimers)) + '\0');
 
         for (int i = 1, loopTo4 = _numberTimers; i <= loopTo4; i++)
         {
@@ -6570,18 +6570,18 @@ public partial class V4Game : IGame, IGameDebug
                 data.Append('\0');
             }
 
-            data.Append(Strings.Trim(Conversion.Str(t.TimerInterval)) + '\0');
-            data.Append(Strings.Trim(Conversion.Str(t.TimerTicks)) + '\0');
+            data.Append(Strings.Trim(InvariantStrings.Str(t.TimerInterval)) + '\0');
+            data.Append(Strings.Trim(InvariantStrings.Str(t.TimerTicks)) + '\0');
         }
 
         // <<< STRING VARIABLE DATA >>>
 
-        data.Append(Strings.Trim(Conversion.Str(_numberStringVariables)) + '\0');
+        data.Append(Strings.Trim(InvariantStrings.Str(_numberStringVariables)) + '\0');
 
         for (int i = 1, loopTo5 = _numberStringVariables; i <= loopTo5; i++)
         {
             var s = _stringVariable[i];
-            data.Append(s.VariableName + '\0' + Strings.Trim(Conversion.Str(s.VariableUBound)) + '\0');
+            data.Append(s.VariableName + '\0' + Strings.Trim(InvariantStrings.Str(s.VariableUBound)) + '\0');
 
             for (int j = 0, loopTo6 = s.VariableUBound; j <= loopTo6; j++)
             {
@@ -6591,12 +6591,12 @@ public partial class V4Game : IGame, IGameDebug
 
         // <<< NUMERIC VARIABLE DATA >>>
 
-        data.Append(Strings.Trim(Conversion.Str(_numberNumericVariables)) + '\0');
+        data.Append(Strings.Trim(InvariantStrings.Str(_numberNumericVariables)) + '\0');
 
         for (int i = 1, loopTo7 = _numberNumericVariables; i <= loopTo7; i++)
         {
             var n = _numericVariable[i];
-            data.Append(n.VariableName + '\0' + Strings.Trim(Conversion.Str(n.VariableUBound)) + '\0');
+            data.Append(n.VariableName + '\0' + Strings.Trim(InvariantStrings.Str(n.VariableUBound)) + '\0');
 
             for (int j = 0, loopTo8 = n.VariableUBound; j <= loopTo8; j++)
             {
@@ -6614,7 +6614,7 @@ public partial class V4Game : IGame, IGameDebug
 
         for (int i = start, loopTo9 = Strings.Len(dataString); i <= loopTo9; i++)
         {
-            newFileData.Append(Strings.Chr(255 - Strings.Asc(Strings.Mid(dataString, i, 1))));
+            newFileData.Append(InvariantStrings.Chr(255 - InvariantStrings.Asc(Strings.Mid(dataString, i, 1))));
         }
 
         return newFileData.ToString();
@@ -6629,7 +6629,7 @@ public partial class V4Game : IGame, IGameDebug
         if (Strings.InStr(room, "[") > 0)
         {
             var idx = GetArrayIndex(room, ctx);
-            room = room + Strings.Trim(Conversion.Str(idx.Index));
+            room = room + Strings.Trim(InvariantStrings.Str(idx.Index));
         }
 
         if (type == Thing.Character)
@@ -6720,11 +6720,11 @@ public partial class V4Game : IGame, IGameDebug
                 }
                 else if (action == ConvertType.Numeric)
                 {
-                    result = result + Strings.Trim(Conversion.Str(GetNumericContents(varName, ctx)));
+                    result = result + Strings.Trim(InvariantStrings.Str(GetNumericContents(varName, ctx)));
                 }
                 else if (action == ConvertType.Collectables)
                 {
-                    result = result + Strings.Trim(Conversion.Str(GetCollectableAmount(varName)));
+                    result = result + Strings.Trim(InvariantStrings.Str(GetCollectableAmount(varName)));
                 }
 
                 pos = nextPos + 1;
@@ -6793,7 +6793,7 @@ public partial class V4Game : IGame, IGameDebug
                 var scp = Strings.InStr(pos, parameter, ";");
 
                 var parameterData = Strings.Trim(Strings.Mid(parameter, pos, scp - pos));
-                await SetStringContents("quest.function.parameter." + Strings.Trim(Conversion.Str(numParameters)),
+                await SetStringContents("quest.function.parameter." + Strings.Trim(InvariantStrings.Str(numParameters)),
                     parameterData, ctx);
 
                 newCtx.NumParameters = numParameters;
@@ -6803,7 +6803,7 @@ public partial class V4Game : IGame, IGameDebug
                 pos = scp + 1;
             } while (pos < Strings.Len(parameter));
 
-            await SetStringContents("quest.function.numparameters", Strings.Trim(Conversion.Str(numParameters)), ctx);
+            await SetStringContents("quest.function.numparameters", Strings.Trim(InvariantStrings.Str(numParameters)), ctx);
         }
         else
         {
@@ -6875,7 +6875,7 @@ public partial class V4Game : IGame, IGameDebug
 
         if (name == "numberparameters")
         {
-            return Strings.Trim(Conversion.Str(ctx.NumParameters));
+            return Strings.Trim(InvariantStrings.Str(ctx.NumParameters));
         }
 
         if (name == "parameter")
@@ -6926,7 +6926,7 @@ public partial class V4Game : IGame, IGameDebug
         }
         else if (name == "lengthof")
         {
-            return Conversion.Str(Strings.Len(untrimmedParameters[1]));
+            return InvariantStrings.Str(Strings.Len(untrimmedParameters[1]));
         }
         else if (name == "left")
         {
@@ -6983,7 +6983,7 @@ public partial class V4Game : IGame, IGameDebug
         }
         else if (name == "rand")
         {
-            return Conversion.Str(
+            return InvariantStrings.Str(
                 Conversion.Int(_random.NextDouble() *
                                (Conversion.Val(parameters[2]) - Conversion.Val(parameters[1]) + 1d)) +
                 Conversion.Val(parameters[1]));
@@ -7020,7 +7020,7 @@ public partial class V4Game : IGame, IGameDebug
                     return "!";
                 }
 
-                return Strings.Trim(Conversion.Str(Strings.InStr(Conversions.ToInteger(parameters[1]), parameters[2],
+                return Strings.Trim(InvariantStrings.Str(Strings.InStr(Conversions.ToInteger(parameters[1]), parameters[2],
                     param3)));
             }
 
@@ -7046,7 +7046,7 @@ public partial class V4Game : IGame, IGameDebug
                     param2 = parameters[2];
                 }
 
-                return Strings.Trim(Conversion.Str(Strings.InStr(parameters[1], param2)));
+                return Strings.Trim(InvariantStrings.Str(Strings.InStr(parameters[1], param2)));
             }
 
             LogASLError("Invalid function call to '$Instr$(...)$'", LogType.WarningError);
@@ -7106,7 +7106,7 @@ public partial class V4Game : IGame, IGameDebug
             {
                 if ((Strings.LCase(_timers[i].TimerName) ?? "") == (Strings.LCase(parameters[1]) ?? ""))
                 {
-                    return Conversion.Str(_timers[i].TimerInterval);
+                    return InvariantStrings.Str(_timers[i].TimerInterval);
                 }
             }
 
@@ -7119,7 +7119,7 @@ public partial class V4Game : IGame, IGameDebug
             {
                 if ((Strings.LCase(_numericVariable[i].VariableName) ?? "") == (Strings.LCase(parameters[1]) ?? ""))
                 {
-                    return Strings.Trim(Conversion.Str(_numericVariable[i].VariableUBound));
+                    return Strings.Trim(InvariantStrings.Str(_numericVariable[i].VariableUBound));
                 }
             }
 
@@ -7127,7 +7127,7 @@ public partial class V4Game : IGame, IGameDebug
             {
                 if ((Strings.LCase(_stringVariable[i].VariableName) ?? "") == (Strings.LCase(parameters[1]) ?? ""))
                 {
-                    return Strings.Trim(Conversion.Str(_stringVariable[i].VariableUBound));
+                    return Strings.Trim(InvariantStrings.Str(_stringVariable[i].VariableUBound));
                 }
             }
 
@@ -7316,24 +7316,24 @@ public partial class V4Game : IGame, IGameDebug
                     {
                         case "+":
                         {
-                            varCont = Conversion.Str(num1 + num2);
+                            varCont = InvariantStrings.Str(num1 + num2);
                             break;
                         }
                         case "-":
                         {
-                            varCont = Conversion.Str(num1 - num2);
+                            varCont = InvariantStrings.Str(num1 - num2);
                             break;
                         }
                         case "*":
                         {
-                            varCont = Conversion.Str(num1 * num2);
+                            varCont = InvariantStrings.Str(num1 * num2);
                             break;
                         }
                         case "/":
                         {
                             if (num2 != 0d)
                             {
-                                varCont = Conversion.Str(num1 / num2);
+                                varCont = InvariantStrings.Str(num1 / num2);
                             }
                             else
                             {
@@ -7638,7 +7638,7 @@ public partial class V4Game : IGame, IGameDebug
         {
             if (!noError)
             {
-                LogASLError("Array index of '" + name + "[" + Strings.Trim(Conversion.Str(arrayIndex)) + "]' too big.",
+                LogASLError("Array index of '" + name + "[" + Strings.Trim(InvariantStrings.Str(arrayIndex)) + "]' too big.",
                     LogType.WarningError);
             }
 
