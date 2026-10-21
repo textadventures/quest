@@ -16,7 +16,7 @@ const branch = (name) => tree.locator('[data-part="branch-control"]', { hasText:
 
 async function addViaToolbar(menuLabel, name) {
     await page.click('button[title="Add element"]');
-    await page.locator('button', { hasText: menuLabel }).click();
+    await page.getByRole('menuitem', { name: menuLabel, exact: true }).click();
     await page.fill('#element-name', name);
     await page.keyboard.press('Enter');
     await page.waitForSelector(`text=${name}`, { timeout: 10000 });

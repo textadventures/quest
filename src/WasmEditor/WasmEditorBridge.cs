@@ -2425,10 +2425,6 @@ public partial class WasmEditorBridge
         try
         {
             _controller.CreateNewPage(name, string.IsNullOrEmpty(parent) ? null : parent, null);
-            // The AddedNode event fires while the object is still a plain object - the
-            // dialoguepage type that gives it its "page" tree presentation is only added
-            // afterwards (within the same transaction), so rebuild for the correct icon.
-            _controller.UpdateTree();
             return name;
         }
         catch (Exception ex)
