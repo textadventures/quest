@@ -766,7 +766,11 @@ public partial class V4Game
     private async Task SetUpGameObject()
     {
         _numberObjs = 1;
+        // Slot 0 is what "no such object" (id 0) reads. VB6 Quest's records were value types, so it was a blank
+        // record there rather than null.
         _objs = new ObjectType[2];
+        _objs[0] = new ObjectType();
+        _rooms = [new RoomType()];
         _objs[1] = new ObjectType();
         var o = _objs[1];
         o.ObjectName = "game";
@@ -5173,6 +5177,7 @@ public partial class V4Game
                 return;
             }
 
+            isInContainer = IsYes(GetObjectProperty("parent", id, true, false));
             var parent = GetObjectProperty("parent", id, false, false);
             parentID = GetObjectIdNoAlias(parent);
         }
