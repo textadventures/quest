@@ -454,6 +454,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-wasmplayer-legacy-start-enter.mjs http://localhost:5175
         working-directory: tests/e2e
+      - run: node verify-wasmplayer-undo-after-command.mjs http://localhost:5175
+        working-directory: tests/e2e
       - run: node verify-wasmplayer-culture-numbers.mjs http://localhost:5175
         working-directory: tests/e2e
       - run: node verify-wasmplayer-legacy-records.mjs http://localhost:5175
