@@ -52,7 +52,9 @@ public class UndoLogger
 
     public void RollTransaction(string command)
     {
-        if (_currentTransaction != null)
+        // Not just _currentTransaction != null: after an undo, that's the previous turn, which has already been
+        // committed, and ending it again would put it on the undo stack twice
+        if (_logging)
         {
             EndTransaction();
         }
