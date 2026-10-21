@@ -1,0 +1,19 @@
+<asl version="550">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <dynamictemplate name="DefaultPull">"No puedes tirar de eso"."</dynamictemplate>
+
+  <game name="Malformed dynamic template test">
+    <start type="script">
+      msg ("Game started.")
+    </start>
+  </game>
+
+  <object name="room">
+    <object name="player">
+    </object>
+  </object>
+
+</asl>

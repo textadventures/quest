@@ -67,4 +67,20 @@ public class TemplateTests
         Assert.IsTrue(success, string.Join("; ", model.Errors));
         Assert.AreEqual("German value", model.Template.GetText("DupeTemplate"));
     }
+
+    // Quest 5.0 and 5.1 didn't check a dynamic template's quotes at load, so games published with them can
+    // ship a malformed one (e.g. Nearco II's DefaultPull). It should only fail when it's used.
+    [TestMethod]
+    public async Task MalformedDynamicTemplate_DoesNotStopGameLoading()
+    {
+        var data = new GameData(File.ReadAllBytes("malformeddynamictemplatetest.aslx"), "malformeddynamictemplatetest.aslx");
+        var model = new WorldModel(data, null);
+
+        var success = await model.Initialise(new Mock<IPlayer>().Object);
+
+        Assert.IsTrue(success, string.Join("; ", model.Errors));
+        Assert.AreEqual("You said hello", await model.Template.GetDynamicTextAsync("GoodTemplate", "hello"));
+        await Assert.ThrowsExceptionAsync<MismatchingQuotesException>(() =>
+            model.Template.GetDynamicTextAsync("BrokenTemplate", "hello"));
+    }
 }
