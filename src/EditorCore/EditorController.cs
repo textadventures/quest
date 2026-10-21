@@ -200,6 +200,8 @@ public sealed class EditorController : IDisposable
         WorldModel.UndoLogger.TransactionsUpdated += UndoLogger_TransactionsUpdated;
         WorldModel.UndoLogger.TransactionCommitted += (_, _) => Dirty?.Invoke(this, EventArgs.Empty);
         WorldModel.Elements.ElementRenamed += Elements_ElementRenamed;
+        WorldModel.Elements.LibraryElementRestored += Elements_LibraryElementRestored;
+        WorldModel.Elements.LibraryElementDisplaced += Elements_LibraryElementDisplaced;
         WorldModel.LoadStatus += OnWorldModelLoadStatus;
 
         var ok = await WorldModel.InitialiseEdit();
@@ -270,6 +272,18 @@ public sealed class EditorController : IDisposable
         var newName = e.Element.Name;
 
         RenamedNode!(this, new RenamedNodeEventArgs {OldName = oldName, NewName = newName});
+        ElementsUpdated?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void Elements_LibraryElementRestored(object? sender, ElementRefreshEventArgs e)
+    {
+        AddElementToTree(e.Element);
+        ElementsUpdated?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void Elements_LibraryElementDisplaced(object? sender, ElementRefreshEventArgs e)
+    {
+        RemovedNode!(this, new RemovedNodeEventArgs {Key = e.Element.Name});
         ElementsUpdated?.Invoke(this, EventArgs.Empty);
     }
 
@@ -805,10 +819,25 @@ public sealed class EditorController : IDisposable
             return;
         }
 
-        WorldModel.UndoLogger.StartTransaction($"Copy '{GetDisplayName(WorldModel.Elements.Get(key))}' into game");
-        data.MakeElementLocal();
+        var element = WorldModel.Elements.Get(key);
+
+        WorldModel.UndoLogger.StartTransaction($"Copy '{GetDisplayName(element)}' into game");
+
+        if (WorldModel.Elements.GetDirectChildren(element).Any())
+        {
+            data.MakeElementLocal();
+        }
+        else
+        {
+            // A real, same-named copy that displaces the library original, rather than flipping the
+            // original's own flag: Elements remembers the original, so renaming the copy leaves it
+            // in place — as it would be after saving and reloading — and undo puts it back.
+            element.Clone(_ => true, true);
+        }
+
         WorldModel.UndoLogger.EndTransaction();
 
+        RemovedNode!(this, new RemovedNodeEventArgs {Key = key});
         AddElementToTree(WorldModel.Elements.Get(key));
     }
 
@@ -2670,6 +2699,8 @@ public sealed class EditorController : IDisposable
             WorldModel.ElementMetaFieldUpdated -= OnWorldModelElementMetaFieldUpdated;
             WorldModel.UndoLogger.TransactionsUpdated -= UndoLogger_TransactionsUpdated;
             WorldModel.Elements.ElementRenamed -= Elements_ElementRenamed;
+            WorldModel.Elements.LibraryElementRestored -= Elements_LibraryElementRestored;
+            WorldModel.Elements.LibraryElementDisplaced -= Elements_LibraryElementDisplaced;
             WorldModel.ObjectsUpdated -= OnWorldModelObjectsUpdated;
         }
 
