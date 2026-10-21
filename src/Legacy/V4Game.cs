@@ -4382,8 +4382,7 @@ public partial class V4Game : IGame, IGameDebug
 
         _numberObjs = _numberObjs + 1;
         Array.Resize(ref _objs, _numberObjs + 1);
-        _objs[_numberObjs] = new ObjectType();
-        _objs[_numberObjs] = _objs[id];
+        _objs[_numberObjs] = _objs[id].Copy();
         _objs[_numberObjs].ContainerRoom = cloneTo;
         _objs[_numberObjs].ObjectName = newName;
 
@@ -4393,8 +4392,7 @@ public partial class V4Game : IGame, IGameDebug
 
             _numberRooms = _numberRooms + 1;
             Array.Resize(ref _rooms, _numberRooms + 1);
-            _rooms[_numberRooms] = new RoomType();
-            _rooms[_numberRooms] = _rooms[_objs[id].CorresRoomId];
+            _rooms[_numberRooms] = _rooms[_objs[id].CorresRoomId].Copy();
             _rooms[_numberRooms].RoomName = newName;
             _rooms[_numberRooms].ObjId = _numberObjs;
 
