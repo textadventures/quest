@@ -73,7 +73,7 @@ public class TemplateTests
     [TestMethod]
     public async Task MalformedDynamicTemplate_DoesNotStopGameLoading()
     {
-        var data = new GameData(File.ReadAllBytes("malformeddynamictemplatetest.aslx"), "malformeddynamictemplatetest.aslx");
+        var data = await new FileGameDataProvider("malformeddynamictemplatetest.aslx").GetData();
         var model = new WorldModel(data, null);
 
         var success = await model.Initialise(new Mock<IPlayer>().Object);
