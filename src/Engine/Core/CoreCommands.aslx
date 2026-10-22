@@ -1018,7 +1018,7 @@
     <script>
       Ask (Template("WantRestartGame")){
         if (result){
-          JS.eval("window.location.reload();")
+          JS.eval("if (typeof(RestartGame) != 'undefined'){RestartGame();}else{window.location.reload();}")
         }
         else {
           game.suppressturnscripts = true

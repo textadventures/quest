@@ -8,7 +8,9 @@
 // RestartGame() must go through the in-app restart (same as "Start from the
 // beginning"), not a page reload, which would lose a game handed over from a
 // file picker, the editor preview or the Electron app — so this also checks
-// the page itself survived the restart.
+// the page itself survived the restart. Current Core's restart (a page
+// reload until RestartGame() existed) now prefers RestartGame() too, so the
+// same checks run against a game using it.
 // Requires the WasmPlayer dev server running locally:
 //   node ../../src/WasmPlayer/dev-server.mjs
 import { chromium } from 'playwright';
@@ -44,8 +46,9 @@ async function answerRestart(answer) {
     await send(answer === 'Yes' ? '1' : '2');
 }
 
-async function run() {
-    await page.goto(`${baseUrl}/?url=/e2e-fixtures/restart-quest5-core-test.aslx`);
+async function checkRestart(label, fixture) {
+    console.log(`── ${label}`);
+    await page.goto(`${baseUrl}/?url=/e2e-fixtures/${fixture}`);
     await page.waitForSelector('#txtCommand', { state: 'visible', timeout: 30000 });
     await page.waitForTimeout(500);
 
@@ -77,6 +80,11 @@ async function run() {
     }
     await expectCount(0, 'after restart');
     console.log('PASS: restart + yes restarted the game in place');
+}
+
+async function run() {
+    await checkRestart("Quest 5's inlined Core", 'restart-quest5-core-test.aslx');
+    await checkRestart('current Core', 'restart-current-core-test.aslx');
 
     if (pageErrors.length > 0) throw new Error(`Page errors: ${pageErrors.join('; ')}`);
     console.log('PASS: all checks passed');
