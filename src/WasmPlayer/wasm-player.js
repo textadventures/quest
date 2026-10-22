@@ -211,8 +211,46 @@ function computeGameId(filename) {
 // relative fetch instead of hanging.
 const RESOURCE_REQUEST_TIMEOUT_MS = 5000;
 
-function getResourceUrl(name) {
-    if (resourceRoot) return Promise.resolve(resourceRoot + name);
+// How long a turn's output waits for an image from resourceRoot before going
+// ahead without it (see preloadImageSize).
+const IMAGE_PRELOAD_TIMEOUT_MS = 3000;
+// Raster formats only: an SVG with no width/height of its own reports a
+// default 300x150 size, which stamping onto its <img> would then force.
+const PRELOADABLE_IMAGE = /\.(png|jpe?g|gif|webp|avif|bmp)$/i;
+
+// Images from resourceRoot are fetched over the network, unlike a .quest
+// package's own resources (data: URLs, see WasmPlayerBridge.GetUrlAsync), so
+// an <img> printed straight away would render at 0x0 until it arrived, then
+// shove everything below it down. Downloading it first - the engine awaits
+// this URL mid-turn, before anything is shown - lets playercore.js give the
+// <img> its real size (applyKnownImageSizes). Only ever runs once per file,
+// since the bridge caches the URL. A slow image doesn't hold the turn up
+// past the timeout; its size is still recorded whenever it does arrive.
+function preloadImageSize(url) {
+    return new Promise(resolve => {
+        const img = new Image();
+        const timeoutId = window.setTimeout(resolve, IMAGE_PRELOAD_TIMEOUT_MS);
+        img.onload = () => {
+            window.clearTimeout(timeoutId);
+            if (img.naturalWidth && img.naturalHeight) {
+                rememberImageSize(url, img.naturalWidth, img.naturalHeight);
+            }
+            resolve();
+        };
+        img.onerror = () => {
+            window.clearTimeout(timeoutId);
+            resolve();
+        };
+        img.src = url;
+    });
+}
+
+async function getResourceUrl(name) {
+    if (resourceRoot) {
+        const url = resourceRoot + name;
+        if (PRELOADABLE_IMAGE.test(name)) await preloadImageSize(url);
+        return url;
+    }
     if (!editorChannel) return Promise.resolve(name);
     return new Promise(resolve => {
         const id = crypto.randomUUID();
