@@ -1,0 +1,52 @@
+<asl version="600">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!--
+    Fixture for issue #2183 (compass exits on the main screen on mobile).
+    The hall has a compass exit, an in/out exit and nothing to the south, so
+    the strip can be checked for showing exactly the available ones; the
+    askme command suspends in a get input, during which the strip has to go.
+  -->
+  <game name="Exits Strip">
+  </game>
+
+  <object name="hall">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <exit alias="north" to="kitchen">
+      <inherit name="northdirection" />
+    </exit>
+    <exit alias="in" to="cupboard">
+      <inherit name="indirection" />
+    </exit>
+  </object>
+
+  <object name="kitchen">
+    <inherit name="editor_room" />
+    <exit alias="south" to="hall">
+      <inherit name="southdirection" />
+    </exit>
+  </object>
+
+  <object name="cupboard">
+    <inherit name="editor_room" />
+    <exit alias="out" to="hall">
+      <inherit name="outdirection" />
+    </exit>
+  </object>
+
+  <command name="askmecmd">
+    <pattern>askme</pattern>
+    <script>
+      msg ("What is your name?")
+      get input {
+        msg ("Hello, " + result)
+      }
+    </script>
+  </command>
+
+</asl>
