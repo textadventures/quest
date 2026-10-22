@@ -65,7 +65,11 @@ internal record ControlInfo(
     bool Bold = false,
     // <samerow/> - pack this control onto the same horizontal row as the previous control
     // in the property editor (e.g. Version + Version Code on the Setup tab).
-    bool SameRow = false);
+    bool SameRow = false,
+    // Shown only because of <alsodisplayifset>: the element still has a value that its other
+    // visibility rules would hide, so the frontend warns that it still takes effect and offers
+    // to remove it.
+    bool Leftover = false);
 
 internal record TabInfo(string? Caption, List<ControlInfo> Controls, string? HelpUrl = null);
 
@@ -603,7 +607,7 @@ public partial class WasmEditorBridge
                     AddDropdownTypeValues(attrs, visibleControls, key, data);
                 }
 
-                tabs.Add(new TabInfo(tab.Caption, visibleControls.Select(c => ToControlInfo(c, key)).ToList(), tab.HelpUrl));
+                tabs.Add(new TabInfo(tab.Caption, await ToControlInfosAsync(visibleControls, key, data), tab.HelpUrl));
             }
 
             var visibleTopControls = data != null
@@ -614,7 +618,7 @@ public partial class WasmEditorBridge
                 AddDropdownTypeValues(attrs, visibleTopControls, key, data);
             }
 
-            topControls.AddRange(visibleTopControls.Select(c => ToControlInfo(c, key)));
+            topControls.AddRange(await ToControlInfosAsync(visibleTopControls, key, data));
         }
         else if (data == null)
         {
@@ -1411,6 +1415,24 @@ public partial class WasmEditorBridge
         {
             return ex.Message;
         }
+    }
+
+    private static async Task<List<ControlInfo>> ToControlInfosAsync(IEnumerable<IEditorControl> controls, string key,
+        IEditorData? data)
+    {
+        var result = new List<ControlInfo>();
+        foreach (var c in controls)
+        {
+            var info = ToControlInfo(c, key);
+            if (data != null && await c.IsControlVisibleOnlyBecauseSet(data))
+            {
+                info = info with {Leftover = true};
+            }
+
+            result.Add(info);
+        }
+
+        return result;
     }
 
     private static async Task<List<IEditorControl>> FilterVisibleAsync(IEnumerable<IEditorControl> controls, IEditorData data)

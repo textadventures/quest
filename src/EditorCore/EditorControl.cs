@@ -105,6 +105,11 @@ internal class EditorControl : IEditorControl
         return _visibilityHelper.IsVisibleIgnoringExpression(data);
     }
 
+    public Task<bool> IsControlVisibleOnlyBecauseSet(IEditorData data)
+    {
+        return _visibilityHelper.IsVisibleOnlyBecauseSet(data);
+    }
+
     public IEditorDefinition Parent => _parent;
 
     public bool IsAdvanced { get; }

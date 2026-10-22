@@ -207,6 +207,8 @@
     "propertyEditor.linkTargetLabels.exit": "Salida",
     "propertyEditor.linkTargetLabels.image": "Imagen",
     "propertyEditor.linkTextToShow": "Texto a mostrar",
+    "propertyEditor.leftoverMessage": "Esto todavía está definido en este objeto y sigue teniendo efecto en el juego, aunque normalmente estaría oculto aquí.",
+    "propertyEditor.leftoverRemove": "Quitar",
 
     "common.add": "Añadir",
     "common.true": "Verdadero",

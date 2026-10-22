@@ -19,4 +19,5 @@ public interface IEditorControl
     bool GetBool(string tag);
     Task<bool> IsControlVisible(IEditorData data);
     bool IsControlVisibleSync(IEditorData data);
+    Task<bool> IsControlVisibleOnlyBecauseSet(IEditorData data);
 }

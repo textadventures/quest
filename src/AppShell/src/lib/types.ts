@@ -80,6 +80,9 @@ export interface ControlInfo {
   bold?: boolean
   // <samerow/> - pack this control onto the same horizontal row as the previous control.
   sameRow?: boolean
+  // Shown only because of <alsodisplayifset>: the element still has a value its other
+  // visibility rules would hide, and that value still takes effect in the game.
+  leftover?: boolean
 }
 
 export interface TabInfo {

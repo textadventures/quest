@@ -7,6 +7,7 @@ namespace QuestViva.EditorCore;
 internal class EditorVisibilityHelper
 {
     private readonly bool _alwaysVisible = true;
+    private readonly IList<string>? _alsoVisibleIfSet;
     private readonly string? _filter;
     private readonly string? _filterGroup;
     private readonly IList<string>? _notVisibleIfElementInheritsType;
@@ -46,6 +47,12 @@ internal class EditorVisibilityHelper
             _alwaysVisible = false;
         }
 
+        // <alsodisplayifset> - keeps a tab or control visible, whatever its other rules say, while
+        // the element has its own value for any of the named attributes. The rules above only
+        // decide whether the editor shows a control; they don't stop its attribute taking effect
+        // in the game, so hiding one that's set would leave a live value the author can't see.
+        _alsoVisibleIfSet = source.Fields.GetAsType<QuestList<string>>("alsodisplayifset");
+
         var expression = source.Fields.GetString("onlydisplayif");
         if (expression != null)
         {
@@ -56,6 +63,40 @@ internal class EditorVisibilityHelper
     }
 
     public async Task<bool> IsVisible(IEditorData data)
+    {
+        return await IsVisibleByRules(data) || IsAlsoVisibleBecauseSet(data);
+    }
+
+    // True when the tab or control is visible only because of <alsodisplayifset>, so the editor
+    // can tell the author why it's showing something its other rules would hide.
+    public async Task<bool> IsVisibleOnlyBecauseSet(IEditorData data)
+    {
+        return IsAlsoVisibleBecauseSet(data) && !await IsVisibleByRules(data);
+    }
+
+    private bool IsAlsoVisibleBecauseSet(IEditorData data)
+    {
+        if (_alsoVisibleIfSet == null)
+        {
+            return false;
+        }
+
+        var element = _worldModel.Elements.Get(data.Name!);
+
+        // A library element's values are the library's own, not something the author left
+        // behind, and the editor shows library elements read-only anyway.
+        if (element.MetaFields[MetaFieldDefinitions.Library])
+        {
+            return false;
+        }
+
+        // Only the element's own attributes count: one inherited from a type is the type's
+        // behaviour (e.g. container_lockable's openscript), not a leftover.
+        var ownAttributes = element.Fields.GetAttributeNames(false);
+        return _alsoVisibleIfSet.Any(ownAttributes.Contains);
+    }
+
+    private async Task<bool> IsVisibleByRules(IEditorData data)
     {
         if (_alwaysVisible)
         {
@@ -99,7 +140,7 @@ internal class EditorVisibilityHelper
             return true;
         }
 
-        return IsVisibleSyncCore(data);
+        return IsVisibleSyncCore(data) || IsAlsoVisibleBecauseSet(data);
     }
 
     private bool IsVisibleSyncCore(IEditorData data)

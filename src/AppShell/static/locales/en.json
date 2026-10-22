@@ -207,6 +207,8 @@
     "propertyEditor.linkTargetLabels.exit": "Exit",
     "propertyEditor.linkTargetLabels.image": "Image",
     "propertyEditor.linkTextToShow": "Text to show",
+    "propertyEditor.leftoverMessage": "This is still set on this object and still takes effect when the game runs, even though it would normally be hidden here.",
+    "propertyEditor.leftoverRemove": "Remove",
 
     "common.add": "Add",
     "common.true": "True",
