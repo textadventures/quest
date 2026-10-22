@@ -8,6 +8,7 @@
     import { loadFromServer } from "#lib/filesystem/server-adapter.js";
     import Toolbar from "#components/Toolbar.svelte";
     import BackupBanner from "#components/BackupBanner.svelte";
+    import UpgradeBanner from "#components/UpgradeBanner.svelte";
     import LibraryReloadBanner from "#components/LibraryReloadBanner.svelte";
     import FileChangedExternallyBanner from "#components/FileChangedExternallyBanner.svelte";
     import TreePanel from "#components/TreePanel.svelte";
@@ -185,6 +186,7 @@
     >{t("editPage.skipToContent")}</a>
     <main class="flex flex-col h-dvh overflow-hidden safe-area-inset">
         <Toolbar />
+        <UpgradeBanner />
         <BackupBanner />
         <LibraryReloadBanner />
         <FileChangedExternallyBanner />

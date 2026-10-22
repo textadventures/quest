@@ -279,6 +279,10 @@ public partial class WorldModel : IGame, IGameDebug
 
     internal RegexCache RegexCache { get; } = new();
 
+    // The version the editor saves every game as. Older Quest versions can't open a game once
+    // it's saved, so the editor warns before it upgrades one.
+    public const WorldModelVersion EditorSaveVersion = WorldModelVersion.v610;
+
     public WorldModelVersion Version { get; internal set; }
 
     internal string? VersionString { get; set; }
