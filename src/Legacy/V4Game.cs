@@ -6352,7 +6352,7 @@ public partial class V4Game : IGame, IGameDebug
         if (Strings.InStr(name, "[") > 0)
         {
             var idx = GetArrayIndex(name, ctx);
-            name = name + Strings.Trim(InvariantStrings.Str(idx.Index));
+            name = idx.Name + Strings.Trim(InvariantStrings.Str(idx.Index));
         }
 
         for (int i = 1, loopTo = _numberRooms; i <= loopTo; i++)
@@ -6629,7 +6629,7 @@ public partial class V4Game : IGame, IGameDebug
         if (Strings.InStr(room, "[") > 0)
         {
             var idx = GetArrayIndex(room, ctx);
-            room = room + Strings.Trim(InvariantStrings.Str(idx.Index));
+            room = idx.Name + Strings.Trim(InvariantStrings.Str(idx.Index));
         }
 
         if (type == Thing.Character)
