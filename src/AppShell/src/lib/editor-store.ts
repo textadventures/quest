@@ -95,6 +95,27 @@ export function dismissFileChangedExternallyBanner() {
 export function markFileChangedExternally() {
     if (get(isLoaded)) showFileChangedExternallyBanner.set(true);
 }
+
+// Set when the open game was last saved by an older Quest version: the editor saves every game as
+// WorldModel.EditorSaveVersion, which those versions can't open (see UpgradeBanner.svelte).
+// originalBytes is the file as it was loaded, so the author can still download it after an
+// autosave has upgraded the copy in storage.
+export type UpgradeNotice = { fromVersion: number; originalBytes: Uint8Array; filename: string };
+export const upgradeNotice = writable<UpgradeNotice | null>(null);
+let _upgradeNoticeDismissed = false;
+
+export function dismissUpgradeNotice() {
+    upgradeNotice.set(null);
+    _upgradeNoticeDismissed = true;
+}
+
+export function downloadOriginalGame() {
+    const notice = get(upgradeNotice);
+    if (!notice) return;
+    const stem = notice.filename.replace(/\.aslx$/i, "");
+    triggerDownload(notice.originalBytes, `${stem}.v${notice.fromVersion}.aslx`);
+    dismissUpgradeNotice();
+}
 export const canPublishToServer = writable(false);
 export const treeNodes = writable<TreeNode[]>([]);
 export const showLibraryElements = writable(false);
@@ -253,6 +274,12 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
     lastOpenGameError.set(null);
     loadingStatus.set(t("editorStore.startingEditor"));
     _bridge = await loadWasm();
+    // Re-opening the same game (reloadGame() and friends) keeps the notice and its original
+    // bytes: by then an autosave may already have upgraded the copy being re-opened.
+    if (adapter !== _adapter) {
+        upgradeNotice.set(null);
+        _upgradeNoticeDismissed = false;
+    }
     _adapter = adapter;
     canSaveAs.set(adapter.canSaveAs);
     canBackup.set(adapter instanceof LocalDraftAdapter);
@@ -285,6 +312,9 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
         lastFailedGameFilename.set(null);
         _loadedGameId = _bridge.GetGameId() || null;
         isGamebook.set(_bridge.IsGamebook());
+        if (!get(upgradeNotice) && !_upgradeNoticeDismissed && _bridge.SaveWillUpgrade()) {
+            upgradeNotice.set({ fromVersion: _bridge.GetAslVersion(), originalBytes: bytes, filename });
+        }
         const nodes: TreeNode[] = JSON.parse(_bridge.GetTreeNodes());
         treeNodes.set(nodes);
         showLibraryElements.set(false);

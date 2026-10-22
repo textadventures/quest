@@ -100,7 +100,7 @@ Most of the scripting language is unchanged, but there are some additions:
 - **Questions and menus in the game text.** In games saved in Quest Viva, a question or menu now appears as numbered links in the game text instead of a pop-up window. Players can click an option or type its number.
 - Plenty of smaller additions and fixes besides - the [changelog](https://github.com/textadventures/quest/blob/main/CHANGELOG.md) lists these from 6.0.0-beta.36 onwards.
 
-A game saved in the Quest Viva editor is marked as ASL version 600 - `<asl version="600">` at the top of the file. Older games load and run unchanged - the version number just tells the engine which behaviour to use where something has been fixed in a way that would otherwise change an existing game.
+A game saved in the Quest Viva editor is marked as ASL version 600 - `<asl version="600">` at the top of the file. Older games load and run unchanged - the version number just tells the engine which behaviour to use where something has been fixed in a way that would otherwise change an existing game. Once a game is saved in Quest Viva, Quest 5 can no longer open it. See [Game file versions](/reference/asl-versions).
 
 ## Why isn't it called Quest 6?
 

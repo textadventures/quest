@@ -705,6 +705,10 @@ export default defineConfig({
                             "slug": "reference/aslx"
                         },
                         {
+                            "label": "Game file versions",
+                            "slug": "reference/asl-versions"
+                        },
+                        {
                             "label": "ASL requirements",
                             "slug": "reference/asl-requirements"
                         }

@@ -129,6 +129,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-appshell-autosave.mjs http://localhost:5174
         working-directory: tests/e2e
+      - run: node verify-appshell-upgrade-banner.mjs http://localhost:5174
+        working-directory: tests/e2e
       - run: node verify-appshell-button-cursor.mjs http://localhost:5174
         working-directory: tests/e2e
       - run: node verify-appshell-play-open-file.mjs http://localhost:5174

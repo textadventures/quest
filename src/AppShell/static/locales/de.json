@@ -352,6 +352,9 @@
 
     "backupBanner.message": "Dieses Spiel ist nur in diesem Browser gespeichert — verwende Backup, um eine Kopie auf der Festplatte zu speichern.",
     "backupBanner.backingUp": "Sichern…",
+    "upgradeBanner.message": "Dieses Spiel wurde mit einer älteren Version von Quest gespeichert. Sobald du es änderst, speichert Quest Viva es in einem neueren Format, das ältere Versionen von Quest nicht öffnen können.",
+    "upgradeBanner.learnMore": "Mehr erfahren",
+    "upgradeBanner.downloadOriginal": "Original herunterladen",
 
     "updateBanner.availableMessage": "Quest Viva {version} ist verfügbar.",
     "updateBanner.downloadButton": "Herunterladen",

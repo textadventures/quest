@@ -807,6 +807,12 @@ public partial class WasmEditorBridge
     [JSExport]
     public static bool IsGamebook() => _controller?.EditorStyle == EditorStyle.GameBook;
 
+    [JSExport]
+    public static int GetAslVersion() => _controller?.AslVersion ?? 0;
+
+    [JSExport]
+    public static bool SaveWillUpgrade() => _controller?.SaveWillUpgrade ?? false;
+
     // Play tab "Recently played" cover art for local files — entirely independent of
     // _controller (doesn't touch the currently-open editor session), a fresh GameQuery per
     // call instead. Several of these can be in flight at once (one per recent-local-play

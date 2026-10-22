@@ -31,6 +31,8 @@ export interface WasmBridge {
   GetGameDescription(): string
   GetGameCover(): string
   IsGamebook(): boolean
+  GetAslVersion(): number
+  SaveWillUpgrade(): boolean
   IsBuiltInLibrary(filename: string): boolean
   GetLibraryXml(filename: string): string | null
   SetLibraryXml(filename: string, xml: string): Promise<string>

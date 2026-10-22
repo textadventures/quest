@@ -140,6 +140,12 @@ public sealed class EditorController : IDisposable
 
     public string? GameCover => WorldModel.Cover;
 
+    // The ASL version the game was loaded as, until the first save changes it to
+    // WorldModel.EditorSaveVersion.
+    public int AslVersion => WorldModel.ASLVersion;
+
+    public bool SaveWillUpgrade => WorldModel.Version < WorldModel.EditorSaveVersion;
+
     // Set by Initialise
     internal EditableScriptFactory ScriptFactory { get; private set; } = null!;
 
