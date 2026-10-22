@@ -12,7 +12,7 @@ import { savePublishTarget, type PublishTarget } from "./publish-target";
 import { confirmDialog } from "./confirm";
 import { showToast } from "./toast";
 import { t } from "./i18n";
-import type { TreeNode, EditorDataResponse, ScriptBlockData, ScriptCommandCategoriesData, ExpressionTemplateData, ExpressionTemplate, FullAttributeData, ExitsData, VerbInfo, ExpressionFunctionInfo } from "./types";
+import type { TreeNode, EditorDataResponse, ScriptBlockData, ScriptCommandCategoriesData, ExpressionTemplateData, ExpressionTemplate, FullAttributeData, ExitsData, VerbInfo, ExpressionFunctionInfo, FeatureLeftover } from "./types";
 
 export type AddElementModalState = { type: "room" | "object" | "page" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type"; parent: string | null; folder: string | null } | null;
 
@@ -1353,6 +1353,27 @@ export function removeAttribute(elementKey: string, attribute: string): string {
     if (!_bridge) return "error";
     const result = _bridge.RemoveAttribute(elementKey, attribute);
     if (result === "ok") refreshSelectedData();
+    refreshUndoRedo();
+    return result;
+}
+
+export function getFeatureLeftovers(elementKey: string, featureAttribute: string): FeatureLeftover[] {
+    if (!_bridge) return [];
+    return JSON.parse(_bridge.GetFeatureLeftovers(elementKey, featureAttribute)) as FeatureLeftover[];
+}
+
+export function turnOffFeature(elementKey: string, featureAttribute: string, removeLeftovers: boolean): string {
+    if (!_bridge) return "error";
+    const result = _bridge.TurnOffFeature(elementKey, featureAttribute, removeLeftovers);
+    refreshSelectedData();
+    refreshUndoRedo();
+    return result;
+}
+
+export function removeFeatureLeftovers(elementKey: string, featureAttribute: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.RemoveFeatureLeftovers(elementKey, featureAttribute);
+    refreshSelectedData();
     refreshUndoRedo();
     return result;
 }

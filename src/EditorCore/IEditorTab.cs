@@ -12,4 +12,19 @@ public interface IEditorTab
     string? HelpUrl { get; }
     IEnumerable<IEditorControl> Controls { get; }
     Task<bool> IsTabVisible(IEditorData data);
+
+    /// <summary>
+    /// The feature checkbox attribute that shows this tab (e.g. "feature_container"), or null
+    /// if the tab isn't gated by a feature. <see cref="IsGameFeature"/> says whether the checkbox
+    /// is on the game rather than on the element itself.
+    /// </summary>
+    string? FeatureAttribute { get; }
+
+    bool IsGameFeature { get; }
+
+    /// <summary>
+    /// True when the tab's feature is turned off but the element still has settings for it, which
+    /// still take effect in the game.
+    /// </summary>
+    Task<bool> IsTabVisibleOnlyForLeftovers(IEditorData data);
 }

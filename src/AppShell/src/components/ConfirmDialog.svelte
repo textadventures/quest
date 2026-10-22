@@ -39,7 +39,7 @@
         use:trapFocus
     >
         <div class="card bg-surface-50-950 rounded-xl shadow-xl w-full max-w-sm p-6 flex flex-col gap-4">
-            <p class="text-sm">{state.message}</p>
+            <p class="text-sm whitespace-pre-line">{state.message}</p>
 
             <div class="flex flex-wrap justify-end gap-2">
                 {#each state.choices as choice, i (choice.label)}

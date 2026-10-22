@@ -91,6 +91,17 @@ export interface TabInfo {
   // <helpurl> on the tab's editor definition - a site-relative documentation
   // path. Absent for tabs with no help target, which show no help affordance.
   helpUrl?: string | null
+  // Set when the tab is shown only because its feature ("feature_..." checkbox, on the game when
+  // leftoverFeatureOnGame) is turned off while the element still has settings for it.
+  leftoverFeature?: string | null
+  leftoverFeatureOnGame?: boolean
+}
+
+// What an element still has set for a feature that's being turned off - see
+// WasmEditorBridge.GetFeatureLeftovers.
+export interface FeatureLeftover {
+  element: string
+  labels: string[]
 }
 
 export interface EditorDataResponse {

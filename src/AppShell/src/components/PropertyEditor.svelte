@@ -1,11 +1,12 @@
 <script lang="ts">
-    import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, removeAttribute, setDropdownType, setMultiType, setObjectReference, setSelectedFilter, addDictItem, removeDictItem, updateDictItem, getObjectNames, getExitNames, getPageNames, selectNode, createPageSilent, openAddModal, openAddLibraryModal, openAddJavascriptModal, getAssetText, putAssetText, putLibraryAssetText, isBuiltInLibrary, getLibraryXml, setPatternAttribute } from "#lib/editor-store.js";
+    import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, removeAttribute, setDropdownType, setMultiType, setObjectReference, setSelectedFilter, addDictItem, removeDictItem, updateDictItem, getObjectNames, getExitNames, getPageNames, selectNode, createPageSilent, openAddModal, openAddLibraryModal, openAddJavascriptModal, getAssetText, putAssetText, putLibraryAssetText, isBuiltInLibrary, getLibraryXml, setPatternAttribute, getFeatureLeftovers, turnOffFeature, removeFeatureLeftovers } from "#lib/editor-store.js";
+    import { chooseDialog } from "#lib/confirm.js";
     import { showToast } from "#lib/toast.js";
     import { isLibraryFilename } from "#lib/filesystem/types.js";
     import { t } from "#lib/i18n/index.js";
     import { docsUrlForPath } from "#lib/docs-links.js";
     import { HELP_PAGE_TITLES } from "#lib/docs-index.generated.js";
-    import type { ControlInfo, ControlOption, TextProcessorCommand } from "#lib/types.js";
+    import type { ControlInfo, ControlOption, FeatureLeftover, TextProcessorCommand } from "#lib/types.js";
     import type { TreeNode } from "#lib/types.js";
     import ChevronLeft from "@lucide/svelte/icons/chevron-left";
     import ArrowRight from "@lucide/svelte/icons/arrow-right";
@@ -166,8 +167,40 @@
         if ($selectedKey) recordResult(subAttribute, setMultiType($selectedKey, subAttribute, newType));
     }
 
-    function onCheckboxChange(attribute: string, checked: boolean) {
-        if ($selectedKey) recordResult(attribute, setAttribute($selectedKey, attribute, "checkbox", checked.toString()));
+    // Unticking a feature checkbox only hides its tab: whatever the author set there stays on the
+    // object (or, for a game-wide feature, on every object) and keeps taking effect in the game.
+    // So when something is left behind, offer to remove it in the same undo step.
+    async function onCheckboxChange(attribute: string, checked: boolean, input?: HTMLInputElement) {
+        if (!$selectedKey) return;
+        const key = $selectedKey;
+        if (!checked && attribute.startsWith("feature_")) {
+            const leftovers = getFeatureLeftovers(key, attribute);
+            if (leftovers.length > 0) {
+                const choice = await chooseDialog(t("propertyEditor.featureOffPrompt", { list: describeLeftovers(leftovers) }), [
+                    { label: t("common.cancel"), value: "cancel" },
+                    { label: t("propertyEditor.featureOffKeep"), value: "keep" },
+                    { label: t("propertyEditor.featureOffRemove"), value: "remove" },
+                ]);
+                if (choice === null || choice === "cancel") {
+                    if (input) input.checked = true;
+                    return;
+                }
+                recordResult(attribute, turnOffFeature(key, attribute, choice === "remove"));
+                return;
+            }
+        }
+        recordResult(attribute, setAttribute(key, attribute, "checkbox", checked.toString()));
+    }
+
+    // A game-wide feature can leave settings on many objects - list the first few.
+    const maxLeftoverElementsListed = 8;
+
+    function describeLeftovers(leftovers: FeatureLeftover[]): string {
+        const lines = leftovers.slice(0, maxLeftoverElementsListed).map(l => `• ${l.element}: ${l.labels.join("; ")}`);
+        if (leftovers.length > maxLeftoverElementsListed) {
+            lines.push(t("propertyEditor.featureOffMore", { count: leftovers.length - maxLeftoverElementsListed }));
+        }
+        return lines.join("\n");
     }
 
     function onNumberChange(attribute: string, controlType: string, value: string) {
@@ -480,6 +513,25 @@
                 <BookOpen size={14} class="shrink-0" />
                 <span class="truncate">{t("propertyEditor.helpGuide", { title: activeHelpTitle })}</span>
             </a>
+        {/if}
+
+        {@const activeTabInfo = $selectedData.tabs.find(tab => tab.caption === activeTab)}
+        {#if activeTabInfo?.leftoverFeature && $selectedKey}
+            {@const feature = activeTabInfo.leftoverFeature}
+            {@const featureOwner = activeTabInfo.leftoverFeatureOnGame ? "game" : $selectedKey}
+            <div class="mx-3 mt-2 flex flex-wrap items-center gap-2 rounded-container border border-warning-300-700 bg-warning-100-900 px-2 py-1.5 text-xs flex-shrink-0">
+                <span class="flex-1 min-w-48">{t(activeTabInfo.leftoverFeatureOnGame ? "propertyEditor.leftoverFeatureGameMessage" : "propertyEditor.leftoverFeatureMessage")}</span>
+                <button
+                    type="button"
+                    class="btn btn-xs preset-tonal flex-shrink-0"
+                    onclick={() => recordResult(feature, setAttribute(featureOwner, feature, "checkbox", "true"))}
+                >{t("propertyEditor.leftoverFeatureTurnOn")}</button>
+                <button
+                    type="button"
+                    class="btn btn-xs preset-filled-warning-500 flex-shrink-0"
+                    onclick={() => { if ($selectedKey) recordResult(feature, removeFeatureLeftovers($selectedKey, feature)); }}
+                >{t("propertyEditor.leftoverFeatureRemove")}</button>
+            </div>
         {/if}
 
         {@const viewControls = getControlsForView()}
@@ -1068,7 +1120,7 @@
                     type="checkbox"
                     class="checkbox flex-shrink-0"
                     checked={boolValue(ctrl.attribute)}
-                    onchange={(e) => onCheckboxChange(ctrl.attribute!, (e.target as HTMLInputElement).checked)}
+                    onchange={(e) => onCheckboxChange(ctrl.attribute!, (e.target as HTMLInputElement).checked, e.target as HTMLInputElement)}
                 />
                 <span class="text-xs text-surface-600-400">
                     {ctrl.caption ?? ctrl.attribute}

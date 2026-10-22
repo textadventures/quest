@@ -80,6 +80,9 @@ export interface WasmBridge {
   // Attributes editor API
   GetFullAttributeData(elementKey: string): string | null
   RemoveAttribute(elementKey: string, attribute: string): string
+  GetFeatureLeftovers(elementKey: string, featureAttribute: string): string
+  TurnOffFeature(elementKey: string, featureAttribute: string, removeLeftovers: boolean): string
+  RemoveFeatureLeftovers(elementKey: string, featureAttribute: string): string
   AddInheritedType(elementKey: string, typeName: string): string
   RemoveInheritedType(elementKey: string, typeName: string): string
   GetTypeNames(): string
