@@ -410,6 +410,8 @@ jobs:
 
       - run: node verify-wasmplayer-restart-sidebar-dup.mjs http://localhost:5175
         working-directory: tests/e2e
+      - run: node verify-wasmplayer-quest5-core-restart.mjs http://localhost:5175
+        working-directory: tests/e2e
       - run: node verify-clientinfo-web.mjs http://localhost:5175
         working-directory: tests/e2e
       - run: node verify-wasmplayer-debugger.mjs http://localhost:5175

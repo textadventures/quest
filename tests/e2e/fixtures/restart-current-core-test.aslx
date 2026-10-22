@@ -1,0 +1,28 @@
+<asl version="580">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <game name="Current Core restart">
+    <count type="int">0</count>
+  </game>
+
+  <command name="bump" pattern="^bump$">
+    <script>
+      game.count = game.count + 1
+      msg ("Count: " + game.count)
+    </script>
+  </command>
+
+  <command name="showcount" pattern="^showcount$">
+    <script>
+      msg ("Count: " + game.count)
+    </script>
+  </command>
+
+  <object name="room">
+    <object name="player">
+    </object>
+  </object>
+
+</asl>

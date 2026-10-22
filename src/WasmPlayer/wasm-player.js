@@ -840,6 +840,20 @@ async function restartGame(saveBytes) {
     }
 }
 
+// Quest 5's Core `restart` command, still inlined into every game saved with
+// it, calls this after the player answers yes — falling back to printing
+// "Try pressing CTRL+R." when it doesn't exist (its other branch, a page
+// reload, only runs when webPlayer is true, which it never is here). Goes
+// through the same in-app restart as "Start from the beginning" rather than a
+// reload, which would lose any game that didn't come from a ?url= (file
+// picker, editor preview, Play tab/Electron handoff, single-file export).
+// Deferred because it's called from the engine's end-of-turn UI flush, while
+// that turn's Bridge call is still returning; restartGame re-initialises the
+// engine underneath it.
+window.RestartGame = () => {
+    setTimeout(() => restartGame(null), 0);
+};
+
 async function restartGameCore(saveBytes) {
     document.getElementById('qv-saves')?.close();
     swapInPlayerUi();
