@@ -1,0 +1,32 @@
+<asl version="580">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="OutputImageTest">
+  </game>
+  <object name="room">
+    <object name="player">
+    </object>
+  </object>
+  <command>
+    <pattern>filler</pattern>
+    <script><![CDATA[
+      for (i, 1, 40) {
+        msg("Filler line " + i + " of output text, padding the page out past one screenful.")
+      }
+    ]]></script>
+  </command>
+  <command>
+    <pattern>fast</pattern>
+    <script><![CDATA[
+      picture ("fast.png")
+      msg("<span id='afterfast'>After the fast picture.</span>")
+    ]]></script>
+  </command>
+  <command>
+    <pattern>slow</pattern>
+    <script><![CDATA[
+      msg("Slow turn begins.")
+      picture ("slow.png")
+    ]]></script>
+  </command>
+</asl>

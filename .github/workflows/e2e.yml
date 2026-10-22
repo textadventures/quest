@@ -442,6 +442,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-wasmplayer-autoscroll-frame-load-race.mjs http://localhost:5175
         working-directory: tests/e2e
+      - run: node verify-wasmplayer-output-image-loading.mjs http://localhost:5175
+        working-directory: tests/e2e
       - run: node verify-wasmplayer-dialogue-pages.mjs http://localhost:5175
         working-directory: tests/e2e
       - run: node verify-wasmplayer-onready-recursive-getinput.mjs http://localhost:5175

@@ -778,6 +778,49 @@ function scrollToEnd() {
     scrollToTurnStart(beginningOfCurrentTurnScrollPosition);
 }
 
+// An output image that's still downloading when its turn scrolls renders at
+// (effectively) 0x0, so scrollToTurnStart() clamps against a document that's
+// shorter than it's about to be — once the image arrives, the rest of it and
+// the command bar below it end up off the bottom of the screen. Re-scroll
+// once it loads, the same way setPanelHeight() does for the picture frame.
+// load/error don't bubble, hence the capture-phase listener; it's on
+// document rather than #divOutput because swapInPlayerUi() replaces the
+// whole body on every boot/restart.
+document.addEventListener("load", rescrollAfterOutputImage, true);
+document.addEventListener("error", rescrollAfterOutputImage, true);
+
+function rescrollAfterOutputImage(e) {
+    if (e.target.tagName !== "IMG" || !$(e.target).closest("#divOutput").length) return;
+    setTimeout(function () {
+        scrollToTurnStart(lastScrollTurnStart);
+    }, 100);
+}
+
+// Natural sizes of images wasm-player.js has already downloaded (see
+// getResourceUrl's preload), keyed by URL — applied to matching <img> tags as
+// they're added to the output, so they take up their real space straight
+// away instead of starting at 0x0 and pushing everything below them (a
+// Continue link, say) down once they arrive, even if the browser fetches the
+// image again rather than reusing the preload.
+var knownImageSizes = new Map();
+
+function rememberImageSize(url, width, height) {
+    knownImageSizes.set(url, { width: width, height: height });
+}
+
+// Only images with no sizing of their own — an author's width, height or
+// style must keep meaning exactly what it did. .qv-sized supplies the
+// height: auto that keeps the aspect ratio when max-width shrinks it.
+function applyKnownImageSizes($scope) {
+    $scope.find("img:not([width]):not([height]):not([style])").each(function () {
+        var size = knownImageSizes.get(this.getAttribute("src"));
+        if (!size) return;
+        this.setAttribute("width", size.width);
+        this.setAttribute("height", size.height);
+        this.classList.add("qv-sized");
+    });
+}
+
 function SetAnimateScroll(value) {
     _animateScroll = value;
 }
@@ -1086,6 +1129,7 @@ function addText(text) {
     var $div = getCurrentDiv();
     $div.append(text);
     makeCmdlinksFocusable($div);
+    applyKnownImageSizes($div);
     $("#divOutput").css("min-height", $("#divOutput").height());
 }
 
