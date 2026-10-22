@@ -31,8 +31,11 @@ internal partial class GameLoader
 
     private readonly ImplicitTypes _implicitTypes = new();
 
+    private readonly LoadMode _mode;
+
     public GameLoader(WorldModel worldModel, LoadMode mode)
     {
+        _mode = mode;
         WorldModel = worldModel;
         ScriptFactory = new ScriptFactory(worldModel);
         ScriptFactory.ErrorHandler += AddError;
@@ -142,6 +145,13 @@ internal partial class GameLoader
         {
             try
             {
+                // Scripts are still unparsed text at this point. Only when playing: the editor
+                // must show authors what's actually in their file.
+                if (_mode == LoadMode.Play)
+                {
+                    LibraryShims.Apply(WorldModel);
+                }
+
                 ResolveGame();
             }
             catch (Exception e)

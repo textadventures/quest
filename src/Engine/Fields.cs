@@ -1105,6 +1105,18 @@ public class LazyFields
         _scripts.Add(property, value);
     }
 
+    internal string? GetScript(string property)
+    {
+        CheckNotResolved();
+        return _scripts.GetValueOrDefault(property);
+    }
+
+    internal void ReplaceScript(string property, string value)
+    {
+        CheckNotResolved();
+        _scripts[property] = value;
+    }
+
     public void AddScriptDictionary(string property, IDictionary<string, string> value)
     {
         CheckNotResolved();

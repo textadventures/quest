@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  FROZEN. Do not edit, even to match later changes to Grid_CalculateMapCoordinates in
+  Core/CoreGrid.aslx. See LibraryShims.cs for what this is and why it never changes.
+
+  Wrapped around the stock Grid_CalculateMapCoordinates body inlined into games saved at ASL
+  version 600 or earlier, to fix issue #2189: a room the player arrives in without walking
+  through a known exit has no map coordinates, so drawing it throws "key 'x' was not present".
+  "before" goes ahead of the game's own body and "after" follows it. Both are the same blocks
+  added to Core/CoreGrid.aslx by the #2189 fix, as they stood when this file was written.
+
+  This lives outside Core/ so its resource name doesn't start with QuestViva.Engine.Core, and
+  a game's own <include ref="..."/> can't load it.
+-->
+<shim>
+  <before><![CDATA[
+      // The walk below only places rooms reached through an exit from a room that's already placed.
+      // A room the player arrives in some other way (a scripted MovePlayer, or an exit created after
+      // the last pass) has no coordinates yet, so place it before anything reads them.
+      if (room = playerobject.parent) {
+        coordinates = Grid_GetPlayerCoordinatesForRoom(playerobject, room)
+        if (not (DictionaryContains(coordinates, "x") and DictionaryContains(coordinates, "y") and DictionaryContains(coordinates, "z"))) {
+          // First try the room the player came from: its exits may lead here now
+          if (HasObject(playerobject, "grid_lastroom")) {
+            lastroom = playerobject.grid_lastroom
+            lastcoordinates = Grid_GetPlayerCoordinatesForRoom(playerobject, lastroom)
+            if (lastroom <> room and DictionaryContains(lastcoordinates, "x") and DictionaryContains(lastcoordinates, "y") and DictionaryContains(lastcoordinates, "z")) {
+              Grid_CalculateMapCoordinates (lastroom, playerobject)
+            }
+          }
+          // Otherwise there's no way to know where it is, so start a new level for it
+          if (not (DictionaryContains(coordinates, "x") and DictionaryContains(coordinates, "y") and DictionaryContains(coordinates, "z"))) {
+            coordinatedata = Grid_GetPlayerCoordinateDictionary(playerobject)
+            newz = 0
+            foundz = false
+            foreach (key, coordinatedata) {
+              keycoordinates = DictionaryItem(coordinatedata, key)
+              if (DictionaryContains(keycoordinates, "z")) {
+                keyz = DictionaryItem(keycoordinates, "z")
+                if (not foundz or keyz + 1 > newz) {
+                  newz = keyz + 1
+                  foundz = true
+                }
+              }
+            }
+            Grid_SetGridCoordinateForPlayer (playerobject, room, "x", 0)
+            Grid_SetGridCoordinateForPlayer (playerobject, room, "y", 0)
+            Grid_SetGridCoordinateForPlayer (playerobject, room, "z", newz)
+          }
+          room.grid_render = true
+        }
+      }
+]]></before>
+  <after><![CDATA[
+      if (room = playerobject.parent) {
+        playerobject.grid_lastroom = room
+      }
+]]></after>
+</shim>
