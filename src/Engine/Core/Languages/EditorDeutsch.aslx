@@ -546,6 +546,7 @@
   <template name="EditorScriptsEffectscharacters">Zeichen pro Wechsel</template>
   <template name="EditorScriptsGameStateGameState">Spielstatus</template>
   <template name="EditorScriptsGameStateFinishthegame">Das komplette Spiel beenden</template>
+  <template name="EditorScriptsGameStateFinishRestStillRuns">(der Rest dieses Skripts wird trotzdem ausgeführt)</template>
   <template name="EditorScriptsGameStateUndo">Eine Transaktion rückgängig machen</template>
   <template name="EditorScriptsGameStateUndoonetransaction">Mache die letzte Transaktion rückgängig</template>
   <template name="EditorScriptsGameStateStarttransaction">Starte die Transaktion für das Kommando</template>

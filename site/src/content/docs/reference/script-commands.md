@@ -205,6 +205,16 @@ finish
 
 Ends the game - no further commands are accepted, and any pending timers, menus or other prompts are cancelled.
 
+The rest of the script that called `finish` still runs, so you can print an epilogue after it:
+
+```quest
+msg ("You have escaped the castle!")
+finish
+msg ("Thanks for playing.")
+```
+
+If you don't want anything after `finish` to run, make it the last line of the script.
+
 ## firsttime
 ```quest
 firsttime { script1 } [ otherwise { script2 } ]

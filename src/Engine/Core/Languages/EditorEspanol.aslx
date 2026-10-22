@@ -548,6 +548,7 @@
   <template name="EditorScriptsEffectscharacters">caracteres a la vez</template>
   <template name="EditorScriptsGameStateGameState">Estado del juego</template>
   <template name="EditorScriptsGameStateFinishthegame">Terminar el juego</template>
+  <template name="EditorScriptsGameStateFinishRestStillRuns">(el resto de este script se sigue ejecutando)</template>
   <template name="EditorScriptsGameStateUndo">Deshacer</template>
   <template name="EditorScriptsGameStateUndoonetransaction">Deshacer un movimiento</template>
   <template name="EditorScriptsGameStateStarttransaction">Comenzar movimiento por comando</template>
