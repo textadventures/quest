@@ -1298,6 +1298,62 @@ public sealed class EditorController : IDisposable
         }
     }
 
+    // What's still set for a feature after it's turned off. A feature ticked on an object
+    // (feature_container) covers that object; one ticked on the game (feature_asktell) covers every
+    // object, since its tabs appear on all of them. With onlyThisElement, just the given element is
+    // checked, against every tab for the feature that it has.
+    public List<FeatureLeftovers> GetFeatureLeftovers(string elementKey, string featureAttribute,
+        bool onlyThisElement = false)
+    {
+        var gameWide = !onlyThisElement && elementKey == WorldModel.Game.Name;
+        var elements = gameWide ? WorldModel.Objects : [WorldModel.Elements.Get(elementKey)];
+        var result = new List<FeatureLeftovers>();
+
+        foreach (var element in elements)
+        {
+            var editorName = GetElementEditorName(element.Name);
+            if (editorName == null)
+            {
+                continue;
+            }
+
+            var leftovers = GetEditorDefinition(editorName).Tabs.Values
+                .OfType<EditorTab>()
+                .Where(t => t.FeatureAttribute == featureAttribute && (onlyThisElement || t.IsGameFeature == gameWide))
+                .Select(t => t.GetLeftovers(element))
+                .OfType<FeatureLeftovers>()
+                .ToList();
+
+            if (leftovers.Count > 0)
+            {
+                result.Add(new FeatureLeftovers(element.Name,
+                    [.. leftovers.SelectMany(l => l.Types).Distinct()],
+                    [.. leftovers.SelectMany(l => l.Attributes).Distinct()],
+                    [.. leftovers.SelectMany(l => l.Labels).Distinct()]));
+            }
+        }
+
+        return result;
+    }
+
+    // Removes the leftovers' types and attributes, as part of the caller's transaction.
+    public void RemoveFeatureLeftovers(IEnumerable<FeatureLeftovers> leftovers)
+    {
+        foreach (var leftover in leftovers)
+        {
+            var element = WorldModel.Elements.Get(leftover.ElementKey);
+            foreach (var typeName in leftover.Types)
+            {
+                element.Fields.RemoveTypeUndoable(WorldModel.Elements.Get(ElementType.ObjectType, typeName));
+            }
+
+            foreach (var attribute in leftover.Attributes)
+            {
+                element.Fields.RemoveField(attribute);
+            }
+        }
+    }
+
     public bool DoesElementInheritType(string elementName, string typeName)
     {
         var element = WorldModel.Elements.Get(elementName);

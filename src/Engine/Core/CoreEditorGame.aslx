@@ -747,7 +747,6 @@
 
     <tab>
       <onlydisplayif>game.feature_advancedscripts</onlydisplayif>
-      <alsodisplayifset>inituserinterface; unresolvedcommandhandler; scopebackdrop</alsodisplayifset>
       <caption>[EditorGameAdvancedScript]</caption>
       <helpurl>/howto/scripting/advanced-game-scripts/</helpurl>
       <advanced/>
@@ -756,24 +755,18 @@
         <controltype>script</controltype>
         <caption>[EditorGameInitUIscript]</caption>
         <attribute>inituserinterface</attribute>
-        <onlydisplayif>game.feature_advancedscripts</onlydisplayif>
-        <alsodisplayifset>inituserinterface</alsodisplayifset>
       </control>
 
       <control>
         <controltype>script</controltype>
         <caption>[EditorGameUnresolvedscript]</caption>
         <attribute>unresolvedcommandhandler</attribute>
-        <onlydisplayif>game.feature_advancedscripts</onlydisplayif>
-        <alsodisplayifset>unresolvedcommandhandler</alsodisplayifset>
       </control>
 
       <control>
         <controltype>script</controltype>
         <caption>[EditorGameBackdropscript]</caption>
         <attribute>scopebackdrop</attribute>
-        <onlydisplayif>game.feature_advancedscripts</onlydisplayif>
-        <alsodisplayifset>scopebackdrop</alsodisplayifset>
       </control>
 
     </tab>

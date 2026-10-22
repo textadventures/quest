@@ -7,9 +7,9 @@ namespace QuestViva.EditorCoreTests;
 // <alsodisplayifset> keeps a tab or control visible while the element has its own value for the
 // named attribute, even when its other visibility rules would hide it. Hiding a control doesn't
 // stop its attribute taking effect in the game, so without this an author could be left with a
-// live value they can't see: an _initialise_ script that runs after "Run an initialisation script"
-// is unticked (#1586), or an openscript left over from the Openable/Closable container type that
-// replaces a plain container's open behaviour (#2513).
+// live value they can't see, such as an openscript left over from the Openable/Closable container
+// type that replaces a plain container's open behaviour (#2513). Tabs hidden by a feature checkbox
+// are covered by FeatureLeftoversTests instead.
 [TestClass]
 public class AlsoDisplayIfSetTests
 {
@@ -26,36 +26,6 @@ public class AlsoDisplayIfSetTests
     public void Cleanup()
     {
         _controller.Uninitialise();
-    }
-
-    [TestMethod]
-    public async Task InitialiseTabHiddenWhenFeatureOffAndNoScript()
-    {
-        var (tab, _) = FindTabAndControl("_initialise_");
-        Assert.IsFalse(await tab.IsTabVisible(Data()));
-    }
-
-    [TestMethod]
-    public async Task InitialiseScriptShownAsLeftoverWhenFeatureOff()
-    {
-        _controller.CreateNewEditableScripts("thing", "_initialise_", "msg", false);
-
-        var (tab, control) = FindTabAndControl("_initialise_");
-        Assert.IsTrue(await tab.IsTabVisible(Data()));
-        Assert.IsTrue(await control.IsControlVisible(Data()));
-        Assert.IsTrue(await control.IsControlVisibleOnlyBecauseSet(Data()));
-    }
-
-    [TestMethod]
-    public async Task InitialiseScriptNotLeftoverWhenFeatureOn()
-    {
-        Data().SetAttribute("feature_startscript", true);
-        _controller.CreateNewEditableScripts("thing", "_initialise_", "msg", false);
-
-        var (tab, control) = FindTabAndControl("_initialise_");
-        Assert.IsTrue(await tab.IsTabVisible(Data()));
-        Assert.IsTrue(await control.IsControlVisible(Data()));
-        Assert.IsFalse(await control.IsControlVisibleOnlyBecauseSet(Data()));
     }
 
     [TestMethod]

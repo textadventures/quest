@@ -71,7 +71,17 @@ internal record ControlInfo(
     // to remove it.
     bool Leftover = false);
 
-internal record TabInfo(string? Caption, List<ControlInfo> Controls, string? HelpUrl = null);
+// LeftoverFeature is set when the tab is shown only because its feature (a "feature_..."
+// checkbox, on the game when LeftoverFeatureOnGame) is turned off while the element still has
+// settings for it - the frontend warns that they still take effect and offers to remove them.
+internal record TabInfo(
+    string? Caption,
+    List<ControlInfo> Controls,
+    string? HelpUrl = null,
+    string? LeftoverFeature = null,
+    bool LeftoverFeatureOnGame = false);
+
+internal record FeatureLeftoverInfo(string Element, List<string> Labels);
 
 // See WasmEditorBridge.ResolveLocalCover — DataUrl is null when Name is only a resource name
 // the caller must resolve itself (a plain unpacked .aslx's sibling-file cover).
@@ -234,6 +244,7 @@ internal record ExpressionFunctionData(string Name, List<string> Parameters, boo
 [JsonSerializable(typeof(List<VerbInfo>))]
 [JsonSerializable(typeof(List<ExpressionFunctionData>))]
 [JsonSerializable(typeof(LocalCoverResult))]
+[JsonSerializable(typeof(List<FeatureLeftoverInfo>))]
 internal partial class WasmEditorJsonContext : JsonSerializerContext
 {
 }
@@ -607,7 +618,9 @@ public partial class WasmEditorBridge
                     AddDropdownTypeValues(attrs, visibleControls, key, data);
                 }
 
-                tabs.Add(new TabInfo(tab.Caption, await ToControlInfosAsync(visibleControls, key, data), tab.HelpUrl));
+                var leftover = data != null && await tab.IsTabVisibleOnlyForLeftovers(data);
+                tabs.Add(new TabInfo(tab.Caption, await ToControlInfosAsync(visibleControls, key, data), tab.HelpUrl,
+                    leftover ? tab.FeatureAttribute : null, leftover && tab.IsGameFeature));
             }
 
             var visibleTopControls = data != null
@@ -3349,6 +3362,79 @@ public partial class WasmEditorBridge
         return JsonSerializer.Serialize(
             new FullAttributeData(attributes, inheritedTypes),
             WasmEditorJsonContext.Default.FullAttributeData);
+    }
+
+    // What would still be set, and still take effect in the game, if the feature checkbox
+    // featureAttribute were turned off on elementKey - see EditorController.GetFeatureLeftovers.
+    // An empty list means unticking it leaves nothing behind.
+    [JSExport]
+    public static string GetFeatureLeftovers(string elementKey, string featureAttribute)
+    {
+        if (_controller == null)
+        {
+            return "[]";
+        }
+
+        var result = _controller.GetFeatureLeftovers(elementKey, featureAttribute)
+            .Select(l => new FeatureLeftoverInfo(l.ElementKey, [.. l.Labels]))
+            .ToList();
+        return JsonSerializer.Serialize(result, WasmEditorJsonContext.Default.ListFeatureLeftoverInfo);
+    }
+
+    // Unticks a feature checkbox, optionally removing everything still set for it, as one undo step.
+    [JSExport]
+    public static string TurnOffFeature(string elementKey, string featureAttribute, bool removeLeftovers)
+    {
+        if (_controller?.GetEditorData(elementKey) is not { } data)
+        {
+            return "error";
+        }
+
+        _controller.StartTransaction($"Turn off {featureAttribute}");
+        try
+        {
+            if (removeLeftovers)
+            {
+                _controller.RemoveFeatureLeftovers(_controller.GetFeatureLeftovers(elementKey, featureAttribute));
+            }
+
+            data.SetAttribute(featureAttribute, false);
+            return "ok";
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;
+        }
+        finally
+        {
+            _controller.EndTransaction();
+        }
+    }
+
+    // Removes what elementKey alone still has set for a feature that's turned off, as one undo step.
+    [JSExport]
+    public static string RemoveFeatureLeftovers(string elementKey, string featureAttribute)
+    {
+        if (_controller == null)
+        {
+            return "error";
+        }
+
+        _controller.StartTransaction($"Remove {featureAttribute} settings");
+        try
+        {
+            _controller.RemoveFeatureLeftovers(
+                _controller.GetFeatureLeftovers(elementKey, featureAttribute, onlyThisElement: true));
+            return "ok";
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;
+        }
+        finally
+        {
+            _controller.EndTransaction();
+        }
     }
 
     [JSExport]
