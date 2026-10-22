@@ -10,6 +10,11 @@
       <controltype>label</controltype>
       <caption>[EditorScriptsGameStateFinishthegame]</caption>
     </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsGameStateFinishRestStillRuns]</caption>
+    </control>
   </editor>
 
   <editor>

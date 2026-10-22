@@ -545,6 +545,7 @@
   <template name="EditorScriptsEffectscharacters">characters at a time</template>
   <template name="EditorScriptsGameStateGameState">Game State</template>
   <template name="EditorScriptsGameStateFinishthegame">Finish the game</template>
+  <template name="EditorScriptsGameStateFinishRestStillRuns">(the rest of this script still runs)</template>
   <template name="EditorScriptsGameStateUndo">Undo</template>
   <template name="EditorScriptsGameStateUndoonetransaction">Undo one transaction</template>
   <template name="EditorScriptsGameStateStarttransaction">Start transaction for command</template>
