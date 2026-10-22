@@ -1,0 +1,28 @@
+<asl version="600">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!--
+    Fixture for issue #2183: a game that turns the compass off must not get
+    the mobile exits strip either.
+  -->
+  <game name="Exits Strip Compass Off">
+    <turnoffcompass />
+  </game>
+
+  <object name="hall">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <exit alias="north" to="kitchen">
+      <inherit name="northdirection" />
+    </exit>
+  </object>
+
+  <object name="kitchen">
+    <inherit name="editor_room" />
+  </object>
+
+</asl>

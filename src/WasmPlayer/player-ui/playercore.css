@@ -506,6 +506,46 @@ div.jj_menu_item_hover {
     justify-content: center;
 }
 
+/* The exits strip under the transcript (issue #2183) - the compass itself is
+   behind the hamburger here. updateExitStrip() fills it and sets
+   .qv-exits-active only while there's an exit to take; the wide layout never
+   shows it, since the compass is on screen there already. It scrolls sideways
+   rather than wrapping, so a room with many exits costs one row, not several.
+   Colours follow the game's own text colour, whatever the game has set it to. */
+#qv-exits {
+    display: none;
+}
+
+.qv-narrow #qv-exits.qv-exits-active {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 2px 0 8px;
+    scrollbar-width: thin;
+}
+
+.qv-narrow #qv-exits .qv-exit {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0 14px;
+    font: inherit;
+    font-size: 16px;
+    color: inherit;
+    background: transparent;
+    border: 1px solid currentColor;
+    border-radius: 22px;
+    cursor: pointer;
+}
+
+.qv-narrow #qv-exits .qv-exit-arrow {
+    font-size: 18px;
+    line-height: 1;
+}
+
 /* Hyperlink pop-up menu. The font size itself is the game's to choose (see
    SetMenuFontSize in playercore.js, which applies a floor here rather than
    overriding it outright), so only the row height is set from CSS. */

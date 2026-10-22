@@ -305,6 +305,7 @@ function initPlayerUI() {
             $("#gamePanes").hide();
         }
         doLayout();
+        updateExitStrip();
     };
 
     const updatePanelImageMaxHeight = (newMaxHeight) => {
@@ -417,6 +418,10 @@ var _pauseRestorePending = false;
 // chained/nested wait()s at game start - previously Save flickered briefly
 // enabled between each one, since it was only gated on the narrower _waitMode.
 var _turnPending = true;
+// Whether the engine has ever called setTurnPending() - only the v5+ engine
+// does; a legacy (.asl/.cas) game never reports, so its _turnPending is just
+// the initial guess and never settles.
+var _turnPendingReported = false;
 var _gameFinished = false;
 
 // _gameFinished deliberately does NOT gate this button (only _turnPending
@@ -430,12 +435,15 @@ function updateSaveButtonEnabled() {
 
 function setTurnPending(pending) {
     _turnPending = pending;
+    _turnPendingReported = true;
     updateSaveButtonEnabled();
+    updateExitStrip();
 }
 
 function beginPause(ms) {
     _pauseMode = true;
     $("#txtCommandDiv").hide();
+    updateExitStrip();
     window.setTimeout(function () {
         endPause()
     }, ms);
@@ -458,6 +466,7 @@ function endPause() {
 // it restores it itself.
 function pauseEnded() {
     _pauseRestorePending = false;
+    updateExitStrip();
     if (_pauseMode || _gameFinished || _waitingForSoundToFinish) return;
     $("#txtCommandDiv").show();
     focusCommandInput();
@@ -568,6 +577,7 @@ function uiShow(element) {
         $(element).show();
         updateStatusVisibility();
     }
+    updateExitStrip();
 }
 
 function uiHide(element) {
@@ -577,6 +587,7 @@ function uiHide(element) {
         $(element).hide();
         updateStatusVisibility();
     }
+    updateExitStrip();
 }
 
 function updateStatusVisibility() {
@@ -883,6 +894,8 @@ var _compassDirs = ["northwest", "north", "northeast", "west", "east", "southwes
 
 function updateCompass(listData) {
     var directions = listData.split("/");
+    _exitStripDirections = directions;
+    updateExitStrip();
     updateDir(directions, "NW", _compassDirs[0]);
     updateDir(directions, "N", _compassDirs[1]);
     updateDir(directions, "NE", _compassDirs[2]);
@@ -903,6 +916,55 @@ function updateDir(directions, label, dir) {
     } else {
         $("#cmdCompass" + label).button("enable");
     }
+}
+
+// On a narrow window the compass is tucked away in the hamburger overlay, so
+// every move meant opening it, scrolling down to the compass and closing it
+// again to read what happened. #qv-exits repeats just the available exits as a
+// row of buttons under the transcript instead (issue #2183).
+//
+// It's a separate element rather than the compass itself moved into place:
+// published games carry their own copy of Core.aslx, which hides the compass,
+// reorders it and recolours its buttons by these exact ids, so the compass DOM
+// has to stay where it is. The strip follows it instead - shown only while the
+// compass would be (not turned off, panes showing, game not over), and only
+// between turns, so a tap can't be swallowed as the answer to a get input or
+// menu. playercore.css only shows it on the narrow layout.
+var _exitStripDirections = [];
+var _exitStripArrows = ["\u2196", "\u2191", "\u2197", "\u2190", "\u2192", "\u2199", "\u2193", "\u2198", "\u21A5", "\u21A7", "", ""];
+var _exitStripButtonIds = ["NW", "N", "NE", "W", "E", "SW", "S", "SE", "U", "D", "In", "Out"];
+
+function updateExitStrip() {
+    var strip = document.getElementById("qv-exits");
+    if (!strip) return;
+    strip.replaceChildren();
+    var compassShowing = isElementVisible("#gamePanes") && isElementVisible("#gamePanesRunning")
+        && isElementVisible("#compassLabel");
+    var betweenTurns = !(_turnPending && _turnPendingReported) && !_waitMode && !_pauseMode && !_gameFinished;
+    if (compassShowing && betweenTurns) {
+        _compassDirs.forEach(function (dir, i) {
+            if ($.inArray(dir, _exitStripDirections) == -1) return;
+            var button = document.createElement("button");
+            button.type = "button";
+            button.className = "qv-exit";
+            // "in"/"out" have their own interface strings for the label, which
+            // can differ from the command (setInterfaceString's In/OutButtonLabel).
+            var label = (i >= 10 && $("#cmdCompass" + _exitStripButtonIds[i]).text().trim()) || dir;
+            if (_exitStripArrows[i]) {
+                var arrow = document.createElement("span");
+                arrow.className = "qv-exit-arrow";
+                arrow.setAttribute("aria-hidden", "true");
+                arrow.textContent = _exitStripArrows[i];
+                button.appendChild(arrow);
+            }
+            button.appendChild(document.createTextNode(label));
+            button.addEventListener("click", function () {
+                compassClick(_compassDirs[i]);
+            });
+            strip.appendChild(button);
+        });
+    }
+    strip.classList.toggle("qv-exits-active", strip.childElementCount > 0);
 }
 
 function paneButtonClick(target, button) {
@@ -1058,6 +1120,7 @@ function beginWait() {
     $("#txtCommand").hide();
     $("#txtCommandPrompt").hide();
     $("#endWaitLink").show();
+    updateExitStrip();
     markScrollPosition();
 }
 
@@ -1079,6 +1142,7 @@ function endWait() {
 // unconditionally (as this used to, synchronously at click time) is what made
 // it flash into view for the length of the round trip between chained waits.
 function waitEnded() {
+    updateExitStrip();
     if (_waitMode) return;
     $("#txtCommand").show();
     $("#txtCommandPrompt").show();
@@ -1089,6 +1153,7 @@ function gameFinished() {
     _gameFinished = true;
     updateSaveButtonEnabled();
     disableInterface();
+    updateExitStrip();
 }
 
 function disableInterface() {
@@ -1397,12 +1462,15 @@ function setInterfaceString(name, text) {
             break;
         case "CompassLabel":
             $("#compassLabel button.accordion-header-text").html(text);
+            $("#qv-exits").attr("aria-label", $("<div>").html(text).text());
             break;
         case "InButtonLabel":
             $("#cmdCompassIn span").html(text);
+            updateExitStrip();
             break;
         case "OutButtonLabel":
             $("#cmdCompassOut span").html(text);
+            updateExitStrip();
             break;
         case "EmptyListLabel":
             break;
