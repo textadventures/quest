@@ -1,0 +1,61 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <game name="GridOrphanRoomTest">
+    <gridmap />
+  </game>
+
+  <object name="RoomA">
+    <inherit name="editor_room" />
+    <attr name="grid_width" type="int">2</attr>
+    <attr name="grid_length" type="int">2</attr>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <exit alias="down" to="Cellar">
+      <inherit name="downdirection" />
+    </exit>
+  </object>
+
+  <!-- Gives the map a charted room below RoomA, so the new level for an orphan has to be found
+       by scanning for the highest z, not just by counting levels. -->
+  <object name="Cellar">
+    <inherit name="editor_room" />
+    <exit alias="up" to="RoomA">
+      <inherit name="updirection" />
+    </exit>
+  </object>
+
+  <!-- No exit anywhere leads to RoomB or RoomD: the only way in is a scripted MovePlayer. -->
+  <object name="RoomB">
+    <inherit name="editor_room" />
+  </object>
+
+  <object name="RoomD">
+    <inherit name="editor_room" />
+  </object>
+
+  <!-- RoomC is only reachable through an exit created after RoomA's own pass has already run. -->
+  <object name="RoomC">
+    <inherit name="editor_room" />
+    <attr name="grid_width" type="int">2</attr>
+    <attr name="grid_length" type="int">2</attr>
+  </object>
+
+  <command name="cmd_teleport">
+    <pattern>teleport #text#</pattern>
+    <script>
+      MovePlayer (GetObject(text))
+    </script>
+  </command>
+
+  <command name="cmd_dig">
+    <pattern>dig</pattern>
+    <script>
+      create exit ("east", RoomA, RoomC, "eastdirection")
+    </script>
+  </command>
+
+</asl>

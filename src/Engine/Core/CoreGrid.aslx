@@ -5,6 +5,43 @@
 
   <function name="Grid_CalculateMapCoordinates" parameters="room, playerobject">
     <![CDATA[
+      // The walk below only places rooms reached through an exit from a room that's already placed.
+      // A room the player arrives in some other way (a scripted MovePlayer, or an exit created after
+      // the last pass) has no coordinates yet, so place it before anything reads them.
+      if (room = playerobject.parent) {
+        coordinates = Grid_GetPlayerCoordinatesForRoom(playerobject, room)
+        if (not (DictionaryContains(coordinates, "x") and DictionaryContains(coordinates, "y") and DictionaryContains(coordinates, "z"))) {
+          // First try the room the player came from: its exits may lead here now
+          if (HasObject(playerobject, "grid_lastroom")) {
+            lastroom = playerobject.grid_lastroom
+            lastcoordinates = Grid_GetPlayerCoordinatesForRoom(playerobject, lastroom)
+            if (lastroom <> room and DictionaryContains(lastcoordinates, "x") and DictionaryContains(lastcoordinates, "y") and DictionaryContains(lastcoordinates, "z")) {
+              Grid_CalculateMapCoordinates (lastroom, playerobject)
+            }
+          }
+          // Otherwise there's no way to know where it is, so start a new level for it
+          if (not (DictionaryContains(coordinates, "x") and DictionaryContains(coordinates, "y") and DictionaryContains(coordinates, "z"))) {
+            coordinatedata = Grid_GetPlayerCoordinateDictionary(playerobject)
+            newz = 0
+            foundz = false
+            foreach (key, coordinatedata) {
+              keycoordinates = DictionaryItem(coordinatedata, key)
+              if (DictionaryContains(keycoordinates, "z")) {
+                keyz = DictionaryItem(keycoordinates, "z")
+                if (not foundz or keyz + 1 > newz) {
+                  newz = keyz + 1
+                  foundz = true
+                }
+              }
+            }
+            Grid_SetGridCoordinateForPlayer (playerobject, room, "x", 0)
+            Grid_SetGridCoordinateForPlayer (playerobject, room, "y", 0)
+            Grid_SetGridCoordinateForPlayer (playerobject, room, "z", newz)
+          }
+          room.grid_render = true
+        }
+      }
+
       if (room.parent <> null) {
         if (room.grid_parent_offset_auto) {
           room.grid_parent_offset_x = (room.parent.grid_width - room.grid_width) /2.0
@@ -133,6 +170,10 @@
             exit.to.grid_render = exit.visible
           }
         }
+      }
+
+      if (room = playerobject.parent) {
+        playerobject.grid_lastroom = room
       }
     ]]>
   </function>
