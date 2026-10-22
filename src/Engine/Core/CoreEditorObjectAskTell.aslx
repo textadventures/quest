@@ -5,6 +5,7 @@
     <helpurl>/howto/characters/ask-tell/</helpurl>
     <mustnotinherit>editor_room; dialoguepage</mustnotinherit>
     <onlydisplayif>game.feature_asktell</onlydisplayif>
+    <alsodisplayifset>ask; askdefault; tell; telldefault; tellto; telltodefault</alsodisplayifset>
 
     <control>
       <controltype>title</controltype>
@@ -15,12 +16,16 @@
       <controltype>scriptdictionary</controltype>
       <caption>[EditorObjectAskTellAskabout]</caption>
       <attribute>ask</attribute>
+      <onlydisplayif>game.feature_asktell</onlydisplayif>
+      <alsodisplayifset>ask</alsodisplayifset>
       <keyprompt>[EditorObjectAskTellPleaseenter]</keyprompt>
     </control>
 
     <control>
       <controltype>script</controltype>
       <attribute>askdefault</attribute>
+      <onlydisplayif>game.feature_asktell</onlydisplayif>
+      <alsodisplayifset>askdefault</alsodisplayifset>
       <caption>[EditorObjectAskScripttorun]</caption>
       <advanced/>
     </control>
@@ -34,12 +39,16 @@
       <controltype>scriptdictionary</controltype>
       <caption>[EditorObjectAskTellTellabout]</caption>
       <attribute>tell</attribute>
+      <onlydisplayif>game.feature_asktell</onlydisplayif>
+      <alsodisplayifset>tell</alsodisplayifset>
       <keyprompt>[EditorObjectAskTellPleaseenter]</keyprompt>
     </control>
 
     <control>
       <controltype>script</controltype>
       <attribute>telldefault</attribute>
+      <onlydisplayif>game.feature_asktell</onlydisplayif>
+      <alsodisplayifset>telldefault</alsodisplayifset>
       <caption>[EditorObjectTellScripttorun]</caption>
       <advanced/>
     </control>
@@ -53,12 +62,16 @@
       <controltype>scriptdictionary</controltype>
       <caption>[EditorObjectAskTellTelltoabout]</caption>
       <attribute>tellto</attribute>
+      <onlydisplayif>game.feature_asktell</onlydisplayif>
+      <alsodisplayifset>tellto</alsodisplayifset>
       <keyprompt>[EditorObjectAskTellPleaseenter]</keyprompt>
     </control>
 
     <control>
       <controltype>script</controltype>
       <attribute>telltodefault</attribute>
+      <onlydisplayif>game.feature_asktell</onlydisplayif>
+      <alsodisplayifset>telltodefault</alsodisplayifset>
       <caption>[EditorObjectTelltoScripttorun]</caption>
       <advanced/>
     </control>

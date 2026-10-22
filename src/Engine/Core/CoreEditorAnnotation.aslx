@@ -19,11 +19,14 @@
     <caption>[EditorObjectStartscriptStartscript]</caption>
     <helpurl>/understanding/when-scripts-run/#object-initialisation-scripts</helpurl>
     <onlydisplayif>this.feature_startscript</onlydisplayif>
+    <alsodisplayifset>_initialise_</alsodisplayifset>
 
     <control>
       <controltype>script</controltype>
       <caption>[EditorObjectScriptsInitial]</caption>
       <attribute>_initialise_</attribute>
+      <onlydisplayif>this.feature_startscript</onlydisplayif>
+      <alsodisplayifset>_initialise_</alsodisplayifset>
     </control>
   </tab>
 </library>

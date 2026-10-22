@@ -1016,6 +1016,16 @@
 {/snippet}
 
 {#snippet controlRow(ctrl: ControlInfo)}
+    {#if ctrl.leftover && ctrl.attribute !== null}
+        <div class="mx-3 mt-2 flex items-center gap-2 rounded-container border border-warning-300-700 bg-warning-100-900 px-2 py-1.5 text-xs">
+            <span class="flex-1">{t("propertyEditor.leftoverMessage")}</span>
+            <button
+                type="button"
+                class="btn btn-xs preset-filled-warning-500 flex-shrink-0"
+                onclick={() => { if ($selectedKey) recordResult(ctrl.attribute!, removeAttribute($selectedKey, ctrl.attribute!)); }}
+            >{t("propertyEditor.leftoverRemove")}</button>
+        </div>
+    {/if}
     {#if ctrl.controlType === "attributes"}
         <AttributesEditor />
     {:else if ctrl.controlType === "title"}

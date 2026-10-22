@@ -8,8 +8,10 @@
   <implied element="control" property="minimum" type="int"/>
   <implied element="control" property="mustinherit" type="simplestringlist"/>
   <implied element="control" property="mustnotinherit" type="simplestringlist"/>
+  <implied element="control" property="alsodisplayifset" type="simplestringlist"/>
   <implied element="tab" property="mustinherit" type="simplestringlist"/>
   <implied element="tab" property="mustnotinherit" type="simplestringlist"/>
+  <implied element="tab" property="alsodisplayifset" type="simplestringlist"/>
   <implied element="tab" property="parent" type="object"/>
 
   <template name="EditorImageFormats">*.jpg;*.jpeg;*.png;*.gif</template>

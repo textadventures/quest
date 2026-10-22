@@ -53,6 +53,7 @@
       <caption>[EditorObjectContainerScripttorun]</caption>
       <attribute>openscript</attribute>
       <mustinherit>openable</mustinherit>
+      <alsodisplayifset>openscript</alsodisplayifset>
     </control>
 
     <control>
@@ -60,6 +61,7 @@
       <caption>[EditorObjectContainerScripttorun2]</caption>
       <attribute>closescript</attribute>
       <mustinherit>openable</mustinherit>
+      <alsodisplayifset>closescript</alsodisplayifset>
     </control>
 
     <control>

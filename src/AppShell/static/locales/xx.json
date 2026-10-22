@@ -173,6 +173,8 @@
     "propertyEditor.linkTargetLabels.exit": "[Éxít]",
     "propertyEditor.linkTargetLabels.image": "[Ímágé]",
     "propertyEditor.linkTextToShow": "[Téxt tó shów]",
+    "propertyEditor.leftoverMessage": "[Thís ís stíll sét ón thís óbjéct ánd stíll tákés éfféct whén thé gámé runs, évén thóugh ít wóuld nórmállý bé híddén héré.]",
+    "propertyEditor.leftoverRemove": "[Rémóvé]",
     "common.add": "[Ádd]",
     "common.true": "[Trúé]",
     "common.false": "[Fálsé]",
