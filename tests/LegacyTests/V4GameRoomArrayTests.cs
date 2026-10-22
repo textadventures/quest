@@ -14,7 +14,7 @@ public class V4GameRoomArrayTests
     public async Task Init()
     {
         var filename = Path.Combine(["..", "..", "..", "room-array-test.asl"]);
-        var gameData = new GameData(File.ReadAllBytes(filename), filename);
+        var gameData = await new FileGameDataProvider(filename).GetData();
         _game = new V4Game(gameData, null);
         _game.PrintText += _player.PrintText;
         await _game.Initialise(_player);
