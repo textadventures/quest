@@ -77,8 +77,8 @@ internal partial class GameSaver
         writer.WriteStartElement("asl");
         if (mode == SaveMode.Editor)
         {
-            _worldModel.Version = WorldModelVersion.v600;
-            _worldModel.VersionString = "600";
+            _worldModel.Version = WorldModelVersion.v610;
+            _worldModel.VersionString = "610";
         }
 
         writer.WriteAttributeString("version", _worldModel.VersionString);

@@ -91,6 +91,15 @@
         <None Update="gridexitvisibilitytest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="gridorphanroomtest.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="gridshimtest.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="GridShim\*.txt">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="savetest.aslx">
             <SubType>Designer</SubType>
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>

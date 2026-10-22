@@ -1,0 +1,132 @@
+
+    if (room.parent <> null) {
+      if (room.grid_parent_offset_auto) {
+        room.grid_parent_offset_x = (room.parent.grid_width - room.grid_width) /2.0
+        room.grid_parent_offset_y = (room.parent.grid_length - room.grid_length) /2.0
+      }
+
+      Grid_SetGridCoordinateForPlayer (playerobject, room.parent, "x", Grid_GetGridCoordinateForPlayer(playerobject, room, "x") - room.grid_parent_offset_x)
+      Grid_SetGridCoordinateForPlayer (playerobject, room.parent, "y", Grid_GetGridCoordinateForPlayer(playerobject, room, "y") - room.grid_parent_offset_y)
+      Grid_SetGridCoordinateForPlayer (playerobject, room.parent, "z", Grid_GetGridCoordinateForPlayer(playerobject, room, "z"))
+
+      room.parent.grid_render = true
+
+      Grid_CalculateMapCoordinates (room.parent, playerobject)
+    }
+
+    // go through all exits in room, set x,y co-ordinates for the rooms they point to
+    foreach (exit, AllExits()) {
+      if (exit.parent = room and not GetBoolean(exit, "lookonly")) {
+        if (DoesInherit(exit, "northdirection")) {
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "x", Grid_GetGridCoordinateForPlayer(playerobject, room, "x") + room.grid_width/2.0 + exit.grid_offset_x)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "y", Grid_GetGridCoordinateForPlayer(playerobject, room, "y") + exit.grid_offset_y)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "x", Grid_GetGridCoordinateForPlayer(playerobject, exit, "x") - exit.to.grid_width/2.0)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "y", (Grid_GetGridCoordinateForPlayer(playerobject, exit, "y") - exit.to.grid_length) - exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "z", Grid_GetGridCoordinateForPlayer(playerobject, room, "z"))
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "end_x", Grid_GetGridCoordinateForPlayer(playerobject, exit, "x"))
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "end_y", Grid_GetGridCoordinateForPlayer(playerobject, exit, "y") - exit.grid_length)
+          exit.grid_render = true
+          exit.to.grid_render = true
+        }
+        else if (DoesInherit(exit, "eastdirection")) {
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "x", Grid_GetGridCoordinateForPlayer(playerobject, room, "x") + room.grid_width + exit.grid_offset_x)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "y", Grid_GetGridCoordinateForPlayer(playerobject, room, "y") + room.grid_length/2.0 + exit.grid_offset_y)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "x", Grid_GetGridCoordinateForPlayer(playerobject, exit, "x") + exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "y", Grid_GetGridCoordinateForPlayer(playerobject, exit, "y") - exit.to.grid_length/2.0)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "z", Grid_GetGridCoordinateForPlayer(playerobject, room, "z"))
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "end_x", Grid_GetGridCoordinateForPlayer(playerobject, exit, "x") + exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "end_y", Grid_GetGridCoordinateForPlayer(playerobject, exit, "y"))
+          exit.grid_render = true
+          exit.to.grid_render = true
+        }
+        else if (DoesInherit(exit, "southdirection")) {
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "x", Grid_GetGridCoordinateForPlayer(playerobject, room, "x") + room.grid_width/2.0 + exit.grid_offset_x)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "y", Grid_GetGridCoordinateForPlayer(playerobject, room, "y") + room.grid_length + exit.grid_offset_y)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "x", Grid_GetGridCoordinateForPlayer(playerobject, exit, "x") - exit.to.grid_width/2.0)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "y", Grid_GetGridCoordinateForPlayer(playerobject, exit, "y") + exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "z", Grid_GetGridCoordinateForPlayer(playerobject, room, "z"))
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "end_x", Grid_GetGridCoordinateForPlayer(playerobject, exit, "x"))
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "end_y", Grid_GetGridCoordinateForPlayer(playerobject, exit, "y") + exit.grid_length)
+          exit.grid_render = true
+          exit.to.grid_render = true
+        }
+        else if (DoesInherit(exit, "westdirection")) {
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "x", Grid_GetGridCoordinateForPlayer(playerobject, room, "x") + exit.grid_offset_x)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "y", Grid_GetGridCoordinateForPlayer(playerobject, room, "y") + room.grid_length/2.0 + exit.grid_offset_y)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "x", (Grid_GetGridCoordinateForPlayer(playerobject, exit, "x") - exit.to.grid_width) - exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "y", Grid_GetGridCoordinateForPlayer(playerobject, exit, "y") - exit.to.grid_length/2.0)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "z", Grid_GetGridCoordinateForPlayer(playerobject, room, "z"))
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "end_x", Grid_GetGridCoordinateForPlayer(playerobject, exit, "x") - exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "end_y", Grid_GetGridCoordinateForPlayer(playerobject, exit, "y"))
+          exit.grid_render = true
+          exit.to.grid_render = true
+        }
+        else if (DoesInherit(exit, "northwestdirection")) {
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "x", Grid_GetGridCoordinateForPlayer(playerobject, room, "x") + exit.grid_offset_x)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "y", Grid_GetGridCoordinateForPlayer(playerobject, room, "y") + exit.grid_offset_y)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "x", (Grid_GetGridCoordinateForPlayer(playerobject, exit, "x") - exit.to.grid_width) - exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "y", (Grid_GetGridCoordinateForPlayer(playerobject, exit, "y") - exit.to.grid_length) - exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "z", Grid_GetGridCoordinateForPlayer(playerobject, room, "z"))
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "end_x", Grid_GetGridCoordinateForPlayer(playerobject, exit, "x") - exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "end_y", Grid_GetGridCoordinateForPlayer(playerobject, exit, "y") - exit.grid_length)
+          exit.grid_render = true
+          exit.to.grid_render = true
+        }
+        else if (DoesInherit(exit, "northeastdirection")) {
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "x", Grid_GetGridCoordinateForPlayer(playerobject, room, "x") + room.grid_width + exit.grid_offset_x)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "y", Grid_GetGridCoordinateForPlayer(playerobject, room, "y") + exit.grid_offset_y)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "x", Grid_GetGridCoordinateForPlayer(playerobject, exit, "x") + exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "y", (Grid_GetGridCoordinateForPlayer(playerobject, exit, "y") - exit.to.grid_length) - exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "z", Grid_GetGridCoordinateForPlayer(playerobject, room, "z"))
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "end_x", Grid_GetGridCoordinateForPlayer(playerobject, exit, "x") + exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "end_y", Grid_GetGridCoordinateForPlayer(playerobject, exit, "y") - exit.grid_length)
+          exit.grid_render = true
+          exit.to.grid_render = true
+        }
+        else if (DoesInherit(exit, "southwestdirection")) {
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "x", Grid_GetGridCoordinateForPlayer(playerobject, room, "x") + exit.grid_offset_x)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "y", Grid_GetGridCoordinateForPlayer(playerobject, room, "y") + room.grid_length + exit.grid_offset_y)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "x", (Grid_GetGridCoordinateForPlayer(playerobject, exit, "x") - exit.to.grid_width) - exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "y", Grid_GetGridCoordinateForPlayer(playerobject, exit, "y") + exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "z", Grid_GetGridCoordinateForPlayer(playerobject, room, "z"))
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "end_x", Grid_GetGridCoordinateForPlayer(playerobject, exit, "x") - exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "end_y", Grid_GetGridCoordinateForPlayer(playerobject, exit, "y") + exit.grid_length)
+          exit.grid_render = true
+          exit.to.grid_render = true
+        }
+        else if (DoesInherit(exit, "southeastdirection")) {
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "x", Grid_GetGridCoordinateForPlayer(playerobject, room, "x") + room.grid_width + exit.grid_offset_x)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "y", Grid_GetGridCoordinateForPlayer(playerobject, room, "y") + room.grid_length + exit.grid_offset_y)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "x", Grid_GetGridCoordinateForPlayer(playerobject, exit, "x") + exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "y", Grid_GetGridCoordinateForPlayer(playerobject, exit, "y") + exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "z", Grid_GetGridCoordinateForPlayer(playerobject, room, "z"))
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "end_x", Grid_GetGridCoordinateForPlayer(playerobject, exit, "x") + exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "end_y", Grid_GetGridCoordinateForPlayer(playerobject, exit, "y") + exit.grid_length)
+          exit.grid_render = true
+          exit.to.grid_render = true
+        }
+        else if (DoesInherit(exit, "updirection")) {
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "x", Grid_GetGridCoordinateForPlayer(playerobject, room, "x") + room.grid_width/2.0 - exit.to.grid_width/2.0 + exit.grid_offset_x)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "y", Grid_GetGridCoordinateForPlayer(playerobject, room, "y") + room.grid_length/2.0 - exit.to.grid_length/2.0 + exit.grid_offset_y)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "z", Grid_GetGridCoordinateForPlayer(playerobject, room, "z") + exit.grid_length)
+          exit.grid_render = false
+          exit.to.grid_render = true
+        }
+        else if (DoesInherit(exit, "downdirection")) {
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "x", Grid_GetGridCoordinateForPlayer(playerobject, room, "x") + room.grid_width/2.0 - exit.to.grid_width/2.0 + exit.grid_offset_x)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "y", Grid_GetGridCoordinateForPlayer(playerobject, room, "y") + room.grid_length/2.0 - exit.to.grid_length/2.0 + exit.grid_offset_y)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "z", Grid_GetGridCoordinateForPlayer(playerobject, room, "z") - exit.grid_length)
+          exit.grid_render = false
+          exit.to.grid_render = true
+        }
+        else if (DoesInherit(exit, "indirection") or DoesInherit(exit, "outdirection")) {
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "x", Grid_GetGridCoordinateForPlayer(playerobject, room, "x") + room.grid_width/2.0 - exit.to.grid_width/2.0 + exit.grid_offset_x)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "y", Grid_GetGridCoordinateForPlayer(playerobject, room, "y") + room.grid_length/2.0 - exit.to.grid_length/2.0 + exit.grid_offset_y)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "z", Grid_GetGridCoordinateForPlayer(playerobject, room, "z"))
+          exit.grid_render = false
+          exit.to.grid_render = true
+        }
+      }
+    }
+
+

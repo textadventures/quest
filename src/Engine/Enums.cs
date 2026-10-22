@@ -23,5 +23,6 @@ public enum WorldModelVersion
     v540,
     v550,
     v580,
-    v600
+    v600,
+    v610
 }

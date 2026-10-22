@@ -57,10 +57,14 @@ internal sealed class GameDriver
     // yieldInRunScript makes RunScriptAsync genuinely yield, as WasmPlayer's does to keep the
     // browser responsive, so a command can be left suspended mid-script rather than always
     // running to completion synchronously.
-    public static async Task<GameDriver> LoadAsync(string filename, bool yieldInRunScript = false)
+    public static Task<GameDriver> LoadAsync(string filename, bool yieldInRunScript = false)
     {
-        var data = new GameData(File.ReadAllBytes(filename), filename);
-        var model = new WorldModel(data, null);
+        return LoadAsync(new GameData(File.ReadAllBytes(filename), filename), yieldInRunScript);
+    }
+
+    public static async Task<GameDriver> LoadAsync(GameData data, bool yieldInRunScript = false, Stream? saveData = null)
+    {
+        var model = new WorldModel(data, saveData);
         var playerMock = new Mock<IPlayer>();
         var driver = new GameDriver(model, playerMock, yieldInRunScript);
         var success = await model.Initialise(playerMock.Object);

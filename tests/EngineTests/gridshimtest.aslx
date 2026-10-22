@@ -1,0 +1,66 @@
+<asl version="{{VERSION}}">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <game name="GridShimTest">
+    <gridmap />
+  </game>
+
+  <!-- Stands in for a published game's inlined copy of the library function. The helpers it calls
+       come from the live Core.aslx, which is fine: they haven't changed since Quest 5.5. -->
+  <function name="Grid_CalculateMapCoordinates" parameters="room, playerobject"><![CDATA[{{BODY}}]]></function>
+
+  <object name="RoomA">
+    <inherit name="editor_room" />
+    <attr name="grid_width" type="int">2</attr>
+    <attr name="grid_length" type="int">2</attr>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <exit alias="down" to="Cellar">
+      <inherit name="downdirection" />
+    </exit>
+    <exit name="exit_a_east" alias="east" to="RoomC">
+      <inherit name="eastdirection" />
+      <visible type="boolean">false</visible>
+    </exit>
+  </object>
+
+  <object name="Cellar">
+    <inherit name="editor_room" />
+    <exit alias="up" to="RoomA">
+      <inherit name="updirection" />
+    </exit>
+  </object>
+
+  <!-- The Acreage's case: no exit anywhere leads here, the only way in is a scripted MovePlayer -->
+  <object name="RoomB">
+    <inherit name="editor_room" />
+  </object>
+
+  <!-- Woo Rebooted's case: only reachable through an exit that starts hidden -->
+  <object name="RoomC">
+    <inherit name="editor_room" />
+    <attr name="grid_width" type="int">2</attr>
+    <attr name="grid_length" type="int">2</attr>
+    <exit alias="west" to="RoomA">
+      <inherit name="westdirection" />
+    </exit>
+  </object>
+
+  <command name="cmd_teleport">
+    <pattern>teleport #text#</pattern>
+    <script>
+      MovePlayer (GetObject(text))
+    </script>
+  </command>
+
+  <command name="cmd_reveal">
+    <pattern>reveal</pattern>
+    <script>
+      MakeExitVisible (exit_a_east)
+    </script>
+  </command>
+
+</asl>
