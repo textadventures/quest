@@ -73,12 +73,12 @@ The untyped parts are what make the legacy UI hard to change:
 For v2, three things change:
 
 1. **A named JS API, `QuestUI`,** is the only thing 610 Core calls, and it's what authors are told to use. Together with the CSS custom properties and `data-qv-part` names (see below), it forms **the 610 UI contract**. The `QuestUI` part is the set 610 Core needs: panes, status, compass, location, command bar, menus, picture frame, map, media, background, fonts, output sections and text effects, plus the author hooks below. 610 Core is inlined into every 610 game, so a published 610 game must **never** break on any future player: the contract only ever gains additions. The contract is versioned by ASL version, so there's no separate API number. If a later Core ever needs a breaking change, that's a new ASL version with its own contract, and 610 games keep theirs. The interface behind the contract (layout, accessibility, phone behaviour) keeps improving for every 610 game, the same way the exits strip (#2581) reached every legacy game.
-2. **The typed `IPlayer` path is the default.** Where 610 Core today calls `JS.setCss("#compassAccordion", …)`, it calls an `IPlayer`-level or `QuestUI` operation instead (`SetPaneVisible("compass", false)`). That rewrite of `InitInterface` and friends only applies under the 610 version gate. Pre-610 Core is unchanged by definition.
+2. **610 Core goes through `QuestUI` only.** Where 610 Core today calls `JS.setCss("#compassAccordion", …)`, it calls `JS.QuestUI.setVisible("compass", false)` instead. No new typed `IPlayer` members are added (see [ui-v2-contract.md](ui-v2-contract.md), Decisions). That rewrite of `InitInterface` and friends only applies under the 610 version gate. Pre-610 Core is unchanged by definition.
 3. **Output markup for 610 uses data attributes, not inline `onclick`:**
-   - `<a data-qv-command="look">`
-   - `<a data-qv-object="…" data-qv-verbs="…">`
+   - `<a class="cmdlink commandlink" data-command="look">`
+   - `<a class="cmdlink elementmenu" data-elementid="…">`
 
-   v2 handles clicks through delegated listeners, which makes it CSP-friendly and lets v2 own menus, disabling and accessibility. `PlayerHelper` (live, not frozen) branches on version; 610 Core's text processor emits the new markup. Author HTML in `msg` passes through as today.
+   These are the names current Core already uses for object, exit and command links. 610 removes the inline handlers that remain (ShowMenu's fallback links, `{popup:}`, `PlayerHelper`'s links). v2 handles clicks through delegated listeners, which makes it CSP-friendly and lets v2 own menus, disabling and accessibility. `PlayerHelper` (live, not frozen) branches on version; 610 Core's text processor emits the new markup. Author HTML in `msg` passes through as today.
 
 `JS.eval` and `JS.*` still work in v2, since a game's own JavaScript is legitimate. But only `QuestUI`, the CSS tokens and the documented parts are stable. Anything else in v2's DOM is internal and may change.
 

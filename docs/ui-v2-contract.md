@@ -1,8 +1,8 @@
-# The 610 UI contract (draft)
+# The 610 UI contract
 
 Phase 0 of [#2584](https://github.com/textadventures/quest/issues/2584). See [ui-v2-plan.md](ui-v2-plan.md) for the plan this belongs to.
 
-**Status: draft for review.** Nothing here is frozen yet. The contract freezes with the first 6.1 release, the first point at which a 610 game can be published (see "When it freezes" below). From then on it only ever gains additions.
+**Status: agreed, not yet frozen.** The open questions were settled on 2026-10-23 (see Decisions). Members can still be added or adjusted while the Core rewrite is built. The contract freezes with the first 6.1 release, the first point at which a 610 game can be published (see "When it freezes" below). From then on it only ever gains additions.
 
 The contract is what 610 Core and 610 authors may rely on. It has three parts:
 
@@ -38,7 +38,7 @@ This settles a question the plan leaves open: a future Core version (say 620) ca
 
 ### 3. Most link markup is already delegated
 
-The plan proposes new `data-qv-object` / `data-qv-command` attributes. Current Core already emits delegated markup with no inline handlers for object, exit and command links:
+The plan originally proposed new `data-qv-object` / `data-qv-command` attributes. Current Core already emits delegated markup with no inline handlers for object, exit and command links:
 
 ```html
 <a class="cmdlink elementmenu" data-elementid="lamp">lamp</a>
@@ -46,7 +46,7 @@ The plan proposes new `data-qv-object` / `data-qv-command` attributes. Current C
 <a class="cmdlink commandlink" data-elementid="…" data-command="…" data-deactivateonclick="true">…</a>
 ```
 
-**Recommendation:** adopt these existing names (`data-elementid`, `data-command`, `data-deactivateonclick`, plus the `elementmenu`/`exitlink`/`commandlink` classes) as the contract's link markup rather than inventing a parallel `data-qv-*` set. Legacy already handles them, and they're already in every 6.0 game. What's left is removing the inline handlers that remain:
+**Decided:** adopt these existing names (`data-elementid`, `data-command`, `data-deactivateonclick`, plus the `elementmenu`/`exitlink`/`commandlink` classes) as the contract's link markup rather than inventing a parallel `data-qv-*` set. Legacy already handles them, and they're already in every 6.0 game. What's left is removing the inline handlers that remain:
 
 | Source | Today | 610 |
 |---|---|---|
@@ -134,6 +134,7 @@ Rules that apply to every member:
 |---|---|
 | `setVisible(part, visible)` | `uiShow`/`uiHide`, `panesVisible`, `hideBorder`, and the `setCss(…, "display:…")` calls |
 | `setPaneOrder(parts)` | the six `insertBefore` evals (`statusandcompassattop`) |
+| `setLayoutPreset(name)` with `gamebook` | GamebookCore's `panesVisible(false)` and its `uiHide`s of the location and command bar. Legacy hides those parts, as today. v2 gives gamebooks their own layout |
 | `setPictureFrame(html)` | `setPanelContents` |
 | `setInterfaceString(name, text)` | `setInterfaceString` (same names: `InventoryLabel`, `StatusLabel`, `PlacesObjectsLabel`, `CompassLabel`, `InButtonLabel`, `OutButtonLabel`, `EmptyListLabel`, `NothingSelectedLabel`, `TypeHereLabel`, `ContinueLabel`) |
 | `setCompassDirections(list)` | `setCompassDirections` |
@@ -156,7 +157,7 @@ Rules that apply to every member:
 
 ### Map
 
-`QuestUI.map` mirrors today's Grid functions one for one, with the same arguments, so 610 CoreGrid changes only in what it calls: `show(size)`, `setInteractive(on)`, `setScale`, `setCentre`, `drawBox`, `drawLabel`, `drawPlayer`, `drawLine`, `drawArrow`, `drawSquare`, `drawShape`, `addShapePoint`, `drawImage`, `drawSvg`, `loadSvg`, `drawGridLines`, `showCustomLayer`, `clearCustomLayer`, `clearAllLayers`. v2 draws these with SVG (#2437). The arguments stay in today's grid coordinate units. Getting their exact meaning right is part of #2437, and it has to happen before the first 6.1 release.
+`QuestUI.map` mirrors today's Grid functions one for one, with the same arguments, so 610 CoreGrid changes only in what it calls: `show(size)`, `setInteractive(on)`, `setScale`, `setCentre`, `drawBox`, `drawLabel`, `drawPlayer`, `drawLine`, `drawArrow`, `drawSquare`, `drawShape`, `addShapePoint`, `drawImage`, `drawSvg`, `loadSvg`, `drawGridLines`, `showCustomLayer`, `clearCustomLayer`, `clearAllLayers`. v2 draws these with SVG (#2437). The arguments are frozen exactly as today's (grid coordinate units, same order, same colour and border strings), so #2437 implements them in SVG rather than redesigning them. A cleaner, SVG-native API can be added alongside later.
 
 ### Transcript
 
@@ -235,14 +236,16 @@ That gives the order of work:
 
 1. Review and settle this draft.
 2. Phase 1 builds `QuestUI` in both UIs: the legacy adapter, plus v2 for what a text game needs.
-3. The 610 Core rewrite (`InitInterface`, output, status, transcript, grid, link markup) lands once both UIs implement every member it calls. It can be split into several PRs, since nothing ships in between, but all of it must land before the first 6.1 release. The map members have to be settled with #2437 first, or frozen with today's Grid arguments.
+3. The 610 Core rewrite (`InitInterface`, output, status, transcript, grid, link markup) lands once both UIs implement every member it calls. It can be split into several PRs, since nothing ships in between, but all of it must land before the first 6.1 release. The map members are frozen with today's Grid arguments, so #2437 doesn't block it.
 4. The first 6.1 release ships. From then on, additions only.
 
 v2 still only becomes the default for 610 at Phase 5, which can come after the first beta: until then 610 games play on legacy through its `QuestUI` adapter.
 
-## Open questions
+## Decisions
 
-1. **Link markup** (finding 3). Agree on keeping `data-elementid`/`data-command` rather than adding `data-qv-object`/`data-qv-command`.
-2. **Typed `IPlayer` members vs `QuestUI`.** The plan suggests either for 610 Core's calls. This draft puts everything in `QuestUI` (one surface, implementable in JS by both UIs, no engine change per addition). Moving some to typed `IPlayer` members would help #1780 (non-HTML players), at the cost of every addition touching `Common`, the bridge and both UIs. That could be revisited later without breaking anything, because the engine could intercept known `QuestUI` calls.
-3. **Map arguments.** Grid coordinates and sizes as today, or something SVG-native? Decide with #2437 before the first 6.1 release.
-4. **Gamebooks.** `GamebookCore`'s `InitInterface` uses a subset of the same calls, so it's covered, but the gamebook layout (Phase 3) may want a `setLayoutPreset("gamebook")` call from Core instead of hiding parts one by one.
+Settled on 2026-10-23 in #2590:
+
+1. **Link markup:** keep the existing delegated names (`data-elementid`, `data-command`, `data-deactivateonclick`, and the `elementmenu`/`exitlink`/`commandlink` classes). The only new attributes are `data-qv-event`/`data-qv-param` and `data-qv-popup` (finding 3). The plan's `data-qv-object`/`data-qv-command` aren't used.
+2. **`QuestUI` only:** 610 Core reaches the UI only through `JS.QuestUI.*`, with no new typed `IPlayer` members. Each addition is JS-only in both UIs. If #1780 (non-HTML players) needs typed calls later, the engine can intercept known `QuestUI` calls without breaking anything.
+3. **Map arguments:** `QuestUI.map` freezes today's Grid arguments, so the Core rewrite doesn't wait on #2437.
+4. **Gamebooks:** `GamebookCore`'s `InitInterface` calls `setLayoutPreset("gamebook")` instead of hiding parts one by one.
