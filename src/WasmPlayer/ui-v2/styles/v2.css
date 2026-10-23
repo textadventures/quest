@@ -1,0 +1,219 @@
+/* Player UI v2 (docs/ui-v2-plan.md).
+ *
+ * All of v2's own CSS is in cascade layers, declared lowest first, so a game's stylesheet (which
+ * isn't in a layer) always wins without !important:
+ *   qv.base   defaults for every token, and the layout
+ *   qv.theme  themes as token sets (Phase 2)
+ *   qv.game   reserved for game-level options
+ *
+ * Authors style v2 through the --qv-* tokens and data-qv-part names in the 610 UI contract
+ * (docs/ui-v2-contract.md). Classes and element names here are internal and may change. */
+
+@layer qv.base, qv.theme, qv.game;
+
+@layer qv.base {
+    qv-player {
+        /* Text and links. 610 Core sets the game's own defaults over these (InitInterface). */
+        --qv-font-body: Georgia, serif;
+        --qv-font-size: 12pt;
+        --qv-font-ui: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        --qv-text: #1a1a1a;
+        --qv-link: #1d4ed8;
+        --qv-link-decoration: underline;
+
+        /* Surfaces. --qv-bg is the game's background; --qv-page-bg is the margin around it. */
+        --qv-bg: #ffffff;
+        --qv-bg-opacity: 1;
+        --qv-bg-image: none;
+        --qv-page-bg: #f4f4f5;
+        --qv-bg-blend-top: var(--qv-page-bg);
+        --qv-bg-blend-bottom: var(--qv-page-bg);
+        --qv-surface: #f4f4f5;
+        --qv-border-colour: #d4d4d8;
+
+        /* Spacing and shape. */
+        --qv-space: 1rem;
+        --qv-radius: 6px;
+        --qv-output-width: 50rem;
+        --qv-padding-top: var(--qv-space);
+        --qv-padding-bottom: var(--qv-space);
+        --qv-padding-left: var(--qv-space);
+        --qv-padding-right: var(--qv-space);
+
+        /* The location bar (the contract's "status" tokens, from the location bar options). */
+        --qv-status-fg: #ffffff;
+        --qv-status-bg: #3f3f46;
+        --qv-status-border: none;
+        --qv-status-image: none;
+
+        /* The command bar. */
+        --qv-command-fg: var(--qv-text);
+        --qv-command-bg: transparent;
+
+        /* Panes and menus: defined now so the whole token set exists; used from Phase 2. */
+        --qv-pane-fg: var(--qv-text);
+        --qv-pane-bg: var(--qv-surface);
+        --qv-pane-heading-fg: var(--qv-text);
+        --qv-pane-heading-bg: var(--qv-surface);
+        --qv-pane-highlight: #f59e0b;
+        --qv-menu-fg: var(--qv-text);
+        --qv-menu-bg: var(--qv-bg);
+        --qv-menu-hover-fg: var(--qv-bg);
+        --qv-menu-hover-bg: var(--qv-link);
+        --qv-menu-font: var(--qv-font-ui);
+        --qv-menu-font-size: 1rem;
+
+        --qv-focus-ring: #2563eb;
+
+        display: block;
+        min-height: 100vh;
+        min-height: 100dvh;
+        box-sizing: border-box;
+        background-color: var(--qv-page-bg);
+        background-image: var(--qv-bg-image), linear-gradient(var(--qv-bg-blend-top), var(--qv-bg-blend-bottom));
+        background-attachment: fixed;
+        background-size: cover;
+        color: var(--qv-text);
+        font-family: var(--qv-font-body);
+        font-size: var(--qv-font-size);
+        line-height: 1.5;
+    }
+
+    body:has(> qv-player) {
+        margin: 0;
+    }
+
+    qv-player [hidden] {
+        display: none !important;
+    }
+
+    qv-player *,
+    qv-player *::before,
+    qv-player *::after {
+        box-sizing: inherit;
+    }
+
+    /* The frame: the game's own column, with its background and border. */
+    [data-qv-part="border"] {
+        display: flex;
+        flex-direction: column;
+        max-width: var(--qv-output-width);
+        min-height: 100vh;
+        min-height: 100dvh;
+        margin: 0 auto;
+        background-color: color-mix(in srgb, var(--qv-bg) calc(var(--qv-bg-opacity) * 100%), transparent);
+        border-inline: 1px solid var(--qv-border-colour);
+    }
+
+    [data-qv-part="border"].qv-borderless {
+        border-inline: none;
+    }
+
+    [data-qv-part="location"] {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        min-height: 2.5rem;
+        padding: 0.5rem var(--qv-padding-right) 0.5rem var(--qv-padding-left);
+        background-color: var(--qv-status-bg);
+        background-image: var(--qv-status-image);
+        background-size: cover;
+        border: var(--qv-status-border);
+        color: var(--qv-status-fg);
+        font-family: var(--qv-font-ui);
+        font-size: 1rem;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    [data-qv-part="location"].qv-empty {
+        visibility: hidden;
+    }
+
+    [data-qv-part="output"] {
+        display: block;
+        flex: 1 0 auto;
+        padding: var(--qv-padding-top) var(--qv-padding-right) 0 var(--qv-padding-left);
+        overflow-wrap: break-word;
+    }
+
+    [data-qv-part="output"] img {
+        max-width: 100%;
+    }
+
+    [data-qv-part="output"] img.qv-sized {
+        height: auto;
+    }
+
+    [data-qv-part="output"] a {
+        color: var(--qv-link);
+        text-decoration: var(--qv-link-decoration);
+    }
+
+    [data-qv-part="output"] a.cmdlink {
+        cursor: pointer;
+    }
+
+    [data-qv-part="output"] a.cmdlink.disabled {
+        color: inherit;
+        text-decoration: none;
+        cursor: default;
+        pointer-events: none;
+    }
+
+    .qv-block.qv-hiding {
+        opacity: 0;
+        transition: opacity 250ms ease;
+    }
+
+    .qv-previous-output {
+        opacity: 0.55;
+        transition: opacity 250ms ease;
+    }
+
+    [data-qv-part="command-bar"] {
+        display: block;
+        position: sticky;
+        bottom: 0;
+        padding: 0.5rem var(--qv-padding-right) var(--qv-padding-bottom) var(--qv-padding-left);
+        background-color: color-mix(in srgb, var(--qv-bg) calc(var(--qv-bg-opacity) * 100%), transparent);
+    }
+
+    qv-player[data-qv-input-held] [data-qv-part="command-bar"] {
+        visibility: hidden;
+    }
+
+    .qv-command-form {
+        display: flex;
+        align-items: center;
+        gap: 0.5ch;
+    }
+
+    .qv-command-prompt:empty {
+        display: none;
+    }
+
+    .qv-command-input {
+        flex: 1;
+        min-width: 0;
+        min-height: 44px;
+        padding: 0.25rem 0.5rem;
+        border: 1px solid var(--qv-border-colour);
+        border-radius: var(--qv-radius);
+        background-color: var(--qv-command-bg);
+        color: var(--qv-command-fg);
+        font: inherit;
+    }
+
+    .qv-command-input:focus-visible {
+        outline: 2px solid var(--qv-focus-ring);
+        outline-offset: 1px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .qv-block.qv-hiding,
+        .qv-previous-output {
+            transition: none;
+        }
+    }
+}

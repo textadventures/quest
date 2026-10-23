@@ -55,16 +55,18 @@
 
     <!-- Build the scoped Skeleton/Tailwind "app chrome" stylesheet (start screen, debugger,
          save-slot manager) from styles/chrome.css into wwwroot/chrome.css, and splice the curated
-         icon sprite (see scripts/build-icons.mjs) into wwwroot/index.html. Both are build outputs
-         (gitignored), so on a clean checkout they don't exist when the project is evaluated and
-         the SDK's wwwroot/** Content glob misses them. Running before static web asset discovery
-         and re-adding them here makes them static web assets either way. -->
+         icon sprite (see scripts/build-icons.mjs) into wwwroot/index.html. The same `npm run build`
+         compiles player UI v2 from ui-v2/ into wwwroot/v2/v2.js and v2.css (ui-v2/build.mjs).
+         All of these are build outputs (gitignored), so on a clean checkout they don't exist when
+         the project is evaluated and the SDK's wwwroot/** Content glob misses them. Running before
+         static web asset discovery and re-adding them here makes them static web assets either
+         way. npm ci also runs when node_modules predates v2's build tools (esbuild). -->
     <Target Name="BuildChromeCss" BeforeTargets="ResolveProjectStaticWebAssets">
-        <Exec Command="npm ci" WorkingDirectory="$(MSBuildThisFileDirectory)" Condition="!Exists('$(MSBuildThisFileDirectory)node_modules')"/>
+        <Exec Command="npm ci" WorkingDirectory="$(MSBuildThisFileDirectory)" Condition="!Exists('$(MSBuildThisFileDirectory)node_modules/esbuild')"/>
         <Exec Command="npm run build" WorkingDirectory="$(MSBuildThisFileDirectory)"/>
         <ItemGroup>
-            <Content Remove="wwwroot\index.html;wwwroot\chrome.css"/>
-            <Content Include="wwwroot\index.html;wwwroot\chrome.css"/>
+            <Content Remove="wwwroot\index.html;wwwroot\chrome.css;wwwroot\v2\v2.js;wwwroot\v2\v2.css"/>
+            <Content Include="wwwroot\index.html;wwwroot\chrome.css;wwwroot\v2\v2.js;wwwroot\v2\v2.css"/>
         </ItemGroup>
     </Target>
 

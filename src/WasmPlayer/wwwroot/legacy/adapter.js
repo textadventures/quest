@@ -1,6 +1,7 @@
 // The legacy UI's side of the player-UI adapter: everything wasm-player.js (the host) asks of
-// whichever UI a game is playing on. The host loads this bundle only for games that get the
-// legacy UI (see preparePlayerUi in wasm-player.js) and calls the UI only through this object.
+// whichever UI a game is playing on, typed as PlayerUiAdapter in ../../ui-v2/src/adapter.ts. The
+// host loads this bundle only for games that get the legacy UI (see preparePlayerUi in
+// wasm-player.js) and calls the UI only through this object.
 //
 // Each engine call is passed straight to the legacy global of the same name, looked up when it's
 // called, so anything that wraps or replaces those globals (questui.js, or a game's own
@@ -46,6 +47,10 @@ window.QuestPlayerUis.legacy = {
         initPlayerUI();
     },
     resetOutput: () => resetGameOutput(),
+    // Stops player.js's 1-second interval from ever starting.
+    useManualClock() {
+        window.startTimer = () => {};
+    },
 
     // Saving.
     getOutputHtml: () => $("#divOutput").html(),

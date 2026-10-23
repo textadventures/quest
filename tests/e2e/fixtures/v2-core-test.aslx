@@ -1,0 +1,102 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- Player UI v2's core loop (verify-wasmplayer-v2-core.mjs): output, alignment, output
+       sections, clear screen, the location bar and QuestUI's tokens and visibility, through 610
+       Core's live functions. -->
+  <game name="V2CoreTest">
+  </game>
+
+  <object name="hall">
+    <inherit name="editor_room" />
+    <description>A plain hall with a door to the north.</description>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <object name="lamp">
+      <inherit name="editor_object" />
+    </object>
+    <exit alias="north" to="kitchen">
+      <inherit name="northdirection" />
+    </exit>
+  </object>
+
+  <object name="kitchen">
+    <inherit name="editor_room" />
+    <description>A small kitchen.</description>
+    <exit alias="south" to="hall">
+      <inherit name="southdirection" />
+    </exit>
+  </object>
+
+  <command name="centre">
+    <pattern>centre</pattern>
+    <script>
+      SetAlignment ("center")
+      msg ("Centred text.")
+      SetAlignment ("left")
+    </script>
+  </command>
+
+  <command name="section">
+    <pattern>section</pattern>
+    <script>
+      game.testsection = StartNewOutputSection()
+      msg ("Inside the section.")
+      EndOutputSection (game.testsection)
+      msg ("After the section.")
+    </script>
+  </command>
+
+  <command name="hidesection">
+    <pattern>hidesection</pattern>
+    <script>
+      HideOutputSection (game.testsection)
+      msg ("Section hidden.")
+    </script>
+  </command>
+
+  <command name="clear">
+    <pattern>clear</pattern>
+    <script>
+      ClearScreen
+      msg ("Fresh page.")
+    </script>
+  </command>
+
+  <command name="tokens">
+    <pattern>tokens</pattern>
+    <script>
+      tokens = NewStringDictionary()
+      dictionary add (tokens, "--qv-output-width", "600")
+      dictionary add (tokens, "--qv-link", "darkred")
+      dictionary add (tokens, "--author-colour", "teal")
+      dictionary add (tokens, "color", "red")
+      JS.QuestUI.setTokens (tokens)
+      msg ("Tokens set.")
+    </script>
+  </command>
+
+  <command name="hidelocation">
+    <pattern>hidelocation</pattern>
+    <script>
+      JS.QuestUI.setVisible ("location", false)
+      JS.QuestUI.setVisible ("no-such-part", false)
+      msg ("Location hidden.")
+    </script>
+  </command>
+
+  <command name="unimplemented">
+    <pattern>unimplemented</pattern>
+    <script>
+      JS.QuestUI.setPaneOrder (Split("compass;status", ";"))
+      JS.QuestUI.map.drawBox (0, 0, 0, 1, 1, 1, "red", "black", 1, "white", 1, 1)
+      JS.QuestUI.transcript.write ("ignored")
+      JS.QuestUI.setLayoutPreset ("gamebook")
+      msg ("Still playing.")
+    </script>
+  </command>
+
+</asl>

@@ -4,12 +4,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tailwindcss -i styles/chrome.css -o wwwroot/chrome.css --minify && node scripts/scope-css.mjs wwwroot/chrome.css && node scripts/build-icons.mjs && node scripts/inject-version.mjs"
+    "build": "tailwindcss -i styles/chrome.css -o wwwroot/chrome.css --minify && node scripts/scope-css.mjs wwwroot/chrome.css && node scripts/build-icons.mjs && node scripts/inject-version.mjs && npm run build:v2",
+    "build:v2": "tsc -p ui-v2 && node ui-v2/build.mjs"
   },
   "devDependencies": {
     "@skeletonlabs/skeleton": "^5.0.1",
     "@tailwindcss/cli": "^4.3.3",
+    "esbuild": "0.28.2",
     "lucide-static": "^1.60.0",
-    "tailwindcss": "^4.2.4"
+    "tailwindcss": "^4.2.4",
+    "typescript": "6.0.3"
   }
 }
