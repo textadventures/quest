@@ -209,6 +209,11 @@ EscapeQuotes(s)
 FormatStatusAttribute(attr, value, format)
 ```
 
+## FormatTextStyle
+```quest
+FormatTextStyle(colour, defaultcolour, omitdefaults)
+```
+
 ## GenerateMenuChoices
 ```quest
 GenerateMenuChoices(dictionary, objects)
@@ -263,6 +268,11 @@ GetKeywordsMatchStrength(keywords, input)
 GetLinkTextColour()
 ```
 
+## GetLinkTextFormat
+```quest
+GetLinkTextFormat(colour)
+```
+
 ## GetPlacesObjectsList
 ```quest
 GetPlacesObjectsList()
@@ -288,6 +298,11 @@ GetTaggedName (object, string type, stringlist verbs)
 Returns a [string](/reference/attributes/types#string).
 
 **This function was removed in Quest 5.4**
+
+## GetUIDefault
+```quest
+GetUIDefault(name)
+```
 
 ## GetUniqueElementName
 ```quest
@@ -539,6 +554,11 @@ InitPOV(oldPOV, newPOV)
 ## InitStatusAttributes
 ```quest
 InitStatusAttributes()
+```
+
+## InitTextDefaults
+```quest
+InitTextDefaults (tokens)
 ```
 
 ## InitVerbsList

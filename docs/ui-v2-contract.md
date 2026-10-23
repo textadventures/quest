@@ -212,7 +212,11 @@ v2 also defines tokens with no game attribute behind them yet (`--qv-surface`, `
 
 `OutputTextRaw` wraps every line in `<span style="font-family:…;color:…;font-size:…">`, taken from `defaultfont`, `defaultforeground` and `defaultfontsize`. Inline styles beat any token, so a theme, a light/dark variant or an author stylesheet couldn't change the text colour or font of output that's already there.
 
-**Recommendation:** 610 `GetCurrentTextFormat` omits a property when it equals the game's default, so ordinary output inherits from the tokens. A mid-game `SetForegroundColour`/`SetFontName` still works: the new value differs from the default, so it's written inline, exactly as today. `SetForegroundColour` etc. also update the matching token when called from `InitInterface`.
+**610 Core leaves the defaults out.** The first time `InitInterface` runs, it records the game's starting font, size, text colour and link colour in `game.uidefaults`, which is kept in saves. Those values become the `--qv-font-body`, `--qv-font-size`, `--qv-text` and `--qv-link` tokens. `GetCurrentTextFormat` and the link formats leave a property out when it equals the recorded value, so ordinary output and links inherit from the tokens.
+
+- A mid-game `SetForegroundColour`, `SetLinkForegroundColour`, `SetFontName` or `SetFontSize` differs from the recorded value, so it's written inline exactly as before, and only affects text from then on.
+- After a restore, the recorded values still come from the save, so earlier text keeps inheriting the starting colour.
+- The command bar's style is always written in full, because a text input doesn't inherit the page's font.
 
 ## Part names
 

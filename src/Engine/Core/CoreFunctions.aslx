@@ -214,7 +214,7 @@
           else {
             colour = GetLinkTextColour()
           }
-          style = GetCurrentTextFormat(colour)
+          style = GetLinkTextFormat(colour)
           list add (game.menuoptionskeys, option.name)
         }
         else {

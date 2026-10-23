@@ -1,0 +1,48 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <game name="InlineStyleTest">
+    <defaultfont>Georgia, serif</defaultfont>
+    <defaultfontsize type="int">13</defaultfontsize>
+    <defaultforeground>#111111</defaultforeground>
+    <defaultlinkforeground>#0000aa</defaultlinkforeground>
+    <showtitle type="boolean">false</showtitle>
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <object name="lamp">
+      <inherit name="editor_object" />
+    </object>
+  </object>
+
+  <command name="plain">
+    <pattern>plain</pattern>
+    <script>
+      msg ("Plain text.")
+    </script>
+  </command>
+
+  <command name="link">
+    <pattern>link</pattern>
+    <script>
+      msg ("A {object:lamp} here.")
+    </script>
+  </command>
+
+  <command name="recolour">
+    <pattern>recolour</pattern>
+    <script>
+      SetForegroundColour ("red")
+      SetLinkForegroundColour ("green")
+      msg ("Red text.")
+      msg ("Another {object:lamp}.")
+    </script>
+  </command>
+
+</asl>
