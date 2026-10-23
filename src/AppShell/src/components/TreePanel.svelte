@@ -32,6 +32,7 @@
         nodeType: string
         isLibrary: boolean
         canDelete: boolean
+        canCopy: boolean
         // Only meaningful on isLibrary nodes — see groupLibraryChildren.
         filename?: string | null
         // User-assigned folder name, currently only meaningful on non-library function nodes —
@@ -113,6 +114,7 @@
                         nodeType: group.kind === "lib" ? "librarygroup" : "usergroup",
                         isLibrary: group.kind === "lib",
                         canDelete: false,
+                        canCopy: false,
                         children: children.slice(i, j),
                     });
                 } else {
@@ -159,6 +161,7 @@
                 nodeType: node.nodeType,
                 isLibrary: node.isLibrary,
                 canDelete: node.canDelete,
+                canCopy: node.canCopy,
                 filename: node.filename,
                 folder: node.folder,
                 ...(grouped ? { children: grouped } : {}),
@@ -391,7 +394,7 @@
         createTreeViewCollection<HierNode>({
             nodeToValue: (n) => n.id,
             nodeToString: (n) => n.text,
-            rootNode: { id: "__root__", text: "", nodeType: "header", isLibrary: false, canDelete: false, children: filteredHierTree },
+            rootNode: { id: "__root__", text: "", nodeType: "header", isLibrary: false, canDelete: false, canCopy: false, children: filteredHierTree },
         })
     );
 
@@ -413,8 +416,15 @@
             const t = e.target as HTMLElement;
             if (!t.closest(".node-actions") && !t.closest(".tree-dropdown")) closeDropdown();
         }
+        function onEscape(e: KeyboardEvent) {
+            if (e.key === "Escape") closeDropdown();
+        }
         document.addEventListener("mousedown", onOutside);
-        return () => document.removeEventListener("mousedown", onOutside);
+        document.addEventListener("keydown", onEscape);
+        return () => {
+            document.removeEventListener("mousedown", onOutside);
+            document.removeEventListener("keydown", onEscape);
+        };
     });
 
     const DROPDOWN_WIDTH = 176; // matches the panel's w-44
@@ -423,7 +433,20 @@
     function toggleDropdown(key: string, opts: Array<{ label: string; action: () => void }>, e: MouseEvent) {
         e.stopPropagation();
         if (dropdownKey === key) { closeDropdown(); return; }
-        const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+        openDropdownAt(key, opts, (e.currentTarget as HTMLElement).getBoundingClientRect());
+    }
+
+    // Right-click opens the same menu as the row's "..." button, at the pointer. Rows with
+    // nothing to offer (library rows) keep the browser's own context menu.
+    function openContextMenu(node: HierNode, e: MouseEvent) {
+        const opts = nodeMenuOptions(node);
+        if (opts.length === 0) return;
+        e.preventDefault();
+        e.stopPropagation();
+        openDropdownAt(node.id + ":menu", opts, new DOMRect(e.clientX, e.clientY, 0, 0));
+    }
+
+    function openDropdownAt(key: string, opts: Array<{ label: string; action: () => void }>, rect: DOMRect) {
         // Anchoring the panel's left edge to the button's left edge (as if it
         // always had room to extend rightward) put it mostly off-screen for
         // the "..." button on a narrow/full-width mobile tree, since that
@@ -525,6 +548,54 @@
         return opts;
     }
 
+    // Cut/Copy/Paste follow Quest 5's rules: any element EditorController.CanCopy allows
+    // (functions, timers, exits, commands... not just rooms/objects/pages), Cut only if it can
+    // also be deleted, and Paste wherever the clipboard's element type belongs - headers
+    // included, e.g. a copied function onto "Functions" (see EditorController.CanPaste).
+    // Shared by the node menu and the tree's Ctrl+X/C/V shortcuts. Reads $clipboardVersion
+    // for the same reason nodeMenuOptions does.
+    function clipboardActions(node: HierNode): { cut?: () => void; copy?: () => void; paste?: () => void } {
+        if (node.isLibrary) return {};
+        void $clipboardVersion;
+        const { id } = node;
+        return {
+            cut: node.canCopy && isDeletable(node) ? () => cutElements([id]) : undefined,
+            copy: node.canCopy ? () => copyElements([id]) : undefined,
+            paste: canPasteElements(id) ? () => void pasteElements(id) : undefined,
+        };
+    }
+
+    function clipboardOptions(node: HierNode): Array<{ label: string; action: () => void }> {
+        const { cut, copy, paste } = clipboardActions(node);
+        const opts: Array<{ label: string; action: () => void }> = [];
+        if (cut) opts.push({ label: t("common.cut"), action: cut });
+        if (copy) opts.push({ label: t("common.copy"), action: copy });
+        if (paste) opts.push({ label: t("common.paste"), action: paste });
+        return opts;
+    }
+
+    function findNode(nodes: HierNode[], id: string): HierNode | null {
+        for (const node of nodes) {
+            if (node.id === id) return node;
+            const found = node.children ? findNode(node.children, id) : null;
+            if (found) return found;
+        }
+        return null;
+    }
+
+    // Ctrl/Cmd+X/C/V while the tree has focus act on the selected node - the same actions
+    // (and the same rules) as its menu's Cut/Copy/Paste.
+    function onTreeKeydown(e: KeyboardEvent) {
+        if (!(e.ctrlKey || e.metaKey) || e.altKey || e.shiftKey || !$selectedKey) return;
+        const node = findNode(filteredHierTree, $selectedKey);
+        if (!node) return;
+        const actions = clipboardActions(node);
+        const action = { x: actions.cut, c: actions.copy, v: actions.paste }[e.key.toLowerCase()];
+        if (!action) return;
+        e.preventDefault();
+        action();
+    }
+
     function nodeMenuOptions(node: HierNode): Array<{ label: string; action: () => void }> {
         // Library-origin nodes (from Core.aslx or another included library) are read-only —
         // the only way to act on one is the "Copy into your game" banner in the properties
@@ -545,9 +616,6 @@
                     : { label: t("elementAdders.room"), action: () => openAddModal("room", null) });
                 if (!$isGamebook) {
                     opts.push({ label: t("elementAdders.page"), action: () => openAddModal("page", null) });
-                }
-                if (canPasteElements(id)) {
-                    opts.push({ label: t("common.paste"), action: () => pasteElements(id) });
                 }
             }
             else if (id === "_functions") opts.push({ label: t("elementAdders.function"), action: () => openAddModal("function", null) });
@@ -598,18 +666,10 @@
         // EditorController with no gamebook-vs-textadventure gating at all (only
         // GetPasteParent special-cases gamebook, always pasting at the flat top
         // level), so pages get the same menu entries as rooms/objects here.
-        if (nt === "room" || nt === "object" || nt === "page") {
-            if (canMoveElement(id)) {
-                opts.push(
-                    { label: t("common.moveTo"), action: () => openMoveModal(id) },
-                    { label: t("common.cut"), action: () => cutElements([id]) },
-                    { label: t("common.copy"), action: () => copyElements([id]) },
-                );
-            }
-            if (canPasteElements(id)) {
-                opts.push({ label: t("common.paste"), action: () => pasteElements(id) });
-            }
+        if ((nt === "room" || nt === "object" || nt === "page") && canMoveElement(id)) {
+            opts.push({ label: t("common.moveTo"), action: () => openMoveModal(id) });
         }
+        opts.push(...clipboardOptions(node));
 
         // Reordering + expand/collapse-all are available on any node with
         // same-parent siblings or children (headers and the game node included)
@@ -684,7 +744,8 @@
     {#if isFiltering && (collection.rootNode.children ?? []).length === 0}
         <div class="px-3 py-2 text-xs text-surface-400">{t("treePanel.noMatches")}</div>
     {/if}
-    <div class="flex-1 overflow-y-auto p-1 text-xs">
+    <!-- svelte-ignore a11y_no_static_element_interactions (keyboard shortcuts for the focused tree inside, not an interactive element of its own) -->
+    <div class="flex-1 overflow-y-auto p-1 text-xs" onkeydown={onTreeKeydown}>
         <TreeView
             {collection}
             selectionMode="single"
@@ -731,7 +792,7 @@
     <TreeView.NodeProvider value={{ node, indexPath }}>
         {#if node.children}
             <TreeView.Branch>
-                <TreeView.BranchControl class="group flex items-center gap-1.5" ondblclick={() => toggleExpand(node.id)} onclick={() => activateIfAlreadySelected(node.id)}>
+                <TreeView.BranchControl class="group flex items-center gap-1.5" ondblclick={() => toggleExpand(node.id)} onclick={() => activateIfAlreadySelected(node.id)} oncontextmenu={(e: MouseEvent) => openContextMenu(node, e)}>
                     <button
                         type="button"
                         tabindex="-1"
@@ -755,7 +816,7 @@
                 </TreeView.BranchContent>
             </TreeView.Branch>
         {:else}
-            <TreeView.Item class="group flex items-center gap-1.5" onclick={() => activateIfAlreadySelected(node.id)}>
+            <TreeView.Item class="group flex items-center gap-1.5" onclick={() => activateIfAlreadySelected(node.id)} oncontextmenu={(e: MouseEvent) => openContextMenu(node, e)}>
                 <Icon class="flex-shrink-0 size-3.5 text-surface-500 {node.isLibrary ? "opacity-60" : ""}" />
                 <span class="flex-1 min-w-0 truncate {node.isLibrary ? "text-surface-600-400" : ""} {$cutElementKeys.has(node.id) ? "opacity-50 italic" : ""}">{node.text}</span>
                 <span class="opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 pointer-coarse:opacity-100">

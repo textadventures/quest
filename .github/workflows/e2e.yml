@@ -205,6 +205,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-appshell-scripteditor-row-buttons.mjs http://localhost:5174
         working-directory: tests/e2e
+      - run: node verify-appshell-tree-copy-paste.mjs http://localhost:5174
+        working-directory: tests/e2e
       - run: node verify-appshell-scripteditor-selection-toolbar.mjs http://localhost:5174
         working-directory: tests/e2e
       - run: node verify-appshell-surface-shade-fix.mjs http://localhost:5174
