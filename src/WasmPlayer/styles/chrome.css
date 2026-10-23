@@ -2,7 +2,7 @@
    debugger and save-slot manager. Anything built from this file only takes
    effect inside a `.qv-chrome` container; see scripts/scope-css.mjs for how
    that containment is enforced. This must never be linked as-is (unscoped) —
-   always build via `npm run build`, which produces generated/chrome.css.
+   always build via `npm run build`, which produces wwwroot/chrome.css.
 
    Utility/component classes (`btn`, `card`, `flex`, ...) are deliberately
    NOT prefixed. Tailwind's `prefix()` was tried first, but it silently
@@ -531,7 +531,7 @@
     color: var(--color-primary-contrast-500);
 }
 
-/* Icons reference generated/icons.svg (a curated subset of Lucide's sprite,
+/* Icons reference the inline sprite in index.html (a curated subset of Lucide's sprite,
    see scripts/build-icons.mjs) via <use>. Lucide's per-icon SVG files carry
    these presentation attributes on their own root <svg> — <symbol>/<use>
    doesn't preserve that, so the consuming element needs them again here. */

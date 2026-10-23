@@ -513,7 +513,7 @@ async function setupPaperJs() {
     canvas.style.display = 'none';
     document.body.appendChild(canvas);
     paper.setup(canvas);
-    const code = await fetch(versioned('grid.js')).then(r => r.text());
+    const code = await fetch(versioned('legacy/grid.js')).then(r => r.text());
     paper.PaperScript.evaluate(code, paper);
 }
 
@@ -629,7 +629,7 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
     currentIsPreview = isPreview;
     currentAllowDebug = allowDebug;
     const [htmResponse, builder] = await Promise.all([
-        fetch(versioned('playercore.htm')),
+        fetch(versioned('legacy/playercore.htm')),
         loadRuntimeBuilder(),
     ]);
     originalPlayerHtml = await htmResponse.text();

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Splices the repo-root VERSION string into generated/index.html, replacing
+// Splices the repo-root VERSION string into wwwroot/index.html, replacing
 // the VERSION_SCRIPT placeholder comment in index.html, so wasm-player.js can
 // print its startup banner immediately on page load — without waiting for the
 // WASM runtime to boot (which only happens once a game starts loading).
@@ -15,7 +15,7 @@
 // manual (non-tag) deploy, where VERSION still holds the last release and so
 // wouldn't change between deploys.
 //
-// Run via `npm run build`, after build-icons.mjs has produced generated/index.html.
+// Run via `npm run build`, after build-icons.mjs has produced wwwroot/index.html.
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -28,12 +28,12 @@ const repoRoot = path.resolve(root, '..', '..');
 const version = process.env.QUESTVIVA_BUILD_VERSION
     || fs.readFileSync(path.join(repoRoot, 'VERSION'), 'utf8').trim();
 
-const target = path.join(root, 'generated', 'index.html');
+const target = path.join(root, 'wwwroot', 'index.html');
 const html = fs.readFileSync(target, 'utf8');
 
 const placeholder = '<!-- VERSION_SCRIPT';
 const start = html.indexOf(placeholder);
-if (start === -1) throw new Error('generated/index.html is missing the VERSION_SCRIPT placeholder');
+if (start === -1) throw new Error('wwwroot/index.html is missing the VERSION_SCRIPT placeholder');
 const end = html.indexOf('-->', start);
 if (end === -1) throw new Error('VERSION_SCRIPT placeholder comment is not closed with -->');
 
@@ -51,7 +51,7 @@ output = output.replace(assetUrl, (_match, attr, url) => {
     stampedCount++;
     return `${attr}="${url}?v=${encodeURIComponent(version)}"`;
 });
-if (stampedCount === 0) throw new Error('generated/index.html has no relative asset URLs to version-stamp');
+if (stampedCount === 0) throw new Error('wwwroot/index.html has no relative asset URLs to version-stamp');
 
 fs.writeFileSync(target, output);
-console.log(`Wrote generated/index.html with version ${version} (${stampedCount} asset URLs stamped)`);
+console.log(`Wrote wwwroot/index.html with version ${version} (${stampedCount} asset URLs stamped)`);

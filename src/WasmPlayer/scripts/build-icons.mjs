@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Extracts a curated subset of Lucide's <symbol> icons (from lucide-static's
-// ~470KB, ~1500-icon sprite.svg) and splices just those into generated/
+// ~470KB, ~1500-icon sprite.svg) and splices just those into wwwroot/
 // index.html, replacing the `ICONS_SPRITE` placeholder comment in index.html.
 //
 // Spliced in as a hidden inline <svg><defs>, not shipped as a separate file
@@ -43,7 +43,7 @@ if (end === -1) throw new Error('ICONS_SPRITE placeholder comment is not closed 
 
 const output = html.slice(0, start) + spriteBlock + html.slice(end + '-->'.length);
 
-const outDir = path.join(root, 'generated');
+const outDir = path.join(root, 'wwwroot');
 fs.mkdirSync(outDir, { recursive: true });
 fs.writeFileSync(path.join(outDir, 'index.html'), output);
-console.log(`Wrote generated/index.html with ${ICONS.length} spliced icon(s): ${ICONS.join(', ')}`);
+console.log(`Wrote wwwroot/index.html with ${ICONS.length} spliced icon(s): ${ICONS.join(', ')}`);

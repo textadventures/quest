@@ -43,46 +43,44 @@
 
     <Import Project="..\WasmAppBundle.targets"/>
 
+    <PropertyGroup>
+        <!-- Serve wwwroot/ under its own file names, like _framework/ (WasmFingerprintAssets in
+             ../WasmAppBundle.targets): cache busting is the ?v= query, not content hashes. -->
+        <StaticWebAssetsFingerprintContent>false</StaticWebAssetsFingerprintContent>
+    </PropertyGroup>
+    <ItemGroup>
+        <!-- Documentation for the vendored libraries, not something the player serves. -->
+        <Content Remove="wwwroot\legacy\lib\README.md"/>
+    </ItemGroup>
+
     <!-- Build the scoped Skeleton/Tailwind "app chrome" stylesheet (start screen, debugger,
-         save-slot manager) from styles/chrome.css, and splice the curated icon sprite (see
-         scripts/build-icons.mjs) into generated/index.html, before either gets copied into
-         the AppBundle. -->
-    <Target Name="BuildChromeCss" BeforeTargets="CopyPlayerAssetsToAppBundle">
+         save-slot manager) from styles/chrome.css into wwwroot/chrome.css, and splice the curated
+         icon sprite (see scripts/build-icons.mjs) into wwwroot/index.html. Both are build outputs
+         (gitignored), so on a clean checkout they don't exist when the project is evaluated and
+         the SDK's wwwroot/** Content glob misses them. Running before static web asset discovery
+         and re-adding them here makes them static web assets either way. -->
+    <Target Name="BuildChromeCss" BeforeTargets="ResolveProjectStaticWebAssets">
         <Exec Command="npm ci" WorkingDirectory="$(MSBuildThisFileDirectory)" Condition="!Exists('$(MSBuildThisFileDirectory)node_modules')"/>
         <Exec Command="npm run build" WorkingDirectory="$(MSBuildThisFileDirectory)"/>
+        <ItemGroup>
+            <Content Remove="wwwroot\index.html;wwwroot\chrome.css"/>
+            <Content Include="wwwroot\index.html;wwwroot\chrome.css"/>
+        </ItemGroup>
     </Target>
 
-    <!-- Copy the static player UI into the AppBundle alongside _framework/ (see
-         ../WasmAppBundle.targets). The shell is identical for build and publish, so this runs once
-         per invocation, in the build phase. -->
+    <!-- Copy the project's own static web assets (everything under wwwroot/: the shell, plus the
+         legacy player UI under legacy/) into the AppBundle alongside _framework/ (see
+         ../WasmAppBundle.targets). The shell is identical for build and publish, so this runs
+         once per invocation, in the build phase. -->
     <Target Name="CopyPlayerAssetsToAppBundle" AfterTargets="Build">
-        <PropertyGroup>
-            <_PlayerUi>$(MSBuildThisFileDirectory)player-ui\</_PlayerUi>
-        </PropertyGroup>
         <ItemGroup>
-            <_FlatAssets Include="$(_PlayerUi)playercore.htm"/>
-            <_FlatAssets Include="$(_PlayerUi)player.js"/>
-            <_FlatAssets Include="$(_PlayerUi)playercore.js"/>
-            <_FlatAssets Include="$(_PlayerUi)playercore.css"/>
-            <_FlatAssets Include="$(_PlayerUi)grid.js"/>
-            <_FlatAssets Include="$(MSBuildThisFileDirectory)wasm-player.js"/>
-            <_FlatAssets Include="$(MSBuildThisFileDirectory)generated\index.html"/>
-            <_FlatAssets Include="$(MSBuildThisFileDirectory)favicon.svg"/>
-            <_FlatAssets Include="$(MSBuildThisFileDirectory)logo.svg"/>
-            <_FlatAssets Include="$(MSBuildThisFileDirectory)quest-config.js"/>
-            <_FlatAssets Include="$(MSBuildThisFileDirectory)generated\chrome.css"/>
-            <_LibAssets Include="$(_PlayerUi)lib\jquery-2.1.1.min.js"/>
-            <_LibAssets Include="$(_PlayerUi)lib\jquery-ui.min.js"/>
-            <_LibAssets Include="$(_PlayerUi)lib\jquery-ui.min.css"/>
-            <_LibAssets Include="$(_PlayerUi)lib\jquery.multi-open-accordion-1.5.3.js"/>
-            <_LibAssets Include="$(_PlayerUi)lib\paper.js"/>
-            <_ImageAssets Include="$(_PlayerUi)lib\images\*.png"/>
-            <_TranscriptViewerAssets Include="$(MSBuildThisFileDirectory)TranscriptViewer\index.html"/>
+            <_PlayerAssets Include="@(StaticWebAsset)" Condition="'%(SourceType)' == 'Discovered' and '%(AssetKind)' != 'Publish'"/>
+            <!-- Clear out the previous shell first, so a file removed or moved under wwwroot/
+                 doesn't linger in the AppBundle (and in export-manifest.json below). -->
+            <_StaleShellFiles Include="$(QuestAppBundleDir)**\*" Exclude="$(QuestAppBundleDir)_framework\**"/>
         </ItemGroup>
-        <Copy SourceFiles="@(_FlatAssets)" DestinationFolder="$(QuestAppBundleDir)"/>
-        <Copy SourceFiles="@(_LibAssets)" DestinationFolder="$(QuestAppBundleDir)lib\"/>
-        <Copy SourceFiles="@(_ImageAssets)" DestinationFolder="$(QuestAppBundleDir)lib\images\"/>
-        <Copy SourceFiles="@(_TranscriptViewerAssets)" DestinationFolder="$(QuestAppBundleDir)TranscriptViewer\"/>
+        <Delete Files="@(_StaleShellFiles)"/>
+        <Copy SourceFiles="@(_PlayerAssets)" DestinationFiles="@(_PlayerAssets->'$(QuestAppBundleDir)%(RelativePath)')"/>
         <!-- Manifest of every non-_framework file for AppShell's zip HTML export —
              keeps that list from drifting when assets are added/removed above.
              $(QuestAppBundleDir) ends in a directory separator; trim it before quoting —

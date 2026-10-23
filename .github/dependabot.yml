@@ -85,8 +85,8 @@ updates:
       prefix: "chore"
 
   # Only the chrome CSS/icon build tooling. The player's vendored jQuery,
-  # jQuery UI and paper.js under player-ui/lib aren't npm packages: see
-  # player-ui/lib/README.md for why they're pinned.
+  # jQuery UI and paper.js under src/WasmPlayer/wwwroot/legacy/lib aren't npm packages: see
+  # its README.md for why they're pinned.
   - package-ecosystem: "npm"
     directory: "/src/WasmPlayer"
     schedule:

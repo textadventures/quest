@@ -10,7 +10,7 @@
 //   version      npm package version to pin to (defaults to repo VERSION).
 //   output-file  Defaults to <game-file-basename>.html next to the input.
 //
-// Requires generated/index.html to already exist (`npm run build`) — this
+// Requires wwwroot/index.html to already exist (`npm run build`) — this
 // script reuses that exact document (icon sprite + version already spliced
 // in by build-icons.mjs/inject-version.mjs) as its starting point, so the
 // two flavors of index.html can't drift apart from each other.
@@ -38,7 +38,7 @@ if (!fs.existsSync(gameFile)) {
 
 const version = versionArg || fs.readFileSync(path.join(repoRoot, 'VERSION'), 'utf8').trim();
 
-const templatePath = path.join(root, 'generated', 'index.html');
+const templatePath = path.join(root, 'wwwroot', 'index.html');
 if (!fs.existsSync(templatePath)) {
     console.error(`Missing ${templatePath} — run "npm run build" in src/WasmPlayer first.`);
     process.exit(1);
@@ -168,7 +168,7 @@ const cdnBase = `https://cdn.jsdelivr.net/npm/@textadventures/quest-viva-wasmpla
 let html = template;
 
 // inject-version.mjs stamps a `?v=<version>` cache key onto every asset URL in
-// generated/index.html (see deploy-play.yml's _headers), so the two tags this
+// wwwroot/index.html (see deploy-play.yml's _headers), so the two tags this
 // script rewrites below no longer match on their bare filenames — hence the
 // optional query in the pattern, which keeps the two scripts from having to
 // agree on its exact shape. (The stamp is harmless in this flavor: the <base
@@ -184,7 +184,7 @@ const scriptLine = (file) => new RegExp(
 // embeds the game at all, so treat a miss as a build failure.
 function replaceOrFail(haystack, pattern, replacement, what) {
     const match = pattern.exec(haystack);
-    if (!match) throw new Error(`export-embedded: could not find ${what} in generated/index.html`);
+    if (!match) throw new Error(`export-embedded: could not find ${what} in wwwroot/index.html`);
     return haystack.slice(0, match.index) + replacement(match[0]) + haystack.slice(match.index + match[0].length);
 }
 
@@ -253,7 +253,7 @@ html = replaceOrFail(html, scriptLine('wasm-player.js'), (line) => embedScript +
 const styleLine = (file) => new RegExp(
     `^[ \\t]*<link rel="stylesheet" type="text/css" href="${file.replace(/\./g, '\\.')}(?:\\?[^"]*)?" />\\r?\\n`,
     'm');
-for (const file of ['lib/jquery-ui.min.css', 'playercore.css', 'chrome.css']) {
+for (const file of ['legacy/lib/jquery-ui.min.css', 'legacy/playercore.css', 'chrome.css']) {
     html = replaceOrFail(html, styleLine(file),
         (line) => line.replace(/ \/>(\r?\n)$/, ' crossorigin="anonymous" />$1'),
         `the ${file} stylesheet link`);

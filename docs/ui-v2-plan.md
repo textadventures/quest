@@ -6,7 +6,7 @@ This folds in #2337 (a supported game stylesheet, CSS custom properties, status 
 
 ## Why now, and why this shape
 
-Today's player UI (`src/WasmPlayer/player-ui/`) is Quest 5's `PlayerController` UI, carried forward:
+Today's player UI (`src/WasmPlayer/wwwroot/legacy/`, formerly `player-ui/`) is Quest 5's `PlayerController` UI, carried forward:
 - jQuery 2.1, jQuery UI and a multi-open-accordion plugin
 - paper.js for the map
 - `playercore.js`, a 3,000-line file of globals
@@ -52,7 +52,7 @@ The choice is made at boot, after the game file is loaded and its version is kno
 | any game with `game.classicinterface = true` | legacy (an author escape hatch, shown in the editor) |
 | `?ui=v2` / `?ui=legacy` URL parameter | forced, for development and testing only |
 
-Today, `index.html` loads jQuery, jQuery UI, paper.js, `playercore.js` and `player.js` up front, and `swapInPlayerUi()` injects `playercore.htm`. Instead, each UI becomes a lazily loaded bundle: `legacy/` (today's files, moved and frozen) and `v2/`. The host (`wasm-player.js`) keeps the parts that are the same for both: the start screen, save-slot manager, debugger and transcript viewer, which are already in the scoped Tailwind/Skeleton "chrome" stack. It then picks a bundle. This lines up with #2493 (moving the player UI into `wwwroot/` as static web assets), which should land first or alongside.
+Today, `index.html` loads jQuery, jQuery UI, paper.js, `playercore.js` and `player.js` up front, and `swapInPlayerUi()` injects `playercore.htm`. Instead, each UI becomes a lazily loaded bundle: `legacy/` (today's files, moved and frozen) and `v2/`. The host (`wasm-player.js`) keeps the parts that are the same for both: the start screen, save-slot manager, debugger and transcript viewer, which are already in the scoped Tailwind/Skeleton "chrome" stack. It then picks a bundle. #2493 has already moved the player UI into `wwwroot/legacy/` as static web assets.
 
 **Timing caveat for 610:** `v610` became the editor's save version on 2026-10-22 (#2576/#2577) and hasn't shipped in any release yet. No 6.1 release, beta included, ships until 610 Core's UI calls have all been rewritten onto the contract, so no published 610 game ever carries today's ID- and jQuery-based `InitInterface` ([ui-v2-contract.md](ui-v2-contract.md), finding 1). Any 610 game saved by a 6.1 beta before v2 is the default will switch to v2 when that happens. That's acceptable for a beta audience, provided that:
 - v2 only becomes the default for 610 once it reaches parity (Phase 5), so until then 610 games play on legacy as now
@@ -130,7 +130,7 @@ Svelte 5, for consistency with AppShell, was considered and rejected (decision 2
 - SVG for the map (#2437)
 - CSS container queries for pane layouts
 
-**Where things live:** `src/WasmPlayer/ui-v2/` (source), built into the AppBundle beside a `legacy/` folder holding today's `player-ui/` unchanged. `wasm-player.js` gains the bundle selection and a small adapter that routes the existing JS imports to whichever UI is loaded.
+**Where things live:** `src/WasmPlayer/ui-v2/` (source), built into the AppBundle beside the `legacy/` folder holding today's UI unchanged. `wasm-player.js` gains the bundle selection and a small adapter that routes the existing JS imports to whichever UI is loaded.
 
 ## Phases
 
