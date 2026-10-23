@@ -190,11 +190,19 @@ let originalGameFilename = null;
 // alike), since WasmPlayerBridge's own pending-file dictionary is consumed and cleared on
 // each load.
 let originalAdjacentFiles = null;
-// The pristine player chrome markup (playercore.htm), fetched once at boot
-// and reused verbatim by restartGame() so a mid-session restart gets exactly
-// the same clean slate as the initial boot, instead of the previous game's
-// live DOM (see swapInPlayerUi()).
-let originalPlayerHtml = null;
+// The player UI the game is playing on (see preparePlayerUi): its adapter, which the host
+// calls for everything that's UI behaviour, and its pristine markup, swapped in afresh for
+// each game and restart so a restart gets exactly the same clean slate as the initial boot,
+// instead of the previous game's live DOM (see swapInPlayerUi()).
+let playerUi = null;
+let playerUiHtml = null;
+// The start screen, kept on top of the freshly swapped-in UI until the game has started.
+let bootStartScreenEl = null;
+// Set by restartGameCore, so preparePlayerUi also clears the output state the UI keeps
+// outside its markup.
+let restartingPlayerUi = false;
+// ?clock=manual (a test hook): see preparePlayerUi.
+let manualClock = false;
 
 function computeGameId(filename) {
     return filename.split('/').pop();
@@ -233,7 +241,7 @@ function preloadImageSize(url) {
         img.onload = () => {
             window.clearTimeout(timeoutId);
             if (img.naturalWidth && img.naturalHeight) {
-                rememberImageSize(url, img.naturalWidth, img.naturalHeight);
+                playerUi.rememberImageSize(url, img.naturalWidth, img.naturalHeight);
             }
             resolve();
         };
@@ -296,7 +304,7 @@ function sendEndWait() {
             // next stopping point and flushed its UI calls, so by now
             // beginWait() has already run for a chained wait() - which is
             // exactly what waitEnded() checks before restoring the input.
-            waitEnded();
+            playerUi.waitEnded();
         }
     }, 100);
 }
@@ -309,7 +317,7 @@ function sendEndPause() {
         } finally {
             // Like uiEndWait, uiEndPause only resolves once the resumed turn
             // has reached its next stopping point - see pauseEnded().
-            pauseEnded();
+            playerUi.pauseEnded();
         }
     }, 100);
 }
@@ -321,13 +329,8 @@ function playSound(url, synchronous, looped) {
     _audio = new Audio(url);
     if (looped) _audio.loop = true;
     if (synchronous) {
-        // Counts a pause whose restore is still pending as visible - see
-        // _pauseRestorePending, otherwise finishSync() below leaves the command
-        // bar hidden for good.
-        var showCmdDiv = isElementVisible("#txtCommandDiv") || _pauseRestorePending;
-        _waitingForSoundToFinish = true;
-        $("#txtCommandDiv").hide();
-        _audio.addEventListener('ended', function () { finishSync(showCmdDiv); });
+        const showCommandBar = playerUi.beginSoundWait();
+        _audio.addEventListener('ended', function () { playerUi.endSoundWait(showCommandBar); });
     }
     _audio.play();
 }
@@ -338,14 +341,6 @@ function stopSound() {
         _audio.src = '';
         _audio = null;
     }
-}
-
-function finishSync(showCommandDiv) {
-    _waitingForSoundToFinish = false;
-    window.setTimeout(async function () {
-        if (showCommandDiv) $("#txtCommandDiv").show();
-        await WebPlayer.uiEndWait();
-    }, 100);
 }
 
 // Chrome (and others) block unmuted audio until the page has "user
@@ -418,13 +413,37 @@ async function maybeGateOnActivation(gameBytes) {
     if (gate) gate.style.display = 'none';
 }
 
+// Applies a resolved chrome-strings dictionary (see ChromeStrings.Resolve in
+// PlayerCore, surfaced via WebPlayer.setChromeStrings/Bridge.GetChromeStringsJson,
+// or a save's snapshot - see GameSaver.save below) to every chrome element
+// tagged with a data-chrome-key* attribute, e.g. the #cmdSave button and the
+// #qv-saves/Slots dialog. dict is always fully populated (every key defaults
+// to English), so a missing key here just means dict itself is null/undefined
+// (no game loaded, no snapshot available) - existing markup is left untouched
+// in that case.
+function applyChromeStrings(dict) {
+    if (!dict) return;
+    document.querySelectorAll('[data-chrome-key]').forEach(el => {
+        const value = dict[el.dataset.chromeKey];
+        if (value) el.textContent = value;
+    });
+    document.querySelectorAll('[data-chrome-key-placeholder]').forEach(el => {
+        const value = dict[el.dataset.chromeKeyPlaceholder];
+        if (value) el.placeholder = value;
+    });
+    document.querySelectorAll('[data-chrome-key-aria-label]').forEach(el => {
+        const value = dict[el.dataset.chromeKeyAriaLabel];
+        if (value) el.setAttribute('aria-label', value);
+    });
+}
+
 // The WebPlayer object — the host API that the shared playercore.js and
 // player.js call into. The name predates WasmPlayer and is kept as-is.
 window.WebPlayer = {
     gameId: null,
     chromeStrings: null,
 
-    initUI() { initPlayerUI(); },
+    initUI() { return playerUi.start(); },
 
     setCanDebug(value) {
         const cmdDebug = document.getElementById("cmdDebug");
@@ -434,11 +453,10 @@ window.WebPlayer = {
     setCanSave(value) {
         const cmdSave = document.getElementById("cmdSave");
         if (cmdSave) cmdSave.style.display = value ? "initial" : "none";
-        canSave = value;
-        if (!value) window.saveGame = () => addText("Disabled");
+        playerUi.setCanSave(value);
     },
 
-    setAnimateScroll(value) { _animateScroll = value; },
+    setAnimateScroll(value) { playerUi.setAnimateScroll(value); },
 
     runJs(scripts) {
         const globalEval = window.eval;
@@ -515,19 +533,6 @@ function addPaperScript() {
     }
 }
 
-async function setupPaperJs() {
-    if (!window.paper) return;
-    const canvas = document.createElement('canvas');
-    canvas.id = 'gridCanvas';
-    canvas.width = 700;
-    canvas.height = 300;
-    canvas.style.display = 'none';
-    document.body.appendChild(canvas);
-    paper.setup(canvas);
-    const code = await fetch(versioned('legacy/grid.js')).then(r => r.text());
-    paper.PaperScript.evaluate(code, paper);
-}
-
 // Replaces document.body with a fresh copy of the player chrome, preserving
 // #qv-start/#qv-saves/#questVivaDebugger/#qv-recording (the static markup's overlays, which
 // live outside the swapped-in playerHtml and would otherwise be destroyed by
@@ -539,6 +544,187 @@ async function setupPaperJs() {
 // again on every restart (RegisterExternalScripts fires on every Initialise
 // call), so anything short of a full DOM reset here leaves the previous run's
 // injected elements in place for the new run to duplicate.
+// Initialise() unconditionally re-registers the game's external scripts every
+// time it runs, including on a mid-session restart (Start from the beginning
+// / Load) — but a real <script src> only ever runs once per document, so
+// re-adding the same URL against the *same* live DOM would re-execute the
+// game's setup code against elements it already set up on the previous run
+// (e.g. a custom sidebar pane), producing duplicates. Dedupe by URL so each
+// script tag still only truly executes once per document, same as normal
+// page-load semantics.
+//
+// A restart also wipes and rebuilds the whole player chrome first (see
+// WasmPlayer's swapInPlayerUi()), so by the
+// time Initialise() re-registers scripts against that fresh DOM, the
+// "already set up on the previous run" premise above no longer holds — the
+// old elements are gone, and the dedupe would wrongly skip re-running setup
+// code against the new ones, silently dropping anything the script injects
+// (confirmed via a real game's custom sidebar pane vanishing after restart).
+// Both chrome-reset call sites clear the set via clearLoadedExternalScripts()
+// so a restart's re-registration is treated as a genuinely fresh page load.
+var _loadedExternalScripts = new Set();
+
+function addExternalScript(url) {
+    if (_loadedExternalScripts.has(url)) return Promise.resolve();
+    _loadedExternalScripts.add(url);
+
+    return new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src = url;
+        script.onload = () => resolve();
+        script.onerror = () => {
+            _loadedExternalScripts.delete(url);
+            reject(new Error(`Failed to load script: ${url}`));
+        };
+        document.head.appendChild(script);
+    });
+}
+
+// A game's own stylesheet (Core's AddExternalStylesheet), added after the player UI's.
+function addExternalStylesheet(source) {
+    const link = document.createElement("link");
+    link.type = "text/css";
+    link.rel = "stylesheet";
+    link.href = source;
+    document.head.appendChild(link);
+}
+
+// ── Player UIs ──────────────────────────────────────────────────────────────
+//
+// Each player UI is a bundle of markup (swapped into the page for each game and restart),
+// stylesheets and classic scripts, loaded only once a game needs it: the legacy UI (today's, frozen) and v2 (docs/ui-v2-plan.md). The last script
+// registers the UI's adapter as window.QuestPlayerUis[name], which is the only way the host
+// talks to it. Paths are relative to this page and get the ?v= cache key.
+const playerUiBundles = {
+    legacy: {
+        html: 'legacy/playercore.htm',
+        styles: ['legacy/lib/jquery-ui.min.css', 'legacy/playercore.css'],
+        scripts: [
+            'legacy/lib/jquery-2.1.1.min.js',
+            'legacy/lib/jquery-ui.min.js',
+            'legacy/lib/jquery.multi-open-accordion-1.5.3.js',
+            'legacy/playercore.js',
+            'legacy/player.js',
+            'legacy/questui.js',
+            'legacy/lib/paper.js',
+            'legacy/adapter.js',
+        ],
+    },
+    v2: {
+        html: 'v2/player.htm',
+        styles: ['v2/v2.css'],
+        scripts: ['v2/v2.js'],
+    },
+};
+
+// ?ui=legacy / ?ui=v2 forces a UI regardless of the game, for development and testing.
+function playerUiOverride() {
+    const ui = new URLSearchParams(window.location.search).get('ui');
+    return Object.hasOwn(playerUiBundles, ui ?? '') ? ui : null;
+}
+
+// Fetches a bundle's files into the HTTP cache, at low priority and without running them, so
+// loading the bundle once the game has been chosen doesn't add a round trip after the engine
+// has loaded it. Every game gets the legacy UI until v2 is the 610 default (Phase 5 of #2584),
+// so boot prefetches that one, or the one ?ui= forces.
+function prefetchPlayerUi(name) {
+    const bundle = playerUiBundles[name];
+    for (const path of [bundle.html, ...bundle.styles, ...bundle.scripts]) {
+        const link = document.createElement('link');
+        link.rel = 'prefetch';
+        link.href = versioned(path);
+        document.head.appendChild(link);
+    }
+}
+
+// A stylesheet from another origin (the CDN-hosted single-file export, whose <base href>
+// points there) needs CORS for playercore.js to read its cssRules (issue #2192).
+function setCrossOriginIfNeeded(element, url) {
+    if (new URL(url, document.baseURI).origin !== window.location.origin) {
+        element.crossOrigin = 'anonymous';
+    }
+}
+
+const loadedPlayerUis = new Map();
+
+// Adds a bundle's stylesheets (before chrome.css, so the app chrome keeps its place in the
+// cascade) and scripts (run in order), once per page, and resolves to its adapter.
+function loadPlayerUi(name) {
+    if (!loadedPlayerUis.has(name)) {
+        loadedPlayerUis.set(name, (async () => {
+            const bundle = playerUiBundles[name];
+            const chromeCss = document.querySelector('link[href^="chrome.css"]');
+            for (const href of bundle.styles) {
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.type = 'text/css';
+                link.href = versioned(href);
+                setCrossOriginIfNeeded(link, link.href);
+                document.head.insertBefore(link, chromeCss);
+            }
+            // A bundle using jQuery (the legacy UI) registers $(function () { ... }) ready
+            // handlers that expect every script in the bundle to have run first, as they would
+            // have when the bundle was in the page from the start. The page is long since
+            // ready, though, so jQuery would run each handler as soon as it's registered. So
+            // hold jQuery's ready event from the moment jQuery itself has run (a script's load
+            // event fires straight after it executes, before the next script) until the whole
+            // bundle has.
+            let heldJQueryReady = false;
+            const loaded = bundle.scripts.map(src => new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = versioned(src);
+                // Dynamically added scripts otherwise run in whatever order they arrive.
+                script.async = false;
+                script.onload = () => {
+                    if (!heldJQueryReady && window.jQuery) {
+                        window.jQuery.holdReady(true);
+                        heldJQueryReady = true;
+                    }
+                    resolve();
+                };
+                script.onerror = () => reject(new Error(`Failed to load ${src}`));
+                document.head.appendChild(script);
+            }));
+            const [html] = await Promise.all([
+                fetch(versioned(bundle.html)).then(r => r.text()),
+                ...loaded,
+            ]);
+            if (heldJQueryReady) window.jQuery.holdReady(false);
+            const adapter = window.QuestPlayerUis?.[name];
+            if (!adapter) throw new Error(`Player UI "${name}" didn't register an adapter`);
+            return { adapter, html };
+        })());
+    }
+    return loadedPlayerUis.get(name);
+}
+
+// Called by WasmPlayerBridge once the engine has loaded the game (or failed to), with the UI
+// the game gets, and before any of the game's own scripts run: games commonly use their
+// external <javascript> resources to manipulate the UI's DOM (e.g. inserting a custom pane
+// next to the built-in Inventory/Status panes), so the UI has to be in place first. If it
+// isn't, those scripts run against the start screen and silently no-op - a real game, "A
+// Stranger Unregarded", does exactly this with a custom Inventory2 pane that never appeared.
+//
+// #qv-start is a fixed, full-viewport overlay (see chrome.css), so it still covers the
+// freshly swapped-in UI until the game has started.
+async function preparePlayerUi(choice) {
+    const name = playerUiOverride() ?? choice;
+    const { adapter, html } = await loadPlayerUi(name);
+    if (manualClock) {
+        // Stops player.js's 1-second interval, so game time only advances via tick/fireNextTimeout.
+        // Applied here, not at boot, since the legacy UI defines startTimer when it loads.
+        window.startTimer = () => {};
+    }
+    playerUi = adapter;
+    playerUiHtml = html;
+    const startScreenEl = swapInPlayerUi();
+    if (restartingPlayerUi) {
+        playerUi.resetOutput();
+    } else {
+        bootStartScreenEl = startScreenEl;
+    }
+}
+
 function swapInPlayerUi() {
     const startScreenEl = document.getElementById('qv-start');
     const savesDialogEl = document.getElementById('qv-saves');
@@ -551,7 +737,7 @@ function swapInPlayerUi() {
     restartingEl?.remove();
     recordingEl?.remove();
 
-    document.body.innerHTML = originalPlayerHtml;
+    document.body.innerHTML = playerUiHtml;
 
     if (startScreenEl) document.body.appendChild(startScreenEl);
     if (savesDialogEl) document.body.appendChild(savesDialogEl);
@@ -559,10 +745,10 @@ function swapInPlayerUi() {
     if (restartingEl) document.body.appendChild(restartingEl);
     if (recordingEl) document.body.appendChild(recordingEl);
     // This is a genuinely fresh chrome (see above) — addExternalScript's
-    // dedupe-by-URL (player.js) must not carry over, or the game's external
+    // dedupe-by-URL must not carry over, or the game's external
     // scripts silently no-op against it on the very next Initialise() call
     // and never re-inject whatever they set up (e.g. that sidebar pane).
-    clearLoadedExternalScripts();
+    _loadedExternalScripts.clear();
     // Likewise QuestUI's per-game state (legacy/questui.js): author panes, event listeners,
     // tokens and the hook flags all belong to the old chrome.
     window.resetQuestUIState?.();
@@ -642,40 +828,43 @@ function preloadRuntime() {
 async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, isPreview = false, recordWalkthrough = null, runWalkthrough = null, adjacentFiles = null, allowDebug = false) {
     currentIsPreview = isPreview;
     currentAllowDebug = allowDebug;
-    const [htmResponse, builder] = await Promise.all([
-        fetch(versioned('legacy/playercore.htm')),
-        loadRuntimeBuilder(),
-    ]);
-    originalPlayerHtml = await htmResponse.text();
-
+    prefetchPlayerUi(playerUiOverride() ?? 'legacy');
+    const builder = await loadRuntimeBuilder();
     const runtime = await builder.create();
     const { setModuleImports, getAssemblyExports, getConfig } = runtime;
 
+    // Everything that's UI behaviour goes to whichever player UI the game is playing on
+    // (playerUi, set by preparePlayerUi). The rest is the host's own.
     setModuleImports("wasm-player", {
-        addTextAndScroll: (html) => addTextAndScroll(html),
-        createNewDiv: (alignment) => createNewDiv(alignment),
-        bindMenu: (linkId, verbs, text, elementId) => bindMenu(linkId, verbs, text, elementId),
-        showMenu: (caption, optionsJson, allowCancel) => showMenu(caption, JSON.parse(optionsJson), allowCancel),
-        showQuestion: (caption) => showQuestion(caption),
-        beginWait: () => beginWait(),
-        setTurnPending: (pending) => setTurnPending(pending),
-        beginPause: (ms) => beginPause(ms),
-        updateLocation: (loc) => updateLocation(loc),
-        setGameName: (name) => setGameName(name),
-        clearScreen: () => clearScreen(),
-        panesVisible: (visible) => panesVisible(visible),
-        updateStatus: (text) => updateStatus(text),
-        setBackground: (colour) => setBackground(colour),
-        setForeground: (colour) => setForeground(colour),
-        updateList: (listName, itemsJson) => updateList(listName, JSON.parse(itemsJson)),
-        updateCompass: (data) => updateCompass(data),
-        updateObjectLinks: (verbsJson) => updateObjectLinks(JSON.parse(verbsJson)),
-        gameFinished: () => gameFinished(),
-        requestNextTimerTick: (seconds) => requestNextTimerTick(seconds),
-        uiShow: (element) => uiShow(element),
-        uiHide: (element) => uiHide(element),
+        addTextAndScroll: (html) => playerUi.addTextAndScroll(html),
+        createNewDiv: (alignment) => playerUi.createNewDiv(alignment),
+        bindMenu: (linkId, verbs, text, elementId) => playerUi.bindMenu(linkId, verbs, text, elementId),
+        showMenu: (caption, optionsJson, allowCancel) => playerUi.showMenu(caption, JSON.parse(optionsJson), allowCancel),
+        showQuestion: (caption) => playerUi.showQuestion(caption),
+        beginWait: () => playerUi.beginWait(),
+        setTurnPending: (pending) => playerUi.setTurnPending(pending),
+        beginPause: (ms) => playerUi.beginPause(ms),
+        updateLocation: (loc) => playerUi.updateLocation(loc),
+        setGameName: (name) => playerUi.setGameName(name),
+        clearScreen: () => playerUi.clearScreen(),
+        panesVisible: (visible) => playerUi.panesVisible(visible),
+        updateStatus: (text) => playerUi.updateStatus(text),
+        setBackground: (colour) => playerUi.setBackground(colour),
+        setForeground: (colour) => playerUi.setForeground(colour),
+        updateList: (listName, itemsJson) => playerUi.updateList(listName, JSON.parse(itemsJson)),
+        updateCompass: (data) => playerUi.updateCompass(data),
+        updateObjectLinks: (verbsJson) => playerUi.updateObjectLinks(JSON.parse(verbsJson)),
+        gameFinished: () => playerUi.gameFinished(),
+        requestNextTimerTick: (seconds) => playerUi.requestNextTimerTick(seconds),
+        uiShow: (element) => playerUi.uiShow(element),
+        uiHide: (element) => playerUi.uiHide(element),
         addExternalScript: (url) => addExternalScript(url),
         addExternalStylesheet: (url) => addExternalStylesheet(url),
+        preparePlayerUi: (choice) => preparePlayerUi(choice),
+        loadHtml: (html) => playerUi.loadHtml(html),
+        markScrollPosition: () => playerUi.markScrollPosition(),
+        scrollToEnd: () => playerUi.scrollToEnd(),
+        requestSave: () => playerUi.requestSave(),
         playSound: (url, synchronous, looped) => playSound(url, synchronous, looped),
         stopSound: () => stopSound(),
         runScript: (call) => {
@@ -683,9 +872,9 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
             try { globalEval(call); } catch (e) { console.error(e); }
         },
         jsYield: () => new Promise(resolve => setTimeout(resolve, 0)),
-        setCompassDirections: (dirsJson) => setCompassDirections(JSON.parse(dirsJson)),
-        setInterfaceString: (name, text) => setInterfaceString(name, text),
-        setPanelContents: (html) => setPanelContents(html),
+        setCompassDirections: (dirsJson) => playerUi.setCompassDirections(JSON.parse(dirsJson)),
+        setInterfaceString: (name, text) => playerUi.setInterfaceString(name, text),
+        setPanelContents: (html) => playerUi.setPanelContents(html),
         consoleError: (msg) => console.error('[Quest]', msg),
         consoleLog: (msg) => console.log('[Quest]', msg),
         getResourceUrl: (name) => getResourceUrl(name),
@@ -702,10 +891,7 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
     const seed = Number.parseInt(testParams.get('seed') ?? '', 10);
     if (Number.isInteger(seed)) Bridge.SetRandomSeed(seed);
     if (testParams.has('transcript')) Bridge.StartTranscriptCapture();
-    if (testParams.get('clock') === 'manual') {
-        // Stops player.js's 1-second interval, so game time only advances via tick/fireNextTimeout.
-        window.startTimer = () => {};
-    }
+    manualClock = testParams.get('clock') === 'manual';
     window.QuestVivaTest = {
         takeTranscript: () => JSON.parse(Bridge.TakeTranscriptJson()),
         evaluate: (expression) => Bridge.EvaluateExpression(expression),
@@ -724,22 +910,8 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
         };
     }
 
-    // Swap in the game UI *before* Initialise/Begin run, not after. Initialise
-    // registers the game's external <javascript> resources (RegisterExternalScripts),
-    // and games commonly use those to manipulate the game UI's own DOM (e.g.
-    // inserting a custom pane next to the built-in Inventory/Status panes). If
-    // the swap happens later, those scripts execute while the start screen is
-    // still showing, find none of the elements they're looking for, and
-    // silently no-op — a real game, "A Stranger Unregarded", does exactly this
-    // with a custom Inventory2 pane that never appeared because of this
-    // ordering.
-    //
-    // #qv-start is a fixed, full-viewport overlay (see chrome.css), so keeping
-    // it in the DOM on top of the freshly-swapped-in game UI still covers the
-    // screen exactly as before — the loading spinner/error UI's visible
-    // behaviour is unchanged.
-    const startScreenEl = swapInPlayerUi();
-
+    // Initialise loads the game, then calls preparePlayerUi to swap in the UI it's playing
+    // on, before registering the game's external <javascript> resources - see there.
     stageAdjacentFiles(adjacentFiles);
     const ok = saveBytes
         ? await Bridge.InitialiseWithSave(gameBytes, filename, saveBytes)
@@ -774,12 +946,11 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
 
     // Now that startup has actually succeeded, remove the start screen overlay
     // to reveal the game UI underneath.
-    startScreenEl?.remove();
-
-    await setupPaperJs();
+    bootStartScreenEl?.remove();
+    bootStartScreenEl = null;
 
     WebPlayer.onSaveClick = () => openSavesDialog('manage');
-    WebPlayer.initUI();
+    await WebPlayer.initUI();
     wireDebuggerButton();
     wireDebuggerRestartButton(isPreview);
     wireRecordingStopButton();
@@ -870,8 +1041,6 @@ window.RestartGame = () => {
 
 async function restartGameCore(saveBytes) {
     document.getElementById('qv-saves')?.close();
-    swapInPlayerUi();
-    resetGameOutput();
 
     // Bridge.Initialise/Begin re-run the whole game's startup (Bridge.Initialise
     // in particular re-parses the embedded Core library XML from scratch every
@@ -887,9 +1056,16 @@ async function restartGameCore(saveBytes) {
 
     try {
         stageAdjacentFiles(originalAdjacentFiles);
-        const ok = saveBytes
-            ? await Bridge.InitialiseWithSave(originalGameBytes, originalGameFilename, saveBytes)
-            : await Bridge.Initialise(originalGameBytes, originalGameFilename);
+        // Initialise swaps in a fresh copy of the UI (preparePlayerUi), as at boot.
+        restartingPlayerUi = true;
+        let ok;
+        try {
+            ok = saveBytes
+                ? await Bridge.InitialiseWithSave(originalGameBytes, originalGameFilename, saveBytes)
+                : await Bridge.Initialise(originalGameBytes, originalGameFilename);
+        } finally {
+            restartingPlayerUi = false;
+        }
         if (!ok) {
             // The engine rejected the game's contents again (or the save didn't
             // apply) — include the actual error rather than the old generic
@@ -904,8 +1080,7 @@ async function restartGameCore(saveBytes) {
 
         await maybeGateOnActivation(originalGameBytes);
 
-        await setupPaperJs();
-        WebPlayer.initUI();
+        await WebPlayer.initUI();
         wireDebuggerButton();
         wireDebuggerRestartButton(currentIsPreview);
         // Used to be an unconditional true — harmless while restartGame was only
@@ -1054,7 +1229,7 @@ function renderSavesList(saves, mode) {
 }
 
 async function downloadSaveToFile() {
-    const bytes = await WebPlayer.uiSaveGame($("#divOutput").html());
+    const bytes = await WebPlayer.uiSaveGame(playerUi.getOutputHtml());
     const blob = new Blob([bytes], { type: 'application/xml' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -1062,7 +1237,7 @@ async function downloadSaveToFile() {
     a.download = WebPlayer.gameId.replace(/\.[^.]+$/, '') + '.quest-save';
     a.click();
     URL.revokeObjectURL(url);
-    clearUnsavedProgress();
+    playerUi.clearUnsavedProgress();
 }
 
 // A .quest-save only carries state, not resources — it must be paired with
@@ -1987,7 +2162,7 @@ function wireDebuggerRestartButton(isPreview) {
     // (applied to them by initPlayerUI's "$('#gameBorder button').button()"
     // — which already ran by the time this is called, so it never touches
     // this button; do it explicitly here instead).
-    $(cmdRestart).button();
+    if (window.jQuery) $(cmdRestart).button();
 }
 
 // Nothing here can ever work over file:// — the runtime fetches its own

@@ -196,46 +196,6 @@ function saveGame() {
     }, 100);
 }
 
-// Initialise() unconditionally re-registers the game's external scripts every
-// time it runs, including on a mid-session restart (Start from the beginning
-// / Load) — but a real <script src> only ever runs once per document, so
-// re-adding the same URL against the *same* live DOM would re-execute the
-// game's setup code against elements it already set up on the previous run
-// (e.g. a custom sidebar pane), producing duplicates. Dedupe by URL so each
-// script tag still only truly executes once per document, same as normal
-// page-load semantics.
-//
-// A restart also wipes and rebuilds the whole player chrome first (see
-// WasmPlayer's swapInPlayerUi()), so by the
-// time Initialise() re-registers scripts against that fresh DOM, the
-// "already set up on the previous run" premise above no longer holds — the
-// old elements are gone, and the dedupe would wrongly skip re-running setup
-// code against the new ones, silently dropping anything the script injects
-// (confirmed via a real game's custom sidebar pane vanishing after restart).
-// Both chrome-reset call sites clear the set via clearLoadedExternalScripts()
-// so a restart's re-registration is treated as a genuinely fresh page load.
-var _loadedExternalScripts = new Set();
-
-function clearLoadedExternalScripts() {
-    _loadedExternalScripts.clear();
-}
-
-function addExternalScript(url) {
-    if (_loadedExternalScripts.has(url)) return Promise.resolve();
-    _loadedExternalScripts.add(url);
-
-    return new Promise((resolve, reject) => {
-        const script = document.createElement("script");
-        script.src = url;
-        script.onload = () => resolve();
-        script.onerror = () => {
-            _loadedExternalScripts.delete(url);
-            reject(new Error(`Failed to load script: ${url}`));
-        };
-        document.head.appendChild(script);
-    });
-}
-
 // The "write log to file" feature itself was removed from Core.aslx (#1924) - a game authored
 // since then has no way to call this. But an already-published game's own inlined Log function
 // may still call JS.WriteToLog(text) when its game.writelogtofile flag is set, and that has to

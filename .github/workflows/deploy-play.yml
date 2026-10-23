@@ -180,9 +180,13 @@ jobs:
           /player/*.svg
             Cache-Control: public, max-age=31536000, immutable
 
-          # Fetched by wasm-player.js at boot. Spelled out in full rather than
-          # as `*.htm`, so there is no chance of it also catching index.html.
+          # Each player UI's markup, fetched by wasm-player.js once a game has
+          # picked its UI. Spelled out in full rather than as `*.htm`, so there
+          # is no chance of catching index.html.
           /player/legacy/playercore.htm
+            Cache-Control: public, max-age=31536000, immutable
+
+          /player/v2/player.htm
             Cache-Control: public, max-age=31536000, immutable
 
           /*.js
