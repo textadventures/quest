@@ -42,16 +42,18 @@ const fixtureUrl = `${baseUrl}/e2e-fixtures/scroll-walkthrough-test.aslx`;
 await senderPage.goto(baseUrl);
 
 const handoffDone = senderPage.evaluate(async (url) => {
-    const bytes = new Uint8Array(await (await fetch(url)).arrayBuffer());
-    await new Promise((resolve) => {
-        const bc = new BroadcastChannel('quest-preview');
+    // Listen before fetching: the player posts 'ready' as soon as it boots, which can be
+    // before the fetch has finished, and a BroadcastChannel message sent before anyone is
+    // listening is simply lost - leaving this waiting forever.
+    const bc = new BroadcastChannel('quest-preview');
+    const ready = new Promise((resolve) => {
         bc.onmessage = ({ data }) => {
-            if (data.type === 'ready') {
-                bc.postMessage({ type: 'game', bytes, filename: 'scroll-walkthrough-test.aslx' });
-                resolve();
-            }
+            if (data.type === 'ready') resolve();
         };
     });
+    const bytes = new Uint8Array(await (await fetch(url)).arrayBuffer());
+    await ready;
+    bc.postMessage({ type: 'game', bytes, filename: 'scroll-walkthrough-test.aslx' });
 }, fixtureUrl);
 
 await previewPage.goto(`${baseUrl}/?source=editor`);
