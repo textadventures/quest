@@ -52,10 +52,10 @@ The plan originally proposed new `data-qv-object` / `data-qv-command` attributes
 |---|---|---|
 | `ShowMenu` non-inline fallback (`CoreFunctions.aslx`, `GamebookCore.aslx`) | `onclick="ASLEvent('ShowMenuResponse','…')"` | `data-qv-event="ShowMenuResponse" data-qv-param="…"` |
 | `{popup:}` text processor | jQuery in inline `onclick`, plus an inline-styled `position:fixed` div | `<button data-qv-popup="id">` + a `<div data-qv-popup-content id>` that the UI shows as a popover |
-| `PlayerHelper` command links (`<a cmd>` in `msg`) | `onclick="sendCommand('…')"` | `data-command="…"` (the version branch lives in `PlayerHelper`, which isn't frozen) |
-| `PlayerHelper` external links | `onclick="goUrl('…')"` | a real `href` with `target="_blank" rel="noopener"` |
 
 `data-qv-event` and `data-qv-popup` are the only new attribute names. Both UIs handle all of these through delegated listeners.
+
+`PlayerHelper` also writes inline handlers (`onclick="sendCommand('…')"` and `goUrl('…')`) for the links in its XML output. That path isn't part of 610: `WorldModel.PrintAsync` sends every game of version 540 or later that has Core's `OutputText` through the text processor instead, so only pre-540 and Quest 4 games reach `PlayerHelper`'s links, and they stay on the legacy UI.
 
 ## Today's surface (current Core)
 
