@@ -1,11 +1,30 @@
 <library>
   <function name="UpdateStatusAttributes">
     <![CDATA[
-      status = NewStringList()
-      AddStatusAttributesForElement (status, game, game.statusattributes)
-      AddStatusAttributesForElement (status, game.pov, game.povstatusattributes)
-      AddStatusAttributesForElement (status, game.pov, game.pov.statusattributes)
-      JS.updateStatus (Join(status, "<br/>"))
+      items = NewList()
+      AddStatusAttributeItems (items, game, game.statusattributes)
+      AddStatusAttributeItems (items, game.pov, game.povstatusattributes)
+      AddStatusAttributeItems (items, game.pov, game.pov.statusattributes)
+      JS.QuestUI.setStatusAttributes (items)
+    ]]>
+  </function>
+
+  <function name="AddStatusAttributeItems" parameters="items, element, statusAttributes">
+    <![CDATA[
+      // One item per status attribute for JS.QuestUI.setStatusAttributes: its name, the text
+      // to show, and its value when it's a number, so the UI can draw it in other ways.
+      if (not statusAttributes = null) {
+        foreach (attr, statusAttributes) {
+          value = GetAttribute(element, attr)
+          item = NewDictionary()
+          dictionary add (item, "name", attr)
+          dictionary add (item, "text", FormatStatusAttribute(attr, value, StringDictionaryItem(statusAttributes, attr)))
+          if (TypeOf(value) = "int" or TypeOf(value) = "double") {
+            dictionary add (item, "value", value)
+          }
+          list add (items, item)
+        }
+      }
     ]]>
   </function>
 

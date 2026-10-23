@@ -104,10 +104,10 @@
         if (not HasAttribute (game, "transcriptname")){
           game.transcriptname = game.gamename
         }
-        JS.enableTranscript(game.transcriptname)
+        JS.QuestUI.transcript.enable(game.transcriptname)
       }
       else{
-        JS.disableTranscript()
+        JS.QuestUI.transcript.disable()
       }
       if (HasScript(game, "onchangedsavetranscript")){
         invoke(game.onchangedsavetranscript)
@@ -118,7 +118,7 @@
         KillTranscript
       }
       else {
-        JS.reviveTranscript()
+        JS.QuestUI.transcript.revive()
       }
       if (HasScript(game, "onchangednotranscript")){
         invoke(game.onchangednotranscript)

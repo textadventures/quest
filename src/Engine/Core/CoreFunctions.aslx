@@ -172,7 +172,7 @@
       if (game.pov <> object) {
         game.pov = object
         if (game.gridmap) {
-          JS.Grid_ClearAllLayers()
+          JS.QuestUI.map.clearAllLayers()
           Grid_Redraw
         }
         OnEnterRoom (null)
@@ -220,7 +220,7 @@
         else {
           error ("ShowMenu cannot handle a " + TypeOf(option))
         }
-        msg (count + ": <a class=\"cmdlink\" style=\"" + style + "\" tabindex=\"0\" onclick=\"ASLEvent('ShowMenuResponse','" + EscapeQuotes(optiontag) + "')\">" + optionText + "</a>")
+        msg (count + ": <a class=\"cmdlink\" style=\"" + style + "\" tabindex=\"0\" data-qv-event=\"ShowMenuResponse\" data-qv-param=\"" + Replace(SafeXML(optiontag), "\"", "&quot;") + "\">" + optionText + "</a>")
       }
       EndOutputSection (outputsection)
       game.menuoptions = options
@@ -269,7 +269,7 @@
   </function>
 
   <function name="DisableMenuOutputSection" parameters="section">
-    JS.disableMenuOutputSection (section)
+    JS.QuestUI.disableSection (section)
   </function>
 
   <function name="EscapeQuotes" parameters="s" type="string">
@@ -312,7 +312,7 @@
         if (number > 0 and number <= ListCount(game.menuoptionskeys)) {
           handled = true
           if (not GetBoolean(game, "notranscript") and GetBoolean(game, "savetranscript")){
-            JS.SaveTranscript("<span><br/>> " + SafeXML(input) + "<br/></span>")
+            JS.QuestUI.transcript.write("<span><br/>> " + SafeXML(input) + "<br/></span>")
           }
           ShowMenuResponse(StringListItem(game.menuoptionskeys, number - 1))
         }
@@ -334,16 +334,16 @@
     }
     game.lastoutputsection = game.lastoutputsection + 1
     name = "section" + game.lastoutputsection
-    JS.StartOutputSection(name)
+    JS.QuestUI.startSection(name)
     return (name)
   </function>
 
   <function name="EndOutputSection" parameters="name">
-    JS.EndOutputSection(name)
+    JS.QuestUI.endSection(name)
   </function>
 
   <function name="HideOutputSection" parameters="name">
-    JS.HideOutputSection(name)
+    JS.QuestUI.hideSection(name)
   </function>
 
   <function name="StartTurnOutputSection">
@@ -688,7 +688,7 @@
     filename = s
     game.transcriptname = game.gamename
     if (not filename = "") {
-      JS.eval ("transcriptName = '" + filename + "';")
+      JS.QuestUI.transcript.setName (filename)
       game.transcriptname = filename
     }
     msg ("> " + game.transcriptname)
@@ -704,20 +704,20 @@
           game.transcriptname = game.gamename
         }
         game.savetranscript = true
-        JS.enableTranscript(game.transcriptname)
+        JS.QuestUI.transcript.enable(game.transcriptname)
         msg ("<br/>" + DynamicTemplate("TranscriptEnabledMessage"))
-        JS.printTranscriptDateAndTime()
+        JS.QuestUI.transcript.stampDateAndTime()
       }
   ]]></function>
 
   <function name="DisableTranscript">
     game.savetranscript = false
-    JS.disableTranscript()
+    JS.QuestUI.transcript.disable()
   </function>
 
   <function name="KillTranscript">
     game.notranscript = true
-    JS.killTranscript()
+    JS.QuestUI.transcript.kill()
     DisableTranscript
   </function>
 

@@ -167,27 +167,32 @@
   <template name="NothingToUndo">Nothing to undo!</template>
 
   <function name="InitInterface">
+    // The player UI is reached only through JS.QuestUI (the 610 UI contract, see
+    // docs/ui-v2-contract.md), never by element ID.
+    tokens = NewStringDictionary()
     if (game.setcustomwidth) {
-      JS.setGameWidth(game.customwidth)
-    }
-    if (not game.showborder) {
-      JS.hideBorder()
+      AddUIToken (tokens, "--qv-output-width", game.customwidth + "px")
     }
     if (game.setcustompadding) {
-      JS.setGamePadding(game.custompaddingtop, game.custompaddingbottom, game.custompaddingleft, game.custompaddingright)
+      AddUIToken (tokens, "--qv-padding-top", game.custompaddingtop + "px")
+      AddUIToken (tokens, "--qv-padding-bottom", game.custompaddingbottom + "px")
+      AddUIToken (tokens, "--qv-padding-left", game.custompaddingleft + "px")
+      AddUIToken (tokens, "--qv-padding-right", game.custompaddingright + "px")
     }
     SetBackgroundColour(game.defaultbackground)
     SetForegroundColour(game.defaultforeground)
     SetLinkForegroundColour(game.defaultlinkforeground)
-    JS.SetMenuBackground(game.menubackground)
-    JS.SetMenuForeground(game.menuforeground)
-    JS.SetMenuHoverBackground(game.menuhoverbackground)
-    JS.SetMenuHoverForeground(game.menuhoverforeground)
-    JS.SetMenuFontName(game.menufont)
-    JS.SetMenuFontSize(game.menufontsize + "pt")
-    JS.panesVisible(false)
-    JS.uiHide("#location")
-    JS.uiHide("#txtCommandDiv")
+    AddUIToken (tokens, "--qv-menu-bg", game.menubackground)
+    AddUIToken (tokens, "--qv-menu-fg", game.menuforeground)
+    AddUIToken (tokens, "--qv-menu-hover-bg", game.menuhoverbackground)
+    AddUIToken (tokens, "--qv-menu-hover-fg", game.menuhoverforeground)
+    AddUIToken (tokens, "--qv-menu-font", game.menufont)
+    AddUIToken (tokens, "--qv-menu-font-size", game.menufontsize + "pt")
+    JS.QuestUI.setTokens (tokens)
+    if (not game.showborder) {
+      JS.QuestUI.setVisible ("border", false)
+    }
+    JS.QuestUI.setLayoutPreset ("gamebook")
   </function>
 
   <function name="StartGame">
@@ -254,7 +259,7 @@
               msg ("<b>" + optiontext + "</b>")
               msg ("")
             }
-            JS.disableAllCommandLinks()
+            JS.QuestUI.disableCommandLinks()
           }
           player.parent = GetObject(command)
         }
@@ -307,7 +312,7 @@
           }
           if (HasString(player.parent, "youtube")) {
             if (LengthOf(player.parent.youtube) > 0) {
-              JS.AddYouTube(player.parent.youtube)
+              JS.QuestUI.addYouTube(player.parent.youtube)
               msg ("")
               msg ("")
             }
@@ -346,16 +351,16 @@
     }
     game.lastoutputsection = game.lastoutputsection + 1
     name = "section" + game.lastoutputsection
-    JS.StartOutputSection(name)
+    JS.QuestUI.startSection(name)
     return (name)
   </function>
 
   <function name="EndOutputSection" parameters="name">
-    JS.EndOutputSection(name)
+    JS.QuestUI.endSection(name)
   </function>
 
   <function name="HideOutputSection" parameters="name">
-    JS.HideOutputSection(name)
+    JS.QuestUI.hideSection(name)
   </function>
 
   <function name="RandomChance" parameters="percentile" type="boolean">
@@ -402,9 +407,9 @@
   </function>
 
   <function name="GetInput" parameters="callback">
-    JS.uiShow("#txtCommandDiv")
+    JS.QuestUI.setVisible("command-bar", true)
     get input {
-      JS.uiHide("#txtCommandDiv")
+      JS.QuestUI.setVisible("command-bar", false)
       parameters = NewStringDictionary()
       dictionary add (parameters, "result", result)
       invoke (callback, parameters)
@@ -464,7 +469,7 @@
         else {
           error ("ShowMenu cannot handle a " + TypeOf(option))
         }
-        msg (count + ": <a class=\"cmdlink\" style=\"" + style + "\" tabindex=\"0\" onclick=\"ASLEvent('ShowMenuResponse','" + EscapeQuotes(optiontag) + "')\">" + optionText + "</a>")
+        msg (count + ": <a class=\"cmdlink\" style=\"" + style + "\" tabindex=\"0\" data-qv-event=\"ShowMenuResponse\" data-qv-param=\"" + Replace(SafeXML(optiontag), "\"", "&quot;") + "\">" + optionText + "</a>")
       }
       EndOutputSection (outputsection)
       game.menuoptions = options

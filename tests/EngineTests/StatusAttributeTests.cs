@@ -13,6 +13,12 @@ namespace QuestViva.EngineTests;
 [TestClass]
 public class StatusAttributeTests
 {
+    // Each status line's text, joined as the status pane shows them.
+    private static string StatusText(object items) =>
+        string.Join("<br/>", ((System.Collections.IEnumerable)items)
+            .Cast<System.Collections.IDictionary>()
+            .Select(item => (string)item["text"]!));
+
     [TestMethod]
     public async Task StatusAttributeSetInStartScriptDoesNotError()
     {
@@ -24,8 +30,8 @@ public class StatusAttributeTests
 
         var status = new List<string>();
         var player = new Mock<IPlayer>();
-        player.Setup(p => p.RunScriptAsync("updateStatus", It.IsAny<object[]>()))
-            .Callback<string, object[]>((_, parameters) => status.Add((string)parameters[0]))
+        player.Setup(p => p.RunScriptAsync("QuestUI.setStatusAttributes", It.IsAny<object[]>()))
+            .Callback<string, object[]>((_, parameters) => status.Add(StatusText(parameters[0])))
             .Returns(Task.CompletedTask);
 
         var success = await worldModel.Initialise(player.Object);
@@ -57,8 +63,8 @@ public class StatusAttributeTests
 
         var status = new List<string>();
         var player = new Mock<IPlayer>();
-        player.Setup(p => p.RunScriptAsync("updateStatus", It.IsAny<object[]>()))
-            .Callback<string, object[]>((_, parameters) => status.Add((string)parameters[0]))
+        player.Setup(p => p.RunScriptAsync("QuestUI.setStatusAttributes", It.IsAny<object[]>()))
+            .Callback<string, object[]>((_, parameters) => status.Add(StatusText(parameters[0])))
             .Returns(Task.CompletedTask);
 
         var success = await worldModel.Initialise(player.Object);

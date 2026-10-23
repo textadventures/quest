@@ -77,7 +77,7 @@
         }
         else {
           if (not GetBoolean(game, "notranscript") and GetBoolean(game, "savingtranscript")){
-            JS.writeToTranscript("<span><br/>> " + SafeXML(command) + "<br/></span>")
+            JS.QuestUI.transcript.write("<span><br/>> " + SafeXML(command) + "<br/></span>")
           }
         }
         if (game.command_newline) {

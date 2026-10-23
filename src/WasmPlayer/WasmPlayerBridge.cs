@@ -877,8 +877,9 @@ public partial class WasmPlayerBridge
         // entire walkthrough finished.
         async Task IPlayer.RunScriptAsync(string function, object?[]? parameters)
         {
-            // Game text arrives here as JS.addText(html) for v540+ games.
-            if (function == "addText" && parameters is { Length: > 0 })
+            // Game text arrives here as JS.addText(html) for v540+ games, and as
+            // JS.QuestUI.addText(html) for games carrying 610 Core.
+            if (function is "addText" or "QuestUI.addText" && parameters is { Length: > 0 })
                 CaptureTranscript("text", parameters[0]?.ToString() ?? "");
 
             // Strip newlines from string parameters — some games depend on this (matching Quest 5 and the old WebPlayer)

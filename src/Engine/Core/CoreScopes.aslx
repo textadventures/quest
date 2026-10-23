@@ -331,17 +331,17 @@
       foreach (object, ScopeVisible()) {
         dictionary add (data, object.name, Join(GetDisplayVerbs(object), "/"))
       }
-      JS.updateObjectLinks(data)
+      JS.QuestUI.updateLinks("object", data)
       exits = NewStringList()
       foreach (exit, ScopeExits()) {
         list add (exits, exit.name)
       }
-      JS.updateExitLinks(exits)
+      JS.QuestUI.updateLinks("exit", exits)
       commands = NewStringList()
       foreach (cmd, ScopeCommands()) {
         list add (commands, cmd.name)
       }
-      JS.updateCommandLinks(commands)
+      JS.QuestUI.updateLinks("command", commands)
     }
   </function>
 

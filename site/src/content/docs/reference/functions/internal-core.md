@@ -61,6 +61,16 @@ _SetVerbsForGarment(garment)
 AddExternalStylesheet(stylesheet)
 ```
 
+## AddPanesThemeTokens
+```quest
+AddPanesThemeTokens (tokens, theme)
+```
+
+## AddStatusAttributeItems
+```quest
+AddStatusAttributeItems (items, element, statusAttributes)
+```
+
 ## AddStatusAttributesForElement
 ```quest
 AddStatusAttributesForElement (status, element, statusAttributes)
@@ -69,6 +79,11 @@ AddStatusAttributesForElement (status, element, statusAttributes)
 ## AddToResolvedNames
 ```quest
 AddToResolvedNames(var, result)
+```
+
+## AddUIToken
+```quest
+AddUIToken (tokens, name, value)
 ```
 
 ## BlockingMessage
