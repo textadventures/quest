@@ -54,7 +54,7 @@ The choice is made at boot, after the game file is loaded and its version is kno
 
 Today, `index.html` loads jQuery, jQuery UI, paper.js, `playercore.js` and `player.js` up front, and `swapInPlayerUi()` injects `playercore.htm`. Instead, each UI becomes a lazily loaded bundle: `legacy/` (today's files, moved and frozen) and `v2/`. The host (`wasm-player.js`) keeps the parts that are the same for both: the start screen, save-slot manager, debugger and transcript viewer, which are already in the scoped Tailwind/Skeleton "chrome" stack. It then picks a bundle. This lines up with #2493 (moving the player UI into `wwwroot/` as static web assets), which should land first or alongside.
 
-**Timing caveat for 610:** `v610` became the editor's save version today (#2576/#2577) and hasn't shipped in any release yet. Any 610 game saved by a 6.1 beta before v2 is the default will switch to v2 when that happens. That's acceptable for a beta audience, provided that:
+**Timing caveat for 610:** `v610` became the editor's save version on 2026-10-22 (#2576/#2577) and hasn't shipped in any release yet. No 6.1 release, beta included, ships until 610 Core's UI calls have all been rewritten onto the contract, so no published 610 game ever carries today's ID- and jQuery-based `InitInterface` ([ui-v2-contract.md](ui-v2-contract.md), finding 1). Any 610 game saved by a 6.1 beta before v2 is the default will switch to v2 when that happens. That's acceptable for a beta audience, provided that:
 - v2 only becomes the default for 610 once it reaches parity (Phase 5), so until then 610 games play on legacy as now
 - the editor's upgrade warning (#2577) also flags games that use legacy-UI hacks (`JS.eval`/`JS.setCss` against legacy IDs), with `classicinterface` as the one-click way to keep them on legacy
 
@@ -134,11 +134,13 @@ Svelte 5, for consistency with AppShell, was considered and rejected (decision 2
 
 ## Phases
 
-**Phase 0: contract.** Write the 610 UI contract (the `QuestUI` surface, token list and part names) as a reference page, and open tracking issues. With decision 1, nothing has to land before the first 6.1 beta ships: 610 games play on legacy until Phase 5.
+**Phase 0: contract.** Write the 610 UI contract (the `QuestUI` surface, token list and part names) as a reference page, and open tracking issues. The draft is [ui-v2-contract.md](ui-v2-contract.md). The contract and the 610 Core rewrite onto it (with a legacy `QuestUI` adapter) must land before the first 6.1 beta ships. v2 itself needn't: 610 games play on legacy until Phase 5.
 
 **Phase 1: plumbing and a minimal v2.**
 - Lazy UI bundle selection in the host, plus the `?ui=` override.
 - Move legacy into `legacy/` (with or after #2493).
+- A `QuestUI` adapter in legacy, so 610 Core can call the contract while 610 games still play on legacy.
+- The 610 Core rewrite onto `QuestUI`, which must be complete before the first 6.1 release.
 - A v2 that plays a text game end to end: output, command bar, links and verb menus, wait/pause/continue, `<dialog>` menus and questions, clear screen, save/restore of the transcript.
 - 610 games stay on legacy by default during this phase.
 
