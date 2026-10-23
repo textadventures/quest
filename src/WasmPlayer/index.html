@@ -42,21 +42,21 @@
         html.qv-booting #qv-pickers { display: none; }
         html.qv-booting #qv-loading-msg { display: flex; }
     </style>
-    <script type="text/javascript" src="lib/jquery-2.1.1.min.js"></script>
-    <script type="text/javascript" src="lib/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="lib/jquery.multi-open-accordion-1.5.3.js"></script>
-    <link rel="stylesheet" type="text/css" href="lib/jquery-ui.min.css" />
-    <link rel="stylesheet" type="text/css" href="playercore.css" />
+    <script type="text/javascript" src="legacy/lib/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="legacy/lib/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="legacy/lib/jquery.multi-open-accordion-1.5.3.js"></script>
+    <link rel="stylesheet" type="text/css" href="legacy/lib/jquery-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="legacy/playercore.css" />
     <!-- App-chrome styles (start screen, debugger, save-slot manager). Built from
          styles/chrome.css via `npm run build` — see WasmPlayer/package.json. All of
          its rules are contained to `.qv-chrome` subtrees so they can't affect the
          game UI above (playercore.css / jQuery UI). -->
     <link rel="stylesheet" type="text/css" href="chrome.css" />
-    <script type="text/javascript" src="playercore.js"></script>
-    <script type="text/javascript" src="player.js"></script>
-    <script type="text/javascript" src="lib/paper.js"></script>
+    <script type="text/javascript" src="legacy/playercore.js"></script>
+    <script type="text/javascript" src="legacy/player.js"></script>
+    <script type="text/javascript" src="legacy/lib/paper.js"></script>
     <!-- VERSION_SCRIPT: spliced in at build time by scripts/inject-version.mjs
-         (into generated/index.html) — sets window.QuestVivaVersion from the
+         (into wwwroot/index.html) — sets window.QuestVivaVersion from the
          repo-root VERSION file before wasm-player.js runs. -->
     <script type="text/javascript" src="wasm-player.js"></script>
 </head>
@@ -146,7 +146,7 @@
 
 <dialog id="qv-saves" class="qv-chrome" data-mode="boot" aria-labelledby="qv-saves-heading-boot">
     <!-- ICONS_SPRITE: spliced in at build time by scripts/build-icons.mjs (into
-         generated/index.html) — a hidden <symbol> defs block, kept inside
+         wwwroot/index.html) — a hidden <symbol> defs block, kept inside
          #qv-saves so it survives the dialog's detach/reattach around the
          document.body.innerHTML swap in wasm-player.js. Cross-document SVG
          <use href="file.svg#id"> isn't reliably supported (notably not in

@@ -5,7 +5,7 @@
 // Drives the CLI exporter (src/WasmPlayer/scripts/export-embedded.mjs) — the
 // AppShell "Export as single file…" path applies the same head transforms.
 //
-// Requires generated/index.html: (cd src/WasmPlayer && npm run build)
+// Requires wwwroot/index.html: (cd src/WasmPlayer && npm run build)
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -16,7 +16,7 @@ import { zipSync } from 'fflate';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, '..', '..');
 const exporter = path.join(repoRoot, 'src/WasmPlayer/scripts/export-embedded.mjs');
-const template = path.join(repoRoot, 'src/WasmPlayer/generated/index.html');
+const template = path.join(repoRoot, 'src/WasmPlayer/wwwroot/index.html');
 
 const IFID_LOWER = '448e73df-2d2f-47e7-a494-a46b40d4cfb3';
 const IFID_UPPER = '448E73DF-2D2F-47E7-A494-A46B40D4CFB3';

@@ -1,6 +1,6 @@
 # Vendored player libraries
 
-These files are checked in, not installed from npm, and are deliberately pinned to old versions. `WasmPlayer.csproj` copies them into the AppBundle's `lib/`, and `index.html` loads them.
+These files are checked in, not installed from npm, and are deliberately pinned to old versions. The SDK serves them as static web assets at `legacy/lib/`, and `index.html` loads them.
 
 | File | Version | Source |
 |---|---|---|

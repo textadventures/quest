@@ -31,7 +31,7 @@ core_blob = '\n'.join(core_blob)
 core_blob = core_blob.replace('&lt;', '<').replace('&gt;', '>').replace('&amp;', '&').replace('&quot;', '"')
 
 ui = {
-    'current': [os.path.join(quest, 'src/WasmPlayer/player-ui', f) for f in ('playercore.htm', 'playercore.js', 'player.js', 'grid.js', 'playercore.css')]
+    'current': [os.path.join(quest, 'src/WasmPlayer/wwwroot/legacy', f) for f in ('playercore.htm', 'playercore.js', 'player.js', 'grid.js', 'playercore.css')]
                + [os.path.join(quest, 'src/WasmPlayer/wasm-player.js')],
     'q5': [os.path.join(quest5, 'PlayerController', f) for f in ('playercore.htm', 'playercore.js', 'grid.js', 'playercore.css')]
           + [os.path.join(quest5, 'Player/desktopplayer.js')],

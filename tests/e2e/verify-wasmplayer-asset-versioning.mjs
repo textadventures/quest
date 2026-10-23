@@ -66,10 +66,10 @@ try {
             + notFetched.slice(0, 10).join('\n  '));
     }
 
-    // lib/images/* are referenced by relative URL from inside jquery-ui.min.css,
+    // legacy/lib/images/* are referenced by relative URL from inside jquery-ui.min.css,
     // so they can't be stamped and are deliberately excluded from the immutable
     // rules too — they must stay excluded from both, together.
-    const stampable = assets.filter(u => !new URL(u).pathname.startsWith('/lib/images/'));
+    const stampable = assets.filter(u => !new URL(u).pathname.startsWith('/legacy/lib/images/'));
 
     const unstamped = stampable.filter(u => !u.endsWith(query));
     if (unstamped.length) {

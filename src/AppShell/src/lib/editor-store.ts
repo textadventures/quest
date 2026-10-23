@@ -1002,7 +1002,7 @@ function buildEmbeddedPlayerHtml(template: string, packageBytes: Uint8Array, emb
     // CDN stylesheets need crossorigin for cssRules (issue #2192). Same-origin zip exports
     // don't — and adding it can break file hosts that omit ACAO — so only when cdnBase is set.
     if (cdnBase) {
-        for (const file of ["lib/jquery-ui.min.css", "playercore.css", "chrome.css"]) {
+        for (const file of ["legacy/lib/jquery-ui.min.css", "legacy/playercore.css", "chrome.css"]) {
             html = replaceOrFail(html, styleLine(file),
                 (line) => line.replace(/ \/>(\r?\n)$/, ' crossorigin="anonymous" />$1'),
                 `the ${file} stylesheet link`);
