@@ -282,6 +282,7 @@
     "scriptEditor.codeView": "Vista de código",
     "scriptEditor.addScript": "Añadir programa",
     "scriptEditor.loadingCommands": "Cargando comandos…",
+    "scriptEditor.loadFailed": "Este script no se pudo mostrar en el editor visual, pero aún puedes editarlo en «Vista de código». ({error})",
     "scriptEditor.removeParameter": "Quitar parámetro",
     "scriptEditor.addParam": "parámetro",
     "scriptEditor.removeCase": "Eliminar caso",

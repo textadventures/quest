@@ -17,7 +17,7 @@ using QuestViva.PlayerCore;
 
 namespace QuestViva.WasmEditor;
 
-internal record TreeNodeData(string Key, string Text, string? Parent, string? NodeType, bool IsLibrary, bool CanDelete, string? Filename, string? Folder);
+internal record TreeNodeData(string Key, string Text, string? Parent, string? NodeType, bool IsLibrary, bool CanDelete, bool CanCopy, string? Filename, string? Folder);
 
 internal record ControlOption(string Value, string Label);
 
@@ -214,7 +214,9 @@ internal record VerbInfo(string Attribute, string DisplayPattern);
 
 internal record ExpressionFunctionData(string Name, List<string> Parameters, bool IsUserDefined, bool IsLibrary);
 
-[JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
+// MaxDepth: ScriptBlockData nests 4 JSON levels per wait/for/firsttime block (node -> controls ->
+// control -> scripts), so the default limit of 64 failed at ~15 nested blocks (#2586).
+[JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase, MaxDepth = 1024)]
 [JsonSerializable(typeof(List<TreeNodeData>))]
 [JsonSerializable(typeof(EditorDataResponse))]
 [JsonSerializable(typeof(ScriptBlockData))]
@@ -4218,9 +4220,9 @@ public partial class WasmEditorBridge
         }
 
         // Authoritative — mirrors exactly what DeleteElement/DeleteElements will actually allow
-        // (see EditorController.CanDelete), rather than the UI guessing from node type/text.
+        // (see EditorController.CanDelete/CanCopy), rather than the UI guessing from node type/text.
         var node = new TreeNodeData(e.Key, e.Text, e.Parent, e.NodeType,
-            e.IsLibraryNode, _controller!.CanDelete(e.Key), e.Filename, e.Folder);
+            e.IsLibraryNode, _controller!.CanDelete(e.Key), _controller.CanCopy(e.Key), e.Filename, e.Folder);
         if (_isRebuilding)
         {
             // ClearTree already emptied the list; all keys are unique in a fresh rebuild.

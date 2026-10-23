@@ -74,14 +74,14 @@ try {
     // Rather than guess DOM ordinal position among a mix of root and nested
     // rows, classify every ScriptEditor row: a row is nested if it lives
     // inside a nested ScriptEditor wrapper (the depth>0 indentClass —
-    // "ml-4 border-l ..."), root otherwise. Every row — root or nested — must
+    // "border-l border-surface-300-700 pl-2"), root otherwise. Every row — root or nested — must
     // have a checkbox and hover-only (opacity 0) row actions.
     const rows = await page.evaluate(() => {
         const results = [];
         for (const actions of document.querySelectorAll('div.absolute.top-1')) {
             const row = actions.closest('div.group.relative');
             if (!row) continue;
-            const isNested = !!row.closest('div.ml-4.border-l.border-surface-300-700.pl-2');
+            const isNested = !!row.closest('div.border-l.border-surface-300-700.pl-2');
             results.push({ isNested, opacity: getComputedStyle(actions).opacity, hasCheckbox: !!row.querySelector('input[type="checkbox"]') });
         }
         return results;
@@ -95,7 +95,7 @@ try {
 
     // The nested row's checkbox must also reveal the selection toolbar (the fix
     // that gave nested blocks their own checkbox + Cut/Copy/Delete/Move).
-    await page.locator('div.ml-4.border-l.border-surface-300-700.pl-2 input[type="checkbox"]').first().click();
+    await page.locator('div.border-l.border-surface-300-700.pl-2 input[type="checkbox"]').first().click();
     await page.waitForSelector('text=selected', { timeout: 5000 });
     console.log('PASS: checking a nested row reveals the Cut/Copy/Delete/Move selection toolbar');
 
