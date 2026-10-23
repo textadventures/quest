@@ -2,7 +2,7 @@
 
 Phase 0 of [#2584](https://github.com/textadventures/quest/issues/2584). See [ui-v2-plan.md](ui-v2-plan.md) for the plan this belongs to.
 
-**Status: draft for review.** Nothing here is frozen yet. The contract freezes when the first game carrying 610 Core's rewritten UI calls can be published (see "When it freezes" below). From then on it only ever gains additions.
+**Status: draft for review.** Nothing here is frozen yet. The contract freezes with the first 6.1 release, the first point at which a 610 game can be published (see "When it freezes" below). From then on it only ever gains additions.
 
 The contract is what 610 Core and 610 authors may rely on. It has three parts:
 
@@ -16,32 +16,17 @@ Everything else in a UI's DOM, CSS and JS is internal and may change. That inclu
 
 Surveying current Core turned up three things the plan doesn't yet account for.
 
-### 1. Games published from 6.1 betas would freeze today's `InitInterface`
+### 1. No 6.1 release before the 610 Core rewrite
 
-No 6.1 release has shipped yet (6.1.0-beta.1 is pending as #2446), but `v610` is already the editor's save version. Once beta.1 ships, an author can publish a 610 `.quest` package, and that package inlines today's `InitInterface`, which:
+`v610` is already the editor's save version, but no 6.1 release has shipped (6.1.0-beta.1 is pending as #2446). Today's `InitInterface`:
 
 - calls `JS.setCss` on legacy IDs (`#compassAccordion`, `#qv-status`, `#txtCommandDiv`, …)
 - calls jQuery directly through `JS.eval` (`$('#commandPane').insertBefore('#inventoryLabel')`, `$('.ui-widget-header').css(...)`)
 - injects `<style>` rules for `#txtCommand` through `JS.addScript`
 
-Plain `.aslx` source isn't affected, because it references Core live and picks up the rewrite on the next load. Only published packages are. But under decision 1 as written (v2 for 610 or later), those packages would load v2, and none of their interface options would apply. The jQuery calls would just log errors.
+A 610 `.quest` package inlines whatever Core it was published with. If any 6.1 release shipped before the rewrite, packages published from it would carry these calls. Under decision 1 (v2 for 610 or later), they'd load v2 and none of their interface options would apply. The same goes for every intermediate state of a rewrite done in stages: each published snapshot would add its own calls to what v2 must support for good. (Plain `.aslx` source isn't affected, because it references Core live.)
 
-The same applies to every intermediate state of the Core rewrite. If 610 Core's UI calls are rewritten in stages, each published snapshot adds its own calls to what v2 must support for good.
-
-**Recommendation:** select v2 by a marker that only the finished 610 Core rewrite carries, not by the ASL version alone. For example, a `playerui` attribute on the `defaultgame` type, which is inlined into packages like the rest of Core:
-
-| Game | UI |
-|---|---|
-| carries the marker (and v2 is the default for it, i.e. after Phase 5) | v2 |
-| no marker: anything pre-610, Quest 4, or a 610 package published before the rewrite | legacy |
-| `game.classicinterface = true` | legacy |
-| `?ui=` | forced |
-
-The marker is set in Core in the same PR that finishes the rewrite, so a package has it only if it carries the whole contract-based Core. That keeps the contract "versioned by Core" in practice, with no separate number for authors to manage. Packages published in the gap stay on legacy, and they play exactly as authored, which is the point of legacy.
-
-The alternatives were:
-- **Hold beta.1** until the rewrite lands. That's clean, but the rewrite needs the contract settled and a legacy `QuestUI` (finding 2), which is weeks away.
-- **Make v2 tolerate the old calls.** That would be a compatibility layer, the thing decision 1 rejected.
+**So decision 1 stands as written, with one release rule: no 6.1 release, beta included, ships until the whole 610 Core rewrite has landed.** Until then nobody can publish a 610 game, so 610 Core can change freely. This fits the plan to hold the first beta until most of 6.1's features are in anyway. The open release PR (#2446) must not be merged before then.
 
 ### 2. Legacy needs a `QuestUI` implementation too
 
@@ -171,7 +156,7 @@ Rules that apply to every member:
 
 ### Map
 
-`QuestUI.map` mirrors today's Grid functions one for one, with the same arguments, so 610 CoreGrid changes only in what it calls: `show(size)`, `setInteractive(on)`, `setScale`, `setCentre`, `drawBox`, `drawLabel`, `drawPlayer`, `drawLine`, `drawArrow`, `drawSquare`, `drawShape`, `addShapePoint`, `drawImage`, `drawSvg`, `loadSvg`, `drawGridLines`, `showCustomLayer`, `clearCustomLayer`, `clearAllLayers`. v2 draws these with SVG (#2437). The arguments stay in today's grid coordinate units. Getting their exact meaning right is part of #2437, and it has to happen before the contract freezes.
+`QuestUI.map` mirrors today's Grid functions one for one, with the same arguments, so 610 CoreGrid changes only in what it calls: `show(size)`, `setInteractive(on)`, `setScale`, `setCentre`, `drawBox`, `drawLabel`, `drawPlayer`, `drawLine`, `drawArrow`, `drawSquare`, `drawShape`, `addShapePoint`, `drawImage`, `drawSvg`, `loadSvg`, `drawGridLines`, `showCustomLayer`, `clearCustomLayer`, `clearAllLayers`. v2 draws these with SVG (#2437). The arguments stay in today's grid coordinate units. Getting their exact meaning right is part of #2437, and it has to happen before the first 6.1 release.
 
 ### Transcript
 
@@ -244,19 +229,20 @@ Elements carry `data-qv-part`. Authors may select on part names (and on `data-qv
 
 ## When it freezes
 
-The contract freezes when the finished 610 Core rewrite merges with the v2 marker (finding 1). After that, a published package can depend on it. Until then, changing anything here costs nothing.
+The contract freezes with the first 6.1 release (finding 1). After that, a published package can depend on it. Until then, changing anything here costs nothing.
 
 That gives the order of work:
 
 1. Review and settle this draft.
 2. Phase 1 builds `QuestUI` in both UIs: the legacy adapter, plus v2 for what a text game needs.
-3. The 610 Core rewrite (`InitInterface`, output, status, transcript, grid, link markup) lands in **one PR** together with the marker, once both UIs implement every member it calls. The map members have to be settled with #2437 before this.
-4. From then on, additions only.
+3. The 610 Core rewrite (`InitInterface`, output, status, transcript, grid, link markup) lands once both UIs implement every member it calls. It can be split into several PRs, since nothing ships in between, but all of it must land before the first 6.1 release. The map members have to be settled with #2437 first, or frozen with today's Grid arguments.
+4. The first 6.1 release ships. From then on, additions only.
+
+v2 still only becomes the default for 610 at Phase 5, which can come after the first beta: until then 610 games play on legacy through its `QuestUI` adapter.
 
 ## Open questions
 
-1. **The marker** (finding 1). Agree on gating v2 by a Core-carried marker rather than the version alone, and pick its name and form.
-2. **Link markup** (finding 3). Agree on keeping `data-elementid`/`data-command` rather than adding `data-qv-object`/`data-qv-command`.
-3. **Typed `IPlayer` members vs `QuestUI`.** The plan suggests either for 610 Core's calls. This draft puts everything in `QuestUI` (one surface, implementable in JS by both UIs, no engine change per addition). Moving some to typed `IPlayer` members would help #1780 (non-HTML players), at the cost of every addition touching `Common`, the bridge and both UIs. That could be revisited later without breaking anything, because the engine could intercept known `QuestUI` calls.
-4. **Map arguments.** Grid coordinates and sizes as today, or something SVG-native? Decide with #2437 before the freeze.
-5. **Gamebooks.** `GamebookCore`'s `InitInterface` uses a subset of the same calls, so it's covered, but the gamebook layout (Phase 3) may want a `setLayoutPreset("gamebook")` call from Core instead of hiding parts one by one.
+1. **Link markup** (finding 3). Agree on keeping `data-elementid`/`data-command` rather than adding `data-qv-object`/`data-qv-command`.
+2. **Typed `IPlayer` members vs `QuestUI`.** The plan suggests either for 610 Core's calls. This draft puts everything in `QuestUI` (one surface, implementable in JS by both UIs, no engine change per addition). Moving some to typed `IPlayer` members would help #1780 (non-HTML players), at the cost of every addition touching `Common`, the bridge and both UIs. That could be revisited later without breaking anything, because the engine could intercept known `QuestUI` calls.
+3. **Map arguments.** Grid coordinates and sizes as today, or something SVG-native? Decide with #2437 before the first 6.1 release.
+4. **Gamebooks.** `GamebookCore`'s `InitInterface` uses a subset of the same calls, so it's covered, but the gamebook layout (Phase 3) may want a `setLayoutPreset("gamebook")` call from Core instead of hiding parts one by one.
