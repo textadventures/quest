@@ -54,6 +54,8 @@ gridApi.setZoom = function (zoom) {
 };
 
 gridApi.zoomIn = function (amount) {
+    // QuestUI.setMapInteractive(false) (questui.js)
+    if (window._qvMapInteractive === false) return;
     zoom = paper.view.zoom * (Math.pow(1.1, amount));
     if (zoom > 0.0001) {
         paper.view.zoom = zoom;
@@ -61,6 +63,7 @@ gridApi.zoomIn = function (amount) {
 };
 
 function onMouseDrag(event) {
+    if (window._qvMapInteractive === false) return;
     updateOffset(event.delta);
 }
 

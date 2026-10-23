@@ -449,21 +449,21 @@ window.WebPlayer = {
 
     async sendCommand(command, tickCount, metadata) {
         const metadataJson = metadata ? JSON.stringify(metadata) : null;
-        await Bridge.SendCommand(command, tickCount, metadataJson);
+        await playerTurn(() => Bridge.SendCommand(command, tickCount, metadataJson));
         canSendCommand = true;
         recordStep(command);
         refreshDebuggerAfterTurn();
     },
 
-    async uiChoice(choice) { await Bridge.SetMenuResponse(choice); recordStep(`menu:${choice}`); },
-    async uiChoiceCancel() { await Bridge.SetMenuResponse(null); },
+    async uiChoice(choice) { await playerTurn(() => Bridge.SetMenuResponse(choice)); recordStep(`menu:${choice}`); },
+    async uiChoiceCancel() { await playerTurn(() => Bridge.SetMenuResponse(null)); },
     async uiTick(tickCount) { await Bridge.Tick(tickCount); },
-    async uiEndWait() { await Bridge.FinishWait(); },
-    async uiEndPause() { await Bridge.FinishPause(); },
-    async uiSetQuestionResponse(response) { await Bridge.SetQuestionResponse(response); recordStep(`answer:${response ? 'yes' : 'no'}`); },
+    async uiEndWait() { await playerTurn(() => Bridge.FinishWait()); },
+    async uiEndPause() { await playerTurn(() => Bridge.FinishPause()); },
+    async uiSetQuestionResponse(response) { await playerTurn(() => Bridge.SetQuestionResponse(response)); recordStep(`answer:${response ? 'yes' : 'no'}`); },
 
     async uiSendEvent(eventName, param) {
-        await Bridge.SendEvent(eventName, param);
+        await playerTurn(() => Bridge.SendEvent(eventName, param));
         canSendCommand = true;
         recordStep(`event:${eventName};${param ?? ''}`);
         refreshDebuggerAfterTurn();
@@ -475,6 +475,17 @@ window.WebPlayer = {
     },
 
 };
+
+// One engine round trip started by the player, bracketed for QuestUI's turnStarted/turnEnded
+// events (legacy/questui.js).
+async function playerTurn(run) {
+    window.notifyQuestUITurn?.(true);
+    try {
+        return await run();
+    } finally {
+        window.notifyQuestUITurn?.(false);
+    }
+}
 
 // Exported bridge reference — set once WASM is loaded.
 var Bridge;
@@ -552,6 +563,9 @@ function swapInPlayerUi() {
     // scripts silently no-op against it on the very next Initialise() call
     // and never re-inject whatever they set up (e.g. that sidebar pane).
     clearLoadedExternalScripts();
+    // Likewise QuestUI's per-game state (legacy/questui.js): author panes, event listeners,
+    // tokens and the hook flags all belong to the old chrome.
+    window.resetQuestUIState?.();
     return startScreenEl;
 }
 

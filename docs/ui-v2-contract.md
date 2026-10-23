@@ -96,7 +96,9 @@ Author JS calls two player globals to talk to the engine: `ASLEvent(name, param)
 
 ## `QuestUI`
 
-A global object, defined by both UIs before any game script runs. 610 Core calls it as `JS.QuestUI.<member>(…)`, which `RunScriptAsync` already supports for dotted names (Core uses `JS.TextFX.Typewriter` today). All arguments are strings, numbers, booleans or JSON-able arrays/objects, since that's what crosses `RunScriptAsync`.
+A global object, defined by both UIs before any game script runs. 610 Core calls it as `JS.QuestUI.<member>(…)`, which `RunScriptAsync` already supports for dotted names (Core uses `JS.TextFX.Typewriter` today).
+
+Arguments are strings, numbers, booleans, and ASL lists and dictionaries, which arrive as JSON arrays and objects. Lists and dictionaries may hold further lists and dictionaries; an object reference inside one arrives as the object's name. (WasmPlayer's bridge serialises these recursively for `QuestUI.*` calls. Any other `JS.*` call still gets only flat string lists and string dictionaries as JSON, and anything else as its `ToString()`, which is what published games' own JS functions were written against.)
 
 Rules that apply to every member:
 - **Unknown names are ignored, not errors.** An unknown pane, part, token or option does nothing. That lets a newer Core pass something an older adapter doesn't know, and lets legacy no-op what it can't do.
@@ -157,7 +159,7 @@ Rules that apply to every member:
 
 ### Map
 
-`QuestUI.map` mirrors today's Grid functions one for one, with the same arguments, so 610 CoreGrid changes only in what it calls: `show(size)`, `setInteractive(on)`, `setScale`, `setCentre`, `drawBox`, `drawLabel`, `drawPlayer`, `drawLine`, `drawArrow`, `drawSquare`, `drawShape`, `addShapePoint`, `drawImage`, `drawSvg`, `loadSvg`, `drawGridLines`, `showCustomLayer`, `clearCustomLayer`, `clearAllLayers`. v2 draws these with SVG (#2437). The arguments are frozen exactly as today's (grid coordinate units, same order, same colour and border strings), so #2437 implements them in SVG rather than redesigning them. A cleaner, SVG-native API can be added alongside later.
+`QuestUI.map` mirrors today's Grid functions one for one, with the same arguments, so 610 CoreGrid changes only in what it calls: `show(size)`, `respondToClicks(on)` (`respondToGridClicks`: clicking a square sends `JS_GridSquareClick`), `setInteractive(on)` (zooming and dragging the map, on by default), `setScale`, `setCentre`, `drawBox`, `drawLabel`, `drawPlayer`, `drawLine`, `drawArrow`, `drawSquare`, `drawShape`, `addShapePoint`, `drawImage`, `drawSvg`, `loadSvg`, `drawGridLines`, `showCustomLayer`, `clearCustomLayer`, `clearAllLayers`. v2 draws these with SVG (#2437). The arguments are frozen exactly as today's (grid coordinate units, same order, same colour and border strings), so #2437 implements them in SVG rather than redesigning them. A cleaner, SVG-native API can be added alongside later.
 
 ### Transcript
 
@@ -176,13 +178,17 @@ These have no Core caller today. They're the supported versions of the survey's 
 | `fadePreviousOutput(on)` | fading `#divOutput` children |
 | `setCommandPlaceholder(text)` | setting `#txtCommand`'s placeholder |
 | `setMapInteractive(on)` | `gridApi.zoomIn = function(){}` and turning off paper.js drag (same as `map.setInteractive`) |
-| `on(event, fn)` / `off(event, fn)` with `turnStarted`, `turnEnded`, `outputAdded`, `locationChanged` | wrapping player functions to observe them |
+| `on(event, fn)` / `off(event, fn)` with `turnStarted`, `turnEnded`, `outputAdded` (`{ html }`), `locationChanged` (`{ location }`) | wrapping player functions to observe them |
+
+A **turn** is one engine round trip the player starts: a command, an event (`sendEvent`, a `data-qv-event` link), or answering a wait, pause, menu or question. `turnStarted` fires before the input goes to the engine and `turnEnded` once the engine has finished with it and its output is on screen. Timer ticks aren't turns.
 
 Each gets a 610 Core wrapper (`SetPaneVisible`, `AddPane`, `SetAutoScroll`, …) in Phase 4, so most authors never write JS.
 
 ## CSS custom properties
 
-Every game option that `InitInterface` applies today maps onto a token. 610 `InitInterface` reads the game's attributes and passes them in one `setTokens` call. Themes (`theme_novella`, …) become token sets, and authors override any of them in the game stylesheet.
+Every game option that `InitInterface` applies today maps onto a token. 610 `InitInterface` reads the game's attributes and passes them in one `setTokens` call (a string dictionary). Themes (`theme_novella`, …) become token sets, and authors override any of them in the game stylesheet.
+
+Values are CSS values, as a stylesheet would write them: colours as any CSS colour, lengths with units (`700px`, `12pt`), images as `url("…")`, and `--qv-bg-opacity` as a number from 0 to 1. A bare number for a length is read as pixels. An empty value unsets the token.
 
 | Token | From |
 |---|---|
@@ -194,7 +200,7 @@ Every game option that `InitInterface` applies today maps onto a token. 610 `Ini
 | `--qv-bg-blend-top`, `--qv-bg-blend-bottom` | `colourblendtop`, `colourblendbottom` |
 | `--qv-output-width` | `customwidth` |
 | `--qv-padding-top`, `-bottom`, `-left`, `-right` | `custompadding*` |
-| `--qv-border` | `bordercolour`; `showborder = false` sets it to `none` |
+| `--qv-border-colour` | `bordercolour`. `showborder = false` is `setVisible("border", false)`, not a token |
 | `--qv-pane-fg`, `--qv-pane-bg`, `--qv-pane-heading-fg`, `--qv-pane-heading-bg`, `--qv-pane-highlight` | `panestheme` (the seven named themes become token sets) |
 | `--qv-status-fg`, `--qv-status-bg`, `--qv-status-border`, `--qv-status-image` | `customlocationtextcolour`, `customlocationcolour`, `customlocationbordercolour`, `locationbarimage` |
 | `--qv-menu-fg`, `--qv-menu-bg`, `--qv-menu-hover-fg`, `--qv-menu-hover-bg`, `--qv-menu-font`, `--qv-menu-font-size` | `menuforeground`, … `menufontsize` |
@@ -210,7 +216,7 @@ v2 also defines tokens with no game attribute behind them yet (`--qv-surface`, `
 
 ## Part names
 
-Elements carry `data-qv-part`. Authors may select on part names (and on `data-qv-pane` for a specific pane), and `setVisible`/`setPaneOrder` take them. IDs and classes stay internal.
+Elements carry `data-qv-part`. Authors may select on part names (and on `data-qv-pane` for a specific pane), and `setVisible`/`setPaneOrder` take them. IDs and classes stay internal. Both UIs carry them. Legacy has no element wrapping a whole pane, so there the part name is on the pane's content, not its heading.
 
 | Part | What | Today's IDs |
 |---|---|---|
