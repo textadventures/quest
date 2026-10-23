@@ -17,13 +17,13 @@
   },
   "dependencies": {
     "@astrojs/starlight": "^0.42.6",
-    "astro": "^7.4.0",
+    "astro": "^7.4.1",
     "sharp": "^0.35.5"
   },
   "devDependencies": {
     "@eslint/compat": "^2.1.1",
     "@eslint/js": "^10.0.1",
     "eslint": "^10.13.0",
-    "typescript-eslint": "^8.71.2"
+    "typescript-eslint": "^8.72.0"
   }
 }
