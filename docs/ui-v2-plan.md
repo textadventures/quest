@@ -78,7 +78,7 @@ For v2, three things change:
    - `<a class="cmdlink commandlink" data-command="look">`
    - `<a class="cmdlink elementmenu" data-elementid="…">`
 
-   These are the names current Core already uses for object, exit and command links. 610 removes the inline handlers that remain (ShowMenu's fallback links, `{popup:}`, `PlayerHelper`'s links). v2 handles clicks through delegated listeners, which makes it CSP-friendly and lets v2 own menus, disabling and accessibility. `PlayerHelper` (live, not frozen) branches on version; 610 Core's text processor emits the new markup. Author HTML in `msg` passes through as today.
+   These are the names current Core already uses for object, exit and command links. 610 removes the inline handlers that remain (ShowMenu's fallback links and `{popup:}`). v2 handles clicks through delegated listeners, which makes it CSP-friendly and lets v2 own menus, disabling and accessibility. `PlayerHelper`'s inline-handler links only reach pre-540 games, whose output doesn't go through Core's text processor, so they stay as they are. Author HTML in `msg` passes through as today.
 
 `JS.eval` and `JS.*` still work in v2, since a game's own JavaScript is legitimate. But only `QuestUI`, the CSS tokens and the documented parts are stable. Anything else in v2's DOM is internal and may change.
 
