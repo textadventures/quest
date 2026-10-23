@@ -1,3 +1,5 @@
 node_modules
 wwwroot/index.html
 wwwroot/chrome.css
+wwwroot/v2/v2.js
+wwwroot/v2/v2.css

@@ -611,6 +611,7 @@ const playerUiBundles = {
         ],
     },
     v2: {
+        // Built from ../ui-v2/ by `npm run build`.
         html: 'v2/player.htm',
         styles: ['v2/v2.css'],
         scripts: ['v2/v2.js'],
@@ -710,11 +711,8 @@ function loadPlayerUi(name) {
 async function preparePlayerUi(choice) {
     const name = playerUiOverride() ?? choice;
     const { adapter, html } = await loadPlayerUi(name);
-    if (manualClock) {
-        // Stops player.js's 1-second interval, so game time only advances via tick/fireNextTimeout.
-        // Applied here, not at boot, since the legacy UI defines startTimer when it loads.
-        window.startTimer = () => {};
-    }
+    // Game time then only advances via QuestVivaTest's tick/fireNextTimeout.
+    if (manualClock) adapter.useManualClock();
     playerUi = adapter;
     playerUiHtml = html;
     const startScreenEl = swapInPlayerUi();

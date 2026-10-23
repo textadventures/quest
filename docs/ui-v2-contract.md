@@ -130,6 +130,8 @@ Rules that apply to every member:
 
 `getDivCount` is dropped: it exists only to keep legacy's div IDs in step after a restore, which the adapter can do itself.
 
+`addText` inserts its HTML as markup. A `<script>` element in it doesn't run on v2, though legacy runs it (jQuery's `append` does). A 610 game runs JavaScript through `JS.eval` or its own script files.
+
 ### Layout and panes
 
 | Member | Replaces |

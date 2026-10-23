@@ -3,7 +3,7 @@
 //
 // - A pre-610 game and a 610 game both get the legacy UI (v2 only becomes the 610 default at
 //   Phase 5 of #2584), and nothing under v2/ is requested.
-// - ?ui=v2 loads only v2 (the placeholder until #2595), with no legacy files and no jQuery, and
+// - ?ui=v2 loads only v2, with no legacy files and no jQuery, and
 //   the game still plays: its text shows and a command gets a response.
 // - ?ui=legacy forces legacy, and an unknown ?ui= value is ignored.
 //
@@ -75,7 +75,7 @@ try {
     const unknown = await play('?url=/examples/simple.aslx&ui=nonsense', legacyInput);
     expect(unknown.uis, 'legacy', 'an unknown ?ui= value is ignored');
 
-    const v2 = await play('?url=/examples/simple.aslx&ui=v2', { input: '#qv-v2-input', response: 'You can see' });
+    const v2 = await play('?url=/examples/simple.aslx&ui=v2', { input: 'qv-command-bar input', response: 'You can see' });
     expect(v2.bundles, 'v2', '?ui=v2 requests only the v2 bundle');
     expect(v2.uis, 'v2', '?ui=v2 gets the v2 UI');
     expect(v2.jquery, 'undefined', '?ui=v2 loads no jQuery');

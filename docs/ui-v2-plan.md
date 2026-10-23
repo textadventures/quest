@@ -116,7 +116,7 @@ From least to most effort for authors. Every tier is part of the 610 UI contract
 ## Building it
 
 **Stack (recommended):**
-- TypeScript, compiled with esbuild to one ES module plus one CSS file per UI.
+- TypeScript, compiled with esbuild to one script plus one CSS file per UI. The script is a classic script (an IIFE) rather than an ES module, because the host loads every UI bundle with plain `<script>` tags.
 - Light-DOM custom elements for components (`<qv-output>`, `<qv-pane>`, `<qv-command-bar>`, …). Light DOM rather than shadow DOM, so game stylesheets and `data-qv-part` selectors reach them.
 - No framework runtime. That keeps the bundle small, keeps the single-file export simple, and avoids tying a UI that must stay stable for years to a framework's major versions.
 - Styling is hand-written CSS on the token set, not Tailwind utilities, because authors read and override this CSS. Colour values can come from the same Skeleton palette as the chrome.
