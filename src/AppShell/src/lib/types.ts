@@ -8,6 +8,9 @@ export interface TreeNode {
   // player object, and any built-in library such as Core.aslx or a language file), so the UI
   // never needs its own guess at what's deletable.
   canDelete: boolean
+  // Authoritative too — mirrors EditorController.CanCopy (everything but "game", the gamebook
+  // player, libraries, JavaScript and templates), gating Cut/Copy in the tree.
+  canCopy: boolean
   // The .aslx file this element was loaded from (e.g. "Core.aslx", "CoreTimers.aslx", or the
   // game's own file). Only meaningful for grouping when isLibrary is true.
   filename: string | null
