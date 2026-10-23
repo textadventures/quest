@@ -212,6 +212,8 @@ public partial class WasmPlayerBridge
         _game.TurnSuspended += () => _ui.FlushBuffer();
 
         var (ok, errors) = await _helper.Initialise(_ui);
+        // A game that failed to load still gets a UI, to show its errors in.
+        await JsPreparePlayerUi(ok ? ChoosePlayerUi(_game) : LegacyPlayerUi);
         if (!ok)
         {
             // Stash the errors for JS to fetch (GetInitialiseErrorsJson) so it can
@@ -241,6 +243,23 @@ public partial class WasmPlayerBridge
 
         return true;
     }
+
+    private const string LegacyPlayerUi = "legacy";
+    private const string V2PlayerUi = "v2";
+
+    // Phase 5 of #2584 turns this on once v2 reaches parity with the legacy UI. Until then, every
+    // game plays on legacy unless ?ui=v2 forces v2 (wasm-player.js's preparePlayerUi).
+    private static readonly bool V2IsDefaultFor610 = false;
+
+    // Which player UI a game gets (docs/ui-v2-plan.md, "How a game gets its UI"): v2 for a game
+    // saved as ASL 610 or later, unless it opts out with game.classicinterface; legacy for
+    // everything older, including Quest 4 games.
+    private static string ChoosePlayerUi(IGame game) =>
+        V2IsDefaultFor610
+        && game is WorldModel { Version: >= WorldModelVersion.v610 } worldModel
+        && !worldModel.Game.Fields.GetAsType<bool>("classicinterface")
+            ? V2PlayerUi
+            : LegacyPlayerUi;
 
     [JSExport]
     public static string GetGameId() => _ui?.GameId ?? string.Empty;
@@ -496,6 +515,24 @@ public partial class WasmPlayerBridge
 
     [JSImport("uiHide", "wasm-player")]
     internal static partial void JsUiHide(string element);
+
+    [JSImport("loadHtml", "wasm-player")]
+    internal static partial void JsLoadHtml(string html);
+
+    [JSImport("markScrollPosition", "wasm-player")]
+    internal static partial void JsMarkScrollPosition();
+
+    [JSImport("scrollToEnd", "wasm-player")]
+    internal static partial void JsScrollToEnd();
+
+    [JSImport("requestSave", "wasm-player")]
+    internal static partial void JsRequestSave();
+
+    // Loads the chosen player UI bundle (once per page) and swaps in a fresh copy of its markup.
+    // Called between loading a game and running any of its own scripts, which commonly reach into
+    // the UI's DOM. See wasm-player.js's preparePlayerUi.
+    [JSImport("preparePlayerUi", "wasm-player")]
+    internal static partial Task JsPreparePlayerUi(string ui);
 
     [JSImport("addExternalScript", "wasm-player")]
     internal static partial Task JsAddExternalScript(string url);
@@ -845,7 +882,7 @@ public partial class WasmPlayerBridge
         {
             FlushText();
             var url = await GetUrlAsync(filename);
-            _uiBuffer.Add(() => JsAddTextAndScroll($"<img src=\"{url}\" onload=\"scrollToEnd();\" /><br />"));
+            _uiBuffer.Add(() => JsAddTextAndScroll($"<img src=\"{url}\" onload=\"window.scrollToEnd?.();\" /><br />"));
         }
 
         void IPlayer.SetPanesVisible(string data) =>
@@ -886,9 +923,24 @@ public partial class WasmPlayerBridge
             var processedParams = parameters?.Select(p =>
                 p is string s ? (object)s.Replace("\r", "").Replace("\n", "") : p).ToArray();
 
+            // The engine's own UI calls arrive here by name too (WorldModel: restoring a saved
+            // game's output, and scrolling around turns). They're for whichever player UI the
+            // game is on, so they go to its adapter rather than being evaluated as globals.
+            if (function == "loadHtml" && processedParams is [string html])
+            {
+                _uiBuffer.Add(() => JsLoadHtml(html));
+            }
+            else if (function == "markScrollPosition" && processedParams is null or [])
+            {
+                _uiBuffer.Add(JsMarkScrollPosition);
+            }
+            else if (function == "scrollToEnd" && processedParams is null or [])
+            {
+                _uiBuffer.Add(JsScrollToEnd);
+            }
             // When function is "eval", pass the code directly rather than wrapping it in eval(...)
             // so it runs in global scope (matching Quest 5 and the old WebPlayer; e.g. spondre defines global functions this way)
-            if (function == "eval" && processedParams is [string evalCode])
+            else if (function == "eval" && processedParams is [string evalCode])
             {
                 _uiBuffer.Add(() => JsRunScript(evalCode));
             }
@@ -999,7 +1051,7 @@ public partial class WasmPlayerBridge
 
         void IPlayer.Speak(string text) { }
 
-        void IPlayer.RequestSave(string? html) => JsRunScript("saveGame()");
+        void IPlayer.RequestSave(string? html) => JsRequestSave();
 
         void IPlayer.Show(string element)
         {

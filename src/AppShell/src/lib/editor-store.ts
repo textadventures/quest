@@ -1002,7 +1002,9 @@ function buildEmbeddedPlayerHtml(template: string, packageBytes: Uint8Array, emb
     // CDN stylesheets need crossorigin for cssRules (issue #2192). Same-origin zip exports
     // don't — and adding it can break file hosts that omit ACAO — so only when cdnBase is set.
     if (cdnBase) {
-        for (const file of ["legacy/lib/jquery-ui.min.css", "legacy/playercore.css", "chrome.css"]) {
+        // The player UI's own stylesheets aren't in the page: wasm-player.js adds them once a
+        // game has picked its UI, setting crossorigin itself when they come from another origin.
+        for (const file of ["chrome.css"]) {
             html = replaceOrFail(html, styleLine(file),
                 (line) => line.replace(/ \/>(\r?\n)$/, ' crossorigin="anonymous" />$1'),
                 `the ${file} stylesheet link`);

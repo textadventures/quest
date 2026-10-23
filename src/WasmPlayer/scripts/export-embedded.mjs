@@ -253,7 +253,9 @@ html = replaceOrFail(html, scriptLine('wasm-player.js'), (line) => embedScript +
 const styleLine = (file) => new RegExp(
     `^[ \\t]*<link rel="stylesheet" type="text/css" href="${file.replace(/\./g, '\\.')}(?:\\?[^"]*)?" />\\r?\\n`,
     'm');
-for (const file of ['legacy/lib/jquery-ui.min.css', 'legacy/playercore.css', 'chrome.css']) {
+// The player UI's own stylesheets aren't in the page: wasm-player.js adds them once a game
+// has picked its UI, setting crossorigin itself when they come from another origin.
+for (const file of ['chrome.css']) {
     html = replaceOrFail(html, styleLine(file),
         (line) => line.replace(/ \/>(\r?\n)$/, ' crossorigin="anonymous" />$1'),
         `the ${file} stylesheet link`);

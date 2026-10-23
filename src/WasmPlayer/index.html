@@ -42,20 +42,15 @@
         html.qv-booting #qv-pickers { display: none; }
         html.qv-booting #qv-loading-msg { display: flex; }
     </style>
-    <script type="text/javascript" src="legacy/lib/jquery-2.1.1.min.js"></script>
-    <script type="text/javascript" src="legacy/lib/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="legacy/lib/jquery.multi-open-accordion-1.5.3.js"></script>
-    <link rel="stylesheet" type="text/css" href="legacy/lib/jquery-ui.min.css" />
-    <link rel="stylesheet" type="text/css" href="legacy/playercore.css" />
+    <!-- The player UI a game plays on (legacy/ or v2/) isn't loaded here: wasm-player.js loads
+         just the one the game gets, once it's known (see preparePlayerUi), and puts its
+         stylesheets before this one. -->
     <!-- App-chrome styles (start screen, debugger, save-slot manager). Built from
          styles/chrome.css via `npm run build` — see WasmPlayer/package.json. All of
          its rules are contained to `.qv-chrome` subtrees so they can't affect the
-         game UI above (playercore.css / jQuery UI). -->
+         game UI. -->
     <link rel="stylesheet" type="text/css" href="chrome.css" />
-    <script type="text/javascript" src="legacy/playercore.js"></script>
-    <script type="text/javascript" src="legacy/player.js"></script>
-    <script type="text/javascript" src="legacy/questui.js"></script>
-    <script type="text/javascript" src="legacy/lib/paper.js"></script>
+    <script type="text/javascript" src="game-saver.js"></script>
     <!-- VERSION_SCRIPT: spliced in at build time by scripts/inject-version.mjs
          (into wwwroot/index.html) — sets window.QuestVivaVersion from the
          repo-root VERSION file before wasm-player.js runs. -->
