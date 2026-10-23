@@ -228,7 +228,9 @@ internal record VerbInfo(string Attribute, string DisplayPattern);
 
 internal record ExpressionFunctionData(string Name, List<string> Parameters, bool IsUserDefined, bool IsLibrary);
 
-[JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
+// MaxDepth: ScriptBlockData nests 4 JSON levels per wait/for/firsttime block (node -> controls ->
+// control -> scripts), so the default limit of 64 failed at ~15 nested blocks (#2586).
+[JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase, MaxDepth = 1024)]
 [JsonSerializable(typeof(List<TreeNodeData>))]
 [JsonSerializable(typeof(EditorDataResponse))]
 [JsonSerializable(typeof(ScriptBlockData))]

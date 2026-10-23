@@ -84,6 +84,10 @@
     }: Props = $props();
 
     let scriptData = $state<ScriptBlockData | null>(null);
+    // Set when the bridge can't build the visual editor's data for this script, so the
+    // author sees why (and that Code view still works) instead of an endless "Loading
+    // commands…" - an exception here used to abort the load effect before it got that far.
+    let loadError = $state<string | null>(null);
     let categories = $state<ScriptCategoryInfo[]>([]);
     let showAddModal = $state(false);
     let isRoot = $derived(initialData === null);
@@ -139,7 +143,7 @@
     $effect(() => {
         const version = $scriptVersion; // track for reactivity on undo/redo
         if (isRoot) {
-            scriptData = version >= 0 ? getScriptData(elementKey, attribute) : null;
+            scriptData = version >= 0 ? loadScriptData() : null;
         }
         // Any cut/delete/undo just removed the currently-selected rows, so a selection can't
         // survive a scriptVersion bump — except a move, which pre-sets nextSelection (see
@@ -194,9 +198,19 @@
         return scriptData?.scripts ?? [];
     }
 
+    function loadScriptData(): ScriptBlockData | null {
+        try {
+            loadError = null;
+            return getScriptData(elementKey, attribute);
+        } catch (e) {
+            loadError = e instanceof Error ? e.message : String(e);
+            return null;
+        }
+    }
+
     function refresh() {
         if (isRoot) {
-            scriptData = getScriptData(elementKey, attribute);
+            scriptData = loadScriptData();
         }
         expressionOverrides.clear();
         templateParamOverrides.clear();
@@ -666,7 +680,11 @@
         return `${base}/case/${paramAttr}/${encodeURIComponent(key)}`;
     }
 
-    const indentClass = $derived(depth > 0 && indent ? "ml-4 border-l border-surface-300-700 pl-2" : "");
+    // No margin of its own: nested blocks already sit inside their parent row's
+    // padding, and nestedBlockOutdent pulls them back under the parent's checkbox
+    // column, so each level only adds this rule + the row's own padding (~18px).
+    // It used to be ~56px a level, which squeezed deep nesting to nothing (#2586).
+    const indentClass = $derived(depth > 0 && indent ? "border-l border-surface-300-700 pl-2" : "");
 
     // Null for commands with no reference entry (syntax like `=` and `//`), which
     // is what hides the help affordance for them rather than linking to a 404.
@@ -687,9 +705,19 @@
             + " pointer-coarse:[--row-actions-pad:0.5rem]";
     }
 
+    // Pulls a nested block (below its row's first line, so never beside the checkbox)
+    // left by the width of the row's checkbox column: the label's pl-1.5 + the
+    // checkbox's size-3.5 + pr-0.5 = 1.375rem. Without this, every nesting level
+    // repeated that column's width as extra indent. An if's else/else-if lines and
+    // its add buttons use it too, so they line up with the blocks between them.
+    const nestedBlockOutdent = "-ml-[1.375rem]";
+    // Keeps a nested block's caption ("Run script:") lined up with the row's text.
+    const nestedCaptionIndent = "pl-[1.375rem]";
+
     // Widens a full-width nested block (script/case editor) back out over the
-    // row's reserved action-cluster padding, leaving the same 0.5rem inset as the left.
-    const nestedBlockWidth = "shrink-0 w-[calc(100%_+_var(--row-actions-pad,0.5rem)_-_0.5rem)]";
+    // row's reserved action-cluster padding, leaving the same 0.5rem inset as the left,
+    // and over the checkbox column it's outdented into.
+    const nestedBlockWidth = `shrink-0 ${nestedBlockOutdent} w-[calc(100%_+_var(--row-actions-pad,0.5rem)_-_0.5rem_+_1.375rem)]`;
 
     function openDocs(url: string) {
         window.open(url, "_blank", "noopener,noreferrer");
@@ -724,6 +752,9 @@
             minHeight="auto"
         />
     {:else}
+        {#if isRoot && loadError}
+            <div class="px-2 py-1 mb-1 bg-error-100-900 border border-error-300-700 rounded text-xs text-error-600-400 whitespace-pre-wrap">{t("scriptEditor.loadFailed", { error: loadError })}</div>
+        {/if}
         <div role="region" inert={isLocked || undefined} class={isLocked ? "opacity-60" : ""}>
             {#each scripts() as script, i (script.id)}
                 {@const docsUrl = docsUrlFor(script)}
@@ -896,7 +927,7 @@
         <!-- Nested script block for commands like for/while/foreach/firsttime -->
         <div class="{nestedBlockWidth} mt-0.5">
             {#if ctrl.caption}
-                <span class="text-surface-600-400 text-xs italic">{ctrl.caption}:</span>
+                <span class="block {nestedCaptionIndent} text-surface-600-400 text-xs italic">{ctrl.caption}:</span>
             {/if}
             <ScriptEditor
                 {elementKey}
@@ -1434,7 +1465,7 @@
         </div>
 
         <!-- Then block -->
-        <div class="mt-1">
+        <div class="mt-1 {nestedBlockOutdent}">
             <ScriptEditor
                 {elementKey}
                 {attribute}
@@ -1446,7 +1477,7 @@
 
         <!-- Else-if blocks -->
         {#each script.elseIfClauses ?? [] as elseIf, ei (elseIf.id)}
-            <div class="mt-1 flex items-center gap-1 flex-wrap">
+            <div class="mt-1 {nestedBlockOutdent} flex items-center gap-1 flex-wrap">
                 <span class="text-surface-600-400 font-medium select-none">{t("scriptEditor.elseIfKeyword")}</span>
                 {@render expressionField(
                     elseIf.expression ?? "",
@@ -1463,7 +1494,7 @@
                     onclick={() => onRemoveElseIf(i, ei)}
                 >×</button>
             </div>
-            <div class="mt-1">
+            <div class="mt-1 {nestedBlockOutdent}">
                 <ScriptEditor
                     {elementKey}
                     {attribute}
@@ -1476,7 +1507,7 @@
 
         <!-- Else block -->
         {#if script.elseScripts !== null && script.elseScripts !== undefined}
-            <div class="mt-1 flex items-center gap-1">
+            <div class="mt-1 {nestedBlockOutdent} flex items-center gap-1">
                 <span class="text-surface-600-400 font-medium select-none">{t("scriptEditor.elseKeyword")}</span>
                 <button
                     type="button"
@@ -1485,7 +1516,7 @@
                     onclick={() => onRemoveElse(i)}
                 >×</button>
             </div>
-            <div class="mt-1">
+            <div class="mt-1 {nestedBlockOutdent}">
                 <ScriptEditor
                     {elementKey}
                     {attribute}
@@ -1497,7 +1528,7 @@
         {/if}
 
         <!-- Add else if / Add else buttons -->
-        <div class="flex gap-1 mt-1">
+        <div class="flex gap-1 mt-1 {nestedBlockOutdent}">
             <button
                 type="button"
                 class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5"
