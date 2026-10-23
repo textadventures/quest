@@ -1,5 +1,23 @@
 # Changelog
 
+## [6.0.3](https://github.com/textadventures/quest/compare/v6.0.2...v6.0.3) (2026-10-23)
+
+
+### Features
+
+* **Editor:** copy and paste any element in the tree, with a right-click menu ([#2588](https://github.com/textadventures/quest/issues/2588)) ([444b17c](https://github.com/textadventures/quest/commit/444b17ca240df36cf2fb535f01eef674fc58aa7d))
+
+
+### Bug Fixes
+
+* **Editor:** load deeply nested scripts and stop them squeezing ([#2587](https://github.com/textadventures/quest/issues/2587)) ([94c431e](https://github.com/textadventures/quest/commit/94c431e0e071041efa04494e7316cb90abe031f0))
+* **Editor:** show rooms added with Add Room as rooms ([#2392](https://github.com/textadventures/quest/issues/2392)) ([#2569](https://github.com/textadventures/quest/issues/2569)) ([d1f4b23](https://github.com/textadventures/quest/commit/d1f4b2349fdcc8daba91d6126394a699013e1221))
+* **Player:** format numbers and characters independently of the player's locale ([#2564](https://github.com/textadventures/quest/issues/2564)) ([fbc3e2c](https://github.com/textadventures/quest/commit/fbc3e2c684ce35677c8e48abd969b629ddf74abf))
+* **Player:** load games with a malformed dynamic template ([#2566](https://github.com/textadventures/quest/issues/2566)) ([c5b45a3](https://github.com/textadventures/quest/commit/c5b45a3ef31330aedd52d060f966382d7fa97150))
+* **Player:** resolve array-indexed room names in Quest 4 goto and move ([#2572](https://github.com/textadventures/quest/issues/2572)) ([5304671](https://github.com/textadventures/quest/commit/53046712ae4d38728bd4044a60cbf49594ebfce4))
+* **Player:** restore Quest 4 object record behaviour lost in translation ([#2565](https://github.com/textadventures/quest/issues/2565)) ([8167f27](https://github.com/textadventures/quest/commit/8167f27dec2bf49c15ed8389dedfe939e829415e))
+* **Player:** undo each turn only once after an undo ([#2567](https://github.com/textadventures/quest/issues/2567)) ([8f27b66](https://github.com/textadventures/quest/commit/8f27b66b0d06b6319375be804e0088945f6005ea))
+
 ## [6.0.2](https://github.com/textadventures/quest/compare/v6.0.1...v6.0.2) (2026-10-13)
 
 
