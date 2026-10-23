@@ -1,0 +1,105 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <game name="LegacyQuestUITest">
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+  <!-- QuestUI calls made from ASL, the way 610 Core will make them. These are the ones whose
+       arguments depend on WasmPlayerBridge's argument serialisation: a string dictionary, a list
+       of dictionaries holding numbers, and a string list. -->
+  <command name="tokens">
+    <pattern>tokens</pattern>
+    <script>
+      tokens = NewStringDictionary()
+      dictionary add (tokens, "--qv-output-width", "700px")
+      dictionary add (tokens, "--qv-pane-fg", "white")
+      dictionary add (tokens, "--qv-pane-bg", "midnightblue")
+      dictionary add (tokens, "--qv-border-colour", "red")
+      dictionary add (tokens, "--author-colour", "teal")
+      dictionary add (tokens, "color", "red")
+      JS.QuestUI.setTokens (tokens)
+      msg ("Tokens set.")
+    </script>
+  </command>
+
+  <command name="status">
+    <pattern>status</pattern>
+    <script>
+      items = NewList()
+      health = NewDictionary()
+      dictionary add (health, "name", "health")
+      dictionary add (health, "label", "Health")
+      dictionary add (health, "value", 7)
+      dictionary add (health, "max", 10)
+      dictionary add (health, "text", "Health: 7/10")
+      list add (items, health)
+      score = NewDictionary()
+      dictionary add (score, "name", "score")
+      dictionary add (score, "text", "Score: 3")
+      list add (items, score)
+      JS.QuestUI.setStatusAttributes (items)
+      msg ("Status set.")
+    </script>
+  </command>
+
+  <command name="order">
+    <pattern>order</pattern>
+    <script>
+      parts = NewStringList()
+      list add (parts, "compass")
+      list add (parts, "status")
+      JS.QuestUI.setPaneOrder (parts)
+      msg ("Panes reordered.")
+    </script>
+  </command>
+
+  <command name="hidecompass">
+    <pattern>hidecompass</pattern>
+    <script>
+      JS.QuestUI.setVisible ("compass", false)
+      JS.QuestUI.setVisible ("location", false)
+      JS.QuestUI.setVisible ("no-such-part", false)
+      msg ("Compass hidden.")
+    </script>
+  </command>
+
+  <command name="links">
+    <pattern>links</pattern>
+    <script><![CDATA[
+      msg ("<a class=\"cmdlink\" data-qv-event=\"PingEvent\" data-qv-param=\"42\">fire</a>")
+      msg ("<button data-qv-popup=\"pop1\">peek</button><div data-qv-popup-content id=\"pop1\">Secret</div>")
+    ]]></script>
+  </command>
+
+  <command name="waitclick">
+    <pattern>waitclick</pattern>
+    <script>
+      JS.QuestUI.setContinueOnClick (true)
+      msg ("Waiting.")
+      wait {
+        msg ("Continued.")
+      }
+    </script>
+  </command>
+
+  <command name="ping">
+    <pattern>ping</pattern>
+    <script>
+      msg ("pong")
+    </script>
+  </command>
+
+  <function name="PingEvent" parameters="param">
+    msg ("Event " + param)
+  </function>
+
+</asl>

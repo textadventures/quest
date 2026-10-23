@@ -556,3 +556,38 @@ div.jj_menu_item_hover {
     padding: 4px 10px;
     box-sizing: border-box;
 }
+
+/* QuestUI (questui.js): {popup:} content in 610 games, positioned as the
+   text processor's own inline styles placed it before 610. */
+[data-qv-popup-content] {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 50px;
+    top: 40%;
+    width: 40%;
+    cursor: pointer;
+    background-color: var(--qv-bg, white);
+    color: var(--qv-link, inherit);
+    border: 2px solid var(--qv-text, currentColor);
+    border-radius: 5px;
+    padding: 5px;
+}
+
+[data-qv-popup-content].qv-popup-open {
+    display: block;
+}
+
+[data-qv-popup] {
+    cursor: pointer;
+    color: var(--qv-link, inherit);
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+}
+
+/* QuestUI.fadePreviousOutput(true) */
+#divOutput .qv-previous-output {
+    opacity: 0.5;
+}

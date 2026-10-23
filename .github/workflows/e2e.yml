@@ -488,6 +488,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-wasmplayer-ui-call-throws.mjs http://localhost:5175
         working-directory: tests/e2e
+      - run: node verify-wasmplayer-legacy-questui.mjs http://localhost:5175
+        working-directory: tests/e2e
       - run: node verify-wasmplayer-seed-transcript.mjs http://localhost:5175
         working-directory: tests/e2e
       - run: node verify-wasmplayer-walkthrough-timer.mjs http://localhost:5175

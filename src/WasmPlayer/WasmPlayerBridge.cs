@@ -894,7 +894,8 @@ public partial class WasmPlayerBridge
             else
             {
                 var serializedArgs = string.Join(',',
-                    processedParams?.Select(SerializeJsArg) ?? System.Array.Empty<string>());
+                    processedParams?.Select(p => SerializeJsArg(p, nested: function.StartsWith("QuestUI.", StringComparison.Ordinal)))
+                    ?? System.Array.Empty<string>());
                 _uiBuffer.Add(() => JsRunScript($"{function}({serializedArgs})"));
             }
 
@@ -906,7 +907,11 @@ public partial class WasmPlayerBridge
             }
         }
 
-        private static string SerializeJsArg(object? arg) => arg switch
+        // nested: serialise any ASL list or dictionary as JSON, not only flat string ones. Only for
+        // QuestUI calls, whose contract relies on it (e.g. setStatusAttributes takes a list of
+        // dictionaries; see docs/ui-v2-contract.md). A published game's own JS functions keep
+        // getting the ToString() they were written against.
+        private static string SerializeJsArg(object? arg, bool nested) => arg switch
         {
             null => "null",
             string s => JsonSerializer.Serialize(s, WasmJsonContext.Default.String),
@@ -919,8 +924,73 @@ public partial class WasmPlayerBridge
                 dict as Dictionary<string, string> ?? new Dictionary<string, string>(dict),
                 WasmJsonContext.Default.DictionaryStringString),
             IEnumerable<string> list => JsonSerializer.Serialize(list.ToArray(), WasmJsonContext.Default.StringArray),
+            System.Collections.IDictionary or System.Collections.IEnumerable when nested => SerializeNestedJsArg(arg),
             _ => JsonSerializer.Serialize(arg.ToString() ?? "", WasmJsonContext.Default.String),
         };
+
+        private static string SerializeNestedJsArg(object arg)
+        {
+            using var stream = new MemoryStream();
+            using (var writer = new Utf8JsonWriter(stream))
+            {
+                WriteJsArgValue(writer, arg);
+            }
+
+            return System.Text.Encoding.UTF8.GetString(stream.ToArray());
+        }
+
+        private static void WriteJsArgValue(Utf8JsonWriter writer, object? value)
+        {
+            switch (value)
+            {
+                case null:
+                    writer.WriteNullValue();
+                    break;
+                case string s:
+                    writer.WriteStringValue(s);
+                    break;
+                case bool b:
+                    writer.WriteBooleanValue(b);
+                    break;
+                case int i:
+                    writer.WriteNumberValue(i);
+                    break;
+                case long l:
+                    writer.WriteNumberValue(l);
+                    break;
+                case double d:
+                    if (double.IsFinite(d)) writer.WriteNumberValue(d);
+                    else writer.WriteNullValue();
+                    break;
+                case Element element:
+                    writer.WriteStringValue(element.Name);
+                    break;
+                case System.Collections.IDictionary dict:
+                    writer.WriteStartObject();
+                    // Keys and the indexer, not foreach over the dictionary: QuestDictionary's
+                    // non-generic enumerator yields KeyValuePairs, not DictionaryEntry.
+                    foreach (var key in dict.Keys)
+                    {
+                        writer.WritePropertyName(key.ToString() ?? "");
+                        WriteJsArgValue(writer, dict[key]);
+                    }
+
+                    writer.WriteEndObject();
+                    break;
+                case System.Collections.IEnumerable items:
+                    writer.WriteStartArray();
+                    foreach (var item in items)
+                    {
+                        WriteJsArgValue(writer, item);
+                    }
+
+                    writer.WriteEndArray();
+                    break;
+                default:
+                    writer.WriteStringValue(value.ToString());
+                    break;
+            }
+        }
 
         void IPlayer.SetFont(string fontName) => _helper?.SetFont(fontName);
 

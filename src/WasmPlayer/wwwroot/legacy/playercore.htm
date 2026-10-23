@@ -1,18 +1,18 @@
-<div id="gameBorder" style="display: none">
+<div id="gameBorder" data-qv-part="border" style="display: none">
     <div class="ui-widget-header" id="qv-status">
         <div id="controlButtons">
             <button id="cmdDebug" style="display: none" type="button">Debug</button>
             <button id="cmdSave" type="button" data-chrome-key="SaveLoadTitle">Save / Load</button>
             <button id="cmdShowPanes" type="button" data-chrome-key-aria-label="ShowPanesButton" aria-label="Show panels">&#9776;</button>
         </div>
-        <div id="location">
+        <div id="location" data-qv-part="location">
         </div>
     </div>
     <div id="sidebar">
-        <div id="gamePanes" style="background:transparent;">
+        <div id="gamePanes" data-qv-part="panes" style="background:transparent;">
             <div id="gamePanesRunning">
                 <h3 id="inventoryLabel"><button type="button" class="accordion-header-text" aria-controls="inventoryAccordion" aria-expanded="true">Inventory</button></h3>
-                <div id="inventoryAccordion">
+                <div id="inventoryAccordion" data-qv-part="pane" data-qv-pane="inventory">
                     <div class="elementListWrapper" id="inventoryWrapper">
                         <ol class="elementList" id="lstInventory">
                         </ol>
@@ -39,12 +39,12 @@
                     </div>
                 </div>
                 <h3 id="statusVarsLabel"><button type="button" class="accordion-header-text" aria-controls="statusVarsAccordion" aria-expanded="true">Status</button></h3>
-                <div id="statusVarsAccordion">
+                <div id="statusVarsAccordion" data-qv-part="pane" data-qv-pane="status">
                     <div id="statusVars">
                     </div>
                 </div>
                 <h3 id="placesObjectsLabel"><button type="button" class="accordion-header-text" aria-controls="placesObjectsAccordion" aria-expanded="true">Places and Objects</button></h3>
-                <div id="placesObjectsAccordion">
+                <div id="placesObjectsAccordion" data-qv-part="pane" data-qv-pane="objects">
                     <div class="elementListWrapper" id="placesObjectsWrapper">
                         <ol class="elementList" id="lstPlacesObjects">
                         </ol>
@@ -70,16 +70,16 @@
                                 style="display:none" type="button"></button>
                     </div>
                 </div>
-                <div class="ui-helper-reset ui-widget ui-state-active" id="commandPane"
+                <div class="ui-helper-reset ui-widget ui-state-active" id="commandPane" data-qv-part="pane" data-qv-pane="commands"
                      style="border-radius: 5px;text-align:center;display:none;padding:2px;min-height: 25px;margin-top:10px; border-top:1px solid rgb(121, 183, 231)">
                     <h3 id="commandPaneHeading"><span class="accordion-header-text">Commands</span></h3>
                 </div>
-                <div class="ui-helper-reset ui-widget ui-state-active" id="customStatusPane"
+                <div class="ui-helper-reset ui-widget ui-state-active" id="customStatusPane" data-qv-part="pane" data-qv-pane="customstatus"
                      style="border-radius: 5px;text-align:center;display:none;padding:2px;min-height: 25px;margin-top:10px; border-top:1px solid rgb(121, 183, 231)">
                     <h3><span class="accordion-header-text">Status</span></h3>
                 </div>
                 <h3 id="compassLabel"><button type="button" class="accordion-header-text" aria-controls="compassAccordion" aria-expanded="true">Compass</button></h3>
-                <div id="compassAccordion">
+                <div id="compassAccordion" data-qv-part="pane" data-qv-pane="compass">
                     <table id="compassTable">
                         <tr>
                             <td>
@@ -176,10 +176,10 @@
         </div>
     </div>
 
-    <div id="gamePanel"></div>
-    <div id="gridPanel"></div>
+    <div id="gamePanel" data-qv-part="picture-frame"></div>
+    <div id="gridPanel" data-qv-part="map"></div>
     <div id="gameContent">
-        <div id="divOutput" role="log" aria-live="polite">
+        <div id="divOutput" data-qv-part="output" role="log" aria-live="polite">
             <div data-divcount="0" id="outputData" style="display: none"></div>
             <h1 id="gameTitle">
                 Loading...</h1>
@@ -188,8 +188,8 @@
         <div id="endWaitDiv">
             <a class="cmdlink" id="endWaitLink" onclick="endWait();" style="display: none">Continue...</a>
         </div>
-        <nav id="qv-exits" aria-label="Compass"></nav>
-        <div id="txtCommandDiv">
+        <nav id="qv-exits" data-qv-part="exits" aria-label="Compass"></nav>
+        <div id="txtCommandDiv" data-qv-part="command-bar">
             <div id="txtCommandContainer">
                 <span id="txtCommandPrompt"></span>
                 <input autofocus id="txtCommand" onkeydown="return commandKey(event);" placeholder="Type here..."
