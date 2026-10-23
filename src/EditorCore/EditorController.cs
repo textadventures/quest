@@ -2095,6 +2095,11 @@ public sealed class EditorController : IDisposable
             return false;
         }
 
+        if (GetPasteTargetType(parentName) != _clipboardElementType)
+        {
+            return false;
+        }
+
         var parent = GetPasteParent(parentName);
         if (parent == null)
         {
@@ -2107,6 +2112,36 @@ public sealed class EditorController : IDisposable
         }
 
         return parent.ElemType == _clipboardElementType;
+    }
+
+    // The element type that belongs at a tree node (an element or a header), or null when
+    // nothing can be pasted there. Without it, anything on the clipboard could be pasted onto
+    // any node - e.g. a copied object pasted with a function selected became a new room.
+    private ElementType? GetPasteTargetType(string targetKey)
+    {
+        if (WorldModel.Elements.ContainsKey(targetKey))
+        {
+            var e = WorldModel.Elements.Get(targetKey);
+
+            // Exits, commands, turn scripts and the game can't contain pasted objects, and
+            // GetPasteParent would make anything pasted onto them top-level instead
+            if (e.ElemType == ElementType.Object && e.Type != ObjectType.Object)
+            {
+                return null;
+            }
+
+            return e.ElemType;
+        }
+
+        foreach (var (type, header) in _elementTreeStructure)
+        {
+            if (header.Key == targetKey)
+            {
+                return type;
+            }
+        }
+
+        return null;
     }
 
     private Element? GetPasteParent(string parentName)
@@ -2141,6 +2176,27 @@ public sealed class EditorController : IDisposable
         }
 
         return null;
+    }
+
+    public bool CanCopy(string elementName)
+    {
+        if (!ElementExists(elementName))
+        {
+            return false;
+        }
+
+        if (elementName == "game")
+        {
+            return false;
+        }
+
+        if (EditorStyle == EditorStyle.GameBook && elementName == "player")
+        {
+            return false;
+        }
+
+        var e = WorldModel.Elements.Get(elementName);
+        return e.ElemType is not (ElementType.IncludedLibrary or ElementType.Javascript or ElementType.Template);
     }
 
     public bool CanDelete(string elementName)
