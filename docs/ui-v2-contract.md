@@ -163,7 +163,7 @@ Rules that apply to every member:
 
 ### Transcript
 
-The transcript belongs to the host (the start screen and transcript viewer are shared by both UIs), but today it's driven from `playercore.js`'s globals and seeded through `JS.eval`'d variables. 610 Core calls `QuestUI.transcript.*` instead, and both UIs forward to the host: `write(html)`, `enable()`, `disable()`, `kill()`, `revive()`, `setName(name)`, `setPrefix(text)` (from `replaceTranscriptString`), `stampDateAndTime()`, `promptForName()`, `show()`. The game name no longer needs seeding: the host already gets it from `IPlayer.UpdateGameName`.
+The transcript belongs to the host (the start screen and transcript viewer are shared by both UIs), but today it's driven from `playercore.js`'s globals and seeded through `JS.eval`'d variables. 610 Core calls `QuestUI.transcript.*` instead, and both UIs forward to the host: `write(html)`, `enable(name)` (`name` optional), `disable()`, `kill()`, `revive()`, `setName(name)`, `setPrefix(text)` (from `replaceTranscriptString`), `stampDateAndTime()`, `promptForName()`, `show()`. The game name no longer needs seeding: the host already gets it from `IPlayer.UpdateGameName`.
 
 ### Author hooks
 

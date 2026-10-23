@@ -1,6 +1,6 @@
 <library>
   <function name="Grid_SetScale" parameters="scale">
-    JS.Grid_SetScale(scale)
+    JS.QuestUI.map.setScale(scale)
   </function>
 
   <function name="Grid_CalculateMapCoordinates" parameters="room, playerobject">
@@ -187,7 +187,7 @@
     player_z = Grid_GetGridCoordinateForPlayer(game.pov, room, "z")
 
     // Grid_DrawPlayer(x, y, z, radius, border, borderWidth, fill)
-    JS.Grid_DrawPlayer(player_x, player_y, player_z, 5, "black", 2, "yellow")
+    JS.QuestUI.map.drawPlayer(player_x, player_y, player_z, 5, "black", 2, "yellow")
   </function>
 
   <function name="Grid_DrawRoom" parameters="room, redraw, playerobject">
@@ -199,12 +199,12 @@
             Grid_DrawRoom (room.parent, redraw, playerobject)
           }
 
-          JS.Grid_DrawBox(Grid_GetGridCoordinateForPlayer(game.pov, room, "x"), Grid_GetGridCoordinateForPlayer(game.pov, room, "y"), Grid_GetGridCoordinateForPlayer(game.pov, room, "z"), room.grid_width, room.grid_length, room.grid_border, room.grid_borderwidth, room.grid_fill, room.grid_bordersides)
+          JS.QuestUI.map.drawBox(Grid_GetGridCoordinateForPlayer(game.pov, room, "x"), Grid_GetGridCoordinateForPlayer(game.pov, room, "y"), Grid_GetGridCoordinateForPlayer(game.pov, room, "z"), room.grid_width, room.grid_length, room.grid_border, room.grid_borderwidth, room.grid_fill, room.grid_bordersides)
 
           if (LengthOf(room.grid_label) > 0) {
             label_x = Grid_GetGridCoordinateForPlayer(game.pov, room, "x") + room.grid_width/2.0
             label_y = (Grid_GetGridCoordinateForPlayer(game.pov, room, "y") + room.grid_length/2.0) - 0.5
-            JS.Grid_DrawLabel(label_x, label_y, Grid_GetGridCoordinateForPlayer(game.pov, room, "z"), room.grid_label, room.grid_label_colour)
+            JS.QuestUI.map.drawLabel(label_x, label_y, Grid_GetGridCoordinateForPlayer(game.pov, room, "z"), room.grid_label, room.grid_label_colour)
           }
 
           foreach (exit, AllExits()) {
@@ -221,55 +221,55 @@
 
   <function name="Grid_ShowCustomLayer" parameters="visible">
     if (visible) {
-      JS.Grid_ShowCustomLayer(true)
+      JS.QuestUI.map.showCustomLayer(true)
     }
     else {
-      JS.Grid_ShowCustomLayer(false)
+      JS.QuestUI.map.showCustomLayer(false)
     }
   </function>
 
   <function name="Grid_ClearCustomLayer">
-    JS.Grid_ClearCustomLayer()
+    JS.QuestUI.map.clearCustomLayer()
   </function>
 
   <function name="Grid_DrawLine" parameters="x1, y1, x2, y2, border, borderWidth">
-    JS.Grid_DrawLine(x1, y1, x2, y2, border, borderWidth)
+    JS.QuestUI.map.drawLine(x1, y1, x2, y2, border, borderWidth)
   </function>
 
   <function name="Grid_DrawArrow" parameters="id, x1, y1, x2, y2, border, borderWidth">
-    JS.Grid_DrawArrow(id, x1, y1, x2, y2, border, borderWidth)
+    JS.QuestUI.map.drawArrow(id, x1, y1, x2, y2, border, borderWidth)
   </function>
 
   <function name="Grid_DrawGridLines" parameters="x1, y1, x2, y2, border">
-    JS.Grid_DrawGridLines(x1, y1, x2, y2, border)
+    JS.QuestUI.map.drawGridLines(x1, y1, x2, y2, border)
   </function>
 
   <function name="Grid_SetCentre" parameters="x, y">
-    JS.Grid_SetCentre(x, y)
+    JS.QuestUI.map.setCentre(x, y)
   </function>
 
   <function name="Grid_DrawSquare" parameters="id, x, y, width, height, text, fill">
-    JS.Grid_DrawSquare(id, x, y, width, height, text, fill)
+    JS.QuestUI.map.drawSquare(id, x, y, width, height, text, fill)
   </function>
 
   <function name="Grid_LoadSvg" parameters="data, id">
-    JS.Grid_LoadSvg(data, id)
+    JS.QuestUI.map.loadSvg(data, id)
   </function>
 
   <function name="Grid_DrawSvg" parameters="id, symbolid, x, y, width, height">
-    JS.Grid_DrawSvg(id, symbolid, x, y, width, height)
+    JS.QuestUI.map.drawSvg(id, symbolid, x, y, width, height)
   </function>
 
   <function name="Grid_DrawImage" parameters="id, url, x, y, width, height">
-    JS.Grid_DrawImage(id, url, x, y, width, height)
+    JS.QuestUI.map.drawImage(id, url, x, y, width, height)
   </function>
 
   <function name="Grid_AddNewShapePoint" parameters="x, y">
-    JS.Grid_AddNewShapePoint(x, y)
+    JS.QuestUI.map.addShapePoint(x, y)
   </function>
 
   <function name="Grid_DrawShape" parameters="id, border, fill, opacity">
-    JS.Grid_DrawShape(id, border, fill, opacity)
+    JS.QuestUI.map.drawShape(id, border, fill, opacity)
   </function>
 
   <function name="JS_GridSquareClick" parameters="parameterstring">

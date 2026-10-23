@@ -247,7 +247,7 @@
 
     var transcript = {
         write: function (html) { writeToTranscript(html); },
-        enable: function () { enableTranscript(); },
+        enable: function (name) { enableTranscript(name); },
         disable: function () { disableTranscript(); },
         kill: function () { killTranscript(); },
         revive: function () { reviveTranscript(); },

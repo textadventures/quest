@@ -39,7 +39,7 @@
       SetTimerScript(timer) {
         this.enabled = false
         invoke (this.timeoutscript)
-        JS.scrollToEnd ()
+        JS.QuestUI.scrollToEnd ()
         destroy (this.name)
       }
       EnableTimer(timer)

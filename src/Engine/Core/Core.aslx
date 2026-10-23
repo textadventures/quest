@@ -32,22 +32,26 @@
 
   <function name="InitInterface">
     <![CDATA[
-      // JSSafe removes any characters that would break the JS string literal below
-      jsgamename = JSSafe(game.gamename)
-      JS.eval ("var gameName = '"+jsgamename+"';var transcriptName = gameName;")
+      // The player UI is reached only through JS.QuestUI (the 610 UI contract, see
+      // docs/ui-v2-contract.md), never by element ID, so the interface can change without
+      // breaking games that carry this function.
       if (GetBoolean(game,"savetranscript")){
-        JS.eval("var savingTranscript = true;")
-        JS.replaceTranscriptString(game.transcriptstring)
+        JS.QuestUI.transcript.enable ()
+        JS.QuestUI.transcript.setPrefix (game.transcriptstring)
       }
+      tokens = NewStringDictionary()
       if (game.setcustomwidth) {
-        JS.setGameWidth (game.customwidth)
+        AddUIToken (tokens, "--qv-output-width", game.customwidth + "px")
       }
       if (game.setcustompadding) {
-        JS.setGamePadding (game.custompaddingtop, game.custompaddingbottom, game.custompaddingleft, game.custompaddingright)
+        AddUIToken (tokens, "--qv-padding-top", game.custompaddingtop + "px")
+        AddUIToken (tokens, "--qv-padding-bottom", game.custompaddingbottom + "px")
+        AddUIToken (tokens, "--qv-padding-left", game.custompaddingleft + "px")
+        AddUIToken (tokens, "--qv-padding-right", game.custompaddingright + "px")
       }
       if (game.externalstylesheets <> null) {
         foreach (stylesheet, game.externalstylesheets) {
-          JS.addExternalStylesheet (stylesheet)
+          JS.QuestUI.addStylesheet (stylesheet)
         }
       }
       if (game.setbackgroundopacity) {
@@ -59,41 +63,36 @@
       if (LengthOf(game.backgroundimage) > 0) {
         SetBackgroundImage (game.backgroundimage)
       }
-      JS.setCompassDirections(Join(game.compassdirections, ";"))
-      JS.setInterfaceString("InventoryLabel", "[InventoryLabel]")
-      JS.setInterfaceString("StatusLabel", "[StatusLabel]")
-      JS.setInterfaceString("PlacesObjectsLabel", "[PlacesObjectsLabel]")
-      JS.setInterfaceString("CompassLabel", "[CompassLabel]")
-      JS.setInterfaceString("InButtonLabel", "[InButtonLabel]")
-      JS.setInterfaceString("OutButtonLabel", "[OutButtonLabel]")
-      JS.setInterfaceString("EmptyListLabel", "[EmptyListLabel]")
-      JS.setInterfaceString("NothingSelectedLabel", "[NothingSelectedLabel]")
-      JS.setInterfaceString("TypeHereLabel", "[TypeHereLabel]")
-      JS.setInterfaceString("ContinueLabel", "[ContinueLabel]")
-      JS.SetMenuBackground (game.menubackground)
-      JS.SetMenuForeground (game.menuforeground)
-      JS.SetMenuHoverBackground (game.menuhoverbackground)
-      JS.SetMenuHoverForeground (game.menuhoverforeground)
-      JS.SetMenuFontName (game.menufont)
-      JS.SetMenuFontSize (game.menufontsize + "pt")
+      JS.QuestUI.setCompassDirections (game.compassdirections)
+      JS.QuestUI.setInterfaceString ("InventoryLabel", "[InventoryLabel]")
+      JS.QuestUI.setInterfaceString ("StatusLabel", "[StatusLabel]")
+      JS.QuestUI.setInterfaceString ("PlacesObjectsLabel", "[PlacesObjectsLabel]")
+      JS.QuestUI.setInterfaceString ("CompassLabel", "[CompassLabel]")
+      JS.QuestUI.setInterfaceString ("InButtonLabel", "[InButtonLabel]")
+      JS.QuestUI.setInterfaceString ("OutButtonLabel", "[OutButtonLabel]")
+      JS.QuestUI.setInterfaceString ("EmptyListLabel", "[EmptyListLabel]")
+      JS.QuestUI.setInterfaceString ("NothingSelectedLabel", "[NothingSelectedLabel]")
+      JS.QuestUI.setInterfaceString ("TypeHereLabel", "[TypeHereLabel]")
+      JS.QuestUI.setInterfaceString ("ContinueLabel", "[ContinueLabel]")
+      AddUIToken (tokens, "--qv-menu-bg", game.menubackground)
+      AddUIToken (tokens, "--qv-menu-fg", game.menuforeground)
+      AddUIToken (tokens, "--qv-menu-hover-bg", game.menuhoverbackground)
+      AddUIToken (tokens, "--qv-menu-hover-fg", game.menuhoverforeground)
+      AddUIToken (tokens, "--qv-menu-font", game.menufont)
+      AddUIToken (tokens, "--qv-menu-font-size", game.menufontsize + "pt")
       if (not game.underlinehyperlinks) {
-        JS.TurnOffHyperlinksUnderline ()
+        AddUIToken (tokens, "--qv-link-decoration", "none")
       }
       // The cached format is saved with the game, so after a load it would already match
       // and the style would never be applied to the new page
       game.commandbarformat = ""
       ResetCommandBarFormat
-      if (game.showcommandbar) {
-        JS.uiShow("#txtCommandDiv")
-      }
-      else {
-        JS.uiHide("#txtCommandDiv")
-      }
+      JS.QuestUI.setVisible ("command-bar", game.showcommandbar)
       if (HasString(game, "panelcontents")) {
         SetFramePicture (game.panelcontents)
       }
       if (game.gridmap) {
-        JS.ShowGrid (game.mapsize)
+        JS.QuestUI.map.show (game.mapsize)
         Grid_SetScale (game.mapscale)
         if (game.pov <> null) {
           if (game.pov.parent <> null) {
@@ -102,127 +101,125 @@
           }
         }
       }
-      // Note that panesVisible in playercore.js must be updated too
-      // This line will get the save confirmation to appear in the right font and colour
-      JS.setCss ("body", "color:" + game.defaultforeground + ";font-family:" + game.defaultfont + ";font-size:" + game.defaultfontsize + "pt;")
-      // various new options
+      // This gets the save confirmation to appear in the right font and colour
+      AddUIToken (tokens, "--qv-text", game.defaultforeground)
+      AddUIToken (tokens, "--qv-font-body", game.defaultfont)
+      AddUIToken (tokens, "--qv-font-size", game.defaultfontsize + "pt")
       if (HasString(game, "bordercolour")) {
-        JS.setCss ("#gameBorder", "border-left:1px solid " + game.bordercolour + ";border-right:1px solid " + game.bordercolour)
+        AddUIToken (tokens, "--qv-border-colour", game.bordercolour)
       }
       if (not game.classiclocation) {
-        JS.setCss ("#qv-status", "background-image:none")
         if (HasString(game, "customlocationcolour")) {
-          JS.setCss ("#qv-status", "background-color:" + game.customlocationcolour)
+          AddUIToken (tokens, "--qv-status-bg", game.customlocationcolour)
         }
         else {
-          JS.setCss ("#qv-status", "background:transparent")
+          AddUIToken (tokens, "--qv-status-bg", "transparent")
         }
         if (HasString(game, "customlocationtextcolour")) {
-          JS.setCss ("#qv-status", "color:" + game.customlocationtextcolour)
+          AddUIToken (tokens, "--qv-status-fg", game.customlocationtextcolour)
         }
         if (HasString(game, "customlocationbordercolour")) {
-          JS.setCss ("#qv-status", "border:1px solid " + game.customlocationbordercolour)
+          AddUIToken (tokens, "--qv-status-border", "1px solid " + game.customlocationbordercolour)
         }
         else {
-          JS.setCss ("#qv-status", "border:none")
+          AddUIToken (tokens, "--qv-status-border", "none")
         }
+        statusimage = "none"
         if (HasString(game, "locationbarimage")){
           if (not Trim(game.locationbarimage) = ""){
-            url = GetFileURL(game.locationbarimage)
-            JS.eval ("$('.ui-widget-header').css('background-image','url(" + url + ")');")
+            statusimage = "url(\"" + GetFileURL(game.locationbarimage) + "\")"
           }
         }
+        AddUIToken (tokens, "--qv-status-image", statusimage)
       }
-      //request (Show, "Location")
-      if (game.showlocation) {
-        JS.uiShow("#location")
-      }
-      else {
-        JS.uiHide("#location")
-      }
+      JS.QuestUI.setVisible ("location", game.showlocation)
       if (HasString(game, "marginscolour")) {
-        JS.setCss ("body", "background-color:" + game.marginscolour)
+        AddUIToken (tokens, "--qv-page-bg", game.marginscolour)
       }
       if (game.turnoffcompass) {
-        JS.setCss ("#compassLabel", "display:none;")
-        JS.setCss ("#compassAccordion", "display:none;")
+        JS.QuestUI.setVisible ("compass", false)
       }
       if (game.turnoffinventory) {
-        JS.setCss ("#inventoryLabel", "display:none")
-        JS.setCss ("#inventoryAccordion", "display:none")
+        JS.QuestUI.setVisible ("inventory", false)
       }
       if (game.turnoffplacesandobjects) {
-        JS.setCss ("#placesObjectsLabel", "display:none")
-        JS.setCss ("#placesObjectsAccordion", "display:none")
+        JS.QuestUI.setVisible ("objects", false)
       }
       if (game.statusandcompassattop) {
-        JS.eval ("$('#commandPane').insertBefore('#inventoryLabel')")
-        JS.eval ("$('#customStatusPane').insertBefore('#inventoryLabel')")
-        JS.eval ("$('#statusVarsLabel').insertBefore('#inventoryLabel')")
-        JS.eval ("$('#statusVarsAccordion').insertBefore('#inventoryLabel')")
-        JS.eval ("$('#compassLabel').insertBefore('#inventoryLabel')")
-        JS.eval ("$('#compassAccordion').insertBefore('#inventoryLabel')")
+        JS.QuestUI.setPaneOrder (Split("commands;customstatus;status;compass", ";"))
       }
       if (game.showpanes and game.commandpane) {
-        JS.setCss ("#commandPane", "display:block")
+        JS.QuestUI.setVisible ("commands", true)
       }
       if (game.showpanes and game.customstatuspane) {
-        JS.setCss ("#customStatusPane", "display:block")
+        JS.QuestUI.setVisible ("customstatus", true)
       }
       if (game.colourblend) {
-        JS.colourBlend (game.colourblendtop, game.colourblendbottom)
+        AddUIToken (tokens, "--qv-bg-blend-top", game.colourblendtop)
+        AddUIToken (tokens, "--qv-bg-blend-bottom", game.colourblendbottom)
       }
       if (game.borderlesscursor) {
-        JS.addScript("<style>#txtCommand { outline:none; border:none; margin:0; padding:0; width:100px; background-color:transparent;}</style>")
-        JS.setCss ("#txtCommandDiv", "color:" + game.defaultforeground)
-        JS.eval("$('#txtCommandPrompt').html('" + game.commandcursor + "')")
+        JS.QuestUI.setCommandBarPreset ("borderless")
+        AddUIToken (tokens, "--qv-command-fg", game.defaultforeground)
+        JS.QuestUI.setCommandPrompt (game.commandcursor)
       }
       else if (game.shadowbox) {
-        JS.addScript ("<style>#txtCommand { outline:none; border:none; margin:2px; padding:7px; width:100 px;box-shadow: 0px 0px 15px 5px #888;}</style>")
+        JS.QuestUI.setCommandBarPreset ("shadow")
       }
-      if (game.panestheme = "Midnight") {
-        JS.setPanes ("white", "midnightblue", "midnightblue", "skyblue")
-      }
-      if (game.panestheme = "Nature") {
-        JS.setPanes ("#A1C935", "#254117", "#306754", "#A1C935", "green")
-      }
-      if (game.panestheme = "Parchment") {
-        JS.setPanes ("#493D26", "#FAEBD7", "#FAEBD7", "#493D26", "#C88141")
-      }
-      if (game.panestheme = "Vanilla") {
-        JS.setPanes ("black", "white")
-      }
-      if (game.panestheme = "Black") {
-        JS.setPanes ("orange", "black", "black", "orange")
-      }
-      if (game.panestheme = "Blood") {
-        JS.setPanes ("orange", "#800000", "#800000", "orange", "yellow")
-      }
-      if (game.panestheme = "Tranquil") {
-        JS.setPanes ("midnightblue", "skyblue", "white", "midnightblue", "blue")
-      }
+      AddPanesThemeTokens (tokens, game.panestheme)
       if (game.respondtogridclicks) {
-        JS.respondToGridClicks (true)
+        JS.QuestUI.map.respondToClicks (true)
       }
+      JS.QuestUI.setTokens (tokens)
       //
       // -----------------------------------------------------------------------
       // This is in the original, but must come last
       if (not game.showborder) {
-        JS.hideBorder ()
+        JS.QuestUI.setVisible ("border", false)
       }
-      if (game.showpanes) {
-        JS.panesVisible(true)
-      }
-      else {
-        JS.panesVisible(false)
-      }
-      JS.getDivCount ()
+      JS.QuestUI.setVisible ("panes", game.showpanes)
       if (not game.pov = null) {
-        JS.updateLocation (CapFirst(GetDisplayName(game.pov.parent)))
+        JS.QuestUI.setLocation (CapFirst(GetDisplayName(game.pov.parent)))
       }
       InitUserInterface
       if (HasScript(game, "inituserinterface")) {
         do (game, "inituserinterface")
+      }
+  ]]></function>
+
+  <function name="AddPanesThemeTokens" parameters="tokens, theme">
+    <![CDATA[
+      // The named pane colour schemes on the Interface tab, as pane tokens: text, background,
+      // heading text, heading background and highlight.
+      colours = null
+      switch (theme) {
+        case ("Midnight") {
+          colours = Split("white;midnightblue;midnightblue;skyblue", ";")
+        }
+        case ("Nature") {
+          colours = Split("#A1C935;#254117;#306754;#A1C935;green", ";")
+        }
+        case ("Parchment") {
+          colours = Split("#493D26;#FAEBD7;#FAEBD7;#493D26;#C88141", ";")
+        }
+        case ("Vanilla") {
+          colours = Split("black;white", ";")
+        }
+        case ("Black") {
+          colours = Split("orange;black;black;orange", ";")
+        }
+        case ("Blood") {
+          colours = Split("orange;#800000;#800000;orange;yellow", ";")
+        }
+        case ("Tranquil") {
+          colours = Split("midnightblue;skyblue;white;midnightblue;blue", ";")
+        }
+      }
+      if (colours <> null) {
+        names = Split("--qv-pane-fg;--qv-pane-bg;--qv-pane-heading-fg;--qv-pane-heading-bg;--qv-pane-highlight", ";")
+        for (i, 0, ListCount(colours) - 1) {
+          AddUIToken (tokens, StringListItem(names, i), StringListItem(colours, i))
+        }
       }
   ]]></function>
 
@@ -233,7 +230,7 @@
     <![CDATA[
       StartTurnOutputSection
       if (game.showtitle) {
-        JS.StartOutputSection ("title")
+        JS.QuestUI.startSection ("title")
         PrintCentered ("<span style=\"font-size:260%\">" + game.gamename + "</span>")
         if (game.subtitle <> null) {
           if (LengthOf(game.subtitle) > 0) {
@@ -246,7 +243,7 @@
           }
         }
         msg ("<div style=\"margin-top:20px\"></div>")
-        JS.EndOutputSection ("title")
+        JS.QuestUI.endSection ("title")
       }
       if (game.pov = null) {
         playerObject = GetObject("player")
@@ -284,9 +281,6 @@
         }
         UpdateStatusAttributes
         UpdateObjectLinks
-      }
-      if (GetBoolean(game, "notranscript")){
-        JS.eval("transcriptEnabled = false;")
       }
       game.runturnscripts = false
       FinishTurn

@@ -8,17 +8,29 @@
   <function name="OutputTextRaw" parameters="text">
     <![CDATA[
       format = GetCurrentTextFormat("")
-      JS.addText("<span style=\"" + format + "\">" + text + "</span><br/>")
+      JS.QuestUI.addText("<span style=\"" + format + "\">" + text + "</span><br/>")
       ResetCommandBarFormat
     ]]>
   </function>
+
+  <function name="AddUIToken" parameters="tokens, name, value">
+    <![CDATA[
+      // Adds a CSS custom property for JS.QuestUI.setTokens, skipping a value the game doesn't
+      // set, so the UI keeps its own default for it.
+      if (value <> null) {
+        value = ToString(value)
+        if (LengthOf(value) > 0) {
+          dictionary add (tokens, name, value)
+        }
+      }
+  ]]></function>
 
   <function name="ResetCommandBarFormat">
     <![CDATA[
       format = GetCommandBarFormat()
       if (GetString(game, "commandbarformat") <> format) {
         game.commandbarformat = format
-        JS.setCommandBarStyle(format)
+        JS.QuestUI.setCommandBarStyle(format)
       }
     ]]>
   </function>
@@ -35,7 +47,7 @@
 
   <function name="OutputTextRawNoBr" parameters="text">
     <![CDATA[
-      JS.addText("<span style=\"" + GetCurrentTextFormat("") + "\">" + text + "</span>")
+      JS.QuestUI.addText("<span style=\"" + GetCurrentTextFormat("") + "\">" + text + "</span>")
     ]]>
   </function>
 
@@ -485,7 +497,9 @@
       id = JSSafe(s1) + GetRandomInt(0, 999999999)
       link = game.defaultlinkforeground
       if (HasString(game, "altlinkforeground")) link = game.altlinkforeground
-      s = "<span  style=\"cursor:pointer;color:" + link + ";\" onclick=\"$('#" + id + "').css('display', 'block');\">" + s1 + "</span><div id=\"" + id + "\" class=\"w3-theme-border\" style=\"position:fixed;z-index:9999;display:none;cursor:pointer;left:50px;top:40%;width:40%;background-color:" + game.defaultbackground + ";border:2px solid " + game.defaultforeground + ";color:" + link + ";border-radius:5px;padding:5px;\" onclick=\"$('#" + id + "').css('display', 'none');\"><p>"
+      // The UI opens and closes the popup itself (data-qv-popup), so this markup needs no
+      // inline handlers or positioning.
+      s = "<button type=\"button\" data-qv-popup=\"" + id + "\" style=\"color:" + link + ";\">" + s1 + "</button><div id=\"" + id + "\" data-qv-popup-content class=\"w3-theme-border\" style=\"background-color:" + game.defaultbackground + ";border-color:" + game.defaultforeground + ";color:" + link + ";\"><p>"
       s = s + s2 + "</p></div>"
       return(ProcessTextSection(s, data))
   ]]></function>
@@ -723,18 +737,18 @@
 
   <function name="SetFramePicture" parameters="filename">
     <![CDATA[
-      JS.setPanelContents("<img src=\"" + GetFileURL(filename) + "\" onload=\"setPanelHeight()\"/>")
+      JS.QuestUI.setPictureFrame("<img src=\"" + GetFileURL(filename) + "\"/>")
       game.panelcontents = filename
     ]]>
   </function>
 
   <function name="ClearFramePicture">
-    JS.setPanelContents("")
+    JS.QuestUI.setPictureFrame("")
     game.panelcontents = null
   </function>
 
   <function name="ClearScreen">
-    JS.clearScreen()
+    JS.QuestUI.clearScreen()
   </function>
 
   <function name="SetForegroundColour" parameters="colour">
@@ -743,7 +757,9 @@
   </function>
 
   <function name="SetBackgroundColour" parameters="colour">
-    JS.setBackground(colour)
+    tokens = NewStringDictionary()
+    AddUIToken (tokens, "--qv-bg", colour)
+    JS.QuestUI.setTokens (tokens)
     game.defaultbackground = colour
   </function>
 
@@ -768,7 +784,7 @@
     }
     if (not ListContains(game.externalstylesheets, stylesheet)) {
       list add (game.externalstylesheets, stylesheet)
-      JS.addExternalStylesheet(stylesheet)
+      JS.QuestUI.addStylesheet(stylesheet)
     }
   </function>
 
@@ -785,7 +801,7 @@
   </function>
 
   <function name="ShowYouTube" parameters="id">
-    JS.AddYouTube(id)
+    JS.QuestUI.addYouTube(id)
   </function>
 
   <function name="WaitForKeyPress">
@@ -833,12 +849,16 @@
   </function>
 
   <function name="SetBackgroundImage" parameters="filename">
-    JS.SetBackgroundImage(GetFileURL(filename))
+    tokens = NewStringDictionary()
+    AddUIToken (tokens, "--qv-bg-image", "url(\"" + GetFileURL(filename) + "\")")
+    JS.QuestUI.setTokens (tokens)
     game.backgroundimage = filename
   </function>
 
   <function name="SetBackgroundOpacity" parameters="opacity">
-    JS.SetBackgroundOpacity(opacity)
+    tokens = NewStringDictionary()
+    AddUIToken (tokens, "--qv-bg-opacity", opacity)
+    JS.QuestUI.setTokens (tokens)
     game.backgroundopacity = opacity
     game.setbackgroundopacity = true
   </function>
@@ -865,7 +885,7 @@
   </function>
 
   <function name="SetAlignment" parameters="align">
-    JS.createNewDiv(align)
+    JS.QuestUI.setAlignment(align)
   </function>
 
   <function name="GetCurrentFontFamily" type="string">

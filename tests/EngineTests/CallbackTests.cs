@@ -12,7 +12,8 @@ namespace QuestViva.EngineTests;
 /// assert that specific text appeared before vs. after a wait / get-input / etc. v600 is used
 /// (rather than v580) because this fixture also exercises the GetInput()/Ask()/ShowMenu()
 /// expression-function forms, which are gated off for v540-v580 games (see V540UndeprecationTests).
-/// For v580+ games, text reaches the player via IPlayer.RunScriptAsync("addText", [html]) rather than
+/// For v580+ games, text reaches the player via IPlayer.RunScriptAsync("addText", [html]) (or
+/// "QuestUI.addText" with current Core) rather than
 /// the PrintText event, so we intercept the mock player to capture it.
 /// </summary>
 internal sealed class GameDriver
@@ -40,7 +41,7 @@ internal sealed class GameDriver
             .Setup(p => p.RunScriptAsync(It.IsAny<string>(), It.IsAny<object[]>()))
             .Callback<string, object[]>((fn, args) =>
             {
-                if (fn == "addText" && args?.Length > 0 && args[0] is string html)
+                if (fn is "addText" or "QuestUI.addText" && args?.Length > 0 && args[0] is string html)
                 {
                     var text = StripTags.Replace(html, "").Trim();
                     if (!string.IsNullOrEmpty(text))
@@ -574,7 +575,7 @@ public class CallbackTests
         // where nothing else can possibly run until this is explicitly completed below.
         var addTextTcs = new TaskCompletionSource();
         driver.PlayerMock
-            .Setup(p => p.RunScriptAsync("addText", It.IsAny<object[]>()))
+            .Setup(p => p.RunScriptAsync("QuestUI.addText", It.IsAny<object[]>()))
             .Returns(addTextTcs.Task);
 
         var tickTask = driver.Model.Tick(2);

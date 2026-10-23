@@ -15,7 +15,7 @@ public class CommandBarFormatTests
     private static List<string> CommandBarStyles(GameDriver driver) =>
         driver.PlayerMock.Invocations
             .Where(i => i.Method.Name == nameof(IPlayer.RunScriptAsync)
-                        && (string)i.Arguments[0] == "setCommandBarStyle")
+                        && (string)i.Arguments[0] == "QuestUI.setCommandBarStyle")
             .Select(i => (string)((object[])i.Arguments[1])[0])
             .ToList();
 

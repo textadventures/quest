@@ -957,7 +957,7 @@
   <command name="view_transcript_cmd" pattern="[view_transcript_cmd]">
     <script>
       if (not GetBoolean(game, "notranscript")){
-        JS.showTranscript (Template("TranscriptViewerMessage"), Template("TranscriptViewerLinkText"))
+        JS.QuestUI.transcript.show (Template("TranscriptViewerMessage"), Template("TranscriptViewerLinkText"))
       }
       else {
         msg (Template("NoTranscriptFeature"))
@@ -973,7 +973,7 @@
           if (not GetBoolean(game,"savetranscript")) {
             if (GetBoolean(game,"showcommandbar")){
               msg (Template("TranscriptEnterFilename"))
-              JS.loadTranscriptNameInputVal()
+              JS.QuestUI.transcript.promptForName()
               get input {
                 filename = Trim(result)
                 InitiateTranscript(filename)
@@ -1018,7 +1018,7 @@
     <script>
       Ask (Template("WantRestartGame")){
         if (result){
-          JS.eval("if (typeof(RestartGame) != 'undefined'){RestartGame();}else{window.location.reload();}")
+          JS.QuestUI.restart()
         }
         else {
           game.suppressturnscripts = true
