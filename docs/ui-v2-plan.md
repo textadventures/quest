@@ -134,7 +134,7 @@ Svelte 5, for consistency with AppShell, was considered and rejected (decision 2
 
 ## Phases
 
-**Phase 0: contract.** Write the 610 UI contract (the `QuestUI` surface, token list and part names) as a reference page, and open tracking issues. With decision 1, nothing has to land before the first 6.1 beta ships: 610 games play on legacy until Phase 5.
+**Phase 0: contract.** Write the 610 UI contract (the `QuestUI` surface, token list and part names) as a reference page, and open tracking issues. The draft is [ui-v2-contract.md](ui-v2-contract.md). With decision 1, nothing has to land before the first 6.1 beta ships: 610 games play on legacy until Phase 5.
 
 **Phase 1: plumbing and a minimal v2.**
 - Lazy UI bundle selection in the host, plus the `?ui=` override.
