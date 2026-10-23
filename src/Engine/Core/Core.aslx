@@ -101,10 +101,7 @@
           }
         }
       }
-      // This gets the save confirmation to appear in the right font and colour
-      AddUIToken (tokens, "--qv-text", game.defaultforeground)
-      AddUIToken (tokens, "--qv-font-body", game.defaultfont)
-      AddUIToken (tokens, "--qv-font-size", game.defaultfontsize + "pt")
+      InitTextDefaults (tokens)
       if (HasString(game, "bordercolour")) {
         AddUIToken (tokens, "--qv-border-colour", game.bordercolour)
       }

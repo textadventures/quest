@@ -188,6 +188,7 @@
     AddUIToken (tokens, "--qv-menu-hover-fg", game.menuhoverforeground)
     AddUIToken (tokens, "--qv-menu-font", game.menufont)
     AddUIToken (tokens, "--qv-menu-font-size", game.menufontsize + "pt")
+    InitTextDefaults (tokens)
     JS.QuestUI.setTokens (tokens)
     if (not game.showborder) {
       JS.QuestUI.setVisible ("border", false)
@@ -463,7 +464,7 @@
           else {
             colour = GetLinkTextColour()
           }
-          style = GetCurrentTextFormat(colour)
+          style = GetLinkTextFormat(colour)
           list add (game.menuoptionskeys, option.name)
         }
         else {

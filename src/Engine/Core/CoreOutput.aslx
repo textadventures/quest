@@ -36,7 +36,8 @@
   </function>
 
   <function name="GetCommandBarFormat" type="string">
-    return (GetCurrentTextFormat("") + ";background:" + game.defaultbackground)
+    // In full, defaults included: a text input doesn't inherit the page's font.
+    return (FormatTextStyle(game.defaultforeground, "", false) + ";background:" + game.defaultbackground)
   </function>
 
   <function name="OutputTextNoBr" parameters="text">
@@ -52,30 +53,85 @@
   </function>
 
   <function name="GetCurrentTextFormat" type="string" parameters="colour">
-    style = ""
-
-    font = GetCurrentFontFamily()
-    if (LengthOf(font) > 0) {
-      style = style + "font-family:" + font + ";"
-    }
-
+    // Leaves out whatever matches the game's starting font, size and text colour: output
+    // inherits those from the UI (InitTextDefaults sets them as tokens), so themes and stylesheets
+    // can change them. An explicit colour is always written.
     if (LengthOf(colour) = 0) {
-      colour = game.defaultforeground
+      return (FormatTextStyle(game.defaultforeground, GetUIDefault("foreground"), true))
     }
-    if (LengthOf(colour) > 0) {
-      style = style + "color:" + colour + ";"
+    else {
+      return (FormatTextStyle(colour, "", true))
     }
-
-    size = game.defaultfontsize
-    if (size > 0) {
-      style = style + "font-size:" + ToString(size) + "pt;"
-    }
-
-    return (style)
   </function>
 
   <function name="GetCurrentLinkTextFormat" type="string">
-    return (GetCurrentTextFormat(GetLinkTextColour()))
+    return (GetLinkTextFormat(GetLinkTextColour()))
+  </function>
+
+  <function name="GetLinkTextFormat" type="string" parameters="colour">
+    // As GetCurrentTextFormat, for a link: the colour is left out when it's the game's starting
+    // link colour, which links inherit from the UI.
+    return (FormatTextStyle(colour, GetUIDefault("linkforeground"), true))
+  </function>
+
+  <function name="FormatTextStyle" type="string" parameters="colour, defaultcolour, omitdefaults">
+    <![CDATA[
+      style = ""
+      font = GetCurrentFontFamily()
+      if (LengthOf(font) > 0) {
+        if (not omitdefaults or font <> GetUIDefault("font")) {
+          style = style + "font-family:" + font + ";"
+        }
+      }
+      if (LengthOf(colour) > 0) {
+        if (not omitdefaults or colour <> defaultcolour) {
+          style = style + "color:" + colour + ";"
+        }
+      }
+      size = game.defaultfontsize
+      if (size > 0) {
+        if (not omitdefaults or ToString(size) <> GetUIDefault("fontsize")) {
+          style = style + "font-size:" + ToString(size) + "pt;"
+        }
+      }
+      return (style)
+    ]]>
+  </function>
+
+  <function name="InitTextDefaults" parameters="tokens">
+    <![CDATA[
+      // The game's starting font, size and text and link colours, recorded once and kept in
+      // saves. They become the UI's text tokens, and output leaves them out of its inline
+      // styles (GetCurrentTextFormat). A later SetForegroundColour etc. differs from them, so
+      // it's still written inline and only affects text from then on.
+      if (not HasAttribute(game, "uidefaults")) {
+        game.uidefaults = NewStringDictionary()
+        dictionary add (game.uidefaults, "font", GetCurrentFontFamily())
+        dictionary add (game.uidefaults, "fontsize", ToString(game.defaultfontsize))
+        dictionary add (game.uidefaults, "foreground", game.defaultforeground)
+        dictionary add (game.uidefaults, "linkforeground", game.defaultlinkforeground)
+      }
+      AddUIToken (tokens, "--qv-text", GetUIDefault("foreground"))
+      AddUIToken (tokens, "--qv-link", GetUIDefault("linkforeground"))
+      AddUIToken (tokens, "--qv-font-body", GetUIDefault("font"))
+      if (LengthOf(GetUIDefault("fontsize")) > 0) {
+        AddUIToken (tokens, "--qv-font-size", GetUIDefault("fontsize") + "pt")
+      }
+    ]]>
+  </function>
+
+  <function name="GetUIDefault" type="string" parameters="name">
+    <![CDATA[
+      if (HasAttribute(game, "uidefaults")) {
+        if (DictionaryContains(game.uidefaults, name)) {
+          value = StringDictionaryItem(game.uidefaults, name)
+          if (value <> null) {
+            return (value)
+          }
+        }
+      }
+      return ("")
+    ]]>
   </function>
 
   <function name="ParamsForTextProcessor" type="dictionary">
@@ -530,7 +586,7 @@
           else {
             colour = GetLinkTextColour()
           }
-          style = GetCurrentTextFormat(colour)
+          style = GetLinkTextFormat(colour)
           return ("<a id=\"" + linkid + "\" style=\"" + style + "\" class=\"cmdlink elementmenu\" tabindex=\"0\" data-elementid=\"" + object.name + "\">" + text + "</a>")
         }
         else {
