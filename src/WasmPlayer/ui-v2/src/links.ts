@@ -110,6 +110,13 @@ export function handleClick(e: MouseEvent, menu: QvVerbMenu | null): void {
         togglePopup(trigger);
         return;
     }
+    // A pane's list item (panes.ts) opens the same verb menu as an object link.
+    const paneItem = target.closest<HTMLElement>('.qv-pane-item');
+    if (paneItem) {
+        menu?.toggle(paneItem);
+        return;
+    }
+
     // As on legacy, a click anywhere in an open popup closes it.
     const content = target.closest<HTMLElement>('[data-qv-popup-content]');
     if (content) closePopup(content);

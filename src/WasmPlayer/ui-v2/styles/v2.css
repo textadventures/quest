@@ -65,7 +65,10 @@
 
         --qv-focus-ring: #2563eb;
 
+        --qv-pane-width: 17rem;
+
         display: block;
+        container: qv-player / inline-size;
         min-height: 100vh;
         min-height: 100dvh;
         box-sizing: border-box;
@@ -93,14 +96,23 @@
         box-sizing: inherit;
     }
 
+    /* The game's column, and the panes beside it on a wide layout. */
+    .qv-layout {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+    }
+
     /* The frame: the game's own column, with its background and border. */
     [data-qv-part="border"] {
         display: flex;
         flex-direction: column;
+        flex: 1 1 auto;
+        min-width: 0;
         max-width: var(--qv-output-width);
         min-height: 100vh;
         min-height: 100dvh;
-        margin: 0 auto;
+        margin: 0;
         background-color: color-mix(in srgb, var(--qv-bg) calc(var(--qv-bg-opacity) * 100%), transparent);
         border-inline: 1px solid var(--qv-border-colour);
     }
@@ -295,6 +307,182 @@
         color: var(--qv-menu-hover-fg);
     }
 
+    /* ── Panes ── */
+
+    [data-qv-part="panes"] {
+        box-sizing: border-box;
+        width: var(--qv-pane-width);
+        padding: 0.5rem;
+        background-color: var(--qv-page-bg);
+        font-family: var(--qv-font-ui);
+        font-size: 0.95rem;
+    }
+
+    qv-pane {
+        display: block;
+        margin-bottom: 0.5rem;
+        border: 1px solid var(--qv-border-colour);
+        border-radius: var(--qv-radius);
+        background-color: var(--qv-pane-bg);
+        color: var(--qv-pane-fg);
+        overflow: hidden;
+    }
+
+    .qv-pane-heading {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        gap: 0.5ch;
+        padding: 0 0.75rem;
+        background-color: var(--qv-pane-heading-bg);
+        color: var(--qv-pane-heading-fg);
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .qv-pane-heading::-webkit-details-marker {
+        display: none;
+    }
+
+    /* Collapsed or open. A flex <summary> loses the browser's own marker. */
+    .qv-pane-heading::before {
+        content: "";
+        width: 0.45em;
+        height: 0.45em;
+        border-right: 2px solid currentColor;
+        border-bottom: 2px solid currentColor;
+        transform: rotate(-45deg);
+        transition: transform 150ms ease;
+    }
+
+    details[open] > .qv-pane-heading::before {
+        transform: rotate(45deg);
+    }
+
+    /* The command and custom status panes have no title, as on legacy, so they can't collapse. */
+    qv-pane:not([label]) .qv-pane-heading {
+        display: none;
+    }
+
+    .qv-pane-heading:focus-visible {
+        outline: 2px solid var(--qv-focus-ring);
+        outline-offset: -2px;
+    }
+
+    .qv-pane-body {
+        padding: 0.25rem 0.5rem 0.5rem;
+    }
+
+    .qv-pane-body:empty {
+        display: none;
+    }
+
+    .qv-pane-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .qv-pane-heading {
+        list-style: none;
+    }
+
+    .qv-pane-item {
+        display: block;
+        width: 100%;
+        min-height: 44px;
+        padding: 0.25rem 0.5rem;
+        border: none;
+        border-radius: calc(var(--qv-radius) - 2px);
+        background: none;
+        color: inherit;
+        font: inherit;
+        text-align: start;
+        cursor: pointer;
+    }
+
+    .qv-pane-item:hover,
+    .qv-pane-item[aria-expanded="true"] {
+        background-color: color-mix(in srgb, var(--qv-pane-highlight) 25%, transparent);
+    }
+
+    .qv-pane-item:focus-visible {
+        outline: 2px solid var(--qv-focus-ring);
+        outline-offset: -2px;
+    }
+
+    .qv-pane-empty {
+        margin: 0.5rem;
+        opacity: 0.8;
+    }
+
+    /* The command pane's links, as buttons in a row. */
+    qv-pane[data-qv-pane="commands"] .qv-pane-body {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+    }
+
+    qv-pane[data-qv-pane="commands"] a.cmdlink {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        padding: 0 0.75rem;
+        border: 1px solid var(--qv-border-colour);
+        border-radius: calc(var(--qv-radius) - 2px);
+        color: var(--qv-link);
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    qv-pane a.cmdlink.disabled {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+
+    /* Wide: the panes are a column beside the game, kept in view as the transcript scrolls. */
+    @container qv-player (min-width: 900px) {
+        [data-qv-part="panes"] {
+            position: sticky;
+            top: 0;
+            flex: none;
+            max-height: 100vh;
+            max-height: 100dvh;
+            overflow-y: auto;
+        }
+
+        .qv-panes-button {
+            display: none;
+        }
+    }
+
+    /* Narrow: the panes are a drawer from the top bar's panes button. */
+    @container qv-player (max-width: 899.98px) {
+        [data-qv-part="panes"] {
+            position: fixed;
+            inset-block: 0;
+            inset-inline-end: 0;
+            z-index: 5;
+            width: min(var(--qv-pane-width), 85vw);
+            overflow-y: auto;
+            box-shadow: -4px 0 24px rgb(0 0 0 / 0.25);
+            transform: translateX(100%);
+            visibility: hidden;
+            transition: transform 200ms ease, visibility 0s 200ms;
+        }
+
+        [data-qv-part="panes"].qv-drawer-open {
+            transform: none;
+            visibility: visible;
+            transition: transform 200ms ease;
+        }
+    }
+
+    .qv-toolbar .qv-panes-button {
+        font-size: 1.25rem;
+        line-height: 1;
+    }
+
     /* ShowMenu and Ask for games before 600, as a modal <dialog>. */
     .qv-dialog {
         width: min(28rem, calc(100vw - 2rem));
@@ -418,7 +606,10 @@
 
     @media (prefers-reduced-motion: reduce) {
         .qv-block.qv-hiding,
-        .qv-previous-output {
+        .qv-previous-output,
+        [data-qv-part="panes"],
+        [data-qv-part="panes"].qv-drawer-open,
+        .qv-pane-heading::before {
             transition: none;
         }
     }

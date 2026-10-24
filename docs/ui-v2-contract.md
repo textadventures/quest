@@ -174,7 +174,7 @@ These have no Core caller today. They're the supported versions of the survey's 
 | Member | Instead of |
 |---|---|
 | `addPane(id, title, html)`, `setPaneContent(id, html)` | inserting accordion sections by hand; `setCustomStatus` (custom status pane) |
-| `setCommands(list)` | `setCommands` (command pane) |
+| `setCommands(list)` | `setCommands` (command pane). Each entry is `Label`, or `Label:command` when the command differs from its label; the command is sent in lower case. A `;`-separated string, as legacy took, also works |
 | `setAutoScroll(on)` | `scrollToEnd = function(){}` |
 | `setContinueOnClick(on)` | a window handler that checks `_waitMode` and calls `endWait()` |
 | `fadePreviousOutput(on)` | fading `#divOutput` children |

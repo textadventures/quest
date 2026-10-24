@@ -1,0 +1,83 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- Player UI v2's panes (verify-wasmplayer-v2-panes.mjs): inventory, places and objects (one
+       with an alias, so its pane text and command name differ), the command and custom status
+       panes, and the QuestUI pane hooks. -->
+  <game name="V2PanesTest">
+    <showpanes />
+    <commandpane />
+    <customstatuspane />
+  </game>
+
+  <object name="hall">
+    <inherit name="editor_room" />
+    <description>A hall.</description>
+    <object name="player">
+      <inherit name="defaultplayer" />
+      <object name="coin">
+        <inherit name="editor_object" />
+        <look>A shiny coin.</look>
+      </object>
+    </object>
+    <object name="lamp">
+      <inherit name="editor_object" />
+      <alias>brass lamp</alias>
+      <look>A brass lamp.</look>
+      <take />
+    </object>
+    <exit alias="north" to="kitchen">
+      <inherit name="northdirection" />
+    </exit>
+  </object>
+
+  <object name="kitchen">
+    <inherit name="editor_room" />
+    <description>A kitchen.</description>
+    <exit alias="south" to="hall">
+      <inherit name="southdirection" />
+    </exit>
+  </object>
+
+  <command name="setuppanes">
+    <pattern>setuppanes</pattern>
+    <script>
+      commands = NewStringList()
+      list add (commands, "Look")
+      list add (commands, "Wait:wait")
+      JS.QuestUI.setCommands (commands)
+      JS.QuestUI.setPaneContent ("customstatus", "Health: 10")
+      JS.QuestUI.addPane ("notes", "Notes", "Remember the coin.")
+      JS.QuestUI.setPaneContent ("notes", "Remember the lamp.")
+      JS.QuestUI.setPaneContent ("inventory", "ignored")
+      msg ("Panes set up.")
+    </script>
+  </command>
+
+  <command name="reorder">
+    <pattern>reorder</pattern>
+    <script>
+      JS.QuestUI.setPaneOrder (Split("notes;objects", ";"))
+      msg ("Panes reordered.")
+    </script>
+  </command>
+
+  <command name="hideinventory">
+    <pattern>hideinventory</pattern>
+    <script>
+      JS.QuestUI.setVisible ("inventory", false)
+      msg ("Inventory hidden.")
+    </script>
+  </command>
+
+  <command name="hidepanes">
+    <pattern>hidepanes</pattern>
+    <script>
+      JS.QuestUI.setVisible ("panes", false)
+      msg ("Panes hidden.")
+    </script>
+  </command>
+
+</asl>
