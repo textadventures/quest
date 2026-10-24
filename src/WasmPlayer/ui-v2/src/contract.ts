@@ -17,6 +17,8 @@ export interface StatusAttribute {
     max?: unknown;
     /** The formatted line, for a UI that doesn't draw bars. */
     text?: string;
+    /** Keep it in view on a small screen (game.pinnedstatusattributes). */
+    pinned?: boolean;
 }
 
 export type QuestUIEvent = 'turnStarted' | 'turnEnded' | 'outputAdded' | 'locationChanged';

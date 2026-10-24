@@ -16,6 +16,7 @@ import { QvOutput, rememberImageSize } from './output';
 import { player, QvPlayer } from './player';
 import * as prompts from './prompts';
 import { QvPane, setDrawerOpen, updateList } from './panes';
+import { renderStatus, resetStatus, updateStatus } from './status';
 import { QuestUI, setCompassDirections, setInterfaceString, setLocation } from './questui';
 import { emit, resetState, state } from './state';
 import * as timer from './timer';
@@ -53,6 +54,7 @@ window.resetQuestUIState = () => {
     timer.stop();
     prompts.resetPrompts();
     resetCompass();
+    resetStatus();
 };
 
 // Any key continues a wait, as on legacy, except Tab (so the keyboard can still reach links) and
@@ -117,7 +119,7 @@ const adapter: PlayerUiAdapter = {
     },
     clearScreen: () => output()?.clearScreen(),
     panesVisible: (visible) => player()?.setVisible('panes', visible),
-    updateStatus: ignore,
+    updateStatus,
     setBackground: (colour) => player()?.setTokens({ '--qv-bg': colour }),
     setForeground: ignore,
     updateList,
@@ -151,6 +153,7 @@ const adapter: PlayerUiAdapter = {
         });
         updateSaveButton();
         renderCompass();
+        renderStatus();
         // The host translates the panes button's label at boot only, not after a restart.
         const label = WebPlayer.chromeStrings?.ShowPanesButton;
         if (label) player()?.panesButton?.setAttribute('aria-label', label);

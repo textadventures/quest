@@ -75,4 +75,45 @@ public class StatusAttributeTests
         errors.ShouldBeEmpty();
         status.Last().ShouldBe("HP: 100");
     }
+
+    // 610 Core adds "pinned" and "max" to each status item, from game.pinnedstatusattributes
+    // and game.statusattributemaximums: a maximum can be a number or another attribute of the
+    // same element, and one that names no numeric attribute is left out.
+    [TestMethod]
+    public async Task StatusItemsCarryPinnedAndMax()
+    {
+        var gameData = new GameData(File.ReadAllBytes("statusattributepinmaxtest.aslx"), "statusattributepinmaxtest.aslx");
+        var worldModel = Helpers.CreateWorldModel(gameData);
+
+        var errors = new List<string>();
+        worldModel.LogError += ex => errors.Add(ex.Message);
+
+        List<System.Collections.IDictionary>? items = null;
+        var player = new Mock<IPlayer>();
+        player.Setup(p => p.RunScriptAsync("QuestUI.setStatusAttributes", It.IsAny<object[]>()))
+            .Callback<string, object[]>((_, parameters) =>
+                items = ((System.Collections.IEnumerable)parameters[0]).Cast<System.Collections.IDictionary>().ToList())
+            .Returns(Task.CompletedTask);
+
+        var success = await worldModel.Initialise(player.Object);
+        Assert.IsTrue(success, "Initialisation failed");
+        await worldModel.Begin();
+
+        errors.ShouldBeEmpty();
+        items.ShouldNotBeNull();
+        var byName = items.ToDictionary(item => (string)item["name"]!);
+
+        byName["score"].Contains("pinned").ShouldBeTrue();
+        byName["score"].Contains("max").ShouldBeFalse();
+
+        byName["health"]["pinned"].ShouldBe(true);
+        byName["health"]["max"].ShouldBe(100);
+        byName["health"]["value"].ShouldBe(70);
+
+        byName["mana"].Contains("pinned").ShouldBeFalse();
+        byName["mana"]["max"].ShouldBe(8);
+
+        byName["gold"].Contains("max").ShouldBeFalse();
+        byName["gold"]["text"].ShouldBe("Gold: 5");
+    }
 }

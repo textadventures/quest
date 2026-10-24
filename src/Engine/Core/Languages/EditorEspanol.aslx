@@ -270,6 +270,9 @@
   <template name="EditorGameAttributesPleaseenter2">Cadena de formato (opcional)</template>
   <template name="EditorGameLocationBarBg">Imagen de fondo de la barra de ubicación</template>
   <template name="EditorGameStatusattributes">Atributos de estado</template>
+  <template name="EditorGamePinnedstatusattributes">Atributos de estado que siguen a la vista en pantallas pequeñas</template>
+  <template name="EditorGameStatusattributemaximums">Máximos de los atributos de estado (se muestran como barras)</template>
+  <template name="EditorGameStatusattributemaximumsPrompt">Máximo: un número o el nombre de otro atributo</template>
   <template name="EditorIncludedLibraryLibrary">Librería</template>
   <template name="EditorIncludedLibraryFilename">Nombre de archivo</template>
   <template name="EditorJavascriptJavascript">Javascript</template>

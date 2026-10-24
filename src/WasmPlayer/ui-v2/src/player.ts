@@ -4,6 +4,7 @@
 
 import type { QvCommandBar } from './command-bar';
 import { updateExitStrip } from './compass';
+import { updateStatusBar } from './status';
 import { handleClick, handleKeyDown, updateLinks } from './links';
 import type { QvOutput } from './output';
 import { builtInPanes, pane, setDrawerOpen, isDrawerOpen } from './panes';
@@ -66,6 +67,11 @@ export class QvPlayer extends HTMLElement {
         return this.querySelector('[data-qv-part="exits"]');
     }
 
+    /** The pinned status bar in the top bar, on a narrow layout (status.ts). */
+    get statusBar(): HTMLElement | null {
+        return this.querySelector('[data-qv-part="status-bar"]');
+    }
+
     /** Opens the panes drawer. Shown only on a narrow layout, and only while there are panes. */
     get panesButton(): HTMLButtonElement | null {
         return this.querySelector('.qv-panes-button');
@@ -79,7 +85,10 @@ export class QvPlayer extends HTMLElement {
         // The panes button counts only where it's drawn, on a narrow layout.
         const anyButton = [...topbar.querySelectorAll<HTMLElement>('.qv-toolbar button')]
             .some((button) => !button.hidden && button.style.display !== 'none' && getComputedStyle(button).display !== 'none');
-        topbar.hidden = (!location || location.hidden) && !anyButton;
+        const statusBar = this.statusBar;
+        const anyStatus = !!statusBar && !statusBar.hidden && statusBar.classList.contains('qv-status-bar-active')
+            && getComputedStyle(statusBar).display !== 'none';
+        topbar.hidden = (!location || location.hidden) && !anyButton && !anyStatus;
     }
 
     get verbMenu(): QvVerbMenu | null {
@@ -128,6 +137,9 @@ export class QvPlayer extends HTMLElement {
             case 'exits':
                 this.#setHidden(this.exits, !visible);
                 break;
+            case 'status-bar':
+                this.#setHidden(this.statusBar, !visible);
+                break;
             case 'panes':
                 this.#setHidden(this.panes, !visible);
                 if (!visible) setDrawerOpen(false, { restoreFocus: false });
@@ -140,8 +152,10 @@ export class QvPlayer extends HTMLElement {
                     this.#updatePanesButton();
                 }
         }
-        // The exits strip follows the compass: hiding the compass or the panes hides it too.
+        // The exits strip follows the compass, and the pinned status bar the status pane: hiding
+        // either pane, or all of them, hides those too.
         updateExitStrip();
+        updateStatusBar();
     }
 
     // The drawer button only makes sense while the region and at least one pane in it show.
@@ -149,7 +163,8 @@ export class QvPlayer extends HTMLElement {
         const button = this.panesButton;
         const region = this.panes;
         if (!button || !region) return;
-        const anyPane = [...region.querySelectorAll<HTMLElement>('qv-pane')].some((p) => !p.hidden);
+        const anyPane = [...region.querySelectorAll<HTMLElement>('qv-pane')]
+            .some((p) => !p.hidden && !p.hasAttribute('data-qv-empty'));
         button.hidden = region.hidden || !anyPane;
         this.updateTopbar();
     }

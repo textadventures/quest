@@ -91,6 +91,9 @@
         <None Update="statusattributecustombuiltintest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="statusattributepinmaxtest.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="gridexitvisibilitytest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
