@@ -161,6 +161,101 @@
         pointer-events: none;
     }
 
+    [data-qv-part="output"] a.cmdlink:focus-visible,
+    [data-qv-part="output"] [data-qv-popup]:focus-visible {
+        outline: 2px solid var(--qv-focus-ring);
+        outline-offset: 2px;
+        border-radius: 2px;
+    }
+
+    /* A {popup:} trigger reads as a link in the text. */
+    [data-qv-popup] {
+        padding: 0;
+        border: none;
+        background: none;
+        color: var(--qv-link);
+        font: inherit;
+        text-decoration: var(--qv-link-decoration);
+        cursor: pointer;
+    }
+
+    /* Hidden until its trigger opens it: as a popover in the top layer where the browser has
+       the Popover API, centred in the viewport either way. Its colours are inline, from Core. */
+    [data-qv-popup-content] {
+        display: none;
+    }
+
+    [data-qv-popup-content].qv-popup-open {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 10;
+        width: fit-content;
+        max-width: min(30rem, calc(100vw - 2rem));
+        height: fit-content;
+        max-height: calc(100vh - 2rem);
+        margin: auto;
+        overflow: auto;
+        padding: 0 var(--qv-space);
+        border: 1px solid;
+        border-radius: var(--qv-radius);
+        box-shadow: 0 4px 16px rgb(0 0 0 / 0.25);
+        cursor: pointer;
+    }
+
+    /* An object's verbs. Placed by verb-menu.ts next to its link. */
+    qv-verb-menu {
+        display: none;
+        position: fixed;
+        inset: auto;
+        z-index: 10;
+        min-width: 10rem;
+        max-width: calc(100vw - 16px);
+        max-height: calc(100vh - 16px);
+        margin: 0;
+        overflow: auto;
+        padding: 4px;
+        border: 1px solid var(--qv-border-colour);
+        border-radius: var(--qv-radius);
+        background-color: var(--qv-menu-bg);
+        box-shadow: 0 4px 16px rgb(0 0 0 / 0.2);
+        color: var(--qv-menu-fg);
+        font-family: var(--qv-menu-font);
+        font-size: var(--qv-menu-font-size);
+    }
+
+    qv-verb-menu.qv-open {
+        display: flex;
+        flex-direction: column;
+    }
+
+    qv-verb-menu [role="menuitem"] {
+        min-height: 44px;
+        padding: 0.25rem 0.75rem;
+        border: none;
+        border-radius: calc(var(--qv-radius) - 2px);
+        background: none;
+        color: inherit;
+        font: inherit;
+        text-align: start;
+        cursor: pointer;
+    }
+
+    qv-verb-menu [role="menuitem"]:hover,
+    qv-verb-menu [role="menuitem"]:focus-visible {
+        outline: none;
+        background-color: var(--qv-menu-hover-bg);
+        color: var(--qv-menu-hover-fg);
+    }
+
+    /* Inline links can't be 44px tall without spreading the lines of text they sit in (WCAG
+       2.5.8 exempts them), but on a touchscreen they get a taller hit area. */
+    @media (pointer: coarse) {
+        [data-qv-part="output"] a.cmdlink {
+            padding-block: 0.35em;
+        }
+    }
+
     .qv-block.qv-hiding {
         opacity: 0;
         transition: opacity 250ms ease;

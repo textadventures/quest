@@ -3,7 +3,9 @@
 // these are looked up when they're needed rather than kept.
 
 import type { QvCommandBar } from './command-bar';
+import { handleClick, handleKeyDown, updateLinks } from './links';
 import type { QvOutput } from './output';
+import type { QvVerbMenu } from './verb-menu';
 
 // Tokens that are lengths, where the contract reads a bare number as pixels.
 const lengthTokens = new Set([
@@ -19,6 +21,26 @@ const lengthTokens = new Set([
 ]);
 
 export class QvPlayer extends HTMLElement {
+    #listening = false;
+
+    connectedCallback(): void {
+        if (this.#listening) return;
+        this.#listening = true;
+        // Every link and popup trigger in the UI is handled here, not by handlers of its own.
+        this.addEventListener('click', (e) => handleClick(e, this.verbMenu));
+        this.addEventListener('keydown', handleKeyDown);
+    }
+
+    get verbMenu(): QvVerbMenu | null {
+        return this.querySelector('qv-verb-menu');
+    }
+
+    /** QuestUI.updateLinks, and the engine's updateObjectLinks. */
+    updateLinks(kind: string, data: unknown): void {
+        updateLinks(this, kind, data);
+        this.verbMenu?.closeIfStale();
+    }
+
     get output(): QvOutput | null {
         return this.querySelector('qv-output');
     }
