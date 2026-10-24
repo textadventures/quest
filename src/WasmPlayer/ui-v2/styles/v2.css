@@ -121,12 +121,16 @@
         border-inline: none;
     }
 
-    /* The location bar, with the host's Save/Load and Debug buttons: the contract's "status"
-       tokens style the whole bar, as legacy's location bar options did. */
-    .qv-topbar {
+    /* The top bar and the picture frame stay at the top of the viewport together. */
+    .qv-header {
         position: sticky;
         top: 0;
         z-index: 1;
+    }
+
+    /* The location bar, with the host's Save/Load and Debug buttons: the contract's "status"
+       tokens style the whole bar, as legacy's location bar options did. */
+    .qv-topbar {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
@@ -188,6 +192,26 @@
     .qv-toolbar button:disabled {
         opacity: 0.5;
         cursor: default;
+    }
+
+    /* The picture frame, on the game's background so the transcript doesn't show through as it
+       scrolls under. Its picture takes at most half of the height below the top bar, as on
+       legacy. */
+    [data-qv-part="picture-frame"] {
+        padding-top: 2px;
+        background-color: color-mix(in srgb, var(--qv-bg) calc(var(--qv-bg-opacity) * 100%), transparent);
+        text-align: center;
+    }
+
+    [data-qv-part="picture-frame"].qv-empty {
+        display: none;
+    }
+
+    [data-qv-part="picture-frame"] img {
+        max-width: 100%;
+        max-height: calc((100vh - 2.75rem) / 2);
+        max-height: calc((100dvh - 2.75rem) / 2);
+        vertical-align: bottom;
     }
 
     [data-qv-part="output"] {

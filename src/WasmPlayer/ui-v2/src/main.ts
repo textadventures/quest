@@ -4,7 +4,7 @@
 // wwwroot/v2/player.htm's markup and talks to v2 only through the adapter registered here as
 // window.QuestPlayerUis.v2. Games talk to it through QuestUI (questui.ts).
 //
-// Not yet here: panes, layouts and theming (Phase 2).
+// Not yet here: layout presets and theming (Phase 2).
 
 import './host';
 import type { PlayerUiAdapter } from './adapter';
@@ -13,6 +13,7 @@ import { renderCompass, resetCompass, updateCompass, updateExitStrip } from './c
 import { bindMenu } from './links';
 import { sendCommand, sendEvent } from './engine';
 import { QvOutput, rememberImageSize } from './output';
+import { setPictureFrame } from './picture-frame';
 import { player, QvPlayer } from './player';
 import * as prompts from './prompts';
 import { QvPane, setDrawerOpen, updateList } from './panes';
@@ -137,7 +138,7 @@ const adapter: PlayerUiAdapter = {
     uiHide: (element) => player()?.setVisible(requestParts[element] ?? '', false),
     setCompassDirections,
     setInterfaceString,
-    setPanelContents: ignore,
+    setPanelContents: setPictureFrame,
     loadHtml: (html) => output()?.loadHtml(html),
     markScrollPosition: () => output()?.markScrollPosition(),
     scrollToEnd: () => output()?.scrollToEnd(),

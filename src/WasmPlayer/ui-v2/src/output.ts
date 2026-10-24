@@ -7,6 +7,7 @@
 // or its own script files.
 
 import { decorateLinks, deactivate, resetRestoredLinks, setLinkEnabled } from './links';
+import { pictureFramePending } from './picture-frame';
 import { player } from './player';
 import { emit, state } from './state';
 
@@ -22,8 +23,12 @@ const TURN_START_GAP = 8;
 export class QvOutput extends HTMLElement {
     #current: HTMLDivElement | null = null;
     #sections: string[] = [];
-    // Where the current turn's output starts, in document coordinates.
+    // Where the current turn's output starts, measured from the top of the output, so it stays
+    // right when the picture frame above changes size.
     #turnStart = 0;
+    // The turn start the last scroll was for, to scroll again once an image settles: by then
+    // markScrollPosition may already have moved #turnStart on to the next turn.
+    #lastTurnStart = 0;
 
     connectedCallback(): void {
         this.setAttribute('role', 'log');
@@ -40,7 +45,7 @@ export class QvOutput extends HTMLElement {
     }
 
     #onImageSettled = (e: Event): void => {
-        if (e.target instanceof HTMLImageElement) this.scrollToEnd();
+        if (e.target instanceof HTMLImageElement) this.rescroll();
     };
 
     addText(html: string): void {
@@ -68,8 +73,9 @@ export class QvOutput extends HTMLElement {
         this.replaceChildren();
         this.#current = null;
         this.setAlignment('left');
-        this.#turnStart = this.#top();
-        if (window.scrollY > this.#turnStart) window.scrollTo({ top: this.#turnStart, behavior: 'instant' });
+        this.#turnStart = 0;
+        const top = this.#top();
+        if (window.scrollY > top) window.scrollTo({ top, behavior: 'instant' });
     }
 
     /** Restores a saved transcript (getHtml's output). */
@@ -96,6 +102,7 @@ export class QvOutput extends HTMLElement {
         this.#current = null;
         this.#sections = [];
         this.#turnStart = 0;
+        this.#lastTurnStart = 0;
     }
 
     // ── Output sections ─────────────────────────────────────────────────────
@@ -151,7 +158,10 @@ export class QvOutput extends HTMLElement {
 
     /** Records where the coming turn's output will start, for scrollToEnd. */
     markScrollPosition(): void {
-        this.#turnStart = this.#top() + this.offsetHeight;
+        // Not offsetHeight: the output stretches to fill the column, so on a short page it ends
+        // well below its text.
+        const last = this.lastElementChild;
+        this.#turnStart = last ? last.getBoundingClientRect().bottom - this.getBoundingClientRect().top : 0;
     }
 
     /**
@@ -159,11 +169,23 @@ export class QvOutput extends HTMLElement {
      * of the turn, so a long turn is read from its beginning. Only ever scrolls forwards.
      */
     scrollToEnd(): void {
+        this.#scrollToTurn(this.#turnStart);
+    }
+
+    /** Scrolls again for the last turn scrolled to, once something above or in it has resized. */
+    rescroll(): void {
+        this.#scrollToTurn(this.#lastTurnStart);
+    }
+
+    #scrollToTurn(turnStart: number): void {
         if (!state.autoScroll) return;
+        this.#lastTurnStart = turnStart;
+        // Until the frame's picture has a height, any position worked out would be short of it.
+        if (pictureFramePending()) return;
         const root = document.scrollingElement ?? document.documentElement;
         const bottom = root.scrollHeight - window.innerHeight;
         const top = state.animateScroll
-            ? Math.min(this.#turnStart - stickyHeaderHeight() - TURN_START_GAP, bottom)
+            ? Math.min(this.#top() + turnStart - stickyHeaderHeight() - TURN_START_GAP, bottom)
             : bottom;
         if (top <= window.scrollY) return;
         const smooth = state.animateScroll && !matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -175,10 +197,10 @@ export class QvOutput extends HTMLElement {
     }
 }
 
-// The top bar (location, Save) stays at the top of the viewport, covering whatever is under it.
+// The header (the top bar and the picture frame) stays at the top of the viewport, covering
+// whatever is under it.
 function stickyHeaderHeight(): number {
-    const topbar = document.querySelector<HTMLElement>('qv-player .qv-topbar');
-    return topbar && !topbar.hidden ? topbar.offsetHeight : 0;
+    return document.querySelector<HTMLElement>('qv-player .qv-header')?.offsetHeight ?? 0;
 }
 
 function disableLinks(scope: Element): void {
