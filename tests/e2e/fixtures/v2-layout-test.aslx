@@ -1,0 +1,64 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- Player UI v2's layout presets (verify-wasmplayer-v2-layout.mjs). The game asks for the
+       bottom bar when wide and no panes when narrow (layoutpreset, narrowlayoutpreset), which 610
+       Core passes to QuestUI.setLayoutPreset; commands switch presets from script. It has a
+       pinned status attribute, an exit and something to pick up, so the panes have content. -->
+  <game name="V2LayoutTest">
+    <showscore type="boolean">true</showscore>
+    <pinnedstatusattributes type="simplestringlist">score</pinnedstatusattributes>
+    <layoutpreset>bottombar</layoutpreset>
+    <narrowlayoutpreset>nopanes</narrowlayoutpreset>
+  </game>
+
+  <object name="hall">
+    <inherit name="editor_room" />
+    <description>A hall.</description>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <object name="lamp">
+      <inherit name="editor_object" />
+      <take />
+    </object>
+    <exit alias="north" to="kitchen">
+      <inherit name="northdirection" />
+    </exit>
+  </object>
+
+  <object name="kitchen">
+    <inherit name="editor_room" />
+    <description>A kitchen.</description>
+    <exit alias="south" to="hall">
+      <inherit name="southdirection" />
+    </exit>
+  </object>
+
+  <command name="sidepanes">
+    <pattern>sidepanes</pattern>
+    <script>
+      JS.QuestUI.setLayoutPreset ("sidepanes")
+      msg ("Side panes.")
+    </script>
+  </command>
+
+  <command name="widebottombar">
+    <pattern>widebottombar</pattern>
+    <script>
+      JS.QuestUI.setLayoutPreset ("bottombar", "sidepanes")
+      msg ("Bottom bar when wide.")
+    </script>
+  </command>
+
+  <command name="nosuchpreset">
+    <pattern>nosuchpreset</pattern>
+    <script>
+      JS.QuestUI.setLayoutPreset ("no-such-preset")
+      msg ("Unknown preset.")
+    </script>
+  </command>
+
+</asl>

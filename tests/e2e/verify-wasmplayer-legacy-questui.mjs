@@ -188,7 +188,14 @@ try {
     });
     console.log('PASS: unknown names are ignored');
 
-    // ── The gamebook preset, last, since it hides the command bar ──────────
+    // ── Layout presets: legacy has one layout for every width ──────────────
+    await page.evaluate(() => QuestUI.setLayoutPreset('sidepanes', 'nopanes'));
+    expect(await isVisible('#gamePanes'), true, 'setLayoutPreset with no panes only when narrow keeps the panes');
+    await page.evaluate(() => QuestUI.setLayoutPreset('nopanes'));
+    expect(await isVisible('#gamePanes'), false, 'setLayoutPreset("nopanes") hides the panes');
+    await page.evaluate(() => QuestUI.setVisible('panes', true));
+
+        // ── The gamebook preset, last, since it hides the command bar ──────────
     await page.evaluate(() => QuestUI.setLayoutPreset('gamebook'));
     expect(await isVisible('#gamePanes'), false, 'setLayoutPreset("gamebook") hides the panes');
     expect(await isVisible('#txtCommandDiv'), false, 'setLayoutPreset("gamebook") hides the command bar');

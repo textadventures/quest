@@ -10,6 +10,21 @@ import type { QvOutput } from './output';
 import { builtInPanes, pane, setDrawerOpen, isDrawerOpen } from './panes';
 import type { QvVerbMenu } from './verb-menu';
 
+/** The layout presets a game can choose for each width (QuestUI.setLayoutPreset). */
+export const layoutPresets = ['sidepanes', 'nopanes', 'bottombar'];
+
+/**
+ * The layout in effect, from the preset for the player's current width:
+ *   side    the panes in a column beside the game (sidepanes, wide)
+ *   drawer  the panes in a drawer from the top bar's button (sidepanes, narrow)
+ *   sheet   the panes in a sheet from a button in the bottom bar (bottombar)
+ *   none    no panes (nopanes)
+ */
+export type Layout = 'side' | 'drawer' | 'sheet' | 'none';
+
+// The width, of the player itself rather than the window, from which it counts as wide.
+const WIDE_MIN_WIDTH = 900;
+
 // Tokens that are lengths, where the contract reads a bare number as pixels.
 const lengthTokens = new Set([
     '--qv-font-size',
@@ -25,6 +40,8 @@ const lengthTokens = new Set([
 
 export class QvPlayer extends HTMLElement {
     #listening = false;
+    #widePreset = 'sidepanes';
+    #narrowPreset = 'sidepanes';
 
     connectedCallback(): void {
         if (this.#listening) return;
@@ -32,7 +49,10 @@ export class QvPlayer extends HTMLElement {
         // Every link and popup trigger in the UI is handled here, not by handlers of its own.
         this.addEventListener('click', (e) => handleClick(e, this.verbMenu));
         this.addEventListener('keydown', handleKeyDown);
-        this.panesButton?.addEventListener('click', () => setDrawerOpen(!isDrawerOpen()));
+        for (const button of this.querySelectorAll('.qv-panes-button')) {
+            button.addEventListener('click', () => setDrawerOpen(!isDrawerOpen()));
+        }
+        new ResizeObserver(() => this.#updateLayout()).observe(this);
         this.panes?.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && isDrawerOpen() && !this.verbMenu?.isOpen) {
                 e.preventDefault();
@@ -46,6 +66,7 @@ export class QvPlayer extends HTMLElement {
                 subtree: true, childList: true, attributes: true, attributeFilter: ['style', 'hidden'],
             });
         }
+        this.#updateLayout();
         this.#updatePanesButton();
     }
 
@@ -62,19 +83,55 @@ export class QvPlayer extends HTMLElement {
         return this.querySelector('[data-qv-part="panes"]');
     }
 
-    /** The exits strip under the transcript, on a narrow layout (compass.ts). */
+    /** The exits strip under the transcript, in the drawer and sheet layouts (compass.ts). */
     get exits(): HTMLElement | null {
         return this.querySelector('[data-qv-part="exits"]');
     }
 
-    /** The pinned status bar in the top bar, on a narrow layout (status.ts). */
+    /** The pinned status bar in the top bar, in the drawer and sheet layouts (status.ts). */
     get statusBar(): HTMLElement | null {
         return this.querySelector('[data-qv-part="status-bar"]');
     }
 
-    /** Opens the panes drawer. Shown only on a narrow layout, and only while there are panes. */
+    /**
+     * Opens the panes drawer or sheet: the top bar's for the drawer, the bottom bar's for the
+     * sheet. Shown only while there are panes.
+     */
     get panesButton(): HTMLButtonElement | null {
-        return this.querySelector('.qv-panes-button');
+        return this.querySelector(this.layout === 'sheet' ? '.qv-footer .qv-panes-button' : '.qv-topbar .qv-panes-button');
+    }
+
+    get layout(): Layout {
+        return (this.dataset.qvLayout as Layout | undefined) ?? 'side';
+    }
+
+    /**
+     * QuestUI.setLayoutPreset with sidepanes, nopanes or bottombar: this preset for every width,
+     * or for wide widths with another for narrow ones. An unknown name changes nothing.
+     */
+    setLayoutPreset(name: string, narrow?: string): void {
+        if (!layoutPresets.includes(name)) return;
+        this.#widePreset = name;
+        this.#narrowPreset = narrow != null && layoutPresets.includes(narrow) ? narrow : name;
+        this.#updateLayout();
+    }
+
+    #updateLayout(): void {
+        const preset = this.clientWidth >= WIDE_MIN_WIDTH ? this.#widePreset : this.#narrowPreset;
+        const layout: Layout = preset === 'nopanes' ? 'none'
+            : preset === 'bottombar' ? 'sheet'
+            : this.clientWidth >= WIDE_MIN_WIDTH ? 'side' : 'drawer';
+        if (this.dataset.qvLayout === layout) return;
+        // Whatever was open belongs to the old layout.
+        setDrawerOpen(false, { restoreFocus: false });
+        // Moving into a new layout isn't the drawer opening or closing, so it isn't animated.
+        this.toggleAttribute('data-qv-layout-changing', true);
+        this.dataset.qvLayout = layout;
+        requestAnimationFrame(() => requestAnimationFrame(() => this.removeAttribute('data-qv-layout-changing')));
+        // The exits strip and pinned status bar show only where the panes aren't beside the game.
+        updateExitStrip();
+        updateStatusBar();
+        this.updateTopbar();
     }
 
     /** The bar holding the location and the toolbar goes when it would be empty. */
@@ -82,7 +139,7 @@ export class QvPlayer extends HTMLElement {
         const topbar = this.topbar;
         if (!topbar) return;
         const location = this.location;
-        // The panes button counts only where it's drawn, on a narrow layout.
+        // The panes button counts only where it's drawn, in the drawer layout.
         const anyButton = [...topbar.querySelectorAll<HTMLElement>('.qv-toolbar button')]
             .some((button) => !button.hidden && button.style.display !== 'none' && getComputedStyle(button).display !== 'none');
         const statusBar = this.statusBar;
@@ -165,14 +222,15 @@ export class QvPlayer extends HTMLElement {
         updateStatusBar();
     }
 
-    // The drawer button only makes sense while the region and at least one pane in it show.
+    // A panes button only makes sense while the region and at least one pane in it show.
     #updatePanesButton(): void {
-        const button = this.panesButton;
         const region = this.panes;
-        if (!button || !region) return;
+        if (!region) return;
         const anyPane = [...region.querySelectorAll<HTMLElement>('qv-pane')]
             .some((p) => !p.hidden && !p.hasAttribute('data-qv-empty'));
-        button.hidden = region.hidden || !anyPane;
+        for (const button of this.querySelectorAll<HTMLButtonElement>('.qv-panes-button')) {
+            button.hidden = region.hidden || !anyPane;
+        }
         this.updateTopbar();
     }
 

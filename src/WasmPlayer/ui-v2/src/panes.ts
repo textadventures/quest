@@ -1,6 +1,6 @@
-// The panes beside the transcript: <qv-pane> elements in the "panes" region (an <aside>). On a
-// wide layout the region is a column beside the game; on a narrow one it's a drawer, opened from
-// the top bar's panes button (layout in v2.css, by container query).
+// The panes beside the transcript: <qv-pane> elements in the "panes" region (an <aside>). The
+// layout puts the region in a column beside the game, a drawer opened from the top bar's panes
+// button, a sheet opened from the bottom bar's, or nowhere (player.ts, v2.css).
 //
 // Built-in panes are in player.htm; authors add their own with QuestUI.addPane. Each carries
 // data-qv-part="pane" and data-qv-pane (the contract's part names), and is a <details>, so it
@@ -170,7 +170,7 @@ export function setPaneLabel(interfaceString: string, html: string): boolean {
     return true;
 }
 
-// ── The drawer, on a narrow layout ──────────────────────────────────────────
+// ── The drawer or sheet ─────────────────────────────────────────────────────
 
 export function isDrawerOpen(): boolean {
     return !!player()?.panes?.classList.contains('qv-drawer-open');

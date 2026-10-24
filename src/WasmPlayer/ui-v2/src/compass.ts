@@ -1,5 +1,5 @@
 // The compass pane, and the exits strip (the "exits" part) that repeats its available exits under
-// the transcript on a narrow layout, where the compass is tucked away in the panes drawer (#2581).
+// the transcript wherever the compass is tucked away in the panes drawer or sheet (#2581).
 //
 // The twelve directions are named by the game (setCompassDirections, from game.compassdirections,
 // so translated games get their own words), in a fixed order: NW, N, NE, W, E, SW, S, SE, up,
@@ -96,9 +96,9 @@ export function resetCompass(): void {
 }
 
 /**
- * The exits strip: the available exits only, as buttons, shown on a narrow layout (v2.css) while
- * the compass would be showing (the game hasn't hidden it or the panes) and between turns, so a
- * tap can't be taken as the answer to a wait, menu or get input.
+ * The exits strip: the available exits only, as buttons, shown in the drawer and sheet layouts
+ * while the compass would be showing (the game hasn't hidden it or the panes) and between turns,
+ * so a tap can't be taken as the answer to a wait, menu or get input.
  */
 export function updateExitStrip(): void {
     const root = player();

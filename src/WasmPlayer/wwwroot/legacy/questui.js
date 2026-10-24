@@ -355,11 +355,16 @@
                 if (selectors) container.prepend($(selectors.join(", ")));
             }
         },
-        setLayoutPreset: function (name) {
+        setLayoutPreset: function (name, narrow) {
             if (name === "gamebook") {
                 panesVisible(false);
                 uiHide("#location");
                 uiHide("#txtCommandDiv");
+            }
+            // Legacy has one layout for every width, so of the other presets only "no panes at
+            // any width" means anything here.
+            else if (name === "nopanes" && (narrow == null || narrow === "nopanes")) {
+                panesVisible(false);
             }
         },
         setPictureFrame: function (html) { setPanelContents(html); },
