@@ -8,6 +8,11 @@
 import { sendCommand } from './engine';
 import { isDisabled, supportsPopover } from './links';
 
+// The object's name as commands use it: a pane item's element name, or an object link's text.
+function menuName(link: HTMLElement): string {
+    return (link.dataset.qvName ?? link.textContent ?? '').trim();
+}
+
 // Space left between the menu and its link, and between the menu and the viewport's edges.
 const GAP = 4;
 const EDGE = 8;
@@ -37,8 +42,8 @@ export class QvVerbMenu extends HTMLElement {
         if (!verbs.length) return;
         this.close({ restoreFocus: false });
 
-        const name = (link.textContent ?? '').trim();
-        this.setAttribute('aria-label', name);
+        const name = menuName(link);
+        this.setAttribute('aria-label', (link.textContent ?? '').trim());
         this.replaceChildren(...verbs.map((verb) => {
             const item = document.createElement('button');
             item.type = 'button';
@@ -83,7 +88,7 @@ export class QvVerbMenu extends HTMLElement {
     #choose(item: HTMLElement): void {
         const link = this.#link;
         if (!link) return;
-        const name = (link.textContent ?? '').trim();
+        const name = menuName(link);
         const metadata: Record<string, string> = {};
         if (link.dataset.elementid) metadata[name] = link.dataset.elementid;
         // Focus goes back to the command bar once the turn is over, not to the link.

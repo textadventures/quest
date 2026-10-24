@@ -7,6 +7,7 @@
 
 import type { QuestUIContract, QuestUIMap, QuestUITranscript } from './contract';
 import { sendCommand, sendEvent } from './engine';
+import { addPane, setCommands, setPaneContent, setPaneLabel, setPaneOrder } from './panes';
 import { player } from './player';
 import { emit, off, on, state } from './state';
 
@@ -61,8 +62,14 @@ export function setLocation(text: string): void {
 
 export function setInterfaceString(name: string, text: string): void {
     state.interfaceStrings.set(name, text);
+    setPaneLabel(name, text);
     if (name === 'TypeHereLabel') player()?.commandBar?.updatePlaceholder();
     if (name === 'ContinueLabel') player()?.commandBar?.updateContinueLabel();
+}
+
+/** Both QuestUI.setCompassDirections and the adapter's: a list, or legacy's ";"-separated string. */
+export function setCompassDirections(list: string[] | string): void {
+    state.compassDirections = Array.isArray(list) ? list.map(String) : String(list ?? '').split(';');
 }
 
 export const QuestUI: QuestUIContract = {
@@ -88,11 +95,11 @@ export const QuestUI: QuestUIContract = {
 
     // Layout and panes
     setVisible: (part, visible) => player()?.setVisible(String(part), !!visible),
-    setPaneOrder: ignore,
+    setPaneOrder: (parts) => setPaneOrder(parsed(parts as string[] | string)),
     setLayoutPreset: ignore,
     setPictureFrame: ignore,
     setInterfaceString,
-    setCompassDirections: ignore,
+    setCompassDirections: (list) => setCompassDirections(parsed(list as string[] | string)),
     setLocation,
     setStatusAttributes: ignore,
 
@@ -107,9 +114,9 @@ export const QuestUI: QuestUIContract = {
     transcript,
 
     // Author hooks
-    addPane: ignore,
-    setPaneContent: ignore,
-    setCommands: ignore,
+    addPane: (id, title, html) => addPane(String(id), title == null ? undefined : String(title), html == null ? undefined : String(html)),
+    setPaneContent: (id, html) => setPaneContent(String(id), String(html ?? '')),
+    setCommands: (list) => setCommands(list),
     setAutoScroll: (on) => {
         state.autoScroll = !!on;
     },

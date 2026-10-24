@@ -5,6 +5,7 @@
 import type { QvCommandBar } from './command-bar';
 import { handleClick, handleKeyDown, updateLinks } from './links';
 import type { QvOutput } from './output';
+import { builtInPanes, pane, setDrawerOpen, isDrawerOpen } from './panes';
 import type { QvVerbMenu } from './verb-menu';
 
 // Tokens that are lengths, where the contract reads a bare number as pixels.
@@ -29,6 +30,13 @@ export class QvPlayer extends HTMLElement {
         // Every link and popup trigger in the UI is handled here, not by handlers of its own.
         this.addEventListener('click', (e) => handleClick(e, this.verbMenu));
         this.addEventListener('keydown', handleKeyDown);
+        this.panesButton?.addEventListener('click', () => setDrawerOpen(!isDrawerOpen()));
+        this.panes?.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && isDrawerOpen() && !this.verbMenu?.isOpen) {
+                e.preventDefault();
+                setDrawerOpen(false);
+            }
+        });
         // The host shows and hides the toolbar's buttons itself, and adds Restart in previews.
         const toolbar = this.querySelector('.qv-toolbar');
         if (toolbar) {
@@ -36,7 +44,7 @@ export class QvPlayer extends HTMLElement {
                 subtree: true, childList: true, attributes: true, attributeFilter: ['style', 'hidden'],
             });
         }
-        this.updateTopbar();
+        this.#updatePanesButton();
     }
 
     get topbar(): HTMLElement | null {
@@ -47,13 +55,24 @@ export class QvPlayer extends HTMLElement {
         return this.querySelector('#cmdSave');
     }
 
+    /** The "panes" region: a column beside the game when it's wide, a drawer when it's narrow. */
+    get panes(): HTMLElement | null {
+        return this.querySelector('[data-qv-part="panes"]');
+    }
+
+    /** Opens the panes drawer. Shown only on a narrow layout, and only while there are panes. */
+    get panesButton(): HTMLButtonElement | null {
+        return this.querySelector('.qv-panes-button');
+    }
+
     /** The bar holding the location and the toolbar goes when it would be empty. */
     updateTopbar(): void {
         const topbar = this.topbar;
         if (!topbar) return;
         const location = this.location;
+        // The panes button counts only where it's drawn, on a narrow layout.
         const anyButton = [...topbar.querySelectorAll<HTMLElement>('.qv-toolbar button')]
-            .some((button) => !button.hidden && button.style.display !== 'none');
+            .some((button) => !button.hidden && button.style.display !== 'none' && getComputedStyle(button).display !== 'none');
         topbar.hidden = (!location || location.hidden) && !anyButton;
     }
 
@@ -100,7 +119,28 @@ export class QvPlayer extends HTMLElement {
                 // The frame's border line, not the frame and what's in it.
                 this.frame?.classList.toggle('qv-borderless', !visible);
                 break;
+            case 'panes':
+                this.#setHidden(this.panes, !visible);
+                if (!visible) setDrawerOpen(false, { restoreFocus: false });
+                this.#updatePanesButton();
+                break;
+            default:
+                // A pane by name: built-in, or one an author added.
+                if (builtInPanes.includes(part) || pane(part)) {
+                    this.#setHidden(pane(part), !visible);
+                    this.#updatePanesButton();
+                }
         }
+    }
+
+    // The drawer button only makes sense while the region and at least one pane in it show.
+    #updatePanesButton(): void {
+        const button = this.panesButton;
+        const region = this.panes;
+        if (!button || !region) return;
+        const anyPane = [...region.querySelectorAll<HTMLElement>('qv-pane')].some((p) => !p.hidden);
+        button.hidden = region.hidden || !anyPane;
+        this.updateTopbar();
     }
 
     #setHidden(element: HTMLElement | null, hidden: boolean): void {

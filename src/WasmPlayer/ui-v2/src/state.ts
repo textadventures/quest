@@ -14,6 +14,8 @@ export const state = {
     continueOnClick: false,
     /** QuestUI.setCommandPlaceholder, which wins over the TypeHereLabel interface string. */
     commandPlaceholder: null as string | null,
+    /** The compass's direction names (setCompassDirections), which places and objects leaves out. */
+    compassDirections: [] as string[],
     /** Strings from setInterfaceString, kept for parts that don't exist yet. */
     interfaceStrings: new Map<string, string>(),
     gameFinished: false,
@@ -61,6 +63,7 @@ export function resetState(): void {
     state.continueOnClick = false;
     state.commandPlaceholder = null;
     state.interfaceStrings.clear();
+    state.compassDirections = [];
     state.gameFinished = false;
     state.soundWait = false;
     state.waiting = false;

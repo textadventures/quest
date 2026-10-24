@@ -14,7 +14,8 @@ import { sendCommand, sendEvent } from './engine';
 import { QvOutput, rememberImageSize } from './output';
 import { player, QvPlayer } from './player';
 import * as prompts from './prompts';
-import { QuestUI, setInterfaceString, setLocation } from './questui';
+import { QvPane, setDrawerOpen, updateList } from './panes';
+import { QuestUI, setCompassDirections, setInterfaceString, setLocation } from './questui';
 import { emit, resetState, state } from './state';
 import * as timer from './timer';
 import { QvVerbMenu } from './verb-menu';
@@ -23,6 +24,7 @@ customElements.define('qv-player', QvPlayer);
 customElements.define('qv-output', QvOutput);
 customElements.define('qv-command-bar', QvCommandBar);
 customElements.define('qv-verb-menu', QvVerbMenu);
+customElements.define('qv-pane', QvPane);
 
 window.QuestUI = QuestUI;
 // The globals author JS has always used, kept as QuestUI's aliases (as on legacy).
@@ -33,6 +35,8 @@ window.canSendCommand = true;
 window.notifyQuestUITurn = (started) => {
     const output = player()?.output;
     if (started) {
+        // Whatever was chosen in the drawer has been sent: show the transcript for its answer.
+        setDrawerOpen(false, { restoreFocus: false });
         output?.beginTurn();
         output?.setAttribute('aria-busy', 'true');
         emit('turnStarted');
@@ -109,11 +113,11 @@ const adapter: PlayerUiAdapter = {
         document.title = name;
     },
     clearScreen: () => output()?.clearScreen(),
-    panesVisible: ignore,
+    panesVisible: (visible) => player()?.setVisible('panes', visible),
     updateStatus: ignore,
     setBackground: (colour) => player()?.setTokens({ '--qv-bg': colour }),
     setForeground: ignore,
-    updateList: ignore,
+    updateList,
     updateCompass: ignore,
     updateObjectLinks: (verbs) => player()?.updateLinks('object', verbs),
     gameFinished() {
@@ -125,7 +129,7 @@ const adapter: PlayerUiAdapter = {
     requestNextTimerTick: timer.requestNextTimerTick,
     uiShow: (element) => player()?.setVisible(requestParts[element] ?? '', true),
     uiHide: (element) => player()?.setVisible(requestParts[element] ?? '', false),
-    setCompassDirections: ignore,
+    setCompassDirections,
     setInterfaceString,
     setPanelContents: ignore,
     loadHtml: (html) => output()?.loadHtml(html),
@@ -142,6 +146,9 @@ const adapter: PlayerUiAdapter = {
             else void GameSaver.save();
         });
         updateSaveButton();
+        // The host translates the panes button's label at boot only, not after a restart.
+        const label = WebPlayer.chromeStrings?.ShowPanesButton;
+        if (label) player()?.panesButton?.setAttribute('aria-label', label);
         player()?.commandBar?.focusInput();
     },
     resetOutput() {
