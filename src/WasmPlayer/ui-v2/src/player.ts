@@ -113,6 +113,10 @@ export class QvPlayer extends HTMLElement {
         return this.querySelector('[data-qv-part="location"]');
     }
 
+    get pictureFrame(): HTMLElement | null {
+        return this.querySelector('[data-qv-part="picture-frame"]');
+    }
+
     get frame(): HTMLElement | null {
         return this.querySelector('[data-qv-part="border"]');
     }
@@ -133,6 +137,9 @@ export class QvPlayer extends HTMLElement {
             case 'border':
                 // The frame's border line, not the frame and what's in it.
                 this.frame?.classList.toggle('qv-borderless', !visible);
+                break;
+            case 'picture-frame':
+                this.#setHidden(this.pictureFrame, !visible);
                 break;
             case 'exits':
                 this.#setHidden(this.exits, !visible);

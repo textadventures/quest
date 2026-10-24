@@ -1,0 +1,73 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- Player UI v2's picture frame (verify-wasmplayer-v2-picture-frame.mjs): a hall with a
+       picture, a cellar whose picture the test serves slowly and whose description is long enough
+       to scroll, and a garden with none (clearframe empties the frame there). Commands set the
+       frame through the engine's SetPanelContents request and hide it through QuestUI. -->
+  <game name="V2PictureFrameTest">
+    <clearframe />
+  </game>
+
+  <object name="hall">
+    <inherit name="editor_room" />
+    <description>A hall.</description>
+    <picture>hall.png</picture>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <exit alias="north" to="cellar">
+      <inherit name="northdirection" />
+    </exit>
+  </object>
+
+  <object name="cellar">
+    <inherit name="editor_room" />
+    <picture>cellar.png</picture>
+    <description type="script"><![CDATA[
+      msg ("<span id='cellarstart'>A cellar.</span> Its description goes on a while.")
+      for (i, 1, 40) {
+        msg ("Cellar line " + i + ", padding the description out past one screenful.")
+      }
+    ]]></description>
+    <exit alias="east" to="garden">
+      <inherit name="eastdirection" />
+    </exit>
+  </object>
+
+  <object name="garden">
+    <inherit name="editor_room" />
+    <description>A garden.</description>
+    <exit alias="west" to="cellar">
+      <inherit name="westdirection" />
+    </exit>
+  </object>
+
+  <command name="filler">
+    <pattern>filler</pattern>
+    <script>
+      for (i, 1, 40) {
+        msg ("Filler line " + i + " of output text, padding the page out past one screenful.")
+      }
+    </script>
+  </command>
+
+  <command name="panel">
+    <pattern>panel</pattern>
+    <script><![CDATA[
+      request (SetPanelContents, "<div id='custompanel'>A custom panel.</div>")
+      msg ("Panel set.")
+    ]]></script>
+  </command>
+
+  <command name="hideframe">
+    <pattern>hideframe</pattern>
+    <script>
+      JS.QuestUI.setVisible ("picture-frame", false)
+      msg ("Frame hidden.")
+    </script>
+  </command>
+
+</asl>
