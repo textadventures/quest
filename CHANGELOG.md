@@ -1,5 +1,84 @@
 # Changelog
 
+## [6.1.0-beta.1](https://github.com/textadventures/quest/compare/v6.0.0...v6.1.0-beta.1) (2026-10-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* replace IGameDataProvider with a plain GameData ([#2464](https://github.com/textadventures/quest/issues/2464))
+* make GameQuery take the game's bytes, not a path ([#2463](https://github.com/textadventures/quest/issues/2463))
+* remove WebPlayer ([#2458](https://github.com/textadventures/quest/issues/2458))
+
+### Features
+
+* add link-preview meta tags to the site and exported games ([#2541](https://github.com/textadventures/quest/issues/2541)) ([94f2338](https://github.com/textadventures/quest/commit/94f2338ce5cc22896c876f86decd9fb3d1779336))
+* **Editor:** copy and paste any element in the tree, with a right-click menu ([#2588](https://github.com/textadventures/quest/issues/2588)) ([376fc6c](https://github.com/textadventures/quest/commit/376fc6cecad06fbe49b6b397fb8d0c41affc3f64))
+* **Editor:** move the TAKE ALL exclusion checkbox to the Inventory tab's Advanced section ([#2518](https://github.com/textadventures/quest/issues/2518)) ([8ac8b17](https://github.com/textadventures/quest/commit/8ac8b1798e062a20e3bd9b1eed4f5e0f1045bec0))
+* **Editor:** offer to remove a feature's settings when it's turned off ([#2575](https://github.com/textadventures/quest/issues/2575)) ([29921cd](https://github.com/textadventures/quest/commit/29921cd55e9be66a89aa60fc3d3c1000bf82639b))
+* **Editor:** say that finish lets the rest of the script run ([#2579](https://github.com/textadventures/quest/issues/2579)) ([c0db92b](https://github.com/textadventures/quest/commit/c0db92b74a57af57ece3ca2d5cf89a07af815bb5))
+* **Editor:** warn when opening a game that saving will upgrade ([#2577](https://github.com/textadventures/quest/issues/2577)) ([561f84e](https://github.com/textadventures/quest/commit/561f84e824d330fca145c91576cc1449bfa18223))
+* **Player:** choose the player UI at boot, with a ?ui= override ([#2606](https://github.com/textadventures/quest/issues/2606)) ([3aa9479](https://github.com/textadventures/quest/commit/3aa9479b5c7035c5ec75f49499a85b5e4f248842))
+* **Player:** implement the QuestUI contract on the legacy UI ([#2602](https://github.com/textadventures/quest/issues/2602)) ([4e3e473](https://github.com/textadventures/quest/commit/4e3e473f4aebb5a22d787273fb0cb3f7cf93f8a9))
+* **Player:** show the available exits under the transcript on mobile ([#2581](https://github.com/textadventures/quest/issues/2581)) ([e5712af](https://github.com/textadventures/quest/commit/e5712afc9fc85a56fa7385675b9eff2fc6266233))
+* **Player:** stop writing a game's default text styles inline ([#2604](https://github.com/textadventures/quest/issues/2604)) ([0d3b0ec](https://github.com/textadventures/quest/commit/0d3b0ec8011a623468277e0ff817563f6068c538))
+* **Player:** v2 compass and exits strip ([#2617](https://github.com/textadventures/quest/issues/2617)) ([49d391e](https://github.com/textadventures/quest/commit/49d391ed6b92c92a7c1783a09ecee93c8206929e))
+* **Player:** v2 layout presets ([#2622](https://github.com/textadventures/quest/issues/2622)) ([af3d26c](https://github.com/textadventures/quest/commit/af3d26c8ab2cab4f6939f70715cab32acf9bd2ae))
+* **Player:** v2 links and verb menus ([#2609](https://github.com/textadventures/quest/issues/2609)) ([4ee810e](https://github.com/textadventures/quest/commit/4ee810e515e6971951f2d354f02bda97ac58c3dc))
+* **Player:** v2 panes ([#2616](https://github.com/textadventures/quest/issues/2616)) ([37f8351](https://github.com/textadventures/quest/commit/37f8351b4235697ee2e9d4aa227b9c9c3fafb69b))
+* **Player:** v2 picture frame ([#2621](https://github.com/textadventures/quest/issues/2621)) ([ae50d4b](https://github.com/textadventures/quest/commit/ae50d4b7fb4dd0004ef7c8e85ced7c615713a9cc))
+* **Player:** v2 saving and accessibility ([#2611](https://github.com/textadventures/quest/issues/2611)) ([8d78761](https://github.com/textadventures/quest/commit/8d787616a5d28d3f70cd9fb91f8d5b9cd0214384))
+* **Player:** v2 status pane and pinned status bar ([#2619](https://github.com/textadventures/quest/issues/2619)) ([a71f470](https://github.com/textadventures/quest/commit/a71f470cec7caea54e78b7de0435dfe96657b507))
+* **Player:** v2 toolchain and core loop ([#2607](https://github.com/textadventures/quest/issues/2607)) ([f2bdeed](https://github.com/textadventures/quest/commit/f2bdeed5c837f9e15a62764fea297ce64cc221e5))
+* **Player:** v2 waits, pauses, menus and questions ([#2610](https://github.com/textadventures/quest/issues/2610)) ([eb9ae10](https://github.com/textadventures/quest/commit/eb9ae100e953ccfb27cbbab7bc603ef8202d7076))
+* show a banner on the beta site ([#2451](https://github.com/textadventures/quest/issues/2451)) ([fcee32a](https://github.com/textadventures/quest/commit/fcee32aaccd4d079ba96c9969206251b9b6bf301))
+
+
+### Bug Fixes
+
+* **Desktop:** apply a game's own stylesheets when playing from the desktop app ([#2531](https://github.com/textadventures/quest/issues/2531)) ([2b4a54f](https://github.com/textadventures/quest/commit/2b4a54f78de862048560b03f6fbf9d9422920413))
+* **Editor:** correct the clash message for adding an "enter" verb ([#2527](https://github.com/textadventures/quest/issues/2527)) ([b9d6f41](https://github.com/textadventures/quest/commit/b9d6f4118d6da889725425bb07b664cb92df5111))
+* **Editor:** keep hidden settings visible while they still take effect ([#2574](https://github.com/textadventures/quest/issues/2574)) ([5b90d8b](https://github.com/textadventures/quest/commit/5b90d8bdbca51a821c60a6bfa4c2fd626aa851d5))
+* **Editor:** keep library original after copy-and-rename ([#2555](https://github.com/textadventures/quest/issues/2555)) ([#2563](https://github.com/textadventures/quest/issues/2563)) ([d2121c5](https://github.com/textadventures/quest/commit/d2121c54fc4f26aff9eda84e6cf7ce745b848f74))
+* **Editor:** load deeply nested scripts and stop them squeezing ([#2587](https://github.com/textadventures/quest/issues/2587)) ([4f4352c](https://github.com/textadventures/quest/commit/4f4352ce231552d0d37594b8dfe3a1f3888c4857))
+* **Editor:** restore 6.0 button sizes after Skeleton 5 upgrade ([#2542](https://github.com/textadventures/quest/issues/2542)) ([99e0bd3](https://github.com/textadventures/quest/commit/99e0bd30199dc5d1da5bea56d184f6ab19b1337e))
+* **Editor:** restore pointer cursor on buttons after Skeleton 5 upgrade ([#2521](https://github.com/textadventures/quest/issues/2521)) ([3a5f1e1](https://github.com/textadventures/quest/commit/3a5f1e17e066e27cd7dc316b01aee13b26959572))
+* **Editor:** show rooms added with Add Room as rooms ([#2392](https://github.com/textadventures/quest/issues/2392)) ([#2569](https://github.com/textadventures/quest/issues/2569)) ([0da43a4](https://github.com/textadventures/quest/commit/0da43a46391011d1d35ae566ac63d2aaeae7cda8))
+* **Editor:** stop nested script blocks squeezing at each level ([#2546](https://github.com/textadventures/quest/issues/2546)) ([425c342](https://github.com/textadventures/quest/commit/425c342a46eb4460ee9ec57856193eb1963cc0db))
+* load game elements written on a single line ([#2522](https://github.com/textadventures/quest/issues/2522)) ([88ebf3d](https://github.com/textadventures/quest/commit/88ebf3d425170622679ec9797604c20f9c9ed9ae))
+* **Player:** allow multi-state garments with no attribute bonuses ([#2525](https://github.com/textadventures/quest/issues/2525)) ([eeb8e05](https://github.com/textadventures/quest/commit/eeb8e051d1ba253265766ee180d8af9effa07bba))
+* **Player:** call ASLEvent handlers that take no parameters ([#2524](https://github.com/textadventures/quest/issues/2524)) ([17fad59](https://github.com/textadventures/quest/commit/17fad5936120c210709b2f816a67d10f379f95d5))
+* **Player:** explain an unset attribute used as a condition ([#2529](https://github.com/textadventures/quest/issues/2529)) ([d97522e](https://github.com/textadventures/quest/commit/d97522e58b011b754d81a2c72158573e86c6f1cd))
+* **Player:** fit embedded videos to narrow screens ([#2526](https://github.com/textadventures/quest/issues/2526)) ([b5bd327](https://github.com/textadventures/quest/commit/b5bd327f97e0f8dccedc027c9af4922fc0319fb7))
+* **Player:** format numbers and characters independently of the player's locale ([#2564](https://github.com/textadventures/quest/issues/2564)) ([c1d9b51](https://github.com/textadventures/quest/commit/c1d9b5153be138217e62721de31fdbc65f17ea3e))
+* **Player:** format numbers invariantly in string concatenation ([#2501](https://github.com/textadventures/quest/issues/2501)) ([462833b](https://github.com/textadventures/quest/commit/462833b92243df8465eda8e4001640178cce540f))
+* **Player:** format Quest 4 numeric variables with the invariant culture ([#2502](https://github.com/textadventures/quest/issues/2502)) ([8ca0f5d](https://github.com/textadventures/quest/commit/8ca0f5dfb19c50d289303ef554c1e448832e7df1))
+* **Player:** let authors hide carried objects from the inventory ([#2516](https://github.com/textadventures/quest/issues/2516)) ([9c98f61](https://github.com/textadventures/quest/commit/9c98f617040bff213f5f4301fd5259eaccb277ec))
+* **Player:** let pronouns resolve to visible objects outside a command's scope ([#2545](https://github.com/textadventures/quest/issues/2545)) ([db404b9](https://github.com/textadventures/quest/commit/db404b92ca0807296e288049377a8263b09769fd))
+* **Player:** load games with a malformed dynamic template ([#2566](https://github.com/textadventures/quest/issues/2566)) ([257ab00](https://github.com/textadventures/quest/commit/257ab0088dc4f4ffb80f7d1f81a3740491970d54))
+* **Player:** make the restart command restart the game in place ([#2583](https://github.com/textadventures/quest/issues/2583)) ([a14af5e](https://github.com/textadventures/quest/commit/a14af5e54e90d665ee39aaadfdd012e9f8754652))
+* **Player:** place rooms on the map that no exit leads to, in new and published games ([#2576](https://github.com/textadventures/quest/issues/2576)) ([dd5d5e8](https://github.com/textadventures/quest/commit/dd5d5e84f4c2f4d6e668eeaccfa5b3e2668d1f79))
+* **Player:** resolve array-indexed room names in Quest 4 goto and move ([#2572](https://github.com/textadventures/quest/issues/2572)) ([134ab9b](https://github.com/textadventures/quest/commit/134ab9b7d8bb96e25780245f7a9d7daf5f70e04a))
+* **Player:** restore Quest 4 object record behaviour lost in translation ([#2565](https://github.com/textadventures/quest/issues/2565)) ([d829efb](https://github.com/textadventures/quest/commit/d829efba932c626896a4756fe1c4184ce573d4df))
+* **Player:** restore the command bar's style after loading a save ([#2528](https://github.com/textadventures/quest/issues/2528)) ([dacbd92](https://github.com/textadventures/quest/commit/dacbd929a4a0e4bf5f96f47d04b508c6cf41ebe3))
+* **Player:** show a dialogue's options again after undoing back into it ([#2530](https://github.com/textadventures/quest/issues/2530)) ([7290de9](https://github.com/textadventures/quest/commit/7290de9fc43f8bed13094a73e1e7ef154e0b1dfe))
+* **Player:** show a Quest 4 start script's enter prompt ([#2503](https://github.com/textadventures/quest/issues/2503)) ([faf934d](https://github.com/textadventures/quest/commit/faf934df868cb74b3cd2f9c84155ce65b0fdafe3))
+* **Player:** stop {if} replacing "this" inside other words ([#2523](https://github.com/textadventures/quest/issues/2523)) ([873c7bf](https://github.com/textadventures/quest/commit/873c7bf784d6fbcb9f08f5689603ef2f01eb5eeb))
+* **Player:** stop online games' images shifting the page or scrolling short ([#2580](https://github.com/textadventures/quest/issues/2580)) ([68f9d92](https://github.com/textadventures/quest/commit/68f9d9261ae0308761e950fe6c7ba49a9455433d))
+* **Player:** undo each turn only once after an undo ([#2567](https://github.com/textadventures/quest/issues/2567)) ([909590b](https://github.com/textadventures/quest/commit/909590bfcf9cc800fe14a5af26f68f9d28487f2c))
+* **Player:** upgrade to Skeleton 5 and keep the player chrome styled ([#2491](https://github.com/textadventures/quest/issues/2491)) ([fc1ee1a](https://github.com/textadventures/quest/commit/fc1ee1af4f376e8d2edcc44e2b3852dad01bd18a))
+
+
+### Miscellaneous Chores
+
+* remove WebPlayer ([#2458](https://github.com/textadventures/quest/issues/2458)) ([8098ed9](https://github.com/textadventures/quest/commit/8098ed9c8c272a4814381217078505185fd3f24d))
+* start the 6.1 beta line ([#2444](https://github.com/textadventures/quest/issues/2444)) ([42d8cbe](https://github.com/textadventures/quest/commit/42d8cbeb9877705545eb255a75712583922800f7))
+
+
+### Code Refactoring
+
+* make GameQuery take the game's bytes, not a path ([#2463](https://github.com/textadventures/quest/issues/2463)) ([a92f9fc](https://github.com/textadventures/quest/commit/a92f9fc6b779f6b55ded9701b7b6b0aa60aadeac))
+* replace IGameDataProvider with a plain GameData ([#2464](https://github.com/textadventures/quest/issues/2464)) ([3266a6c](https://github.com/textadventures/quest/commit/3266a6c9f39fd33afd5771255c5c7f3ea399dbae))
+
 ## [6.0.0](https://github.com/textadventures/quest/compare/v6.0.0-rc.4...v6.0.0) (2026-10-03)
 
 
