@@ -1,0 +1,41 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- A game stylesheet (game.stylesheet), for verify-wasmplayer-v2-game-stylesheet.mjs. Its rules
+       are no more specific than v2's own (the location's font-weight, the link's underline), so
+       on v2 they only win because the stylesheet isn't in a cascade layer. -->
+  <game name="V2GameStylesheetTest">
+    <stylesheet><![CDATA[qv-player {
+    --qv-link: rgb(160, 82, 45);
+}
+
+[data-qv-part="location"] {
+    font-weight: 400;
+}
+
+a.cmdlink {
+    text-decoration-style: dotted;
+}]]></stylesheet>
+  </game>
+
+  <object name="hall">
+    <inherit name="editor_room" />
+    <description>A hall, with a {object:lamp} in it.</description>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <object name="lamp">
+      <inherit name="editor_object" />
+    </object>
+  </object>
+
+  <command name="fine">
+    <pattern>fine</pattern>
+    <script>
+      msg ("All fine.")
+    </script>
+  </command>
+
+</asl>

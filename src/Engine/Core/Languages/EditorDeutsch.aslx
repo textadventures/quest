@@ -235,6 +235,9 @@
   <template name="EditorGameRight">Rechts</template>
   <template name="EditorGameOptions">Optionen</template>
   <template name="EditorGameClearpicture">Bilderrahmen verbergen, wenn zu dem aktuellen Raum kein Bild verfügbar ist</template>
+  <template name="EditorGameStylesheetTitle">Stylesheet</template>
+  <template name="EditorGameStylesheetHelp">CSS für die Oberfläche des Spiels, die beim Spielen über die eigenen Stile des Players angewendet wird.</template>
+  <template name="EditorGameStylesheet">Stylesheet</template>
   <template name="EditorGameScript">Skripte</template>
   <template name="EditorGameAdvancedScript">Erweiterte Skripte</template>
   <template name="EditorGameStartscript">Beim Spielstart</template>

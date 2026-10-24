@@ -717,6 +717,25 @@
         <onlydisplayif>game.feature_pictureframe</onlydisplayif>
       </control>
 
+      <control>
+        <controltype>title</controltype>
+        <caption>[EditorGameStylesheetTitle]</caption>
+        <advanced/>
+      </control>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>[EditorGameStylesheetHelp]</caption>
+        <advanced/>
+      </control>
+
+      <control>
+        <controltype>csseditor</controltype>
+        <caption>[EditorGameStylesheet]</caption>
+        <attribute>stylesheet</attribute>
+        <advanced/>
+      </control>
+
     </tab>
 
     <tab>

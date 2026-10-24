@@ -45,6 +45,8 @@ public interface IGame
 
     IEnumerable<string>? GetExternalScripts();
     IEnumerable<string>? GetExternalStylesheets();
+    /// <summary>The game's own stylesheet (CSS), which the player applies over its UI's styles.</summary>
+    string? GetGameStylesheet();
 
     Stream? GetResourceStream(string filename);
     IEnumerable<string> GetResourceNames();

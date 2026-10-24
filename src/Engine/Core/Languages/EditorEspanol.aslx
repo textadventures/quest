@@ -231,6 +231,9 @@
   <template name="EditorGameRight">Derecha</template>
   <template name="EditorGameOptions">Opciones</template>
   <template name="EditorGameClearpicture">Quitar panel de imagen si el lugar no tiene imagen</template>
+  <template name="EditorGameStylesheetTitle">Hoja de estilo</template>
+  <template name="EditorGameStylesheetHelp">CSS para la interfaz del juego, que se aplica sobre los estilos del reproductor al jugar.</template>
+  <template name="EditorGameStylesheet">Hoja de estilo</template>
   <template name="EditorGameScript">Programas</template>
   <template name="EditorGameAdvancedScript">Programas Avanzados</template>
   <template name="EditorGameStartscript">Programa inicial</template>

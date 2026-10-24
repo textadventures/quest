@@ -1,0 +1,18 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- A game with a stylesheet attribute (GameStylesheetTests). -->
+  <game name="GameStylesheetTest">
+    <stylesheet><![CDATA[[data-qv-part="output"] > p { color: teal; }]]></stylesheet>
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+</asl>

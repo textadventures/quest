@@ -235,6 +235,9 @@
   <template name="EditorGameRight">Right</template>
   <template name="EditorGameOptions">Options</template>
   <template name="EditorGameClearpicture">Clear picture panel if room has no picture</template>
+  <template name="EditorGameStylesheetTitle">Stylesheet</template>
+  <template name="EditorGameStylesheetHelp">CSS for the game's interface, applied over the player's own styles when the game is played.</template>
+  <template name="EditorGameStylesheet">Stylesheet</template>
   <template name="EditorGameScript">Scripts</template>
   <template name="EditorGameAdvancedScript">Advanced Scripts</template>
   <template name="EditorGameStartscript">Start script</template>

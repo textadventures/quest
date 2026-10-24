@@ -160,6 +160,11 @@ public partial class V4Game
         return null;
     }
 
+    public string GetGameStylesheet()
+    {
+        return null;
+    }
+
     public event Action<int> RequestNextTimerTick;
 
     public Stream GetResourceStream(string file)
