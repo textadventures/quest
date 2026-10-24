@@ -477,8 +477,8 @@
         background-color: var(--qv-pane-highlight);
     }
 
-    /* The pinned status bar: a second row of the top bar, shown only on a narrow layout (below),
-       where the status pane is in the drawer. */
+    /* The pinned status bar: a second row of the top bar, shown only where the status pane isn't
+       beside the game (Layouts, below). */
     .qv-status-bar {
         display: none;
     }
@@ -585,84 +585,171 @@
         line-height: 1;
     }
 
-    /* The exits strip: shown only on a narrow layout (below), where the compass is in the drawer.
-       It scrolls sideways rather than wrapping, so a room with many exits costs one row. */
+    /* ── Layouts ──
+       qv-player's data-qv-layout is the layout in effect at the player's width (player.ts), from
+       the game's preset (QuestUI.setLayoutPreset) for a wide or a narrow player:
+         side    sidepanes, wide: the panes are a column beside the game
+         drawer  sidepanes, narrow: the panes are a drawer from the top bar's button
+         sheet   bottombar: the panes are a sheet from a button in a bar at the bottom, which
+                 keeps the exits strip and the command bar in view together
+         none    nopanes: no panes, and nothing standing in for them
+       Wherever the panes aren't beside the game, the exits strip under the output and the pinned
+       status bar under the top bar stand in for the compass and the status pane. */
+
+    /* The exits strip scrolls sideways rather than wrapping, so a room with many exits costs one
+       row. */
     .qv-exits {
         display: none;
     }
 
-    /* Wide: the panes are a column beside the game, kept in view as the transcript scrolls. */
-    @container qv-player (min-width: 900px) {
-        [data-qv-part="panes"] {
-            position: sticky;
-            top: 0;
-            flex: none;
-            max-height: 100vh;
-            max-height: 100dvh;
-            overflow-y: auto;
-        }
-
-        .qv-panes-button {
-            display: none;
-        }
+    qv-player:is([data-qv-layout="drawer"], [data-qv-layout="sheet"]) .qv-exits.qv-exits-active {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding: 0.5rem var(--qv-padding-right) 0 var(--qv-padding-left);
+        scrollbar-width: thin;
     }
 
-    /* Narrow: the panes are a drawer from the top bar's panes button. */
-    @container qv-player (max-width: 899.98px) {
-        .qv-status-bar.qv-status-bar-active {
-            display: flex;
-            flex-basis: 100%;
-            flex-wrap: wrap;
-            gap: 0.25rem 1rem;
-            padding-bottom: 0.25rem;
-            font-size: 0.9rem;
-        }
-
-        .qv-status-bar .qv-status-item {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
-
-        .qv-status-bar .qv-status-meter {
-            width: 4rem;
-            margin-top: 0;
-        }
-
-        .qv-exits.qv-exits-active {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding: 0.5rem var(--qv-padding-right) 0 var(--qv-padding-left);
-            scrollbar-width: thin;
-        }
-
-        .qv-exit {
-            flex: none;
-            font-family: var(--qv-font-ui);
-        }
-
-        [data-qv-part="panes"] {
-            position: fixed;
-            inset-block: 0;
-            inset-inline-end: 0;
-            z-index: 5;
-            width: min(var(--qv-pane-width), 85vw);
-            overflow-y: auto;
-            box-shadow: -4px 0 24px rgb(0 0 0 / 0.25);
-            transform: translateX(100%);
-            visibility: hidden;
-            transition: transform 200ms ease, visibility 0s 200ms;
-        }
-
-        [data-qv-part="panes"].qv-drawer-open {
-            transform: none;
-            visibility: visible;
-            transition: transform 200ms ease;
-        }
+    .qv-exit {
+        flex: none;
+        font-family: var(--qv-font-ui);
     }
 
-    .qv-toolbar .qv-panes-button {
+    qv-player:is([data-qv-layout="drawer"], [data-qv-layout="sheet"]) .qv-status-bar.qv-status-bar-active {
+        display: flex;
+        flex-basis: 100%;
+        flex-wrap: wrap;
+        gap: 0.25rem 1rem;
+        padding-bottom: 0.25rem;
+        font-size: 0.9rem;
+    }
+
+    .qv-status-bar .qv-status-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .qv-status-bar .qv-status-meter {
+        width: 4rem;
+        margin-top: 0;
+    }
+
+    /* Each panes button shows only in its own layout. */
+    qv-player:not([data-qv-layout="drawer"]) .qv-topbar .qv-panes-button,
+    qv-player:not([data-qv-layout="sheet"]) .qv-footer .qv-panes-button {
+        display: none;
+    }
+
+    qv-player[data-qv-layout="none"] [data-qv-part="panes"] {
+        display: none;
+    }
+
+    /* Side: kept in view as the transcript scrolls. */
+    qv-player[data-qv-layout="side"] [data-qv-part="panes"] {
+        position: sticky;
+        top: 0;
+        flex: none;
+        max-height: 100vh;
+        max-height: 100dvh;
+        overflow-y: auto;
+    }
+
+    qv-player:is([data-qv-layout="drawer"], [data-qv-layout="sheet"]) [data-qv-part="panes"] {
+        position: fixed;
+        z-index: 5;
+        overflow-y: auto;
+        visibility: hidden;
+        transition: transform 200ms ease, visibility 0s 200ms;
+    }
+
+    qv-player:is([data-qv-layout="drawer"], [data-qv-layout="sheet"]) [data-qv-part="panes"].qv-drawer-open {
+        transform: none;
+        visibility: visible;
+        transition: transform 200ms ease;
+    }
+
+    qv-player[data-qv-layout-changing] [data-qv-part="panes"] {
+        transition: none !important;
+    }
+
+    qv-player[data-qv-layout="drawer"] [data-qv-part="panes"] {
+        inset-block: 0;
+        inset-inline-end: 0;
+        width: min(var(--qv-pane-width), 85vw);
+        box-shadow: -4px 0 24px rgb(0 0 0 / 0.25);
+        transform: translateX(100%);
+    }
+
+    /* The sheet rises from the bottom, as wide as the game's column, with its panes side by side
+       when there's room for more than one. */
+    qv-player[data-qv-layout="sheet"] [data-qv-part="panes"] {
+        inset-inline: 0;
+        bottom: 0;
+        width: auto;
+        max-width: calc(var(--qv-output-width) + 2px);
+        max-height: 70vh;
+        max-height: 70dvh;
+        margin-inline: auto;
+        border-radius: var(--qv-radius) var(--qv-radius) 0 0;
+        box-shadow: 0 -4px 24px rgb(0 0 0 / 0.25);
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+        align-items: start;
+        gap: 0 0.5rem;
+        transform: translateY(100%);
+    }
+
+    /* The bottom bar: the exits strip and the command bar, with the panes button beside it. Only
+       the sheet layout has one; elsewhere its parts are laid out as if it weren't there. */
+    .qv-footer,
+    .qv-footer-bar {
+        display: contents;
+    }
+
+    qv-player[data-qv-layout="sheet"] .qv-footer {
+        display: block;
+        position: sticky;
+        bottom: 0;
+        z-index: 1;
+        background-color: color-mix(in srgb, var(--qv-bg) calc(var(--qv-bg-opacity) * 100%), transparent);
+    }
+
+    qv-player[data-qv-layout="sheet"] .qv-footer-bar {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        padding-inline-end: var(--qv-padding-right);
+    }
+
+    qv-player[data-qv-layout="sheet"] [data-qv-part="command-bar"] {
+        position: static;
+        flex: 1;
+        min-width: 0;
+        padding-inline-end: 0;
+    }
+
+    .qv-footer .qv-panes-button {
+        flex: none;
+        box-sizing: border-box;
+        min-width: 44px;
+        min-height: 44px;
+        margin-top: 0.5rem;
+        padding: 0.25rem 0.75rem;
+        border: 1px solid var(--qv-border-colour);
+        border-radius: var(--qv-radius);
+        background-color: var(--qv-command-bg);
+        color: var(--qv-text);
+        font-family: var(--qv-font-ui);
+        cursor: pointer;
+    }
+
+    .qv-footer .qv-panes-button:focus-visible {
+        outline: 2px solid var(--qv-focus-ring);
+        outline-offset: 1px;
+    }
+
+    .qv-panes-button {
         font-size: 1.25rem;
         line-height: 1;
     }

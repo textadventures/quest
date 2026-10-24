@@ -18,8 +18,15 @@
                 <div class="qv-picture-frame qv-empty" data-qv-part="picture-frame"></div>
             </div>
             <qv-output data-qv-part="output"></qv-output>
-            <nav class="qv-exits" data-qv-part="exits" aria-label="Compass"></nav>
-            <qv-command-bar data-qv-part="command-bar"></qv-command-bar>
+            <div class="qv-footer">
+                <nav class="qv-exits" data-qv-part="exits" aria-label="Compass"></nav>
+                <div class="qv-footer-bar">
+                    <qv-command-bar data-qv-part="command-bar"></qv-command-bar>
+                    <!-- The bottom bar layout's panes button (bottombar); the top bar's is for the drawer. -->
+                    <button class="qv-panes-button qv-panes-button-bottom" type="button" aria-expanded="false"
+                            data-chrome-key-aria-label="ShowPanesButton" aria-label="Show panels">&#9776;</button>
+                </div>
+            </div>
         </main>
         <aside class="qv-panes" data-qv-part="panes">
             <qv-pane data-qv-pane="inventory" label="Inventory"></qv-pane>

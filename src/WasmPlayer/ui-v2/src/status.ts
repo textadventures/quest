@@ -1,6 +1,6 @@
 // Status attributes: the status pane, and the pinned status bar (the "status-bar" part) that keeps
-// the attributes a game pins in view under the top bar on a narrow layout, where the pane is in
-// the drawer.
+// the attributes a game pins in view under the top bar wherever the pane is in the drawer or
+// sheet.
 //
 // 610 Core sends structured items (QuestUI.setStatusAttributes): each has the formatted text, and
 // may have a numeric value, a max (drawn as a bar) and pinned. Older games send pre-formatted
@@ -80,7 +80,7 @@ export function renderStatus(): void {
 }
 
 /**
- * The pinned status bar: the pinned items only, shown on a narrow layout (v2.css) while the
+ * The pinned status bar: the pinned items only, shown in the drawer and sheet layouts while the
  * status pane would be showing (the game hasn't hidden it or the panes).
  */
 export function updateStatusBar(): void {

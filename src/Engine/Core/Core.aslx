@@ -175,6 +175,19 @@
         JS.QuestUI.setVisible ("border", false)
       }
       JS.QuestUI.setVisible ("panes", game.showpanes)
+      // sidepanes, nopanes or bottombar: layoutpreset for every width, or for wide ones when
+      // narrowlayoutpreset gives another for narrow ones
+      if (HasString(game, "layoutpreset") or HasString(game, "narrowlayoutpreset")) {
+        widelayout = "sidepanes"
+        if (HasString(game, "layoutpreset")) {
+          widelayout = game.layoutpreset
+        }
+        narrowlayout = widelayout
+        if (HasString(game, "narrowlayoutpreset")) {
+          narrowlayout = game.narrowlayoutpreset
+        }
+        JS.QuestUI.setLayoutPreset (widelayout, narrowlayout)
+      }
       if (not game.pov = null) {
         JS.QuestUI.setLocation (CapFirst(GetDisplayName(game.pov.parent)))
       }

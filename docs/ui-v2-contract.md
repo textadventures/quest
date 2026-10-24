@@ -138,7 +138,7 @@ Rules that apply to every member:
 |---|---|
 | `setVisible(part, visible)` | `uiShow`/`uiHide`, `panesVisible`, `hideBorder`, and the `setCss(…, "display:…")` calls |
 | `setPaneOrder(parts)` | the six `insertBefore` evals (`statusandcompassattop`) |
-| `setLayoutPreset(name)` with `gamebook` | GamebookCore's `panesVisible(false)` and its `uiHide`s of the location and command bar. Legacy hides those parts, as today. v2 gives gamebooks their own layout |
+| `setLayoutPreset(name, narrow)` with `sidepanes`, `nopanes` or `bottombar` (see "Layout presets" below), or `gamebook` | GamebookCore's `panesVisible(false)` and its `uiHide`s of the location and command bar. Legacy hides those parts, as today. v2 gives gamebooks their own layout |
 | `setPictureFrame(html)` | `setPanelContents` |
 | `setInterfaceString(name, text)` | `setInterfaceString` (same names: `InventoryLabel`, `StatusLabel`, `PlacesObjectsLabel`, `CompassLabel`, `InButtonLabel`, `OutButtonLabel`, `EmptyListLabel`, `NothingSelectedLabel`, `TypeHereLabel`, `ContinueLabel`) |
 | `setCompassDirections(list)` | `setCompassDirections` |
@@ -154,6 +154,22 @@ Rules that apply to every member:
   - `game.pinnedstatusattributes` (a string list) keeps an attribute in view on a small screen: `pinned` is `true` for those, and absent otherwise.
 
 v2 draws an attribute with a `value` and a positive `max` as a bar, and shows the pinned ones in the `status-bar` part on a narrow layout. Legacy shows `text` only.
+
+### Layout presets
+
+`setLayoutPreset(name, narrow)` chooses where the panes go. `name` is the preset for every width, unless `narrow` gives another for a narrow player (under 900px wide):
+
+| Preset | Wide | Narrow |
+|---|---|---|
+| `sidepanes`, the default | the panes in a column beside the game | the panes in a drawer opened from the top bar, with the exits strip under the output and the pinned status bar under the top bar standing in for the compass and status panes |
+| `nopanes` | no panes, and no exits strip or pinned status bar | the same |
+| `bottombar` | the panes in a sheet opened from a button beside the command bar, with the exits strip and command bar kept in view at the bottom, and the pinned status bar under the top bar | the same |
+
+610 Core's `InitInterface` passes two `game` attributes: `layoutpreset`, and `narrowlayoutpreset` for a narrow player when it differs. A game with neither gets `sidepanes` at both widths. `gamebook` (GamebookCore's own) ignores `narrow`.
+
+The presets place the panes region in one of the layout's named regions: `header` (the top bar, picture frame and pinned status bar), `output`, `below-output` (the exits strip and command bar), `side` or `drawer` (`bottombar`'s sheet is a drawer from the bottom). Region names aren't part of the contract yet: placing individual panes in them can be added later.
+
+Legacy has one layout for every width, so it hides the panes for `nopanes` at both widths and otherwise ignores the call.
 
 ### Theming
 

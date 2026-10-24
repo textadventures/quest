@@ -157,7 +157,9 @@ const adapter: PlayerUiAdapter = {
         renderStatus();
         // The host translates the panes button's label at boot only, not after a restart.
         const label = WebPlayer.chromeStrings?.ShowPanesButton;
-        if (label) player()?.panesButton?.setAttribute('aria-label', label);
+        if (label) {
+            for (const button of player()?.querySelectorAll('.qv-panes-button') ?? []) button.setAttribute('aria-label', label);
+        }
         player()?.commandBar?.focusInput();
     },
     resetOutput() {
