@@ -2,8 +2,8 @@
  *
  * All of v2's own CSS is in cascade layers, declared lowest first, so a game's stylesheet (which
  * isn't in a layer) always wins without !important:
- *   qv.base   defaults for every token, and the layout
- *   qv.theme  themes as token sets (Phase 2)
+ *   qv.base   defaults for every token, light and dark, and the layout
+ *   qv.theme  reserved for named token sets (a game's theme reaches v2 as tokens, from Core)
  *   qv.game   reserved for game-level options
  *
  * Authors style v2 through the --qv-* tokens and data-qv-part names in the 610 UI contract
@@ -13,7 +13,9 @@
 
 @layer qv.base {
     qv-player {
-        /* Text and links. 610 Core sets the game's own defaults over these (InitInterface). */
+        /* Text and links. 610 Core sets the game's own over these once it has changed one from the
+           editor's defaults (InitTextDefaults); until then they follow the light or dark scheme
+           (below). */
         --qv-font-body: Georgia, serif;
         --qv-font-size: 12pt;
         --qv-font-ui: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -21,15 +23,17 @@
         --qv-link: #1d4ed8;
         --qv-link-decoration: underline;
 
-        /* Surfaces. --qv-bg is the game's background; --qv-page-bg is the margin around it. */
+        /* Surfaces. --qv-bg is the game's background; --qv-page-bg is the margin around it. The
+           neutral ones are mixed from the text and background, so they suit whatever colours the
+           game or the scheme gives those. */
         --qv-bg: #ffffff;
         --qv-bg-opacity: 1;
         --qv-bg-image: none;
-        --qv-page-bg: #f4f4f5;
+        --qv-page-bg: color-mix(in srgb, var(--qv-text) 5%, var(--qv-bg));
         --qv-bg-blend-top: var(--qv-page-bg);
         --qv-bg-blend-bottom: var(--qv-page-bg);
-        --qv-surface: #f4f4f5;
-        --qv-border-colour: #d4d4d8;
+        --qv-surface: color-mix(in srgb, var(--qv-text) 5%, var(--qv-bg));
+        --qv-border-colour: color-mix(in srgb, var(--qv-text) 20%, var(--qv-bg));
 
         /* Spacing and shape. */
         --qv-space: 1rem;
@@ -65,6 +69,8 @@
 
         --qv-focus-ring: #2563eb;
 
+        color-scheme: light;
+
         --qv-pane-width: 17rem;
 
         display: block;
@@ -80,6 +86,19 @@
         font-family: var(--qv-font-body);
         font-size: var(--qv-font-size);
         line-height: 1.5;
+    }
+
+    /* Dark: for a game that hasn't chosen its own colours (610 Core then sends none). */
+    @media (prefers-color-scheme: dark) {
+        qv-player {
+            --qv-text: #e4e4e7;
+            --qv-link: #93c5fd;
+            --qv-bg: #18181b;
+            --qv-status-bg: #27272a;
+            --qv-focus-ring: #60a5fa;
+
+            color-scheme: dark;
+        }
     }
 
     body:has(> qv-player) {
@@ -438,7 +457,7 @@
 
     .qv-pane-empty {
         margin: 0.5rem;
-        opacity: 0.8;
+        font-style: italic;
     }
 
     /* A pane with nothing in it (the status pane before there are any attributes). */

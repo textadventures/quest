@@ -1,0 +1,41 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- A game that leaves the editor's default colours alone (DefaultColourTokenTests). -->
+  <game name="DefaultColoursTest">
+    <showtitle type="boolean">false</showtitle>
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+  <command name="plain">
+    <pattern>plain</pattern>
+    <script>
+      msg ("Plain text.")
+    </script>
+  </command>
+
+  <command name="recolour">
+    <pattern>recolour</pattern>
+    <script>
+      SetForegroundColour ("red")
+      msg ("Red text.")
+    </script>
+  </command>
+
+  <command name="background">
+    <pattern>background</pattern>
+    <script>
+      SetBackgroundColour ("black")
+      msg ("Black background.")
+    </script>
+  </command>
+
+</asl>

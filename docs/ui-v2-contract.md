@@ -212,14 +212,14 @@ Each gets a 610 Core wrapper (`SetPaneVisible`, `AddPane`, `SetAutoScroll`, …)
 
 ## CSS custom properties
 
-Every game option that `InitInterface` applies today maps onto a token. 610 `InitInterface` reads the game's attributes and passes them in one `setTokens` call (a string dictionary). Themes (`theme_novella`, …) become token sets, and authors override any of them in the game stylesheet.
+Every game option that `InitInterface` applies today maps onto a token. 610 `InitInterface` reads the game's attributes and passes them in one `setTokens` call (a string dictionary). Themes (`theme_novella`, …) are types that set those attributes, so they reach the UI as token sets the same way, and authors override any of them in the game stylesheet.
 
 Values are CSS values, as a stylesheet would write them: colours as any CSS colour, lengths with units (`700px`, `12pt`), images as `url("…")`, and `--qv-bg-opacity` as a number from 0 to 1. A bare number for a length is read as pixels. An empty value unsets the token.
 
 | Token | From |
 |---|---|
 | `--qv-font-body`, `--qv-font-size` | `defaultfont` / `defaultwebfont`, `defaultfontsize` |
-| `--qv-text`, `--qv-bg`, `--qv-link` | `defaultforeground`, `defaultbackground`, `defaultlinkforeground` |
+| `--qv-text`, `--qv-bg`, `--qv-link` | `defaultforeground`, `defaultbackground`, `defaultlinkforeground`, only once one differs from the editor's defaults (see "Light and dark") |
 | `--qv-link-decoration` | `underlinehyperlinks` |
 | `--qv-page-bg` | `marginscolour` |
 | `--qv-bg-image`, `--qv-bg-opacity` | `backgroundimage`, `backgroundopacity` |
@@ -229,20 +229,48 @@ Values are CSS values, as a stylesheet would write them: colours as any CSS colo
 | `--qv-border-colour` | `bordercolour`. `showborder = false` is `setVisible("border", false)`, not a token |
 | `--qv-pane-fg`, `--qv-pane-bg`, `--qv-pane-heading-fg`, `--qv-pane-heading-bg`, `--qv-pane-highlight` | `panestheme` (the seven named themes become token sets) |
 | `--qv-status-fg`, `--qv-status-bg`, `--qv-status-border`, `--qv-status-image` | `customlocationtextcolour`, `customlocationcolour`, `customlocationbordercolour`, `locationbarimage` |
-| `--qv-menu-fg`, `--qv-menu-bg`, `--qv-menu-hover-fg`, `--qv-menu-hover-bg`, `--qv-menu-font`, `--qv-menu-font-size` | `menuforeground`, … `menufontsize` |
+| `--qv-menu-fg`, `--qv-menu-bg`, `--qv-menu-hover-fg`, `--qv-menu-hover-bg`, `--qv-menu-font`, `--qv-menu-font-size` | `menuforeground`, … `menufontsize`. The four colours only once one differs from the editor's defaults |
 | `--qv-command-fg`, `--qv-command-bg` | command bar format |
 
 v2 also defines tokens with no game attribute behind them yet (`--qv-surface`, `--qv-radius`, `--qv-space`, `--qv-font-ui`, focus-ring colours). Those are in the contract too, and the editor gains options for them later.
+
+### Light and dark
+
+A game that keeps the editor's default colours (black text, blue links, a white background) gets v2's own colours, which follow the player's `prefers-color-scheme`. So 610 Core sends colour tokens only once a game has changed one (#2613, decision 5):
+
+- **Text, links and background go together.** Once any of `defaultforeground`, `defaultlinkforeground` or `defaultbackground` differs from its default (text and links as the game started, the background as it is now), or the game sets a background opacity, Core sends all three. A game never gets its own text colour on the scheme's background. A mid-game `SetBackgroundColour` sends the text colours with it for the same reason.
+- **So do the menu colours:** all four, once one differs.
+- **The command bar** leaves its colour and background out while the game's text and background colours are the defaults.
+
+Any other colour an author sets (location bar, margins, border, pane theme) is sent as before. Legacy's own defaults match the editor's, so leaving the tokens out changes nothing there.
+
+v2's defaults, light and dark (`--qv-surface`, `--qv-page-bg` and `--qv-border-colour` are mixed from the text and background, so they also suit a game's own colours):
+
+| Token | Light | Dark |
+|---|---|---|
+| `--qv-text` | `#1a1a1a` | `#e4e4e7` |
+| `--qv-bg` | `#ffffff` | `#18181b` |
+| `--qv-link` | `#1d4ed8` | `#93c5fd` |
+| `--qv-surface`, `--qv-page-bg` | 5% text over the background | the same |
+| `--qv-border-colour` | 20% text over the background | the same |
+| `--qv-status-fg` / `--qv-status-bg` | `#ffffff` / `#3f3f46` | `#ffffff` / `#27272a` |
+| `--qv-pane-fg`, `--qv-pane-heading-fg`, `--qv-menu-fg` | `--qv-text` | the same |
+| `--qv-pane-bg`, `--qv-pane-heading-bg` | `--qv-surface` | the same |
+| `--qv-menu-bg` / `--qv-menu-hover-bg` / `--qv-menu-hover-fg` | `--qv-bg` / `--qv-link` / `--qv-bg` | the same |
+| `--qv-pane-highlight` | `#f59e0b` | the same |
+| `--qv-focus-ring` | `#2563eb` | `#60a5fa` |
+
+The built-in themes and pane themes keep WCAG AA contrast, except `theme_hotdogstand`'s yellow on red, which is the point of it. 610 Core's Nature pane theme draws its headings in `#254117` rather than legacy's `#306754`, which was too faint on its heading colour.
 
 ### Inline output styles
 
 `OutputTextRaw` wraps every line in `<span style="font-family:…;color:…;font-size:…">`, taken from `defaultfont`, `defaultforeground` and `defaultfontsize`. Inline styles beat any token, so a theme, a light/dark variant or an author stylesheet couldn't change the text colour or font of output that's already there.
 
-**610 Core leaves the defaults out.** The first time `InitInterface` runs, it records the game's starting font, size, text colour and link colour in `game.uidefaults`, which is kept in saves. Those values become the `--qv-font-body`, `--qv-font-size`, `--qv-text` and `--qv-link` tokens. `GetCurrentTextFormat` and the link formats leave a property out when it equals the recorded value, so ordinary output and links inherit from the tokens.
+**610 Core leaves the defaults out.** The first time `InitInterface` runs, it records the game's starting font, size, text colour and link colour in `game.uidefaults`, which is kept in saves. Those values become the `--qv-font-body`, `--qv-font-size`, `--qv-text` and `--qv-link` tokens (the colours only as "Light and dark" describes). `GetCurrentTextFormat` and the link formats leave a property out when it equals the recorded value, so ordinary output and links inherit from the tokens.
 
 - A mid-game `SetForegroundColour`, `SetLinkForegroundColour`, `SetFontName` or `SetFontSize` differs from the recorded value, so it's written inline exactly as before, and only affects text from then on.
 - After a restore, the recorded values still come from the save, so earlier text keeps inheriting the starting colour.
-- The command bar's style is always written in full, because a text input doesn't inherit the page's font.
+- The command bar's style is always written in full, because a text input doesn't inherit the page's font, except for the default colours.
 
 ## Part names
 
