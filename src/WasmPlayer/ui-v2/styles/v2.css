@@ -109,12 +109,17 @@
         border-inline: none;
     }
 
-    [data-qv-part="location"] {
+    /* The location bar, with the host's Save/Load and Debug buttons: the contract's "status"
+       tokens style the whole bar, as legacy's location bar options did. */
+    .qv-topbar {
         position: sticky;
         top: 0;
         z-index: 1;
-        min-height: 2.5rem;
-        padding: 0.5rem var(--qv-padding-right) 0.5rem var(--qv-padding-left);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        min-height: 2.75rem;
+        padding: 0.25rem var(--qv-padding-right) 0.25rem var(--qv-padding-left);
         background-color: var(--qv-status-bg);
         background-image: var(--qv-status-image);
         background-size: cover;
@@ -122,12 +127,54 @@
         color: var(--qv-status-fg);
         font-family: var(--qv-font-ui);
         font-size: 1rem;
+    }
+
+    [data-qv-part="location"] {
+        flex: 1;
+        min-width: 0;
         font-weight: 600;
         text-align: center;
     }
 
     [data-qv-part="location"].qv-empty {
         visibility: hidden;
+    }
+
+    .qv-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 0.25rem;
+    }
+
+    /* With the location hidden, the buttons keep to the end of the bar. */
+    [data-qv-part="location"][hidden] + .qv-toolbar {
+        margin-inline-start: auto;
+    }
+
+    .qv-toolbar button {
+        min-height: 44px;
+        padding: 0.25rem 0.75rem;
+        border: 1px solid color-mix(in srgb, currentColor 45%, transparent);
+        border-radius: var(--qv-radius);
+        background: none;
+        color: inherit;
+        font: inherit;
+        cursor: pointer;
+    }
+
+    .qv-toolbar button:hover:not(:disabled) {
+        background-color: color-mix(in srgb, currentColor 15%, transparent);
+    }
+
+    .qv-toolbar button:focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: 2px;
+    }
+
+    .qv-toolbar button:disabled {
+        opacity: 0.5;
+        cursor: default;
     }
 
     [data-qv-part="output"] {

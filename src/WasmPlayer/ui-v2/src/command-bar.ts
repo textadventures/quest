@@ -34,7 +34,10 @@ export class QvCommandBar extends HTMLElement {
         this.#input.spellcheck = false;
         this.#input.setAttribute('autocapitalize', 'off');
         this.#input.setAttribute('enterkeyhint', 'send');
-        this.#input.setAttribute('aria-label', 'Command');
+        // The host translates this at boot (data-chrome-key-aria-label), but not after a restart,
+        // which swaps in fresh markup, so it's looked up here too.
+        this.#input.dataset.chromeKeyAriaLabel = 'CommandInputLabel';
+        this.#input.setAttribute('aria-label', WebPlayer.chromeStrings?.CommandInputLabel ?? 'Type your command');
         form.append(this.#prompt, this.#input);
         this.#continue = document.createElement('button');
         this.#continue.type = 'button';

@@ -77,6 +77,11 @@ export class QvOutput extends HTMLElement {
         this.innerHTML = html;
         decorateLinks(this);
         resetRestoredLinks(this);
+        // Show where the restored game left off, once it's laid out.
+        requestAnimationFrame(() => {
+            const root = document.scrollingElement ?? document.documentElement;
+            window.scrollTo({ top: root.scrollHeight, behavior: 'instant' });
+        });
         // Carry on in a new block: the restored ones may be inside sections long since closed.
         this.#current = null;
         this.#sections = [];
@@ -170,10 +175,10 @@ export class QvOutput extends HTMLElement {
     }
 }
 
-// The location bar stays at the top of the viewport, so it covers whatever is scrolled under it.
+// The top bar (location, Save) stays at the top of the viewport, covering whatever is under it.
 function stickyHeaderHeight(): number {
-    const location = document.querySelector<HTMLElement>('qv-player [data-qv-part="location"]');
-    return location && !location.hidden ? location.offsetHeight : 0;
+    const topbar = document.querySelector<HTMLElement>('qv-player .qv-topbar');
+    return topbar && !topbar.hidden ? topbar.offsetHeight : 0;
 }
 
 function disableLinks(scope: Element): void {
