@@ -6,6 +6,7 @@
 // ignored.
 
 import type { QuestUIContract, QuestUIMap, QuestUITranscript } from './contract';
+import { renderCompass } from './compass';
 import { sendCommand, sendEvent } from './engine';
 import { addPane, setCommands, setPaneContent, setPaneLabel, setPaneOrder } from './panes';
 import { player } from './player';
@@ -63,6 +64,7 @@ export function setLocation(text: string): void {
 export function setInterfaceString(name: string, text: string): void {
     state.interfaceStrings.set(name, text);
     setPaneLabel(name, text);
+    if (name === 'InButtonLabel' || name === 'OutButtonLabel' || name === 'CompassLabel') renderCompass();
     if (name === 'TypeHereLabel') player()?.commandBar?.updatePlaceholder();
     if (name === 'ContinueLabel') player()?.commandBar?.updateContinueLabel();
 }
@@ -70,6 +72,7 @@ export function setInterfaceString(name: string, text: string): void {
 /** Both QuestUI.setCompassDirections and the adapter's: a list, or legacy's ";"-separated string. */
 export function setCompassDirections(list: string[] | string): void {
     state.compassDirections = Array.isArray(list) ? list.map(String) : String(list ?? '').split(';');
+    renderCompass();
 }
 
 export const QuestUI: QuestUIContract = {

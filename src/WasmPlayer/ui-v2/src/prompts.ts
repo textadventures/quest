@@ -8,6 +8,7 @@
 // Only then does the command input come back, and only if that turn didn't wait or pause again,
 // so it doesn't flash up between chained waits.
 
+import { updateExitStrip } from './compass';
 import { player } from './player';
 import { state } from './state';
 
@@ -33,6 +34,7 @@ export function resetPrompts(): void {
 
 export function beginWait(): void {
     state.waiting = true;
+    updateExitStrip();
     player()?.commandBar?.setMode('continue');
     player()?.output?.markScrollPosition();
 }
@@ -48,6 +50,7 @@ export function endWait(): void {
 }
 
 export function waitEnded(): void {
+    updateExitStrip();
     if (state.waiting) return;
     showInput();
 }
@@ -58,6 +61,7 @@ let pauseTimer: ReturnType<typeof setTimeout> | undefined;
 
 export function beginPause(ms: number): void {
     state.pausing = true;
+    updateExitStrip();
     holdCommandBar('pause', true);
     clearTimeout(pauseTimer);
     pauseTimer = setTimeout(endPause, ms);
@@ -70,6 +74,7 @@ function endPause(): void {
 }
 
 export function pauseEnded(): void {
+    updateExitStrip();
     if (state.pausing) return;
     holdCommandBar('pause', false);
     showInput();
@@ -129,6 +134,7 @@ function openDialog(caption: string, choices: DialogChoice[], cancel: (() => Pro
                 await choose();
             } finally {
                 state.inDialog = false;
+                updateExitStrip();
                 showInput();
             }
         }, 100);
@@ -160,6 +166,7 @@ function openDialog(caption: string, choices: DialogChoice[], cancel: (() => Pro
     });
 
     state.inDialog = true;
+    updateExitStrip();
     root.commandBar?.setMode('none');
     root.append(dialog);
     dialog.showModal();

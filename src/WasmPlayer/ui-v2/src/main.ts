@@ -9,6 +9,7 @@
 import './host';
 import type { PlayerUiAdapter } from './adapter';
 import { QvCommandBar } from './command-bar';
+import { renderCompass, resetCompass, updateCompass, updateExitStrip } from './compass';
 import { bindMenu } from './links';
 import { sendCommand, sendEvent } from './engine';
 import { QvOutput, rememberImageSize } from './output';
@@ -51,6 +52,7 @@ window.resetQuestUIState = () => {
     resetState();
     timer.stop();
     prompts.resetPrompts();
+    resetCompass();
 };
 
 // Any key continues a wait, as on legacy, except Tab (so the keyboard can still reach links) and
@@ -106,6 +108,7 @@ const adapter: PlayerUiAdapter = {
     setTurnPending(pending) {
         state.turnPending = pending;
         updateSaveButton();
+        updateExitStrip();
     },
     beginPause: prompts.beginPause,
     updateLocation: setLocation,
@@ -118,13 +121,14 @@ const adapter: PlayerUiAdapter = {
     setBackground: (colour) => player()?.setTokens({ '--qv-bg': colour }),
     setForeground: ignore,
     updateList,
-    updateCompass: ignore,
+    updateCompass,
     updateObjectLinks: (verbs) => player()?.updateLinks('object', verbs),
     gameFinished() {
         state.gameFinished = true;
         timer.stop();
         state.waiting = false;
         prompts.holdCommandBar('finished', true);
+        updateExitStrip();
     },
     requestNextTimerTick: timer.requestNextTimerTick,
     uiShow: (element) => player()?.setVisible(requestParts[element] ?? '', true),
@@ -146,6 +150,7 @@ const adapter: PlayerUiAdapter = {
             else void GameSaver.save();
         });
         updateSaveButton();
+        renderCompass();
         // The host translates the panes button's label at boot only, not after a restart.
         const label = WebPlayer.chromeStrings?.ShowPanesButton;
         if (label) player()?.panesButton?.setAttribute('aria-label', label);

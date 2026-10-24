@@ -87,7 +87,7 @@ try {
             };
         });
         check(layout.beside && !layout.buttonShown, 'on a wide layout the panes are a column beside the game, with no drawer button');
-        check(layout.labels.join('/') === 'Inventory/Places and Objects', `panes are labelled by the game's interface strings (${layout.labels.join('/')})`);
+        check(layout.labels.join('/') === 'Inventory/Places and Objects/Compass', `panes are labelled by the game's interface strings (${layout.labels.join('/')})`);
         check((await items(page, 'inventory')).join('/') === 'coin', 'the inventory lists what the player carries');
         check((await items(page, 'objects')).join('/') === 'brass lamp', 'places and objects lists the room, leaving out exits');
         check(await page.evaluate(() => document.querySelector('qv-pane[data-qv-pane="objects"] .qv-pane-item').getAttribute('aria-haspopup')) === 'menu',
