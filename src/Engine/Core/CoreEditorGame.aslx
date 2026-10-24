@@ -962,6 +962,21 @@
       </control>
 
       <control>
+        <controltype>list</controltype>
+        <caption>[EditorGamePinnedstatusattributes]</caption>
+        <attribute>pinnedstatusattributes</attribute>
+        <editprompt>[EditorGameAttributesPleaseenter]</editprompt>
+      </control>
+
+      <control>
+        <controltype>stringdictionary</controltype>
+        <caption>[EditorGameStatusattributemaximums]</caption>
+        <keyprompt>[EditorGameAttributesPleaseenter]</keyprompt>
+        <valueprompt>[EditorGameStatusattributemaximumsPrompt]</valueprompt>
+        <attribute>statusattributemaximums</attribute>
+      </control>
+
+      <control>
         <controltype>attributes</controltype>
         <expand/>
       </control>

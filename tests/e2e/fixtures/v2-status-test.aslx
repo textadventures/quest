@@ -1,0 +1,66 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- Player UI v2's status pane and pinned status bar (verify-wasmplayer-v2-status.mjs). Score and
+       health are pinned; health has a numeric maximum and mana's maximum is another attribute,
+       so both are drawn as bars; gold is text only. -->
+  <game name="V2StatusTest">
+    <showscore type="boolean">true</showscore>
+    <pinnedstatusattributes type="simplestringlist">score;health</pinnedstatusattributes>
+    <statusattributemaximums type="stringdictionary">
+      <item>
+        <key>health</key>
+        <value>100</value>
+      </item>
+      <item>
+        <key>mana</key>
+        <value>maxmana</value>
+      </item>
+    </statusattributemaximums>
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <description>A room.</description>
+    <object name="player">
+      <inherit name="defaultplayer" />
+      <health type="int">70</health>
+      <mana type="int">3</mana>
+      <maxmana type="int">8</maxmana>
+      <gold type="int">5</gold>
+      <statusattributes type="stringdictionary">
+        <item>
+          <key>health</key>
+          <value>Health: !%</value>
+        </item>
+        <item>
+          <key>mana</key>
+          <value>Mana: !</value>
+        </item>
+        <item>
+          <key>gold</key>
+          <value>Gold: !</value>
+        </item>
+      </statusattributes>
+    </object>
+  </object>
+
+  <command name="hurt">
+    <pattern>hurt</pattern>
+    <script>
+      player.health = player.health - 20
+      msg ("Ouch.")
+    </script>
+  </command>
+
+  <command name="hidestatus">
+    <pattern>hidestatus</pattern>
+    <script>
+      JS.QuestUI.setVisible ("status", false)
+      msg ("Status hidden.")
+    </script>
+  </command>
+
+</asl>

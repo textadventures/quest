@@ -269,6 +269,9 @@
   <template name="EditorGamePlayerobjectStatus">Player object status attributes (values read from the current player object)</template>
   <template name="EditorGameAttributes">Attributes</template>
   <template name="EditorGameStatusattributes">Status attributes</template>
+  <template name="EditorGamePinnedstatusattributes">Status attributes to keep in view on small screens</template>
+  <template name="EditorGameStatusattributemaximums">Status attribute maximums (shown as bars)</template>
+  <template name="EditorGameStatusattributemaximumsPrompt">Maximum: a number, or the name of another attribute</template>
   <template name="EditorIncludedLibraryLibrary">Library</template>
   <template name="EditorIncludedLibraryFilename">Filename</template>
   <template name="EditorJavascriptJavascript">Javascript</template>

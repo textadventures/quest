@@ -145,7 +145,15 @@ Rules that apply to every member:
 | `setLocation(text)` | `updateLocation` |
 | `setStatusAttributes(items)` | `updateStatus` (see below) |
 
-**Status attributes become structured.** Today `UpdateStatusAttributes` joins pre-formatted strings with `<br/>`. For #2337 item 3 (a pinned phone status bar with `value/max` bars), 610 Core passes items instead: `[{ "name": "health", "label": "Health", "value": 7, "max": 10, "text": "Health: 7/10" }]`. `text` is the formatted string as today, so a UI that doesn't draw bars just shows it.
+**Status attributes become structured.** Before 610, `UpdateStatusAttributes` joined pre-formatted strings with `<br/>`. For #2337 item 3 (a pinned phone status bar with `value/max` bars), 610 Core passes items instead: `[{ "name": "health", "value": 7, "max": 10, "pinned": true, "text": "Health: 7%" }]`.
+
+- `text` is the formatted string as before, so a UI that doesn't draw bars just shows it.
+- `value` is sent only when the attribute is a number.
+- `max` and `pinned` come from two game-wide settings, keyed by attribute name, on the editor's Attributes tab:
+  - `game.statusattributemaximums` (a string dictionary) gives an attribute a maximum: a number, or the name of another attribute of the same element (`maxhealth`). `max` is sent only when that resolves to a number.
+  - `game.pinnedstatusattributes` (a string list) keeps an attribute in view on a small screen: `pinned` is `true` for those, and absent otherwise.
+
+v2 draws an attribute with a `value` and a positive `max` as a bar, and shows the pinned ones in the `status-bar` part on a narrow layout. Legacy shows `text` only.
 
 ### Theming
 

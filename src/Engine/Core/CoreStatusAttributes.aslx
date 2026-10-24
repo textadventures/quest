@@ -12,7 +12,11 @@
   <function name="AddStatusAttributeItems" parameters="items, element, statusAttributes">
     <![CDATA[
       // One item per status attribute for JS.QuestUI.setStatusAttributes: its name, the text
-      // to show, and its value when it's a number, so the UI can draw it in other ways.
+      // to show, and its value when it's a number, so the UI can draw it in other ways. Two
+      // game-wide settings, keyed by attribute name, add to that: game.pinnedstatusattributes
+      // (a string list) keeps an attribute in view on a phone, and game.statusattributemaximums
+      // (a string dictionary) gives one a maximum, a number or another attribute of the same
+      // element, so it can be drawn as a bar.
       if (not statusAttributes = null) {
         foreach (attr, statusAttributes) {
           value = GetAttribute(element, attr)
@@ -21,6 +25,25 @@
           dictionary add (item, "text", FormatStatusAttribute(attr, value, StringDictionaryItem(statusAttributes, attr)))
           if (TypeOf(value) = "int" or TypeOf(value) = "double") {
             dictionary add (item, "value", value)
+          }
+          if (not game.pinnedstatusattributes = null) {
+            if (ListContains(game.pinnedstatusattributes, attr)) {
+              dictionary add (item, "pinned", true)
+            }
+          }
+          if (not game.statusattributemaximums = null) {
+            if (DictionaryContains(game.statusattributemaximums, attr)) {
+              max = Trim(StringDictionaryItem(game.statusattributemaximums, attr))
+              if (IsInt(max)) {
+                max = ToInt(max)
+              }
+              else {
+                max = GetAttribute(element, max)
+              }
+              if (TypeOf(max) = "int" or TypeOf(max) = "double") {
+                dictionary add (item, "max", max)
+              }
+            }
           }
           list add (items, item)
         }

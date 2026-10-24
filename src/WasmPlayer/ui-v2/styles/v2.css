@@ -128,6 +128,7 @@
         top: 0;
         z-index: 1;
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
         gap: 0.5rem;
         min-height: 2.75rem;
@@ -416,6 +417,48 @@
         opacity: 0.8;
     }
 
+    /* A pane with nothing in it (the status pane before there are any attributes). */
+    qv-pane[data-qv-empty] {
+        display: none;
+    }
+
+    /* Status attributes: their text, with a bar under any that has a maximum. */
+    .qv-status-list {
+        margin: 0;
+        padding: 0.25rem;
+        list-style: none;
+    }
+
+    .qv-status-list .qv-status-item + .qv-status-item {
+        margin-top: 0.4rem;
+    }
+
+    .qv-status-item {
+        display: block;
+    }
+
+    .qv-status-meter {
+        display: block;
+        height: 0.5rem;
+        margin-top: 0.2rem;
+        border-radius: 999px;
+        background-color: color-mix(in srgb, currentColor 18%, transparent);
+        overflow: hidden;
+    }
+
+    .qv-status-meter-fill {
+        display: block;
+        height: 100%;
+        border-radius: inherit;
+        background-color: var(--qv-pane-highlight);
+    }
+
+    /* The pinned status bar: a second row of the top bar, shown only on a narrow layout (below),
+       where the status pane is in the drawer. */
+    .qv-status-bar {
+        display: none;
+    }
+
     /* The command pane's links, as buttons in a row. */
     qv-pane[data-qv-pane="commands"] .qv-pane-body {
         display: flex;
@@ -542,6 +585,26 @@
 
     /* Narrow: the panes are a drawer from the top bar's panes button. */
     @container qv-player (max-width: 899.98px) {
+        .qv-status-bar.qv-status-bar-active {
+            display: flex;
+            flex-basis: 100%;
+            flex-wrap: wrap;
+            gap: 0.25rem 1rem;
+            padding-bottom: 0.25rem;
+            font-size: 0.9rem;
+        }
+
+        .qv-status-bar .qv-status-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .qv-status-bar .qv-status-meter {
+            width: 4rem;
+            margin-top: 0;
+        }
+
         .qv-exits.qv-exits-active {
             display: flex;
             gap: 8px;

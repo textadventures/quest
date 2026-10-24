@@ -7,6 +7,8 @@
 
 import type { QuestUIContract, QuestUIMap, QuestUITranscript } from './contract';
 import { renderCompass } from './compass';
+import type { StatusAttribute } from './contract';
+import { setStatusAttributes } from './status';
 import { sendCommand, sendEvent } from './engine';
 import { addPane, setCommands, setPaneContent, setPaneLabel, setPaneOrder } from './panes';
 import { player } from './player';
@@ -104,7 +106,7 @@ export const QuestUI: QuestUIContract = {
     setInterfaceString,
     setCompassDirections: (list) => setCompassDirections(parsed(list as string[] | string)),
     setLocation,
-    setStatusAttributes: ignore,
+    setStatusAttributes: (items) => setStatusAttributes(parsed<StatusAttribute[]>(items)),
 
     // Theming
     setTokens: (tokens) => player()?.setTokens(parsed(tokens) ?? {}),

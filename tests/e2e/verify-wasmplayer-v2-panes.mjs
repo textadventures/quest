@@ -83,7 +83,7 @@ try {
             return {
                 beside: aside.left >= main.right - 1 && aside.width > 0,
                 buttonShown: getComputedStyle(document.querySelector('.qv-panes-button')).display !== 'none',
-                labels: [...document.querySelectorAll('qv-pane[label] .qv-pane-heading')].map((s) => s.textContent),
+                labels: [...document.querySelectorAll('qv-pane[label] .qv-pane-heading')].filter((s) => s.offsetHeight > 0).map((s) => s.textContent),
             };
         });
         check(layout.beside && !layout.buttonShown, 'on a wide layout the panes are a column beside the game, with no drawer button');

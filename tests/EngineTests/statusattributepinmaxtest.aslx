@@ -1,0 +1,51 @@
+<asl version="610">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <!--
+    The status items 610 Core sends to JS.QuestUI.setStatusAttributes carry "pinned" and "max"
+    from game.pinnedstatusattributes and game.statusattributemaximums. Score is pinned with no
+    maximum; health has a numeric maximum; mana's maximum is another attribute of the player
+    (maxmana); gold names a maximum attribute that doesn't exist, so it gets none.
+  -->
+  <game name="statusattributepinmaxtest">
+    <showscore type="boolean">true</showscore>
+    <pinnedstatusattributes type="simplestringlist">score;health</pinnedstatusattributes>
+    <statusattributemaximums type="stringdictionary">
+      <item>
+        <key>health</key>
+        <value>100</value>
+      </item>
+      <item>
+        <key>mana</key>
+        <value>maxmana</value>
+      </item>
+      <item>
+        <key>gold</key>
+        <value>nosuchattribute</value>
+      </item>
+    </statusattributemaximums>
+  </game>
+  <object name="room">
+    <object name="player">
+      <inherit name="defaultplayer" />
+      <health type="int">70</health>
+      <mana type="int">3</mana>
+      <maxmana type="int">8</maxmana>
+      <gold type="int">5</gold>
+      <statusattributes type="stringdictionary">
+        <item>
+          <key>health</key>
+          <value>Health: !</value>
+        </item>
+        <item>
+          <key>mana</key>
+          <value>Mana: !</value>
+        </item>
+        <item>
+          <key>gold</key>
+          <value>Gold: !</value>
+        </item>
+      </statusattributes>
+    </object>
+  </object>
+</asl>
