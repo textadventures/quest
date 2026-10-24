@@ -110,6 +110,13 @@ export function handleClick(e: MouseEvent, menu: QvVerbMenu | null): void {
         togglePopup(trigger);
         return;
     }
+    // A compass or exits strip button (compass.ts) sends its direction.
+    const direction = target.closest<HTMLElement>('[data-qv-direction]');
+    if (direction) {
+        if (!(direction as HTMLButtonElement).disabled) sendCommand(direction.dataset.qvDirection ?? '');
+        return;
+    }
+
     // A pane's list item (panes.ts) opens the same verb menu as an object link.
     const paneItem = target.closest<HTMLElement>('.qv-pane-item');
     if (paneItem) {

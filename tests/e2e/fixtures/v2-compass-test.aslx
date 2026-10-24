@@ -1,0 +1,79 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- Player UI v2's compass pane and exits strip (verify-wasmplayer-v2-compass.mjs): a hall with
+       exits north, east, up and in, rooms that lead back, a wait (when the strip must go), and a
+       command that hides the compass. -->
+  <game name="V2CompassTest">
+  </game>
+
+  <object name="hall">
+    <inherit name="editor_room" />
+    <description>A hall.</description>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <exit alias="north" to="kitchen">
+      <inherit name="northdirection" />
+    </exit>
+    <exit alias="east" to="garden">
+      <inherit name="eastdirection" />
+    </exit>
+    <exit alias="up" to="attic">
+      <inherit name="updirection" />
+    </exit>
+    <exit alias="in" to="cupboard">
+      <inherit name="indirection" />
+    </exit>
+  </object>
+
+  <object name="kitchen">
+    <inherit name="editor_room" />
+    <description>A kitchen.</description>
+    <exit alias="south" to="hall">
+      <inherit name="southdirection" />
+    </exit>
+  </object>
+
+  <object name="garden">
+    <inherit name="editor_room" />
+    <exit alias="west" to="hall">
+      <inherit name="westdirection" />
+    </exit>
+  </object>
+
+  <object name="attic">
+    <inherit name="editor_room" />
+    <exit alias="down" to="hall">
+      <inherit name="downdirection" />
+    </exit>
+  </object>
+
+  <object name="cupboard">
+    <inherit name="editor_room" />
+    <exit alias="out" to="hall">
+      <inherit name="outdirection" />
+    </exit>
+  </object>
+
+  <command name="waitcmd">
+    <pattern>waitcmd</pattern>
+    <script>
+      msg ("Waiting.")
+      wait {
+        msg ("Done waiting.")
+      }
+    </script>
+  </command>
+
+  <command name="hidecompass">
+    <pattern>hidecompass</pattern>
+    <script>
+      JS.QuestUI.setVisible ("compass", false)
+      msg ("Compass hidden.")
+    </script>
+  </command>
+
+</asl>

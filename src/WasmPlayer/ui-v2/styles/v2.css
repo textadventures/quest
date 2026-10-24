@@ -440,6 +440,90 @@
         pointer-events: none;
     }
 
+    /* The compass: eight points around an empty middle, with up/down and in/out beside them in a
+       2x2 block, centred against the points, as on legacy's compass. Five 44px columns just fit
+       the pane, with its body's side padding trimmed. */
+    qv-pane[data-qv-pane="compass"] .qv-pane-body {
+        padding-inline: 0.25rem;
+    }
+
+    .qv-compass {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 0.25rem 0;
+    }
+
+    .qv-compass-points {
+        display: grid;
+        grid-template-columns: repeat(3, 44px);
+        grid-template-rows: repeat(3, 44px);
+        gap: 4px;
+    }
+
+    /* Up, down, in, out: up/down in the first column, in/out in the second. */
+    .qv-compass-others {
+        display: grid;
+        grid-template-rows: repeat(2, 44px);
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(44px, auto);
+        gap: 4px;
+    }
+
+    .qv-compass-points .qv-compass-button {
+        padding: 0;
+    }
+
+    .qv-compass-others .qv-compass-button {
+        padding: 0 4px;
+    }
+
+    .qv-compass-button,
+    .qv-exit {
+        box-sizing: border-box;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        min-width: 44px;
+        min-height: 44px;
+        padding: 0 0.5rem;
+        border: 1px solid var(--qv-border-colour);
+        border-radius: calc(var(--qv-radius) - 2px);
+        background-color: var(--qv-bg);
+        color: var(--qv-text);
+        font: inherit;
+        cursor: pointer;
+    }
+
+    .qv-compass-button:hover:not(:disabled),
+    .qv-exit:hover {
+        background-color: color-mix(in srgb, var(--qv-pane-highlight) 25%, var(--qv-bg));
+    }
+
+    .qv-compass-button:disabled {
+        opacity: 0.35;
+        cursor: default;
+    }
+
+    .qv-compass-button:focus-visible,
+    .qv-exit:focus-visible {
+        outline: 2px solid var(--qv-focus-ring);
+        outline-offset: 1px;
+    }
+
+    .qv-direction-arrow {
+        font-size: 1.2em;
+        line-height: 1;
+    }
+
+    /* The exits strip: shown only on a narrow layout (below), where the compass is in the drawer.
+       It scrolls sideways rather than wrapping, so a room with many exits costs one row. */
+    .qv-exits {
+        display: none;
+    }
+
     /* Wide: the panes are a column beside the game, kept in view as the transcript scrolls. */
     @container qv-player (min-width: 900px) {
         [data-qv-part="panes"] {
@@ -458,6 +542,19 @@
 
     /* Narrow: the panes are a drawer from the top bar's panes button. */
     @container qv-player (max-width: 899.98px) {
+        .qv-exits.qv-exits-active {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 0.5rem var(--qv-padding-right) 0 var(--qv-padding-left);
+            scrollbar-width: thin;
+        }
+
+        .qv-exit {
+            flex: none;
+            font-family: var(--qv-font-ui);
+        }
+
         [data-qv-part="panes"] {
             position: fixed;
             inset-block: 0;

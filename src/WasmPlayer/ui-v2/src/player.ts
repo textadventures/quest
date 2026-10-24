@@ -3,6 +3,7 @@
 // these are looked up when they're needed rather than kept.
 
 import type { QvCommandBar } from './command-bar';
+import { updateExitStrip } from './compass';
 import { handleClick, handleKeyDown, updateLinks } from './links';
 import type { QvOutput } from './output';
 import { builtInPanes, pane, setDrawerOpen, isDrawerOpen } from './panes';
@@ -58,6 +59,11 @@ export class QvPlayer extends HTMLElement {
     /** The "panes" region: a column beside the game when it's wide, a drawer when it's narrow. */
     get panes(): HTMLElement | null {
         return this.querySelector('[data-qv-part="panes"]');
+    }
+
+    /** The exits strip under the transcript, on a narrow layout (compass.ts). */
+    get exits(): HTMLElement | null {
+        return this.querySelector('[data-qv-part="exits"]');
     }
 
     /** Opens the panes drawer. Shown only on a narrow layout, and only while there are panes. */
@@ -119,6 +125,9 @@ export class QvPlayer extends HTMLElement {
                 // The frame's border line, not the frame and what's in it.
                 this.frame?.classList.toggle('qv-borderless', !visible);
                 break;
+            case 'exits':
+                this.#setHidden(this.exits, !visible);
+                break;
             case 'panes':
                 this.#setHidden(this.panes, !visible);
                 if (!visible) setDrawerOpen(false, { restoreFocus: false });
@@ -131,6 +140,8 @@ export class QvPlayer extends HTMLElement {
                     this.#updatePanesButton();
                 }
         }
+        // The exits strip follows the compass: hiding the compass or the panes hides it too.
+        updateExitStrip();
     }
 
     // The drawer button only makes sense while the region and at least one pane in it show.
