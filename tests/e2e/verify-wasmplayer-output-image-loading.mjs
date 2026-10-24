@@ -59,7 +59,12 @@ function makePng(width, height) {
 const png = makePng(IMAGE_WIDTH, IMAGE_HEIGHT);
 const browser = await chromium.launch();
 
+// A turn's output is on screen before the turn itself returns: SendCommand
+// flushes it, then yields (jsYield, a setTimeout) before canSendCommand flips
+// back to true. A command typed in that gap is silently dropped by
+// runCommand, so waiting for the previous turn's text alone isn't enough.
 async function sendCommand(page, command) {
+    await page.waitForFunction(() => window.canSendCommand === true, null, { timeout: 15000 });
     await page.fill('#txtCommand', command);
     await page.press('#txtCommand', 'Enter');
 }
