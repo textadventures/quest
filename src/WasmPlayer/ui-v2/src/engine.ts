@@ -7,7 +7,8 @@ import { takeTickCount } from './timer';
 
 /** Whether a command can go to the engine now: not while a turn is in progress or held. */
 export function canSendCommand(): boolean {
-    return window.canSendCommand && !state.gameFinished && !state.soundWait;
+    return window.canSendCommand && !state.gameFinished && !state.soundWait && !state.waiting && !state.pausing
+        && !state.inDialog;
 }
 
 /** Returns whether the command was sent. */

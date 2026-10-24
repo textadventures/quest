@@ -19,6 +19,14 @@ export const state = {
     gameFinished: false,
     /** A synchronous sound is playing: the turn is held until it ends. */
     soundWait: false,
+    /** The game is waiting for the player to continue (wait). */
+    waiting: false,
+    /** The game has paused for a set time (pause). */
+    pausing: false,
+    /** A ShowMenu or Ask dialog is open, or its answer hasn't reached the engine yet. */
+    inDialog: false,
+    /** The engine is suspended mid-turn (a wait, menu, question or pause), so can't save. */
+    turnPending: true,
     hasUnsavedProgress: false,
     canSave: false,
 };
@@ -55,6 +63,10 @@ export function resetState(): void {
     state.interfaceStrings.clear();
     state.gameFinished = false;
     state.soundWait = false;
+    state.waiting = false;
+    state.pausing = false;
+    state.inDialog = false;
+    state.turnPending = true;
     state.hasUnsavedProgress = false;
     listeners.clear();
 }

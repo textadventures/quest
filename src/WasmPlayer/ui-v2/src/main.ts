@@ -4,8 +4,8 @@
 // wwwroot/v2/player.htm's markup and talks to v2 only through the adapter registered here as
 // window.QuestPlayerUis.v2. Games talk to it through QuestUI (questui.ts).
 //
-// Not yet here: waits, pauses, menus and questions, saving and
-// accessibility (#2595's later PRs), then panes, layouts and theming (Phase 2).
+// Not yet here: saving and accessibility (#2595's last PR), then panes, layouts and theming
+// (Phase 2).
 
 import './host';
 import type { PlayerUiAdapter } from './adapter';
@@ -14,6 +14,7 @@ import { bindMenu } from './links';
 import { sendCommand, sendEvent } from './engine';
 import { QvOutput, rememberImageSize } from './output';
 import { player, QvPlayer } from './player';
+import * as prompts from './prompts';
 import { QuestUI, setInterfaceString, setLocation } from './questui';
 import { emit, resetState, state } from './state';
 import * as timer from './timer';
@@ -43,24 +44,30 @@ window.notifyQuestUITurn = (started) => {
     }
 };
 
-const commandBarHiddenBy = new Set<string>();
-
 window.resetQuestUIState = () => {
     resetState();
     timer.stop();
-    commandBarHiddenBy.clear();
+    prompts.resetPrompts();
 };
+
+// Any key continues a wait, as on legacy, except Tab (so the keyboard can still reach links) and
+// keys typed into a field, such as the host's save dialog. So does a click anywhere once the game
+// has asked for that (QuestUI.setContinueOnClick), except on a link or control, which keeps its
+// own meaning.
+document.addEventListener('keydown', (e) => {
+    if (!state.waiting || e.repeat || ['Tab', 'Shift', 'Control', 'Alt', 'Meta'].includes(e.key)) return;
+    if (e.target instanceof Element && e.target.closest('input, textarea, select, [contenteditable], dialog')) return;
+    e.preventDefault();
+    prompts.endWait();
+});
+document.addEventListener('click', (e) => {
+    if (!state.waiting || !state.continueOnClick) return;
+    if (e.target instanceof Element && e.target.closest('a, button, input, textarea, select, summary, dialog')) return;
+    prompts.endWait();
+});
 
 const output = () => player()?.output;
 const ignore = (): void => {};
-
-// Hides the command bar for a reason of v2's own (the game finishing, a synchronous sound),
-// separately from the game's setVisible("command-bar", …).
-function holdCommandBar(reason: string, held: boolean): void {
-    if (held) commandBarHiddenBy.add(reason);
-    else commandBarHiddenBy.delete(reason);
-    player()?.toggleAttribute('data-qv-input-held', commandBarHiddenBy.size > 0);
-}
 
 // Element names the engine's Show/Hide requests use (WasmPlayerBridge.ElementMap).
 const requestParts: Record<string, string> = {
@@ -77,11 +84,13 @@ const adapter: PlayerUiAdapter = {
     },
     createNewDiv: (alignment) => void output()?.setAlignment(alignment),
     bindMenu: (linkId, verbs, _text, elementId) => bindMenu(linkId, verbs, elementId),
-    showMenu: ignore,
-    showQuestion: ignore,
-    beginWait: ignore,
-    setTurnPending: ignore,
-    beginPause: ignore,
+    showMenu: prompts.showMenu,
+    showQuestion: prompts.showQuestion,
+    beginWait: prompts.beginWait,
+    setTurnPending(pending) {
+        state.turnPending = pending;
+    },
+    beginPause: prompts.beginPause,
     updateLocation: setLocation,
     setGameName(name) {
         document.title = name;
@@ -97,7 +106,8 @@ const adapter: PlayerUiAdapter = {
     gameFinished() {
         state.gameFinished = true;
         timer.stop();
-        holdCommandBar('finished', true);
+        state.waiting = false;
+        prompts.holdCommandBar('finished', true);
     },
     requestNextTimerTick: timer.requestNextTimerTick,
     uiShow: (element) => player()?.setVisible(requestParts[element] ?? '', true),
@@ -137,18 +147,18 @@ const adapter: PlayerUiAdapter = {
     },
 
     // The host's wait, pause and sound plumbing
-    waitEnded: ignore,
-    pauseEnded: ignore,
+    waitEnded: prompts.waitEnded,
+    pauseEnded: prompts.pauseEnded,
     beginSoundWait() {
         const showCommandBar = !player()?.commandBar?.hidden;
         state.soundWait = true;
-        holdCommandBar('sound', true);
+        prompts.holdCommandBar('sound', true);
         return showCommandBar;
     },
     endSoundWait() {
         state.soundWait = false;
         setTimeout(async () => {
-            holdCommandBar('sound', false);
+            prompts.holdCommandBar('sound', false);
             await WebPlayer.uiEndWait();
         }, 100);
     },

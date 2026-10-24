@@ -124,7 +124,7 @@ From least to most effort for authors. Every tier is part of the 610 UI contract
 Svelte 5, for consistency with AppShell, was considered and rejected (decision 2).
 
 **Native platform features in place of the old plugins:**
-- `<dialog>` for ShowMenu/Ask, which resolves #2006 for v2
+- `<dialog>` for ShowMenu/Ask, which resolves #2006 for v2. Only games before 600 use these dialogs: from 600, the engine draws `show menu` and `ask` in the transcript as numbered links (`WorldModel.ShowInlinePromptAsync`). So a 610 game never opens one, but they matter if v2 ever plays known-compatible older games (see "Later").
 - the Popover API for object verb menus, replacing jjmenu
 - `<details>`, or an ARIA disclosure pattern, for collapsible panes, replacing the multi-open accordion
 - SVG for the map (#2437)

@@ -1,0 +1,51 @@
+<asl version="580">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- Player UI v2's ShowMenu and Ask dialogs (verify-wasmplayer-v2-prompts.mjs). Before 600, show
+       menu and ask go to the player UI as dialogs rather than being drawn in the transcript.
+       v2 is for 610 games, so this only plays on it with ?ui=v2. -->
+  <game name="V2DialogsTest">
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+  <command name="menu">
+    <pattern>menu</pattern>
+    <script>
+      show menu ("Pick a fruit", Split("Apple;Banana;Cherry", ";"), true) {
+        msg ("You picked " + result + ".")
+      }
+    </script>
+  </command>
+
+  <command name="mustpick">
+    <pattern>mustpick</pattern>
+    <script>
+      show menu ("Pick a colour", Split("Red;Blue", ";"), false) {
+        msg ("You picked " + result + ".")
+      }
+    </script>
+  </command>
+
+  <command name="question">
+    <pattern>question</pattern>
+    <script>
+      ask ("Are you sure?") {
+        if (result) {
+          msg ("You said yes.")
+        }
+        else {
+          msg ("You said no.")
+        }
+      }
+    </script>
+  </command>
+
+</asl>

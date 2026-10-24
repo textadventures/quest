@@ -1,11 +1,19 @@
-// <qv-command-bar>: the prompt and the command input, with history on the up and down keys.
+// <qv-command-bar>: the prompt and the command input, with history on the up and down keys. While
+// the game waits, a Continue button takes the input's place.
 
 import { canSendCommand, sendCommand } from './engine';
+import { endWait } from './prompts';
 import { state } from './state';
 
+/** input: the command input; continue: the Continue button (a wait); none: neither, briefly. */
+export type CommandBarMode = 'input' | 'continue' | 'none';
+
 export class QvCommandBar extends HTMLElement {
+    #form!: HTMLFormElement;
     #input!: HTMLInputElement;
     #prompt!: HTMLElement;
+    #continue!: HTMLButtonElement;
+    #mode: CommandBarMode = 'input';
     #history: string[] = [];
     // Where up/down has got to in #history; #history.length means the line being typed.
     #historyIndex = 0;
@@ -14,7 +22,7 @@ export class QvCommandBar extends HTMLElement {
 
     connectedCallback(): void {
         if (this.#input) return;
-        const form = document.createElement('form');
+        const form = this.#form = document.createElement('form');
         form.className = 'qv-command-form';
         this.#prompt = document.createElement('span');
         this.#prompt.className = 'qv-command-prompt';
@@ -28,7 +36,12 @@ export class QvCommandBar extends HTMLElement {
         this.#input.setAttribute('enterkeyhint', 'send');
         this.#input.setAttribute('aria-label', 'Command');
         form.append(this.#prompt, this.#input);
-        this.append(form);
+        this.#continue = document.createElement('button');
+        this.#continue.type = 'button';
+        this.#continue.className = 'qv-continue';
+        this.#continue.hidden = true;
+        this.#continue.addEventListener('click', endWait);
+        this.append(form, this.#continue);
 
         form.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -36,14 +49,25 @@ export class QvCommandBar extends HTMLElement {
         });
         this.#input.addEventListener('keydown', (e) => this.#onKeyDown(e));
         this.updatePlaceholder();
+        this.updateContinueLabel();
+    }
+
+    setMode(mode: CommandBarMode): void {
+        this.#mode = mode;
+        this.#form.hidden = mode !== 'input';
+        this.#continue.hidden = mode !== 'continue';
+        if (mode === 'continue') this.#continue.focus({ preventScroll: true });
     }
 
     get input(): HTMLInputElement {
         return this.#input;
     }
 
+    /** Focuses whichever control the bar is showing. */
     focusInput(): void {
-        if (!this.hidden && document.activeElement !== this.#input) this.#input.focus({ preventScroll: true });
+        if (this.hidden) return;
+        const control = this.#mode === 'input' ? this.#input : this.#mode === 'continue' ? this.#continue : null;
+        if (control && document.activeElement !== control) control.focus({ preventScroll: true });
     }
 
     setPrompt(html: string): void {
@@ -52,6 +76,10 @@ export class QvCommandBar extends HTMLElement {
 
     setStyle(css: string): void {
         this.#input.style.cssText = css;
+    }
+
+    updateContinueLabel(): void {
+        this.#continue.textContent = textOf(state.interfaceStrings.get('ContinueLabel') ?? '') || 'Continue';
     }
 
     /** setCommandPlaceholder wins over the game's TypeHereLabel. */
