@@ -1,8 +1,17 @@
 <qv-player>
-    <div data-qv-part="border">
-        <header data-qv-part="location" class="qv-empty"></header>
+    <main data-qv-part="border">
+        <header class="qv-topbar">
+            <div data-qv-part="location" class="qv-empty"></div>
+            <div class="qv-toolbar">
+                <!-- The host shows these as the session allows (WebPlayer.setCanDebug/setCanSave),
+                     adds a Restart button after Debug in editor previews, and translates Save's
+                     label (data-chrome-key). -->
+                <button id="cmdDebug" type="button" style="display: none">Debug</button>
+                <button id="cmdSave" type="button" data-chrome-key="SaveLoadTitle">Save / Load</button>
+            </div>
+        </header>
         <qv-output data-qv-part="output"></qv-output>
         <qv-command-bar data-qv-part="command-bar"></qv-command-bar>
-    </div>
+    </main>
     <qv-verb-menu data-qv-part="menu"></qv-verb-menu>
 </qv-player>

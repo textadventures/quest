@@ -4,8 +4,7 @@
 // wwwroot/v2/player.htm's markup and talks to v2 only through the adapter registered here as
 // window.QuestPlayerUis.v2. Games talk to it through QuestUI (questui.ts).
 //
-// Not yet here: saving and accessibility (#2595's last PR), then panes, layouts and theming
-// (Phase 2).
+// Not yet here: panes, layouts and theming (Phase 2).
 
 import './host';
 import type { PlayerUiAdapter } from './adapter';
@@ -60,6 +59,13 @@ document.addEventListener('keydown', (e) => {
     e.preventDefault();
     prompts.endWait();
 });
+// Leaving the page loses whatever happened since the last save, so ask first, as legacy does.
+window.addEventListener('beforeunload', (e) => {
+    if (!state.hasUnsavedProgress || !state.canSave || !player()) return;
+    e.preventDefault();
+    e.returnValue = '';
+});
+
 document.addEventListener('click', (e) => {
     if (!state.waiting || !state.continueOnClick) return;
     if (e.target instanceof Element && e.target.closest('a, button, input, textarea, select, summary, dialog')) return;
@@ -67,6 +73,11 @@ document.addEventListener('click', (e) => {
 });
 
 const output = () => player()?.output;
+
+function updateSaveButton(): void {
+    const button = player()?.saveButton;
+    if (button) button.disabled = state.turnPending;
+}
 const ignore = (): void => {};
 
 // Element names the engine's Show/Hide requests use (WasmPlayerBridge.ElementMap).
@@ -87,8 +98,10 @@ const adapter: PlayerUiAdapter = {
     showMenu: prompts.showMenu,
     showQuestion: prompts.showQuestion,
     beginWait: prompts.beginWait,
+    // Saving needs the engine between turns: a wait, menu, question or pause can't be saved.
     setTurnPending(pending) {
         state.turnPending = pending;
+        updateSaveButton();
     },
     beginPause: prompts.beginPause,
     updateLocation: setLocation,
@@ -124,6 +137,11 @@ const adapter: PlayerUiAdapter = {
 
     // Lifecycle
     start() {
+        player()?.saveButton?.addEventListener('click', () => {
+            if (WebPlayer.onSaveClick) WebPlayer.onSaveClick();
+            else void GameSaver.save();
+        });
+        updateSaveButton();
         player()?.commandBar?.focusInput();
     },
     resetOutput() {

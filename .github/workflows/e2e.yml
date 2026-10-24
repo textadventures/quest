@@ -504,6 +504,10 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-wasmplayer-v2-prompts.mjs http://localhost:5175
         working-directory: tests/e2e
+      - run: node verify-wasmplayer-v2-saving.mjs http://localhost:5175
+        working-directory: tests/e2e
+      - run: node verify-wasmplayer-v2-a11y.mjs http://localhost:5175
+        working-directory: tests/e2e
 
   # Real, packaged Electron app (Playwright's _electron launcher) — macos-
   # latest, not ubuntu-latest (unlike build_electron in build-and-test.yml,

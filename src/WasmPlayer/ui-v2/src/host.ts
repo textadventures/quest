@@ -4,6 +4,10 @@ import type { PlayerUiAdapter } from './adapter';
 import type { QuestUIContract } from './contract';
 
 export interface WebPlayerHost {
+    /** The game's translated chrome strings (ChromeStrings in PlayerCore), once it has loaded. */
+    chromeStrings: Record<string, string> | null;
+    /** Opens the host's Save/Load dialog. */
+    onSaveClick?(): void;
     sendCommand(command: string, tickCount: number, metadata: Record<string, string> | null): Promise<void>;
     uiSendEvent(eventName: string, param: string): Promise<void>;
     uiTick(tickCount: number): Promise<void>;

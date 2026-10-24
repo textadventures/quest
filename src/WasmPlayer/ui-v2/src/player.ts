@@ -29,6 +29,32 @@ export class QvPlayer extends HTMLElement {
         // Every link and popup trigger in the UI is handled here, not by handlers of its own.
         this.addEventListener('click', (e) => handleClick(e, this.verbMenu));
         this.addEventListener('keydown', handleKeyDown);
+        // The host shows and hides the toolbar's buttons itself, and adds Restart in previews.
+        const toolbar = this.querySelector('.qv-toolbar');
+        if (toolbar) {
+            new MutationObserver(() => this.updateTopbar()).observe(toolbar, {
+                subtree: true, childList: true, attributes: true, attributeFilter: ['style', 'hidden'],
+            });
+        }
+        this.updateTopbar();
+    }
+
+    get topbar(): HTMLElement | null {
+        return this.querySelector('.qv-topbar');
+    }
+
+    get saveButton(): HTMLButtonElement | null {
+        return this.querySelector('#cmdSave');
+    }
+
+    /** The bar holding the location and the toolbar goes when it would be empty. */
+    updateTopbar(): void {
+        const topbar = this.topbar;
+        if (!topbar) return;
+        const location = this.location;
+        const anyButton = [...topbar.querySelectorAll<HTMLElement>('.qv-toolbar button')]
+            .some((button) => !button.hidden && button.style.display !== 'none');
+        topbar.hidden = (!location || location.hidden) && !anyButton;
     }
 
     get verbMenu(): QvVerbMenu | null {
@@ -68,6 +94,7 @@ export class QvPlayer extends HTMLElement {
                 break;
             case 'location':
                 this.#setHidden(this.location, !visible);
+                this.updateTopbar();
                 break;
             case 'border':
                 // The frame's border line, not the frame and what's in it.
