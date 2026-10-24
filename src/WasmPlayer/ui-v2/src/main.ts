@@ -4,22 +4,25 @@
 // wwwroot/v2/player.htm's markup and talks to v2 only through the adapter registered here as
 // window.QuestPlayerUis.v2. Games talk to it through QuestUI (questui.ts).
 //
-// Not yet here: links and verb menus, waits, pauses, menus and questions, saving and
+// Not yet here: waits, pauses, menus and questions, saving and
 // accessibility (#2595's later PRs), then panes, layouts and theming (Phase 2).
 
 import './host';
 import type { PlayerUiAdapter } from './adapter';
 import { QvCommandBar } from './command-bar';
+import { bindMenu } from './links';
 import { sendCommand, sendEvent } from './engine';
 import { QvOutput, rememberImageSize } from './output';
 import { player, QvPlayer } from './player';
 import { QuestUI, setInterfaceString, setLocation } from './questui';
 import { emit, resetState, state } from './state';
 import * as timer from './timer';
+import { QvVerbMenu } from './verb-menu';
 
 customElements.define('qv-player', QvPlayer);
 customElements.define('qv-output', QvOutput);
 customElements.define('qv-command-bar', QvCommandBar);
+customElements.define('qv-verb-menu', QvVerbMenu);
 
 window.QuestUI = QuestUI;
 // The globals author JS has always used, kept as QuestUI's aliases (as on legacy).
@@ -73,7 +76,7 @@ const adapter: PlayerUiAdapter = {
         output()?.scrollToEnd();
     },
     createNewDiv: (alignment) => void output()?.setAlignment(alignment),
-    bindMenu: ignore,
+    bindMenu: (linkId, verbs, _text, elementId) => bindMenu(linkId, verbs, elementId),
     showMenu: ignore,
     showQuestion: ignore,
     beginWait: ignore,
@@ -90,7 +93,7 @@ const adapter: PlayerUiAdapter = {
     setForeground: ignore,
     updateList: ignore,
     updateCompass: ignore,
-    updateObjectLinks: ignore,
+    updateObjectLinks: (verbs) => player()?.updateLinks('object', verbs),
     gameFinished() {
         state.gameFinished = true;
         timer.stop();

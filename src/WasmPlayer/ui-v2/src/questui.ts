@@ -79,7 +79,7 @@ export const QuestUI: QuestUIContract = {
     hideSection: (name) => player()?.output?.hideSection(String(name)),
     disableSection: (name) => player()?.output?.disableSection(String(name)),
     disableCommandLinks: () => player()?.output?.disableCommandLinks(),
-    updateLinks: ignore,
+    updateLinks: (kind, data) => player()?.updateLinks(String(kind), parsed(data as object | string)),
     scrollToEnd: () => player()?.output?.scrollToEnd(),
     addYouTube: ignore,
     addVimeo: ignore,

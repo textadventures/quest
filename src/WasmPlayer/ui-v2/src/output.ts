@@ -6,6 +6,8 @@
 // markup, without running any <script> in it: a 610 game runs its JavaScript through JS.eval
 // or its own script files.
 
+import { decorateLinks, deactivate, resetRestoredLinks, setLinkEnabled } from './links';
+import { player } from './player';
 import { emit, state } from './state';
 
 const knownImageSizes = new Map<string, { width: number; height: number }>();
@@ -45,6 +47,7 @@ export class QvOutput extends HTMLElement {
         const block = this.#current ?? this.setAlignment('left');
         block.insertAdjacentHTML('beforeend', html);
         applyKnownImageSizes(block);
+        decorateLinks(block);
         emit('outputAdded', { html });
     }
 
@@ -72,6 +75,8 @@ export class QvOutput extends HTMLElement {
     /** Restores a saved transcript (getHtml's output). */
     loadHtml(html: string): void {
         this.innerHTML = html;
+        decorateLinks(this);
+        resetRestoredLinks(this);
         // Carry on in a new block: the restored ones may be inside sections long since closed.
         this.#current = null;
         this.#sections = [];
@@ -118,7 +123,8 @@ export class QvOutput extends HTMLElement {
     }
 
     disableCommandLinks(): void {
-        for (const link of this.querySelectorAll('a.commandlink')) disableLink(link);
+        for (const link of this.querySelectorAll('a.commandlink')) deactivate(link);
+        player()?.verbMenu?.closeIfStale();
     }
 
     #sectionBlocks(name: string): HTMLElement[] {
@@ -171,12 +177,8 @@ function stickyHeaderHeight(): number {
 }
 
 function disableLinks(scope: Element): void {
-    for (const link of scope.querySelectorAll('a.cmdlink')) disableLink(link);
-}
-
-function disableLink(link: Element): void {
-    link.classList.add('disabled');
-    link.setAttribute('aria-disabled', 'true');
+    for (const link of scope.querySelectorAll('a.cmdlink, a[data-qv-event]')) setLinkEnabled(link, false);
+    player()?.verbMenu?.closeIfStale();
 }
 
 // Gives an image the size wasm-player.js found when it preloaded it, so it takes up its real

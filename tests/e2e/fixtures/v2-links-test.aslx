@@ -1,0 +1,71 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- Player UI v2's links (verify-wasmplayer-v2-links.mjs): object links with verb menus, exit
+       and command links, ShowMenu options and an author's data-qv-event link, {popup:}, and an
+       ordinary link to another site, all through 610 Core's live text processor. -->
+  <game name="V2LinksTest">
+    <deactivatecommandlinks />
+  </game>
+
+  <object name="hall">
+    <inherit name="editor_room" />
+    <description>A hall with a bell. {command:ring bell:Ring the bell}</description>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <object name="lamp">
+      <inherit name="editor_object" />
+      <look>A brass lamp.</look>
+    </object>
+    <exit alias="north" to="kitchen">
+      <inherit name="northdirection" />
+    </exit>
+  </object>
+
+  <object name="kitchen">
+    <inherit name="editor_room" />
+    <description>A small kitchen.</description>
+    <exit alias="south" to="hall">
+      <inherit name="southdirection" />
+    </exit>
+  </object>
+
+  <command name="ring">
+    <pattern>ring bell</pattern>
+    <script>
+      msg ("Ding!")
+    </script>
+  </command>
+
+  <command name="note">
+    <pattern>note</pattern>
+    <script>
+      msg ("There is a {popup:note:The note says hello.} here.")
+    </script>
+  </command>
+
+  <command name="choose">
+    <pattern>choose</pattern>
+    <script>
+      ShowMenu ("Pick a colour", Split("Red;Blue", ";"), false) {
+        msg ("You chose " + result + ".")
+      }
+    </script>
+  </command>
+
+  <command name="links">
+    <pattern>links</pattern>
+    <script><![CDATA[
+      msg ("<a class=\"cmdlink\" data-qv-event=\"PingEvent\" data-qv-param=\"42\">ping</a>")
+      msg ("<a href=\"https://example.com/\">a website</a>")
+    ]]></script>
+  </command>
+
+  <function name="PingEvent" parameters="param">
+    msg ("Ping " + param + ".")
+  </function>
+
+</asl>
