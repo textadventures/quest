@@ -1,0 +1,95 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- Player UI v2's prompts (verify-wasmplayer-v2-prompts.mjs): wait, chained waits, pause,
+       continue-on-click, get input, and the inline menu and question a 610 game gets from
+       show menu and ask. -->
+  <game name="V2PromptsTest">
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+  <command name="waitonce">
+    <pattern>waitonce</pattern>
+    <script>
+      msg ("Before the wait.")
+      wait {
+        msg ("After the wait.")
+      }
+    </script>
+  </command>
+
+  <command name="waittwice">
+    <pattern>waittwice</pattern>
+    <script>
+      msg ("First page.")
+      wait {
+        msg ("Second page.")
+        wait {
+          msg ("Third page.")
+        }
+      }
+    </script>
+  </command>
+
+  <command name="pausecmd">
+    <pattern>pausecmd</pattern>
+    <script>
+      msg ("Before the pause.")
+      Pause (1)
+      msg ("After the pause.")
+    </script>
+  </command>
+
+  <command name="clickwait">
+    <pattern>clickwait</pattern>
+    <script>
+      JS.QuestUI.setContinueOnClick (true)
+      msg ("Click anywhere.")
+      wait {
+        msg ("Clicked through.")
+      }
+    </script>
+  </command>
+
+  <command name="name">
+    <pattern>name</pattern>
+    <script>
+      msg ("What is your name?")
+      get input {
+        msg ("Hello, " + result + ".")
+      }
+    </script>
+  </command>
+
+  <command name="menu">
+    <pattern>menu</pattern>
+    <script>
+      show menu ("Pick a fruit", Split("Apple;Banana;Cherry", ";"), true) {
+        msg ("You picked " + result + ".")
+      }
+    </script>
+  </command>
+
+  <command name="question">
+    <pattern>question</pattern>
+    <script>
+      ask ("Are you sure?") {
+        if (result) {
+          msg ("You said yes.")
+        }
+        else {
+          msg ("You said no.")
+        }
+      }
+    </script>
+  </command>
+
+</asl>

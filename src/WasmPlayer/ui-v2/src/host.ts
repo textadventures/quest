@@ -8,6 +8,9 @@ export interface WebPlayerHost {
     uiSendEvent(eventName: string, param: string): Promise<void>;
     uiTick(tickCount: number): Promise<void>;
     uiEndWait(): Promise<void>;
+    uiChoice(choice: string): Promise<void>;
+    uiChoiceCancel(): Promise<void>;
+    uiSetQuestionResponse(response: boolean): Promise<void>;
 }
 
 declare global {
@@ -15,6 +18,9 @@ declare global {
     const GameSaver: { save(): Promise<void> };
     /** A game's own stylesheet, added after the player UI's. */
     function addExternalStylesheet(url: string): void;
+    /** Resume the engine after a wait or pause, then call the adapter's waitEnded/pauseEnded. */
+    function sendEndWait(): void;
+    function sendEndPause(): void;
 
     interface Window {
         QuestPlayerUis?: Record<string, PlayerUiAdapter>;

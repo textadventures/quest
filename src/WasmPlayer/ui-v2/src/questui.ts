@@ -62,6 +62,7 @@ export function setLocation(text: string): void {
 export function setInterfaceString(name: string, text: string): void {
     state.interfaceStrings.set(name, text);
     if (name === 'TypeHereLabel') player()?.commandBar?.updatePlaceholder();
+    if (name === 'ContinueLabel') player()?.commandBar?.updateContinueLabel();
 }
 
 export const QuestUI: QuestUIContract = {

@@ -248,6 +248,57 @@
         color: var(--qv-menu-hover-fg);
     }
 
+    /* ShowMenu and Ask for games before 600, as a modal <dialog>. */
+    .qv-dialog {
+        width: min(28rem, calc(100vw - 2rem));
+        max-height: calc(100vh - 2rem);
+        padding: var(--qv-space);
+        border: 1px solid var(--qv-border-colour);
+        border-radius: var(--qv-radius);
+        background-color: var(--qv-bg);
+        box-shadow: 0 8px 32px rgb(0 0 0 / 0.3);
+        color: var(--qv-text);
+        font-family: var(--qv-font-body);
+        font-size: var(--qv-font-size);
+    }
+
+    .qv-dialog::backdrop {
+        background-color: rgb(0 0 0 / 0.4);
+    }
+
+    .qv-dialog-caption {
+        margin-bottom: 0.75rem;
+    }
+
+    .qv-dialog-choices {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .qv-dialog button {
+        min-height: 44px;
+        padding: 0.25rem 0.75rem;
+        border: 1px solid var(--qv-border-colour);
+        border-radius: calc(var(--qv-radius) - 2px);
+        background-color: var(--qv-menu-bg);
+        color: var(--qv-menu-fg);
+        font-family: var(--qv-menu-font);
+        font-size: var(--qv-menu-font-size);
+        text-align: start;
+        cursor: pointer;
+    }
+
+    .qv-dialog .qv-dialog-choices button:hover {
+        background-color: var(--qv-menu-hover-bg);
+        color: var(--qv-menu-hover-fg);
+    }
+
+    .qv-dialog .qv-dialog-cancel {
+        margin-top: 0.75rem;
+        text-align: center;
+    }
+
     /* Inline links can't be 44px tall without spreading the lines of text they sit in (WCAG
        2.5.8 exempts them), but on a touchscreen they get a taller hit area. */
     @media (pointer: coarse) {
@@ -300,6 +351,19 @@
         font: inherit;
     }
 
+    .qv-continue {
+        min-height: 44px;
+        padding: 0.25rem 1.25rem;
+        border: 1px solid var(--qv-border-colour);
+        border-radius: var(--qv-radius);
+        background-color: var(--qv-command-bg);
+        color: var(--qv-link);
+        font: inherit;
+        cursor: pointer;
+    }
+
+    .qv-continue:focus-visible,
+    .qv-dialog button:focus-visible,
     .qv-command-input:focus-visible {
         outline: 2px solid var(--qv-focus-ring);
         outline-offset: 1px;
