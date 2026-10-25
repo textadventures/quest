@@ -6,6 +6,7 @@ import type { QvCommandBar } from './command-bar';
 import { updateExitStrip } from './compass';
 import { updateStatusBar } from './status';
 import { handleClick, handleKeyDown, updateLinks } from './links';
+import { setMapVisible, toggleMapCollapsed, updateMap } from './map';
 import type { QvOutput } from './output';
 import { builtInPanes, pane, setDrawerOpen, isDrawerOpen } from './panes';
 import type { QvVerbMenu } from './verb-menu';
@@ -52,6 +53,7 @@ export class QvPlayer extends HTMLElement {
         for (const button of this.querySelectorAll('.qv-panes-button')) {
             button.addEventListener('click', () => setDrawerOpen(!isDrawerOpen()));
         }
+        this.mapButton?.addEventListener('click', toggleMapCollapsed);
         new ResizeObserver(() => this.#updateLayout()).observe(this);
         this.panes?.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && isDrawerOpen() && !this.verbMenu?.isOpen) {
@@ -117,10 +119,15 @@ export class QvPlayer extends HTMLElement {
     }
 
     #updateLayout(): void {
-        const preset = this.clientWidth >= WIDE_MIN_WIDTH ? this.#widePreset : this.#narrowPreset;
+        const narrow = this.clientWidth < WIDE_MIN_WIDTH;
+        if (narrow !== this.hasAttribute('data-qv-narrow')) {
+            this.toggleAttribute('data-qv-narrow', narrow);
+            updateMap();
+        }
+        const preset = narrow ? this.#narrowPreset : this.#widePreset;
         const layout: Layout = preset === 'nopanes' ? 'none'
             : preset === 'bottombar' ? 'sheet'
-            : this.clientWidth >= WIDE_MIN_WIDTH ? 'side' : 'drawer';
+            : narrow ? 'drawer' : 'side';
         if (this.dataset.qvLayout === layout) return;
         // Whatever was open belongs to the old layout.
         setDrawerOpen(false, { restoreFocus: false });
@@ -174,6 +181,16 @@ export class QvPlayer extends HTMLElement {
         return this.querySelector('[data-qv-part="picture-frame"]');
     }
 
+    /** The map (map.ts), under the picture frame. */
+    get map(): HTMLElement | null {
+        return this.querySelector('[data-qv-part="map"]');
+    }
+
+    /** Collapses the map on a narrow layout. */
+    get mapButton(): HTMLButtonElement | null {
+        return this.querySelector('.qv-map-button');
+    }
+
     get frame(): HTMLElement | null {
         return this.querySelector('[data-qv-part="border"]');
     }
@@ -200,6 +217,9 @@ export class QvPlayer extends HTMLElement {
                 break;
             case 'exits':
                 this.#setHidden(this.exits, !visible);
+                break;
+            case 'map':
+                setMapVisible(visible);
                 break;
             case 'status-bar':
                 this.#setHidden(this.statusBar, !visible);

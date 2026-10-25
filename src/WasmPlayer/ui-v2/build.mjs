@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Builds player UI v2 (docs/ui-v2-plan.md) from src/ and styles/ into wwwroot/v2/v2.js and
-// wwwroot/v2/v2.css, which wasm-player.js loads as the v2 bundle (playerUiBundles). Both files
-// are generated and gitignored; WasmPlayer.csproj's BuildChromeCss target runs this through
+// wwwroot/v2/v2.css, which wasm-player.js loads as the v2 bundle (playerUiBundles), and
+// wwwroot/v2/map.js, the map renderer, which v2.js loads itself the first time a game uses the
+// map (src/map.ts). All three are generated and gitignored; WasmPlayer.csproj's BuildChromeCss target runs this through
 // `npm run build` before the static web assets are collected.
 //
 // The script is a classic script, not an ES module, because the host loads every UI bundle's
@@ -30,6 +31,12 @@ await Promise.all([
         ...common,
         entryPoints: [path.join(here, 'src', 'main.ts')],
         outfile: path.join(outDir, 'v2.js'),
+        format: 'iife',
+    }),
+    esbuild.build({
+        ...common,
+        entryPoints: [path.join(here, 'src', 'map', 'main.ts')],
+        outfile: path.join(outDir, 'map.js'),
         format: 'iife',
     }),
     esbuild.build({

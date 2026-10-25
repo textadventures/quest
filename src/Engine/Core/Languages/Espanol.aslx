@@ -738,5 +738,8 @@
   <template name="SavedGameDefaultLabel">Partida guardada — [timestamp]</template>
   <template name="CommandInputLabel">Escribe tu comando</template>
   <template name="ShowPanesButton">Mostrar paneles</template>
+  <template name="MapLabel">Mapa</template>
+  <template name="MapZoomIn">Acercar</template>
+  <template name="MapZoomOut">Alejar</template>
 
 </library>

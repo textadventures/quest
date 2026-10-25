@@ -1,0 +1,113 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- Player UI v2's map (verify-wasmplayer-v2-map.mjs): a hall with a library to the north and
+       an attic up a level, each 3 squares across, on a 300px map that answers clicks. Commands
+       draw on the custom layer (a square, an arrow, a shape, an SVG symbol with a script in it,
+       and an image), redraw the square under the same id, hide the custom layer, turn map
+       interaction off and hide the map. -->
+  <game name="V2MapTest">
+    <gridmap />
+    <mapsize type="int">300</mapsize>
+    <mapscale type="int">30</mapscale>
+    <respondtogridclicks />
+  </game>
+
+  <object name="hall">
+    <inherit name="editor_room" />
+    <description>A hall.</description>
+    <grid_width type="int">3</grid_width>
+    <grid_length type="int">3</grid_length>
+    <grid_fill>#dbeafe</grid_fill>
+    <grid_label>Hall</grid_label>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <exit alias="north" to="library">
+      <inherit name="northdirection" />
+    </exit>
+    <exit alias="up" to="attic">
+      <inherit name="updirection" />
+    </exit>
+  </object>
+
+  <object name="library">
+    <inherit name="editor_room" />
+    <description>A library.</description>
+    <grid_width type="int">3</grid_width>
+    <grid_length type="int">3</grid_length>
+    <grid_fill>#fef3c7</grid_fill>
+    <grid_label>Library</grid_label>
+    <exit alias="south" to="hall">
+      <inherit name="southdirection" />
+    </exit>
+  </object>
+
+  <object name="attic">
+    <inherit name="editor_room" />
+    <description>An attic.</description>
+    <grid_width type="int">3</grid_width>
+    <grid_length type="int">3</grid_length>
+    <grid_fill>#e9d5ff</grid_fill>
+    <grid_label>Attic</grid_label>
+    <exit alias="down" to="hall">
+      <inherit name="downdirection" />
+    </exit>
+  </object>
+
+  <function name="GridSquareClick" parameters="x, y">
+    msg ("Clicked " + x + "," + y + ".")
+  </function>
+
+  <command name="custom">
+    <pattern>custom</pattern>
+    <script><![CDATA[
+      Grid_ShowCustomLayer (true)
+      Grid_DrawSquare ("box", 5, 0, 2, 2, "X", "#fca5a5")
+      Grid_DrawArrow ("arrow", 0, -1, 4, -1, "red", 2)
+      Grid_AddNewShapePoint (5, 3)
+      Grid_AddNewShapePoint (7, 3)
+      Grid_AddNewShapePoint (6, 5)
+      Grid_DrawShape ("tri", "blue", "#bfdbfe", 0.5)
+      Grid_LoadSvg ("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'><script>window.svgScriptRan = true</script><circle cx='5' cy='5' r='4' fill='gold' onclick='window.svgHandlerRan = true'/></svg>", "star")
+      Grid_DrawSvg ("star1", "star", 8, 0, 1, 1)
+      Grid_DrawImage ("pic", "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", 0.5, 4, 0.5, 0.5)
+      msg ("Custom drawn.")
+    ]]></script>
+  </command>
+
+  <command name="redraw">
+    <pattern>redraw</pattern>
+    <script>
+      Grid_DrawSquare ("box", 5, 0, 1, 1, "Y", "#86efac")
+      msg ("Square redrawn.")
+    </script>
+  </command>
+
+  <command name="hidecustom">
+    <pattern>hidecustom</pattern>
+    <script>
+      Grid_ShowCustomLayer (false)
+      msg ("Custom hidden.")
+    </script>
+  </command>
+
+  <command name="nointeract">
+    <pattern>nointeract</pattern>
+    <script>
+      JS.QuestUI.setMapInteractive (false)
+      msg ("Map fixed.")
+    </script>
+  </command>
+
+  <command name="hidemap">
+    <pattern>hidemap</pattern>
+    <script>
+      JS.QuestUI.setVisible ("map", false)
+      msg ("Map hidden.")
+    </script>
+  </command>
+
+</asl>

@@ -11,6 +11,7 @@ import type { PlayerUiAdapter } from './adapter';
 import { QvCommandBar } from './command-bar';
 import { renderCompass, resetCompass, updateCompass, updateExitStrip } from './compass';
 import { bindMenu } from './links';
+import { resetMap } from './map';
 import { sendCommand, sendEvent } from './engine';
 import { QvOutput, rememberImageSize } from './output';
 import { setPictureFrame } from './picture-frame';
@@ -56,6 +57,7 @@ window.resetQuestUIState = () => {
     prompts.resetPrompts();
     resetCompass();
     resetStatus();
+    resetMap();
 };
 
 // Any key continues a wait, as on legacy, except Tab (so the keyboard can still reach links) and
