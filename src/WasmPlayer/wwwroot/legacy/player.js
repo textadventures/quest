@@ -215,22 +215,12 @@ function WriteToTranscript(data) {
         tName = data.split("___SCRIPTDATA___")[0].trim() || tName;
         data = data.split("___SCRIPTDATA___")[1];
     }
-    // Electron: file storage under userData rather than localStorage, since
-    // this window's origin (a local loopback port) isn't guaranteed to stay
-    // the same across restarts — see transcript-store.ts. window.electronTranscripts
-    // is bridged by player-transcript-preload.ts for every player window.
-    if (navigator.userAgent.includes('Electron/')) {
-        if (window.electronTranscripts) void window.electronTranscripts.append(tName, data);
-        return;
-    }
-    if (!isLocalStorageAvailable()) {
+    // The host keeps the transcripts, for both UIs (wasm-player.js).
+    if (!WebPlayer.appendToTranscript(tName, data)) {
         console.error("There is no localStorage. Disabling transcript functionality.");
         noTranscript = true;
         savingTranscript = false;
-        return;
     }
-    var oldData = localStorage.getItem("questtranscript-" + tName) || "";
-    localStorage.setItem("questtranscript-" + tName, oldData + data);
 }
 
 // Make sure localStorage is available, hopefully without throwing any errors!

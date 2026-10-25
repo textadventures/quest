@@ -195,7 +195,9 @@ On v2 (#2627, decisions 1–3), the map is the `map` part, under the picture fra
 
 ### Transcript
 
-The transcript belongs to the host (the start screen and transcript viewer are shared by both UIs), but today it's driven from `playercore.js`'s globals and seeded through `JS.eval`'d variables. 610 Core calls `QuestUI.transcript.*` instead, and both UIs forward to the host: `write(html)`, `enable(name)` (`name` optional), `disable()`, `kill()`, `revive()`, `setName(name)`, `setPrefix(text)` (from `replaceTranscriptString`), `stampDateAndTime()`, `promptForName()`, `show()`. The game name no longer needs seeding: the host already gets it from `IPlayer.UpdateGameName`.
+The transcript belongs to the host (the start screen and transcript viewer are shared by both UIs), but today it's driven from `playercore.js`'s globals and seeded through `JS.eval`'d variables. 610 Core calls `QuestUI.transcript.*` instead: `write(html)`, `enable(name)` (`name` optional), `disable()`, `kill()`, `revive()`, `setName(name)`, `setPrefix(text)` (from `replaceTranscriptString`, which has never done anything since Quest 5.8, so neither UI does anything with it), `stampDateAndTime()`, `promptForName()` (offers the transcript's name in the command bar), and `show(message, linkText)` (a link to the transcript viewer, with Core's translated message and link text). The game name no longer needs seeding: the host already gets it from `IPlayer.UpdateGameName`.
+
+The host keeps the transcripts (`WebPlayer.transcript` in `wasm-player.js`, #2627 decision 5), in the same `questtranscript-<name>` localStorage keys, or Electron's own store, as before. v2's `QuestUI.transcript.*` forward to it, and v2 copies its output into it while recording, as legacy does. Legacy keeps its own on/off state and text conversion, and stores through the host.
 
 ### Author hooks
 

@@ -1,0 +1,41 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- The transcript on player UI v2 and legacy (verify-wasmplayer-v2-transcript.mjs): the
+       built-in "transcript on", "view transcript" and "transcript off", plus a picture with alt
+       text and a text effect to record. -->
+  <game name="V2TranscriptTest">
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <description>A recording room.</description>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+  <command name="picture">
+    <pattern>picture</pattern>
+    <script><![CDATA[
+      msg ("<img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==' alt='a brass lamp'> Shown here.")
+    ]]></script>
+  </command>
+
+  <command name="typewriter">
+    <pattern>typewriter</pattern>
+    <script>
+      TextFX_Typewriter ("Typed for the record.", 10)
+    </script>
+  </command>
+
+  <command name="secret">
+    <pattern>secret</pattern>
+    <script>
+      msg ("Not for the record.")
+    </script>
+  </command>
+
+</asl>

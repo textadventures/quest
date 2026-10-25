@@ -3,9 +3,23 @@
 import type { PlayerUiAdapter } from './adapter';
 import type { QuestUIContract } from './contract';
 
+/** The host's transcript store (wasm-player.js), shared with legacy. */
+export interface WebPlayerTranscript {
+    /** The transcript's name, which the viewer lists it by. */
+    readonly name: string;
+    readonly viewerUrl: string;
+    write(html: string): void;
+    enable(name?: string): void;
+    disable(): void;
+    kill(): void;
+    revive(): void;
+    setName(name: string): void;
+}
+
 export interface WebPlayerHost {
     /** The game's translated chrome strings (ChromeStrings in PlayerCore), once it has loaded. */
     chromeStrings: Record<string, string> | null;
+    transcript?: WebPlayerTranscript;
     /** Opens the host's Save/Load dialog. */
     onSaveClick?(): void;
     sendCommand(command: string, tickCount: number, metadata: Record<string, string> | null): Promise<void>;

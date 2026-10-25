@@ -55,16 +55,19 @@ export class QvOutput extends HTMLElement {
         block.insertAdjacentHTML('beforeend', html);
         applyKnownImageSizes(block);
         decorateLinks(block);
+        WebPlayer.transcript?.write(html);
         emit('outputAdded', { html });
     }
 
-    /** Adds elements v2 has built itself (a text effect), as addText adds markup. */
-    addNodes(nodes: Node[]): void {
+    /**
+     * Adds elements v2 has built itself (a text effect), as addText adds markup. `html` is what
+     * they stand for, for the transcript and outputAdded listeners.
+     */
+    addNodes(nodes: Node[], html: string): void {
         const block = this.#current ?? this.setAlignment('left');
         block.append(...nodes);
-        const holder = document.createElement('div');
-        holder.append(...nodes.map((n) => n.cloneNode(true)));
-        emit('outputAdded', { html: holder.innerHTML });
+        WebPlayer.transcript?.write(html);
+        emit('outputAdded', { html });
     }
 
     /** Starts a new block with this alignment (left, center, right or justify). */
