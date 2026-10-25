@@ -14,7 +14,8 @@
 
     interface Props {
         value: string;
-        language: "xml" | "quest-script" | "javascript";
+        // css has no syntax highlighting of its own yet: the editor's other features still apply.
+        language: "xml" | "quest-script" | "javascript" | "css";
         readonly?: boolean;
         onChange?: (value: string) => void;
         minHeight?: string;
@@ -29,9 +30,10 @@
     const languageCompartment = new Compartment();
     const readonlyCompartment = new Compartment();
 
-    function languageExtension(lang: "xml" | "quest-script" | "javascript") {
+    function languageExtension(lang: "xml" | "quest-script" | "javascript" | "css") {
         if (lang === "xml") return xmlWithScript();
         if (lang === "javascript") return javascript();
+        if (lang === "css") return [];
         return questScript();
     }
 

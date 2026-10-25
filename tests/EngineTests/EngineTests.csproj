@@ -37,6 +37,12 @@
         <None Update="commandbarformattest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="gamestylesheet610test.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="gamestylesheet600test.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="defaultcolourstest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>

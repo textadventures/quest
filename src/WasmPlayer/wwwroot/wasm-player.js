@@ -589,6 +589,24 @@ function addExternalStylesheet(source) {
     document.head.appendChild(link);
 }
 
+// The game's own stylesheet (game.stylesheet, from 610), set on every Initialise. It isn't in a
+// cascade layer and comes after the player UI's styles, so the author's CSS wins over the UI's
+// without !important (docs/ui-v2-contract.md, "Game stylesheet").
+function setGameStylesheet(css) {
+    let style = document.getElementById("qv-game-stylesheet");
+    if (!css) {
+        style?.remove();
+        return;
+    }
+    if (!style) {
+        style = document.createElement("style");
+        style.id = "qv-game-stylesheet";
+    }
+    style.textContent = css;
+    // Last in <head> each time, after anything added since.
+    document.head.appendChild(style);
+}
+
 // ── Player UIs ──────────────────────────────────────────────────────────────
 //
 // Each player UI is a bundle of markup (swapped into the page for each game and restart),
@@ -858,6 +876,7 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
         uiHide: (element) => playerUi.uiHide(element),
         addExternalScript: (url) => addExternalScript(url),
         addExternalStylesheet: (url) => addExternalStylesheet(url),
+        setGameStylesheet: (css) => setGameStylesheet(css),
         preparePlayerUi: (choice) => preparePlayerUi(choice),
         loadHtml: (html) => playerUi.loadHtml(html),
         markScrollPosition: () => playerUi.markScrollPosition(),

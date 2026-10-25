@@ -241,6 +241,10 @@ public partial class WasmPlayerBridge
                 JsAddExternalStylesheet(stylesheet);
         }
 
+        // Every Initialise, so a restart or a restored save gets it back, and a game without one
+        // clears what the last game had.
+        JsSetGameStylesheet(_game.GetGameStylesheet() ?? "");
+
         return true;
     }
 
@@ -536,6 +540,9 @@ public partial class WasmPlayerBridge
 
     [JSImport("addExternalScript", "wasm-player")]
     internal static partial Task JsAddExternalScript(string url);
+
+    [JSImport("setGameStylesheet", "wasm-player")]
+    internal static partial void JsSetGameStylesheet(string css);
 
     [JSImport("addExternalStylesheet", "wasm-player")]
     internal static partial void JsAddExternalStylesheet(string url);

@@ -143,6 +143,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-appshell-advanced-controls.mjs http://localhost:5174
         working-directory: tests/e2e
+      - run: node verify-appshell-game-stylesheet.mjs http://localhost:5174
+        working-directory: tests/e2e
       - run: node verify-appshell-assetpicker-mobile-overflow.mjs http://localhost:5174
         working-directory: tests/e2e
       - run: node verify-appshell-attributes-add-type-excludes-defaults.mjs http://localhost:5174
@@ -519,6 +521,8 @@ jobs:
       - run: node verify-wasmplayer-v2-layout.mjs http://localhost:5175
         working-directory: tests/e2e
       - run: node verify-wasmplayer-v2-themes.mjs http://localhost:5175
+        working-directory: tests/e2e
+      - run: node verify-wasmplayer-v2-game-stylesheet.mjs http://localhost:5175
         working-directory: tests/e2e
 
   # Real, packaged Electron app (Playwright's _electron launcher) — macos-

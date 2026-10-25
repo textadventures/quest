@@ -666,6 +666,11 @@ public partial class WorldModel : IGame, IGameDebug
         return result;
     }
 
+    // From 610, game.stylesheet is the game's own CSS, edited on the game's Interface tab. An older
+    // game may use that attribute name for something of its own.
+    public string? GetGameStylesheet() =>
+        Version >= WorldModelVersion.v610 ? Game.Fields.GetString("stylesheet") : null;
+
     public Task<byte[]> SaveAsync(string html)
     {
         var saveData = Save(SaveMode.SavedGame, html: html);

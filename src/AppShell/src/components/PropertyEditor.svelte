@@ -983,6 +983,20 @@
         <div class="flex-1 min-w-0 overflow-hidden">
             <ScriptEditor elementKey={$selectedKey} attribute={ctrl.attribute} />
         </div>
+    {:else if ctrl.controlType === "csseditor" && ctrl.attribute !== null}
+        <!-- The game's stylesheet (game.stylesheet), kept in the game itself rather than in a file:
+             the player applies it over its own styles. -->
+        <div class="w-full min-h-48">
+            <CodeEditor
+                value={attrValue(ctrl.attribute) ?? ""}
+                language="css"
+                onChange={(v) => {
+                    if (v !== (attrValue(ctrl.attribute!) ?? "")) onTextChange(ctrl.attribute!, ctrl.controlType, v, true);
+                }}
+                minHeight="12rem"
+                class="h-full"
+            />
+        </div>
     {:else if ctrl.controlType === "texteditor" && ctrl.attribute !== null}
         {@const filename = attrValue(ctrl.attribute)}
         <!-- The same control type drives both file kinds: a Javascript element's src (.js — the
@@ -1210,7 +1224,7 @@
             </div>
         {:else}
             {@const label = ctrl.caption ?? ctrl.attribute}
-            {@const isMultiline = ctrl.controlType === "richtext" || ctrl.controlType === "script" || ctrl.controlType === "texteditor" || ctrl.controlType === "list" || ctrl.controlType === "stringdictionary" || ctrl.controlType === "scriptdictionary" || ctrl.controlType === "gamebookoptions"}
+            {@const isMultiline = ctrl.controlType === "richtext" || ctrl.controlType === "script" || ctrl.controlType === "texteditor" || ctrl.controlType === "csseditor" || ctrl.controlType === "list" || ctrl.controlType === "stringdictionary" || ctrl.controlType === "scriptdictionary" || ctrl.controlType === "gamebookoptions"}
             {@const stacksBelowLabel = label.length > 20 || isMultiline}
             {#if stacksBelowLabel}
                 <div class="flex flex-col gap-1 px-3 py-1.5">

@@ -272,6 +272,18 @@ The built-in themes and pane themes keep WCAG AA contrast, except `theme_hotdogs
 - After a restore, the recorded values still come from the save, so earlier text keeps inheriting the starting colour.
 - The command bar's style is always written in full, because a text input doesn't inherit the page's font, except for the default colours.
 
+## Game stylesheet
+
+A 610 game's own CSS is its `stylesheet` attribute, a string on `game`, edited as CSS under Advanced on the game's Interface tab (#2613, decision 6). It's saved and packaged like any other attribute, and like any other a script can change it, though it's only reapplied on the next start or restore.
+
+The host applies it, not the UI and not Core, so it needs no `QuestUI` call:
+
+- On every `Initialise` (start, restart and restoring a save), the host sets it as one `<style id="qv-game-stylesheet">` at the end of `<head>`, after the player UI's own styles, and removes it for a game without one.
+- It isn't in a cascade layer, so on v2 (whose CSS is all in `qv.*` layers) the author's rules win over v2's whatever their specificity, without `!important`. On legacy, whose CSS isn't layered, it wins on order at equal specificity.
+- It's read only from 610, since an older game may use the attribute name for something of its own (`IGame.GetGameStylesheet`).
+
+What it may rely on is the rest of this contract: the `--qv-*` tokens and the `data-qv-part` names. Anything else in a UI's DOM is internal.
+
 ## Part names
 
 Elements carry `data-qv-part`. Authors may select on part names (and on `data-qv-pane` for a specific pane), and `setVisible`/`setPaneOrder` take them. IDs and classes stay internal. Both UIs carry them. Legacy has no element wrapping a whole pane, so there the part name is on the pane's content, not its heading.
