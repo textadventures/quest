@@ -65,7 +65,10 @@ export function textEffect(kind: string, args: unknown[]): void {
     shown.className = 'qv-text-effect-shown';
     shown.setAttribute('aria-hidden', 'true');
     effect.append(full, shown);
-    output.addNodes([effect, document.createElement('br')]);
+    // For the transcript and outputAdded, it stands for its plain text.
+    const escaped = document.createElement('span');
+    escaped.textContent = text;
+    output.addNodes([effect, document.createElement('br')], `${escaped.innerHTML}<br/>`);
 
     const animate = state.animateScroll && !matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!animate || text === '') {

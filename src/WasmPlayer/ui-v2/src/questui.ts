@@ -1,10 +1,9 @@
 // QuestUI on v2: the 610 UI contract (contract.ts, docs/ui-v2-contract.md).
 //
-// Every member exists, because 610 Core calls whichever it needs. The ones for parts v2 doesn't
-// have yet (the transcript) do nothing for now, which the contract allows:
-// calls describe intent, and unknown names are ignored.
+// Every member exists, because 610 Core calls whichever it needs. Calls describe intent, and
+// unknown names are ignored.
 
-import type { QuestUIContract, QuestUIMap, QuestUITranscript } from './contract';
+import type { QuestUIContract, QuestUIMap } from './contract';
 import { renderCompass } from './compass';
 import type { StatusAttribute } from './contract';
 import { setStatusAttributes } from './status';
@@ -12,6 +11,7 @@ import { sendCommand, sendEvent } from './engine';
 import { mapCall } from './map';
 import { addVimeo, addYouTube } from './media';
 import { textEffect } from './text-effects';
+import { transcript } from './transcript';
 import { setPictureFrame } from './picture-frame';
 import { addPane, setCommands, setPaneContent, setPaneLabel, setPaneOrder } from './panes';
 import { player } from './player';
@@ -43,19 +43,6 @@ const map: QuestUIMap = {
     showCustomLayer: forward('showCustomLayer'),
     clearCustomLayer: forward('clearCustomLayer'),
     clearAllLayers: forward('clearAllLayers'),
-};
-
-const transcript: QuestUITranscript = {
-    write: ignore,
-    enable: ignore,
-    disable: ignore,
-    kill: ignore,
-    revive: ignore,
-    setName: ignore,
-    setPrefix: ignore,
-    stampDateAndTime: ignore,
-    promptForName: ignore,
-    show: ignore,
 };
 
 // ASL lists and dictionaries arrive as JSON values, but an author's JS may pass a JSON string.

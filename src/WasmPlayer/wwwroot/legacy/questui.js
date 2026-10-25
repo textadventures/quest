@@ -251,10 +251,14 @@
         disable: function () { disableTranscript(); },
         kill: function () { killTranscript(); },
         revive: function () { reviveTranscript(); },
-        setName: function (name) { transcriptName = name; },
+        // playercore.js's transcriptName is an implicit global, which strict code can't assign
+        // by its bare name.
+        setName: function (name) { window.transcriptName = name; },
         setPrefix: function (text) { replaceTranscriptString(text); },
         stampDateAndTime: function () { printTranscriptDateAndTime(); },
-        promptForName: function () { loadTranscriptNameInputVal(); },
+        // 610 Core doesn't seed transcriptName as older Core did (through JS.eval), so offer the
+        // game's name until there is one, as v2 does.
+        promptForName: function () { $("#txtCommand").val(window.transcriptName || gameName); },
         show: function (message, linkText) { showTranscript(message, linkText); }
     };
 

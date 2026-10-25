@@ -437,11 +437,92 @@ function applyChromeStrings(dict) {
     });
 }
 
+// ── Transcript ──────────────────────────────────────────────────────────────
+//
+// The player's transcripts ("transcript on"), which the transcript viewer
+// (TranscriptViewer/index.html) lists by name. They belong to the host, so
+// both UIs write to the same store: v2 through WebPlayer.transcript, which
+// QuestUI.transcript.* forwards to, and legacy through its own
+// WriteToTranscript (legacy/player.js), which keeps its own on/off state and
+// text conversion and only uses appendToTranscript here.
+
+// Appends text to the named transcript: localStorage's "questtranscript-<name>",
+// or in Electron a file under userData, since the player window's origin (a
+// local loopback port) isn't guaranteed to stay the same across restarts (see
+// transcript-store.ts; window.electronTranscripts is bridged by
+// player-preload.ts). Returns false if there's nowhere to keep it.
+function appendToTranscript(name, text) {
+    if (navigator.userAgent.includes('Electron/')) {
+        if (window.electronTranscripts) void window.electronTranscripts.append(name, text);
+        return true;
+    }
+    try {
+        const key = 'questtranscript-' + name;
+        localStorage.setItem(key, (localStorage.getItem(key) || '') + text);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+// Output HTML as transcript text, as legacy's writeToTranscript has always
+// stored it: images, image map areas and inputs become their alt text, line
+// breaks become @@@NEW_LINE@@@ (which the viewer turns back into lines), and
+// the rest is its text.
+function transcriptText(html) {
+    const holder = document.createElement('div');
+    holder.innerHTML = html;
+    for (const el of holder.querySelectorAll('img, area, input')) {
+        el.replaceWith(el.getAttribute('alt') || '');
+    }
+    for (const br of holder.querySelectorAll('br')) br.replaceWith('@@@NEW_LINE@@@');
+    return (holder.textContent || '').replace(/ /g, ' ');
+}
+
+let currentGameName = '';
+
+const transcript = {
+    recording: false,
+    // "kill": the game has turned transcripts off for good, until "revive".
+    killed: false,
+    name: '',
+
+    // Each Initialise: 610 Core's InitInterface turns it back on if the game
+    // (or the save being restored) has it on.
+    reset() {
+        this.recording = false;
+        this.killed = false;
+        this.name = '';
+    },
+    enable(name) {
+        if (this.killed) return;
+        this.name = name || this.name || currentGameName || 'Transcript';
+        this.recording = true;
+    },
+    disable() { this.recording = false; },
+    kill() {
+        this.killed = true;
+        this.recording = false;
+    },
+    revive() { this.killed = false; },
+    setName(name) { this.name = name || ''; },
+    write(html) {
+        if (!this.recording || this.killed) return;
+        if (!appendToTranscript(this.name || currentGameName || 'Transcript', transcriptText(html))) {
+            console.error('There is no localStorage. Disabling transcript functionality.');
+            this.kill();
+        }
+    },
+    viewerUrl: 'TranscriptViewer/index.html',
+};
+
 // The WebPlayer object — the host API that the shared playercore.js and
 // player.js call into. The name predates WasmPlayer and is kept as-is.
 window.WebPlayer = {
     gameId: null,
     chromeStrings: null,
+    transcript,
+    appendToTranscript,
 
     initUI() { return playerUi.start(); },
 
@@ -768,6 +849,7 @@ function swapInPlayerUi() {
     // Likewise QuestUI's per-game state (legacy/questui.js): author panes, event listeners,
     // tokens and the hook flags all belong to the old chrome.
     window.resetQuestUIState?.();
+    transcript.reset();
     return startScreenEl;
 }
 
@@ -861,7 +943,10 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
         setTurnPending: (pending) => playerUi.setTurnPending(pending),
         beginPause: (ms) => playerUi.beginPause(ms),
         updateLocation: (loc) => playerUi.updateLocation(loc),
-        setGameName: (name) => playerUi.setGameName(name),
+        setGameName: (name) => {
+            currentGameName = name;
+            playerUi.setGameName(name);
+        },
         clearScreen: () => playerUi.clearScreen(),
         panesVisible: (visible) => playerUi.panesVisible(visible),
         updateStatus: (text) => playerUi.updateStatus(text),
