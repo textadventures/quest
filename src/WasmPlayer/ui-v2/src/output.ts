@@ -53,6 +53,7 @@ export class QvOutput extends HTMLElement {
     addText(html: string): void {
         const block = this.#current ?? this.setAlignment('left');
         block.insertAdjacentHTML('beforeend', html);
+        markUndescribedImages(block);
         applyKnownImageSizes(block);
         decorateLinks(block);
         WebPlayer.transcript?.write(html);
@@ -225,6 +226,13 @@ function stickyHeaderHeight(): number {
 function disableLinks(scope: Element): void {
     for (const link of scope.querySelectorAll('a.cmdlink, a[data-qv-event]')) setLinkEnabled(link, false);
     player()?.verbMenu?.closeIfStale();
+}
+
+// Core's picture command (and a gamebook page's picture) writes an <img> with no alt text, which a
+// screen reader would read out as its file name. Like the picture frame's, it illustrates what
+// the text already says, so it's marked decorative. An author's own alt text is kept.
+function markUndescribedImages(scope: Element): void {
+    for (const img of scope.querySelectorAll('img:not([alt])')) img.setAttribute('alt', '');
 }
 
 // Gives an image the size wasm-player.js found when it preloaded it, so it takes up its real

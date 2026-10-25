@@ -49,6 +49,7 @@ window.notifyQuestUITurn = (started) => {
         output?.removeAttribute('aria-busy');
         emit('turnEnded');
         player()?.commandBar?.focusInput();
+        player()?.focusFirstChoice();
     }
 };
 

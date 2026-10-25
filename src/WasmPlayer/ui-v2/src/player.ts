@@ -110,9 +110,23 @@ export class QvPlayer extends HTMLElement {
     /**
      * QuestUI.setLayoutPreset with sidepanes, nopanes or bottombar: this preset for every width,
      * or for wide widths with another for narrow ones. An unknown name changes nothing.
+     *
+     * gamebook (GamebookCore's, which ignores narrow) is a page in a reading column at every
+     * width: no panes, location, command bar, exits strip or pinned status bar, and the page's
+     * options drawn as choices (v2.css). The command bar is hidden with setVisible, so a
+     * gamebook's GetInput can still show it.
      */
     setLayoutPreset(name: string, narrow?: string): void {
+        if (name === 'gamebook') {
+            this.toggleAttribute('data-qv-gamebook', true);
+            this.#widePreset = this.#narrowPreset = 'nopanes';
+            this.setVisible('command-bar', false);
+            this.setVisible('location', false);
+            this.#updateLayout();
+            return;
+        }
         if (!layoutPresets.includes(name)) return;
+        this.removeAttribute('data-qv-gamebook');
         this.#widePreset = name;
         this.#narrowPreset = narrow != null && layoutPresets.includes(narrow) ? narrow : name;
         this.#updateLayout();
@@ -153,6 +167,23 @@ export class QvPlayer extends HTMLElement {
         const anyStatus = !!statusBar && !statusBar.hidden && statusBar.classList.contains('qv-status-bar-active')
             && getComputedStyle(statusBar).display !== 'none';
         topbar.hidden = (!location || location.hidden) && !anyButton && !anyStatus;
+    }
+
+    /**
+     * After a gamebook page has turned, the link that turned it is disabled and on its way out, so
+     * keyboard focus would be lost: it moves to the new page's first choice instead (without
+     * scrolling to it).
+     */
+    focusFirstChoice(): void {
+        if (!this.hasAttribute('data-qv-gamebook')) return;
+        // Focus somewhere that's staying (not the chosen option, now disabled and fading out) is
+        // left alone.
+        const active = document.activeElement;
+        if (active && active !== document.body && this.contains(active)
+            && !active.closest('.qv-hiding') && !active.classList.contains('disabled')) return;
+        const choice = [...this.querySelectorAll<HTMLElement>('[data-qv-part="output"] [data-qv-sections] a.commandlink:not(.disabled)')]
+            .find((a) => !a.closest('.qv-hiding'));
+        choice?.focus({ preventScroll: true });
     }
 
     get verbMenu(): QvVerbMenu | null {

@@ -1,0 +1,18 @@
+<asl version="610">
+
+  <include ref="GamebookCore.aslx"/>
+
+  <!-- A gamebook that sets its own colours (GamebookColourTokenTests). -->
+  <game name="GamebookOwnColoursTest">
+    <defaultbackground>Black</defaultbackground>
+    <defaultforeground>White</defaultforeground>
+  </game>
+
+  <object name="Page1">
+    <object name="player">
+      <inherit name="defaultplayer"/>
+    </object>
+    <description>The first page.</description>
+  </object>
+
+</asl>

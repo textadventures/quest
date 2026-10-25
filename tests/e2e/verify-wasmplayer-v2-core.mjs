@@ -190,7 +190,7 @@ try {
         }), 'setVisible("location", false) hides the location bar, and an unknown part is ignored');
 
         await send(page, 'unimplemented');
-        check((await outputText(page)).includes('Still playing.'), 'contract members v2 has no part for yet are accepted');
+        check((await outputText(page)).includes('Still playing.'), 'contract calls with nothing to do (a transcript that isn\'t recording) are accepted');
 
         // A save's transcript is restored through the adapter's loadHtml (WorldModel's restore).
         const restored = await page.evaluate(() => {

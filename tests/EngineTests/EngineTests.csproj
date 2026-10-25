@@ -58,6 +58,12 @@
         <None Update="borderlesscolourtest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="gamebookdefaultcolourstest.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="gamebookowncolourstest.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="backgroundcolourtest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>

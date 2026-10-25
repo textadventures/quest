@@ -92,7 +92,6 @@ export const QuestUI: QuestUIContract = {
     // Layout and panes
     setVisible: (part, visible) => player()?.setVisible(String(part), !!visible),
     setPaneOrder: (parts) => setPaneOrder(parsed(parts as string[] | string)),
-    // gamebook, v2's own layout for gamebooks, comes with Phase 3.
     setLayoutPreset: (name, narrow) => player()?.setLayoutPreset(String(name), narrow == null ? undefined : String(narrow)),
     setPictureFrame: (html) => setPictureFrame(String(html ?? '')),
     setInterfaceString,

@@ -169,6 +169,8 @@ v2 draws an attribute with a `value` and a positive `max` as a bar, and shows th
 
 610 Core's `InitInterface` passes two `game` attributes: `layoutpreset`, and `narrowlayoutpreset` for a narrow player when it differs. A game with neither gets `sidepanes` at both widths. `gamebook` (GamebookCore's own) ignores `narrow`.
 
+`gamebook` is a page in a reading column (`--qv-output-width`) at every width, with no panes, location, command bar, exits strip or pinned status bar. The command bar is hidden as `setVisible("command-bar", false)` would, so GamebookCore's `GetInput` can still show it. The page's options, the links GamebookCore puts in its options output section, are drawn as full-width choices, and after a page turns, keyboard focus moves to the new page's first choice. A gamebook with the editor's default colours follows light and dark like any other game: 610 GamebookCore sends its colours only through `InitTextDefaults` (#2627, PR 7).
+
 The presets place the panes region in one of the layout's named regions: `header` (the top bar, picture frame and pinned status bar), `output`, `below-output` (the exits strip and command bar), `side` or `drawer` (`bottombar`'s sheet is a drawer from the bottom). Region names aren't part of the contract yet: placing individual panes in them can be added later.
 
 Legacy has one layout for every width, so it hides the panes for `nopanes` at both widths and otherwise ignores the call.
