@@ -125,7 +125,9 @@ try {
             const style = document.querySelector('qv-player').style;
             return { text: style.getPropertyValue('--qv-text'), font: style.getPropertyValue('--qv-font-body') };
         });
-        check(tokens.text !== '' && tokens.font !== '', `610 Core's InitInterface sets the game's default tokens (${JSON.stringify(tokens)})`);
+        // Colours only once the game has changed one (verify-wasmplayer-v2-themes.mjs), which this
+        // one hasn't.
+        check(tokens.text === '' && tokens.font !== '', `610 Core's InitInterface sets the game's default tokens, but not its default colours (${JSON.stringify(tokens)})`);
 
         await page.evaluate(() => {
             window.seen = { turnStarted: 0, turnEnded: 0, outputAdded: 0, locations: [] };

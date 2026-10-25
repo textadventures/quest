@@ -1,0 +1,52 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- Player UI v2's themes and colour tokens (verify-wasmplayer-v2-themes.mjs). The script serves
+       this with the game inheriting each theme_* type in turn, and with each pane theme, in place
+       of the two markers below. It has a link, a pane item, an exit and a status attribute with
+       a bar, so every coloured part has something in it. -->
+  <game name="V2ThemeTest">
+    <!--THEME-->
+    <!--PANESTHEME-->
+    <showscore type="boolean">true</showscore>
+    <statusattributemaximums type="stringdictionary">
+      <item>
+        <key>health</key>
+        <value>100</value>
+      </item>
+    </statusattributemaximums>
+  </game>
+
+  <object name="hall">
+    <inherit name="editor_room" />
+    <description>A hall, with a {object:lamp} in it.</description>
+    <object name="player">
+      <inherit name="defaultplayer" />
+      <health type="int">70</health>
+      <statusattributes type="stringdictionary">
+        <item>
+          <key>health</key>
+          <value>Health: !%</value>
+        </item>
+      </statusattributes>
+    </object>
+    <object name="lamp">
+      <inherit name="editor_object" />
+      <take />
+    </object>
+    <exit alias="north" to="kitchen">
+      <inherit name="northdirection" />
+    </exit>
+  </object>
+
+  <object name="kitchen">
+    <inherit name="editor_room" />
+    <description>A kitchen.</description>
+    <exit alias="south" to="hall">
+      <inherit name="southdirection" />
+    </exit>
+  </object>
+
+</asl>

@@ -1,0 +1,20 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- A game that changes only its background and menu hover colours (DefaultColourTokenTests). -->
+  <game name="BackgroundColourTest">
+    <showtitle type="boolean">false</showtitle>
+    <defaultbackground>Black</defaultbackground>
+    <menuhoverbackground>Yellow</menuhoverbackground>
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+</asl>

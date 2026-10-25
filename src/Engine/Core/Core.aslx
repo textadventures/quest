@@ -57,9 +57,6 @@
       if (game.setbackgroundopacity) {
         SetBackgroundOpacity (game.backgroundopacity)
       }
-      SetBackgroundColour(game.defaultbackground)
-      SetForegroundColour(game.defaultforeground)
-      SetLinkForegroundColour(game.defaultlinkforeground)
       if (LengthOf(game.backgroundimage) > 0) {
         SetBackgroundImage (game.backgroundimage)
       }
@@ -74,10 +71,14 @@
       JS.QuestUI.setInterfaceString ("NothingSelectedLabel", "[NothingSelectedLabel]")
       JS.QuestUI.setInterfaceString ("TypeHereLabel", "[TypeHereLabel]")
       JS.QuestUI.setInterfaceString ("ContinueLabel", "[ContinueLabel]")
-      AddUIToken (tokens, "--qv-menu-bg", game.menubackground)
-      AddUIToken (tokens, "--qv-menu-fg", game.menuforeground)
-      AddUIToken (tokens, "--qv-menu-hover-bg", game.menuhoverbackground)
-      AddUIToken (tokens, "--qv-menu-hover-fg", game.menuhoverforeground)
+      // The menu colours go together, and only once the game has changed one, as with the text
+      // colours (InitTextDefaults)
+      if (not IsDefaultColour(game.menubackground, "white") or not IsDefaultColour(game.menuforeground, "black") or not IsDefaultColour(game.menuhoverbackground, "lightgrey") or not IsDefaultColour(game.menuhoverforeground, "black")) {
+        AddUIToken (tokens, "--qv-menu-bg", game.menubackground)
+        AddUIToken (tokens, "--qv-menu-fg", game.menuforeground)
+        AddUIToken (tokens, "--qv-menu-hover-bg", game.menuhoverbackground)
+        AddUIToken (tokens, "--qv-menu-hover-fg", game.menuhoverforeground)
+      }
       AddUIToken (tokens, "--qv-menu-font", game.menufont)
       AddUIToken (tokens, "--qv-menu-font-size", game.menufontsize + "pt")
       if (not game.underlinehyperlinks) {
@@ -207,7 +208,9 @@
           colours = Split("white;midnightblue;midnightblue;skyblue", ";")
         }
         case ("Nature") {
-          colours = Split("#A1C935;#254117;#306754;#A1C935;green", ";")
+          // Headings in the pane background's green, not legacy's #306754, which is too faint
+          // against the heading colour to read (WCAG AA)
+          colours = Split("#A1C935;#254117;#254117;#A1C935;green", ";")
         }
         case ("Parchment") {
           colours = Split("#493D26;#FAEBD7;#FAEBD7;#493D26;#C88141", ";")

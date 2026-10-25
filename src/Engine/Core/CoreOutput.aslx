@@ -36,8 +36,16 @@
   </function>
 
   <function name="GetCommandBarFormat" type="string">
-    // In full, defaults included: a text input doesn't inherit the page's font.
-    return (FormatTextStyle(game.defaultforeground, "", false) + ";background:" + game.defaultbackground)
+    <![CDATA[
+      // In full, defaults included: a text input doesn't inherit the page's font. The colours are
+      // left out while they're the editor's defaults, so the UI's own (light or dark) apply.
+      // OutputTextRaw runs this after every line, so it checks inline rather than calling
+      // IsDefaultColour.
+      if (LCase(ToString(game.defaultforeground)) = "black" and LCase(ToString(game.defaultbackground)) = "white") {
+        return (FormatTextStyle("", "", false))
+      }
+      return (FormatTextStyle(game.defaultforeground, "", false) + ";background:" + game.defaultbackground)
+    ]]>
   </function>
 
   <function name="OutputTextNoBr" parameters="text">
@@ -111,12 +119,36 @@
         dictionary add (game.uidefaults, "foreground", game.defaultforeground)
         dictionary add (game.uidefaults, "linkforeground", game.defaultlinkforeground)
       }
-      AddUIToken (tokens, "--qv-text", GetUIDefault("foreground"))
-      AddUIToken (tokens, "--qv-link", GetUIDefault("linkforeground"))
+      // The colours go to the UI only once the game has changed one from the editor's defaults
+      // (black text, blue links, a white background), and then all three together, so a game
+      // that hasn't chosen colours gets the UI's own light or dark ones, and one that has never
+      // gets its text colour on the UI's background. A background opacity needs the colour it
+      // applies to.
+      if (not HasDefaultColours() or game.setbackgroundopacity) {
+        AddUIToken (tokens, "--qv-bg", game.defaultbackground)
+        AddUIToken (tokens, "--qv-text", GetUIDefault("foreground"))
+        AddUIToken (tokens, "--qv-link", GetUIDefault("linkforeground"))
+      }
       AddUIToken (tokens, "--qv-font-body", GetUIDefault("font"))
       if (LengthOf(GetUIDefault("fontsize")) > 0) {
         AddUIToken (tokens, "--qv-font-size", GetUIDefault("fontsize") + "pt")
       }
+    ]]>
+  </function>
+
+  <function name="HasDefaultColours" type="boolean">
+    // Whether the game started with the editor's text and link colours and still has its
+    // background colour (a background set mid-game is kept in saves).
+    return (IsDefaultColour(GetUIDefault("foreground"), "black") and IsDefaultColour(GetUIDefault("linkforeground"), "blue") and IsDefaultColour(game.defaultbackground, "white"))
+  </function>
+
+  <function name="IsDefaultColour" type="boolean" parameters="colour, default">
+    <![CDATA[
+      // A colour the game hasn't set counts as the default.
+      if (colour = null) {
+        return (true)
+      }
+      return (LCase(Trim(ToString(colour))) = default)
     ]]>
   </function>
 
@@ -815,6 +847,9 @@
   <function name="SetBackgroundColour" parameters="colour">
     tokens = NewStringDictionary()
     AddUIToken (tokens, "--qv-bg", colour)
+    // Once the game has chosen a background, its text colours go with it (InitTextDefaults)
+    AddUIToken (tokens, "--qv-text", GetUIDefault("foreground"))
+    AddUIToken (tokens, "--qv-link", GetUIDefault("linkforeground"))
     JS.QuestUI.setTokens (tokens)
     game.defaultbackground = colour
   </function>

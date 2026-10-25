@@ -37,6 +37,12 @@
         <None Update="commandbarformattest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="defaultcolourstest.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="backgroundcolourtest.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="multistatewearabletest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
