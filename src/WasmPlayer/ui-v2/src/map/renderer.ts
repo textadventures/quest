@@ -259,8 +259,9 @@ class SvgMap implements MapRenderer {
         });
     }
 
-    // drawBox(x, y, z, width, height, border, borderWidth, fill, sides): sides is a bit per edge
-    // to draw, N=8, E=4, S=2, W=1.
+    // drawBox(x, y, z, width, height, border, borderWidth, fill, sides, image): sides is a bit per
+    // edge to draw, N=8, E=4, S=2, W=1. image (from 610, #2199) is the room's picture, as a URL,
+    // or "" for none: it covers the room's fill, cropped to the room, under its border and label.
     #drawBox(a: unknown[]): void {
         const [x, y, z, width, height] = [num(a[0]), num(a[1]), num(a[2]), num(a[3]), num(a[4])];
         const level = this.#activate(z);
@@ -270,9 +271,10 @@ class SvgMap implements MapRenderer {
         }
         const corners = [this.#point(x, y), this.#point(x + width, y), this.#point(x + width, y + height), this.#point(x, y + height)];
         const [nw, se] = [corners[0], corners[2]];
-        level.fills.append(svg('rect', {
-            x: nw.x, y: nw.y, width: se.x - nw.x, height: se.y - nw.y, fill: colour(a[7]),
-        }));
+        const box = { x: nw.x, y: nw.y, width: se.x - nw.x, height: se.y - nw.y };
+        level.fills.append(svg('rect', { ...box, fill: colour(a[7]) }));
+        const image = a[9] == null ? '' : String(a[9]).trim();
+        if (image) level.fills.append(svg('image', { ...box, href: image, preserveAspectRatio: 'xMidYMid slice' }));
 
         const borderWidth = num(a[6]);
         if (borderWidth <= 0) return;

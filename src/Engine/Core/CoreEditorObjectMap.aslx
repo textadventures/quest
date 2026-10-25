@@ -29,6 +29,13 @@
     </control>
 
     <control>
+      <controltype>file</controltype>
+      <caption>[EditorObjectMapPicture]</caption>
+      <attribute>grid_image</attribute>
+      <source>[EditorImageFormats]</source>
+    </control>
+
+    <control>
       <controltype>dropdown</controltype>
       <caption>[EditorObjectMapLabelcolour]</caption>
       <attribute>grid_label_colour</attribute>

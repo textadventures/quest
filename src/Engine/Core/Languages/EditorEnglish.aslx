@@ -383,6 +383,7 @@
   <template name="EditorObjectMapWidth">Width</template>
   <template name="EditorObjectMapLength">Length</template>
   <template name="EditorObjectMapFillcolour">Fill colour</template>
+  <template name="EditorObjectMapPicture">Picture</template>
   <template name="EditorObjectMapLabelcolour">Label colour</template>
   <template name="EditorObjectMapBordercolour">Border colour</template>
   <template name="EditorObjectMapBorderwidth">Border width</template>

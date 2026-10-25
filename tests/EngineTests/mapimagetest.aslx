@@ -1,0 +1,30 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- MapRoomPictureTests: a map with a hall that has a picture (grid_image) and a cellar that
+       doesn't. -->
+  <game name="MapImageTest">
+    <gridmap />
+  </game>
+
+  <object name="hall">
+    <inherit name="editor_room" />
+    <grid_image>hall.png</grid_image>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <exit alias="down" to="cellar">
+      <inherit name="downdirection" />
+    </exit>
+  </object>
+
+  <object name="cellar">
+    <inherit name="editor_room" />
+    <exit alias="up" to="hall">
+      <inherit name="updirection" />
+    </exit>
+  </object>
+
+</asl>
