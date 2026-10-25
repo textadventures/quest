@@ -199,7 +199,14 @@
             Grid_DrawRoom (room.parent, redraw, playerobject)
           }
 
-          JS.QuestUI.map.drawBox(Grid_GetGridCoordinateForPlayer(game.pov, room, "x"), Grid_GetGridCoordinateForPlayer(game.pov, room, "y"), Grid_GetGridCoordinateForPlayer(game.pov, room, "z"), room.grid_width, room.grid_length, room.grid_border, room.grid_borderwidth, room.grid_fill, room.grid_bordersides)
+          // A room's picture (#2199) goes last, as the URL to draw it from, or "" for none.
+          image = ""
+          if (HasString(room, "grid_image")) {
+            if (LengthOf(room.grid_image) > 0) {
+              image = GetFileURL(room.grid_image)
+            }
+          }
+          JS.QuestUI.map.drawBox(Grid_GetGridCoordinateForPlayer(game.pov, room, "x"), Grid_GetGridCoordinateForPlayer(game.pov, room, "y"), Grid_GetGridCoordinateForPlayer(game.pov, room, "z"), room.grid_width, room.grid_length, room.grid_border, room.grid_borderwidth, room.grid_fill, room.grid_bordersides, image)
 
           if (LengthOf(room.grid_label) > 0) {
             label_x = Grid_GetGridCoordinateForPlayer(game.pov, room, "x") + room.grid_width/2.0

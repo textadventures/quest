@@ -46,6 +46,9 @@
         <None Update="defaultcolourstest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="mapimagetest.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="backgroundcolourtest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>

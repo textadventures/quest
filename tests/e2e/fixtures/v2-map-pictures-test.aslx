@@ -1,0 +1,43 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- Room pictures on player UI v2's map (verify-wasmplayer-v2-map-pictures.mjs, #2199): a hall
+       with a picture (grid_image), a fill, a border and a label, and a cellar below without one. -->
+  <game name="V2MapPicturesTest">
+    <gridmap />
+    <mapsize type="int">300</mapsize>
+    <mapscale type="int">40</mapscale>
+  </game>
+
+  <object name="hall">
+    <inherit name="editor_room" />
+    <description>A hall.</description>
+    <grid_width type="int">4</grid_width>
+    <grid_length type="int">3</grid_length>
+    <grid_fill>#dbeafe</grid_fill>
+    <grid_borderwidth type="int">2</grid_borderwidth>
+    <grid_label>Hall</grid_label>
+    <grid_image>hall.png</grid_image>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <exit alias="down" to="cellar">
+      <inherit name="downdirection" />
+    </exit>
+  </object>
+
+  <object name="cellar">
+    <inherit name="editor_room" />
+    <description>A cellar.</description>
+    <grid_width type="int">3</grid_width>
+    <grid_length type="int">3</grid_length>
+    <grid_fill>#fef3c7</grid_fill>
+    <grid_label>Cellar</grid_label>
+    <exit alias="up" to="hall">
+      <inherit name="updirection" />
+    </exit>
+  </object>
+
+</asl>

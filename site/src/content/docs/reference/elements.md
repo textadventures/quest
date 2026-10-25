@@ -362,6 +362,7 @@ Object attributes handled by Core.aslx:
 -   [grid\_bordersides](/reference/attributes/all#grid_bordersides)
 -   [grid\_borderwidth](/reference/attributes/all#grid_borderwidth)
 -   [grid\_fill](/reference/attributes/all#grid_fill)
+-   [grid\_image](/reference/attributes/all#grid_image)
 -   [grid\_label](/reference/attributes/all#grid_label)
 -   [grid\_length](/reference/attributes/all#grid_length)
 -   [grid\_parent\_offset\_auto](/reference/attributes/all#grid_parent_offset_auto)

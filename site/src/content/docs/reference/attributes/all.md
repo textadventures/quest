@@ -390,6 +390,10 @@ The attribute value itself encodes the sides as individual bits (for NESW).
 
 "grid\_fill" is a [string](/reference/attributes/types#string) attribute. It specifies the HTML colour name to use for the fill colour for this room on the map.
 
+## grid_image
+
+"grid\_image" is a [string](/reference/attributes/types#string) attribute. It specifies a picture file to draw over this room's fill colour on the map, cropped to fit the room, under its border and label. It's drawn only by the player interface for games saved as version 610 or later.
+
 ## grid_label
 
 "grid\_label" is a [string](/reference/attributes/types#string) attribute. It specifies the text to display in the centre of this room on the map.
