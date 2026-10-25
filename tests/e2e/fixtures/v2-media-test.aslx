@@ -1,0 +1,70 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- Player UI v2's media (verify-wasmplayer-v2-media.mjs): commands embed a YouTube video
+       (ShowYouTube), a Vimeo video, an unlisted Vimeo video (id/hash) and a YouTube id with markup
+       in it, play a sound that holds the turn until it ends, start a looping one and stop it. -->
+  <game name="V2MediaTest">
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <description>A screening room.</description>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+  <command name="youtube">
+    <pattern>youtube</pattern>
+    <script>
+      ShowYouTube ("7vIi0U4rSX4")
+      msg ("YouTube added.")
+    </script>
+  </command>
+
+  <command name="vimeo">
+    <pattern>vimeo</pattern>
+    <script>
+      JS.QuestUI.addVimeo ("76979871")
+      JS.QuestUI.addVimeo ("76979871/abc123")
+      msg ("Vimeo added.")
+    </script>
+  </command>
+
+  <command name="markup">
+    <pattern>markup</pattern>
+    <script><![CDATA[
+      JS.QuestUI.addYouTube ("x\"><img id='injected' src='x'>")
+      msg ("Markup tried.")
+    ]]></script>
+  </command>
+
+  <command name="sound">
+    <pattern>sound</pattern>
+    <script>
+      msg ("Before the sound.")
+      play sound ("short-beep.wav", true, false)
+      msg ("After the sound.")
+    </script>
+  </command>
+
+  <command name="music">
+    <pattern>music</pattern>
+    <script>
+      play sound ("short-beep.wav", false, true)
+      msg ("Music playing.")
+    </script>
+  </command>
+
+  <command name="stopmusic">
+    <pattern>stopmusic</pattern>
+    <script>
+      stop sound
+      msg ("Music stopped.")
+    </script>
+  </command>
+
+</asl>

@@ -327,6 +327,17 @@
         overflow-wrap: break-word;
     }
 
+    /* A video embed (media.ts), fitted to the output at 16:9. */
+    .qv-video {
+        display: block;
+        width: 100%;
+        max-width: 560px;
+        aspect-ratio: 16 / 9;
+        height: auto;
+        margin-block: 0.5em;
+        border: 0;
+    }
+
     [data-qv-part="output"] img {
         max-width: 100%;
     }

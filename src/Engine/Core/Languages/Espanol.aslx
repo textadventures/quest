@@ -741,5 +741,7 @@
   <template name="MapLabel">Mapa</template>
   <template name="MapZoomIn">Acercar</template>
   <template name="MapZoomOut">Alejar</template>
+  <template name="YouTubeVideoTitle">Vídeo de YouTube</template>
+  <template name="VimeoVideoTitle">Vídeo de Vimeo</template>
 
 </library>

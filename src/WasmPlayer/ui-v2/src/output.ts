@@ -7,6 +7,7 @@
 // or its own script files.
 
 import { decorateLinks, deactivate, resetRestoredLinks, setLinkEnabled } from './links';
+import { stopRestoredVideos } from './media';
 import { pictureFramePending } from './picture-frame';
 import { player } from './player';
 import { emit, state } from './state';
@@ -80,7 +81,11 @@ export class QvOutput extends HTMLElement {
 
     /** Restores a saved transcript (getHtml's output). */
     loadHtml(html: string): void {
-        this.innerHTML = html;
+        // Parsed inert in a template first, so restored videos lose their autoplay before they load.
+        const template = document.createElement('template');
+        template.innerHTML = html;
+        stopRestoredVideos(template.content);
+        this.replaceChildren(template.content);
         decorateLinks(this);
         resetRestoredLinks(this);
         // Show where the restored game left off, once it's laid out.
