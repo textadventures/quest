@@ -1,0 +1,49 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- Player UI v2's text effects (verify-wasmplayer-v2-text-effects.mjs): a typewriter with
+       markup in its text, an unscramble, a slow typewriter to interrupt, and a typewriter after
+       the game changes its text colour. -->
+  <game name="V2TextEffectsTest">
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <description>An effects room.</description>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+  <command name="typewriter">
+    <pattern>typewriter</pattern>
+    <script><![CDATA[
+      TextFX_Typewriter ("Hello <b>world</b>, typed one letter at a time.", 40)
+    ]]></script>
+  </command>
+
+  <command name="unscramble">
+    <pattern>unscramble</pattern>
+    <script>
+      TextFX_Unscramble ("A secret message, unscrambled.", 40, 2)
+    </script>
+  </command>
+
+  <command name="slow">
+    <pattern>slow</pattern>
+    <script>
+      TextFX_Typewriter ("This one takes a very long time to finish typing.", 500)
+    </script>
+  </command>
+
+  <command name="red">
+    <pattern>red</pattern>
+    <script>
+      SetForegroundColour ("red")
+      TextFX_Typewriter ("Red text.", 20)
+    </script>
+  </command>
+
+</asl>

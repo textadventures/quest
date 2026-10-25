@@ -327,6 +327,17 @@
         overflow-wrap: break-word;
     }
 
+    /* A text effect (text-effects.ts): its full text for screen readers, hidden from view, and
+       the animated copy everyone else sees. */
+    .qv-text-effect-full {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+    }
+
     /* A video embed (media.ts), fitted to the output at 16:9. */
     .qv-video {
         display: block;

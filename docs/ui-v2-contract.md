@@ -128,6 +128,8 @@ Rules that apply to every member:
 | `addYouTube(id)`, `addVimeo(id)` | `AddYouTube`, `AddVimeo` |
 | `textEffect(kind, …)` with `kind` = `typewriter` or `unscramble` | `TextFX.Typewriter`, `TextFX.Unscramble` |
 
+`textEffect`'s arguments after `kind` are TextFX's own: `typewriter` takes `text, speed, font, color, size` and `unscramble` takes `text, speed, reveal, font, color, size`, with `speed` in milliseconds and `size` in points. An empty `font`, `color` or `size` leaves it as the rest of the game's text has it, and 610 Core passes the game's starting ones that way (#2627, decision 4). Markup in `text` is dropped.
+
 `getDivCount` is dropped: it exists only to keep legacy's div IDs in step after a restore, which the adapter can do itself.
 
 `addText` inserts its HTML as markup. A `<script>` element in it doesn't run on v2, though legacy runs it (jQuery's `append` does). A 610 game runs JavaScript through `JS.eval` or its own script files.

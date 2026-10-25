@@ -914,6 +914,8 @@ TextFX_Typewriter_Internal(text, speed, font, color, size)
 TextFX_Unscramble_Internal(text, speed, reveal, font, color, size)
 ```
 
+For both, an empty font, color or size leaves it as the rest of the game's text has it. [TextFX\_Typewriter](/reference/functions/user-interface#textfx_typewriter) and [TextFX\_Unscramble](/reference/functions/user-interface#textfx_unscramble) pass the game's starting font, colour and size that way.
+
 ## TryOpenClose
 ```quest
 TryOpenClose (boolean open, object)

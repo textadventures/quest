@@ -8,6 +8,7 @@
 
 import { decorateLinks, deactivate, resetRestoredLinks, setLinkEnabled } from './links';
 import { stopRestoredVideos } from './media';
+import { finishRestoredEffects } from './text-effects';
 import { pictureFramePending } from './picture-frame';
 import { player } from './player';
 import { emit, state } from './state';
@@ -57,6 +58,15 @@ export class QvOutput extends HTMLElement {
         emit('outputAdded', { html });
     }
 
+    /** Adds elements v2 has built itself (a text effect), as addText adds markup. */
+    addNodes(nodes: Node[]): void {
+        const block = this.#current ?? this.setAlignment('left');
+        block.append(...nodes);
+        const holder = document.createElement('div');
+        holder.append(...nodes.map((n) => n.cloneNode(true)));
+        emit('outputAdded', { html: holder.innerHTML });
+    }
+
     /** Starts a new block with this alignment (left, center, right or justify). */
     setAlignment(alignment: string): HTMLDivElement {
         // Sections open and close a block each time, often with nothing written in between.
@@ -85,6 +95,7 @@ export class QvOutput extends HTMLElement {
         const template = document.createElement('template');
         template.innerHTML = html;
         stopRestoredVideos(template.content);
+        finishRestoredEffects(template.content);
         this.replaceChildren(template.content);
         decorateLinks(this);
         resetRestoredLinks(this);

@@ -1,6 +1,22 @@
 <library>
   <function name="TextFX_Typewriter" parameters="text, speed">
-    TextFX_Typewriter_Internal (text, speed, GetCurrentFontFamily(), game.defaultforeground, game.defaultfontsize)
+    <![CDATA[
+      // The game's starting font, colour and size are passed as "", as GetCurrentTextFormat leaves
+      // them out of output, so the effect's text inherits them from the UI (#2627, decision 4).
+      font = GetCurrentFontFamily()
+      if (font = GetUIDefault("font")) {
+        font = ""
+      }
+      color = game.defaultforeground
+      if (color = GetUIDefault("foreground")) {
+        color = ""
+      }
+      size = ToString(game.defaultfontsize)
+      if (size = GetUIDefault("fontsize")) {
+        size = ""
+      }
+      TextFX_Typewriter_Internal (text, speed, font, color, size)
+    ]]>
   </function>
 
   <function name="TextFX_Typewriter_Internal" parameters="text, speed, font, color, size">
@@ -8,7 +24,22 @@
   </function>
 
   <function name="TextFX_Unscramble" parameters="text, speed, reveal">
-    TextFX_Unscramble_Internal (text, speed, reveal, GetCurrentFontFamily(), game.defaultforeground, game.defaultfontsize)
+    <![CDATA[
+      // As TextFX_Typewriter, the game's starting font, colour and size are passed as "".
+      font = GetCurrentFontFamily()
+      if (font = GetUIDefault("font")) {
+        font = ""
+      }
+      color = game.defaultforeground
+      if (color = GetUIDefault("foreground")) {
+        color = ""
+      }
+      size = ToString(game.defaultfontsize)
+      if (size = GetUIDefault("fontsize")) {
+        size = ""
+      }
+      TextFX_Unscramble_Internal (text, speed, reveal, font, color, size)
+    ]]>
   </function>
 
   <function name="TextFX_Unscramble_Internal" parameters="text, speed, reveal, font, color, size">

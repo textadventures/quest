@@ -1,0 +1,41 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- TextEffectStyleTests: text effects with the game's starting font, colour and size, and
+       after the game changes them. -->
+  <game name="TextEffectsTest">
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+  <command name="typewriter">
+    <pattern>typewriter</pattern>
+    <script>
+      TextFX_Typewriter ("Typed.", 50)
+    </script>
+  </command>
+
+  <command name="unscramble">
+    <pattern>unscramble</pattern>
+    <script>
+      TextFX_Unscramble ("Unscrambled.", 50, 2)
+    </script>
+  </command>
+
+  <command name="restyle">
+    <pattern>restyle</pattern>
+    <script>
+      SetFontName ("Arial")
+      SetForegroundColour ("red")
+      SetFontSize (20)
+    </script>
+  </command>
+
+</asl>
