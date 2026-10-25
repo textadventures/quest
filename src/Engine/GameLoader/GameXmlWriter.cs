@@ -51,17 +51,9 @@ internal class GameXmlWriter
 
     public void WriteString(string text)
     {
-        // When writing a string containing newlines, the XmlWriter won't indent the ending tag at all.
-        // So, add the right amount of indenting to the end of the string, so that the ending tag will
-        // be indented correctly.
-        if (text.Contains(Environment.NewLine))
-        {
-            for (var i = 0; i < IndentLevel - 1; i++)
-            {
-                text += IndentChars;
-            }
-        }
-
+        // Written exactly as it is. The XmlWriter doesn't indent the ending tag after a string
+        // with newlines in it, but padding the string to line the tag up made the padding part of
+        // the value when it was loaded again, so a multi-line string grew by an indent each save.
         if (UseCDATA(text))
         {
             _writer.WriteCData(text);
