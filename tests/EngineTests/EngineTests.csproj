@@ -52,6 +52,12 @@
         <None Update="texteffectstest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="borderlessdefaulttest.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="borderlesscolourtest.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="backgroundcolourtest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>

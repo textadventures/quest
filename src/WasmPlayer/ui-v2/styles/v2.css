@@ -985,6 +985,29 @@
         font: inherit;
     }
 
+    /* setCommandBarPreset("borderless"): the command is typed straight onto the page after the
+       game's prompt, with no box. An underline in the focus colour still shows where it goes. */
+    [data-qv-preset="borderless"] .qv-command-input {
+        padding-inline: 0;
+        border: 0;
+        border-bottom: 2px solid transparent;
+        border-radius: 0;
+        background-color: transparent;
+    }
+
+    [data-qv-preset="borderless"] .qv-command-input:focus-visible {
+        outline: none;
+        border-bottom-color: var(--qv-focus-ring);
+    }
+
+    /* setCommandBarPreset("shadow"): a glow instead of a border, mixed from the text colour so it
+       shows on a dark background too. */
+    [data-qv-preset="shadow"] .qv-command-input {
+        padding: 0.5rem 0.75rem;
+        border-color: transparent;
+        box-shadow: 0 0 15px 5px color-mix(in srgb, var(--qv-text) 35%, transparent);
+    }
+
     .qv-continue {
         min-height: 44px;
         padding: 0.25rem 1.25rem;

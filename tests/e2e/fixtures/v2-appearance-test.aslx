@@ -1,0 +1,54 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- Player UI v2's backgrounds, web fonts and output sections
+       (verify-wasmplayer-v2-appearance.mjs): a background image at half opacity over a colour
+       blend, the Special Elite web font, a command that switches to another web font, and
+       commands that print inside an output section and then hide it. -->
+  <game name="V2AppearanceTest">
+    <backgroundimage>paper.png</backgroundimage>
+    <setbackgroundopacity />
+    <backgroundopacity type="double">0.5</backgroundopacity>
+    <colourblend />
+    <colourblendtop>#1e3a8a</colourblendtop>
+    <colourblendbottom>#be185d</colourblendbottom>
+    <defaultwebfont>Special Elite</defaultwebfont>
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <description>A decorated room.</description>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+  <command name="webfont">
+    <pattern>webfont</pattern>
+    <script>
+      SetWebFontName ("Press Start 2P")
+      msg ("In a new font.")
+    </script>
+  </command>
+
+  <command name="section">
+    <pattern>section</pattern>
+    <script>
+      game.testsection = StartNewOutputSection()
+      msg ("Inside the section.")
+      EndOutputSection (game.testsection)
+      msg ("After the section.")
+    </script>
+  </command>
+
+  <command name="hidesection">
+    <pattern>hidesection</pattern>
+    <script>
+      HideOutputSection (game.testsection)
+      msg ("Section hidden.")
+    </script>
+  </command>
+
+</asl>

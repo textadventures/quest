@@ -1,0 +1,19 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- Player UI v2's "shadow" command bar preset (verify-wasmplayer-v2-appearance.mjs). -->
+  <game name="V2ShadowTest">
+    <shadowbox />
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <description>A plain room.</description>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+</asl>

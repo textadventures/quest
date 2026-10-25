@@ -1,0 +1,21 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- A game with the borderless command bar that sets its own text and background colours
+       (BorderlessCommandBarTests). -->
+  <game name="BorderlessColourTest">
+    <borderlesscursor />
+    <defaultforeground>Yellow</defaultforeground>
+    <defaultbackground>Navy</defaultbackground>
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+</asl>

@@ -183,6 +183,8 @@ Legacy has one layout for every width, so it hides the panes for `nopanes` at bo
 | `setCommandPrompt(text)` | the `#txtCommandPrompt` HTML eval |
 | `addStylesheet(url)` | `addExternalStylesheet` |
 
+`setCommandBarPreset("borderless")` draws the command input with no box, after `setCommandPrompt`'s prompt, and `"shadow"` gives it a glow instead of a border. On v2 the borderless input keeps a visible focus underline, and the glow is mixed from the text colour, so both suit light and dark. 610 Core sends the borderless input's colour (`--qv-command-fg`) only once the game has set its own colours (#2627, PR 6).
+
 `setTokens` sets each name with `style.setProperty` on the UI root, so values can't inject markup. Names must start with `--qv-` or be an author's own custom property (`--` prefix). One call carries all of `InitInterface`'s options, so they apply in a single style recalculation.
 
 ### Map

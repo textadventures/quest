@@ -158,7 +158,11 @@
       }
       if (game.borderlesscursor) {
         JS.QuestUI.setCommandBarPreset ("borderless")
-        AddUIToken (tokens, "--qv-command-fg", game.defaultforeground)
+        // The typed command matches the game's text, which is the UI's own until the game sets
+        // its colours (InitTextDefaults)
+        if (not HasDefaultColours()) {
+          AddUIToken (tokens, "--qv-command-fg", game.defaultforeground)
+        }
         JS.QuestUI.setCommandPrompt (game.commandcursor)
       }
       else if (game.shadowbox) {
