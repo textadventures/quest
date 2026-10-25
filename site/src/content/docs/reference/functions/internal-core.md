@@ -513,6 +513,11 @@ HandleSingleCommandPattern(command, thiscommand, varlist)
 HandleUseOn(object1, object2)
 ```
 
+## HasDefaultColours
+```quest
+HasDefaultColours()
+```
+
 ## HideOutputSection
 ```quest
 HideOutputSection(name)
@@ -564,6 +569,11 @@ InitTextDefaults (tokens)
 ## InitVerbsList
 ```quest
 InitVerbsList
+```
+
+## IsDefaultColour
+```quest
+IsDefaultColour(colour, default)
 ```
 
 ## IsGameRunning
