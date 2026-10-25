@@ -93,7 +93,6 @@
     <script>
       JS.QuestUI.setPaneOrder (Split("compass;status", ";"))
       JS.QuestUI.transcript.write ("ignored")
-      JS.QuestUI.setLayoutPreset ("gamebook")
       msg ("Still playing.")
     </script>
   </command>

@@ -373,6 +373,32 @@
         pointer-events: none;
     }
 
+    /* The gamebook layout (setLayoutPreset("gamebook")): a page's options are the command links
+       in the output section GamebookCore puts them in, drawn as full-width choices. An option
+       that links to a web address is drawn the same way. */
+    qv-player[data-qv-gamebook] [data-qv-sections] a.commandlink,
+    qv-player[data-qv-gamebook] [data-qv-sections] a[href]:not(.cmdlink) {
+        display: flex;
+        align-items: center;
+        min-height: 44px;
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--qv-border-colour);
+        border-radius: var(--qv-radius);
+        background-color: var(--qv-surface);
+        color: var(--qv-link);
+        text-decoration: none;
+    }
+
+    qv-player[data-qv-gamebook] [data-qv-sections] a.commandlink:hover:not(.disabled),
+    qv-player[data-qv-gamebook] [data-qv-sections] a[href]:not(.cmdlink):hover {
+        border-color: var(--qv-link);
+    }
+
+    qv-player[data-qv-gamebook] [data-qv-sections] a.commandlink.disabled {
+        color: inherit;
+        opacity: 0.6;
+    }
+
     [data-qv-part="output"] a.cmdlink:focus-visible,
     [data-qv-part="output"] [data-qv-popup]:focus-visible {
         outline: 2px solid var(--qv-focus-ring);

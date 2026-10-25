@@ -1,0 +1,44 @@
+<asl version="610">
+
+  <include ref="GamebookCore.aslx"/>
+
+  <!-- Player UI v2's gamebook layout (verify-wasmplayer-v2-gamebook.mjs): a first page with a
+       picture, a YouTube video and a sound, and options to a second page, a page that asks for
+       the player's name (GamebookCore's GetInput), and a web link. The last page is kept on
+       screen when a page turns (clearlastpage is off). -->
+  <game name="V2GamebookTest">
+    <subtitle>A test gamebook</subtitle>
+  </game>
+
+  <object name="Page1">
+    <object name="player">
+      <inherit name="defaultplayer"/>
+    </object>
+    <description>This is the first page.</description>
+    <picture>cover.png</picture>
+    <youtube>7vIi0U4rSX4</youtube>
+    <sound>short-beep.wav</sound>
+    <options type="simplestringdictionary">Page2 = Turn to page two;Ask = Give your name;Site = Visit the website</options>
+  </object>
+
+  <object name="Page2">
+    <description>This is page two.</description>
+    <options type="simplestringdictionary">Page1 = Back to the first page</options>
+  </object>
+
+  <object name="Ask">
+    <inherit name="script" />
+    <script type="script">
+      msg ("What is your name?")
+      GetInput () {
+        msg ("Hello, " + result + ".")
+      }
+    </script>
+  </object>
+
+  <object name="Site">
+    <inherit name="link" />
+    <address>https://example.com/</address>
+  </object>
+
+</asl>

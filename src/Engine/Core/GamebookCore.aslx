@@ -179,9 +179,8 @@
       AddUIToken (tokens, "--qv-padding-left", game.custompaddingleft + "px")
       AddUIToken (tokens, "--qv-padding-right", game.custompaddingright + "px")
     }
-    SetBackgroundColour(game.defaultbackground)
-    SetForegroundColour(game.defaultforeground)
-    SetLinkForegroundColour(game.defaultlinkforeground)
+    // The game's colours go to the UI in InitTextDefaults, only once it has changed one from the
+    // editor's defaults, so a gamebook that hasn't follows the UI's light or dark colours.
     AddUIToken (tokens, "--qv-menu-bg", game.menubackground)
     AddUIToken (tokens, "--qv-menu-fg", game.menuforeground)
     AddUIToken (tokens, "--qv-menu-hover-bg", game.menuhoverbackground)
