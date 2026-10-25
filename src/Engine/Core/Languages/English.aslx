@@ -530,5 +530,7 @@
   <template name="MapLabel">Map</template>
   <template name="MapZoomIn">Zoom in</template>
   <template name="MapZoomOut">Zoom out</template>
+  <template name="YouTubeVideoTitle">YouTube video</template>
+  <template name="VimeoVideoTitle">Vimeo video</template>
 
 </library>

@@ -36,6 +36,8 @@ public static class ChromeStrings
         ["MapLabel"] = "Map",
         ["MapZoomIn"] = "Zoom in",
         ["MapZoomOut"] = "Zoom out",
+        ["YouTubeVideoTitle"] = "YouTube video",
+        ["VimeoVideoTitle"] = "Vimeo video",
     };
 
     public static Dictionary<string, string> Resolve(WorldModel? worldModel)
