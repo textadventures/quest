@@ -81,6 +81,11 @@ export class QvCommandBar extends HTMLElement {
         this.#input.style.cssText = css;
     }
 
+    /** setCommandBarPreset: borderless or shadow. Any other name is ignored. */
+    setPreset(name: string): void {
+        if (name === 'borderless' || name === 'shadow') this.dataset.qvPreset = name;
+    }
+
     updateContinueLabel(): void {
         this.#continue.textContent = textOf(state.interfaceStrings.get('ContinueLabel') ?? '') || 'Continue';
     }

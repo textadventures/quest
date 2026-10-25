@@ -17,8 +17,6 @@ import { addPane, setCommands, setPaneContent, setPaneLabel, setPaneOrder } from
 import { player } from './player';
 import { emit, off, on, state } from './state';
 
-const ignore = (): void => {};
-
 // Each member is passed on to the map's renderer by name (map.ts), with its arguments as they came.
 const forward = (name: string) => (...args: unknown[]): void => mapCall(name, args);
 
@@ -105,7 +103,7 @@ export const QuestUI: QuestUIContract = {
     // Theming
     setTokens: (tokens) => player()?.setTokens(parsed(tokens) ?? {}),
     setCommandBarStyle: (css) => player()?.commandBar?.setStyle(String(css ?? '')),
-    setCommandBarPreset: ignore,
+    setCommandBarPreset: (name) => player()?.commandBar?.setPreset(String(name ?? '')),
     setCommandPrompt: (text) => player()?.commandBar?.setPrompt(String(text ?? '')),
     addStylesheet: (url) => addExternalStylesheet(String(url)),
 
