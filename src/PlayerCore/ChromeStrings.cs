@@ -2,7 +2,7 @@ using QuestViva.Engine;
 
 namespace QuestViva.PlayerCore;
 
-// Player-chrome UI strings (the Save/Load dialog) sourced from the game's own
+// Player-chrome UI strings (the Save/Load dialog, and labels in the player UI itself) sourced from the game's own
 // per-language Core library templates (src/Engine/Core/Languages/*.aslx), so a
 // translation added there is baked into every game published from then on -
 // see WorldModel.GetTemplateText. Defaults here match today's hardcoded
@@ -33,6 +33,9 @@ public static class ChromeStrings
         ["SavedGameDefaultLabel"] = "Saved game — [timestamp]",
         ["CommandInputLabel"] = "Type your command",
         ["ShowPanesButton"] = "Show panels",
+        ["MapLabel"] = "Map",
+        ["MapZoomIn"] = "Zoom in",
+        ["MapZoomOut"] = "Zoom out",
     };
 
     public static Dictionary<string, string> Resolve(WorldModel? worldModel)

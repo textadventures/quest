@@ -1,15 +1,15 @@
 // QuestUI on v2: the 610 UI contract (contract.ts, docs/ui-v2-contract.md).
 //
 // Every member exists, because 610 Core calls whichever it needs. The ones for parts v2 doesn't
-// have yet (map, media, text effects, the transcript) do
-// nothing for now, which the contract allows: calls describe intent, and unknown names are
-// ignored.
+// have yet (media, text effects, the transcript) do nothing for now, which the contract allows:
+// calls describe intent, and unknown names are ignored.
 
 import type { QuestUIContract, QuestUIMap, QuestUITranscript } from './contract';
 import { renderCompass } from './compass';
 import type { StatusAttribute } from './contract';
 import { setStatusAttributes } from './status';
 import { sendCommand, sendEvent } from './engine';
+import { mapCall } from './map';
 import { setPictureFrame } from './picture-frame';
 import { addPane, setCommands, setPaneContent, setPaneLabel, setPaneOrder } from './panes';
 import { player } from './player';
@@ -17,27 +17,30 @@ import { emit, off, on, state } from './state';
 
 const ignore = (): void => {};
 
+// Each member is passed on to the map's renderer by name (map.ts), with its arguments as they came.
+const forward = (name: string) => (...args: unknown[]): void => mapCall(name, args);
+
 const map: QuestUIMap = {
-    show: ignore,
-    respondToClicks: ignore,
-    setInteractive: ignore,
-    setScale: ignore,
-    setCentre: ignore,
-    drawBox: ignore,
-    drawLabel: ignore,
-    drawPlayer: ignore,
-    drawLine: ignore,
-    drawArrow: ignore,
-    drawSquare: ignore,
-    drawShape: ignore,
-    addShapePoint: ignore,
-    drawImage: ignore,
-    drawSvg: ignore,
-    loadSvg: ignore,
-    drawGridLines: ignore,
-    showCustomLayer: ignore,
-    clearCustomLayer: ignore,
-    clearAllLayers: ignore,
+    show: forward('show'),
+    respondToClicks: forward('respondToClicks'),
+    setInteractive: forward('setInteractive'),
+    setScale: forward('setScale'),
+    setCentre: forward('setCentre'),
+    drawBox: forward('drawBox'),
+    drawLabel: forward('drawLabel'),
+    drawPlayer: forward('drawPlayer'),
+    drawLine: forward('drawLine'),
+    drawArrow: forward('drawArrow'),
+    drawSquare: forward('drawSquare'),
+    drawShape: forward('drawShape'),
+    addShapePoint: forward('addShapePoint'),
+    drawImage: forward('drawImage'),
+    drawSvg: forward('drawSvg'),
+    loadSvg: forward('loadSvg'),
+    drawGridLines: forward('drawGridLines'),
+    showCustomLayer: forward('showCustomLayer'),
+    clearCustomLayer: forward('clearCustomLayer'),
+    clearAllLayers: forward('clearAllLayers'),
 };
 
 const transcript: QuestUITranscript = {
@@ -138,7 +141,7 @@ export const QuestUI: QuestUIContract = {
         state.commandPlaceholder = text == null ? null : String(text);
         player()?.commandBar?.updatePlaceholder();
     },
-    setMapInteractive: ignore,
+    setMapInteractive: (on) => mapCall('setInteractive', [on]),
     on,
     off,
 };

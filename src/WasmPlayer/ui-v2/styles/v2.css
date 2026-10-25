@@ -233,6 +233,93 @@
         vertical-align: bottom;
     }
 
+    /* The map (map.ts), under the picture frame and as high as the game asks (map.show), on the
+       game's background like the frame. On a narrow layout it takes at most 40% of the height,
+       and the top bar's map button collapses it. */
+    [data-qv-part="map"] {
+        position: relative;
+        height: var(--qv-map-height, 300px);
+        background-color: color-mix(in srgb, var(--qv-bg) calc(var(--qv-bg-opacity) * 100%), transparent);
+        border-bottom: 1px solid var(--qv-border-colour);
+    }
+
+    qv-player[data-qv-narrow] [data-qv-part="map"] {
+        max-height: 40vh;
+        max-height: 40dvh;
+    }
+
+    qv-player[data-qv-narrow] [data-qv-part="map"].qv-map-collapsed {
+        display: none;
+    }
+
+    .qv-map-view {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+    }
+
+    .qv-map-svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+        user-select: none;
+    }
+
+    /* Dragging pans the map, so a touch on it doesn't scroll the page. */
+    .qv-map-svg.qv-map-interactive {
+        touch-action: none;
+        cursor: grab;
+    }
+
+    .qv-map-svg.qv-map-clickable {
+        cursor: pointer;
+    }
+
+    .qv-map-svg.qv-map-dragging {
+        cursor: grabbing;
+    }
+
+    .qv-map-svg:focus-visible {
+        outline: 2px solid var(--qv-focus-ring);
+        outline-offset: -2px;
+    }
+
+    .qv-map-labels text,
+    .qv-map-label {
+        font-family: var(--qv-font-ui);
+        font-size: 12px;
+    }
+
+    .qv-map-zoom {
+        position: absolute;
+        inset-inline-end: 0.5rem;
+        bottom: 0.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .qv-map-zoom button {
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        border: 1px solid var(--qv-border-colour);
+        border-radius: var(--qv-radius);
+        background-color: var(--qv-bg);
+        color: var(--qv-text);
+        font: 1.25rem/1 var(--qv-font-ui);
+        cursor: pointer;
+    }
+
+    .qv-map-zoom button:hover {
+        background-color: var(--qv-surface);
+    }
+
+    .qv-map-zoom button:focus-visible {
+        outline: 2px solid var(--qv-focus-ring);
+        outline-offset: 2px;
+    }
+
     [data-qv-part="output"] {
         display: block;
         flex: 1 0 auto;

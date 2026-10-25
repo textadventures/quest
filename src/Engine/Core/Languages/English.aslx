@@ -527,5 +527,8 @@
   <template name="SavedGameDefaultLabel">Saved game — [timestamp]</template>
   <template name="CommandInputLabel">Type your command</template>
   <template name="ShowPanesButton">Show panels</template>
+  <template name="MapLabel">Map</template>
+  <template name="MapZoomIn">Zoom in</template>
+  <template name="MapZoomOut">Zoom out</template>
 
 </library>
