@@ -27,6 +27,10 @@ export default defineConfig({
                 baseUrl: "https://github.com/textadventures/quest/edit/main/site/",
             },
             customCss: ["./src/styles/custom.css"],
+            components: {
+                Header: "./src/components/Header.astro",
+                PageFrame: "./src/components/PageFrame.astro",
+            },
             sidebar: [
                 {
                     "label": "Start Here",

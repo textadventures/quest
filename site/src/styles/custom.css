@@ -17,3 +17,41 @@ a.qv-badge:hover {
 	border-color: var(--sl-color-text-accent);
 	color: var(--sl-color-text-accent);
 }
+
+/* IBM Plex Sans, as on textadventures.co.uk, for the family strip and footer */
+@font-face {
+	font-family: 'IBM Plex Sans';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url('/family/ibm-plex-sans-latin-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'IBM Plex Sans';
+	font-style: normal;
+	font-weight: 600;
+	font-display: swap;
+	src: url('/family/ibm-plex-sans-latin-600-normal.woff2') format('woff2');
+}
+
+/* Room for the textadventures.co.uk family strip (FamilyStrip.astro) above Starlight's header */
+:root {
+	--family-strip-height: 2rem;
+	--sl-nav-height: calc(3.5rem + var(--family-strip-height));
+}
+
+@media (min-width: 50rem) {
+	:root {
+		--sl-nav-height: calc(4rem + var(--family-strip-height));
+	}
+}
+
+.page > .header {
+	padding-top: calc(var(--sl-nav-pad-y) + var(--family-strip-height));
+}
+
+/* Keep the phone menu button centred in Starlight's own header, below the strip */
+starlight-menu-button button {
+	top: calc(var(--family-strip-height) + (var(--sl-nav-height) - var(--family-strip-height) - var(--sl-menu-button-size)) / 2);
+}

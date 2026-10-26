@@ -1,0 +1,119 @@
+---
+// Footer across the bottom of every page, in the same style as textadventures.co.uk's own
+---
+
+<footer class="family-footer">
+	<div class="family-footer-inner">
+		<div class="family-footer-columns">
+			<nav aria-labelledby="family-footer-questviva">
+				<h2 id="family-footer-questviva">Quest Viva</h2>
+				<a href="https://play.questviva.com/open">Start creating</a>
+				<a href="/download/">Download the app</a>
+				<a href="/intro/">Documentation</a>
+				<a href="https://github.com/textadventures/quest">GitHub</a>
+			</nav>
+			<nav aria-labelledby="family-footer-play">
+				<h2 id="family-footer-play">Play</h2>
+				<a href="https://textadventures.co.uk/games/platform/quest">Games made with Quest Viva</a>
+				<a href="https://textadventures.co.uk/games/latest">Latest games</a>
+				<a href="https://textadventures.co.uk/games/top">Top rated</a>
+			</nav>
+			<nav aria-labelledby="family-footer-create">
+				<h2 id="family-footer-create">Create</h2>
+				<a href="https://textadventures.co.uk/submit">Publish your game</a>
+				<a href="https://squiffystory.com/">Squiffy</a>
+			</nav>
+			<nav aria-labelledby="family-footer-community">
+				<h2 id="family-footer-community">Community</h2>
+				<a href="https://textadventures.co.uk/community/discord">Discord</a>
+				<a href="https://github.com/orgs/textadventures/discussions">Discussions</a>
+				<a href="https://archive.textadventures.co.uk/forum">Forum archive</a>
+			</nav>
+		</div>
+		<div class="family-footer-bottom">
+			<a href="https://textadventures.co.uk/" class="family-footer-logo">
+				<img src="/family/ta-logo.png" alt="textadventures.co.uk" width="185" height="16" />
+			</a>
+			<span>Quest Viva is free, open source, and part of textadventures.co.uk</span>
+		</div>
+	</div>
+</footer>
+
+<style>
+	/* Above the fixed "On this page" column, whose border otherwise runs down through the footer */
+	.family-footer {
+		position: relative;
+		z-index: 1;
+		margin-top: 4rem;
+		border-top: 1px solid var(--sl-color-hairline-shade);
+		background-color: #14161b;
+		color: #c9ccd2;
+		font-family: 'IBM Plex Sans', var(--sl-font-system);
+		font-size: 0.95rem;
+	}
+
+	/* Leave room for the fixed sidebar on wide screens, like Starlight's .main-frame */
+	.family-footer-inner {
+		margin-inline-start: var(--sl-content-inline-start, 0);
+		padding-inline: var(--sl-nav-pad-x);
+	}
+
+	.family-footer-columns {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+		gap: 2rem;
+		max-width: 72rem;
+		margin-inline: auto;
+		padding: 2.5rem 0 2rem;
+	}
+
+	nav {
+		display: flex;
+		flex-direction: column;
+		gap: 0.4rem;
+	}
+
+	h2 {
+		margin: 0 0 0.35rem;
+		font-family: inherit;
+		font-size: 1rem;
+		font-weight: 600;
+		color: #fff;
+	}
+
+	a {
+		color: #c9ccd2;
+		text-decoration: none;
+	}
+
+	a:hover {
+		color: #fb923c;
+	}
+
+	.family-footer-bottom {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.75rem;
+		max-width: 72rem;
+		margin-inline: auto;
+		padding: 1rem 0 1.5rem;
+		border-top: 1px solid #2a2d35;
+		color: #9ca1ab;
+		font-size: 0.875rem;
+	}
+
+	.family-footer-logo {
+		display: flex;
+		align-items: center;
+		min-height: 32px;
+	}
+
+	.family-footer-logo img {
+		display: block;
+		height: 16px;
+		width: auto;
+		opacity: 0.85;
+	}
+</style>
