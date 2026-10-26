@@ -22,8 +22,15 @@ const page = await browser.newPage();
 page.on('pageerror', err => console.log('[pageerror]', err.message));
 page.on('console', msg => { if (msg.type() === 'error') console.log('[console.error]', msg.text()); });
 
+// /open in vite dev is hundreds of unbundled modules, and the nightly once took more than
+// goto's default 30s to reach "load" for the first one in a fresh Firefox. Every step after a
+// navigation waits for the element it needs anyway, so DOM-ready is all goto has to wait for.
+async function gotoOpen() {
+    await page.goto(`${baseUrl}/open`, { waitUntil: 'domcontentloaded', timeout: 60000 });
+}
+
 async function createDraft(name) {
-    await page.goto(`${baseUrl}/open`);
+    await gotoOpen();
     await page.fill('input[placeholder="Game name"]', name);
     await page.waitForSelector('text=Text adventure', { timeout: 10000 });
     await page.click('button:has-text("Create local draft")');
@@ -31,7 +38,7 @@ async function createDraft(name) {
 }
 
 async function draftCount() {
-    await page.goto(`${baseUrl}/open`);
+    await gotoOpen();
     // refreshDrafts() is async (reads OPFS) — wait for it to actually settle
     // rather than counting immediately, or this races the render.
     await page.locator('text=Your local drafts').waitFor({ timeout: 5000 }).catch(() => {});
@@ -95,7 +102,7 @@ try {
     // (also labelled "Delete", as the primary/danger action) must be clicked
     // directly, scoped to the dialog to avoid matching a different draft
     // row's own "Delete" button.
-    await page.goto(`${baseUrl}/open`);
+    await gotoOpen();
     await page.click('button[title="Delete draft"]');
     await page.locator('div[role="dialog"] button:has-text("Delete")').click();
     await page.waitForTimeout(500);
