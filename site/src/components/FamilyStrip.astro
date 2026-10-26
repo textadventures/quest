@@ -1,0 +1,99 @@
+---
+// Thin bar above the header linking the textadventures.co.uk family of sites (the same strip goes on
+// squiffystory.com). The logo is the link to the games site itself, so there's no separate "Games" link.
+interface Props {
+	current: 'questviva' | 'squiffy';
+}
+const { current } = Astro.props;
+const links = [
+	{ id: 'questviva', label: 'Quest Viva', href: 'https://questviva.com/' },
+	{ id: 'squiffy', label: 'Squiffy', href: 'https://squiffystory.com/' },
+	{ id: 'community', label: 'Community', href: 'https://textadventures.co.uk/community' },
+];
+---
+
+<nav class="family-strip" aria-label="textadventures.co.uk sites">
+	<a class="family-home" href="https://textadventures.co.uk/">
+		<img src="/family/ta-logo.png" alt="textadventures.co.uk" width="185" height="16" />
+	</a>
+	<ul>
+		{
+			links.map((l) => (
+				<li class={l.id === 'community' ? 'family-extra' : undefined}>
+					<a href={l.href} aria-current={l.id === current ? 'page' : undefined}>
+						{l.label}
+					</a>
+				</li>
+			))
+		}
+	</ul>
+</nav>
+
+<style>
+	.family-strip {
+		position: absolute;
+		inset-inline: 0;
+		inset-block-start: 0;
+		height: var(--family-strip-height);
+		display: flex;
+		align-items: center;
+		gap: 1.5rem;
+		padding-inline: var(--sl-nav-pad-x);
+		background-color: #14161b;
+		font-family: 'IBM Plex Sans', var(--sl-font-system);
+		font-size: 0.875rem;
+		white-space: nowrap;
+		overflow: hidden;
+	}
+
+	/* Fill the strip's height so the logo is an easy target, not just the 12px image */
+	.family-home {
+		display: flex;
+		align-items: center;
+		align-self: stretch;
+		flex-shrink: 0;
+	}
+
+	.family-home img {
+		display: block;
+		height: 16px;
+		width: auto;
+	}
+
+	ul {
+		display: flex;
+		gap: 1.25rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	ul a {
+		display: block;
+		padding-block: 0.4rem;
+		color: #c9cdd4;
+		text-decoration: none;
+	}
+
+	ul a:hover {
+		color: #fff;
+	}
+
+	ul a[aria-current='page'] {
+		color: #fff;
+		font-weight: 600;
+		box-shadow: inset 0 -2px 0 #fb923c;
+	}
+
+	@media (max-width: 30rem) {
+		.family-strip {
+			gap: 1rem;
+		}
+		ul {
+			gap: 0.9rem;
+		}
+		.family-extra {
+			display: none;
+		}
+	}
+</style>
