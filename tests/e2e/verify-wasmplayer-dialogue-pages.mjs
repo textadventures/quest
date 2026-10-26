@@ -28,6 +28,13 @@ async function sendCommand(command) {
     await waitUntilCanSendCommand();
     await page.fill('#txtCommand', command);
     await page.press('#txtCommand', 'Enter');
+    // runCommand (legacy/playercore.js) clears the box as it accepts a command, so text still
+    // there means it was refused, and the waits and checks after this would be timing a turn that
+    // never started.
+    const leftOver = await page.inputValue('#txtCommand');
+    if (leftOver !== '') {
+        throw new Error(`command ${JSON.stringify(command)} was not accepted (still in the command box)`);
+    }
     await waitUntilCanSendCommand();
 }
 
@@ -43,9 +50,15 @@ async function outputSince(startLength) {
     return (await output()).slice(startLength);
 }
 
-async function expectInOutput(text, label) {
-    const out = await output();
-    if (!out.includes(text)) {
+// Polls rather than reading once: on a slow CI runner the turn's text can reach #divOutput a
+// moment after canSendCommand flips back. `since` scopes the check to output printed after that
+// length checkpoint, for text an earlier turn already printed.
+async function expectInOutput(text, label, since = 0) {
+    try {
+        await page.waitForFunction(([t, start]) => document.getElementById('divOutput').textContent.slice(start).includes(t),
+            [text, since], { timeout: 5000 });
+    } catch {
+        const out = await output();
         throw new Error(`${label}: expected output to contain ${JSON.stringify(text)}, tail: ${out.slice(-300)}`);
     }
     console.log(`PASS: ${label}`);
@@ -124,9 +137,11 @@ async function run() {
     }, { timeout: 5000 });
     console.log('PASS: previous page option links are hidden after a choice');
 
-    // Typed option number.
+    // Typed option number. The intro page's options were printed once already, so only count
+    // them if this turn printed them again.
+    const beforeTypedOption = (await output()).length;
     await sendCommand('1');
-    await expectInOutput('2: Ask about the castle', 'typed option number returns to the intro page');
+    await expectInOutput('2: Ask about the castle', 'typed option number returns to the intro page', beforeTypedOption);
 
     // Non-option command with allowCancel off: refused, not executed.
     await sendCommand('marker');
