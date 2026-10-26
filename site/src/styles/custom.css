@@ -51,6 +51,11 @@ a.qv-badge:hover {
 	padding-top: calc(var(--sl-nav-pad-y) + var(--family-strip-height));
 }
 
+/* Starlight sizes the logo from the nav height, which now includes the strip */
+.site-title img {
+	height: calc(var(--sl-nav-height) - var(--family-strip-height) - 2 * var(--sl-nav-pad-y));
+}
+
 /* Keep the phone menu button centred in Starlight's own header, below the strip */
 .sl-menu-button {
 	top: calc(var(--family-strip-height) + (var(--sl-nav-height) - var(--family-strip-height) - var(--sl-menu-button-size)) / 2);
