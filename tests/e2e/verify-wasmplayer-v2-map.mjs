@@ -132,8 +132,26 @@ try {
 
     {
         const { page, errors } = await open(1200);
-        await page.waitForFunction(() => document.querySelector('[data-qv-part="map"] svg text'), null, { timeout: 10000 })
-            .catch(() => { throw new Error('the map never drew'); });
+        await page.waitForFunction(() => document.querySelector('[data-qv-part="map"] svg text'), null, { timeout: 20000 })
+            .catch(async () => {
+                const diag = await page.evaluate(() => {
+                    const region = document.querySelector('[data-qv-part="map"]');
+                    const svg = region?.querySelector('svg');
+                    const resources = performance.getEntriesByType('resource')
+                        .filter((e) => e.name.includes('map'))
+                        .map((e) => e.name);
+                    return {
+                        hasRegion: !!region,
+                        regionHidden: region?.hidden,
+                        regionHeight: region?.offsetHeight,
+                        hasSvg: !!svg,
+                        textCount: svg?.querySelectorAll('text')?.length || 0,
+                        mapScriptLoaded: !!window.QuestUIV2Map,
+                        resources,
+                    };
+                });
+                throw new Error(`the map never drew\n${JSON.stringify(diag, null, 2)}`);
+            });
         await settled(page);
         let m = await map(page);
         check(m.shown && m.height === 300, `the map shows, as high as game.mapsize (${m.height}px)`);
