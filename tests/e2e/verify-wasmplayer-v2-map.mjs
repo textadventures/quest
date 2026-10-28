@@ -134,12 +134,13 @@ try {
         const { page, errors } = await open(1200);
         await page.waitForFunction(() => document.querySelector('[data-qv-part="map"] svg text'), null, { timeout: 20000 })
             .catch(async () => {
-                const diag = await page.evaluate(() => {
+                const diag = await page.evaluate(async () => {
                     const region = document.querySelector('[data-qv-part="map"]');
                     const svg = region?.querySelector('svg');
                     const resources = performance.getEntriesByType('resource')
                         .filter((e) => e.name.includes('map'))
-                        .map((e) => e.name);
+                        .map((e) => `${e.name} (${e.responseStatus ?? '?'}, ${e.transferSize}B, ${Math.round(e.duration)}ms)`);
+                    const refetch = await fetch('/v2/map.js').then((r) => `${r.status} ${r.headers.get('content-type')} ${r.headers.get('content-length')}`, (e) => String(e));
                     return {
                         hasRegion: !!region,
                         regionHidden: region?.hidden,
@@ -148,9 +149,10 @@ try {
                         textCount: svg?.querySelectorAll('text')?.length || 0,
                         mapScriptLoaded: !!window.QuestUIV2Map,
                         resources,
+                        refetch,
                     };
                 });
-                throw new Error(`the map never drew\n${JSON.stringify(diag, null, 2)}`);
+                throw new Error(`the map never drew\n${JSON.stringify({ ...diag, errors }, null, 2)}`);
             });
         await settled(page);
         let m = await map(page);
