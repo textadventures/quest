@@ -371,6 +371,8 @@
                 panesVisible(false);
             }
         },
+        // Legacy has one place for the map.
+        setMapPosition: function () { },
         setPictureFrame: function (html) { setPanelContents(html); },
         setInterfaceString: function (name, text) { setInterfaceString(name, text); },
         setCompassDirections: function (list) { setCompassDirections(list); },

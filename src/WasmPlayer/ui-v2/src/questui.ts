@@ -8,7 +8,7 @@ import { renderCompass } from './compass';
 import type { StatusAttribute } from './contract';
 import { setStatusAttributes } from './status';
 import { sendCommand, sendEvent } from './engine';
-import { mapCall } from './map';
+import { mapCall, setMapPosition } from './map';
 import { addVimeo, addYouTube } from './media';
 import { textEffect } from './text-effects';
 import { transcript } from './transcript';
@@ -93,6 +93,7 @@ export const QuestUI: QuestUIContract = {
     setVisible: (part, visible) => player()?.setVisible(String(part), !!visible),
     setPaneOrder: (parts) => setPaneOrder(parsed(parts as string[] | string)),
     setLayoutPreset: (name, narrow) => player()?.setLayoutPreset(String(name), narrow == null ? undefined : String(narrow)),
+    setMapPosition: (position) => setMapPosition(String(position ?? '')),
     setPictureFrame: (html) => setPictureFrame(String(html ?? '')),
     setInterfaceString,
     setCompassDirections: (list) => setCompassDirections(parsed(list as string[] | string)),

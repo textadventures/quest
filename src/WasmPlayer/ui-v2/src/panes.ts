@@ -137,14 +137,17 @@ export function setCommands(list: string[] | string): void {
 
 /** QuestUI.setPaneContent: an author pane's HTML, or the custom status pane's. */
 export function setPaneContent(id: string, html: string): void {
-    if (id !== 'customstatus' && builtInPanes.includes(id)) return;
+    if (id === 'map' || (id !== 'customstatus' && builtInPanes.includes(id))) return;
     pane(id)?.setContent(html);
 }
 
-/** QuestUI.addPane: an author's pane, after the built-in ones. An existing name is ignored. */
+/**
+ * QuestUI.addPane: an author's pane, after the built-in ones. An existing name is ignored, as is
+ * "map", the name of the map's own pane (setMapPosition).
+ */
 export function addPane(id: string, title?: string, html?: string): void {
     const region = player()?.panes;
-    if (!id || !region || pane(id)) return;
+    if (!id || id === 'map' || !region || pane(id)) return;
     const element = document.createElement('qv-pane') as QvPane;
     element.dataset.qvPane = id;
     element.setAttribute('label', title ?? id);

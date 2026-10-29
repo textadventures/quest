@@ -86,6 +86,7 @@ export interface QuestUIContract {
     setVisible(part: string, visible: unknown): void;
     setPaneOrder(parts: string[] | string): void;
     setLayoutPreset(name: string, narrow?: string): void;
+    setMapPosition(position: string): void;
     setPictureFrame(html: string): void;
     setInterfaceString(name: string, text: string): void;
     setCompassDirections(list: string[] | string): void;

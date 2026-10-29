@@ -293,13 +293,14 @@ v2's defaults, light and dark (`--qv-surface`, `--qv-page-bg` and `--qv-border-c
 |---|---|---|
 | `--qv-text` | `#1a1a1a` | `#e4e4e7` |
 | `--qv-bg` | `#ffffff` | `#18181b` |
-| `--qv-accent` | `#1d4ed8` | `#93c5fd` |
+| `--qv-accent` | `#1f6f78` | `#7cc4cc` |
 | `--qv-link` | `--qv-accent` | the same |
 | `--qv-surface`, `--qv-page-bg` | 5% text over the background | the same |
 | `--qv-border-colour` | 20% text over the background | the same |
-| `--qv-status-fg` / `--qv-status-bg` | `#ffffff` / `#3f3f46` | `#ffffff` / `#27272a` |
-| `--qv-pane-fg`, `--qv-pane-heading-fg`, `--qv-menu-fg` | `--qv-text` | the same |
-| `--qv-pane-bg`, `--qv-pane-heading-bg` | `--qv-surface` | the same |
+| `--qv-status-fg` / `--qv-status-bg` | `--qv-text` / `--qv-bg` | the same |
+| `--qv-pane-fg`, `--qv-menu-fg` | `--qv-text` | the same |
+| `--qv-pane-heading-fg` | 68% text over the background | the same |
+| `--qv-pane-bg`, `--qv-pane-heading-bg` | `transparent` (the panes sit on `--qv-page-bg`) | the same |
 | `--qv-menu-bg` / `--qv-menu-hover-bg` / `--qv-menu-hover-fg` | `--qv-bg` / `--qv-accent` / `--qv-bg` | the same |
 | `--qv-pane-highlight` | `#f59e0b` | the same |
 | `--qv-focus-ring` | `#2563eb` | `#60a5fa` |
@@ -339,7 +340,7 @@ Elements carry `data-qv-part`. Authors may select on part names (and on `data-qv
 | `location` | the location bar | `location` inside `qv-status` |
 | `border` | the frame around the game | `gameBorder` |
 | `panes` | the whole pane region | `gamePanes` |
-| `pane` + `data-qv-pane=` `inventory`, `objects`, `status`, `compass`, `commands`, `customstatus`, or an author pane's ID | one pane | `inventory*`, `placesObjects*`, `statusVars*`, `compass*`, `commandPane`, `customStatusPane` |
+| `pane` + `data-qv-pane=` `inventory`, `objects`, `status`, `compass`, `commands`, `customstatus`, `map` (with `setMapPosition("panes")`), or an author pane's ID | one pane | `inventory*`, `placesObjects*`, `statusVars*`, `compass*`, `commandPane`, `customStatusPane` |
 | `exits` | the exits strip (#2581) | `qv-exits` |
 | `picture-frame` | the picture frame | `gamePanel` |
 | `map` | the map, above the game or in the panes region (`setMapPosition`) | `gridPanel` |

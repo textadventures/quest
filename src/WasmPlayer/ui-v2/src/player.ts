@@ -148,6 +148,8 @@ export class QvPlayer extends HTMLElement {
         // Moving into a new layout isn't the drawer opening or closing, so it isn't animated.
         this.toggleAttribute('data-qv-layout-changing', true);
         this.dataset.qvLayout = layout;
+        // A map kept in the panes goes back to the header in a layout without them.
+        updateMap();
         requestAnimationFrame(() => requestAnimationFrame(() => this.removeAttribute('data-qv-layout-changing')));
         // The exits strip and pinned status bar show only where the panes aren't beside the game.
         updateExitStrip();
@@ -212,7 +214,7 @@ export class QvPlayer extends HTMLElement {
         return this.querySelector('[data-qv-part="picture-frame"]');
     }
 
-    /** The map (map.ts), under the picture frame. */
+    /** The map (map.ts), under the picture frame or in its own pane. */
     get map(): HTMLElement | null {
         return this.querySelector('[data-qv-part="map"]');
     }
@@ -258,6 +260,7 @@ export class QvPlayer extends HTMLElement {
             case 'panes':
                 this.#setHidden(this.panes, !visible);
                 if (!visible) setDrawerOpen(false, { restoreFocus: false });
+                updateMap();
                 this.#updatePanesButton();
                 break;
             default:
@@ -304,6 +307,10 @@ export class QvPlayer extends HTMLElement {
             if (lengthTokens.has(name) && /^-?(\d+\.?\d*|\.\d+)$/.test(value)) value += 'px';
             this.style.setProperty(name, value);
         }
+        // Under the dark scheme, a game's own accent is lightened unless it has its own
+        // background too (v2.css).
+        this.toggleAttribute('data-qv-own-accent', !!this.style.getPropertyValue('--qv-accent'));
+        this.toggleAttribute('data-qv-own-background', !!this.style.getPropertyValue('--qv-bg'));
     }
 
     setLocation(html: string): void {

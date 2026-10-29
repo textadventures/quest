@@ -71,7 +71,14 @@ try {
     }
     const items = (page, name) => page.evaluate((n) => [...document.querySelectorAll(`qv-pane[data-qv-pane="${n}"] .qv-pane-item`)]
         .map((b) => b.textContent), name);
-    const paneText = (page, name) => page.evaluate((n) => document.querySelector(`qv-pane[data-qv-pane="${n}"]`)?.innerText.trim() ?? null, name);
+    // A pane's heading as written (v2 shows it in capitals), then its body as shown.
+    const paneText = (page, name) => page.evaluate((n) => {
+        const element = document.querySelector(`qv-pane[data-qv-pane="${n}"]`);
+        if (!element) return null;
+        const heading = element.querySelector('summary');
+        const label = heading && heading.offsetParent !== null ? heading.textContent.trim() : '';
+        return [label, element.querySelector('.qv-pane-body').innerText.trim()].filter(Boolean).join('\n');
+    }, name);
 
     // ── Wide ────────────────────────────────────────────────────────────────
 
