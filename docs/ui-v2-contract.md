@@ -30,7 +30,7 @@ A 610 `.quest` package inlines whatever Core it was published with. If any 6.1 r
 
 ### 2. Legacy needs a `QuestUI` implementation too
 
-610 games play on legacy until Phase 5, and after it any game with `classicinterface` still plays on legacy. Once 610 Core goes through `QuestUI`, legacy has to implement it: a thin adapter over its existing functions (`setPaneVisible("compass", false)` → `$("#compassLabel, #compassAccordion").hide()`, and so on). Phase 1 should include it.
+610 games play on v2 (since 2026-10-29), and any game with `classicinterface` plays on legacy. Once 610 Core goes through `QuestUI`, legacy has to implement it: a thin adapter over its existing functions (`setPaneVisible("compass", false)` → `$("#compassLabel, #compassAccordion").hide()`, and so on). Phase 1 should include it.
 
 So "legacy is frozen" means its *existing* behaviour is frozen. Legacy still gains the `QuestUI` adapter, and that adapter follows the contract's additions. Where an addition has no sensible legacy equivalent (e.g. a layout preset), the legacy adapter accepts the call and does nothing. That's allowed, because contract calls describe intent, not guaranteed visuals.
 
@@ -343,7 +343,7 @@ That gives the order of work:
 3. The 610 Core rewrite (`InitInterface`, output, status, transcript, grid, link markup) lands once both UIs implement every member it calls. It can be split into several PRs, since nothing ships in between, but all of it must land before the first 6.1 release. The map members are frozen with today's Grid arguments, so #2437 doesn't block it.
 4. The first 6.1 release ships. From then on, additions only.
 
-v2 still only becomes the default for 610 at Phase 5, which can come after the first beta: until then 610 games play on legacy through its `QuestUI` adapter.
+v2 became the default for 610 on 2026-10-29, ahead of Phase 5's parity work, which still has to be done before any 6.1 release. A 610 game with `classicinterface` plays on legacy through its `QuestUI` adapter.
 
 ## Decisions
 

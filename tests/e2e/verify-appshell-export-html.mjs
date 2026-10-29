@@ -233,7 +233,8 @@ try {
     page2.on('pageerror', err => bootErrors.push(String(err)));
     page2.on('requestfailed', req => bootErrors.push(`fail ${req.url()} ${req.failure()?.errorText}`));
     try {
-        await page2.waitForSelector('#txtCommand, #divOutput, .compassbutton', { timeout: 120000 });
+        // A new game is 610, so it plays on v2; either UI's command bar or output will do
+        await page2.waitForSelector('qv-command-bar input, qv-output, #txtCommand, #divOutput', { timeout: 120000 });
     } catch (err) {
         const body = await page2.evaluate(() => document.body?.innerText?.slice(0, 2000) ?? '');
         console.log('boot body:', body);

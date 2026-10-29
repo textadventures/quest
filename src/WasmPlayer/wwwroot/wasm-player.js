@@ -737,8 +737,9 @@ function playerUiOverride() {
 
 // Fetches a bundle's files into the HTTP cache, at low priority and without running them, so
 // loading the bundle once the game has been chosen doesn't add a round trip after the engine
-// has loaded it. Every game gets the legacy UI until v2 is the 610 default (Phase 5 of #2584),
-// so boot prefetches that one, or the one ?ui= forces.
+// has loaded it. Boot doesn't know the game's version yet, so it guesses: a game from the
+// editor's Preview was saved by this version, so it's 610 or later and gets v2, while most other
+// games are older and get legacy. ?ui= settles it.
 function prefetchPlayerUi(name) {
     const bundle = playerUiBundles[name];
     for (const path of [bundle.html, ...bundle.styles, ...bundle.scripts]) {
@@ -938,7 +939,7 @@ function preloadRuntime() {
 async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, isPreview = false, recordWalkthrough = null, runWalkthrough = null, adjacentFiles = null, allowDebug = false) {
     currentIsPreview = isPreview;
     currentAllowDebug = allowDebug;
-    prefetchPlayerUi(playerUiOverride() ?? 'legacy');
+    prefetchPlayerUi(playerUiOverride() ?? (isPreview ? 'v2' : 'legacy'));
     const builder = await loadRuntimeBuilder();
     const runtime = await builder.create();
     const { setModuleImports, getAssemblyExports, getConfig } = runtime;

@@ -3,7 +3,10 @@
   <include ref="English.aslx"/>
   <include ref="Core.aslx"/>
 
+  <!-- classicinterface keeps this 610 game on legacy, which is what it tests (and what
+       verify-wasmplayer-ui-selection.mjs checks the opt-out with). -->
   <game name="LegacyQuestUITest">
+    <classicinterface />
   </game>
 
   <object name="room">
