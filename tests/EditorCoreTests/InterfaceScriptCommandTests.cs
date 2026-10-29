@@ -32,7 +32,7 @@ public class InterfaceScriptCommandTests
 
     [TestMethod]
     [DataRow("English", "Interface")]
-    [DataRow("Deutsch", "Oberfläche")]
+    [DataRow("Deutsch", "Interface")]
     [DataRow("Español", "Interfaz")]
     public async Task EachHook_HasACommandInTheInterfaceCategory(string templateName, string category)
     {

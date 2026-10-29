@@ -182,15 +182,21 @@
       }
       JS.QuestUI.setVisible ("panes", game.showpanes)
       // sidepanes, nopanes or bottombar: layoutpreset for every width, or for wide ones when
-      // narrowlayoutpreset gives another for narrow ones
-      if (HasString(game, "layoutpreset") or HasString(game, "narrowlayoutpreset")) {
-        widelayout = "sidepanes"
-        if (HasString(game, "layoutpreset")) {
-          widelayout = game.layoutpreset
+      // narrowlayoutpreset gives another for narrow ones. Empty is the editor's "default".
+      widelayout = ""
+      if (HasString(game, "layoutpreset")) {
+        widelayout = game.layoutpreset
+      }
+      narrowlayout = ""
+      if (HasString(game, "narrowlayoutpreset")) {
+        narrowlayout = game.narrowlayoutpreset
+      }
+      if (widelayout <> "" or narrowlayout <> "") {
+        if (widelayout = "") {
+          widelayout = "sidepanes"
         }
-        narrowlayout = widelayout
-        if (HasString(game, "narrowlayoutpreset")) {
-          narrowlayout = game.narrowlayoutpreset
+        if (narrowlayout = "") {
+          narrowlayout = widelayout
         }
         JS.QuestUI.setLayoutPreset (widelayout, narrowlayout)
       }

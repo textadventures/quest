@@ -469,6 +469,13 @@
       </control>
 
       <control>
+        <controltype>checkbox</controltype>
+        <onlydisplayif>game.gridmap</onlydisplayif>
+        <caption>[EditorGameMapinteractive]</caption>
+        <attribute>mapinteractive</attribute>
+      </control>
+
+      <control>
         <controltype>title</controltype>
         <caption>[EditorGamePanesCaption]</caption>
       </control>
@@ -477,6 +484,28 @@
         <controltype>checkbox</controltype>
         <caption>[EditorGameShowpanesInventory,]</caption>
         <attribute>showpanes</attribute>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>[EditorGameLayoutPreset]</caption>
+        <attribute>layoutpreset</attribute>
+        <validvalues type="simplestringdictionary">=[EditorGameLayoutSidepanes]; bottombar=[EditorGameLayoutBottombar]; nopanes=[EditorGameLayoutNopanes]</validvalues>
+        <onlydisplayif>game.showpanes</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>[EditorGameNarrowLayoutPreset]</caption>
+        <attribute>narrowlayoutpreset</attribute>
+        <validvalues type="simplestringdictionary">=[EditorGameLayoutSame]; sidepanes=[EditorGameLayoutDrawer]; bottombar=[EditorGameLayoutBottombar]; nopanes=[EditorGameLayoutNopanes]</validvalues>
+        <onlydisplayif>game.showpanes</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>[EditorGameLayoutPresetHelp]</caption>
+        <onlydisplayif>game.showpanes</onlydisplayif>
       </control>
 
       <control>
@@ -541,6 +570,13 @@
       </control>
 
       <control>
+        <controltype>textbox</controltype>
+        <caption>[EditorGameCommandPlaceholder]</caption>
+        <attribute>commandplaceholder</attribute>
+        <onlydisplayif>game.showcommandbar</onlydisplayif>
+      </control>
+
+      <control>
         <controltype>checkbox</controltype>
         <caption>[EditorGameBorderlessCommand]</caption>
         <attribute>borderlesscursor</attribute>
@@ -559,6 +595,29 @@
         <caption>[EditorGameShadowBox]</caption>
         <attribute>shadowbox</attribute>
         <onlydisplayif>game.showcommandbar and not game.borderlesscursor</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>title</controltype>
+        <caption>[EditorGameOutputCaption]</caption>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameAutoscroll]</caption>
+        <attribute>autoscroll</attribute>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameContinueonclick]</caption>
+        <attribute>continueonclick</attribute>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameFadepreviousoutput]</caption>
+        <attribute>fadepreviousoutput</attribute>
       </control>
 
       <control>
@@ -715,6 +774,25 @@
         <caption>[EditorGameClearpicture]</caption>
         <attribute>clearframe</attribute>
         <onlydisplayif>game.feature_pictureframe</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>title</controltype>
+        <caption>[EditorGamePlayerInterfaceTitle]</caption>
+        <advanced/>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameClassicinterface]</caption>
+        <attribute>classicinterface</attribute>
+        <advanced/>
+      </control>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>[EditorGameClassicinterfaceHelp]</caption>
+        <advanced/>
       </control>
 
       <control>
