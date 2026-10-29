@@ -12,5 +12,6 @@
   <include ref="CoreEditorScriptsDrawing.aslx"/>
   <include ref="CoreEditorScriptsDarkness.aslx"/>
   <include ref="CoreEditorScriptsEffects.aslx"/>
+  <include ref="CoreEditorScriptsInterface.aslx"/>
 
 </library>

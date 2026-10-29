@@ -212,6 +212,11 @@
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
             <SubType>Designer</SubType>
         </EmbeddedResource>
+        <None Remove="Core\CoreEditorScriptsInterface.aslx" />
+        <EmbeddedResource Include="Core\CoreEditorScriptsInterface.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <SubType>Designer</SubType>
+        </EmbeddedResource>
         <None Remove="Core\CoreEditorScriptsGameState.aslx" />
         <EmbeddedResource Include="Core\CoreEditorScriptsGameState.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
