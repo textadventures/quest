@@ -22,7 +22,9 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v7
         with:
-          node-version: 'lts/*'
+          # The Node major version Cloudflare Pages builds the site with, so a dependency that
+          # needs a newer Node fails here rather than in the deploy
+          node-version-file: site/.node-version
           cache: 'npm'
           cache-dependency-path: site/package-lock.json
 
