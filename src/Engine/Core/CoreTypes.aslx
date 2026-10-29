@@ -42,6 +42,10 @@
     <panestheme>Classic</panestheme>
     <shadowbox type="boolean">false</shadowbox>
     <respondtogridclicks type="boolean">false</respondtogridclicks>
+    <autoscroll type="boolean">true</autoscroll>
+    <continueonclick type="boolean">false</continueonclick>
+    <fadepreviousoutput type="boolean">false</fadepreviousoutput>
+    <mapinteractive type="boolean">true</mapinteractive>
     <commandcursor>&gt;</commandcursor>
     <moneyformat>$!</moneyformat>
     <classiclocation/>

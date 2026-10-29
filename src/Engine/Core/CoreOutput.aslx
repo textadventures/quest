@@ -839,6 +839,129 @@
     JS.QuestUI.clearScreen()
   </function>
 
+  <!-- The author hooks (QuestUI's own, see docs/ui-v2-contract.md). Each keeps what it set on
+       game as well as telling the UI, since the UI starts afresh on a restore, and InitInterface
+       applies it again from there. -->
+
+  <function name="SetPaneVisible" parameters="part, visible">
+    <![CDATA[
+      // Parts with an Interface tab option keep it in step, so the editor and InitInterface
+      // agree on them. Any other part, an author pane included, is kept in game.hiddenparts.
+      switch (part) {
+        case ("panes") {
+          game.showpanes = visible
+        }
+        case ("location") {
+          game.showlocation = visible
+        }
+        case ("command-bar") {
+          game.showcommandbar = visible
+        }
+        case ("border") {
+          game.showborder = visible
+        }
+        case ("compass") {
+          game.turnoffcompass = not visible
+        }
+        case ("inventory") {
+          game.turnoffinventory = not visible
+        }
+        case ("objects") {
+          game.turnoffplacesandobjects = not visible
+        }
+        case ("commands") {
+          game.commandpane = visible
+        }
+        case ("customstatus") {
+          game.customstatuspane = visible
+        }
+        default {
+          if (game.hiddenparts = null) {
+            game.hiddenparts = NewStringList()
+          }
+          if (visible) {
+            if (ListContains(game.hiddenparts, part)) {
+              list remove (game.hiddenparts, part)
+            }
+          }
+          else if (not ListContains(game.hiddenparts, part)) {
+            list add (game.hiddenparts, part)
+          }
+        }
+      }
+      JS.QuestUI.setVisible (part, visible)
+    ]]>
+  </function>
+
+  <function name="AddPane" parameters="id, title">
+    <![CDATA[
+      if (game.custompanes = null) {
+        game.custompanes = NewStringDictionary()
+      }
+      if (not DictionaryContains(game.custompanes, id)) {
+        dictionary add (game.custompanes, id, title)
+        JS.QuestUI.addPane (id, title, "")
+        if (game.panecontents <> null) {
+          if (DictionaryContains(game.panecontents, id)) {
+            JS.QuestUI.setPaneContent (id, StringDictionaryItem(game.panecontents, id))
+          }
+        }
+      }
+    ]]>
+  </function>
+
+  <function name="SetPaneContent" parameters="id, html">
+    <![CDATA[
+      // An author pane's content, or the custom status pane's
+      if (game.panecontents = null) {
+        game.panecontents = NewStringDictionary()
+      }
+      if (DictionaryContains(game.panecontents, id)) {
+        dictionary remove (game.panecontents, id)
+      }
+      dictionary add (game.panecontents, id, html)
+      JS.QuestUI.setPaneContent (id, html)
+    ]]>
+  </function>
+
+  <function name="SetCommandPane" parameters="commands">
+    <![CDATA[
+      // Each entry is a label, or "label:command" when the command differs from it. A string
+      // of entries separated by ";" works too.
+      if (TypeOf(commands) = "string") {
+        commands = Split(commands, ";")
+      }
+      game.commandpanecommands = commands
+      JS.QuestUI.setCommands (commands)
+      SetPaneVisible ("commands", true)
+    ]]>
+  </function>
+
+  <function name="SetAutoScroll" parameters="on">
+    game.autoscroll = on
+    JS.QuestUI.setAutoScroll (on)
+  </function>
+
+  <function name="SetContinueOnClick" parameters="on">
+    game.continueonclick = on
+    JS.QuestUI.setContinueOnClick (on)
+  </function>
+
+  <function name="SetFadePreviousOutput" parameters="on">
+    game.fadepreviousoutput = on
+    JS.QuestUI.fadePreviousOutput (on)
+  </function>
+
+  <function name="SetCommandPlaceholder" parameters="text">
+    game.commandplaceholder = text
+    JS.QuestUI.setCommandPlaceholder (text)
+  </function>
+
+  <function name="SetMapInteractive" parameters="on">
+    game.mapinteractive = on
+    JS.QuestUI.setMapInteractive (on)
+  </function>
+
   <function name="SetForegroundColour" parameters="colour">
     //request (Foreground, colour)
     game.defaultforeground = colour

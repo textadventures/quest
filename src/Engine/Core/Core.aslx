@@ -172,6 +172,7 @@
       if (game.respondtogridclicks) {
         JS.QuestUI.map.respondToClicks (true)
       }
+      InitAuthorHooks
       JS.QuestUI.setTokens (tokens)
       //
       // -----------------------------------------------------------------------
@@ -239,6 +240,46 @@
         }
       }
   ]]></function>
+
+  <function name="InitAuthorHooks">
+    <![CDATA[
+      // What the author hook functions (SetPaneVisible, AddPane, SetAutoScroll, ... in
+      // CoreOutput) kept on game, applied again to a UI that has just started
+      if (game.custompanes <> null) {
+        foreach (id, game.custompanes) {
+          JS.QuestUI.addPane (id, StringDictionaryItem(game.custompanes, id), "")
+        }
+      }
+      if (game.panecontents <> null) {
+        foreach (id, game.panecontents) {
+          JS.QuestUI.setPaneContent (id, StringDictionaryItem(game.panecontents, id))
+        }
+      }
+      if (game.commandpanecommands <> null) {
+        JS.QuestUI.setCommands (game.commandpanecommands)
+      }
+      if (game.hiddenparts <> null) {
+        foreach (part, game.hiddenparts) {
+          JS.QuestUI.setVisible (part, false)
+        }
+      }
+      if (not game.autoscroll) {
+        JS.QuestUI.setAutoScroll (false)
+      }
+      if (game.continueonclick) {
+        JS.QuestUI.setContinueOnClick (true)
+      }
+      if (game.fadepreviousoutput) {
+        JS.QuestUI.fadePreviousOutput (true)
+      }
+      if (HasString(game, "commandplaceholder")) {
+        JS.QuestUI.setCommandPlaceholder (game.commandplaceholder)
+      }
+      if (not game.mapinteractive) {
+        JS.QuestUI.setMapInteractive (false)
+      }
+    ]]>
+  </function>
 
   <function name="InitUserInterface">
   </function>

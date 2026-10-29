@@ -1,0 +1,50 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- The 610 Core author hook functions (verify-wasmplayer-v2-author-hooks.mjs): "setup" calls
+       them, and saving and loading must bring back what they set, on v2 and legacy. -->
+  <game name="V2AuthorHooksTest">
+    <showpanes />
+    <customstatuspane />
+  </game>
+
+  <command name="setup">
+    <pattern>setup</pattern>
+    <script>
+      AddPane ("clues", "Clues")
+      SetPaneContent ("clues", "No clues yet.")
+      SetPaneContent ("customstatus", "Score: 1")
+      SetCommandPane ("Look;Wait:z")
+      SetPaneVisible ("compass", false)
+      SetCommandPlaceholder ("What now?")
+      msg ("Hooks set.")
+    </script>
+  </command>
+
+  <command name="later">
+    <pattern>later</pattern>
+    <script>
+      SetPaneContent ("clues", "A muddy footprint.")
+      msg ("Later on.")
+    </script>
+  </command>
+
+  <object name="hall">
+    <inherit name="editor_room" />
+    <description>A hall.</description>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <exit alias="north" to="kitchen">
+      <inherit name="northdirection" />
+    </exit>
+  </object>
+
+  <object name="kitchen">
+    <inherit name="editor_room" />
+    <description>A kitchen.</description>
+  </object>
+
+</asl>

@@ -1,0 +1,43 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- A game whose "setup" command calls each author hook function (AuthorHookTests). -->
+  <game name="AuthorHookTest">
+  </game>
+
+  <command name="setup">
+    <pattern>setup</pattern>
+    <script>
+      AddPane ("clues", "Clues")
+      SetPaneContent ("clues", "No clues yet.")
+      SetPaneContent ("customstatus", "Score: 1")
+      SetCommandPane ("Look;Wait:z")
+      SetPaneVisible ("compass", false)
+      SetPaneVisible ("status", false)
+      SetAutoScroll (false)
+      SetContinueOnClick (true)
+      SetFadePreviousOutput (true)
+      SetCommandPlaceholder ("What now?")
+      SetMapInteractive (false)
+    </script>
+  </command>
+
+  <command name="undo hooks">
+    <pattern>undo hooks</pattern>
+    <script>
+      SetPaneVisible ("compass", true)
+      SetPaneVisible ("status", true)
+      SetAutoScroll (true)
+    </script>
+  </command>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+</asl>
