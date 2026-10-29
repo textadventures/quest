@@ -743,5 +743,6 @@
   <template name="MapZoomOut">Alejar</template>
   <template name="YouTubeVideoTitle">Vídeo de YouTube</template>
   <template name="VimeoVideoTitle">Vídeo de Vimeo</template>
+  <template name="GameSaved">Partida guardada.</template>
 
 </library>

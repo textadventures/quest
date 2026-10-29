@@ -532,5 +532,6 @@
   <template name="MapZoomOut">Zoom out</template>
   <template name="YouTubeVideoTitle">YouTube video</template>
   <template name="VimeoVideoTitle">Vimeo video</template>
+  <template name="GameSaved">Game saved.</template>
 
 </library>

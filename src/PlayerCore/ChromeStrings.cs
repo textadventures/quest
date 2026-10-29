@@ -38,6 +38,10 @@ public static class ChromeStrings
         ["MapZoomOut"] = "Zoom out",
         ["YouTubeVideoTitle"] = "YouTube video",
         ["VimeoVideoTitle"] = "Vimeo video",
+        ["GameSaved"] = "Game saved.",
+        // Core's own template, which games already have in every language, standing in for
+        // QuestUI.setInterfaceString("CompassLabel") until the game sets it.
+        ["CompassLabel"] = "Compass",
     };
 
     public static Dictionary<string, string> Resolve(WorldModel? worldModel)

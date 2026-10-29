@@ -437,6 +437,18 @@ function applyChromeStrings(dict) {
     });
 }
 
+// Translates the chrome into the loaded game's language (applyChromeStrings),
+// and sets the page's lang from its LanguageId template, so screen readers
+// pronounce the game and the translated chrome in that language. A game
+// without one (a V4 game, or a library that doesn't set it) stays "en", as
+// its chrome does. Called once the engine has the game, at boot and after a
+// restart, which swaps in fresh markup.
+function applyGameLanguage() {
+    WebPlayer.chromeStrings = JSON.parse(Bridge.GetChromeStringsJson());
+    applyChromeStrings(WebPlayer.chromeStrings);
+    document.documentElement.lang = Bridge.GetLanguageId() || 'en';
+}
+
 // ── Transcript ──────────────────────────────────────────────────────────────
 //
 // The player's transcripts ("transcript on"), which the transcript viewer
@@ -1041,8 +1053,7 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
     // current for the shared GameSaver in playercore.js (default save label,
     // and the snapshot it stashes into the save record for next session's
     // boot prompt — see startGame below).
-    WebPlayer.chromeStrings = JSON.parse(Bridge.GetChromeStringsJson());
-    applyChromeStrings(WebPlayer.chromeStrings);
+    applyGameLanguage();
 
     await maybeGateOnActivation(gameBytes);
 
@@ -1179,6 +1190,9 @@ async function restartGameCore(saveBytes) {
                 : 'Failed to load that save.');
             return;
         }
+
+        // The restarted game has a fresh copy of the UI, still in English.
+        applyGameLanguage();
 
         await maybeGateOnActivation(originalGameBytes);
 

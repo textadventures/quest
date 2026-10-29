@@ -117,6 +117,6 @@ export function updateExitStrip(): void {
         });
     }
     strip.replaceChildren(...buttons);
-    strip.setAttribute('aria-label', textOf(state.interfaceStrings.get('CompassLabel')) || 'Compass');
+    strip.setAttribute('aria-label', textOf(state.interfaceStrings.get('CompassLabel')) || (WebPlayer.chromeStrings?.CompassLabel ?? 'Compass'));
     strip.classList.toggle('qv-exits-active', buttons.length > 0);
 }

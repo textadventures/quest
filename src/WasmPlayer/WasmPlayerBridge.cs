@@ -293,6 +293,11 @@ public partial class WasmPlayerBridge
     public static string GetChromeStringsJson() =>
         JsonSerializer.Serialize(ChromeStrings.Resolve(_game as WorldModel), WasmJsonContext.Default.DictionaryStringString);
 
+    // The game's LanguageId template ("en", "de", ...), for the page's lang
+    // attribute; empty for a V4 game, or one whose library doesn't set it.
+    [JSExport]
+    public static string GetLanguageId() => (_game as WorldModel)?.LanguageId ?? string.Empty;
+
     [JSExport]
     public static async Task Begin()
     {
