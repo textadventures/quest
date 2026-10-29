@@ -587,6 +587,7 @@
   <template name="MapZoomOut">Verkleinern</template>
   <template name="YouTubeVideoTitle">YouTube-Video</template>
   <template name="VimeoVideoTitle">Vimeo-Video</template>
+  <template name="GameSaved">Spiel gespeichert.</template>
 
   <!-- Explicit copies of English.aslx's own values (both already reached via
        the <include ref="English.aslx"/> above, so this changes nothing at

@@ -160,11 +160,6 @@ const adapter: PlayerUiAdapter = {
         updateSaveButton();
         renderCompass();
         renderStatus();
-        // The host translates the panes button's label at boot only, not after a restart.
-        const label = WebPlayer.chromeStrings?.ShowPanesButton;
-        if (label) {
-            for (const button of player()?.querySelectorAll('.qv-panes-button') ?? []) button.setAttribute('aria-label', label);
-        }
         player()?.commandBar?.focusInput();
     },
     resetOutput() {
@@ -177,7 +172,7 @@ const adapter: PlayerUiAdapter = {
     // Saving
     getOutputHtml: () => output()?.getHtml() ?? '',
     gameSaved() {
-        output()?.addText('Game saved.<br>');
+        output()?.addText(`${WebPlayer.chromeStrings?.GameSaved ?? 'Game saved.'}<br>`);
         state.hasUnsavedProgress = false;
     },
     clearUnsavedProgress() {

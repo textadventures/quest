@@ -1,0 +1,48 @@
+<asl version="610">
+
+  <include ref="Deutsch.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- Player UI v2's interface strings in another language (verify-wasmplayer-v2-i18n.mjs): a
+       German game with a map, an exit and a command that embeds a YouTube video, so every part of
+       v2 with its own label is on screen. -->
+  <game name="V2I18nTest">
+    <gridmap />
+    <mapsize type="int">200</mapsize>
+    <mapscale type="int">30</mapscale>
+  </game>
+
+  <object name="halle">
+    <inherit name="editor_room" />
+    <description>Eine Halle.</description>
+    <grid_width type="int">3</grid_width>
+    <grid_length type="int">3</grid_length>
+    <grid_label>Halle</grid_label>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <exit alias="norden" to="bibliothek">
+      <inherit name="northdirection" />
+    </exit>
+  </object>
+
+  <object name="bibliothek">
+    <inherit name="editor_room" />
+    <description>Eine Bibliothek.</description>
+    <grid_width type="int">3</grid_width>
+    <grid_length type="int">3</grid_length>
+    <grid_label>Bibliothek</grid_label>
+    <exit alias="süden" to="halle">
+      <inherit name="southdirection" />
+    </exit>
+  </object>
+
+  <command name="video">
+    <pattern>video</pattern>
+    <script>
+      ShowYouTube ("7vIi0U4rSX4")
+      msg ("Video gezeigt.")
+    </script>
+  </command>
+
+</asl>

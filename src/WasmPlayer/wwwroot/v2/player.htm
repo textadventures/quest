@@ -11,7 +11,7 @@
                         <button id="cmdDebug" type="button" style="display: none">Debug</button>
                         <button id="cmdSave" type="button" data-chrome-key="SaveLoadTitle">Save / Load</button>
                         <!-- Collapses the map on a narrow layout (map.ts). -->
-                        <button class="qv-map-button" type="button" aria-expanded="true" aria-controls="qv-map" hidden>Map</button>
+                        <button class="qv-map-button" type="button" aria-expanded="true" aria-controls="qv-map" data-chrome-key="MapLabel" hidden>Map</button>
                         <button class="qv-panes-button" type="button" aria-expanded="false"
                                 data-chrome-key-aria-label="ShowPanesButton" aria-label="Show panels">&#9776;</button>
                     </div>
@@ -22,7 +22,7 @@
             </div>
             <qv-output data-qv-part="output"></qv-output>
             <div class="qv-footer">
-                <nav class="qv-exits" data-qv-part="exits" aria-label="Compass"></nav>
+                <nav class="qv-exits" data-qv-part="exits" data-chrome-key-aria-label="CompassLabel" aria-label="Compass"></nav>
                 <div class="qv-footer-bar">
                     <qv-command-bar data-qv-part="command-bar"></qv-command-bar>
                     <!-- The bottom bar layout's panes button (bottombar); the top bar's is for the drawer. -->
