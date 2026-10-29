@@ -1,0 +1,219 @@
+<library>
+  <!-- The author hook functions in CoreOutput (SetPaneVisible, AddPane, SetAutoScroll, ...),
+       which keep what they set when a saved game is loaded (docs/ui-v2-contract.md). -->
+
+  <editor>
+    <appliesto>(function)SetPaneVisible</appliesto>
+    <display>Show/hide #0</display>
+    <category>[EditorScriptsInterfaceInterface]</category>
+    <create>SetPaneVisible ("panes", false)</create>
+    <add>[EditorScriptsInterfaceShowHide]</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsInterfaceShowpart]</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>part</simple>
+      <simpleeditor>dropdown</simpleeditor>
+      <validvalues type="simplestringlist">panes;inventory;objects;status;compass;commands;customstatus;location;command-bar;border;picture-frame;map;exits</validvalues>
+      <freetext/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+      <simpleeditor>boolean</simpleeditor>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)AddPane</appliesto>
+    <display>Add pane #0</display>
+    <category>[EditorScriptsInterfaceInterface]</category>
+    <create>AddPane ("", "")</create>
+    <add>[EditorScriptsInterfaceAddpane]</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsInterfaceAddpaneid]</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>id</simple>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsInterfaceTitle]</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+      <simple>title</simple>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)SetPaneContent</appliesto>
+    <display>Set content of pane #0</display>
+    <category>[EditorScriptsInterfaceInterface]</category>
+    <create>SetPaneContent ("", "")</create>
+    <add>[EditorScriptsInterfaceSetpanecontent]</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsInterfaceSetcontentofpane]</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>id</simple>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsInterfaceto]</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+      <simple>content</simple>
+      <expand/>
+      <multiline/>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)SetCommandPane</appliesto>
+    <display>Set command pane to #0</display>
+    <category>[EditorScriptsInterfaceInterface]</category>
+    <create>SetCommandPane ("")</create>
+    <add>[EditorScriptsInterfaceSetcommandpane]</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsInterfaceSetcommandpaneto]</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>commands</simple>
+      <expand/>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsInterfaceCommandpanehelp]</caption>
+      <breakbefore/>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)SetCommandPlaceholder</appliesto>
+    <display>Set command bar hint to #0</display>
+    <category>[EditorScriptsInterfaceInterface]</category>
+    <create>SetCommandPlaceholder ("")</create>
+    <add>[EditorScriptsInterfaceSetcommandplaceholder]</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsInterfaceSetcommandplaceholderto]</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>hint</simple>
+      <expand/>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)SetAutoScroll</appliesto>
+    <display>Scroll to new output: #0</display>
+    <category>[EditorScriptsInterfaceInterface]</category>
+    <create>SetAutoScroll (false)</create>
+    <add>[EditorScriptsInterfaceAutoscroll]</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsInterfaceAutoscroll]</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simpleeditor>boolean</simpleeditor>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)SetContinueOnClick</appliesto>
+    <display>Continue on click: #0</display>
+    <category>[EditorScriptsInterfaceInterface]</category>
+    <create>SetContinueOnClick (true)</create>
+    <add>[EditorScriptsInterfaceContinueonclick]</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsInterfaceContinueonclick]</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simpleeditor>boolean</simpleeditor>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)SetFadePreviousOutput</appliesto>
+    <display>Fade earlier output: #0</display>
+    <category>[EditorScriptsInterfaceInterface]</category>
+    <create>SetFadePreviousOutput (true)</create>
+    <add>[EditorScriptsInterfaceFadepreviousoutput]</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsInterfaceFadepreviousoutput]</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simpleeditor>boolean</simpleeditor>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)SetMapInteractive</appliesto>
+    <display>Map can be dragged and zoomed: #0</display>
+    <category>[EditorScriptsInterfaceInterface]</category>
+    <create>SetMapInteractive (false)</create>
+    <add>[EditorScriptsInterfaceMapinteractive]</add>
+    <onlydisplayif>game.gridmap</onlydisplayif>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsInterfaceMapinteractive]</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simpleeditor>boolean</simpleeditor>
+    </control>
+  </editor>
+
+</library>
