@@ -530,6 +530,15 @@ HidePreviousTurnOutput()
 
 Hides the output that was shown for the previous turn, leaving only the current turn's text visible in the transcript.
 
+## InitAuthorHooks
+```quest
+InitAuthorHooks
+```
+
+Called by InitInterface. Applies again what the interface functions such as [SetPaneVisible](/reference/functions/user-interface#setpanevisible) and [AddPane](/reference/functions/user-interface#addpane) kept on the game, after starting or loading it.
+
+Does not return a value.
+
 ## InitConjugation
 ```quest
 InitConjugation()
