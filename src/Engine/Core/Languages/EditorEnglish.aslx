@@ -204,6 +204,13 @@
   <template name="EditorGamePictureOptions">Picture frame</template>
   <template name="EditorGamePanesCaption">Game panes</template>
   <template name="EditorGameMapinteractive">Map can be dragged and zoomed</template>
+  <template name="EditorGameInterfacefont">Interface font</template>
+  <template name="EditorGameInterfacefontHelp">The font of the location bar, panes and buttons. Leave it empty for the player’s own.</template>
+  <template name="EditorGameAccentColour">Accent colour</template>
+  <template name="EditorGameAccentColourHelp">Links, the compass and the command prompt are drawn in it. Leave it empty for the link colour if you’ve changed the colours, or the player’s own if you haven’t. An accent on its own still lets the game follow the player’s light or dark mode.</template>
+  <template name="EditorGameMapPosition">Map position</template>
+  <template name="EditorGameMapPositionHeader">Above the game</template>
+  <template name="EditorGameMapPositionPanes">In the panes</template>
   <template name="EditorGameLayoutPreset">Where the panes go</template>
   <template name="EditorGameNarrowLayoutPreset">On a phone</template>
   <template name="EditorGameLayoutSidepanes">Beside the game (in a drawer on a phone)</template>

@@ -5,15 +5,18 @@ using QuestViva.EditorCore;
 namespace QuestViva.EditorCoreTests;
 
 // The game's Interface tab options for the 610 UI contract (#2650 PR 3): the layout presets, the
-// author hook settings, and the classic interface, each captioned in every editor language.
+// author hook settings, the map position and the classic interface, plus the Display tab's accent
+// colour and interface font, each captioned in every editor language.
 [TestClass]
 public class InterfaceTabOptionTests
 {
     private static readonly string[] Attributes =
     [
-        "layoutpreset", "narrowlayoutpreset", "mapinteractive", "commandplaceholder",
+        "layoutpreset", "narrowlayoutpreset", "mapinteractive", "mapposition", "commandplaceholder",
         "autoscroll", "continueonclick", "fadepreviousoutput", "classicinterface"
     ];
+
+    private static readonly string[] DisplayAttributes = ["accentcolour", "interfacefont"];
 
     private static async Task<EditorController> LoadController(string templateName)
     {
@@ -35,6 +38,18 @@ public class InterfaceTabOptionTests
         return definition.Tabs.Values.Single(t => t.Caption == caption);
     }
 
+    private static void AssertTranslatedControls(List<IEditorControl> controls, IEnumerable<string> attributes)
+    {
+        foreach (var attribute in attributes)
+        {
+            var control = controls.SingleOrDefault(c => c.Attribute == attribute);
+            Assert.IsNotNull(control, $"no control for {attribute}");
+            Assert.IsFalse(string.IsNullOrEmpty(control.Caption), attribute);
+            StringAssert.DoesNotMatch(control.Caption, new System.Text.RegularExpressions.Regex(@"\["),
+                $"{attribute}'s caption isn't translated");
+        }
+    }
+
     [TestMethod]
     [DataRow("English", "Interface", "Beside the game (in a drawer on a phone)")]
     [DataRow("Deutsch", "Interface", "Neben dem Spiel (auf dem Handy in einer Schublade)")]
@@ -44,20 +59,25 @@ public class InterfaceTabOptionTests
         using var controller = await LoadController(templateName);
         var controls = InterfaceTab(controller, tabCaption).Controls.ToList();
 
-        foreach (var attribute in Attributes)
-        {
-            var control = controls.SingleOrDefault(c => c.Attribute == attribute);
-            Assert.IsNotNull(control, $"no control for {attribute}");
-            Assert.IsFalse(string.IsNullOrEmpty(control.Caption), attribute);
-            StringAssert.DoesNotMatch(control.Caption, new System.Text.RegularExpressions.Regex(@"\["),
-                $"{attribute}'s caption isn't translated");
-        }
+        AssertTranslatedControls(controls, Attributes);
 
         var layout = controls.Single(c => c.Attribute == "layoutpreset").GetDictionary("validvalues")!;
         CollectionAssert.AreEquivalent(new[] { "", "bottombar", "nopanes" }, layout.Keys.ToArray());
         Assert.AreEqual(defaultLayout, layout[""]);
         var narrow = controls.Single(c => c.Attribute == "narrowlayoutpreset").GetDictionary("validvalues")!;
         CollectionAssert.AreEquivalent(new[] { "", "sidepanes", "bottombar", "nopanes" }, narrow.Keys.ToArray());
+        var mapPosition = controls.Single(c => c.Attribute == "mapposition").GetDictionary("validvalues")!;
+        CollectionAssert.AreEquivalent(new[] { "", "panes" }, mapPosition.Keys.ToArray());
+    }
+
+    [TestMethod]
+    [DataRow("English", "Display")]
+    [DataRow("Deutsch", "Oberfläche")]
+    [DataRow("Español", "Pantalla")]
+    public async Task TheAccentAndInterfaceFont_AreOnTheDisplayTab(string templateName, string tabCaption)
+    {
+        using var controller = await LoadController(templateName);
+        AssertTranslatedControls(InterfaceTab(controller, tabCaption).Controls.ToList(), DisplayAttributes);
     }
 
     [TestMethod]

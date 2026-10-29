@@ -530,6 +530,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-wasmplayer-v2-map.mjs http://localhost:5175
         working-directory: tests/e2e
+      - run: node verify-wasmplayer-v2-accent-map.mjs http://localhost:5175
+        working-directory: tests/e2e
       - run: node verify-wasmplayer-v2-map-pictures.mjs http://localhost:5175
         working-directory: tests/e2e
       - run: node verify-wasmplayer-v2-media.mjs http://localhost:5175

@@ -79,6 +79,9 @@
         AddUIToken (tokens, "--qv-menu-hover-bg", game.menuhoverbackground)
         AddUIToken (tokens, "--qv-menu-hover-fg", game.menuhoverforeground)
       }
+      if (HasString(game, "interfacefont")) {
+        AddUIToken (tokens, "--qv-font-ui", game.interfacefont)
+      }
       AddUIToken (tokens, "--qv-menu-font", game.menufont)
       AddUIToken (tokens, "--qv-menu-font-size", game.menufontsize + "pt")
       if (not game.underlinehyperlinks) {
@@ -93,6 +96,12 @@
         SetFramePicture (game.panelcontents)
       }
       if (game.gridmap) {
+        // Above the game, or "panes" for the first pane. Empty is the editor's default.
+        if (HasString(game, "mapposition")) {
+          if (game.mapposition <> "") {
+            JS.QuestUI.setMapPosition (game.mapposition)
+          }
+        }
         JS.QuestUI.map.show (game.mapsize)
         Grid_SetScale (game.mapscale)
         if (game.pov <> null) {
