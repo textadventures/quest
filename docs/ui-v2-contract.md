@@ -167,7 +167,7 @@ v2 draws an attribute with a `value` and a positive `max` as a bar, and shows th
 | `nopanes` | no panes, and no exits strip or pinned status bar | the same |
 | `bottombar` | the panes in a sheet opened from a button beside the command bar, with the exits strip and command bar kept in view at the bottom, and the pinned status bar under the top bar | the same |
 
-610 Core's `InitInterface` passes two `game` attributes: `layoutpreset`, and `narrowlayoutpreset` for a narrow player when it differs. A game with neither gets `sidepanes` at both widths. `gamebook` (GamebookCore's own) ignores `narrow`.
+610 Core's `InitInterface` passes two `game` attributes: `layoutpreset`, and `narrowlayoutpreset` for a narrow player when it differs. A game with neither gets `sidepanes` at both widths. An empty value counts as unset: it's what the editor's Interface tab saves for its defaults ("Beside the game" and "Same as above"), so `narrowlayoutpreset` alone keeps `sidepanes` when wide. `gamebook` (GamebookCore's own) ignores `narrow`.
 
 `gamebook` is a page in a reading column (`--qv-output-width`) at every width, with no panes, location, command bar, exits strip or pinned status bar. The command bar is hidden as `setVisible("command-bar", false)` would, so GamebookCore's `GetInput` can still show it. The page's options, the links GamebookCore puts in its options output section, are drawn as full-width choices, and after a page turns, keyboard focus moves to the new page's first choice. A gamebook with the editor's default colours follows light and dark like any other game: 610 GamebookCore sends its colours only through `InitTextDefaults` (#2627, PR 7).
 
