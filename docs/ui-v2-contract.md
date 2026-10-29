@@ -141,6 +141,7 @@ Rules that apply to every member:
 | `setVisible(part, visible)` | `uiShow`/`uiHide`, `panesVisible`, `hideBorder`, and the `setCss(…, "display:…")` calls |
 | `setPaneOrder(parts)` | the six `insertBefore` evals (`statusandcompassattop`) |
 | `setLayoutPreset(name, narrow)` with `sidepanes`, `nopanes` or `bottombar` (see "Layout presets" below), or `gamebook` | GamebookCore's `panesVisible(false)` and its `uiHide`s of the location and command bar. Legacy hides those parts, as today. v2 gives gamebooks their own layout |
+| `setMapPosition(position)` with `header` or `panes` (see "Map" below) | (new) |
 | `setPictureFrame(html)` | `setPanelContents` |
 | `setInterfaceString(name, text)` | `setInterfaceString` (same names: `InventoryLabel`, `StatusLabel`, `PlacesObjectsLabel`, `CompassLabel`, `InButtonLabel`, `OutButtonLabel`, `EmptyListLabel`, `NothingSelectedLabel`, `TypeHereLabel`, `ContinueLabel`) |
 | `setCompassDirections(list)` | `setCompassDirections` |
@@ -195,6 +196,8 @@ Legacy has one layout for every width, so it hides the panes for `nopanes` at bo
 
 On v2 (#2627, decisions 1–3), the map is the `map` part, under the picture frame and `show`'s `size` pixels high (at most 40% of the height on a narrow layout, where the player can collapse it). It keeps what 610 CoreGrid relies on: z-levels with every level but the current one faded to 0.2, drawing calls going to the current level or to the custom layer while that's shown, reused ids replacing their item, and the map centring on the first room and following the player's dot. Three things differ from legacy, which has bugs there: the custom layer is an overlay above the map rather than a replacement for it (drawing a room doesn't hide it), the whole map pans together, and positions and sizes aren't truncated to whole squares. An SVG passed to `loadSvg` has its scripts and event handler attributes removed.
 
+**Map position.** `setMapPosition(position)` chooses where the `map` part goes: `header`, the default, as above, or `panes`, as the first pane in the panes region, under a "Map" heading that collapses like the other panes' headings. In `panes`, the map follows the panes into the drawer or sheet on a narrow layout, and a layout with no panes (`nopanes`, `gamebook`) shows it in `header` instead. 610 Core's `InitInterface` passes `game.mapposition`, and only for a game with a map; an empty value counts as unset, which is what the editor's Interface tab saves for its default ("Above the game"). Legacy has one map position and ignores the call.
+
 **Room pictures (#2199).** `drawBox` takes a tenth argument, `image`: the URL of the room's picture, from its `grid_image` attribute through `GetFileURL`, or `""` for none. 610 CoreGrid always passes it. v2 draws it over the room's fill, cropped to the room, under its border and label. Legacy ignores it.
 
 ### Transcript
@@ -247,7 +250,9 @@ Values are CSS values, as a stylesheet would write them: colours as any CSS colo
 | Token | From |
 |---|---|
 | `--qv-font-body`, `--qv-font-size` | `defaultfont` / `defaultwebfont`, `defaultfontsize` |
+| `--qv-font-ui` | `interfacefont`: the font of the location bar, panes, menus and buttons |
 | `--qv-text`, `--qv-bg`, `--qv-link` | `defaultforeground`, `defaultbackground`, `defaultlinkforeground`, only once one differs from the editor's defaults (see "Light and dark") |
+| `--qv-accent` | `accentcolour`, or the link colour (see "Accent") |
 | `--qv-link-decoration` | `underlinehyperlinks` |
 | `--qv-page-bg` | `marginscolour` |
 | `--qv-bg-image`, `--qv-bg-opacity` | `backgroundimage`, `backgroundopacity` |
@@ -260,7 +265,7 @@ Values are CSS values, as a stylesheet would write them: colours as any CSS colo
 | `--qv-menu-fg`, `--qv-menu-bg`, `--qv-menu-hover-fg`, `--qv-menu-hover-bg`, `--qv-menu-font`, `--qv-menu-font-size` | `menuforeground`, … `menufontsize`. The four colours only once one differs from the editor's defaults |
 | `--qv-command-fg`, `--qv-command-bg` | command bar format |
 
-v2 also defines tokens with no game attribute behind them yet (`--qv-surface`, `--qv-radius`, `--qv-space`, `--qv-font-ui`, focus-ring colours). Those are in the contract too, and the editor gains options for them later.
+v2 also defines tokens with no game attribute behind them yet (`--qv-surface`, `--qv-radius`, `--qv-space`, focus-ring colours). Those are in the contract too, and the editor gains options for them later.
 
 ### Light and dark
 
@@ -272,19 +277,30 @@ A game that keeps the editor's default colours (black text, blue links, a white 
 
 Any other colour an author sets (location bar, margins, border, pane theme) is sent as before. Legacy's own defaults match the editor's, so leaving the tokens out changes nothing there.
 
+### Accent
+
+`--qv-accent` is the game's one highlight colour. v2 uses it for links (`--qv-link` defaults to it), the player's dot on the map, the compass directions the player can take, the command prompt, and the menu's hover background. It lets an author change "blue" to their own colour without taking on a whole colour scheme:
+
+- **`accentcolour` is sent on its own.** Unlike the link colour, it doesn't bring the text and background colours with it, so a game that only sets an accent still follows light and dark. Under v2's dark scheme the accent is lightened enough to keep AA contrast on the dark background. A game that has sent its own background gets its accent as given.
+- **A game that changes its link colour but has no `accentcolour`** gets the link colour as its accent too, so the rest of v2's highlights match its links.
+- **A game with both** keeps its own link colour for links, and the accent for everything else.
+
+Legacy has no accent: it ignores `--qv-accent`, and its links follow the link colour as before.
+
 v2's defaults, light and dark (`--qv-surface`, `--qv-page-bg` and `--qv-border-colour` are mixed from the text and background, so they also suit a game's own colours):
 
 | Token | Light | Dark |
 |---|---|---|
 | `--qv-text` | `#1a1a1a` | `#e4e4e7` |
 | `--qv-bg` | `#ffffff` | `#18181b` |
-| `--qv-link` | `#1d4ed8` | `#93c5fd` |
+| `--qv-accent` | `#1d4ed8` | `#93c5fd` |
+| `--qv-link` | `--qv-accent` | the same |
 | `--qv-surface`, `--qv-page-bg` | 5% text over the background | the same |
 | `--qv-border-colour` | 20% text over the background | the same |
 | `--qv-status-fg` / `--qv-status-bg` | `#ffffff` / `#3f3f46` | `#ffffff` / `#27272a` |
 | `--qv-pane-fg`, `--qv-pane-heading-fg`, `--qv-menu-fg` | `--qv-text` | the same |
 | `--qv-pane-bg`, `--qv-pane-heading-bg` | `--qv-surface` | the same |
-| `--qv-menu-bg` / `--qv-menu-hover-bg` / `--qv-menu-hover-fg` | `--qv-bg` / `--qv-link` / `--qv-bg` | the same |
+| `--qv-menu-bg` / `--qv-menu-hover-bg` / `--qv-menu-hover-fg` | `--qv-bg` / `--qv-accent` / `--qv-bg` | the same |
 | `--qv-pane-highlight` | `#f59e0b` | the same |
 | `--qv-focus-ring` | `#2563eb` | `#60a5fa` |
 
@@ -326,7 +342,7 @@ Elements carry `data-qv-part`. Authors may select on part names (and on `data-qv
 | `pane` + `data-qv-pane=` `inventory`, `objects`, `status`, `compass`, `commands`, `customstatus`, or an author pane's ID | one pane | `inventory*`, `placesObjects*`, `statusVars*`, `compass*`, `commandPane`, `customStatusPane` |
 | `exits` | the exits strip (#2581) | `qv-exits` |
 | `picture-frame` | the picture frame | `gamePanel` |
-| `map` | the map | `gridPanel` |
+| `map` | the map, above the game or in the panes region (`setMapPosition`) | `gridPanel` |
 | `menu` | an object verb menu or `ShowMenu` dialog | jjmenu, jQuery UI dialog |
 | `status-bar` | the pinned phone status bar | (new) |
 
