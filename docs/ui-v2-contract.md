@@ -220,7 +220,23 @@ These have no Core caller today. They're the supported versions of the survey's 
 
 A **turn** is one engine round trip the player starts: a command, an event (`sendEvent`, a `data-qv-event` link), or answering a wait, pause, menu or question. `turnStarted` fires before the input goes to the engine and `turnEnded` once the engine has finished with it and its output is on screen. Timer ticks aren't turns.
 
-Each gets a 610 Core wrapper (`SetPaneVisible`, `AddPane`, `SetAutoScroll`, …) in Phase 4, so most authors never write JS.
+### Author hook functions in 610 Core
+
+So most authors never write JS, 610 Core has a function for each hook except the events (#2650, decision 1). The UI starts afresh when a save is loaded, so a bare `JS.QuestUI` call is lost then. Each function therefore keeps what it set on `game` as well, and `InitInterface` (through `InitAuthorHooks`) applies it again on every start and load:
+
+| Function | Calls | Kept in |
+|---|---|---|
+| `SetPaneVisible(part, visible)` | `setVisible` | the part's Interface tab option where it has one (`showpanes`, `showlocation`, `showcommandbar`, `showborder`, `turnoffcompass`, `turnoffinventory`, `turnoffplacesandobjects`, `commandpane`, `customstatuspane`), otherwise `game.hiddenparts` (a string list) |
+| `AddPane(id, title)` | `addPane(id, title, "")` | `game.custompanes` (a string dictionary, id → title) |
+| `SetPaneContent(id, html)` | `setPaneContent` | `game.panecontents` (a string dictionary, id → HTML), so content set before its pane is added still shows |
+| `SetCommandPane(commands)` | `setCommands`, then shows the command pane | `game.commandpanecommands` (a string list; a `;`-separated string is split) |
+| `SetAutoScroll(on)` | `setAutoScroll` | `game.autoscroll`, `true` by default |
+| `SetContinueOnClick(on)` | `setContinueOnClick` | `game.continueonclick` |
+| `SetFadePreviousOutput(on)` | `fadePreviousOutput` | `game.fadepreviousoutput` |
+| `SetCommandPlaceholder(text)` | `setCommandPlaceholder` | `game.commandplaceholder` |
+| `SetMapInteractive(on)` | `setMapInteractive` | `game.mapinteractive`, `true` by default |
+
+`InitAuthorHooks` sends nothing for a game that hasn't used them. The functions and attribute names are part of the contract like the rest of 610 Core: none of them was used by any of the 21,704 published games. The events stay JS-only, since they need a JS callback.
 
 ## CSS custom properties
 

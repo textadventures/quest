@@ -13,6 +13,17 @@ AddPageLink (object source, object destination, string text)
 
 Adds an option to the `dialoguepage` **source** linking to **destination**, displayed as **text**. If a link to that destination already exists, it's replaced. See also [RemovePageLink](#removepagelink) and [ShowPage](#showpage). There's also an [AddPageLink](/reference/functions/gamebook#addpagelink) for gamebook pages, which works the same way.
 
+## AddPane
+```quest
+AddPane (string id, string title)
+```
+
+Adds a pane of your own to the panes beside the game, after the built-in ones, headed with `title`. `id` names it: use it with [SetPaneContent](#setpanecontent) to fill the pane and [SetPaneVisible](#setpanevisible) to hide it, and in a stylesheet as `[data-qv-pane=id]`. Adding a pane that's already there does nothing.
+
+It's kept when a saved game is loaded. It's available in games saved as version 610 or later.
+
+Does not return a value.
+
 ## Ask
 ```quest
 Ask (string question)
@@ -198,6 +209,17 @@ SetAlignment(string alignment)
 
 Sets the text alignment for all the text which follows. Valid alignment values are "left", "center" or "right".
 
+## SetAutoScroll
+```quest
+SetAutoScroll (boolean on)
+```
+
+Sets whether the game scrolls to the end of the output as text is added. It's on unless you turn it off.
+
+It's kept when a saved game is loaded. It's available in games saved as version 610 or later.
+
+Does not return a value.
+
 ## SetBackgroundColour
 ```quest
 SetBackgroundColour(string colour)
@@ -223,6 +245,50 @@ Sets the opacity of the background (how transparent it is). This should be a num
 SetBackgroundOpacity(0.5)
 SetBackgroundColour(game.defaultbackground)
 ```
+
+## SetCommandPane
+```quest
+SetCommandPane (stringlist or string commands)
+```
+
+Fills the command pane with links and shows it. Each entry is a label, or `label:command` when the command to send differs from the label, as in `"Wait:z"`. A single string of entries separated by `;` works too.
+
+It's kept when a saved game is loaded. It's available in games saved as version 610 or later.
+
+Does not return a value.
+
+## SetCommandPlaceholder
+```quest
+SetCommandPlaceholder (string text)
+```
+
+Sets the hint shown in the command bar before the player types anything.
+
+It's kept when a saved game is loaded. It's available in games saved as version 610 or later.
+
+Does not return a value.
+
+## SetContinueOnClick
+```quest
+SetContinueOnClick (boolean on)
+```
+
+Sets whether clicking or tapping anywhere in the game carries on from a [WaitForKeyPress](#waitforkeypress) or a `wait`, as well as the Continue button and pressing a key.
+
+It's kept when a saved game is loaded. It's available in games saved as version 610 or later.
+
+Does not return a value.
+
+## SetFadePreviousOutput
+```quest
+SetFadePreviousOutput (boolean on)
+```
+
+Sets whether the text from earlier turns is shown faded, so the latest turn's output stands out.
+
+It's kept when a saved game is loaded. It's available in games saved as version 610 or later.
+
+Does not return a value.
 
 ## SetFontName
 ```quest
@@ -251,6 +317,39 @@ SetFramePicture (string filename)
 ```
 
 Sets the static frame picture to the specified file. Use [ClearFramePicture](#clearframepicture) to clear the frame.
+
+Does not return a value.
+
+## SetMapInteractive
+```quest
+SetMapInteractive (boolean on)
+```
+
+Sets whether the player can drag and zoom the map. It's on unless you turn it off.
+
+It's kept when a saved game is loaded. It's available in games saved as version 610 or later.
+
+Does not return a value.
+
+## SetPaneContent
+```quest
+SetPaneContent (string id, string html)
+```
+
+Sets the content of a pane added with [AddPane](#addpane), or of the custom status pane (`"customstatus"`), replacing what was there.
+
+It's kept when a saved game is loaded. It's available in games saved as version 610 or later.
+
+Does not return a value.
+
+## SetPaneVisible
+```quest
+SetPaneVisible (string part, boolean visible)
+```
+
+Shows or hides part of the interface: `"panes"`, `"location"`, `"command-bar"`, `"border"`, `"picture-frame"`, `"map"`, `"exits"`, one pane (`"inventory"`, `"objects"`, `"status"`, `"compass"`, `"commands"`, `"customstatus"`), or a pane added with [AddPane](#addpane). Where the game's Interface tab has an option for the part, such as **Show panes**, this changes that option too.
+
+It's kept when a saved game is loaded. It's available in games saved as version 610 or later.
 
 Does not return a value.
 
