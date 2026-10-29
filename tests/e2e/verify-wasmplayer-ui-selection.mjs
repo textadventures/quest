@@ -1,8 +1,10 @@
 // Checks boot-time player UI selection (#2593): the host loads only the UI bundle a game gets,
 // once the engine has loaded the game, and ?ui= forces either one.
 //
-// - A pre-610 game and a 610 game both get the legacy UI (v2 only becomes the 610 default at
-//   Phase 5 of #2584), and nothing under v2/ is requested.
+// - A pre-610 game gets the legacy UI, and nothing under v2/ is requested.
+// - A 610 game gets v2, with no jQuery run, and one with game.classicinterface gets legacy.
+//   (Boot prefetches the legacy bundle for a game not from the editor's Preview, before it knows
+//   the game's version, so a 610 game also requests legacy's files without running them.)
 // - ?ui=v2 loads only v2, with no legacy files and no jQuery, and
 //   the game still plays: its text shows and a command gets a response.
 // - ?ui=legacy forces legacy, and an unknown ?ui= value is ignored.
@@ -64,10 +66,14 @@ try {
     expect(oldGame.bundles, 'legacy', 'a pre-610 game requests only the legacy bundle');
     expect(oldGame.uis, 'legacy', 'a pre-610 game gets the legacy UI');
 
+    const game610 = await play('?url=/e2e-fixtures/v2-core-test.aslx', { input: 'qv-command-bar input', response: 'A plain hall' });
+    expect(game610.uis, 'v2', 'a 610 game gets the v2 UI');
+    expect(game610.jquery, 'undefined', 'a 610 game runs no jQuery');
+
     // This fixture's room is empty, so "look" only repeats "You are in".
-    const game610 = await play('?url=/e2e-fixtures/legacy-questui-test.aslx', { input: '#txtCommand', response: 'You are in' });
-    expect(game610.bundles, 'legacy', 'a 610 game requests only the legacy bundle until v2 is the 610 default');
-    expect(game610.uis, 'legacy', 'a 610 game gets the legacy UI');
+    const classic = await play('?url=/e2e-fixtures/legacy-questui-test.aslx', { input: '#txtCommand', response: 'You are in' });
+    expect(classic.bundles, 'legacy', 'a 610 game with classicinterface requests only the legacy bundle');
+    expect(classic.uis, 'legacy', 'a 610 game with classicinterface gets the legacy UI');
 
     const forcedLegacy = await play('?url=/examples/simple.aslx&ui=legacy', legacyInput);
     expect(forcedLegacy.uis, 'legacy', '?ui=legacy forces the legacy UI');

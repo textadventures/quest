@@ -55,7 +55,7 @@ The choice is made at boot, after the game file is loaded and its version is kno
 Each UI is a lazily loaded bundle: `legacy/` (today's files, moved and frozen) and `v2/` (#2493, #2593). The engine loads the game, `WasmPlayerBridge` picks a UI, and the host (`wasm-player.js`) loads that bundle and swaps in its markup before any of the game's own scripts run. The host keeps the parts that are the same for both: the start screen, save-slot manager and saving, debugger, transcript viewer, and the game's own scripts and stylesheets. It talks to the loaded UI only through that UI's adapter (`window.QuestPlayerUis`).
 
 **Timing caveat for 610:** `v610` became the editor's save version on 2026-10-22 (#2576/#2577) and hasn't shipped in any release yet. No 6.1 release, beta included, ships until 610 Core's UI calls have all been rewritten onto the contract, so no published 610 game ever carries today's ID- and jQuery-based `InitInterface` ([ui-v2-contract.md](ui-v2-contract.md), finding 1). Any 610 game saved by a 6.1 beta before v2 is the default will switch to v2 when that happens. That's acceptable for a beta audience, provided that:
-- v2 only becomes the default for 610 once it reaches parity (Phase 5), so until then 610 games play on legacy as now
+- v2 only becomes the default for 610 once it reaches parity (Phase 5), so until then 610 games play on legacy as now. *Changed on 2026-10-29:* v2 became the 610 default on `main` ahead of parity, so it can be tried in the editor's Preview, and no 6.1 release ships until Phase 5's parity work is done
 - the editor's upgrade warning (#2577) also flags games that use legacy-UI hacks (`JS.eval`/`JS.setCss` against legacy IDs), with `classicinterface` as the one-click way to keep them on legacy
 
 Gating v2 on a later version (620), or on the attribute alone, was considered and rejected (decision 1).
@@ -157,7 +157,7 @@ Svelte 5, for consistency with AppShell, was considered and rejected (decision 2
 - Documentation under `site/src/content/docs/customise/` (rewrite `css.md`, `look-and-feel.md`, `panes.md`, `player-interface.md` and `javascript.md` for v2, keep the legacy pages, and add a migration guide from common `JS.eval` snippets to their v2 equivalents).
 - The upgrade warning that flags legacy-UI hacks.
 
-**Phase 5: parity and switch-over.**
+**Phase 5: parity and switch-over.** The switch itself was brought forward to 2026-10-29 (see decision 1), so what's left is the parity work, which has to be done before any 6.1 release.
 - Port the WasmPlayer e2e scripts that cover behaviour (not legacy DOM details) to run against v2 via `?ui=v2`, and add v2-specific ones.
 - Run the stock-only part of the corpus (about 97% of published games, identifiable with the survey's classifier) under `?ui=v2` as a dev-only parity check.
 - When it's clean, make v2 the default for 610.
@@ -175,7 +175,7 @@ After switch-over, legacy is frozen: bug fixes and security fixes only, no new f
 
 Settled on 2026-10-22:
 
-1. **What selects v2:** ASL 610 or later, with `game.classicinterface` as an opt-out. v2 only becomes the 610 default once it reaches parity (Phase 5); until then 610 games play on legacy. Gating on ASL 620, or on an attribute alone, was rejected.
+1. **What selects v2:** ASL 610 or later, with `game.classicinterface` as an opt-out. v2 only becomes the 610 default once it reaches parity (Phase 5); until then 610 games play on legacy. (Brought forward on 2026-10-29: v2 is the 610 default on `main` so it can be tried before parity, with no release until Phase 5 is done.) Gating on ASL 620, or on an attribute alone, was rejected.
 2. **Stack:** TypeScript, light-DOM custom elements and esbuild, with no framework runtime. Svelte 5 was rejected, to keep the bundle small and the player free of a framework's upgrade cycle.
 3. **Game stylesheet** (#2337's open question): a game-level stylesheet element stored in the `.aslx`, editable in the editor. It may also reference asset `.css` files.
 4. **Stability:** the 610 UI contract is permanent. Published 610 games must never break on a future player, so the contract only gains additions. A breaking change would need a new ASL version with its own contract.

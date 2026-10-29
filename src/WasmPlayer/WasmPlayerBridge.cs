@@ -251,16 +251,12 @@ public partial class WasmPlayerBridge
     private const string LegacyPlayerUi = "legacy";
     private const string V2PlayerUi = "v2";
 
-    // Phase 5 of #2584 turns this on once v2 reaches parity with the legacy UI. Until then, every
-    // game plays on legacy unless ?ui=v2 forces v2 (wasm-player.js's preparePlayerUi).
-    private static readonly bool V2IsDefaultFor610 = false;
-
     // Which player UI a game gets (docs/ui-v2-plan.md, "How a game gets its UI"): v2 for a game
     // saved as ASL 610 or later, unless it opts out with game.classicinterface; legacy for
-    // everything older, including Quest 4 games.
+    // everything older, including Quest 4 games. ?ui= overrides it (wasm-player.js's
+    // preparePlayerUi).
     private static string ChoosePlayerUi(IGame game) =>
-        V2IsDefaultFor610
-        && game is WorldModel { Version: >= WorldModelVersion.v610 } worldModel
+        game is WorldModel { Version: >= WorldModelVersion.v610 } worldModel
         && !worldModel.Game.Fields.GetAsType<bool>("classicinterface")
             ? V2PlayerUi
             : LegacyPlayerUi;
