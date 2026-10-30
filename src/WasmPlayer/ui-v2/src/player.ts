@@ -64,10 +64,21 @@ export class QvPlayer extends HTMLElement {
         // The host shows and hides the toolbar's buttons itself, and adds Restart in previews.
         const toolbar = this.querySelector('.qv-toolbar');
         if (toolbar) {
-            new MutationObserver(() => this.updateTopbar()).observe(toolbar, {
+            new MutationObserver(() => {
+                decorateRestartButton(toolbar);
+                this.updateTopbar();
+            }).observe(toolbar, {
                 subtree: true, childList: true, attributes: true, attributeFilter: ['style', 'hidden'],
             });
+            decorateRestartButton(toolbar);
         }
+        // An icon button's tooltip is its name, which the host may have translated since.
+        this.addEventListener('pointerover', (e) => {
+            const button = e.target instanceof Element ? e.target.closest('button') : null;
+            if (!button?.querySelector(':scope > .qv-icon')) return;
+            const name = button.querySelector('.qv-button-label')?.textContent?.trim() || button.getAttribute('aria-label');
+            if (name) button.title = name;
+        });
         this.#updateLayout();
         this.#updatePanesButton();
     }
@@ -319,6 +330,30 @@ export class QvPlayer extends HTMLElement {
         location.innerHTML = html;
         location.classList.toggle('qv-empty', html.trim() === '');
     }
+}
+
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+/**
+ * The host's Restart button (editor previews) arrives as text, like legacy's toolbar buttons; on
+ * v2 it gets an icon, with its text kept as the label, as player.htm's buttons have.
+ */
+function decorateRestartButton(toolbar: Element): void {
+    const button = toolbar.querySelector<HTMLButtonElement>('#cmdRestart');
+    if (!button || button.querySelector('.qv-icon')) return;
+    const label = document.createElement('span');
+    label.className = 'qv-button-label';
+    label.textContent = button.textContent;
+    const icon = document.createElementNS(SVG_NS, 'svg');
+    icon.setAttribute('class', 'qv-icon');
+    icon.setAttribute('viewBox', '0 0 24 24');
+    icon.setAttribute('aria-hidden', 'true');
+    for (const d of ['M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8', 'M3 3v5h5']) {
+        const path = document.createElementNS(SVG_NS, 'path');
+        path.setAttribute('d', d);
+        icon.append(path);
+    }
+    button.replaceChildren(icon, label);
 }
 
 export function player(): QvPlayer | null {

@@ -9,6 +9,7 @@
 // - mapposition "panes" puts the map in the first pane, drawn and with no collapse button at
 //   either width; a layout with no panes puts it back above the game, as does setMapPosition
 //   ("header").
+// - The top bar's buttons are icons, named by a hidden label that is also their tooltip.
 // - axe-core finds no WCAG A/AA violations with the map in the panes, light or dark.
 //
 // Requires the WasmPlayer dev server running locally:
@@ -97,6 +98,21 @@ try {
         check(a.link === '31,111,120', `links are v2's own accent, #1f6f78 (${a.link})`);
         check(a.exit === a.link, `an open compass direction is drawn in the accent too (${a.exit})`);
         check(a.topbar === a.frame, `the location bar is on the game's background (${a.topbar}, ${a.frame})`);
+        await page.hover('#cmdSave');
+        const save = await page.evaluate(() => {
+            const button = document.getElementById('cmdSave');
+            const icon = button.querySelector('.qv-icon').getBoundingClientRect();
+            const box = button.getBoundingClientRect();
+            return {
+                name: button.textContent.trim(),
+                title: button.title,
+                labelWidth: button.querySelector('.qv-button-label').getBoundingClientRect().width,
+                centred: Math.abs((icon.top + icon.bottom) / 2 - (box.top + box.bottom) / 2) < 1,
+            };
+        });
+        check(save.name === 'Save / Load' && save.title === 'Save / Load' && save.labelWidth <= 1,
+            `Save / Load is an icon, named by a hidden label and tooltip (${JSON.stringify(save)})`);
+        check(save.centred, 'the icon is centred in its button');
         check(errors.length === 0, `no page errors on the defaults (${errors.join('; ')})`);
         await page.close();
     }

@@ -59,7 +59,7 @@ try {
     async function started(page) {
         await page.waitForFunction(() => !document.getElementById('qv-start') && window.canSendCommand
             && document.querySelector('qv-output')?.textContent.includes('Eine Halle.')
-            && document.querySelector('qv-player svg'), null, { timeout: 30000 })
+            && document.querySelector('qv-player .qv-map-svg'), null, { timeout: 30000 })
             .catch(() => { throw new Error('the game never started on v2 with its map drawn'); });
     }
 
@@ -103,7 +103,7 @@ try {
             command: document.querySelector('qv-command-bar input')?.getAttribute('aria-label'),
             panes: [...document.querySelectorAll('qv-player .qv-panes-button')].map((b) => b.getAttribute('aria-label')),
             compass: document.querySelector('qv-player .qv-exits')?.getAttribute('aria-label'),
-            map: document.querySelector('qv-player svg')?.getAttribute('aria-label'),
+            map: document.querySelector('qv-player .qv-map-svg')?.getAttribute('aria-label'),
             zoom: [...document.querySelectorAll('qv-player [data-qv-part="map"] button')].map((b) => b.getAttribute('aria-label') || b.textContent.trim()),
         }));
         check(state.lang === 'de', `the page's lang is the game's language ${when} (got "${state.lang}")`);

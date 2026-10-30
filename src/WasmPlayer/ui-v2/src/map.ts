@@ -126,7 +126,8 @@ export function updateMap(): void {
     const button = p.mapButton;
     if (button) {
         button.hidden = region.hidden || inPanes || !p.hasAttribute('data-qv-narrow');
-        button.textContent = chromeString('MapLabel', 'Map');
+        const label = button.querySelector('.qv-button-label');
+        if (label) label.textContent = chromeString('MapLabel', 'Map');
         button.setAttribute('aria-expanded', String(!collapsed));
     }
     p.updateTopbar();

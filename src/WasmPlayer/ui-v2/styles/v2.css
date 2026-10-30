@@ -212,10 +212,44 @@
         margin-inline-start: auto;
     }
 
-    /* Quiet text buttons, a step back from the location. */
+    /* Lucide-style stroke icons (player.htm), drawn in the button's text colour. */
+    qv-player .qv-icon {
+        flex: none;
+        width: 20px;
+        height: 20px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.75;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    /* The host shows its toolbar buttons with an inline display ("initial"), which beats flex
+       centring, so the icon is a block, which a button centres by itself. */
+    .qv-toolbar .qv-icon,
+    .qv-panes-button .qv-icon {
+        display: block;
+        margin-inline: auto;
+    }
+
+    /* An icon button's name: read out, and its tooltip (player.ts), but not shown. */
+    .qv-button-label {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+    }
+
+    /* Quiet icon buttons, a step back from the location. */
     .qv-toolbar button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 44px;
         min-height: 44px;
-        padding: 0.25rem 0.75rem;
+        padding: 0;
         border: none;
         border-radius: var(--qv-radius);
         background: none;
@@ -1007,8 +1041,9 @@
     }
 
     .qv-panes-button {
-        font-size: 1.25rem;
-        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
 
     /* ShowMenu and Ask for games before 600, as a modal <dialog>. */
