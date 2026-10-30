@@ -140,6 +140,8 @@
   <template name="InButtonLabel">inn í</template>
   <template name="OutButtonLabel">út úr</template>
   <template name="EmptyListLabel">(tómt)</template>
+  <template name="InventoryEmptyLabel">Þú hefur ekkert.</template>
+  <template name="PlacesObjectsEmptyLabel">Hér er ekkert.</template>
   <template name="NothingSelectedLabel">(ekkert valið)</template>
   <template name="TypeHereLabel">Skrifaðu hér...</template>
   <template name="ContinueLabel">...</template>

@@ -11,7 +11,10 @@ import { player } from './player';
 import { state } from './state';
 
 const DEFAULT_DIRECTIONS = ['northwest', 'north', 'northeast', 'west', 'east', 'southwest', 'south', 'southeast', 'up', 'down', 'in', 'out'];
-const ARROWS = ['↖', '↑', '↗', '←', '→', '↙', '↓', '↘', '↥', '↧', '', ''];
+// Each of the eight points' arrow, as the angle an upward arrow is turned by. Up, down, in and out
+// show their words instead.
+const ARROWS: (number | null)[] = [315, 0, 45, 270, 90, 225, 180, 135, null, null, null, null];
+const SVG_NS = 'http://www.w3.org/2000/svg';
 // Where each of the eight points sits in the compass pane's 3x3 grid (row, column), around an
 // empty middle. Up/down and in/out sit beside it in a 2x2 block, as on legacy's compass.
 const GRID = [[1, 1], [1, 2], [1, 3], [2, 1], [2, 3], [3, 1], [3, 2], [3, 3]];
@@ -43,14 +46,26 @@ function directionButton(index: number, className: string): HTMLButtonElement {
     button.type = 'button';
     button.className = className;
     button.dataset.qvDirection = name;
-    if (ARROWS[index]) {
-        const arrow = document.createElement('span');
-        arrow.className = 'qv-direction-arrow';
-        arrow.setAttribute('aria-hidden', 'true');
-        arrow.textContent = ARROWS[index];
-        button.append(arrow);
-    }
+    const angle = ARROWS[index];
+    if (angle != null) button.append(arrow(angle));
     return button;
+}
+
+function arrow(angle: number): SVGSVGElement {
+    const icon = document.createElementNS(SVG_NS, 'svg');
+    icon.setAttribute('class', 'qv-direction-arrow');
+    icon.setAttribute('viewBox', '0 0 24 24');
+    icon.setAttribute('aria-hidden', 'true');
+    icon.setAttribute('fill', 'none');
+    icon.setAttribute('stroke', 'currentColor');
+    icon.setAttribute('stroke-width', '2');
+    icon.setAttribute('stroke-linecap', 'round');
+    icon.setAttribute('stroke-linejoin', 'round');
+    const path = document.createElementNS(SVG_NS, 'path');
+    path.setAttribute('d', 'M12 19V5M5 12l7-7 7 7');
+    path.setAttribute('transform', `rotate(${angle} 12 12)`);
+    icon.append(path);
+    return icon;
 }
 
 /** Draws the compass pane and the exits strip from the current directions, labels and exits. */
@@ -64,10 +79,10 @@ export function renderCompass(): void {
         directions().forEach((name, i) => {
             const button = directionButton(i, 'qv-compass-button');
             const text = label(i);
-            // An arrow speaks as its direction; in and out show their words too.
+            // An arrow speaks as its direction; up, down, in and out show their words.
             button.setAttribute('aria-label', text);
             button.title = text;
-            if (!ARROWS[i]) button.append(text);
+            if (ARROWS[i] == null) button.append(text);
             button.disabled = !available.includes(name);
             if (GRID[i]) {
                 button.style.gridRow = String(GRID[i][0]);

@@ -204,6 +204,13 @@
   <template name="EditorGamePictureOptions">Bilderrahmen</template>
   <template name="EditorGamePanesCaption">Spielleisten</template>
   <template name="EditorGameMapinteractive">Karte kann verschoben und gezoomt werden</template>
+  <template name="EditorGameInterfacefont">Schriftart der Oberfläche</template>
+  <template name="EditorGameInterfacefontHelp">Die Schriftart der Raumleiste, der Bereiche und der Schaltflächen. Leer lassen für die des Spielers.</template>
+  <template name="EditorGameAccentColour">Akzentfarbe</template>
+  <template name="EditorGameAccentColourHelp">Links, der Kompass und die Eingabeaufforderung werden darin gezeichnet. Leer lassen für die Linkfarbe, wenn du die Farben geändert hast, sonst für die des Spielers. Mit nur einer Akzentfarbe folgt das Spiel weiter dem hellen oder dunklen Modus des Spielers.</template>
+  <template name="EditorGameMapPosition">Position der Karte</template>
+  <template name="EditorGameMapPositionHeader">Über dem Spiel</template>
+  <template name="EditorGameMapPositionPanes">In den Bereichen</template>
   <template name="EditorGameLayoutPreset">Position der Bereiche</template>
   <template name="EditorGameNarrowLayoutPreset">Auf einem Handy</template>
   <template name="EditorGameLayoutSidepanes">Neben dem Spiel (auf dem Handy in einer Schublade)</template>

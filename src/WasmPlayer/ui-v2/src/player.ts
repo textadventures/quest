@@ -64,10 +64,21 @@ export class QvPlayer extends HTMLElement {
         // The host shows and hides the toolbar's buttons itself, and adds Restart in previews.
         const toolbar = this.querySelector('.qv-toolbar');
         if (toolbar) {
-            new MutationObserver(() => this.updateTopbar()).observe(toolbar, {
+            new MutationObserver(() => {
+                decorateRestartButton(toolbar);
+                this.updateTopbar();
+            }).observe(toolbar, {
                 subtree: true, childList: true, attributes: true, attributeFilter: ['style', 'hidden'],
             });
+            decorateRestartButton(toolbar);
         }
+        // An icon button's tooltip is its name, which the host may have translated since.
+        this.addEventListener('pointerover', (e) => {
+            const button = e.target instanceof Element ? e.target.closest('button') : null;
+            if (!button?.querySelector(':scope > .qv-icon')) return;
+            const name = button.querySelector('.qv-button-label')?.textContent?.trim() || button.getAttribute('aria-label');
+            if (name) button.title = name;
+        });
         this.#updateLayout();
         this.#updatePanesButton();
     }
@@ -148,6 +159,8 @@ export class QvPlayer extends HTMLElement {
         // Moving into a new layout isn't the drawer opening or closing, so it isn't animated.
         this.toggleAttribute('data-qv-layout-changing', true);
         this.dataset.qvLayout = layout;
+        // A map kept in the panes goes back to the header in a layout without them.
+        updateMap();
         requestAnimationFrame(() => requestAnimationFrame(() => this.removeAttribute('data-qv-layout-changing')));
         // The exits strip and pinned status bar show only where the panes aren't beside the game.
         updateExitStrip();
@@ -212,7 +225,7 @@ export class QvPlayer extends HTMLElement {
         return this.querySelector('[data-qv-part="picture-frame"]');
     }
 
-    /** The map (map.ts), under the picture frame. */
+    /** The map (map.ts), under the picture frame or in its own pane. */
     get map(): HTMLElement | null {
         return this.querySelector('[data-qv-part="map"]');
     }
@@ -258,6 +271,7 @@ export class QvPlayer extends HTMLElement {
             case 'panes':
                 this.#setHidden(this.panes, !visible);
                 if (!visible) setDrawerOpen(false, { restoreFocus: false });
+                updateMap();
                 this.#updatePanesButton();
                 break;
             default:
@@ -304,6 +318,10 @@ export class QvPlayer extends HTMLElement {
             if (lengthTokens.has(name) && /^-?(\d+\.?\d*|\.\d+)$/.test(value)) value += 'px';
             this.style.setProperty(name, value);
         }
+        // Under the dark scheme, a game's own accent is lightened unless it has its own
+        // background too (v2.css).
+        this.toggleAttribute('data-qv-own-accent', !!this.style.getPropertyValue('--qv-accent'));
+        this.toggleAttribute('data-qv-own-background', !!this.style.getPropertyValue('--qv-bg'));
     }
 
     setLocation(html: string): void {
@@ -312,6 +330,30 @@ export class QvPlayer extends HTMLElement {
         location.innerHTML = html;
         location.classList.toggle('qv-empty', html.trim() === '');
     }
+}
+
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+/**
+ * The host's Restart button (editor previews) arrives as text, like legacy's toolbar buttons; on
+ * v2 it gets an icon, with its text kept as the label, as player.htm's buttons have.
+ */
+function decorateRestartButton(toolbar: Element): void {
+    const button = toolbar.querySelector<HTMLButtonElement>('#cmdRestart');
+    if (!button || button.querySelector('.qv-icon')) return;
+    const label = document.createElement('span');
+    label.className = 'qv-button-label';
+    label.textContent = button.textContent;
+    const icon = document.createElementNS(SVG_NS, 'svg');
+    icon.setAttribute('class', 'qv-icon');
+    icon.setAttribute('viewBox', '0 0 24 24');
+    icon.setAttribute('aria-hidden', 'true');
+    for (const d of ['M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8', 'M3 3v5h5']) {
+        const path = document.createElementNS(SVG_NS, 'path');
+        path.setAttribute('d', d);
+        icon.append(path);
+    }
+    button.replaceChildren(icon, label);
 }
 
 export function player(): QvPlayer | null {

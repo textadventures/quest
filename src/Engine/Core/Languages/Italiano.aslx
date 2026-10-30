@@ -179,6 +179,8 @@
   <template name="InButtonLabel">dentro</template>
   <template name="OutButtonLabel">fuori</template>
   <template name="EmptyListLabel">(vuoto)</template>
+  <template name="InventoryEmptyLabel">Non hai niente con te.</template>
+  <template name="PlacesObjectsEmptyLabel">Qui non c'è niente.</template>
   <template name="NothingSelectedLabel">(non hai selezionato niente)</template>
 
   <!-- Nella riga sotto ho tolto gli "entra ed esci" che noi italiani possiamo inserire come verbi nel gioco (Cordella) -->

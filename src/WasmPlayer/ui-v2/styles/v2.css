@@ -20,8 +20,15 @@
         --qv-font-size: 12pt;
         --qv-font-ui: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
         --qv-text: #1a1a1a;
-        --qv-link: #1d4ed8;
+        --qv-link: var(--qv-accent-shown);
         --qv-link-decoration: underline;
+
+        /* The game's one highlight colour (links, the compass's open directions, the command
+           prompt, the menu's hover, the player on the map), from accentcolour or the link colour.
+           --qv-accent-shown is internal: the accent as drawn, lightened under the dark scheme when
+           the game gave its own accent but not its own background (below). */
+        --qv-accent: #1f6f78;
+        --qv-accent-shown: var(--qv-accent);
 
         /* Surfaces. --qv-bg is the game's background; --qv-page-bg is the margin around it. The
            neutral ones are mixed from the text and background, so they suit whatever colours the
@@ -34,19 +41,23 @@
         --qv-bg-blend-bottom: var(--qv-page-bg);
         --qv-surface: color-mix(in srgb, var(--qv-text) 5%, var(--qv-bg));
         --qv-border-colour: color-mix(in srgb, var(--qv-text) 20%, var(--qv-bg));
+        /* Internal: the fainter lines that divide the bars and panes, and muted text. */
+        --qv-hairline: color-mix(in srgb, var(--qv-text) 10%, var(--qv-bg));
+        --qv-muted: color-mix(in srgb, var(--qv-text) 68%, var(--qv-bg));
 
         /* Spacing and shape. */
         --qv-space: 1rem;
         --qv-radius: 6px;
-        --qv-output-width: 50rem;
+        --qv-output-width: 42rem;
         --qv-padding-top: var(--qv-space);
         --qv-padding-bottom: var(--qv-space);
         --qv-padding-left: var(--qv-space);
         --qv-padding-right: var(--qv-space);
 
-        /* The location bar (the contract's "status" tokens, from the location bar options). */
-        --qv-status-fg: #ffffff;
-        --qv-status-bg: #3f3f46;
+        /* The location bar (the contract's "status" tokens, from the location bar options): on
+           the game's own background unless the game colours it. */
+        --qv-status-fg: var(--qv-text);
+        --qv-status-bg: var(--qv-bg);
         --qv-status-border: none;
         --qv-status-image: none;
 
@@ -56,14 +67,14 @@
 
         /* Panes and menus: defined now so the whole token set exists; used from Phase 2. */
         --qv-pane-fg: var(--qv-text);
-        --qv-pane-bg: var(--qv-surface);
-        --qv-pane-heading-fg: var(--qv-text);
-        --qv-pane-heading-bg: var(--qv-surface);
+        --qv-pane-bg: transparent;
+        --qv-pane-heading-fg: var(--qv-muted);
+        --qv-pane-heading-bg: transparent;
         --qv-pane-highlight: #f59e0b;
         --qv-menu-fg: var(--qv-text);
         --qv-menu-bg: var(--qv-bg);
         --qv-menu-hover-fg: var(--qv-bg);
-        --qv-menu-hover-bg: var(--qv-link);
+        --qv-menu-hover-bg: var(--qv-accent-shown);
         --qv-menu-font: var(--qv-font-ui);
         --qv-menu-font-size: 1rem;
 
@@ -85,20 +96,31 @@
         color: var(--qv-text);
         font-family: var(--qv-font-body);
         font-size: var(--qv-font-size);
-        line-height: 1.5;
+        line-height: 1.6;
     }
 
     /* Dark: for a game that hasn't chosen its own colours (610 Core then sends none). */
     @media (prefers-color-scheme: dark) {
         qv-player {
             --qv-text: #e4e4e7;
-            --qv-link: #93c5fd;
+            --qv-accent: #7cc4cc;
             --qv-bg: #18181b;
-            --qv-status-bg: #27272a;
             --qv-focus-ring: #60a5fa;
 
             color-scheme: dark;
         }
+
+        /* A game's own accent was chosen for a light background. On the dark one it's lightened
+           enough to read, unless the game has sent its own background too (setTokens marks both). */
+        qv-player[data-qv-own-accent]:not([data-qv-own-background]) {
+            --qv-accent-shown: color-mix(in oklab, var(--qv-accent) 45%, white);
+        }
+    }
+
+    /* A game's own colours may leave no room to fade text toward the background, so with its own
+       background, v2's muted text (pane headings, toolbar buttons) is its text colour. */
+    qv-player[data-qv-own-background] {
+        --qv-muted: var(--qv-text);
     }
 
     body:has(> qv-player) {
@@ -133,7 +155,7 @@
         min-height: 100dvh;
         margin: 0;
         background-color: color-mix(in srgb, var(--qv-bg) calc(var(--qv-bg-opacity) * 100%), transparent);
-        border-inline: 1px solid var(--qv-border-colour);
+        border-inline: 1px solid var(--qv-hairline);
     }
 
     [data-qv-part="border"].qv-borderless {
@@ -154,22 +176,23 @@
         flex-wrap: wrap;
         align-items: center;
         gap: 0.5rem;
-        min-height: 2.75rem;
+        min-height: 3.25rem;
         padding: 0.25rem var(--qv-padding-right) 0.25rem var(--qv-padding-left);
         background-color: var(--qv-status-bg);
         background-image: var(--qv-status-image);
         background-size: cover;
         border: var(--qv-status-border);
+        /* A hairline under the bar, whatever border the game gives it. */
+        box-shadow: inset 0 -1px var(--qv-hairline);
         color: var(--qv-status-fg);
         font-family: var(--qv-font-ui);
-        font-size: 1rem;
+        font-size: 0.95rem;
     }
 
     [data-qv-part="location"] {
         flex: 1;
         min-width: 0;
         font-weight: 600;
-        text-align: center;
     }
 
     [data-qv-part="location"].qv-empty {
@@ -188,19 +211,60 @@
         margin-inline-start: auto;
     }
 
+    /* Lucide-style stroke icons (player.htm), drawn in the button's text colour. */
+    qv-player .qv-icon {
+        flex: none;
+        width: 20px;
+        height: 20px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.75;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    /* The host shows its toolbar buttons with an inline display ("initial"), which beats flex
+       centring, so the icon is a block, which a button centres by itself. */
+    .qv-toolbar .qv-icon,
+    .qv-panes-button .qv-icon {
+        display: block;
+        margin-inline: auto;
+    }
+
+    /* An icon button's name: read out, and its tooltip (player.ts), but not shown. */
+    .qv-button-label {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+    }
+
+    /* Quiet icon buttons, a step back from the location. */
     .qv-toolbar button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 44px;
         min-height: 44px;
-        padding: 0.25rem 0.75rem;
-        border: 1px solid color-mix(in srgb, currentColor 45%, transparent);
+        padding: 0;
+        border: none;
         border-radius: var(--qv-radius);
         background: none;
-        color: inherit;
+        color: color-mix(in srgb, currentColor 72%, transparent);
         font: inherit;
+        font-size: 0.9rem;
         cursor: pointer;
     }
 
+    qv-player[data-qv-own-background] .qv-toolbar button {
+        color: inherit;
+    }
+
     .qv-toolbar button:hover:not(:disabled) {
-        background-color: color-mix(in srgb, currentColor 15%, transparent);
+        background-color: color-mix(in srgb, currentColor 8%, transparent);
+        color: inherit;
     }
 
     .qv-toolbar button:focus-visible {
@@ -240,7 +304,46 @@
         position: relative;
         height: var(--qv-map-height, 300px);
         background-color: color-mix(in srgb, var(--qv-bg) calc(var(--qv-bg-opacity) * 100%), transparent);
-        border-bottom: 1px solid var(--qv-border-colour);
+        border-bottom: 1px solid var(--qv-hairline);
+    }
+
+    /* setMapPosition("panes"): the map is the first pane (map.ts), as wide as the panes and no
+       higher than it is wide. */
+    qv-pane[data-qv-pane="map"] [data-qv-part="map"] {
+        height: min(var(--qv-map-height, 300px), calc(var(--qv-pane-width) - 2rem));
+        border: 1px solid var(--qv-hairline);
+        border-radius: var(--qv-radius);
+        overflow: hidden;
+    }
+
+    /* In a pane the zoom buttons are smaller, so they don't crowd a narrow map. */
+    qv-pane[data-qv-pane="map"] .qv-map-zoom button {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+    }
+
+    /* Core draws the player as a yellow dot ringed in black, which v2 draws in the accent. A
+       game's own colours for the player are left as they are. */
+    .qv-map-player[fill="yellow" i][stroke="black" i] {
+        fill: var(--qv-accent-shown);
+        stroke: var(--qv-bg);
+    }
+
+    /* On the dark scheme, Core's default white rooms and black lines and labels would glare or
+       vanish, so they take the scheme's colours. A game with its own background keeps them. */
+    @media (prefers-color-scheme: dark) {
+        qv-player:not([data-qv-own-background]) .qv-map-svg [fill="white" i] {
+            fill: var(--qv-surface);
+        }
+
+        qv-player:not([data-qv-own-background]) .qv-map-svg [stroke="black" i]:not(.qv-map-player) {
+            stroke: var(--qv-border-colour);
+        }
+
+        qv-player:not([data-qv-own-background]) .qv-map-svg text[fill="black" i] {
+            fill: var(--qv-text);
+        }
     }
 
     qv-player[data-qv-narrow] [data-qv-part="map"] {
@@ -248,7 +351,7 @@
         max-height: 40dvh;
     }
 
-    qv-player[data-qv-narrow] [data-qv-part="map"].qv-map-collapsed {
+    qv-player[data-qv-narrow] .qv-header [data-qv-part="map"].qv-map-collapsed {
         display: none;
     }
 
@@ -303,10 +406,10 @@
         width: 44px;
         height: 44px;
         padding: 0;
-        border: 1px solid var(--qv-border-colour);
+        border: 1px solid var(--qv-hairline);
         border-radius: var(--qv-radius);
         background-color: var(--qv-bg);
-        color: var(--qv-text);
+        color: var(--qv-muted);
         font: 1.25rem/1 var(--qv-font-ui);
         cursor: pointer;
     }
@@ -357,9 +460,17 @@
         height: auto;
     }
 
+    /* Links underlined lightly, the line darkening on hover. */
     [data-qv-part="output"] a {
         color: var(--qv-link);
         text-decoration: var(--qv-link-decoration);
+        text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+        text-decoration-thickness: 1px;
+        text-underline-offset: 0.2em;
+    }
+
+    [data-qv-part="output"] a:hover {
+        text-decoration-color: currentColor;
     }
 
     [data-qv-part="output"] a.cmdlink {
@@ -488,10 +599,12 @@
 
     /* ── Panes ── */
 
+    /* Sections divided by hairlines rather than boxes, each headed by a small label. A pane theme
+       colours the sections and their headings. */
     [data-qv-part="panes"] {
         box-sizing: border-box;
         width: var(--qv-pane-width);
-        padding: 0.5rem;
+        padding: 0.5rem 0.75rem;
         background-color: var(--qv-page-bg);
         font-family: var(--qv-font-ui);
         font-size: 0.95rem;
@@ -499,23 +612,30 @@
 
     qv-pane {
         display: block;
-        margin-bottom: 0.5rem;
-        border: 1px solid var(--qv-border-colour);
-        border-radius: var(--qv-radius);
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--qv-hairline);
         background-color: var(--qv-pane-bg);
         color: var(--qv-pane-fg);
-        overflow: hidden;
+    }
+
+    qv-pane + qv-pane {
+        padding-top: 0.25rem;
     }
 
     .qv-pane-heading {
         min-height: 44px;
         display: flex;
         align-items: center;
+        justify-content: space-between;
         gap: 0.5ch;
-        padding: 0 0.75rem;
+        padding: 0 0.5rem;
+        border-radius: calc(var(--qv-radius) - 2px);
         background-color: var(--qv-pane-heading-bg);
         color: var(--qv-pane-heading-fg);
+        font-size: 0.75rem;
         font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
         cursor: pointer;
     }
 
@@ -524,18 +644,20 @@
     }
 
     /* Collapsed or open. A flex <summary> loses the browser's own marker. */
-    .qv-pane-heading::before {
+    .qv-pane-heading::after {
         content: "";
-        width: 0.45em;
-        height: 0.45em;
-        border-right: 2px solid currentColor;
-        border-bottom: 2px solid currentColor;
+        flex: none;
+        width: 0.5em;
+        height: 0.5em;
+        margin-inline-end: 0.2em;
+        border-right: 1.5px solid currentColor;
+        border-bottom: 1.5px solid currentColor;
         transform: rotate(-45deg);
         transition: transform 150ms ease;
     }
 
-    details[open] > .qv-pane-heading::before {
-        transform: rotate(45deg);
+    details[open] > .qv-pane-heading::after {
+        transform: translateY(-0.15em) rotate(45deg);
     }
 
     /* The command and custom status panes have no title, as on legacy, so they can't collapse. */
@@ -549,7 +671,7 @@
     }
 
     .qv-pane-body {
-        padding: 0.25rem 0.5rem 0.5rem;
+        padding: 0 0 0.25rem;
     }
 
     .qv-pane-body:empty {
@@ -582,7 +704,7 @@
 
     .qv-pane-item:hover,
     .qv-pane-item[aria-expanded="true"] {
-        background-color: color-mix(in srgb, var(--qv-pane-highlight) 25%, transparent);
+        background-color: color-mix(in srgb, currentColor 8%, transparent);
     }
 
     .qv-pane-item:focus-visible {
@@ -591,7 +713,8 @@
     }
 
     .qv-pane-empty {
-        margin: 0.5rem;
+        margin: 0.25rem 0.5rem 0.5rem;
+        font-size: 0.9em;
         font-style: italic;
     }
 
@@ -700,6 +823,8 @@
         padding: 0 4px;
     }
 
+    /* A way the player can go is tinted with the accent. One they can't is just a faint arrow or
+       word, with no button drawn round it. */
     .qv-compass-button,
     .qv-exit {
         box-sizing: border-box;
@@ -710,21 +835,26 @@
         min-width: 44px;
         min-height: 44px;
         padding: 0 0.5rem;
-        border: 1px solid var(--qv-border-colour);
-        border-radius: calc(var(--qv-radius) - 2px);
-        background-color: var(--qv-bg);
-        color: var(--qv-text);
+        border: 1px solid color-mix(in srgb, var(--qv-accent-shown) 35%, var(--qv-bg));
+        border-radius: var(--qv-radius);
+        background-color: color-mix(in srgb, var(--qv-accent-shown) 12%, var(--qv-bg));
+        color: var(--qv-accent-shown);
         font: inherit;
+        font-size: 0.875rem;
+        font-weight: 600;
         cursor: pointer;
     }
 
     .qv-compass-button:hover:not(:disabled),
     .qv-exit:hover {
-        background-color: color-mix(in srgb, var(--qv-pane-highlight) 25%, var(--qv-bg));
+        background-color: color-mix(in srgb, var(--qv-accent-shown) 22%, var(--qv-bg));
     }
 
     .qv-compass-button:disabled {
-        opacity: 0.35;
+        border-color: transparent;
+        background-color: transparent;
+        color: color-mix(in srgb, var(--qv-pane-fg) 30%, transparent);
+        font-weight: normal;
         cursor: default;
     }
 
@@ -735,8 +865,9 @@
     }
 
     .qv-direction-arrow {
-        font-size: 1.2em;
-        line-height: 1;
+        flex: none;
+        width: 18px;
+        height: 18px;
     }
 
     /* ── Layouts ──
@@ -854,14 +985,16 @@
         transform: translateY(100%);
     }
 
-    /* The bottom bar: the exits strip and the command bar, with the panes button beside it. Only
-       the sheet layout has one; elsewhere its parts are laid out as if it weren't there. */
+    /* The bottom bar: the exits strip and the command bar, kept in view together wherever the
+       strip shows (the drawer and sheet layouts), so the command bar never covers the exits. The
+       sheet layout's panes button is beside the command bar. Elsewhere its parts are laid out as
+       if it weren't there. */
     .qv-footer,
     .qv-footer-bar {
         display: contents;
     }
 
-    qv-player[data-qv-layout="sheet"] .qv-footer {
+    qv-player:is([data-qv-layout="drawer"], [data-qv-layout="sheet"]) .qv-footer {
         display: block;
         position: sticky;
         bottom: 0;
@@ -874,6 +1007,10 @@
         align-items: flex-start;
         gap: 0.5rem;
         padding-inline-end: var(--qv-padding-right);
+    }
+
+    qv-player[data-qv-layout="drawer"] [data-qv-part="command-bar"] {
+        position: static;
     }
 
     qv-player[data-qv-layout="sheet"] [data-qv-part="command-bar"] {
@@ -904,8 +1041,9 @@
     }
 
     .qv-panes-button {
-        font-size: 1.25rem;
-        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
 
     /* ShowMenu and Ask for games before 600, as a modal <dialog>. */
@@ -999,16 +1137,44 @@
         display: none;
     }
 
+    /* With no prompt of the game's own, a "›" in the accent marks where commands go. */
+    .qv-command-form:has(> .qv-command-prompt:empty)::before {
+        content: "›";
+        flex: none;
+        color: var(--qv-accent-shown);
+        font-size: 1.5em;
+        line-height: 1;
+    }
+
+    /* Typed onto an underline under the prompt and input, which takes the accent while the input
+       has focus. The presets draw the input their own way. */
+    qv-command-bar:not([data-qv-preset]) .qv-command-form {
+        border-bottom: 1.5px solid var(--qv-border-colour);
+    }
+
+    qv-command-bar:not([data-qv-preset]) .qv-command-form:has(.qv-command-input:focus-visible) {
+        border-bottom-color: var(--qv-accent-shown);
+    }
+
     .qv-command-input {
         flex: 1;
         min-width: 0;
         min-height: 44px;
-        padding: 0.25rem 0.5rem;
-        border: 1px solid var(--qv-border-colour);
-        border-radius: var(--qv-radius);
+        padding: 0.25rem 0;
+        border: 0;
+        border-radius: 0;
         background-color: var(--qv-command-bg);
         color: var(--qv-command-fg);
         font: inherit;
+    }
+
+    .qv-command-input::placeholder {
+        color: var(--qv-command-fg);
+        opacity: 0.5;
+    }
+
+    .qv-command-input:focus-visible {
+        outline: none;
     }
 
     /* setCommandBarPreset("borderless"): the command is typed straight onto the page after the
@@ -1030,7 +1196,8 @@
        shows on a dark background too. */
     [data-qv-preset="shadow"] .qv-command-input {
         padding: 0.5rem 0.75rem;
-        border-color: transparent;
+        border: 1px solid transparent;
+        border-radius: var(--qv-radius);
         box-shadow: 0 0 15px 5px color-mix(in srgb, var(--qv-text) 35%, transparent);
     }
 
@@ -1047,7 +1214,7 @@
 
     .qv-continue:focus-visible,
     .qv-dialog button:focus-visible,
-    .qv-command-input:focus-visible {
+    [data-qv-preset="shadow"] .qv-command-input:focus-visible {
         outline: 2px solid var(--qv-focus-ring);
         outline-offset: 1px;
     }

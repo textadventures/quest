@@ -1,6 +1,9 @@
-// The map (the "map" part): QuestUI.map and setMapInteractive on v2. It sits under the picture
-// frame in the sticky header, game.mapsize pixels high (map.show), at every width. On a narrow
-// layout its height is capped, and a top bar button collapses it.
+// The map (the "map" part): QuestUI.map, setMapInteractive and setMapPosition on v2. It sits
+// under the picture frame in the sticky header, game.mapsize pixels high (map.show), at every
+// width. On a narrow layout its height is capped, and a top bar button collapses it.
+//
+// setMapPosition("panes") moves it into a pane of its own, first in the panes region, wherever the
+// layout has panes (the column, drawer or sheet). With no panes it stays in the header.
 //
 // The drawing is done in SVG by map.js (map/renderer.ts), which is loaded the first time a game
 // calls a map member, since most games have no map. Calls made before it has loaded are kept,
@@ -8,6 +11,7 @@
 
 import { sendEvent } from './engine';
 import type { MapHost, MapRenderer } from './map/types';
+import { type QvPane, pane } from './panes';
 import { player } from './player';
 import { state } from './state';
 
@@ -25,6 +29,7 @@ let queue: [string, unknown[]][] = [];
 let size = 0;
 let visible = true;
 let collapsed = false;
+let position: 'header' | 'panes' = 'header';
 
 const chromeString = (key: string, fallback: string): string => WebPlayer.chromeStrings?.[key] ?? fallback;
 
@@ -99,7 +104,17 @@ export function setMapVisible(value: boolean): void {
     updateMap();
 }
 
-/** Shows the part once map.show has given it a height, and the collapse button where it's narrow. */
+/** QuestUI.setMapPosition: header (the default) or panes. Any other value changes nothing. */
+export function setMapPosition(value: string): void {
+    if (value !== 'header' && value !== 'panes') return;
+    position = value;
+    updateMap();
+}
+
+/**
+ * Shows the part once map.show has given it a height, in the header or its pane, and the collapse
+ * button where it's narrow and in the header.
+ */
 export function updateMap(): void {
     const p = player();
     const region = p?.map;
@@ -107,13 +122,39 @@ export function updateMap(): void {
     region.hidden = !(size > 0 && visible);
     region.style.setProperty('--qv-map-height', `${size}px`);
     region.classList.toggle('qv-map-collapsed', collapsed);
+    const inPanes = placeMap(region);
     const button = p.mapButton;
     if (button) {
-        button.hidden = region.hidden || !p.hasAttribute('data-qv-narrow');
-        button.textContent = chromeString('MapLabel', 'Map');
+        button.hidden = region.hidden || inPanes || !p.hasAttribute('data-qv-narrow');
+        const label = button.querySelector('.qv-button-label');
+        if (label) label.textContent = chromeString('MapLabel', 'Map');
         button.setAttribute('aria-expanded', String(!collapsed));
     }
     p.updateTopbar();
+}
+
+// Moves the map into its pane, or back under the picture frame, and says which. Moving the element
+// keeps its renderer, which redraws for its new size.
+function placeMap(region: HTMLElement): boolean {
+    const p = player();
+    if (!p) return false;
+    const inPanes = position === 'panes' && p.layout !== 'none' && !!p.panes && !p.panes.hidden;
+    let mapPane = pane('map');
+    if (inPanes && !mapPane && p.panes) {
+        mapPane = document.createElement('qv-pane') as QvPane;
+        mapPane.dataset.qvPane = 'map';
+        mapPane.setAttribute('label', chromeString('MapLabel', 'Map'));
+        p.panes.prepend(mapPane);
+    }
+    if (inPanes && mapPane) {
+        if (region.parentElement !== mapPane.body) mapPane.body.append(region);
+        mapPane.hidden = region.hidden;
+    } else {
+        const header = p.querySelector('.qv-header');
+        if (header && region.parentElement !== header) header.append(region);
+        if (mapPane) mapPane.hidden = true;
+    }
+    return inPanes;
 }
 
 export function toggleMapCollapsed(): void {
@@ -129,4 +170,5 @@ export function resetMap(): void {
     size = 0;
     visible = true;
     collapsed = false;
+    position = 'header';
 }

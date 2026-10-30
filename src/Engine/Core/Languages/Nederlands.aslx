@@ -91,6 +91,8 @@
   <template name="InButtonLabel">in</template>
   <template name="OutButtonLabel">uit</template>
   <template name="EmptyListLabel">(leeg)</template>
+  <template name="InventoryEmptyLabel">Je draagt niets.</template>
+  <template name="PlacesObjectsEmptyLabel">Hier is niets.</template>
   <template name="NothingSelectedLabel">(niets geselecteerd)</template>
 
   <verbtemplate name="lookat">kijk naar</verbtemplate>

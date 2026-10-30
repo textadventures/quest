@@ -128,11 +128,31 @@
         AddUIToken (tokens, "--qv-bg", game.defaultbackground)
         AddUIToken (tokens, "--qv-text", GetUIDefault("foreground"))
         AddUIToken (tokens, "--qv-link", GetUIDefault("linkforeground"))
+        AddAccentToken (tokens, true)
+      }
+      else {
+        AddAccentToken (tokens, false)
       }
       AddUIToken (tokens, "--qv-font-body", GetUIDefault("font"))
       if (LengthOf(GetUIDefault("fontsize")) > 0) {
         AddUIToken (tokens, "--qv-font-size", GetUIDefault("fontsize") + "pt")
       }
+    ]]>
+  </function>
+
+  <function name="AddAccentToken" parameters="tokens, owncolours">
+    <![CDATA[
+      // The accent is accentcolour, sent on its own so a game that only sets an accent still
+      // follows the UI's light and dark schemes. A game that has its own colours but no accent
+      // gets its link colour, so the UI's other highlights match its links.
+      accent = ""
+      if (HasString(game, "accentcolour")) {
+        accent = Trim(game.accentcolour)
+      }
+      if (accent = "" and owncolours) {
+        accent = GetUIDefault("linkforeground")
+      }
+      AddUIToken (tokens, "--qv-accent", accent)
     ]]>
   </function>
 
@@ -973,6 +993,7 @@
     // Once the game has chosen a background, its text colours go with it (InitTextDefaults)
     AddUIToken (tokens, "--qv-text", GetUIDefault("foreground"))
     AddUIToken (tokens, "--qv-link", GetUIDefault("linkforeground"))
+    AddAccentToken (tokens, true)
     JS.QuestUI.setTokens (tokens)
     game.defaultbackground = colour
   </function>

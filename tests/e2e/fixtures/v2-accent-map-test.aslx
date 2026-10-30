@@ -1,0 +1,40 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- Player UI v2's accent colour and map position (verify-wasmplayer-v2-accent-map.mjs): a game
+       with its own accent but the editor's other colours, an interface font, and a map in the
+       panes. A hall with a thing in it and a garden to the east. -->
+  <game name="V2AccentMapTest">
+    <accentcolour>#7a3e6e</accentcolour>
+    <interfacefont>Verdana, sans-serif</interfacefont>
+    <gridmap />
+    <mapsize type="int">200</mapsize>
+    <mapscale type="int">30</mapscale>
+    <mapposition>panes</mapposition>
+  </game>
+
+  <object name="hall">
+    <inherit name="editor_room" />
+    <description>A hall.</description>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <object name="thing">
+      <inherit name="editor_object" />
+    </object>
+    <exit alias="east" to="garden">
+      <inherit name="eastdirection" />
+    </exit>
+  </object>
+
+  <object name="garden">
+    <inherit name="editor_room" />
+    <description>A garden.</description>
+    <exit alias="west" to="hall">
+      <inherit name="westdirection" />
+    </exit>
+  </object>
+
+</asl>

@@ -22,7 +22,7 @@ const contractMembers = [
     'addText', 'clearScreen', 'setAlignment', 'startSection', 'endSection', 'hideSection',
     'disableSection', 'disableCommandLinks', 'updateLinks', 'scrollToEnd', 'addYouTube', 'addVimeo',
     'textEffect',
-    'setVisible', 'setPaneOrder', 'setLayoutPreset', 'setPictureFrame', 'setInterfaceString',
+    'setVisible', 'setPaneOrder', 'setLayoutPreset', 'setMapPosition', 'setPictureFrame', 'setInterfaceString',
     'setCompassDirections', 'setLocation', 'setStatusAttributes',
     'setTokens', 'setCommandBarStyle', 'setCommandBarPreset', 'setCommandPrompt', 'addStylesheet',
     'addPane', 'setPaneContent', 'setCommands', 'setAutoScroll', 'setContinueOnClick',

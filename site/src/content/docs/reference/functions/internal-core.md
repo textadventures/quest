@@ -56,6 +56,11 @@ _SetVerbList(garment, list, s)
 _SetVerbsForGarment(garment)
 ```
 
+## AddAccentToken
+```quest
+AddAccentToken (tokens, owncolours)
+```
+
 ## AddExternalStylesheet
 ```quest
 AddExternalStylesheet(stylesheet)

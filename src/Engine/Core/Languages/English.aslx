@@ -191,6 +191,8 @@
   <template name="InButtonLabel">in</template>
   <template name="OutButtonLabel">out</template>
   <template name="EmptyListLabel">(empty)</template>
+  <template name="InventoryEmptyLabel">You aren't carrying anything.</template>
+  <template name="PlacesObjectsEmptyLabel">Nothing here.</template>
   <template name="NothingSelectedLabel">(nothing selected)</template>
   <template name="TypeHereLabel">Type here...</template>
   <template name="ContinueLabel">Continue...</template>

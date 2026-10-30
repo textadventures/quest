@@ -139,6 +139,8 @@
   <template name="InButtonLabel">în</template>
   <template name="OutButtonLabel">ex</template>
   <template name="EmptyListLabel">(gol)</template>
+  <template name="InventoryEmptyLabel">Nu ai nimic la tine.</template>
+  <template name="PlacesObjectsEmptyLabel">Aici nu e nimic.</template>
   <template name="NothingSelectedLabel">(nu este selectat nimic)</template>
   <template name="TypeHereLabel">Scrie aici...</template>
   <template name="ContinueLabel">Continuă...</template>

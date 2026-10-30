@@ -5,15 +5,16 @@
                 <header class="qv-topbar">
                     <div data-qv-part="location" class="qv-empty"></div>
                     <div class="qv-toolbar">
-                        <!-- The host shows these as the session allows (WebPlayer.setCanDebug/setCanSave),
-                             adds a Restart button after Debug in editor previews, and translates the labels
-                             (data-chrome-key*). -->
-                        <button id="cmdDebug" type="button" style="display: none">Debug</button>
-                        <button id="cmdSave" type="button" data-chrome-key="SaveLoadTitle">Save / Load</button>
+                        <!-- Icon buttons, each named by a visually hidden label (also its tooltip, player.ts).
+                             The host shows these as the session allows (WebPlayer.setCanDebug/setCanSave),
+                             adds a Restart button after Debug in editor previews (given an icon by
+                             player.ts), and translates the labels (data-chrome-key*). -->
+                        <button id="cmdDebug" type="button" style="display: none"><svg class="qv-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 2 1.88 1.88"/><path d="M14.12 3.88 16 2"/><path d="M9 7.13v-1a3.003 3.003 0 1 1 6 0v1"/><path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6"/><path d="M12 20v-9"/><path d="M6.53 9C4.6 8.8 3 7.1 3 5"/><path d="M6 13H2"/><path d="M3 21c0-2.1 1.7-3.9 3.8-4"/><path d="M20.97 5c0 2.1-1.6 3.8-3.5 4"/><path d="M22 13h-4"/><path d="M17.2 17c2.1.1 3.8 1.9 3.8 4"/></svg><span class="qv-button-label">Debug</span></button>
+                        <button id="cmdSave" type="button"><svg class="qv-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/></svg><span class="qv-button-label" data-chrome-key="SaveLoadTitle">Save / Load</span></button>
                         <!-- Collapses the map on a narrow layout (map.ts). -->
-                        <button class="qv-map-button" type="button" aria-expanded="true" aria-controls="qv-map" data-chrome-key="MapLabel" hidden>Map</button>
+                        <button class="qv-map-button" type="button" aria-expanded="true" aria-controls="qv-map" hidden><svg class="qv-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></svg><span class="qv-button-label" data-chrome-key="MapLabel">Map</span></button>
                         <button class="qv-panes-button" type="button" aria-expanded="false"
-                                data-chrome-key-aria-label="ShowPanesButton" aria-label="Show panels">&#9776;</button>
+                                data-chrome-key-aria-label="ShowPanesButton" aria-label="Show panels"><svg class="qv-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg></button>
                     </div>
                     <div class="qv-status-bar" data-qv-part="status-bar"></div>
                 </header>
@@ -27,7 +28,7 @@
                     <qv-command-bar data-qv-part="command-bar"></qv-command-bar>
                     <!-- The bottom bar layout's panes button (bottombar); the top bar's is for the drawer. -->
                     <button class="qv-panes-button qv-panes-button-bottom" type="button" aria-expanded="false"
-                            data-chrome-key-aria-label="ShowPanesButton" aria-label="Show panels">&#9776;</button>
+                            data-chrome-key-aria-label="ShowPanesButton" aria-label="Show panels"><svg class="qv-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg></button>
                 </div>
             </div>
         </main>

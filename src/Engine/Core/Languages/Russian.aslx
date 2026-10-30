@@ -156,6 +156,8 @@ This is first version done by Daria Mikhaylova, Yeshi Namkhai. It manages declin
   <template name="InButtonLabel">в</template>
   <template name="OutButtonLabel">из</template>
   <template name="EmptyListLabel">(пусто)</template>
+  <template name="InventoryEmptyLabel">У тебя ничего нет.</template>
+  <template name="PlacesObjectsEmptyLabel">Здесь ничего нет.</template>
   <template name="NothingSelectedLabel">(ничего не выбрано)</template>
   <template name="TypeHereLabel">Пиши здесь...</template>
   <template name="ContinueLabel">Продолжай...</template>

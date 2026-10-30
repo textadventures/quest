@@ -200,6 +200,13 @@
   <template name="EditorGamePictureOptions">Cuadro de Imagen</template>
   <template name="EditorGamePanesCaption">Paneles de Juego</template>
   <template name="EditorGameMapinteractive">El mapa se puede arrastrar y ampliar</template>
+  <template name="EditorGameInterfacefont">Fuente de la interfaz</template>
+  <template name="EditorGameInterfacefontHelp">La fuente de la barra de ubicación, los paneles y los botones. Déjala vacía para usar la del jugador.</template>
+  <template name="EditorGameAccentColour">Color de acento</template>
+  <template name="EditorGameAccentColourHelp">Los enlaces, la brújula y el indicador de comandos se dibujan en este color. Déjalo vacío para usar el color de los enlaces si has cambiado los colores, o el del jugador si no. Con solo un color de acento, el juego sigue el modo claro u oscuro del jugador.</template>
+  <template name="EditorGameMapPosition">Posición del mapa</template>
+  <template name="EditorGameMapPositionHeader">Encima del juego</template>
+  <template name="EditorGameMapPositionPanes">En los paneles</template>
   <template name="EditorGameLayoutPreset">Dónde van los paneles</template>
   <template name="EditorGameNarrowLayoutPreset">En un móvil</template>
   <template name="EditorGameLayoutSidepanes">Junto al juego (en un cajón en el móvil)</template>

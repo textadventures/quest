@@ -223,6 +223,19 @@
       </control>
 
       <control>
+        <controltype>dropdown</controltype>
+        <caption>[EditorGameInterfacefont]</caption>
+        <attribute>interfacefont</attribute>
+        <source>basefonts</source>
+        <freetext/>
+      </control>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>[EditorGameInterfacefontHelp]</caption>
+      </control>
+
+      <control>
         <controltype>title</controltype>
         <caption>[EditorGameColour]</caption>
       </control>
@@ -238,6 +251,19 @@
         <attribute>defaultbackground</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>[EditorGameAccentColour]</caption>
+        <attribute>accentcolour</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <freetext/>
+      </control>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>[EditorGameAccentColourHelp]</caption>
       </control>
 
       <control>
@@ -473,6 +499,14 @@
         <onlydisplayif>game.gridmap</onlydisplayif>
         <caption>[EditorGameMapinteractive]</caption>
         <attribute>mapinteractive</attribute>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <onlydisplayif>game.gridmap</onlydisplayif>
+        <caption>[EditorGameMapPosition]</caption>
+        <attribute>mapposition</attribute>
+        <validvalues type="simplestringdictionary">=[EditorGameMapPositionHeader]; panes=[EditorGameMapPositionPanes]</validvalues>
       </control>
 
       <control>
