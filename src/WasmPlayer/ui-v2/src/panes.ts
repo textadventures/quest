@@ -109,7 +109,8 @@ export function updateList(listName: string, items: Record<string, string>): voi
     if (!list.childElementCount) {
         const empty = document.createElement('p');
         empty.className = 'qv-pane-empty';
-        empty.innerHTML = state.interfaceStrings.get('EmptyListLabel') ?? '';
+        empty.innerHTML = state.interfaceStrings.get(listPanes[listName] === 'inventory' ? 'InventoryEmptyLabel' : 'PlacesObjectsEmptyLabel')
+            ?? state.interfaceStrings.get('EmptyListLabel') ?? '';
         target.body.replaceChildren(empty);
     } else {
         target.body.replaceChildren(list);

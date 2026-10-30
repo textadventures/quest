@@ -237,6 +237,8 @@
   <template name="InButtonLabel">μέσα</template>
   <template name="OutButtonLabel">έξω</template>
   <template name="EmptyListLabel">(άδειο)</template>
+  <template name="InventoryEmptyLabel">Δεν έχεις τίποτα.</template>
+  <template name="PlacesObjectsEmptyLabel">Δεν υπάρχει τίποτα εδώ.</template>
   <template name="NothingSelectedLabel">(καμία επιλογή)</template>
   <template name="TypeHereLabel">Γράψε εδώ...</template>
   <template name="ContinueLabel">Συνέχισε...</template>

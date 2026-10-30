@@ -193,6 +193,8 @@
   <template name="InButtonLabel">rein</template>
   <template name="OutButtonLabel">raus</template>
   <template name="EmptyListLabel">(leer)</template>
+  <template name="InventoryEmptyLabel">Du trägst nichts bei dir.</template>
+  <template name="PlacesObjectsEmptyLabel">Hier ist nichts.</template>
   <template name="NothingSelectedLabel">(nichts selektiert)</template>
   <template name="TypeHereLabel">Schreibe hier...</template>
   <template name="ContinueLabel">Weiter...</template>

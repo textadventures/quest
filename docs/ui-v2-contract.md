@@ -143,7 +143,7 @@ Rules that apply to every member:
 | `setLayoutPreset(name, narrow)` with `sidepanes`, `nopanes` or `bottombar` (see "Layout presets" below), or `gamebook` | GamebookCore's `panesVisible(false)` and its `uiHide`s of the location and command bar. Legacy hides those parts, as today. v2 gives gamebooks their own layout |
 | `setMapPosition(position)` with `header` or `panes` (see "Map" below) | (new) |
 | `setPictureFrame(html)` | `setPanelContents` |
-| `setInterfaceString(name, text)` | `setInterfaceString` (same names: `InventoryLabel`, `StatusLabel`, `PlacesObjectsLabel`, `CompassLabel`, `InButtonLabel`, `OutButtonLabel`, `EmptyListLabel`, `NothingSelectedLabel`, `TypeHereLabel`, `ContinueLabel`) |
+| `setInterfaceString(name, text)` | `setInterfaceString` (same names: `InventoryLabel`, `StatusLabel`, `PlacesObjectsLabel`, `CompassLabel`, `InButtonLabel`, `OutButtonLabel`, `EmptyListLabel`, `NothingSelectedLabel`, `TypeHereLabel`, `ContinueLabel`, plus `InventoryEmptyLabel` and `PlacesObjectsEmptyLabel`, the wording for each list when it's empty. `EmptyListLabel` after those replaces them, and legacy shows none of the three) |
 | `setCompassDirections(list)` | `setCompassDirections` |
 | `setLocation(text)` | `updateLocation` |
 | `setStatusAttributes(items)` | `updateStatus` (see below) |

@@ -199,6 +199,8 @@
   <template name="InButtonLabel">Entrar</template>
   <template name="OutButtonLabel">Salir</template>
   <template name="EmptyListLabel">(nada)</template>
+  <template name="InventoryEmptyLabel">No llevas nada encima.</template>
+  <template name="PlacesObjectsEmptyLabel">Aquí no hay nada.</template>
   <template name="NothingSelectedLabel">(nada seleccionado)</template>
   <template name="TypeHereLabel">Escribe aquí...</template>
   <template name="ContinueLabel">Continuar...</template>

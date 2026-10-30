@@ -145,6 +145,8 @@
   <template name="InButtonLabel">entrar</template>
   <template name="OutButtonLabel">sair</template>
   <template name="EmptyListLabel">(vazio)</template>
+  <template name="InventoryEmptyLabel">Você não está carregando nada.</template>
+  <template name="PlacesObjectsEmptyLabel">Não há nada aqui.</template>
   <template name="NothingSelectedLabel">(nada selecionado)</template>
   <template name="TypeHereLabel">Digite aqui...</template>
   <template name="ContinueLabel">Continuar...</template>

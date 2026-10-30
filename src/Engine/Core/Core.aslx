@@ -68,6 +68,8 @@
       JS.QuestUI.setInterfaceString ("InButtonLabel", "[InButtonLabel]")
       JS.QuestUI.setInterfaceString ("OutButtonLabel", "[OutButtonLabel]")
       JS.QuestUI.setInterfaceString ("EmptyListLabel", "[EmptyListLabel]")
+      JS.QuestUI.setInterfaceString ("InventoryEmptyLabel", "[InventoryEmptyLabel]")
+      JS.QuestUI.setInterfaceString ("PlacesObjectsEmptyLabel", "[PlacesObjectsEmptyLabel]")
       JS.QuestUI.setInterfaceString ("NothingSelectedLabel", "[NothingSelectedLabel]")
       JS.QuestUI.setInterfaceString ("TypeHereLabel", "[TypeHereLabel]")
       JS.QuestUI.setInterfaceString ("ContinueLabel", "[ContinueLabel]")

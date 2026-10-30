@@ -193,7 +193,6 @@
         flex: 1;
         min-width: 0;
         font-weight: 600;
-        text-align: center;
     }
 
     [data-qv-part="location"].qv-empty {
@@ -715,6 +714,7 @@
 
     .qv-pane-empty {
         margin: 0.25rem 0.5rem 0.5rem;
+        font-size: 0.9em;
         font-style: italic;
     }
 

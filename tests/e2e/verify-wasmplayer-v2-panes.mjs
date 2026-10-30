@@ -4,7 +4,7 @@
 // - Wide: the panes are a column beside the game, with no drawer button. Inventory and places and
 //   objects list their items as buttons (exits left out), labelled by the game's interface
 //   strings. An item opens the verb menu, which sends "<verb> <name>" with metadata naming the
-//   element, as legacy's verb buttons do. An empty list shows EmptyListLabel. The command pane,
+//   element, as legacy's verb buttons do. An empty list shows its own wording. The command pane,
 //   custom status pane and an author's pane are set through QuestUI. setPaneOrder, collapsing a
 //   pane, and setVisible for one pane and for all of them work.
 // - Narrow: the panes are a drawer from the top bar's button. It opens with focus inside, closes
@@ -111,7 +111,7 @@ try {
         await page.waitForFunction(() => [...document.querySelectorAll('qv-pane[data-qv-pane="inventory"] .qv-pane-item')].some((b) => b.textContent === 'brass lamp'),
             null, { timeout: 5000 }).catch(() => { throw new Error("the inventory didn't update after taking the lamp"); });
         const objects = await page.evaluate(() => document.querySelector('qv-pane[data-qv-pane="objects"] .qv-pane-empty')?.textContent ?? '');
-        check(objects.trim() !== '', `an empty list shows EmptyListLabel ("${objects.trim()}")`);
+        check(objects.trim() === 'Nothing here.', `an empty list shows its own wording ("${objects.trim()}")`);
 
         await send(page, 'setuppanes', 'Panes set up.');
         check(await page.evaluate(() => [...document.querySelectorAll('qv-pane[data-qv-pane="commands"] a.cmdlink')].map((a) => a.textContent).join('/')) === 'Look/Wait',

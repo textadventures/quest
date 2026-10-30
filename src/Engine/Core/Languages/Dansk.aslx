@@ -156,6 +156,8 @@
   <template name="InButtonLabel">ind</template>
   <template name="OutButtonLabel">ud</template>
   <template name="EmptyListLabel">(tom)</template>
+  <template name="InventoryEmptyLabel">Du bærer ikke på noget.</template>
+  <template name="PlacesObjectsEmptyLabel">Her er ingenting.</template>
   <template name="NothingSelectedLabel">(intet valgt)</template>
   <template name="TypeHereLabel">Skriv her...</template>
   <template name="ContinueLabel">Fortsæt...</template>

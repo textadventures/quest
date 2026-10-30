@@ -123,6 +123,8 @@
   <template name="InButtonLabel">Ene</template>
   <template name="OutButtonLabel">Ekstere</template>
   <template name="EmptyListLabel">(malplena)</template>
+  <template name="InventoryEmptyLabel">Vi kunportas nenion.</template>
+  <template name="PlacesObjectsEmptyLabel">Estas nenio ĉi tie.</template>
   <template name="NothingSelectedLabel">(nenion elektita)</template>
 
   <template templatetype="command" name="go"><![CDATA[^iru al (?<exit>.*)o$|^iru (?<exit>.*)en$|^(?<exit>.*)e$|^(?<exit>.*)en$|^(?<exit>.*)o$|^(?<exit>nordokcident|nord|nordorient|okcident|orient|sudokcident|sud|sudorient|supr|malsupr|intern|ekster)$]]></template>

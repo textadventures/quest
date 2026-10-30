@@ -56,6 +56,12 @@ export function setLocation(text: string): void {
 
 export function setInterfaceString(name: string, text: string): void {
     state.interfaceStrings.set(name, text);
+    // Core sends the per-list wording after this, so this coming later is a game's own text, for
+    // both lists.
+    if (name === 'EmptyListLabel') {
+        state.interfaceStrings.delete('InventoryEmptyLabel');
+        state.interfaceStrings.delete('PlacesObjectsEmptyLabel');
+    }
     setPaneLabel(name, text);
     if (name === 'InButtonLabel' || name === 'OutButtonLabel' || name === 'CompassLabel') renderCompass();
     if (name === 'TypeHereLabel') player()?.commandBar?.updatePlaceholder();

@@ -137,6 +137,8 @@
   <template name="InButtonLabel">int</template>
   <template name="OutButtonLabel">ext</template>
   <template name="EmptyListLabel">(vide)</template>
+  <template name="InventoryEmptyLabel">Vous ne transportez rien.</template>
+  <template name="PlacesObjectsEmptyLabel">Il n'y a rien ici.</template>
   <template name="NothingSelectedLabel">(rien n'est sélectionné)</template>
   <template name="TypeHereLabel">Écrivez ici ou cliquez sur les éléments interactifs...</template>
   <template name="ContinueLabel">Continuer...</template>
