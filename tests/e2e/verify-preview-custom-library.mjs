@@ -74,9 +74,10 @@ try {
     await previewPage.waitForLoadState('domcontentloaded');
 
     // Wait for either the game's command box to show up (success) or a reasonable timeout.
+    // New 610 games get the v2 UI (<qv-command-bar>); #txtCommandDiv is the legacy UI's.
     let booted = false;
     try {
-        await previewPage.waitForSelector('#txtCommandDiv', { state: 'visible', timeout: 15000 });
+        await previewPage.waitForSelector('qv-command-bar input, #txtCommandDiv', { state: 'visible', timeout: 15000 });
         booted = true;
     } catch {
         booted = false;
@@ -89,7 +90,7 @@ try {
         throw new Error(`Preview failed to load the game with a custom Included Library: ${libraryError}`);
     }
     if (!booted) {
-        throw new Error(`Preview never reached a booted game UI (#txtCommandDiv). Errors seen: ${JSON.stringify(allErrors)}`);
+        throw new Error(`Preview never reached a booted game UI (qv-command-bar input / #txtCommandDiv). Errors seen: ${JSON.stringify(allErrors)}`);
     }
     console.log('PASS: Preview booted the game with a custom Included Library, no "Library file not found" error');
 
