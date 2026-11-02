@@ -1,0 +1,24 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- Player UI v2's restart (verify-wasmplayer-v2-saving-restart-undo.mjs). The start script adds
+       a pane, and the game's script file counts how many times it has run. -->
+  <game name="V2RestartTest">
+    <start type="script">
+      AddPane ("clues", "Clues")
+      SetPaneContent ("clues", "A clue")
+    </start>
+  </game>
+
+  <javascript src="restart-test.js"/>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+</asl>
