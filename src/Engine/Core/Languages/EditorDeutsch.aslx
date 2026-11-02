@@ -232,8 +232,8 @@
   <template name="EditorGameTurnOffInventory">Inventarleiste entfernen</template>
   <template name="EditorGameTurnOffPlacesAndObjects">Räume-und-Objekte-Leiste entfernen</template>
   <template name="EditorGameAltPaneOrder">Alternative Spielleistenanordnung (Status und Kompass nach oben)</template>
-  <template name="EditorGameShowCommandPane">Kommandosleiste anzeigen (JS.setCommands zum initialisieren benutzen)</template>
-  <template name="EditorGameShowCustomStatusPane">Benutzerdefinierte Statusleiste anzeigen (JS.setCustomStatus zum initialisieren benutzen)</template>
+  <template name="EditorGameShowCommandPane">Kommandosleiste anzeigen (zum Festlegen den Skriptbefehl "Befehlsbereich festlegen" benutzen)</template>
+  <template name="EditorGameShowCustomStatusPane">Benutzerdefinierte Statusleiste anzeigen (zum Festlegen den Skriptbefehl "Inhalt eines Bereichs festlegen" mit der ID customstatus benutzen)</template>
   <template name="EditorGamePanesTheme">Farbschema der Spielleisten</template>
   <template name="EditorGameClassiclocation">Klassische Raumleiste</template>
   <template name="EditorGameLocationColour">Hintergrundfarbe der Raumleiste</template>

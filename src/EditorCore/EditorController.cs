@@ -146,6 +146,47 @@ public sealed class EditorController : IDisposable
 
     public bool SaveWillUpgrade => WorldModel.Version < WorldModel.EditorSaveVersion;
 
+    // The .js files the game itself includes. The caller reads them and passes them to
+    // FindLegacyUiHacks, since they're assets in the host's storage.
+    public IEnumerable<string> OwnJavascriptFiles =>
+        WorldModel.Elements.GetElements(ElementType.Javascript)
+            .Where(e => !e.MetaFields[MetaFieldDefinitions.Library])
+            .Select(e => e.Fields[FieldDefinitions.Src]!);
+
+    // Where the game's own code relies on the legacy player UI, which matters to a game that will
+    // play on v2: it's nothing to report once the game has chosen the classic interface.
+    public IReadOnlyList<LegacyUiHack> FindLegacyUiHacks(IReadOnlyDictionary<string, string> javascriptFiles)
+    {
+        return WorldModel.Game.Fields.GetAsType<bool>("classicinterface")
+            ? []
+            : LegacyUiDetector.Find(OwnScripts(), javascriptFiles.Select(file => (file.Key, file.Value)));
+    }
+
+    private IEnumerable<(string Source, string Script)> OwnScripts()
+    {
+        foreach (var element in WorldModel.Elements.GetElements()
+                     .Where(e => !e.MetaFields[MetaFieldDefinitions.Library]))
+        {
+            foreach (var attribute in element.Fields.GetAttributeNames(false))
+            {
+                var source = attribute == "script" ? element.Name : $"{element.Name}.{attribute}";
+                switch (element.Fields.Get(attribute))
+                {
+                    case IScript script:
+                        yield return (source, script.Save());
+                        break;
+                    case QuestDictionary<IScript> scripts:
+                        foreach (var entry in scripts)
+                        {
+                            yield return (source, entry.Value.Save());
+                        }
+
+                        break;
+                }
+            }
+        }
+    }
+
     // Set by Initialise
     internal EditableScriptFactory ScriptFactory { get; private set; } = null!;
 

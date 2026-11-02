@@ -33,6 +33,8 @@ export interface WasmBridge {
   IsGamebook(): boolean
   GetAslVersion(): number
   SaveWillUpgrade(): boolean
+  GetOwnJavascriptFiles(): string
+  GetLegacyUiHacks(javascriptFilesJson: string): string
   IsBuiltInLibrary(filename: string): boolean
   GetLibraryXml(filename: string): string | null
   SetLibraryXml(filename: string, xml: string): Promise<string>

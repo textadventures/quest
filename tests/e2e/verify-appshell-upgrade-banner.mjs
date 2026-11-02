@@ -2,6 +2,10 @@
 // upgrade it, with a download of the file as it was loaded. The download must still be the
 // original after an autosave has upgraded the stored copy, and reopening the upgraded copy
 // shows no banner.
+//
+// A game whose own code relies on the legacy player UI gets a second line, which offers the
+// classic interface. It also shows on a game already saved at the current version, and one click
+// sets classicinterface so reopening it says nothing.
 import { chromium } from './lib/tracked-chromium.mjs';
 import { readFileSync, writeFileSync } from 'node:fs';
 
@@ -13,11 +17,31 @@ const original = readFileSync(new URL('./fixtures/restart-test.aslx', import.met
 const gamePath = '/tmp/appshell-upgrade-banner.aslx';
 writeFileSync(gamePath, original);
 
+// The same game at the current version, with a hack in its start script.
+const hackedPath = '/tmp/appshell-legacy-ui-hacks.aslx';
+writeFileSync(hackedPath, original
+    .replace('asl version="580"', 'asl version="610"')
+    .replace('23390000-0000-0000-0000-000000000580', '23390000-0000-0000-0000-000000000610')
+    .replace('<game name="Simple">', `<game name="Simple">
+    <start type="script"><![CDATA[JS.setCss ("#gamePanes", "display:none")]]></start>`));
+
 const browser = await chromium.launch();
 const page = await browser.newPage({ acceptDownloads: true });
 page.on('pageerror', err => console.log('[pageerror]', err.message));
 
 const banner = page.getByText('This game was saved by an older version of Quest.');
+const legacyUiBanner = page.getByText("This game changes the player's interface with JavaScript");
+
+async function importGame(path) {
+    await page.goto(`${baseUrl}/open`);
+    await page.waitForSelector('button:has-text("Import game file")', { timeout: 30000 });
+    const [fileChooser] = await Promise.all([
+        page.waitForEvent('filechooser'),
+        page.click('button:has-text("Import game file")'),
+    ]);
+    await fileChooser.setFiles(path);
+    await page.waitForSelector('button[title="Manage assets"]', { timeout: 30000 });
+}
 
 async function downloadOriginal() {
     const [download] = await Promise.all([
@@ -29,18 +53,12 @@ async function downloadOriginal() {
 }
 
 try {
-    await page.goto(`${baseUrl}/open`);
-    await page.waitForSelector('button:has-text("Import game file")', { timeout: 30000 });
-    const [fileChooser] = await Promise.all([
-        page.waitForEvent('filechooser'),
-        page.click('button:has-text("Import game file")'),
-    ]);
-    await fileChooser.setFiles(gamePath);
-    await page.waitForSelector('button[title="Manage assets"]', { timeout: 30000 });
+    await importGame(gamePath);
 
     await banner.waitFor({ timeout: 10000 });
     const href = await page.getAttribute('a:has-text("Learn more")', 'href');
     if (href !== 'https://questviva.com/reference/asl-versions/') throw new Error(`"Learn more" links to ${href}`);
+    if (await legacyUiBanner.isVisible()) throw new Error('Legacy UI line shown for a stock game');
     console.log('PASS: banner shown for a version 580 game, linking to the versions page');
 
     // Edit the description and wait for the autosave, which upgrades the stored copy.
@@ -69,6 +87,24 @@ try {
     await page.waitForTimeout(500);
     if (await banner.isVisible()) throw new Error('Banner shown for the upgraded draft');
     console.log('PASS: no banner once the game has been saved at the current version');
+
+    await importGame(hackedPath);
+    await legacyUiBanner.waitFor({ timeout: 10000 });
+    if (await banner.isVisible()) throw new Error('Upgrade banner shown for a version 610 game');
+    const hack = await page.locator('li:has(code)').first().textContent();
+    if (!hack.includes('JS.setCss') || !hack.includes('#gamePanes')) throw new Error(`Banner names "${hack}"`);
+    console.log('PASS: a version 610 game that hacks the legacy UI is told so, with the code it found');
+
+    await page.click('button:has-text("Keep the classic interface")');
+    await legacyUiBanner.waitFor({ state: 'hidden', timeout: 5000 });
+    await page.locator('.save-chip-saved').waitFor({ state: 'visible', timeout: 10000 });
+    await page.goto(`${baseUrl}/open`);
+    await page.waitForSelector('text=Your local drafts', { timeout: 10000 });
+    await page.click('button:has-text("appshell-legacy-ui-hacks.aslx")');
+    await page.waitForSelector('button[title="Manage assets"]', { timeout: 30000 });
+    await page.waitForTimeout(500);
+    if (await legacyUiBanner.isVisible()) throw new Error('Legacy UI line shown after keeping the classic interface');
+    console.log('PASS: keeping the classic interface is saved, and the line stays gone');
 
     console.log('PASS');
 } catch (err) {
