@@ -228,8 +228,8 @@
   <template name="EditorGameTurnOffInventory">Desactivar el inventario</template>
   <template name="EditorGameTurnOffPlacesAndObjects">Desactivar lugares y objetos</template>
   <template name="EditorGameAltPaneOrder">Orden alternativa de paneles (estatus y brújula arriba)</template>
-  <template name="EditorGameShowCommandPane">Mostrar una panel de comandos (usa JS.setCommands para configurarlo)</template>
-  <template name="EditorGameShowCustomStatusPane">Mostrar un panel de estatus (usa JS.setCustomStatus para configurarlo)</template>
+  <template name="EditorGameShowCommandPane">Mostrar una panel de comandos (usa el comando de script "Establecer el panel de comandos" para configurarlo)</template>
+  <template name="EditorGameShowCustomStatusPane">Mostrar un panel de estatus (usa el comando de script "Establecer el contenido de un panel" con el ID customstatus para configurarlo)</template>
   <template name="EditorGamePanesTheme">Tema de colones para los paneles</template>
   <template name="EditorGameClassiclocation">Estilo clásico de ubicación</template>
   <template name="EditorGameLocationColour">Color barra de ubicación</template>

@@ -116,6 +116,34 @@ export function downloadOriginalGame() {
     triggerDownload(notice.originalBytes, `${stem}.v${notice.fromVersion}.aslx`);
     dismissUpgradeNotice();
 }
+
+// Set when the game's own code relies on the legacy player UI, which doesn't work on the
+// interface it would otherwise play on (see LegacyUiDetector.cs). Unlike upgradeNotice it can
+// apply to a game already saved at the current version: a 6.1 beta can have saved one.
+export type LegacyUiHack = { source: string; detail: string };
+export const legacyUiHacks = writable<LegacyUiHack[]>([]);
+let _legacyUiNoticeDismissed = false;
+
+export function dismissLegacyUiNotice() {
+    legacyUiHacks.set([]);
+    _legacyUiNoticeDismissed = true;
+}
+
+export function keepClassicInterface(gameKey: string) {
+    setAttribute(gameKey, "classicinterface", "checkbox", "true");
+    dismissLegacyUiNotice();
+}
+
+async function refreshLegacyUiHacks(adapter: FileAdapter): Promise<void> {
+    if (!_bridge || _legacyUiNoticeDismissed) return;
+    const files: Record<string, string> = {};
+    for (const key of JSON.parse(_bridge.GetOwnJavascriptFiles()) as string[]) {
+        const blob = await adapter.getAsset(key);
+        if (blob) files[key] = await blob.text();
+    }
+    legacyUiHacks.set(JSON.parse(_bridge.GetLegacyUiHacks(JSON.stringify(files))));
+}
+
 export const canPublishToServer = writable(false);
 export const treeNodes = writable<TreeNode[]>([]);
 export const showLibraryElements = writable(false);
@@ -279,6 +307,8 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
     if (adapter !== _adapter) {
         upgradeNotice.set(null);
         _upgradeNoticeDismissed = false;
+        legacyUiHacks.set([]);
+        _legacyUiNoticeDismissed = false;
     }
     _adapter = adapter;
     canSaveAs.set(adapter.canSaveAs);
@@ -326,6 +356,7 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
         scriptClipboardHasContent.set(false);
         cutElementKeys.set(new Set());
         await refreshAssets();
+        await refreshLegacyUiHacks(adapter);
         const gameNode = nodes.find(n => n.nodeType === "game");
         if (gameNode) await selectNode(gameNode.key);
         resetNavHistory(gameNode?.key ?? null);

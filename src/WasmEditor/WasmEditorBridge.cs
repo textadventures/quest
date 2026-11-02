@@ -247,6 +247,8 @@ internal record ExpressionFunctionData(string Name, List<string> Parameters, boo
 [JsonSerializable(typeof(List<ExpressionFunctionData>))]
 [JsonSerializable(typeof(LocalCoverResult))]
 [JsonSerializable(typeof(List<FeatureLeftoverInfo>))]
+[JsonSerializable(typeof(Dictionary<string, string>))]
+[JsonSerializable(typeof(IReadOnlyList<LegacyUiHack>))]
 internal partial class WasmEditorJsonContext : JsonSerializerContext
 {
 }
@@ -814,6 +816,20 @@ public partial class WasmEditorBridge
 
     [JSExport]
     public static bool SaveWillUpgrade() => _controller?.SaveWillUpgrade ?? false;
+
+    [JSExport]
+    public static string GetOwnJavascriptFiles() => JsonSerializer.Serialize(
+        _controller?.OwnJavascriptFiles.ToList() ?? [], WasmEditorJsonContext.Default.ListString);
+
+    // javascriptFilesJson maps each of GetOwnJavascriptFiles' files to its text, for those the
+    // host could read: a .js file is an asset in the host's own storage, not something C# can see.
+    [JSExport]
+    public static string GetLegacyUiHacks(string javascriptFilesJson)
+    {
+        var files = JsonSerializer.Deserialize(javascriptFilesJson, WasmEditorJsonContext.Default.DictionaryStringString)!;
+        return JsonSerializer.Serialize(_controller?.FindLegacyUiHacks(files) ?? [],
+            WasmEditorJsonContext.Default.IReadOnlyListLegacyUiHack);
+    }
 
     // Play tab "Recently played" cover art for local files — entirely independent of
     // _controller (doesn't touch the currently-open editor session), a fresh GameQuery per

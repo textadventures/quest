@@ -356,6 +356,9 @@
     "upgradeBanner.message": "This game was saved by an older version of Quest. Once you change it, Quest Viva saves it in a newer format, which older versions of Quest can't open.",
     "upgradeBanner.learnMore": "Learn more",
     "upgradeBanner.downloadOriginal": "Download original",
+    "upgradeBanner.legacyUiMessage": "This game changes the player's interface with JavaScript, which the new interface doesn't support. Keep the classic interface?",
+    "upgradeBanner.legacyUiMore": "...and {count} more",
+    "upgradeBanner.keepClassicInterface": "Keep the classic interface",
 
     "updateBanner.availableMessage": "Quest Viva {version} is available.",
     "updateBanner.downloadButton": "Download",
