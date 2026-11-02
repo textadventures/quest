@@ -33,5 +33,5 @@ export function pictureFramePending(): boolean {
 }
 
 function rescroll(): void {
-    player()?.output?.rescroll();
+    player()?.output?.rescroll(true);
 }

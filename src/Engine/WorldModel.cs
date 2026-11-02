@@ -416,6 +416,11 @@ public partial class WorldModel : IGame, IGameDebug
             throw new Exception("Begin() has not been called");
         }
 
+        // The input can be there while Begin() or a turn is still running, and starting this
+        // command now would replace the turn signal that one is about to resolve: it would run
+        // alongside it, and each later turn would be taken as over when the one before it ended.
+        await _turnSuspendedTcs.Task;
+
         if (elapsedTime > 0)
         {
             _timerRunner.IncrementTime(elapsedTime);

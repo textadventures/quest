@@ -192,12 +192,15 @@ export class QvOutput extends HTMLElement {
         this.#scrollToTurn(this.#turnStart);
     }
 
-    /** Scrolls again for the last turn scrolled to, once something above or in it has resized. */
-    rescroll(): void {
-        this.#scrollToTurn(this.#lastTurnStart);
+    /**
+     * Scrolls again for the last turn scrolled to, once something above or in it has resized. A
+     * header that has grown can cover the start of that turn, so revealStart moves back for that.
+     */
+    rescroll(revealStart = false): void {
+        this.#scrollToTurn(this.#lastTurnStart, revealStart);
     }
 
-    #scrollToTurn(turnStart: number): void {
+    #scrollToTurn(turnStart: number, revealStart = false): void {
         if (!state.autoScroll) return;
         this.#lastTurnStart = turnStart;
         // Until the frame's picture has a height, any position worked out would be short of it.
@@ -207,7 +210,9 @@ export class QvOutput extends HTMLElement {
         const top = state.animateScroll
             ? Math.min(this.#top() + turnStart - stickyHeaderHeight() - TURN_START_GAP, bottom)
             : bottom;
-        if (top <= window.scrollY) return;
+        const startInViewport = this.#top() + turnStart - window.scrollY;
+        const covered = revealStart && startInViewport >= 0 && startInViewport < stickyHeaderHeight();
+        if (top <= window.scrollY && !covered) return;
         const smooth = state.animateScroll && !matchMedia('(prefers-reduced-motion: reduce)').matches;
         window.scrollTo({ top, behavior: smooth ? 'smooth' : 'instant' });
     }
