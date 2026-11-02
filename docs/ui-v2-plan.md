@@ -157,18 +157,19 @@ Svelte 5, for consistency with AppShell, was considered and rejected (decision 2
 - Documentation under `site/src/content/docs/customise/` (rewrite `css.md`, `look-and-feel.md`, `panes.md`, `player-interface.md` and `javascript.md` for v2, keep the legacy pages, and add a migration guide from common `JS.eval` snippets to their v2 equivalents).
 - The upgrade warning that flags legacy-UI hacks.
 
-**Phase 5: parity and switch-over.** The switch itself was brought forward to 2026-10-29 (see decision 1), so what's left is the parity work, which has to be done before any 6.1 release.
-- Port the WasmPlayer e2e scripts that cover behaviour (not legacy DOM details) to run against v2 via `?ui=v2`, and add v2-specific ones.
-- Run the stock-only part of the corpus (about 97% of published games, identifiable with the survey's classifier) under `?ui=v2` as a dev-only parity check.
-- When it's clean, make v2 the default for 610.
+**Phase 5: parity.** v2 does everything legacy does for a 610 game. The switch to v2 as the 610 default was brought forward to 2026-10-29 (see decision 1), so what's left is the parity work, which has to be done before any 6.1 release.
+- Run the WasmPlayer e2e scripts that cover behaviour (not legacy DOM details) against v2 via `?ui=v2`, on their existing fixtures, which use live Core.
+- Check the route by which an older game really reaches v2: an author saves it in the editor, which makes it a 610 game on current Core. A one-off check on about 20 published games, played through their walkthroughs.
 
-After switch-over, legacy is frozen: bug fixes and security fixes only, no new features.
+An earlier version of this plan also ran the stock-only part of the corpus under `?ui=v2`. That was dropped on 2026-11-02: older games stay on legacy (decision 5), so they don't need to pass on v2, and they can't, because the old Core inlined in a published game calls legacy functions that v2 doesn't define.
+
+Once Phase 5 is done, legacy is frozen: bug fixes and security fixes only, no new features.
 
 ## Testing
 
 - The existing 37 `verify-wasmplayer-*` e2e scripts keep testing legacy unchanged. They're its regression suite once it's frozen.
 - v2 gets its own `verify-wasmplayer-v2-*.mjs` scripts, wired into the `wasmplayer_chromium` job, plus v2 runs of the behavioural scripts.
-- The quest-e2e-tests corpus (all pre-610) stays on legacy. Add a handful of 610 fixture games covering each pane, layout and customisation tier.
+- The quest-e2e-tests corpus (all pre-610) stays on legacy, apart from Phase 5's one-off upgrade check. 610 fixture games cover each pane, layout and customisation tier.
 - Accessibility checks with axe-core in e2e. Visual checks at phone, tablet and desktop widths in light and dark.
 
 ## Decisions
