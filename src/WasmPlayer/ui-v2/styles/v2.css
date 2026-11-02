@@ -580,6 +580,11 @@
         font-size: var(--qv-menu-font-size);
     }
 
+    /* Every game inherits Core's 9pt menu font, too small on a phone. A larger one is kept. */
+    qv-player[data-qv-narrow] qv-verb-menu {
+        font-size: max(var(--qv-menu-font-size), 1rem);
+    }
+
     qv-verb-menu.qv-open {
         display: flex;
         flex-direction: column;
@@ -615,6 +620,10 @@
         background-color: var(--qv-page-bg);
         font-family: var(--qv-font-ui);
         font-size: 0.95rem;
+    }
+
+    qv-player[data-qv-narrow] [data-qv-part="panes"] {
+        font-size: 1rem;
     }
 
     qv-pane {
@@ -1092,6 +1101,10 @@
         font-size: var(--qv-menu-font-size);
         text-align: start;
         cursor: pointer;
+    }
+
+    qv-player[data-qv-narrow] .qv-dialog .qv-dialog-choices button {
+        font-size: max(var(--qv-menu-font-size), 1rem);
     }
 
     .qv-dialog .qv-dialog-choices button:hover {

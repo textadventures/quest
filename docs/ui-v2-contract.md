@@ -262,7 +262,7 @@ Values are CSS values, as a stylesheet would write them: colours as any CSS colo
 | `--qv-border-colour` | `bordercolour`. `showborder = false` is `setVisible("border", false)`, not a token |
 | `--qv-pane-fg`, `--qv-pane-bg`, `--qv-pane-heading-fg`, `--qv-pane-heading-bg`, `--qv-pane-highlight` | `panestheme` (the seven named themes become token sets) |
 | `--qv-status-fg`, `--qv-status-bg`, `--qv-status-border`, `--qv-status-image` | `customlocationtextcolour`, `customlocationcolour`, `customlocationbordercolour`, `locationbarimage` |
-| `--qv-menu-fg`, `--qv-menu-bg`, `--qv-menu-hover-fg`, `--qv-menu-hover-bg`, `--qv-menu-font`, `--qv-menu-font-size` | `menuforeground`, … `menufontsize`. The four colours only once one differs from the editor's defaults |
+| `--qv-menu-fg`, `--qv-menu-bg`, `--qv-menu-hover-fg`, `--qv-menu-hover-bg`, `--qv-menu-font`, `--qv-menu-font-size` | `menuforeground`, … `menufontsize`. The four colours only once one differs from the editor's defaults On a narrow layout, `--qv-menu-font-size` is at least 1rem. |
 | `--qv-command-fg`, `--qv-command-bg` | command bar format |
 
 v2 also defines tokens with no game attribute behind them yet (`--qv-surface`, `--qv-radius`, `--qv-space`, focus-ring colours). Those are in the contract too, and the editor gains options for them later.
