@@ -596,4 +596,96 @@ public class CallbackTests
         driver.RequestedTimerTicks.ShouldNotContain(0);
         driver.RequestedTimerTicks.ShouldContain(3);
     }
+
+    private const string TurnOrderGame = """
+        <asl version="610">
+          <include ref="English.aslx"/>
+          <include ref="Core.aslx"/>
+          <game name="TurnOrder">
+            <start type="script"><![CDATA[
+              msg ("start 1")
+              msg ("start 2")
+            ]]></start>
+          </game>
+          <object name="room">
+            <object name="player">
+              <inherit name="defaultplayer"/>
+            </object>
+          </object>
+          <command>
+            <pattern>first</pattern>
+            <script><![CDATA[
+              msg ("first 1")
+              msg ("first 2")
+            ]]></script>
+          </command>
+          <command>
+            <pattern>second</pattern>
+            <script><![CDATA[
+              msg ("second 1")
+            ]]></script>
+          </command>
+        </asl>
+        """;
+
+    private static readonly TimeSpan TurnTimeout = TimeSpan.FromSeconds(10);
+
+    // Loads TurnOrderGame with a player whose output call stays suspended while gate() is
+    // unfinished, which is what lets a command arrive while the engine is part way through a script.
+    private static async Task<(WorldModel Model, List<string> Output)> LoadTurnOrderGame(Func<Task> gate)
+    {
+        var data = new GameData(System.Text.Encoding.UTF8.GetBytes(TurnOrderGame), "turnorder.aslx");
+        var model = new WorldModel(data, null);
+        var output = new List<string>();
+        var player = new Mock<IPlayer>();
+        player.Setup(p => p.RunScriptAsync(It.IsAny<string>(), It.IsAny<object[]>())).Returns(Task.CompletedTask);
+        player.Setup(p => p.RunScriptAsync("QuestUI.addText", It.IsAny<object[]>()))
+            .Callback<string, object[]>((_, args) => output.Add((string)args[0]))
+            .Returns(gate);
+        (await model.Initialise(player.Object)).ShouldBeTrue();
+        return (model, output);
+    }
+
+    private static void ShouldBeInOrder(List<string> output, params string[] lines)
+    {
+        var positions = lines.Select(line => output.FindIndex(html => html.Contains(line))).ToList();
+        positions.ShouldNotContain(-1);
+        positions.ShouldBe(positions.Order().ToList(), string.Join("\n", output));
+    }
+
+    // The input can be there before the game has finished starting. A command that started
+    // straight away would run alongside the start script, whose end would then be taken for the
+    // end of that command's turn, and so on for each turn after it.
+    [TestMethod]
+    public async Task SendCommand_BeforeBeginFinishes_WaitsForIt()
+    {
+        var gate = new TaskCompletionSource();
+        var (model, output) = await LoadTurnOrderGame(() => gate.Task);
+
+        var begin = model.BeginAsync();
+        var command = model.SendCommand("first");
+        gate.SetResult();
+        await begin.WaitAsync(TurnTimeout);
+        await command.WaitAsync(TurnTimeout);
+
+        ShouldBeInOrder(output, "start 1", "start 2", "first 1", "first 2");
+    }
+
+    [TestMethod]
+    public async Task SendCommand_DuringAnotherTurn_WaitsForIt()
+    {
+        var gate = new TaskCompletionSource();
+        gate.SetResult();
+        var (model, output) = await LoadTurnOrderGame(() => gate.Task);
+        await model.BeginAsync().WaitAsync(TurnTimeout);
+
+        gate = new TaskCompletionSource();
+        var first = model.SendCommand("first");
+        var second = model.SendCommand("second");
+        gate.SetResult();
+        await first.WaitAsync(TurnTimeout);
+        await second.WaitAsync(TurnTimeout);
+
+        ShouldBeInOrder(output, "first 1", "first 2", "second 1");
+    }
 }
