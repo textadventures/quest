@@ -542,6 +542,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-wasmplayer-v2-autoscroll.mjs http://localhost:5175
         working-directory: tests/e2e
+      - run: node verify-wasmplayer-v2-timing.mjs http://localhost:5175
+        working-directory: tests/e2e
       - run: node verify-wasmplayer-v2-author-hooks.mjs http://localhost:5175
         working-directory: tests/e2e
       - run: node verify-wasmplayer-v2-appearance.mjs http://localhost:5175
