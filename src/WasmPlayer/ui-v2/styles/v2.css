@@ -452,6 +452,13 @@
         border: 0;
     }
 
+    /* A border would otherwise take an author's iframe past the width of the text. */
+    [data-qv-part="output"] video,
+    [data-qv-part="output"] iframe:not(.qv-video) {
+        box-sizing: border-box;
+        max-width: 100%;
+    }
+
     [data-qv-part="output"] img {
         max-width: 100%;
     }
