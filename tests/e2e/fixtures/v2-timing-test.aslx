@@ -1,0 +1,84 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- Player UI v2's turns and timing (verify-wasmplayer-v2-timing.mjs). startcountdown runs a
+       JavaScript countdown that updates the custom status pane through QuestUI and calls back
+       into the game once, through ASLEvent, at zero. lightgray and rgbbackground send the
+       Background request older Core uses, and throwui makes that request's UI call throw. -->
+  <game name="V2TimingTest">
+    <customstatuspane />
+    <showpanes />
+    <start type="script">
+      s = "var countdownTimer;"
+      s = s + "function startCountdown(seconds) {"
+      s = s + "  var deadline = Date.now() + parseFloat(seconds) * 1000;"
+      s = s + "  countdownTimer = setInterval(function () {"
+      s = s + "    var left = deadline - Date.now();"
+      s = s + "    if (left > 0) {"
+      s = s + "      QuestUI.setPaneContent('customstatus', 'Time remaining: ' + (left / 1000).toFixed(1));"
+      s = s + "    }"
+      s = s + "    else {"
+      s = s + "      clearInterval(countdownTimer);"
+      s = s + "      QuestUI.setPaneContent('customstatus', 'Time remaining: 0.0');"
+      s = s + "      ASLEvent('CountdownFinished', 'timeout');"
+      s = s + "    }"
+      s = s + "  }, 100);"
+      s = s + "}"
+      JS.eval (s)
+    </start>
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+  <command name="startcountdown">
+    <pattern>startcountdown</pattern>
+    <script>
+      msg ("Countdown started.")
+      JS.startCountdown ("2")
+    </script>
+  </command>
+
+  <function name="CountdownFinished" parameters="s">
+    msg ("Out of time! (" + s + ")")
+  </function>
+
+  <command name="lightgray">
+    <pattern>lightgray</pattern>
+    <script>
+      msg ("Background is now light gray.")
+      request (Background, "LightGray")
+    </script>
+  </command>
+
+  <command name="rgbbackground">
+    <pattern>rgbbackground</pattern>
+    <script>
+      msg ("Background is now rgb.")
+      request (Background, "rgb(10, 20, 30)")
+    </script>
+  </command>
+
+  <command name="throwui">
+    <pattern>throwui</pattern>
+    <script>
+      JS.eval ("QuestPlayerUis.v2.setBackground = function () { throw new Error('v2-timing-test'); };")
+      msg ("Still accepting commands after a throwing UI call.")
+      request (Background, "white")
+    </script>
+  </command>
+
+  <command name="ping">
+    <pattern>ping</pattern>
+    <script>
+      msg ("pong")
+    </script>
+  </command>
+
+</asl>
