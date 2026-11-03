@@ -304,6 +304,7 @@ public partial class WorldModel : IGame, IGameDebug
     {
         await _turnSuspendedTcs.Task;
         var tcs = _menuTcs;
+        if (tcs is not { Task.IsCompleted: false }) return;
         _turnSuspendedTcs = new();
         tcs?.TrySetResult(response);
         await _turnSuspendedTcs.Task;
@@ -601,6 +602,7 @@ public partial class WorldModel : IGame, IGameDebug
         if (State == GameState.Finished) return;
         await _turnSuspendedTcs.Task;
         var tcs = _waitTcs;
+        if (tcs is not { Task.IsCompleted: false }) return;
         _turnSuspendedTcs = new();
         tcs?.TrySetResult();
         await _turnSuspendedTcs.Task;
@@ -612,6 +614,7 @@ public partial class WorldModel : IGame, IGameDebug
     {
         await _turnSuspendedTcs.Task;
         var tcs = _pauseTcs;
+        if (tcs is not { Task.IsCompleted: false }) return;
         _turnSuspendedTcs = new();
         tcs?.TrySetResult();
         await _turnSuspendedTcs.Task;
@@ -759,6 +762,7 @@ public partial class WorldModel : IGame, IGameDebug
     {
         await _turnSuspendedTcs.Task;
         var tcs = _questionTcs;
+        if (tcs is not { Task.IsCompleted: false }) return;
         _turnSuspendedTcs = new();
         tcs?.TrySetResult(response);
         await _turnSuspendedTcs.Task;
@@ -1315,6 +1319,8 @@ public partial class WorldModel : IGame, IGameDebug
     // FinishWait, FinishPause, SetMenuResponse and SetQuestionResponse each await the running
     // turn before starting their own, rather than replacing a _turnSuspendedTcs that turn's
     // caller is still waiting on (which would leave it waiting forever).
+    // They do nothing if their prompt is already over: with no script left to resume, nothing
+    // would resolve a new _turnSuspendedTcs, and the next command waits for the turn before it.
     // Seen as a debugger walkthrough whose output fell one step behind after a wait{} in a
     // beforeenter script, since the runner answers the wait the moment it's signalled.
     internal void SignalTurnSuspended(bool scroll = true, bool resolveTurn = true)
