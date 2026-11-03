@@ -10,10 +10,13 @@
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>qv</ToolCommandName>
         <PackageId>QuestViva.Cli</PackageId>
-        <Description>Command-line tools for Quest Viva: play text adventure games in the terminal.</Description>
+        <Description>Command-line tools for Quest Viva: play text adventure games in the terminal, or drive them from another program.</Description>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="System.CommandLine" Version="2.0.14" />
+    </ItemGroup>
+    <ItemGroup>
+        <InternalsVisibleTo Include="CliTests" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\PlayerCore\PlayerCore.csproj" />

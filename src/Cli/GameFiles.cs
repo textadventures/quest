@@ -10,6 +10,11 @@ internal static class GameFiles
     // in its folder are made available to the game, read when the game asks for them.
     public static GameData Load(FileInfo file)
     {
+        if (!file.Exists)
+        {
+            throw new FileNotFoundException($"File not found: {file.FullName}");
+        }
+
         var bytes = File.ReadAllBytes(file.FullName);
         return new GameData(bytes, file.FullName, new FolderFiles(file.DirectoryName!));
     }
