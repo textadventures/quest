@@ -5,12 +5,12 @@ using QuestViva.Common;
 
 namespace QuestViva.Cli;
 
-// `qv mcp`: an MCP server over stdio whose tools play one game, for AI agents.
+// `qv mcp`: an MCP server over stdio whose tools play a game, for AI agents.
 internal static class McpCommand
 {
-    public static async Task<int> RunAsync(FileInfo game, int? seed, bool debugTools)
+    public static async Task<int> RunAsync(FileInfo? game, int? seed, bool debugTools)
     {
-        if (!game.Exists)
+        if (game is { Exists: false })
         {
             await Console.Error.WriteLineAsync($"File not found: {game.FullName}");
             return 1;
@@ -22,11 +22,20 @@ internal static class McpCommand
         builder.Logging.AddConsole(o => o.LogToStandardErrorThreshold = LogLevel.Trace);
         builder.Logging.SetMinimumLevel(LogLevel.Warning);
 
-        builder.Services.AddSingleton(new McpGame(game, seed ?? Random.Shared.Next()));
+        builder.Services.AddSingleton(new McpGame(game, seed));
         var mcp = builder.Services
             .AddMcpServer(o => o.ServerInfo = new() { Name = "qv", Version = VersionInfo.Version })
             .WithStdioServerTransport()
             .WithTools<PlayTools>();
+        if (game != null)
+        {
+            mcp.WithTools<FixedGameTools>();
+        }
+        else
+        {
+            mcp.WithTools<LoadGameTools>();
+        }
+
         if (debugTools)
         {
             mcp.WithTools<DebugTools>();

@@ -72,4 +72,39 @@ public class McpGameTests
         var ex = await Assert.ThrowsAsync<McpException>(() => new McpGame(new FileInfo("nosuch.quest"), 1).StartAsync());
         StringAssert.Contains(ex.Message, "File not found");
     }
+
+    [TestMethod]
+    public async Task WithNoGameStartSaysToPassOne()
+    {
+        var ex = await Assert.ThrowsAsync<McpException>(() => new McpGame(null, null).StartAsync());
+        StringAssert.Contains(ex.Message, "Pass the path");
+    }
+
+    [TestMethod]
+    public async Task StartLoadsAGameByPath()
+    {
+        var game = new McpGame(null, null);
+        StringAssert.Contains(await game.StartAsync(Path.GetFullPath("headless.aslx")), "Welcome.");
+        await game.SendAsync("testend");
+        StringAssert.Contains(await game.StartAsync(), "Welcome.");
+    }
+
+    [TestMethod]
+    public async Task BadPathKeepsTheCurrentGame()
+    {
+        var game = new McpGame(null, null);
+        await game.StartAsync("headless.aslx");
+        await Assert.ThrowsAsync<McpException>(() => game.StartAsync("nosuch.quest"));
+        StringAssert.Contains(await game.SendAsync("look"), "A plain room.");
+    }
+
+    [TestMethod]
+    public async Task RestartKeepsTheSeed()
+    {
+        var game = new McpGame(null, null);
+        await game.StartAsync("headless.aslx");
+        var first = await game.EvaluateAsync("GetRandomInt(1, 1000000)");
+        await game.StartAsync();
+        Assert.AreEqual(first, await game.EvaluateAsync("GetRandomInt(1, 1000000)"));
+    }
 }

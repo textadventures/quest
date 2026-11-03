@@ -6,14 +6,40 @@ namespace QuestViva.Cli;
 
 // The game behind `qv mcp`, shared by its tools. Tool calls can arrive concurrently and a
 // HeadlessSession handles one step at a time, so calls are serialised here.
-internal sealed class McpGame(FileInfo game, int seed)
+//
+// The game is either fixed when the server starts, or loaded by start_game. Each game gets a seed when
+// it is loaded - the --seed one, or else a random one - and keeps it when restarted.
+internal sealed class McpGame(FileInfo? game, int? seed)
 {
     private readonly SemaphoreSlim _lock = new(1, 1);
+    private FileInfo? _game = game;
+    private int _seed = seed ?? Random.Shared.Next();
     private HeadlessSession? _session;
 
-    public Task<string> StartAsync() => RunAsync(async () =>
+    // Loads the game at path, relative to the working directory, or with no path restarts the
+    // current game.
+    public Task<string> StartAsync(string? path = null) => RunAsync(async () =>
     {
-        _session = await HeadlessSession.StartAsync(GameFiles.Load(game), seed);
+        if (path != null)
+        {
+            if (path.StartsWith("~/"))
+            {
+                path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), path[2..]);
+            }
+
+            var file = new FileInfo(Path.GetFullPath(path));
+            // Load before switching, so a bad path leaves the current game as it was.
+            var newSeed = seed ?? Random.Shared.Next();
+            var session = await HeadlessSession.StartAsync(GameFiles.Load(file), newSeed);
+            (_game, _seed, _session) = (file, newSeed, session);
+        }
+        else
+        {
+            var current = _game ?? throw new McpException(
+                "No game is loaded. Pass the path of a .quest or .aslx file to start_game.");
+            _session = await HeadlessSession.StartAsync(GameFiles.Load(current), _seed);
+        }
+
         return Describe(_session.Opening, null);
     });
 

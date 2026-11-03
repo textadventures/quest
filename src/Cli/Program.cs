@@ -17,15 +17,20 @@ play.SetAction((parseResult, _) =>
 var serve = new Command("serve", "Play a game over a JSON-lines protocol on stdin/stdout, for programs to drive");
 serve.SetAction((_, _) => ServeCommand.RunAsync());
 
+var mcpGameArgument = new Argument<FileInfo?>("game")
+{
+    Description = "The game to serve. Without one, the agent loads games with start_game",
+    Arity = ArgumentArity.ZeroOrOne
+};
 var debugToolsOption = new Option<bool>("--debug-tools")
 {
     Description = "Also offer tools that reach past what a player can do: evaluate, tick and send_event"
 };
 var mcp = new Command("mcp", "Run an MCP server over stdio whose tools play a game, for AI agents")
 {
-    gameArgument, seedOption, debugToolsOption
+    mcpGameArgument, seedOption, debugToolsOption
 };
-mcp.SetAction((parseResult, _) => McpCommand.RunAsync(parseResult.GetValue(gameArgument)!,
+mcp.SetAction((parseResult, _) => McpCommand.RunAsync(parseResult.GetValue(mcpGameArgument),
     parseResult.GetValue(seedOption), parseResult.GetValue(debugToolsOption)));
 
 var root = new RootCommand("Quest Viva command-line tools") { play, serve, mcp };
