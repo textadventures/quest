@@ -57,6 +57,11 @@ internal static class PlayCommand
             Write(step, input);
         }
 
+        if (session.Finished)
+        {
+            Console.WriteLine("The game has ended.");
+        }
+
         return 0;
     }
 
