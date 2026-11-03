@@ -30,7 +30,7 @@ When the game shows its compass, each response also ends with the exits a browse
 
 | Tool | Arguments | Does |
 |---|---|---|
-| `evaluate` | `expression` | Evaluates an ASL expression against the game's current state |
+| `evaluate` | `expression` | Evaluates an ASL expression against the game's current state. Not available for Quest 4 and earlier |
 | `tick` | `seconds` | Advances the game clock, firing timers that come due |
 | `send_event` | `name`, `param` | Fires an event the game's own JavaScript would send with `ASLEvent` |
 

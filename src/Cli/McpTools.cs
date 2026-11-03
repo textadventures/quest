@@ -27,7 +27,7 @@ internal sealed class FixedGameTools(McpGame game)
 internal sealed class LoadGameTools(McpGame mcpGame)
 {
     [McpServerTool(Name = "start_game"),
-     Description("Load a Quest text adventure game (a .quest or .aslx file) and return its opening text. " +
+     Description("Load a Quest text adventure game (a .quest, .aslx, .asl or .cas file) and return its opening text. " +
                  "With no game, restart the current one from the beginning.")]
     public Task<string> StartGame(
         [Description("Path to the game file. An absolute path is safest; a relative one is resolved " +

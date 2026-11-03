@@ -1,6 +1,6 @@
 # `qv`, the Quest Viva command-line tool
 
-`qv` plays Quest 5 and later games without a browser:
+`qv` plays Quest games without a browser, from any version: Quest 1–4 `.asl`/`.cas` files as well as Quest 5 and Quest Viva `.quest`/`.aslx` ones:
 
 - `qv play <game>` — play in the terminal.
 - `qv serve` — let another program drive a game over JSON lines on stdin/stdout ([qv-serve.md](qv-serve.md)).

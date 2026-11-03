@@ -18,11 +18,6 @@ internal static class PlayCommand
         {
             session = await HeadlessSession.StartAsync(GameFiles.Load(game), seed ?? Random.Shared.Next());
         }
-        catch (NotSupportedException)
-        {
-            await Console.Error.WriteLineAsync("qv only plays Quest 5 and later games.");
-            return 1;
-        }
         catch (InvalidOperationException ex)
         {
             await Console.Error.WriteLineAsync(ex.Message);

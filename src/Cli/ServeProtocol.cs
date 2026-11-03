@@ -26,8 +26,7 @@ internal sealed class ServeProtocol
         catch (Exception ex) when (ex is ProtocolException or JsonException or InvalidOperationException
                                        or FileNotFoundException or NotSupportedException)
         {
-            var message = ex is NotSupportedException ? "qv only plays Quest 5 and later games." : ex.Message;
-            return WithId(new JsonObject { ["ok"] = false, ["error"] = message }, id);
+            return WithId(new JsonObject { ["ok"] = false, ["error"] = ex.Message }, id);
         }
     }
 

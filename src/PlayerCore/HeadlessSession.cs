@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using QuestViva.Common;
 using QuestViva.Engine;
+using QuestViva.Legacy;
 
 namespace QuestViva.PlayerCore;
 
@@ -45,7 +46,7 @@ public sealed class HeadlessStep
         Output.Where(o => o.Kind == HeadlessOutputKind.Text).Select(o => o.Text.EndsWith('\n') ? o.Text : o.Text + "\n")));
 }
 
-// Plays a v5+ game with no UI: a command goes in, and that turn's plain text comes back, along with
+// Plays a game with no UI: a command goes in, and that turn's plain text comes back, along with
 // any menu or question the game is now waiting on. Waits, pauses and synchronous sounds are
 // advanced automatically, and SetTimeout timers that come due are drained after every step, so a
 // step returns once the game is waiting for the player again.
@@ -56,10 +57,14 @@ public sealed class HeadlessSession
 {
     public const int DefaultSeed = 1234;
 
-    private static readonly string[] LegacyExtensions = [".asl", ".cas", ".qsg"];
+    private static readonly string[] Quest4Extensions = [".asl", ".cas", ".qsg"];
 
-    private readonly WorldModel _world;
+    // _world is the same game as _game for Quest 5 and later, and null for a Quest 1–4 game, which
+    // V4Game plays.
+    private readonly IGame _game;
+    private readonly WorldModel? _world;
     private readonly HeadlessPlayer _player;
+    private bool _finished;
     private List<HeadlessOutput> _output = [];
     private int _pendingTick;
     private List<ListData> _exits = [];
@@ -68,12 +73,16 @@ public sealed class HeadlessSession
 
     private HeadlessSession(GameData gameData, int seed)
     {
-        _world = new WorldModel(gameData, null);
-        _world.SetRandomSeed(seed);
-        _world.LogError += ex => Write(new HeadlessOutput(HeadlessOutputKind.Error, ex.Message));
-        _world.PrintText += WriteHtml; // output path for ASL < v540
-        _world.RequestNextTimerTick += seconds => _pendingTick = seconds;
-        _world.UpdateList += OnUpdateList;
+        _game = Quest4Extensions.Contains(Path.GetExtension(gameData.Filename).ToLowerInvariant())
+            ? new V4Game(gameData, null)
+            : new WorldModel(gameData, null);
+        _world = _game as WorldModel;
+        _game.SetRandomSeed(seed);
+        _game.LogError += ex => Write(new HeadlessOutput(HeadlessOutputKind.Error, ex.Message));
+        _game.PrintText += WriteHtml; // output path for Quest 1–4 and ASL < v540
+        _game.RequestNextTimerTick += seconds => _pendingTick = seconds;
+        _game.UpdateList += OnUpdateList;
+        _game.Finished += () => _finished = true;
         _player = new HeadlessPlayer(WriteHtml);
     }
 
@@ -87,33 +96,28 @@ public sealed class HeadlessSession
     public MenuData? PendingMenu => _player.PendingMenu;
     public string? PendingQuestion => _player.PendingQuestion;
     public bool PendingQuestionInline => _player.PendingQuestionInline;
-    public GameState State => _world.State;
+    public GameState State => _world?.State ?? (_finished ? GameState.Finished : GameState.Running);
     public bool Finished => State == GameState.Finished;
 
     // The underlying game, for privileged inspection such as IGameDebug.GetObjects.
-    public IGameDebug Game => _world;
+    public IGameDebug Game => (IGameDebug) _game;
 
     public static async Task<HeadlessSession> StartAsync(GameData gameData, int seed = DefaultSeed,
         Action<HeadlessOutput>? onOutput = null)
     {
-        if (LegacyExtensions.Contains(Path.GetExtension(gameData.Filename).ToLowerInvariant()))
-        {
-            throw new NotSupportedException("Headless sessions only support Quest 5 and later games.");
-        }
-
         var session = new HeadlessSession(gameData, seed);
         if (onOutput != null)
         {
             session.OutputWritten += onOutput;
         }
 
-        if (!await session._world.Initialise(session._player))
+        if (!await session._game.Initialise(session._player))
         {
             throw new InvalidOperationException(
-                $"Game '{gameData.GameId}' failed to load: {string.Join("; ", session._world.Errors)}");
+                $"Game '{gameData.GameId}' failed to load: {string.Join("; ", session._game.Errors)}");
         }
 
-        session.Opening = await session.RunStepAsync(() => session._world.Begin());
+        session.Opening = await session.RunStepAsync(() => session._game.Begin());
         return session;
     }
 
@@ -137,7 +141,7 @@ public sealed class HeadlessSession
     }
 
     public Task<HeadlessStep> SendCommandAsync(string command) =>
-        RunStepAsync(() => _world.SendCommand(command));
+        RunStepAsync(() => _game.SendCommand(command));
 
     public Task<HeadlessStep> AnswerMenuAsync(string choice)
     {
@@ -151,7 +155,7 @@ public sealed class HeadlessSession
         }
 
         _player.PendingMenu = null;
-        return RunStepAsync(() => _world.SetMenuResponse(key));
+        return RunStepAsync(() => _game.SetMenuResponse(key));
     }
 
     public Task<HeadlessStep> AnswerQuestionAsync(bool answer)
@@ -162,26 +166,47 @@ public sealed class HeadlessSession
         }
 
         _player.PendingQuestion = null;
-        return RunStepAsync(() => _world.SetQuestionResponse(answer));
+        return RunStepAsync(() => _game.SetQuestionResponse(answer));
     }
 
     // Advances the game clock, firing any timers that come due - the stand-in for a browser
     // player's one-second interval, for games gated on real-time timers. SetTimeout timers are
     // already drained after every step.
     public Task<HeadlessStep> TickAsync(int seconds) =>
-        RunStepAsync(() =>
+        RunStepAsync(async () =>
         {
             _pendingTick = 0;
-            return _world.Tick(seconds);
+            if (_world != null)
+            {
+                await _world.Tick(seconds);
+                return;
+            }
+
+            // A Quest 1–4 timer skips the first tick after it's turned on, however long that tick is,
+            // so a single Tick(seconds) would never fire it. Tick a second at a time, as a browser
+            // player does, stopping at anything the player has to answer.
+            for (var i = 0; i < seconds && !Finished && PendingMenu == null && PendingQuestion == null; i++)
+            {
+                await TickGameAsync(1);
+                await AutoAdvanceAsync();
+            }
         });
 
     // Fires an event a game's own JavaScript would normally send with ASLEvent.
     public Task<HeadlessStep> SendEventAsync(string eventName, string param) =>
-        RunStepAsync(() => _world.SendEvent(eventName, param));
+        RunStepAsync(() => _game.SendEvent(eventName, param));
 
-    public Task<bool> AssertAsync(string expression) => _world.AssertAsync(expression);
+    // For a Quest 1–4 game the expression is a condition in that syntax, such as "got <lamp>".
+    public Task<bool> AssertAsync(string expression) => Game.AssertAsync(expression);
 
-    public Task<object?> EvaluateAsync(string expression) => _world.EvaluateAsync(expression);
+    public Task<object?> EvaluateAsync(string expression) =>
+        _world?.EvaluateAsync(expression)
+        ?? throw new NotSupportedException("Games from Quest 4 and earlier can't evaluate expressions. Use assert with a condition in their syntax, such as \"got <lamp>\", instead.");
+
+    // V4Game's Tick doesn't return until a prompt one of its timers opens has been answered, which
+    // only the caller can do once this returns.
+    private Task TickGameAsync(int seconds) =>
+        _world?.Tick(seconds) ?? Game.TickUntilSuspended(seconds);
 
     private async Task<HeadlessStep> RunStepAsync(Func<Task> action)
     {
@@ -203,8 +228,9 @@ public sealed class HeadlessSession
     private HeadlessStep CurrentStep(IReadOnlyList<HeadlessOutput> output)
     {
         // The objects list includes the exits too; a browser player draws those in the compass.
-        var exitIds = _exits.Select(e => e.ElementId).ToHashSet();
-        var panesVisible = _world.Game.Fields.GetAsType<bool>("showpanes");
+        var exitKeys = _exits.Select(ListKey).ToHashSet();
+        // Quest 1–4 games always show their panes and compass.
+        var panesVisible = _world?.Game.Fields.GetAsType<bool>("showpanes") ?? true;
         return new HeadlessStep
         {
             Output = output,
@@ -213,10 +239,10 @@ public sealed class HeadlessSession
             PendingQuestionInline = PendingQuestionInline,
             Finished = Finished,
             Exits = DisplayNames(_exits),
-            Objects = DisplayNames(_objects.Where(o => !exitIds.Contains(o.ElementId))),
+            Objects = DisplayNames(_objects.Where(o => !exitKeys.Contains(ListKey(o)))),
             Inventory = DisplayNames(_inventory),
             PanesVisible = panesVisible,
-            CompassVisible = panesVisible && !_world.Game.Fields.GetAsType<bool>("turnoffcompass")
+            CompassVisible = panesVisible && _world?.Game.Fields.GetAsType<bool>("turnoffcompass") != true
         };
     }
 
@@ -236,6 +262,9 @@ public sealed class HeadlessSession
         }
     }
 
+    // Quest 1–4 list items have no element id, only a name.
+    private static string ListKey(ListData item) => item.ElementId ?? "name:" + item.ElementName;
+
     // A game's GetListDisplayAlias can return null, despite ListData.Text's type.
     private static List<string> DisplayNames(IEnumerable<ListData> items) =>
         items.Select(i => HtmlToText((string?) i.Text ?? i.ElementName ?? ""))
@@ -249,19 +278,19 @@ public sealed class HeadlessSession
             if (_player.IsWaiting)
             {
                 _player.IsWaiting = false;
-                await _world.FinishWait();
+                await _game.FinishWait();
             }
 
             if (_player.IsPausing)
             {
                 _player.IsPausing = false;
-                await _world.FinishPause();
+                await _game.FinishPause();
             }
         }
     }
 
     private bool HasPendingTimeout() =>
-        _world.Elements.GetElements(ElementType.Timer)
+        _world != null && _world.Elements.GetElements(ElementType.Timer)
             .Any(t => t.Name.StartsWith("timeout", StringComparison.Ordinal) && t.Fields.GetAsType<bool>("enabled"));
 
     // SetTimeout creates "timeout*" timers. Fire them until none are left, so a step's delayed
@@ -273,7 +302,7 @@ public sealed class HeadlessSession
         {
             var seconds = _pendingTick;
             _pendingTick = 0;
-            await _world.Tick(seconds > 0 ? seconds : 1);
+            await TickGameAsync(seconds > 0 ? seconds : 1);
             await AutoAdvanceAsync();
         }
     }
