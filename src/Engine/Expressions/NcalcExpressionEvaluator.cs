@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
@@ -186,7 +187,9 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         return (handled, result);
     }
 
-    private static readonly Dictionary<(Type, string), MethodBase[]?> MethodCache = [];
+    // Concurrent because games in separate WorldModels can be running on different threads at
+    // once, e.g. headless sessions or parallel tests.
+    private static readonly ConcurrentDictionary<(Type, string), MethodBase[]?> MethodCache = [];
 
     private static MethodBase[]? GetPublicMethodsByName([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)] Type type, string name)
     {

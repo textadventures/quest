@@ -1,6 +1,6 @@
 # Headless Session, CLI and Agent Interface
 
-Status: design, not yet started.
+Status: phase 1 done — `HeadlessSession` is in PlayerCore and quest-e2e-tests runs on it. Phase 2 (CLI) not started.
 
 ## Motivation
 
@@ -8,7 +8,7 @@ Quest Viva games can already be driven headlessly, but the logic for doing it li
 
 - `PlayerCore/WalkthroughRunner.cs` — runs a game's built-in walkthroughs inside the live player UI.
 - `quest-e2e-tests` (private sibling repo) — `HeadlessPlayer` + `TranscriptRunner`, which drive ~75 published games end-to-end and diff transcripts against goldens.
-- spatterlight's quest5-oracle harness, which the e2e harness was ported from.
+- spatterlight's quest5-oracle harness, an external project that drives Quest Viva as a compatibility oracle.
 
 The hard-won parts — capturing both output channels (`WriteHTML`/`PrintText` and v540+ `JS.addText` via `RunScriptAsync`), auto-advancing waits and pauses, treating a synchronous `play sound` as a wait, draining `timeout*` timers, resolving menus by key/label/number — are knowledge about engine semantics, and belong next to the engine so they change when it does.
 
@@ -54,6 +54,15 @@ Evaluation-specific work that isn't Quest functionality:
 - **v5+ only.** `HeadlessSession` works with `WorldModel`; Quest 4 games via `V4Game` are out of scope.
 - **`WalkthroughRunner` stays as it is.** It drives a game attached to the live UI player with a real timer, which is a different shape from a session that owns its own headless `IPlayer`.
 - **NuGet API stability is not a concern yet.** The only consumer of the PlayerCore package is textadventures.co.uk, so the API can change as it settles.
+
+## Phase 1 notes
+
+- **API.** `HeadlessSession.StartAsync(gameData, seed, onOutput)` returns a session whose `Opening` holds the text up to the first prompt. `SendAsync(input)` routes input to a pending menu or question, or sends it as a command. `AnswerMenuAsync`, `AnswerQuestionAsync`, `SendCommandAsync`, `TickAsync` and `SendEventAsync` each return a `HeadlessStep`: output chunks in order (text or script error), the pending menu/question, and the finished flag. `AssertAsync`/`EvaluateAsync` and `Game` (the `IGameDebug`) are the privileged side. Reset is `StartAsync` again.
+- **The `OutputWritten` event / `onOutput` callback** sees every chunk, including errors raised by `AssertAsync`/`EvaluateAsync`, which return no step. quest-e2e-tests builds its transcript from it, which is how the goldens stay byte-identical.
+- **Output fidelity over tidiness.** Chunks keep the engine's own shape: the command echo (`> look`), newline-only chunks from `<br/>`, and script errors arriving both as a logged error and as printed "Error running script" text. `HeadlessStep.Text` joins and normalises them; the CLI can decide how much to clean up for an agent.
+- **An unmatched menu answer cancels the menu** (`SetMenuResponse(null)`), as the e2e harness always did. A playtesting front-end will probably want to reject it instead.
+- **`QuestUI.addText`.** The current Core library writes text via `QuestUI.addText`, not `addText`; the e2e harness only ever saw published games using the older name. The session handles both.
+- **Parallel sessions.** `NcalcExpressionEvaluator`'s static method cache was a plain `Dictionary`, so two games evaluating expressions on different threads at once could corrupt it. Now a `ConcurrentDictionary`. Running sessions in parallel (benchmarks, parallel tests) may turn up more shared static state.
 
 ## Design questions
 
