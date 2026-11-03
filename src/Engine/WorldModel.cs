@@ -408,6 +408,59 @@ public partial class WorldModel : IGame, IGameDebug
         }
     }
 
+    /// <summary>
+    /// Sets up a player UI that has just been swapped in afresh, as restoring a save does
+    /// (BeginInternalAsync): runs InitInterface, sends the lists, and puts back the output so far.
+    /// Unlike a restore it doesn't reload the game, so the editor's Preview can show Interface tab
+    /// changes while the game carries on where it was. Only while no turn is suspended mid-script,
+    /// since the fresh UI has none of a wait's or menu's prompt.
+    /// </summary>
+    public async Task ReapplyInterfaceAsync(string html)
+    {
+        if (_beginInProgress || _pendingCallbackCount > 0) return;
+        try
+        {
+            if (Elements.ContainsKey(ElementType.Function, "InitInterface"))
+            {
+                await RunProcedureAsync("InitInterface");
+            }
+
+            if (State != GameState.Finished) await UpdateListsAsync();
+            await PlayerUi.RunScriptAsync("loadHtml", [html]);
+            await PlayerUi.RunScriptAsync("markScrollPosition", null);
+            ScrollToEnd();
+        }
+        catch (Exception ex)
+        {
+            LogException(ex);
+        }
+
+        // Tells the fresh UI the turn isn't pending, as the end of Begin does.
+        SignalTurnSuspended();
+        SendNextTimerRequest();
+    }
+
+    /// <summary>
+    /// Sets one of the game's attributes from a value the editor sent (ReapplyInterfaceAsync):
+    /// null removes the game's own value, so it inherits again. A whole number becomes a double
+    /// when the attribute already is one, since JSON doesn't tell 1 from 1.0.
+    /// </summary>
+    public void SetGameAttributeFromEditor(string name, object? value)
+    {
+        if (value == null)
+        {
+            if (Game.Fields.GetAttributeNames(false).Contains(name)) Game.Fields.RemoveField(name);
+            return;
+        }
+
+        if (value is int i && Game.Fields.Get(name) is double)
+        {
+            value = (double)i;
+        }
+
+        Game.Fields.Set(name, value);
+    }
+
     public List<string> Errors { get; private set; } = [];
 
     public async Task SendCommand(string command, int elapsedTime, IDictionary<string, string> metadata)

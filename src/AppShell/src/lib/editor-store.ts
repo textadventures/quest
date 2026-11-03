@@ -226,6 +226,7 @@ function refreshUndoRedo() {
     const dirty = _bridge?.IsDirty() ?? false;
     isDirty.set(dirty);
     if (dirty) scheduleAutosave();
+    schedulePreviewInterfaceSync();
 }
 
 // Set by openGame() whenever it returns false, so callers can show the actual reason (a missing
@@ -297,6 +298,9 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
     // this should always be a no-op in practice — but a leftover timer here
     // would otherwise fire against the wrong _bridge/_adapter below.
     cancelPendingAutosave();
+    // A Preview that's still open is playing the game being closed, so it gets no more of
+    // this one's interface changes (syncPreviewInterface).
+    _previewInterface = null;
     isSaving.set(false);
     saveError.set(null);
     lastOpenGameError.set(null);
@@ -614,6 +618,38 @@ function blobToDataUrl(blob: Blob): Promise<string> {
 }
 
 let _previewChannel: BroadcastChannel | null = null;
+// The Display and Interface tab attributes the open Preview last got, so an edit sends only what
+// changed (see syncPreviewInterface).
+let _previewInterface: Record<string, unknown> | null = null;
+let _previewInterfaceTimer: ReturnType<typeof setTimeout> | null = null;
+const PREVIEW_INTERFACE_DEBOUNCE_MS = 200;
+
+function readLiveInterfaceAttributes(): Record<string, unknown> | null {
+    return _bridge ? JSON.parse(_bridge.GetLiveInterfaceAttributes()) as Record<string, unknown> : null;
+}
+
+function schedulePreviewInterfaceSync(): void {
+    if (!_previewChannel || !_previewInterface) return;
+    if (_previewInterfaceTimer) clearTimeout(_previewInterfaceTimer);
+    _previewInterfaceTimer = setTimeout(syncPreviewInterface, PREVIEW_INTERFACE_DEBOUNCE_MS);
+}
+
+// Sends a running Preview the Display and Interface tab attributes (including the stylesheet) that
+// have changed since it last got them, which it shows without restarting (wasm-player.js's
+// applyInterfaceChanges). Runs after every edit, undo and redo.
+function syncPreviewInterface(): void {
+    _previewInterfaceTimer = null;
+    if (!_previewChannel || !_previewInterface) return;
+    const current = readLiveInterfaceAttributes();
+    if (!current) return;
+    const changed: Record<string, unknown> = {};
+    for (const [name, value] of Object.entries(current)) {
+        if (_previewInterface[name] !== value) changed[name] = value;
+    }
+    if (Object.keys(changed).length === 0) return;
+    _previewInterface = current;
+    _previewChannel.postMessage({ type: "interface", attributes: changed });
+}
 
 export async function previewInWasmPlayer(wasmPlayerUrl: string, opts?: { recordWalkthrough?: string; runWalkthrough?: string }): Promise<void> {
     if (!_bridge || !_adapter) return;
@@ -633,6 +669,7 @@ export async function previewInWasmPlayer(wasmPlayerUrl: string, opts?: { record
             // Serialize fresh on every 'ready' so WasmPlayer refreshes also pick up latest edits.
             if (!_bridge) return;
             const bytes = new TextEncoder().encode(_bridge.Save());
+            _previewInterface = readLiveInterfaceAttributes();
             // The Editor's own save (SaveMode.Editor) excludes unmodified library-origin
             // elements, leaving only <include ref="..."/> behind (see preloadAdjacentLibraryAssets)
             // — WasmPlayer runs in its own separate WASM module with no adapter of its own, so

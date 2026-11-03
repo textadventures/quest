@@ -44,6 +44,8 @@ internal partial class EditorTab : IEditorTab
             IsGameFeature = match.Groups[1].Value == "game";
             FeatureAttribute = match.Groups[2].Value;
         }
+
+        IsLiveInterface = source.Fields.GetAsType<bool>("liveinterface");
     }
 
     [GeneratedRegex(@"^\s*(this|game)\.(feature_\w+)\s*$")]
@@ -52,6 +54,8 @@ internal partial class EditorTab : IEditorTab
     public string? FeatureAttribute { get; }
 
     public bool IsGameFeature { get; }
+
+    public bool IsLiveInterface { get; }
 
     public string? Caption { get; }
 

@@ -27,4 +27,10 @@ public interface IEditorTab
     /// still take effect in the game.
     /// </summary>
     Task<bool> IsTabVisibleOnlyForLeftovers(IEditorData data);
+
+    /// <summary>
+    /// True for a tab marked &lt;liveinterface/&gt;: its attributes are ones InitInterface reads, so
+    /// a running Preview picks up their changes without restarting (<see cref="EditorController.GetLiveInterfaceAttributes"/>).
+    /// </summary>
+    bool IsLiveInterface { get; }
 }

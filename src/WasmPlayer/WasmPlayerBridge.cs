@@ -226,15 +226,21 @@ public partial class WasmPlayerBridge
             return false;
         }
         _initialiseErrors = [];
+        await AddGameResourcesAsync(_game, _ui);
+        return true;
+    }
 
-        var scripts = _game.GetExternalScripts();
+    // The game's own scripts and stylesheets, added to a UI that has just been swapped in.
+    private static async Task AddGameResourcesAsync(IGame game, WasmPlayerUi ui)
+    {
+        var scripts = game.GetExternalScripts();
         if (scripts != null)
         {
             foreach (var script in scripts)
-                await JsAddExternalScript(await _ui.GetUrlAsync(script));
+                await JsAddExternalScript(await ui.GetUrlAsync(script));
         }
 
-        var stylesheets = _game.GetExternalStylesheets();
+        var stylesheets = game.GetExternalStylesheets();
         if (stylesheets != null)
         {
             foreach (var stylesheet in stylesheets)
@@ -243,9 +249,57 @@ public partial class WasmPlayerBridge
 
         // Every Initialise, so a restart or a restored save gets it back, and a game without one
         // clears what the last game had.
-        JsSetGameStylesheet(_game.GetGameStylesheet() ?? "");
+        JsSetGameStylesheet(game.GetGameStylesheet() ?? "");
+    }
 
-        return true;
+    // ── The editor's live Preview ────────────────────────────────────────────
+    // Interface tab and stylesheet changes reach a running Preview without restarting it (see
+    // wasm-player.js's applyInterfaceChanges): SetGameAttributes copies them onto the game, then,
+    // unless only the stylesheet changed, RebuildPlayerUi swaps in a fresh UI and ReapplyInterface
+    // sets it up as a restore would, with the output so far.
+
+    // attributesJson is an object of the changed attributes' values, as
+    // WasmEditorBridge.GetLiveInterfaceAttributes gives them.
+    [JSExport]
+    public static void SetGameAttributes(string attributesJson)
+    {
+        if (_game is not WorldModel worldModel) return;
+        using var document = JsonDocument.Parse(attributesJson);
+        foreach (var property in document.RootElement.EnumerateObject())
+        {
+            object? value = property.Value.ValueKind switch
+            {
+                JsonValueKind.String => property.Value.GetString(),
+                JsonValueKind.True => true,
+                JsonValueKind.False => false,
+                JsonValueKind.Number when property.Value.TryGetInt32(out var i) => i,
+                JsonValueKind.Number => property.Value.GetDouble(),
+                _ => null,
+            };
+            worldModel.SetGameAttributeFromEditor(property.Name, value);
+        }
+
+        JsSetGameStylesheet(_game.GetGameStylesheet() ?? "");
+    }
+
+    [JSExport]
+    public static async Task RebuildPlayerUi()
+    {
+        if (_game == null || _ui == null) return;
+        // Choosing again lets the classic interface option switch UIs.
+        await JsPreparePlayerUi(ChoosePlayerUi(_game));
+        await AddGameResourcesAsync(_game, _ui);
+        _ui.ResetLists();
+    }
+
+    [JSExport]
+    public static async Task ReapplyInterface(string html)
+    {
+        if (_game is not WorldModel worldModel || _ui == null) return;
+        await worldModel.ReapplyInterfaceAsync(html);
+        // The fresh UI doesn't know a finished game has finished.
+        if (_ui.IsFinished) _ui.HandleFinished();
+        await _ui.FlushBufferAndYieldAsync();
     }
 
     private const string LegacyPlayerUi = "legacy";
@@ -766,6 +820,8 @@ public partial class WasmPlayerBridge
 
         public void HandleUpdateList(ListType listType, List<ListData> items) =>
             _listHandler.UpdateList(listType, items);
+
+        public void ResetLists() => _listHandler.Reset();
 
         public void HandleFinished()
         {

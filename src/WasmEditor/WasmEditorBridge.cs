@@ -821,6 +821,33 @@ public partial class WasmEditorBridge
     public static string GetOwnJavascriptFiles() => JsonSerializer.Serialize(
         _controller?.OwnJavascriptFiles.ToList() ?? [], WasmEditorJsonContext.Default.ListString);
 
+    // The Display and Interface tabs' attributes as one JSON object of plain values, for
+    // editor-store.ts to send a running Preview whichever have changed (WasmPlayerBridge.ReapplyInterface).
+    [JSExport]
+    public static string GetLiveInterfaceAttributes()
+    {
+        using var stream = new MemoryStream();
+        using (var writer = new Utf8JsonWriter(stream))
+        {
+            writer.WriteStartObject();
+            foreach (var (name, value) in _controller?.GetLiveInterfaceAttributes() ?? new Dictionary<string, object?>())
+            {
+                writer.WritePropertyName(name);
+                switch (value)
+                {
+                    case string s: writer.WriteStringValue(s); break;
+                    case bool b: writer.WriteBooleanValue(b); break;
+                    case int i: writer.WriteNumberValue(i); break;
+                    case double d: writer.WriteNumberValue(d); break;
+                    default: writer.WriteNullValue(); break;
+                }
+            }
+            writer.WriteEndObject();
+        }
+
+        return System.Text.Encoding.UTF8.GetString(stream.ToArray());
+    }
+
     // javascriptFilesJson maps each of GetOwnJavascriptFiles' files to its text, for those the
     // host could read: a .js file is an asset in the host's own storage, not something C# can see.
     [JSExport]
