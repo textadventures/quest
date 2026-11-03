@@ -1,6 +1,6 @@
 # Headless Session, CLI and Agent Interface
 
-Status: phase 1 done — `HeadlessSession` is in PlayerCore and quest-e2e-tests runs on it. Phase 2 built: `qv play`, `qv serve` ([qv-serve.md](qv-serve.md)) and `qv mcp` ([qv-mcp.md](qv-mcp.md)); dogfooding an agent against `examples/` and a corpus game still to do. The tool isn't published yet (`nuget-publish` doesn't pack `src/Cli`) — see Distribution below.
+Status: phase 1 done — `HeadlessSession` is in PlayerCore and quest-e2e-tests runs on it. Phase 2 done: `qv play`, `qv serve` ([qv-serve.md](qv-serve.md)) and `qv mcp` ([qv-mcp.md](qv-mcp.md)), published with each release ([qv.md](qv.md)). Status attributes aren't passed to agents yet, and `qv walkthrough` is still a maybe. The tool isn't published yet (`nuget-publish` doesn't pack `src/Cli`) — see Distribution below.
 
 ## Motivation
 
@@ -70,7 +70,7 @@ Evaluation-specific work that isn't Quest functionality:
 2. **Observation content.** Settled as "what a browser player would see": `HeadlessSession` tracks the exits, visible objects and inventory the engine sends via `UpdateList`, and whether the game shows its compass and panes (`game.showpanes`, `game.turnoffcompass`). `qv serve` always returns them and leaves forwarding to the harness. `qv mcp` adds the exits to each response when the compass is visible — dogfooding found agents guessing directions in games that leave exits out of room text because the compass shows them — and `--text-only` turns that off. A benchmark should report which it used. Listening for `UpdateList` runs extra Core functions each turn; no corpus golden changed. Status attributes (score, health) aren't tracked yet.
 3. **Reset and checkpoint semantics.** Reset = reload from game bytes with a seed. Checkpoints via `SaveAsync`. Open: does a save taken while a menu or `get input` is pending restore correctly? If not, only allow checkpoints at clean turn boundaries. Worth an early spike.
 4. **JS-dependent games.** The e2e harness no-ops `JS.*` calls, and most corpus games make them. Generated worlds won't care, but the CLI should warn when a game appears to depend on JS for more than presentation.
-5. **Distribution.** `dotnet tool` suits .NET users; evaluation users are mostly Python users without a .NET SDK. Consider self-contained single-file binaries attached to each GitHub release, which the Python package can download. Needs a release workflow addition (phase 3).
+5. **Distribution.** Settled: both. `nuget-publish` packs the `QuestViva.Cli` dotnet tool, and `cli-publish` attaches self-contained single-file binaries (`qv-<rid>.tar.gz`/`.zip`, ~39 MB, no .NET needed) to each GitHub Release, which the phase-3 Python package can download. Linux needs ICU (invariant globalization would change sort order). The macOS binary (Apple Silicon only, like the desktop app) is signed with the Developer ID and notarized, with `allow-jit` as its one hardened-runtime entitlement. See [qv.md](qv.md).
 6. **Naming** for the new repo and Python package.
 
 ## Phases

@@ -13,7 +13,8 @@ Each version tag is either **stable** (`v6.0.0`, `v6.0.1`) or a **prerelease** (
 | GitHub Release (`release-please.yml`, `finalize-release.yml`) | Not flagged as a prerelease, marked Latest | Stays flagged as a prerelease, so `releases/latest` never returns it |
 | WebPlayer Docker image (`docker-publish.yml`, on `release/6.0` only) | `:<version>` and `:latest` | None: WebPlayer was removed from `main` in 6.1, so there are no 6.1 images |
 | npm package (`npm-publish.yml`) | dist-tag `latest` | dist-tag `beta` |
-| NuGet packages | Stable version | Prerelease version (NuGet handles this from the version string alone) |
+| NuGet packages, including the `QuestViva.Cli` dotnet tool | Stable version | Prerelease version (NuGet handles this from the version string alone) |
+| `qv` binaries (`cli-publish.yml`) | Attached to the release, so `releases/latest/download/qv-<rid>.tar.gz` returns them | Attached to the prerelease only |
 | Electron installers (`electron-publish.yml`) | "Quest Viva" | "Quest Viva Beta", a separate app that installs alongside the stable one |
 
 A manual `workflow_dispatch` run of `deploy-play.yml` from a branch always deploys to the beta site, because `main` holds the next release's development work. Such a build reports `<short SHA>-<run ID>-<attempt>` as its version (in the browser console, and as the `?v=` cache key on its assets), not a version number. `VERSION` still holds the last release until the next release PR merges, so using it would give every manual deploy the same cache key. The .NET output isn't byte-reproducible, so edge caches would then mix one deploy's WebAssembly binaries with another's hash manifest, and the player would fail its integrity checks. That happened on the second manual beta deploy. The run ID keeps the key unique even when the same commit is deployed twice. Reusing a future tag's version would be worse still, since that build's cached assets would outlive the real release.

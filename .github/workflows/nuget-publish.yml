@@ -39,7 +39,8 @@ jobs:
 
       - name: Pack
         run: |
-          for project in src/Common src/Engine src/Legacy src/PlayerCore; do
+          # src/Cli packs as the QuestViva.Cli dotnet tool (`dotnet tool install -g QuestViva.Cli`).
+          for project in src/Common src/Engine src/Legacy src/PlayerCore src/Cli; do
             dotnet pack "$project" --no-build --configuration Release -p:Version=${{ env.VERSION }} --output nupkgs
           done
 

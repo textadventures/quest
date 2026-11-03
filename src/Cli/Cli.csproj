@@ -10,6 +10,10 @@
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>qv</ToolCommandName>
         <PackageId>QuestViva.Cli</PackageId>
+        <!-- qv reports the repo's VERSION as its own version, however it was built. Release
+             workflows pass the same value as the Version property. -->
+        <Version>$([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)../../VERSION').Trim())</Version>
+        <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
         <Description>Command-line tools for Quest Viva: play text adventure games in the terminal, or drive them from another program or an AI agent.</Description>
     </PropertyGroup>
     <ItemGroup>
