@@ -318,6 +318,32 @@ public class CallbackTests
         afterAnswer.ShouldContain(afterPrompt);
     }
 
+    // An answer can reach the engine after its prompt is over: a sound can end twice, for one.
+    // Nothing is left to run, so nothing would resolve a new turn signal, and the next command,
+    // which waits for the turn before it, would never start.
+    [TestMethod]
+    [DataRow("blockwait")]
+    [DataRow("blockpause")]
+    [DataRow("blockask")]
+    [DataRow("blockmenu")]
+    public async Task BlockingPrompt_AnsweredTwice_NextCommandStillRuns(string command)
+    {
+        var driver = await GameDriver.LoadAsync("callbacktest.aslx", yieldInRunScript: true);
+        await driver.SendCommandAsync(command);
+
+        Func<Task> answer = command switch
+        {
+            "blockwait" => driver.Model.FinishWait,
+            "blockpause" => driver.Model.FinishPause,
+            "blockask" => () => driver.Model.SetQuestionResponse(true),
+            _ => () => driver.Model.SetMenuResponse("Red"),
+        };
+        await answer().WaitAsync(TimeSpan.FromSeconds(5));
+        await answer().WaitAsync(TimeSpan.FromSeconds(5));
+
+        await driver.Model.SendCommand("blockwait").WaitAsync(TimeSpan.FromSeconds(5));
+    }
+
     // Tick doesn't end in a turn signal of its own, unlike a command, so a blocking prompt that a
     // timer script opens has to rely on Tick to signal once that script finishes.
     [TestMethod]
