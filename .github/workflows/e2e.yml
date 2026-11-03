@@ -53,10 +53,14 @@ on:
       - .release-please-manifest.json
 
 jobs:
+  # Every job sets timeout-minutes at roughly twice its usual runtime, so a hung
+  # script costs minutes rather than GitHub's six-hour default (nightly run
+  # 41435260262 sat in verify-wasmplayer-autoscroll.mjs until that cancelled it).
   # No servers, no npm install — just verifies the scripts and the workflow
   # below haven't drifted apart. Fast enough to run on every trigger.
   check_e2e_manifest:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -73,6 +77,7 @@ jobs:
   # vite.config.ts).
   appshell_chromium:
     runs-on: ubuntu-latest
+    timeout-minutes: 40
     if: github.event_name != 'pull_request'
     steps:
       - uses: actions/checkout@v7
@@ -292,6 +297,7 @@ jobs:
   # locally (see that script's own header comment) — just not from Linux CI.
   appshell_opfs_firefox:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     if: github.event_name != 'pull_request'
     steps:
       - uses: actions/checkout@v7
@@ -344,6 +350,7 @@ jobs:
   # no WasmEditor build needed at all.
   appshell_server_mode:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     if: github.event_name != 'pull_request'
     steps:
       - uses: actions/checkout@v7
@@ -383,6 +390,7 @@ jobs:
   # WasmPlayer alone, no AppShell involved.
   wasmplayer_chromium:
     runs-on: ubuntu-latest
+    timeout-minutes: 35
     if: github.event_name != 'pull_request'
     steps:
       - uses: actions/checkout@v7
@@ -569,6 +577,7 @@ jobs:
   # applies. Also the runner electron-publish.yml already uses for DMG builds.
   electron:
     runs-on: macos-latest
+    timeout-minutes: 25
     if: github.event_name != 'pull_request'
     steps:
       - uses: actions/checkout@v7
@@ -636,6 +645,7 @@ jobs:
   # no AppShell/Engine build needed at all, just the static site itself.
   site_chromium:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     if: github.event_name != 'pull_request'
     steps:
       - uses: actions/checkout@v7

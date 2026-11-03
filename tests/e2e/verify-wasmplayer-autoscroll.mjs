@@ -21,6 +21,7 @@
 // Requires the WasmPlayer dev server running locally:
 //   node ../../src/WasmPlayer/dev-server.mjs
 import { chromium } from 'playwright';
+import { handOffPreviewGame } from './lib/preview-handoff.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5175';
 
@@ -41,23 +42,11 @@ const senderPage = await context.newPage();
 const fixtureUrl = `${baseUrl}/e2e-fixtures/scroll-walkthrough-test.aslx`;
 await senderPage.goto(baseUrl);
 
-const handoffDone = senderPage.evaluate(async (url) => {
-    // Listen before fetching: the player posts 'ready' as soon as it boots, which can be
-    // before the fetch has finished, and a BroadcastChannel message sent before anyone is
-    // listening is simply lost - leaving this waiting forever.
-    const bc = new BroadcastChannel('quest-preview');
-    const ready = new Promise((resolve) => {
-        bc.onmessage = ({ data }) => {
-            if (data.type === 'ready') resolve();
-        };
-    });
-    const bytes = new Uint8Array(await (await fetch(url)).arrayBuffer());
-    await ready;
-    bc.postMessage({ type: 'game', bytes, filename: 'scroll-walkthrough-test.aslx' });
-}, fixtureUrl);
-
-await previewPage.goto(`${baseUrl}/?source=editor`);
-await handoffDone;
+await handOffPreviewGame(senderPage, previewPage, {
+    previewUrl: `${baseUrl}/?source=editor`,
+    fixtureUrl,
+    filename: 'scroll-walkthrough-test.aslx',
+});
 
 await previewPage.waitForSelector('#txtCommand', { state: 'visible', timeout: 30000 });
 await previewPage.waitForTimeout(300);
