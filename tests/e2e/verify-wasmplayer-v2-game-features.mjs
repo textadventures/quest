@@ -20,6 +20,7 @@
 // Requires the WasmPlayer dev server running locally:
 //   node src/WasmPlayer/dev-server.mjs
 import { chromium } from 'playwright';
+import { handOffPreviewGame } from './lib/preview-handoff.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5175';
 const input = 'qv-command-bar input';
@@ -237,19 +238,11 @@ async function debuggerSession() {
     page.on('pageerror', err => console.log('[pageerror]', err.message));
     const sender = await context.newPage();
     await sender.goto(baseUrl);
-    const handoff = sender.evaluate(async url => {
-        const bc = new BroadcastChannel('quest-preview');
-        const ready = new Promise(resolve => {
-            bc.onmessage = ({ data }) => {
-                if (data.type === 'ready') resolve();
-            };
-        });
-        const bytes = new Uint8Array(await (await fetch(url)).arrayBuffer());
-        await ready;
-        bc.postMessage({ type: 'game', bytes, filename: 'debugger-test.aslx' });
-    }, `${baseUrl}/e2e-fixtures/debugger-test.aslx`);
-    await page.goto(`${baseUrl}/?source=editor&ui=v2`);
-    await handoff;
+    await handOffPreviewGame(sender, page, {
+        previewUrl: `${baseUrl}/?source=editor&ui=v2`,
+        fixtureUrl: `${baseUrl}/e2e-fixtures/debugger-test.aslx`,
+        filename: 'debugger-test.aslx',
+    });
     await page.waitForSelector(input, { state: 'visible', timeout: 60000 });
     await hasOutput(page, 'You are in a kitchen');
     await sender.close();
