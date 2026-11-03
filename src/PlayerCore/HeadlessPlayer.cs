@@ -8,11 +8,17 @@ internal sealed class HeadlessPlayer(Action<string> emit) : IPlayer
 {
     public MenuData? PendingMenu;
     public string? PendingQuestion;
+    public bool PendingQuestionInline;
     public bool IsWaiting;
     public bool IsPausing;
 
     public void ShowMenu(MenuData menuData) => PendingMenu = menuData;
-    public void ShowQuestion(string caption, bool inline) => PendingQuestion = caption;
+    public void ShowQuestion(string caption, bool inline)
+    {
+        PendingQuestion = caption;
+        PendingQuestionInline = inline;
+    }
+
     public void DoWait() => IsWaiting = true;
     public void DoPause(int ms) => IsPausing = true;
 

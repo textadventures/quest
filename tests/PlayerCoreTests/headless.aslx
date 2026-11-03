@@ -32,6 +32,17 @@
       }
     </script>
   </command>
+  <command name="cmd_menu_nocancel">
+    <pattern>testmenunocancel</pattern>
+    <script>
+      options = NewStringDictionary()
+      dictionary add (options, "r", "Red")
+      dictionary add (options, "g", "Green")
+      show menu ("Must pick", options, false) {
+        msg ("chose " + result)
+      }
+    </script>
+  </command>
   <command name="cmd_ask">
     <pattern>testask</pattern>
     <script>

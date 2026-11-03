@@ -1,6 +1,6 @@
 # Headless Session, CLI and Agent Interface
 
-Status: phase 1 done — `HeadlessSession` is in PlayerCore and quest-e2e-tests runs on it. Phase 2 (CLI) not started.
+Status: phase 1 done — `HeadlessSession` is in PlayerCore and quest-e2e-tests runs on it. Phase 2 in progress: `qv play` done; `serve` and `mcp` next. The tool isn't published yet (`nuget-publish` doesn't pack `src/Cli`) — see Distribution below.
 
 ## Motivation
 
@@ -15,7 +15,7 @@ The hard-won parts — capturing both output channels (`WriteHTML`/`PrintText` a
 Pulling this into a supported `HeadlessSession` in PlayerCore, and building a CLI on top of it, enables:
 
 - **AI playtesting** — an author asks an agent to play their game and report where it got stuck.
-- **A terminal player** — `quest play mygame.quest`.
+- **A terminal player** — `qv play mygame.quest`.
 - **CI for authors** — run a game's walkthroughs from the command line.
 - **Compatibility oracles and alternative front-ends** (e.g. spatterlight) without another copy of the harness.
 - **AI agent evaluation** — Quest as an environment for benchmarking LLM agents on parser games (see "Downstream: evaluation benchmark" below).
@@ -30,11 +30,11 @@ Pulling this into a supported `HeadlessSession` in PlayerCore, and building a CL
   - menu and question answers
   - auto-advance of waits/pauses, timer draining, HTML-to-text
   - later: structured world-state snapshot, checkpoint/restore
-- **`src/Cli`** — new project, shipped as a `dotnet tool`:
-  - `quest play <game>` — interactive terminal play
-  - `quest serve` — JSON-lines protocol over stdio, for programmatic drivers
-  - `quest mcp` — the same operations exposed as MCP tools
-  - possibly `quest walkthrough <game> [name]` — run built-in walkthroughs, for authors' CI
+- **`src/Cli`** — new project, shipped as the `QuestViva.Cli` dotnet tool, whose command is `qv`:
+  - `qv play <game>` — interactive terminal play
+  - `qv serve` — JSON-lines protocol over stdio, for programmatic drivers
+  - `qv mcp` — the same operations exposed as MCP tools
+  - possibly `qv walkthrough <game> [name]` — run built-in walkthroughs, for authors' CI
 
 ### quest-e2e-tests
 
@@ -46,7 +46,7 @@ Evaluation-specific work that isn't Quest functionality:
 
 - world generator + solver
 - benchmark task sets
-- Python package wrapping `quest serve` for Inspect / Verifiers
+- Python package wrapping `qv serve` for Inspect / Verifiers
 - baseline runs and write-up
 
 ## Scope decisions
@@ -60,7 +60,7 @@ Evaluation-specific work that isn't Quest functionality:
 - **API.** `HeadlessSession.StartAsync(gameData, seed, onOutput)` returns a session whose `Opening` holds the text up to the first prompt. `SendAsync(input)` routes input to a pending menu or question, or sends it as a command. `AnswerMenuAsync`, `AnswerQuestionAsync`, `SendCommandAsync`, `TickAsync` and `SendEventAsync` each return a `HeadlessStep`: output chunks in order (text or script error), the pending menu/question, and the finished flag. `AssertAsync`/`EvaluateAsync` and `Game` (the `IGameDebug`) are the privileged side. Reset is `StartAsync` again.
 - **The `OutputWritten` event / `onOutput` callback** sees every chunk, including errors raised by `AssertAsync`/`EvaluateAsync`, which return no step. quest-e2e-tests builds its transcript from it, which is how the goldens stay byte-identical.
 - **Output fidelity over tidiness.** Chunks keep the engine's own shape: the command echo (`> look`), newline-only chunks from `<br/>`, and script errors arriving both as a logged error and as printed "Error running script" text. `HeadlessStep.Text` joins and normalises them; the CLI can decide how much to clean up for an agent.
-- **An unmatched menu answer cancels the menu** (`SetMenuResponse(null)`), as the e2e harness always did. A playtesting front-end will probably want to reject it instead.
+- **An unmatched menu answer** cancels the menu if it can be cancelled (`SetMenuResponse(null)`), as the e2e harness always did. If it can't, the answer is ignored and the menu stays pending: cancelling it would leave its script waiting forever, and a player can't do that either. (No corpus golden relied on the old behaviour.) v600 `Ask`/`ShowMenu` callback forms are handled by the game's own parser instead, which ignores anything but an option number.
 - **`QuestUI.addText`.** The current Core library writes text via `QuestUI.addText`, not `addText`; the e2e harness only ever saw published games using the older name. The session handles both.
 - **Parallel sessions.** `NcalcExpressionEvaluator`'s static method cache was a plain `Dictionary`, so two games evaluating expressions on different threads at once could corrupt it. Now a `ConcurrentDictionary`. Running sessions in parallel (benchmarks, parallel tests) may turn up more shared static state.
 

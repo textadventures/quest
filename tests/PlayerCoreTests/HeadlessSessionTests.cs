@@ -79,6 +79,31 @@ public class HeadlessSessionTests
     }
 
     [TestMethod]
+    public async Task UnmatchedAnswerCancelsACancellableMenu()
+    {
+        var session = await StartAsync();
+        await session.SendAsync("testmenu");
+        var step = await session.SendAsync("blue");
+        Assert.IsNull(step.PendingMenu);
+        Assert.DoesNotContain("chose r", step.Text);
+        Assert.DoesNotContain("chose g", step.Text);
+    }
+
+    [TestMethod]
+    public async Task UnmatchedAnswerLeavesAnUncancellableMenuPending()
+    {
+        var session = await StartAsync();
+        await session.SendAsync("testmenunocancel");
+        var step = await session.SendAsync("blue");
+        Assert.IsNotNull(step.PendingMenu);
+        Assert.IsEmpty(step.Output);
+
+        step = await session.SendAsync("1");
+        Assert.IsNull(step.PendingMenu);
+        StringAssert.Contains(step.Text, "chose r");
+    }
+
+    [TestMethod]
     public async Task QuestionAnswer()
     {
         var session = await StartAsync();
