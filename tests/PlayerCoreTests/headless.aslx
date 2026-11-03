@@ -2,6 +2,13 @@
   <include ref="English.aslx" />
   <include ref="Core.aslx" />
   <game name="headless">
+    <score type="int">0</score>
+    <statusattributes type="stringdictionary">
+      <item>
+        <key>score</key>
+        <value>Score: !</value>
+      </item>
+    </statusattributes>
     <start type="script">
       msg ("Welcome.")
     </start>
@@ -19,6 +26,12 @@
     </exit>
   </object>
   <object name="hall" />
+  <command name="cmd_score">
+    <pattern>testscore</pattern>
+    <script>
+      game.score = game.score + 5
+    </script>
+  </command>
   <command name="cmd_nopanes">
     <pattern>testnopanes</pattern>
     <script>

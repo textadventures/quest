@@ -120,6 +120,7 @@ public class ServeProtocolTests
         var (protocol, start) = await StartAsync();
         Assert.AreEqual("south", start["exits"]![0]!.GetValue<string>());
         Assert.IsTrue(start["compassVisible"]!.GetValue<bool>());
+        Assert.AreEqual("Score: 0", start["status"]![0]!.GetValue<string>());
 
         var response = await protocol.HandleAsync("""{"op":"send","input":"take lamp"}""");
         Assert.AreEqual("lamp", response["inventory"]![0]!.GetValue<string>());

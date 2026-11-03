@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Text.RegularExpressions;
 using QuestViva.Common;
 
 namespace QuestViva.PlayerCore;
@@ -11,6 +13,10 @@ internal sealed class HeadlessPlayer(Action<string> emit) : IPlayer
     public bool PendingQuestionInline;
     public bool IsWaiting;
     public bool IsPausing;
+
+    // The status pane's lines: score, health and the like. Games set it three ways, depending on
+    // the Quest version and Core library they were published with.
+    public IReadOnlyList<string> Status = [];
 
     public void ShowMenu(MenuData menuData) => PendingMenu = menuData;
     public void ShowQuestion(string caption, bool inline)
@@ -32,6 +38,19 @@ internal sealed class HeadlessPlayer(Action<string> emit) : IPlayer
         if (function is "addText" or "QuestUI.addText" && parameters is { Length: > 0 })
         {
             emit(parameters[0]?.ToString() ?? "");
+        }
+        else if (function == "updateStatus" && parameters is { Length: > 0 })
+        {
+            // Core libraries before setStatusAttributes
+            SetStatusText(parameters[0]?.ToString() ?? "");
+        }
+        else if (function == "QuestUI.setStatusAttributes" && parameters is [IEnumerable items, ..])
+        {
+            // A list of dictionaries; "text" is what the pane shows for each.
+            Status = items.OfType<IDictionary>()
+                .Select(item => HeadlessSession.HtmlToText(item["text"]?.ToString() ?? "").Trim())
+                .Where(line => line.Length > 0)
+                .ToList();
         }
 
         return Task.CompletedTask;
@@ -61,7 +80,13 @@ internal sealed class HeadlessPlayer(Action<string> emit) : IPlayer
     public void ClearScreen() { }
     public Task ShowPictureAsync(string filename) => Task.CompletedTask;
     public void SetPanesVisible(string data) { }
-    public void SetStatusText(string text) { }
+    // Quest 4, and request (SetStatus, ...) in older Core libraries: lines separated by newlines
+    // or <br>.
+    public void SetStatusText(string text) =>
+        Status = Regex.Split(text, @"\r?\n|<br\s*/?>")
+            .Select(line => HeadlessSession.HtmlToText(line).Trim())
+            .Where(line => line.Length > 0)
+            .ToList();
     public void SetBackground(string colour) { }
     public void SetForeground(string colour) { }
     public void SetLinkForeground(string colour) { }
