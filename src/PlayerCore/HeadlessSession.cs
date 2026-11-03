@@ -22,6 +22,10 @@ public sealed class HeadlessStep
     public required IReadOnlyList<HeadlessOutput> Output { get; init; }
     public MenuData? PendingMenu { get; init; }
     public string? PendingQuestion { get; init; }
+
+    // True when the game has already drawn the question in its text (v600+), as MenuData.Inline is
+    // for a menu.
+    public bool PendingQuestionInline { get; init; }
     public bool Finished { get; init; }
 
     public IEnumerable<string> Errors =>
@@ -69,6 +73,7 @@ public sealed class HeadlessSession
 
     public MenuData? PendingMenu => _player.PendingMenu;
     public string? PendingQuestion => _player.PendingQuestion;
+    public bool PendingQuestionInline => _player.PendingQuestionInline;
     public GameState State => _world.State;
     public bool Finished => State == GameState.Finished;
 
@@ -101,7 +106,8 @@ public sealed class HeadlessSession
 
     // Input as a player would type it: the answer to a pending menu or question, or else a command.
     // A menu answer may be an option's key, its text, or its 1-based number; a question answer is
-    // yes if it is "yes", "y", "true" or "1". An answer that matches no menu option cancels the menu.
+    // yes if it is "yes", "y", "true" or "1". An answer that matches no menu option cancels the menu
+    // if it can be cancelled, and otherwise does nothing, leaving the menu pending.
     public Task<HeadlessStep> SendAsync(string input)
     {
         if (PendingMenu != null)
@@ -124,6 +130,13 @@ public sealed class HeadlessSession
     {
         var menu = PendingMenu ?? throw new InvalidOperationException("No menu is pending.");
         var key = ResolveMenuKey(menu, choice);
+        if (key == null && !menu.AllowCancel)
+        {
+            // Cancelling a menu that can't be cancelled leaves its script waiting forever. A player
+            // can't do it either: the engine ignores anything but an option while such a menu is up.
+            return Task.FromResult(CurrentStep([]));
+        }
+
         _player.PendingMenu = null;
         return RunStepAsync(() => _world.SetMenuResponse(key));
     }
@@ -171,14 +184,18 @@ public sealed class HeadlessSession
         // land in Opening.
         var output = _output;
         _output = [];
-        return new HeadlessStep
+        return CurrentStep(output);
+    }
+
+    private HeadlessStep CurrentStep(IReadOnlyList<HeadlessOutput> output) =>
+        new()
         {
             Output = output,
             PendingMenu = PendingMenu,
             PendingQuestion = PendingQuestion,
+            PendingQuestionInline = PendingQuestionInline,
             Finished = Finished
         };
-    }
 
     private async Task AutoAdvanceAsync()
     {

@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <OutputType>Exe</OutputType>
+        <RootNamespace>QuestViva.Cli</RootNamespace>
+        <AssemblyName>qv</AssemblyName>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>default</LangVersion>
+        <PackAsTool>true</PackAsTool>
+        <ToolCommandName>qv</ToolCommandName>
+        <PackageId>QuestViva.Cli</PackageId>
+        <Description>Command-line tools for Quest Viva: play text adventure games in the terminal.</Description>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="System.CommandLine" Version="2.0.14" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\PlayerCore\PlayerCore.csproj" />
+    </ItemGroup>
+</Project>
