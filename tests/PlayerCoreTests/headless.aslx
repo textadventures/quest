@@ -11,7 +11,26 @@
     <object name="player">
       <inherit name="defaultplayer" />
     </object>
+    <object name="lamp">
+      <take />
+    </object>
+    <exit alias="south" to="hall">
+      <inherit name="southdirection" />
+    </exit>
   </object>
+  <object name="hall" />
+  <command name="cmd_nopanes">
+    <pattern>testnopanes</pattern>
+    <script>
+      game.showpanes = false
+    </script>
+  </command>
+  <command name="cmd_nocompass">
+    <pattern>testnocompass</pattern>
+    <script>
+      game.turnoffcompass = true
+    </script>
+  </command>
   <command name="cmd_wait">
     <pattern>testwait</pattern>
     <script>

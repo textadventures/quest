@@ -1,6 +1,6 @@
 # Headless Session, CLI and Agent Interface
 
-Status: phase 1 done — `HeadlessSession` is in PlayerCore and quest-e2e-tests runs on it. Phase 2 in progress: `qv play` and `qv serve` (protocol in [qv-serve.md](qv-serve.md)) done; `mcp` next. The tool isn't published yet (`nuget-publish` doesn't pack `src/Cli`) — see Distribution below.
+Status: phase 1 done — `HeadlessSession` is in PlayerCore and quest-e2e-tests runs on it. Phase 2 built: `qv play`, `qv serve` ([qv-serve.md](qv-serve.md)) and `qv mcp` ([qv-mcp.md](qv-mcp.md)); dogfooding an agent against `examples/` and a corpus game still to do. The tool isn't published yet (`nuget-publish` doesn't pack `src/Cli`) — see Distribution below.
 
 ## Motivation
 
@@ -67,7 +67,7 @@ Evaluation-specific work that isn't Quest functionality:
 ## Design questions
 
 1. **Agent-visible vs privileged operations.** An agent should get: send command, answer menu, answer question. State dumps, `assert`, `evaluate`, set attribute, and checkpoint/restore are privileged — otherwise an agent can read the solution out of the world model. In `serve` these are protocol commands the harness doesn't forward to the agent. In `mcp` they are hidden unless enabled with a flag (e.g. `--debug-tools`), so a playtesting agent gets a fair game by default.
-2. **Observation content.** Plain text by default. The engine also knows exits, visible objects and inventory (via `UpdateList`) — useful, but exactly the kind of privileged information that inflates agent scores. Make it an opt-in "assisted" mode, reported alongside any results.
+2. **Observation content.** Settled as "what a browser player would see": `HeadlessSession` tracks the exits, visible objects and inventory the engine sends via `UpdateList`, and whether the game shows its compass and panes (`game.showpanes`, `game.turnoffcompass`). `qv serve` always returns them and leaves forwarding to the harness. `qv mcp` adds the exits to each response when the compass is visible — dogfooding found agents guessing directions in games that leave exits out of room text because the compass shows them — and `--text-only` turns that off. A benchmark should report which it used. Listening for `UpdateList` runs extra Core functions each turn; no corpus golden changed. Status attributes (score, health) aren't tracked yet.
 3. **Reset and checkpoint semantics.** Reset = reload from game bytes with a seed. Checkpoints via `SaveAsync`. Open: does a save taken while a menu or `get input` is pending restore correctly? If not, only allow checkpoints at clean turn boundaries. Worth an early spike.
 4. **JS-dependent games.** The e2e harness no-ops `JS.*` calls, and most corpus games make them. Generated worlds won't care, but the CLI should warn when a game appears to depend on JS for more than presentation.
 5. **Distribution.** `dotnet tool` suits .NET users; evaluation users are mostly Python users without a .NET SDK. Consider self-contained single-file binaries attached to each GitHub release, which the Python package can download. Needs a release workflow addition (phase 3).

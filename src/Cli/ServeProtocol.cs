@@ -80,10 +80,15 @@ internal sealed class ServeProtocol
         {
             ["ok"] = true,
             ["text"] = text,
-            ["errors"] = new JsonArray(step.Errors.Select(e => (JsonNode?) e).ToArray()),
+            ["errors"] = Strings(step.Errors),
             ["menu"] = null,
             ["question"] = null,
-            ["finished"] = step.Finished
+            ["finished"] = step.Finished,
+            ["exits"] = Strings(step.Exits),
+            ["objects"] = Strings(step.Objects),
+            ["inventory"] = Strings(step.Inventory),
+            ["panesVisible"] = step.PanesVisible,
+            ["compassVisible"] = step.CompassVisible
         };
 
         if (step.PendingMenu is { } menu)
@@ -110,6 +115,8 @@ internal sealed class ServeProtocol
 
         return response;
     }
+
+    private static JsonArray Strings(IEnumerable<string> values) => [.. values.Select(v => (JsonNode?) v)];
 
     private static JsonNode? ToJson(object? value) => value switch
     {

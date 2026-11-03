@@ -161,4 +161,33 @@ public class HeadlessSessionTests
     {
         await Assert.ThrowsAsync<NotSupportedException>(() => StartAsync("test1.asl"));
     }
+
+    [TestMethod]
+    public async Task ReportsWhatThePanesShow()
+    {
+        var session = await StartAsync();
+        CollectionAssert.AreEqual(new[] { "south" }, session.Opening.Exits.ToList());
+        CollectionAssert.Contains(session.Opening.Objects.ToList(), "lamp");
+        CollectionAssert.DoesNotContain(session.Opening.Objects.ToList(), "south");
+        Assert.IsEmpty(session.Opening.Inventory);
+        Assert.IsTrue(session.Opening.PanesVisible);
+        Assert.IsTrue(session.Opening.CompassVisible);
+
+        var step = await session.SendAsync("take lamp");
+        CollectionAssert.AreEqual(new[] { "lamp" }, step.Inventory.ToList());
+        CollectionAssert.DoesNotContain(step.Objects.ToList(), "lamp");
+    }
+
+    [TestMethod]
+    public async Task ReportsWhenTheGameHidesPanesOrCompass()
+    {
+        var session = await StartAsync();
+        var step = await session.SendAsync("testnocompass");
+        Assert.IsTrue(step.PanesVisible);
+        Assert.IsFalse(step.CompassVisible);
+
+        step = await session.SendAsync("testnopanes");
+        Assert.IsFalse(step.PanesVisible);
+        Assert.IsFalse(step.CompassVisible);
+    }
 }
