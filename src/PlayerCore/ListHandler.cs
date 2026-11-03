@@ -41,6 +41,12 @@ public class ListHandler(Action<string, object?[]?> addJavaScriptToBuffer)
         SendUpdatedList(listType);
     }
 
+    /// <summary>
+    /// Forgets what each list last sent, so the next update sends it in full: for a UI swapped in
+    /// afresh while the game carries on.
+    /// </summary>
+    public void Reset() => _lists.Clear();
+
     private void SendUpdatedList(ListType listType)
     {
         if (listType == ListType.ExitsList)

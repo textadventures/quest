@@ -854,6 +854,35 @@ public sealed class EditorController : IDisposable
         return _editorDefinitions[editorName];
     }
 
+    /// <summary>
+    /// The game's current value of each attribute on its editor's &lt;liveinterface/&gt; tabs (the
+    /// Display and Interface tabs), including inherited ones, for the editor's Preview to copy onto
+    /// the running game before re-running InitInterface. Only strings, booleans and numbers: the
+    /// tabs' other controls (scripts, lists) aren't what InitInterface reads. A null value means the
+    /// game doesn't set the attribute.
+    /// </summary>
+    public IDictionary<string, object?> GetLiveInterfaceAttributes()
+    {
+        var result = new SortedDictionary<string, object?>(StringComparer.Ordinal);
+        var editorName = GetElementEditorName("game");
+        if (editorName == null) return result;
+        var attributes = GetEditorDefinition(editorName).Tabs.Values
+            .Where(tab => tab.IsLiveInterface)
+            .SelectMany(tab => tab.Controls)
+            .Select(control => control.Attribute)
+            .OfType<string>();
+        foreach (var attribute in attributes)
+        {
+            var value = WorldModel.Game.Fields.Get(attribute);
+            if (value is null or string or bool or int or double)
+            {
+                result[attribute] = value;
+            }
+        }
+
+        return result;
+    }
+
     public IEditorData? GetEditorData(string elementKey)
     {
         if (!WorldModel.Elements.ContainsKey(elementKey))

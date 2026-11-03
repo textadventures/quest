@@ -34,6 +34,7 @@ export interface WasmBridge {
   GetAslVersion(): number
   SaveWillUpgrade(): boolean
   GetOwnJavascriptFiles(): string
+  GetLiveInterfaceAttributes(): string
   GetLegacyUiHacks(javascriptFilesJson: string): string
   IsBuiltInLibrary(filename: string): boolean
   GetLibraryXml(filename: string): string | null

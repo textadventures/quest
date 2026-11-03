@@ -168,6 +168,8 @@
 
     <tab>
       <caption>[EditorGameDisplay]</caption>
+      <!-- Changes show in a running Preview straight away (InitInterface reads these) -->
+      <liveinterface/>
       <helpurl>/customise/look-and-feel/#the-display-tab</helpurl>
 
       <control>
@@ -436,6 +438,8 @@
 
     <tab>
       <caption>[EditorGameInterface]</caption>
+      <!-- Changes show in a running Preview straight away (InitInterface reads these) -->
+      <liveinterface/>
       <helpurl>/customise/look-and-feel/#the-interface-tab</helpurl>
 
       <control>

@@ -280,6 +280,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-preview-custom-library.mjs http://localhost:5174
         working-directory: tests/e2e
+      - run: node verify-appshell-live-preview.mjs http://localhost:5174
+        working-directory: tests/e2e
       - run: node verify-appshell-folder-move-and-add-here.mjs http://localhost:5174
         working-directory: tests/e2e
       - run: node verify-appshell-firsttime-otherwise.mjs http://localhost:5174

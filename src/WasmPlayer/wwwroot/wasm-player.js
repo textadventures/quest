@@ -568,7 +568,17 @@ window.WebPlayer = {
 
     async uiChoice(choice) { await playerTurn(() => Bridge.SetMenuResponse(choice)); recordStep(`menu:${choice}`); },
     async uiChoiceCancel() { await playerTurn(() => Bridge.SetMenuResponse(null)); },
-    async uiTick(tickCount) { await Bridge.Tick(tickCount); },
+    async uiTick(tickCount) {
+        // A timer firing mid-change would run its script against a half-built UI.
+        await interfaceChangesApplied;
+        turnsInFlight++;
+        try {
+            await Bridge.Tick(tickCount);
+        } finally {
+            turnsInFlight--;
+            scheduleInterfaceChanges();
+        }
+    },
     async uiEndWait() { await playerTurn(() => Bridge.FinishWait()); },
     async uiEndPause() { await playerTurn(() => Bridge.FinishPause()); },
     async uiSetQuestionResponse(response) { await playerTurn(() => Bridge.SetQuestionResponse(response)); recordStep(`answer:${response ? 'yes' : 'no'}`); },
@@ -591,12 +601,23 @@ window.WebPlayer = {
 // events (legacy/questui.js).
 async function playerTurn(run) {
     window.notifyQuestUITurn?.(true);
+    turnsInFlight++;
     try {
+        // A live interface change being applied finishes first (applyInterfaceChanges).
+        await interfaceChangesApplied;
         return await run();
     } finally {
+        turnsInFlight--;
         window.notifyQuestUITurn?.(false);
+        scheduleInterfaceChanges();
     }
 }
+
+// Engine round trips the player has started that haven't returned yet (playerTurn), and whether
+// the engine says a turn is held mid-script (a wait, menu, question or pause): a live interface
+// change waits for both to be over.
+let turnsInFlight = 0;
+let turnPending = false;
 
 // Exported bridge reference — set once WASM is loaded.
 var Bridge;
@@ -953,7 +974,11 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
         showMenu: (caption, optionsJson, allowCancel) => playerUi.showMenu(caption, JSON.parse(optionsJson), allowCancel),
         showQuestion: (caption) => playerUi.showQuestion(caption),
         beginWait: () => playerUi.beginWait(),
-        setTurnPending: (pending) => playerUi.setTurnPending(pending),
+        setTurnPending: (pending) => {
+            turnPending = pending;
+            playerUi.setTurnPending(pending);
+            if (!pending) scheduleInterfaceChanges();
+        },
         beginPause: (ms) => playerUi.beginPause(ms),
         updateLocation: (loc) => playerUi.updateLocation(loc),
         setGameName: (name) => {
@@ -1021,6 +1046,8 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
             if (data.type === 'resource-response') {
                 pendingResources.get(data.id)?.(data.dataUrl);
                 pendingResources.delete(data.id);
+            } else if (data.type === 'interface' && isPreview) {
+                queueInterfaceChanges(data.attributes);
             }
         };
     }
@@ -1102,6 +1129,66 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
     }
 
     return true;
+}
+
+// ── Live interface changes from the editor ─────────────────────────────────
+//
+// The editor's Preview gets the game's Display and Interface tab attributes as the author changes
+// them (editor-store.ts's syncPreviewInterface), and shows them without restarting: the
+// attributes are copied onto the running game, and then, unless only the stylesheet changed, a
+// fresh copy of the UI is swapped in and set up as a restore would (InitInterface, the lists and
+// the output so far), so options that are turned off go away too. Changes arriving while a turn
+// is running or held wait until it's over, since the fresh UI would have none of its prompt.
+let pendingInterfaceChanges = null;
+let applyingInterfaceChanges = false;
+let interfaceChangesApplied = Promise.resolve();
+
+function queueInterfaceChanges(attributes) {
+    if (!attributes || typeof attributes !== 'object') return;
+    pendingInterfaceChanges = { ...pendingInterfaceChanges, ...attributes };
+    scheduleInterfaceChanges();
+}
+
+function scheduleInterfaceChanges() {
+    if (pendingInterfaceChanges) setTimeout(applyInterfaceChanges, 0);
+}
+
+function applyInterfaceChanges() {
+    if (!pendingInterfaceChanges || !Bridge || applyingInterfaceChanges) return;
+    if (turnsInFlight > 0 || turnPending || restartInProgress) return;
+    const attributes = pendingInterfaceChanges;
+    pendingInterfaceChanges = null;
+    applyingInterfaceChanges = true;
+    interfaceChangesApplied = applyInterfaceChangesCore(attributes);
+}
+
+async function applyInterfaceChangesCore(attributes) {
+    try {
+        Bridge.SetGameAttributes(JSON.stringify(attributes));
+        if (Object.keys(attributes).every(name => name === 'stylesheet')) return;
+
+        const html = playerUi.getOutputHtml();
+        restartingPlayerUi = true;
+        try {
+            await Bridge.RebuildPlayerUi();
+        } finally {
+            restartingPlayerUi = false;
+        }
+        applyGameLanguage();
+        await WebPlayer.initUI();
+        playerUi.setGameName(currentGameName);
+        wireDebuggerButton();
+        wireDebuggerRestartButton(currentIsPreview);
+        WebPlayer.setCanSave(!currentIsPreview);
+        WebPlayer.setCanDebug((currentIsPreview || currentAllowDebug) && Bridge.IsDebugEnabled());
+        await Bridge.ReapplyInterface(html);
+    } catch (e) {
+        console.error('[Quest] Failed to apply interface changes', e);
+    } finally {
+        applyingInterfaceChanges = false;
+        // Anything that arrived meanwhile.
+        scheduleInterfaceChanges();
+    }
 }
 
 // Guards restartGame against overlapping calls — e.g. impatiently clicking

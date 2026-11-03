@@ -297,6 +297,8 @@
 
     <tab>
       <caption>[EditorGameDisplay]</caption>
+      <!-- Changes show in a running Preview straight away (InitInterface reads these) -->
+      <liveinterface/>
 
       <control>
         <controltype>checkbox</controltype>
