@@ -14,5 +14,8 @@ var play = new Command("play", "Play a game in the terminal") { gameArgument, se
 play.SetAction((parseResult, _) =>
     PlayCommand.RunAsync(parseResult.GetValue(gameArgument)!, parseResult.GetValue(seedOption)));
 
-var root = new RootCommand("Quest Viva command-line tools") { play };
+var serve = new Command("serve", "Play a game over a JSON-lines protocol on stdin/stdout, for programs to drive");
+serve.SetAction((_, _) => ServeCommand.RunAsync());
+
+var root = new RootCommand("Quest Viva command-line tools") { play, serve };
 return await root.Parse(args).InvokeAsync();

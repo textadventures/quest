@@ -86,21 +86,11 @@ internal static class PlayCommand
 
     private static void Write(HeadlessStep step, string? input)
     {
-        var text = step.Output.Where(o => o.Kind == HeadlessOutputKind.Text).Select(o => o.Text).ToList();
-
-        // The game echoes the command, which the terminal already shows.
-        var first = text.FindIndex(t => t.Trim().Length > 0);
-        if (input != null && first >= 0 && text[first].Trim() == "> " + input.Trim())
-        {
-            text.RemoveRange(0, first + 1);
-        }
-
-        var joined = string.Concat(text.Select(t => t.EndsWith('\n') ? t : t + "\n"));
-        Console.Write(HeadlessSession.Normalise(joined));
+        var text = StepText.Format(step, input);
+        Console.Write(text);
         Console.WriteLine();
 
-        // Errors in a game's scripts are already printed in its text; anything else goes to stderr.
-        foreach (var error in step.Errors.Where(e => !joined.Contains("Error running script: " + e)))
+        foreach (var error in StepText.UnprintedErrors(step, text))
         {
             Console.Error.WriteLine($"[error] {error}");
         }
