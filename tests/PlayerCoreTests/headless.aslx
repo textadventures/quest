@@ -1,0 +1,86 @@
+<asl version="600">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="headless">
+    <start type="script">
+      msg ("Welcome.")
+    </start>
+  </game>
+  <object name="room">
+    <description>A plain room.</description>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+  <command name="cmd_wait">
+    <pattern>testwait</pattern>
+    <script>
+      msg ("before wait")
+      wait {
+        msg ("after wait")
+      }
+    </script>
+  </command>
+  <command name="cmd_menu">
+    <pattern>testmenu</pattern>
+    <script>
+      options = NewStringDictionary()
+      dictionary add (options, "r", "Red")
+      dictionary add (options, "g", "Green")
+      show menu ("Pick one", options, true) {
+        msg ("chose " + result)
+      }
+    </script>
+  </command>
+  <command name="cmd_ask">
+    <pattern>testask</pattern>
+    <script>
+      ask ("Sure?") {
+        msg ("answer " + result)
+      }
+    </script>
+  </command>
+  <command name="cmd_timeout">
+    <pattern>testtimeout</pattern>
+    <script>
+      msg ("set")
+      SetTimeout (3) {
+        msg ("timeout fired")
+      }
+    </script>
+  </command>
+  <command name="cmd_sound">
+    <pattern>testsound</pattern>
+    <script>
+      play sound ("bang.mp3", true, false)
+      msg ("after sound")
+    </script>
+  </command>
+  <command name="cmd_clock">
+    <pattern>testclock</pattern>
+    <script>
+      EnableTimer (clock)
+    </script>
+  </command>
+  <command name="cmd_error">
+    <pattern>testerror</pattern>
+    <script>
+      msg ("before error")
+      x = nosuchthing.attr
+    </script>
+  </command>
+  <command name="cmd_end">
+    <pattern>testend</pattern>
+    <script>
+      msg ("The end.")
+      finish
+    </script>
+  </command>
+  <timer name="clock">
+    <interval>10</interval>
+    <script>
+      msg ("tock")
+      DisableTimer (clock)
+    </script>
+  </timer>
+</asl>
