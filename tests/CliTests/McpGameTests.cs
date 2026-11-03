@@ -26,7 +26,7 @@ public class McpGameTests
     {
         var game = Game();
         await game.StartAsync();
-        Assert.AreEqual("before wait\nafter wait\n[Exits: south]\n", await game.SendAsync("testwait"));
+        Assert.AreEqual("before wait\nafter wait\n[Exits: south]\n[Status: Score: 0]\n", await game.SendAsync("testwait"));
     }
 
     [TestMethod]
@@ -117,9 +117,20 @@ public class McpGameTests
     }
 
     [TestMethod]
-    public async Task TextOnlyLeavesOutExits()
+    public async Task TextOnlyLeavesOutExitsAndStatus()
     {
         var game = new McpGame(new FileInfo("headless.aslx"), 1234, textOnly: true);
-        Assert.DoesNotContain("[Exits:", await game.StartAsync());
+        var opening = await game.StartAsync();
+        Assert.DoesNotContain("[Exits:", opening);
+        Assert.DoesNotContain("[Status:", opening);
+    }
+
+    [TestMethod]
+    public async Task StatusIsShownWhenThePanesAreVisible()
+    {
+        var game = Game();
+        StringAssert.Contains(await game.StartAsync(), "[Status: Score: 0]");
+        StringAssert.Contains(await game.SendAsync("testscore"), "[Status: Score: 5]");
+        Assert.DoesNotContain("[Status:", await game.SendAsync("testnopanes"));
     }
 }

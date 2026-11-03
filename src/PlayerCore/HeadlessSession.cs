@@ -35,6 +35,9 @@ public sealed class HeadlessStep
     public IReadOnlyList<string> Exits { get; init; } = [];
     public IReadOnlyList<string> Objects { get; init; } = [];
     public IReadOnlyList<string> Inventory { get; init; } = [];
+
+    // The status pane's lines, such as "Score: 5", if the game has any.
+    public IReadOnlyList<string> Status { get; init; } = [];
     public bool PanesVisible { get; init; }
     public bool CompassVisible { get; init; }
 
@@ -241,6 +244,7 @@ public sealed class HeadlessSession
             Exits = DisplayNames(_exits),
             Objects = DisplayNames(_objects.Where(o => !exitKeys.Contains(ListKey(o)))),
             Inventory = DisplayNames(_inventory),
+            Status = _player.Status,
             PanesVisible = panesVisible,
             CompassVisible = panesVisible && _world?.Game.Fields.GetAsType<bool>("turnoffcompass") != true
         };

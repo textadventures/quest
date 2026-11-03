@@ -22,7 +22,12 @@ Each game gets its seed when it's loaded: the `--seed` one, or else a random one
 
 Responses are the game's plain text, without the echo of the command. Anything the text doesn't already show is added in the same form a terminal player would see: a menu or question older games expect to show in a dialog, script errors that weren't printed, `[Choose an option by its number.]` when a menu answer was ignored, and `[The game has ended. Call start_game to play again.]`.
 
-When the game shows its compass, each response also ends with the exits a browser player would see lit, such as `[Exits: north, south, up]`. Many games leave exits out of their room descriptions because the compass shows them, so without this an agent has to guess directions. `--text-only` leaves the line out, for a game played purely from its text.
+Each response also ends with what a browser player sees beside the text:
+
+- When the game shows its compass, the exits that would be lit, such as `[Exits: north, south, up]`. Many games leave exits out of their room descriptions because the compass shows them, so without this an agent has to guess directions.
+- When the game shows its side panes and has a status pane, its lines, such as `[Status: Score: 2 | Health: 100%]`.
+
+`--text-only` leaves both out, for a game played purely from its text.
 
 ### Debug tools
 

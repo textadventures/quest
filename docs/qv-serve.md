@@ -26,7 +26,7 @@ The same seed and the same requests always give the same responses.
 `start`, `send`, `tick` and `event` return what that step produced and what the game is waiting for now:
 
 ```json
-{"id":3,"ok":true,"text":"What is your favourite colour?\n1: Red\n2: Green\n","errors":[],"menu":{"caption":"What is your favourite colour?","options":[{"key":"Red","text":"Red"},{"key":"Green","text":"Green"}],"allowCancel":false,"inline":true},"question":null,"finished":false,"exits":[],"objects":[],"inventory":[],"panesVisible":true,"compassVisible":true}
+{"id":3,"ok":true,"text":"What is your favourite colour?\n1: Red\n2: Green\n","errors":[],"menu":{"caption":"What is your favourite colour?","options":[{"key":"Red","text":"Red"},{"key":"Green","text":"Green"}],"allowCancel":false,"inline":true},"question":null,"finished":false,"exits":[],"objects":[],"inventory":[],"status":[],"panesVisible":true,"compassVisible":true}
 ```
 
 - `text` — the step's output as plain text: trailing whitespace trimmed, runs of blank lines collapsed, and the game's echo of the command left out. `""` if there was none.
@@ -34,7 +34,7 @@ The same seed and the same requests always give the same responses.
 - `menu` — the menu waiting for an answer, or `null`. `inline` is true when the game has already drawn the options in `text` (v600+ games); otherwise a front-end should show them itself. An answer that matches no option cancels the menu if `allowCancel`, and is otherwise ignored, leaving the menu pending.
 - `question` — `{"caption": ..., "inline": ...}` for a pending yes/no question, or `null`.
 - `finished` — the game has ended. Further steps are rejected.
-- `exits`, `objects`, `inventory` — what a browser player sees in the compass and side panes, as display names: the exits from the current room (compass directions and named places), the objects visible there, and what the player is carrying. `panesVisible` and `compassVisible` say whether the game shows them at all. They're always included; like `evaluate`, it's up to a harness whether to pass them on to an agent.
+- `exits`, `objects`, `inventory`, `status` — what a browser player sees in the compass and side panes, as display names: the exits from the current room (compass directions and named places), the objects visible there, and what the player is carrying. `status` is the status pane's lines, such as `"Score: 2"`, as the game formats them. `panesVisible` and `compassVisible` say whether the game shows them at all. They're always included; like `evaluate`, it's up to a harness whether to pass them on to an agent.
 
 Waits and pauses are advanced automatically and `SetTimeout` timers are run before a step returns, so a response always reflects a game waiting for the player.
 
@@ -47,7 +47,7 @@ Anything that fails returns `{"ok":false,"error":"..."}`: malformed JSON, an unk
 ```
 $ qv serve
 {"id":1,"op":"start","game":"examples/simple.aslx","seed":1}
-{"id":1,"ok":true,"text":"Simple\n\nYou are in a room.\nYou can see a thing.\n","errors":[],"menu":null,"question":null,"finished":false,"exits":[],"objects":["thing"],"inventory":[],"panesVisible":true,"compassVisible":true}
+{"id":1,"ok":true,"text":"Simple\n\nYou are in a room.\nYou can see a thing.\n","errors":[],"menu":null,"question":null,"finished":false,"exits":[],"objects":["thing"],"inventory":[],"status":[],"panesVisible":true,"compassVisible":true}
 {"id":2,"op":"send","input":"take thing"}
-{"id":2,"ok":true,"text":"You can't take it.\n","errors":[],"menu":null,"question":null,"finished":false,"exits":[],"objects":["thing"],"inventory":[],"panesVisible":true,"compassVisible":true}
+{"id":2,"ok":true,"text":"You can't take it.\n","errors":[],"menu":null,"question":null,"finished":false,"exits":[],"objects":["thing"],"inventory":[],"status":[],"panesVisible":true,"compassVisible":true}
 ```

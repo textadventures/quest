@@ -240,4 +240,14 @@ public class HeadlessSessionTests
         Assert.IsFalse(step.PanesVisible);
         Assert.IsFalse(step.CompassVisible);
     }
+
+    [TestMethod]
+    public async Task ReportsTheStatusPane()
+    {
+        var session = await StartAsync();
+        CollectionAssert.AreEqual(new[] { "Score: 0" }, session.Opening.Status.ToList());
+
+        var step = await session.SendAsync("testscore");
+        CollectionAssert.AreEqual(new[] { "Score: 5" }, step.Status.ToList());
+    }
 }

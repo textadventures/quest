@@ -86,6 +86,7 @@ internal sealed class ServeProtocol
             ["exits"] = Strings(step.Exits),
             ["objects"] = Strings(step.Objects),
             ["inventory"] = Strings(step.Inventory),
+            ["status"] = Strings(step.Status),
             ["panesVisible"] = step.PanesVisible,
             ["compassVisible"] = step.CompassVisible
         };
