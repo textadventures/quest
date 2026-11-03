@@ -163,7 +163,9 @@ Svelte 5, for consistency with AppShell, was considered and rejected (decision 2
 
 An earlier version of this plan also ran the stock-only part of the corpus under `?ui=v2`. That was dropped on 2026-11-02: older games stay on legacy (decision 5), so they don't need to pass on v2, and they can't, because the old Core inlined in a published game calls legacy functions that v2 doesn't define.
 
-Once Phase 5 is done, legacy is frozen: bug fixes and security fixes only, no new features.
+Phase 5 was done on 2026-11-03 (#2676). The behavioural scripts pass on v2, with the differences recorded in the contract doc. The upgrade check found no v2 bugs: every difference from an old game's golden transcript came from resaving it on current Core, and showed up the same on legacy (results on #2676). It did find a hang in #2678's engine change, fixed in #2684.
+
+Legacy has been frozen since then: bug fixes and security fixes only, no new features. It still follows contract additions through its `QuestUI` adapter (see the contract doc).
 
 ## Testing
 
