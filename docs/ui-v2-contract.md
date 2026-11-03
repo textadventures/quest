@@ -32,7 +32,7 @@ A 610 `.quest` package inlines whatever Core it was published with. If any 6.1 r
 
 610 games play on v2 (since 2026-10-29), and any game with `classicinterface` plays on legacy. Once 610 Core goes through `QuestUI`, legacy has to implement it: a thin adapter over its existing functions (`setPaneVisible("compass", false)` → `$("#compassLabel, #compassAccordion").hide()`, and so on). Phase 1 should include it.
 
-So "legacy is frozen" means its *existing* behaviour is frozen. Legacy still gains the `QuestUI` adapter, and that adapter follows the contract's additions. Where an addition has no sensible legacy equivalent (e.g. a layout preset), the legacy adapter accepts the call and does nothing. That's allowed, because contract calls describe intent, not guaranteed visuals.
+Legacy has been frozen since Phase 5 was done on 2026-11-03 (#2676), and "frozen" means its *existing* behaviour is frozen. Legacy still gains the `QuestUI` adapter, and that adapter follows the contract's additions. Where an addition has no sensible legacy equivalent (e.g. a layout preset), the legacy adapter accepts the call and does nothing. That's allowed, because contract calls describe intent, not guaranteed visuals.
 
 This settles a question the plan leaves open: a future Core version (say 620) can add calls, and a 620 game with `classicinterface` still works on legacy.
 
