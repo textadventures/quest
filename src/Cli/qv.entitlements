@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Entitlements for the notarized macOS qv binary (see .github/workflows/cli-publish.yml).
+     Notarization requires the hardened runtime, under which .NET's JIT can't allocate executable
+     memory without allow-jit: the binary fails at startup with "Failed to create CoreCLR". -->
+<plist version="1.0">
+<dict>
+    <key>com.apple.security.cs.allow-jit</key>
+    <true/>
+</dict>
+</plist>

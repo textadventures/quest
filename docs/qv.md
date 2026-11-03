@@ -25,7 +25,6 @@ Leave out `--prerelease` once a stable 6.1 is out. `dotnet tool update -g QuestV
 | Platform | Asset |
 |---|---|
 | macOS, Apple Silicon | `qv-osx-arm64.tar.gz` |
-| macOS, Intel | `qv-osx-x64.tar.gz` |
 | Linux, x64 | `qv-linux-x64.tar.gz` |
 | Linux, ARM64 | `qv-linux-arm64.tar.gz` |
 | Windows, x64 | `qv-win-x64.zip` |
@@ -38,7 +37,7 @@ curl -L https://github.com/textadventures/quest/releases/download/v6.1.0-beta.2/
 ```
 
 - **Linux** needs ICU, which desktop distributions include but minimal containers often don't (`apt-get install libicu74` on Ubuntu 24.04, `apk add icu-libs` on Alpine).
-- **macOS** binaries are signed ad hoc but not notarized. One downloaded with `curl`, as above, runs as it is; one downloaded with a browser is quarantined, and `xattr -d com.apple.quarantine qv` clears that.
+- **macOS**: the binary is signed with Quest Viva's Developer ID and notarized, so Gatekeeper accepts it even when downloaded with a browser. There's no Intel Mac build, as there's none of the desktop app either; Intel Macs can use the dotnet tool.
 
 ## Building from source
 
