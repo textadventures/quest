@@ -10,12 +10,12 @@ Every request has an `op`. An optional `id` (any JSON value) is copied into the 
 
 | `op` | Fields | Does |
 |---|---|---|
-| `start` | `game`: path to a `.quest` or `.aslx` file; `seed`: integer, optional (default 1234) | Loads the game and returns its opening text |
+| `start` | `game`: path to a game file (`.quest` or `.aslx`, or `.asl` or `.cas` for Quest 4 and earlier); `seed`: integer, optional (default 1234) | Loads the game and returns its opening text |
 | `send` | `input`: string | What a player would type: answers a pending menu (option key, option text or 1-based number) or yes/no question (`yes`, `y`, `true` or `1` is yes), and otherwise runs it as a command |
 | `tick` | `seconds`: integer | Advances the game clock, firing any timers that come due |
 | `event` | `name`: string; `param`: string, optional | Fires an event the game's own JavaScript would send with `ASLEvent` |
-| `evaluate` | `expression`: string | Evaluates an ASL expression against the game |
-| `assert` | `expression`: string | Evaluates an ASL expression as true or false |
+| `evaluate` | `expression`: string | Evaluates an ASL expression against the game. Not available for Quest 4 and earlier |
+| `assert` | `expression`: string | Evaluates an ASL expression as true or false; for Quest 4 and earlier, a condition in that version's syntax such as `got <lamp>` |
 
 `send` is everything a player can do. `tick` and `event` stand in for things a browser would do on its own. `evaluate` and `assert` read the world model directly, so a harness evaluating an agent should not pass them through to it.
 

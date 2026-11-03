@@ -3,7 +3,7 @@ using QuestViva.Cli;
 
 var gameArgument = new Argument<FileInfo>("game")
 {
-    Description = "The game to play: a .quest package or an .aslx file"
+    Description = "The game to play: a .quest or .aslx file, or an .asl or .cas file from Quest 4 or earlier"
 };
 var seedOption = new Option<int?>("--seed")
 {

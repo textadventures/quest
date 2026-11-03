@@ -51,7 +51,7 @@ Evaluation-specific work that isn't Quest functionality:
 
 ## Scope decisions
 
-- **v5+ only.** `HeadlessSession` works with `WorldModel`; Quest 4 games via `V4Game` are out of scope.
+- **Every Quest version.** `HeadlessSession` drives the `IGame` interface both engines implement, so it plays Quest 1–4 games through `V4Game` as well as Quest 5+ ones through `WorldModel`. The differences for Quest 4 and earlier: there's no expression evaluator, so `EvaluateAsync` throws and `AssertAsync` takes a Quest 4 condition (`got <lamp>`); a timer skips the first tick after it's turned on, so `TickAsync` ticks a second at a time, as a browser does; there are no `SetTimeout` timers to drain; and the panes and compass always count as visible.
 - **`WalkthroughRunner` stays as it is.** It drives a game attached to the live UI player with a real timer, which is a different shape from a session that owns its own headless `IPlayer`.
 - **NuGet API stability is not a concern yet.** The only consumer of the PlayerCore package is textadventures.co.uk, so the API can change as it settles.
 

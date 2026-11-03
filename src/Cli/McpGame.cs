@@ -39,7 +39,7 @@ internal sealed class McpGame(FileInfo? game, int? seed, bool textOnly = false)
         else
         {
             var current = _game ?? throw new McpException(
-                "No game is loaded. Pass the path of a .quest or .aslx file to start_game.");
+                "No game is loaded. Pass the path of a game file (.quest, .aslx, .asl or .cas) to start_game.");
             _session = await HeadlessSession.StartAsync(GameFiles.Load(current), _seed);
         }
 
@@ -68,10 +68,6 @@ internal sealed class McpGame(FileInfo? game, int? seed, bool textOnly = false)
         try
         {
             return await action();
-        }
-        catch (NotSupportedException)
-        {
-            throw new McpException("qv only plays Quest 5 and later games.");
         }
         // The SDK reports other exceptions to the client only as "An error occurred", which leaves an
         // agent nothing to go on - "call start_game first", or why an expression didn't evaluate.

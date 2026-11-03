@@ -156,10 +156,60 @@ public class HeadlessSessionTests
         Assert.AreEqual("after wait", seen[^1].Text.Trim());
     }
 
+    // examples/test.asl, a Quest 4 game with one of each kind of prompt.
     [TestMethod]
-    public async Task QuestFourGamesAreNotSupported()
+    public async Task Quest4GamePlays()
     {
-        await Assert.ThrowsAsync<NotSupportedException>(() => StartAsync("test1.asl"));
+        var session = await StartAsync("quest4.asl");
+        StringAssert.Contains(session.Opening.Text, "You are in room.");
+        CollectionAssert.AreEqual(new[] { "east" }, session.Opening.Exits.ToList());
+
+        var step = await session.SendAsync("take red book");
+        StringAssert.Contains(step.Text, "You pick it up.");
+        Assert.HasCount(1, step.Inventory);
+        Assert.IsTrue(await session.AssertAsync("got <book>"));
+
+        step = await session.SendAsync("quit");
+        Assert.IsTrue(step.Finished);
+    }
+
+    [TestMethod]
+    public async Task Quest4PromptsAreHandled()
+    {
+        var session = await StartAsync("quest4.asl");
+        Assert.AreEqual("> test2\nPress a key please...\nDone!\nNow press a key again...\nFinished!\n",
+            (await session.SendAsync("test2")).Text);
+
+        var step = await session.SendAsync("ask");
+        Assert.AreEqual("test question", step.PendingQuestion);
+        step = await session.SendAsync("yes");
+        StringAssert.Contains(step.Text, "You answered YES.");
+        Assert.AreEqual("another question", step.PendingQuestion);
+        await session.SendAsync("no");
+
+        step = await session.SendAsync("menu");
+        Assert.IsNotNull(step.PendingMenu);
+        step = await session.SendAsync("one");
+        StringAssert.Contains(step.Text, "Option 1");
+
+        await session.SendAsync("test");
+        StringAssert.Contains((await session.SendAsync("hello")).Text, "You typed: hello");
+    }
+
+    [TestMethod]
+    public async Task Quest4TimersFireOnTick()
+    {
+        var session = await StartAsync("quest4.asl");
+        await session.SendAsync("tmron");
+        var step = await session.TickAsync(12);
+        Assert.AreEqual("Tick\nTick\n", step.Text);
+    }
+
+    [TestMethod]
+    public async Task Quest4GamesCantEvaluate()
+    {
+        var session = await StartAsync("quest4.asl");
+        await Assert.ThrowsAsync<NotSupportedException>(() => session.EvaluateAsync("1"));
     }
 
     [TestMethod]
