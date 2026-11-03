@@ -1,6 +1,6 @@
 # Headless Session, CLI and Agent Interface
 
-Status: phase 1 done — `HeadlessSession` is in PlayerCore and quest-e2e-tests runs on it. Phase 2 in progress: `qv play` and `qv serve` (protocol in [qv-serve.md](qv-serve.md)) done; `mcp` next. The tool isn't published yet (`nuget-publish` doesn't pack `src/Cli`) — see Distribution below.
+Status: phase 1 done — `HeadlessSession` is in PlayerCore and quest-e2e-tests runs on it. Phase 2 built: `qv play`, `qv serve` ([qv-serve.md](qv-serve.md)) and `qv mcp` ([qv-mcp.md](qv-mcp.md)); dogfooding an agent against `examples/` and a corpus game still to do. The tool isn't published yet (`nuget-publish` doesn't pack `src/Cli`) — see Distribution below.
 
 ## Motivation
 
