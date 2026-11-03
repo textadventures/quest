@@ -26,7 +26,7 @@ public class McpGameTests
     {
         var game = Game();
         await game.StartAsync();
-        Assert.AreEqual("before wait\nafter wait\n", await game.SendAsync("testwait"));
+        Assert.AreEqual("before wait\nafter wait\n[Exits: south]\n", await game.SendAsync("testwait"));
     }
 
     [TestMethod]
@@ -106,5 +106,20 @@ public class McpGameTests
         var first = await game.EvaluateAsync("GetRandomInt(1, 1000000)");
         await game.StartAsync();
         Assert.AreEqual(first, await game.EvaluateAsync("GetRandomInt(1, 1000000)"));
+    }
+
+    [TestMethod]
+    public async Task ExitsAreListedWhenTheCompassIsVisible()
+    {
+        var game = Game();
+        StringAssert.Contains(await game.StartAsync(), "[Exits: south]");
+        Assert.DoesNotContain("[Exits:", await game.SendAsync("testnocompass"));
+    }
+
+    [TestMethod]
+    public async Task TextOnlyLeavesOutExits()
+    {
+        var game = new McpGame(new FileInfo("headless.aslx"), 1234, textOnly: true);
+        Assert.DoesNotContain("[Exits:", await game.StartAsync());
     }
 }

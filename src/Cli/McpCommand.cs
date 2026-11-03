@@ -8,7 +8,7 @@ namespace QuestViva.Cli;
 // `qv mcp`: an MCP server over stdio whose tools play a game, for AI agents.
 internal static class McpCommand
 {
-    public static async Task<int> RunAsync(FileInfo? game, int? seed, bool debugTools)
+    public static async Task<int> RunAsync(FileInfo? game, int? seed, bool textOnly, bool debugTools)
     {
         if (game is { Exists: false })
         {
@@ -22,7 +22,7 @@ internal static class McpCommand
         builder.Logging.AddConsole(o => o.LogToStandardErrorThreshold = LogLevel.Trace);
         builder.Logging.SetMinimumLevel(LogLevel.Warning);
 
-        builder.Services.AddSingleton(new McpGame(game, seed));
+        builder.Services.AddSingleton(new McpGame(game, seed, textOnly));
         var mcp = builder.Services
             .AddMcpServer(o => o.ServerInfo = new() { Name = "qv", Version = VersionInfo.Version })
             .WithStdioServerTransport()

@@ -113,4 +113,17 @@ public class ServeProtocolTests
         Assert.IsFalse(response["ok"]!.GetValue<bool>());
         StringAssert.Contains(response["error"]!.GetValue<string>(), message);
     }
+
+    [TestMethod]
+    public async Task PaneListsAreIncluded()
+    {
+        var (protocol, start) = await StartAsync();
+        Assert.AreEqual("south", start["exits"]![0]!.GetValue<string>());
+        Assert.IsTrue(start["compassVisible"]!.GetValue<bool>());
+
+        var response = await protocol.HandleAsync("""{"op":"send","input":"take lamp"}""");
+        Assert.AreEqual("lamp", response["inventory"]![0]!.GetValue<string>());
+        Assert.IsTrue(response["panesVisible"]!.GetValue<bool>());
+        Assert.IsEmpty(response["objects"]!.AsArray());
+    }
 }

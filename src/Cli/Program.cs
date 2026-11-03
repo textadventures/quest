@@ -22,16 +22,20 @@ var mcpGameArgument = new Argument<FileInfo?>("game")
     Description = "The game to serve. Without one, the agent loads games with start_game",
     Arity = ArgumentArity.ZeroOrOne
 };
+var textOnlyOption = new Option<bool>("--text-only")
+{
+    Description = "Give the agent only the game's text, without the exits a browser player sees in the compass"
+};
 var debugToolsOption = new Option<bool>("--debug-tools")
 {
     Description = "Also offer tools that reach past what a player can do: evaluate, tick and send_event"
 };
 var mcp = new Command("mcp", "Run an MCP server over stdio whose tools play a game, for AI agents")
 {
-    mcpGameArgument, seedOption, debugToolsOption
+    mcpGameArgument, seedOption, textOnlyOption, debugToolsOption
 };
 mcp.SetAction((parseResult, _) => McpCommand.RunAsync(parseResult.GetValue(mcpGameArgument),
-    parseResult.GetValue(seedOption), parseResult.GetValue(debugToolsOption)));
+    parseResult.GetValue(seedOption), parseResult.GetValue(textOnlyOption), parseResult.GetValue(debugToolsOption)));
 
 var root = new RootCommand("Quest Viva command-line tools") { play, serve, mcp };
 return await root.Parse(args).InvokeAsync();

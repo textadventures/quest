@@ -9,7 +9,10 @@ namespace QuestViva.Cli;
 //
 // The game is either fixed when the server starts, or loaded by start_game. Each game gets a seed when
 // it is loaded - the --seed one, or else a random one - and keeps it when restarted.
-internal sealed class McpGame(FileInfo? game, int? seed)
+//
+// Unless textOnly, a step also lists the exits when the game shows its compass, as a browser player
+// would: many games leave them out of their room descriptions for that reason.
+internal sealed class McpGame(FileInfo? game, int? seed, bool textOnly = false)
 {
     private readonly SemaphoreSlim _lock = new(1, 1);
     private FileInfo? _game = game;
@@ -84,7 +87,7 @@ internal sealed class McpGame(FileInfo? game, int? seed)
 
     // A step as an agent reads it: the game's text, then anything it is waiting for that the text
     // doesn't already show.
-    private static string Describe(HeadlessStep step, string? input)
+    private string Describe(HeadlessStep step, string? input)
     {
         var text = StepText.Format(step, input);
         var result = new StringBuilder(text);
@@ -92,6 +95,11 @@ internal sealed class McpGame(FileInfo? game, int? seed)
         foreach (var error in StepText.UnprintedErrors(step, text))
         {
             result.Append("[error] ").Append(error).Append('\n');
+        }
+
+        if (!textOnly && step is { CompassVisible: true, Finished: false, Exits.Count: > 0 })
+        {
+            result.Append("[Exits: ").AppendJoin(", ", step.Exits).Append("]\n");
         }
 
         if (step.PendingMenu is { Inline: false } menu)

@@ -28,6 +28,15 @@ public sealed class HeadlessStep
     public bool PendingQuestionInline { get; init; }
     public bool Finished { get; init; }
 
+    // What a browser player shows in its compass and side panes, as display names: the exits (both
+    // compass directions and named places), the visible objects, and the inventory. CompassVisible and
+    // PanesVisible say whether the game shows them at all.
+    public IReadOnlyList<string> Exits { get; init; } = [];
+    public IReadOnlyList<string> Objects { get; init; } = [];
+    public IReadOnlyList<string> Inventory { get; init; } = [];
+    public bool PanesVisible { get; init; }
+    public bool CompassVisible { get; init; }
+
     public IEnumerable<string> Errors =>
         Output.Where(o => o.Kind == HeadlessOutputKind.Error).Select(o => o.Text);
 
@@ -53,6 +62,9 @@ public sealed class HeadlessSession
     private readonly HeadlessPlayer _player;
     private List<HeadlessOutput> _output = [];
     private int _pendingTick;
+    private List<ListData> _exits = [];
+    private List<ListData> _objects = [];
+    private List<ListData> _inventory = [];
 
     private HeadlessSession(GameData gameData, int seed)
     {
@@ -61,6 +73,7 @@ public sealed class HeadlessSession
         _world.LogError += ex => Write(new HeadlessOutput(HeadlessOutputKind.Error, ex.Message));
         _world.PrintText += WriteHtml; // output path for ASL < v540
         _world.RequestNextTimerTick += seconds => _pendingTick = seconds;
+        _world.UpdateList += OnUpdateList;
         _player = new HeadlessPlayer(WriteHtml);
     }
 
@@ -187,15 +200,47 @@ public sealed class HeadlessSession
         return CurrentStep(output);
     }
 
-    private HeadlessStep CurrentStep(IReadOnlyList<HeadlessOutput> output) =>
-        new()
+    private HeadlessStep CurrentStep(IReadOnlyList<HeadlessOutput> output)
+    {
+        // The objects list includes the exits too; a browser player draws those in the compass.
+        var exitIds = _exits.Select(e => e.ElementId).ToHashSet();
+        var panesVisible = _world.Game.Fields.GetAsType<bool>("showpanes");
+        return new HeadlessStep
         {
             Output = output,
             PendingMenu = PendingMenu,
             PendingQuestion = PendingQuestion,
             PendingQuestionInline = PendingQuestionInline,
-            Finished = Finished
+            Finished = Finished,
+            Exits = DisplayNames(_exits),
+            Objects = DisplayNames(_objects.Where(o => !exitIds.Contains(o.ElementId))),
+            Inventory = DisplayNames(_inventory),
+            PanesVisible = panesVisible,
+            CompassVisible = panesVisible && !_world.Game.Fields.GetAsType<bool>("turnoffcompass")
         };
+    }
+
+    private void OnUpdateList(ListType listType, List<ListData> items)
+    {
+        switch (listType)
+        {
+            case ListType.ExitsList:
+                _exits = items;
+                break;
+            case ListType.ObjectsList:
+                _objects = items;
+                break;
+            case ListType.InventoryList:
+                _inventory = items;
+                break;
+        }
+    }
+
+    // A game's GetListDisplayAlias can return null, despite ListData.Text's type.
+    private static List<string> DisplayNames(IEnumerable<ListData> items) =>
+        items.Select(i => HtmlToText((string?) i.Text ?? i.ElementName ?? ""))
+            .Where(name => name.Length > 0)
+            .ToList();
 
     private async Task AutoAdvanceAsync()
     {
