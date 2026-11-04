@@ -22,6 +22,9 @@
     </ItemGroup>
 
     <ItemGroup>
+        <None Include="..\..\src\WasmPlayer\index.html" Link="player-index.html">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Include="..\PlayerCoreTests\headless.aslx" Link="headless.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>

@@ -1,3 +1,5 @@
+using System.IO.Compression;
+using System.Text;
 using QuestViva.Engine;
 using QuestViva.PlayerCore;
 
@@ -14,8 +16,19 @@ internal sealed record PublishResult(
     IReadOnlyList<string> Warnings,
     GameCheckResult? Problems);
 
-// Publishes an .aslx game as a .quest package, as the Editor's Publish does: the game with its
-// included libraries inlined (Packager), plus the files in its folder.
+// What qv publish makes, as the Editor's Publish dialog offers: a .quest package; one HTML file
+// with the package embedded, which loads the player from jsDelivr; or a zip of that page beside a
+// copy of the player, for any web host.
+internal enum PublishFormat
+{
+    Quest,
+    Html,
+    Zip
+}
+
+// Publishes an .aslx game as the Editor's Publish does: a .quest package of the game with its
+// included libraries inlined (Packager), plus the files in its folder, and for the HTML formats
+// that package embedded in WasmPlayer's page (PlayerExport).
 //
 // Which files: like the Editor, every file at the top of the game's folder except .aslx and .xml
 // files (the game and its libraries, which are inlined) and macOS junk. Unlike the Editor, it
@@ -24,8 +37,21 @@ internal sealed record PublishResult(
 // collect them. The result lists the files, so the author can see what went in.
 internal static class GamePublisher
 {
-    public static async Task<PublishResult> PublishAsync(FileInfo game, FileInfo? output, bool force)
+    // player is the WasmPlayer bundle the HTML formats take the page from, and the zip the player.
+    // The html format pins the CDN's player to cdnVersion, which must be a published version.
+    public static async Task<PublishResult> PublishAsync(FileInfo game, FileInfo? output, bool force,
+        PublishFormat format = PublishFormat.Quest, PlayerBundle? player = null, string? cdnVersion = null)
     {
+        if (format != PublishFormat.Quest && player == null)
+        {
+            throw new ArgumentNullException(nameof(player), "The HTML formats need the player.");
+        }
+
+        if (format == PublishFormat.Html && cdnVersion == null)
+        {
+            throw new ArgumentNullException(nameof(cdnVersion), "The html format needs a version to pin the player to.");
+        }
+
         if (!game.Exists)
         {
             throw new FileNotFoundException($"File not found: {game.FullName}");
@@ -52,7 +78,12 @@ internal static class GamePublisher
         }
 
         var baseName = Path.GetFileNameWithoutExtension(game.Name);
-        var outputFile = output ?? new FileInfo(Path.Combine(game.DirectoryName!, baseName + ".quest"));
+        var outputFile = output ?? new FileInfo(Path.Combine(game.DirectoryName!, baseName + format switch
+        {
+            PublishFormat.Html => ".html",
+            PublishFormat.Zip => "-html.zip",
+            _ => ".quest"
+        }));
         var folder = game.Directory!;
         var files = folder.EnumerateFiles()
             .Where(f => Included(f, baseName, outputFile))
@@ -91,17 +122,16 @@ internal static class GamePublisher
             Filename = f.Name,
             Content = f.OpenRead()
         }).ToList();
+        byte[] package;
         try
         {
-            // Written to a temporary file first, so a failure leaves any earlier package as it was.
-            var temp = outputFile.FullName + ".tmp";
-            if (!world.CreatePackage(temp, out var error, streams, null))
+            using var packageStream = new MemoryStream();
+            if (!world.CreatePackage(null, out var error, streams, packageStream))
             {
-                File.Delete(temp);
                 throw new InvalidOperationException("The package couldn't be created: " + error);
             }
 
-            File.Move(temp, outputFile.FullName, overwrite: true);
+            package = packageStream.ToArray();
         }
         finally
         {
@@ -111,8 +141,98 @@ internal static class GamePublisher
             }
         }
 
+        var bytes = format switch
+        {
+            PublishFormat.Html => Encoding.UTF8.GetBytes(PlayerExport.BuildHtml(Template(player!),
+                ExportedGame(world, package, baseName, null), PlayerExport.CdnBase(cdnVersion!))),
+            PublishFormat.Zip => PlayerZip(world, package, baseName, player!, files),
+            _ => package
+        };
+
+        // Written to a temporary file first, so a failure leaves any earlier output as it was.
+        var temp = outputFile.FullName + ".tmp";
+        await File.WriteAllBytesAsync(temp, bytes);
+        File.Move(temp, outputFile.FullName, overwrite: true);
+
         return new PublishResult(outputFile.FullName, files.Select(f => new PublishedFile(f.Name, f.Length)).ToList(),
             warnings, check.Problems.Count > 0 ? check : null);
+    }
+
+    private static ExportedGame ExportedGame(WorldModel world, byte[] package, string baseName, string? coverUrl) =>
+        new(package, baseName + ".quest",
+            string.IsNullOrWhiteSpace(world.GameName) ? baseName : world.GameName.Trim(),
+            PlayerExport.PlainText(world.Description),
+            world.GameID,
+            coverUrl);
+
+    private static string Template(PlayerBundle player) =>
+        Encoding.UTF8.GetString(player.Read("index.html")
+                                ?? throw new InvalidOperationException("The player has no index.html."));
+
+    // The page and the player files it needs, plus the game's cover art as cover.<ext>, under a
+    // name that can't clash with a player file, for link previews to show. The game's own copy of
+    // the cover stays in the package, which is what the player uses.
+    private static byte[] PlayerZip(WorldModel world, byte[] package, string baseName, PlayerBundle player,
+        List<FileInfo> folderFiles)
+    {
+        var manifest = player.Read("export-manifest.json")
+                       ?? throw new InvalidOperationException("The player has no export-manifest.json.");
+        var boot = player.Read("_framework/dotnet.boot.js")
+                   ?? throw new InvalidOperationException("The player has no _framework/dotnet.boot.js.");
+
+        var cover = world.Cover?.Trim() is { Length: > 0 } coverName
+            ? folderFiles.FirstOrDefault(f => f.Name == coverName)
+            : null;
+        var coverPath = cover == null ? null : "cover" + cover.Extension.ToLowerInvariant();
+
+        using var zipStream = new MemoryStream();
+        var added = new HashSet<string>(StringComparer.Ordinal);
+        using (var zip = new ZipArchive(zipStream, ZipArchiveMode.Create, leaveOpen: true))
+        {
+            foreach (var path in PlayerExport.PlayerFiles(Encoding.UTF8.GetString(manifest), Encoding.UTF8.GetString(boot)))
+            {
+                if (path == "index.html")
+                {
+                    continue;
+                }
+
+                // Every shell file must be there. A runtime file the boot manifest names that the
+                // player doesn't have is left out, as the Editor's zip export does.
+                var file = player.Read(path);
+                if (file == null)
+                {
+                    if (path.StartsWith("_framework/", StringComparison.Ordinal))
+                    {
+                        continue;
+                    }
+
+                    throw new InvalidOperationException($"The player has no {path}.");
+                }
+
+                Add(path, file);
+            }
+
+            Add("index.html", Encoding.UTF8.GetBytes(PlayerExport.BuildHtml(Template(player),
+                ExportedGame(world, package, baseName, coverPath), null)));
+
+            if (cover != null)
+            {
+                Add(coverPath!, File.ReadAllBytes(cover.FullName));
+            }
+
+            void Add(string path, byte[] content)
+            {
+                if (!added.Add(path))
+                {
+                    throw new InvalidOperationException($"{path} is in the zip twice.");
+                }
+
+                using var entry = zip.CreateEntry(path, CompressionLevel.Optimal).Open();
+                entry.Write(content);
+            }
+        }
+
+        return zipStream.ToArray();
     }
 
     private static bool Included(FileInfo file, string baseName, FileInfo output)

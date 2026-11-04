@@ -14,6 +14,9 @@ internal abstract class PlayerBundle
 {
     public abstract string Description { get; }
 
+    // Whether it's the player built into qv, which only a release build has.
+    public virtual bool BuiltIn => false;
+
     // The file at path, relative to the bundle's root with forward slashes, or null.
     public abstract byte[]? Read(string path);
 
@@ -66,6 +69,8 @@ internal abstract class PlayerBundle
         }
 
         public override string Description => "the player built into qv";
+
+        public override bool BuiltIn => true;
 
         public override byte[]? Read(string path) => _files.GetValueOrDefault(path);
     }

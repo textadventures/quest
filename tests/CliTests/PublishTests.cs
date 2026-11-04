@@ -157,6 +157,79 @@ public class PublishTests
         StringAssert.Contains(ex.Message, "already published");
     }
 
+    // A player folder with what the HTML formats read: the real page, the export manifest, and a boot
+    // manifest naming the runtime files, one of which the player doesn't have.
+    private DirectoryInfo FakePlayer()
+    {
+        var player = Directory.CreateDirectory(Path.Combine(_folder.FullName, ".player"));
+        File.Copy("player-index.html", Path.Combine(player.FullName, "index.html"));
+        File.WriteAllText(Path.Combine(player.FullName, "export-manifest.json"),
+            """["index.html", "quest-config.js", "wasm-player.js"]""");
+        File.WriteAllText(Path.Combine(player.FullName, "quest-config.js"), "// config");
+        File.WriteAllText(Path.Combine(player.FullName, "wasm-player.js"), "// player");
+        var framework = player.CreateSubdirectory("_framework");
+        File.WriteAllText(Path.Combine(framework.FullName, "dotnet.boot.js"),
+            """export const config = /*json-start*/{"resources":{"assembly":[{"name":"a.wasm"},{"name":"missing.wasm"}]}}/*json-end*/;""");
+        File.WriteAllText(Path.Combine(framework.FullName, "dotnet.js"), "// runtime");
+        File.WriteAllText(Path.Combine(framework.FullName, "a.wasm"), "wasm");
+        return player;
+    }
+
+    [TestMethod]
+    public async Task ZipHasThePageThePlayerAndTheCover()
+    {
+        Write("map.png", "png");
+        Write("lamp.png", "png");
+        var game = Write("game.aslx", Game.Replace("GAMEID",
+            "<gameid>a1b2c3d4-0000-4000-8000-000000000001</gameid><cover>map.png</cover>"));
+
+        var result = await PublishCommand.PublishAsync(game, "zip", null, false, FakePlayer());
+
+        Assert.AreEqual(Path.Combine(_folder.FullName, "game-html.zip"), result.Output);
+        CollectionAssert.AreEqual(new[]
+        {
+            "_framework/a.wasm", "_framework/dotnet.boot.js", "_framework/dotnet.js", "cover.png", "index.html",
+            "wasm-player.js"
+        }, Entries(result.Output!));
+        using var zip = ZipFile.OpenRead(result.Output!);
+        using var reader = new StreamReader(zip.GetEntry("index.html")!.Open());
+        var html = await reader.ReadToEndAsync();
+        StringAssert.Contains(html, "<title>Publish test</title>");
+        StringAssert.Contains(html, "<meta property=\"og:image\" content=\"cover.png\" />");
+        StringAssert.Contains(html, "window.QuestVivaEmbeddedGameFilename = \"game.quest\";");
+        Assert.DoesNotContain("<base", html);
+    }
+
+    [TestMethod]
+    public async Task HtmlPinsTheCdnToTheVersionGiven()
+    {
+        Write("map.png", "png");
+        Write("lamp.png", "png");
+        var result = await PublishCommand.PublishAsync(WriteGame(), "html", null, false, FakePlayer(), "6.1.0-beta.5");
+
+        Assert.AreEqual(Path.Combine(_folder.FullName, "game.html"), result.Output);
+        var html = await File.ReadAllTextAsync(result.Output!);
+        StringAssert.Contains(html,
+            "<base href=\"https://cdn.jsdelivr.net/npm/@textadventures/quest-viva-wasmplayer@6.1.0-beta.5/\" />");
+        StringAssert.Contains(html, "content=\"A1B2C3D4-0000-4000-8000-000000000001\"");
+    }
+
+    [TestMethod]
+    public async Task HtmlFromACheckoutBuildNeedsAVersion()
+    {
+        var ex = await Assert.ThrowsAsync<NotSupportedException>(() =>
+            PublishCommand.PublishAsync(WriteGame(), "html", null, false, FakePlayer()));
+        StringAssert.Contains(ex.Message, "--cdn-version");
+    }
+
+    [TestMethod]
+    public async Task UnknownFormatsAreRefused()
+    {
+        var ex = await Assert.ThrowsAsync<NotSupportedException>(() =>
+            PublishCommand.PublishAsync(WriteGame(), "pdf", null, false, null));
+        StringAssert.Contains(ex.Message, "quest, html and zip");
+    }
+
     [TestMethod]
     public async Task TheMcpToolPublishesAGameByPath()
     {

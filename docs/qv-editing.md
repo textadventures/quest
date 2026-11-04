@@ -1,6 +1,6 @@
 # Editing games with `qv`
 
-Status: phases 1 and 2 done: `qv check` and `qv walkthrough`, and in `qv mcp --debug-tools` the tools `check`, `run_walkthrough`, `docs`, `list_functions` and `describe_function`, with server instructions that teach enough ASL to start. Phase 2's `llms.txt` is done too. A first round of dogfooding found no case for phase 3 (editing tools); see "Dogfooding" below. Phase 4 is mostly done: `qv publish --format quest`, `qv preview` and their `publish` and `preview` tools. The HTML and zip publish formats are still a plan.
+Status: phases 1 and 2 done: `qv check` and `qv walkthrough`, and in `qv mcp --debug-tools` the tools `check`, `run_walkthrough`, `docs`, `list_functions` and `describe_function`, with server instructions that teach enough ASL to start. Phase 2's `llms.txt` is done too. A first round of dogfooding found no case for phase 3 (editing tools); see "Dogfooding" below. Phase 4 is done: `qv publish` in all three formats, `qv preview`, and their `publish` and `preview` tools.
 
 `qv mcp` lets an agent play a game ([qv-mcp.md](qv-mcp.md)). This plan extends it to fixing and writing games: an author asks an agent to fix a bug it found while playtesting, or to add a room, and the agent checks and plays its change in the same session.
 
@@ -116,7 +116,7 @@ Publishing only accepts an `.aslx`: a `.quest` file is already published.
 
 Open questions:
 
-- **The HTML rewriting would be in three places.** `buildEmbeddedPlayerHtml` in `editor-store.ts` is already a copy of `src/WasmPlayer/scripts/export-embedded.mjs`, and `qv` has no Node to run either. Port it to C# once, in EditorCore or PlayerCore, and have AppShell call it through the WasmEditor bridge, so every export shares one implementation with one set of tests. The rewriting is done with regular expressions and has broken before (#2233), so this matters.
+- ~~**The HTML rewriting would be in three places.**~~ Settled: `PlayerExport` in PlayerCore builds the page and lists the zip's player files. The Editor calls it through `WasmEditorBridge` (`BuildEmbeddedPlayerHtml`, `GetPlayerExportFiles`), `qv publish` calls it directly, and `src/WasmPlayer/scripts/export-embedded.mjs` is gone; its e2e test now drives `qv publish --format html`. The page it makes is byte-for-byte what the script made.
 - ~~**Which files go in the package.**~~ Settled for `qv publish --format quest`: the Editor's files (every file at the top of the folder except `.aslx`/`.xml` and macOS junk), with hidden files and earlier publish output (any `.quest`, and the game's own `.html`, `.zip` and `-html.zip`) left out, and the files listed in the result. Packing only the files the game refers to would miss ones it names at run time. The Editor leaves the same earlier publish output out of its Publish file list and package, so a second publish from the same folder no longer packs the first one.
 - ~~**Checking first.**~~ Settled: `qv publish` runs the check and refuses on problems unless given `--force`, and warns about a file the game refers to that isn't in its folder, and about a game with no `gameid`, which would get a new IFID every time.
 
@@ -144,4 +144,4 @@ Smaller things: the agents fixed a bug before writing its test (the instructions
 6. ~~Dogfood: an agent fixes bugs in a few `examples/` games by editing the XML. Decide on phase 3 from what goes wrong~~: first round done, see "Dogfooding". No phase 3 for now.
 7. ~~`qv publish --format quest`, which needs no WasmPlayer bundle~~: done ([qv.md](qv.md)). It matches the Editor's files with earlier output and hidden files left out, lists them, checks first unless `--force`, and warns about missing files and a missing `gameid`.
 8. ~~The WasmPlayer bundle in `qv`, the `?source=qv` boot source and `qv preview`, with live reload and the `preview` tool~~: done ([qv.md](qv.md)). Live reload reloads the page, so the game starts again; keeping the author's place is still for later.
-9. The HTML rewriting ported to C# and shared with AppShell, then `qv publish --format html|zip`.
+9. ~~The HTML rewriting ported to C# and shared with AppShell, then `qv publish --format html|zip`~~: done. `--format html` pins jsDelivr to qv's own version, so it needs a released qv (one with the player built in) or `--cdn-version`.

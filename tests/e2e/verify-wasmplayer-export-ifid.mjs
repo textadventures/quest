@@ -1,48 +1,47 @@
-// Ad-hoc verification: single-file HTML export stamps the game's <gameid> as a
-// Babel Treaty ifiction:ifid <meta> (uppercase UUID + RDFa prefix on <head>),
-// and replaces the shell's Quest Viva link-preview tags with the game's own
-// title and description.
-// Drives the CLI exporter (src/WasmPlayer/scripts/export-embedded.mjs) — the
-// AppShell "Export as single file…" path applies the same head transforms.
+// The single-file HTML export stamps the game's <gameid> as a Babel Treaty ifiction:ifid <meta>
+// (uppercase UUID, RDFa prefix on <head>), loads the player from jsDelivr through <base href>,
+// and replaces the shell's Quest Viva link-preview tags with the game's own title and description.
 //
-// Requires wwwroot/index.html: (cd src/WasmPlayer && npm run build)
+// Drives `qv publish --format html` (PlayerExport in PlayerCore), which the Editor's "single file"
+// export shares. The qv built in this checkout pins the CDN with --cdn-version, as a released one
+// would pin to its own version.
+//
+// Usage: node verify-wasmplayer-export-ifid.mjs
+// Requires `dotnet build src/Cli` and a WasmPlayer build (the page is taken from its index.html).
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
-import { zipSync } from 'fflate';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const repoRoot = path.resolve(__dirname, '..', '..');
-const exporter = path.join(repoRoot, 'src/WasmPlayer/scripts/export-embedded.mjs');
-const template = path.join(repoRoot, 'src/WasmPlayer/wwwroot/index.html');
+const repoRoot = path.resolve(import.meta.dirname, '..', '..');
+const qv = process.env.QV?.split(' ') ?? ['dotnet', path.join(repoRoot, 'src/Cli/bin/Debug/net10.0/qv.dll')];
+const cdnVersion = '6.0.0-beta.59';
 
 const IFID_LOWER = '448e73df-2d2f-47e7-a494-a46b40d4cfb3';
 const IFID_UPPER = '448E73DF-2D2F-47E7-A494-A46B40D4CFB3';
 
-const aslxWithId = `<asl version="580">
-  <game name="IFID Test">
-    <gameid>${IFID_LOWER}</gameid>
-    <description>A "tiny" test &amp; nothing
-      more.</description>
+const game = (name, extra) => `<asl version="580">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="${name}">
+${extra}
   </game>
   <object name="room"><object name="player" /></object>
 </asl>
 `;
-const aslxNoId = `<asl version="580">
-  <game name="No Id"></game>
-  <object name="room"><object name="player" /></object>
-</asl>
-`;
+const withId = game('IFID Test', `    <gameid>${IFID_LOWER}</gameid>
+    <description>A "tiny" test &amp; nothing
+      more.</description>`);
+const noId = game('No Id', '');
 
-function exportHtml(gamePath, outPath) {
-    const result = spawnSync(process.execPath, [exporter, gamePath, '6.0.0-beta.59', outPath], {
-        encoding: 'utf8',
-    });
+function publishHtml(gamePath) {
+    const result = spawnSync(qv[0], [...qv.slice(1), 'publish', gamePath, '--format', 'html', '--cdn-version', cdnVersion],
+        { encoding: 'utf8' });
     if (result.status !== 0) {
-        throw new Error(`export-embedded failed:\n${result.stderr || result.stdout}`);
+        throw new Error(`qv publish failed (${result.status}):\n${result.stderr || result.stdout}`);
     }
+
+    return { html: fs.readFileSync(gamePath.replace(/\.aslx$/, '.html'), 'utf8'), output: result.stdout };
 }
 
 function assertPreviewMeta(html, label, { title, description }) {
@@ -63,60 +62,50 @@ function assertPreviewMeta(html, label, { title, description }) {
     }
 }
 
-const DESCRIPTION_ESCAPED = 'A &quot;tiny&quot; test &amp; nothing more.';
-
-function assertIfidMeta(html, label) {
+function assertIfidMeta(html, label, ifid) {
     const prefix = 'prefix="ifiction: http://babel.ifarchive.org/protocol/iFiction/"';
     if (!html.includes(prefix)) throw new Error(`${label}: missing RDFa prefix on <head>`);
-    if (!html.includes(`property="ifiction:ifid"`)) throw new Error(`${label}: missing ifiction:ifid property`);
-    if (!html.includes(`content="${IFID_UPPER}"`)) {
-        throw new Error(`${label}: expected uppercase IFID content="${IFID_UPPER}"`);
-    }
-    if (html.includes(`content="${IFID_LOWER}"`)) {
-        throw new Error(`${label}: IFID was left lowercase`);
+    if (!html.includes(`<meta property="ifiction:ifid" content="${ifid}" />`)) {
+        throw new Error(`${label}: expected ifiction:ifid content="${ifid}"`);
     }
 }
 
+let tmp = null;
 try {
-    if (!fs.existsSync(template)) {
-        throw new Error(`Missing ${template} — run "npm run build" in src/WasmPlayer first.`);
+    tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'qv-export-ifid-'));
+    const withIdPath = path.join(tmp, 'game.aslx');
+    fs.writeFileSync(withIdPath, withId);
+    fs.mkdirSync(path.join(tmp, 'noid'));
+    const noIdPath = path.join(tmp, 'noid', 'noid.aslx');
+    fs.writeFileSync(noIdPath, noId);
+
+    const { html } = publishHtml(withIdPath);
+    assertIfidMeta(html, 'export', IFID_UPPER);
+    if (html.includes(`content="${IFID_LOWER}"`)) throw new Error('export: IFID was left lowercase');
+    console.log('PASS: the export includes the uppercase ifiction:ifid meta and RDFa prefix');
+    assertPreviewMeta(html, 'export', { title: 'IFID Test', description: 'A &quot;tiny&quot; test &amp; nothing more.' });
+    console.log('PASS: the export swaps the site preview tags for the game title and description');
+    const cdnBase = `<base href="https://cdn.jsdelivr.net/npm/@textadventures/quest-viva-wasmplayer@${cdnVersion}/" />`;
+    if (!html.includes(cdnBase)) throw new Error(`export: missing ${cdnBase}`);
+    if (!/window\.QuestVivaEmbeddedGame = "[A-Za-z0-9+/=]{100,}";\n\s*window\.QuestVivaEmbeddedGameFilename = "game\.quest";/.test(html)) {
+        throw new Error('export: the game package isn\'t embedded');
     }
+    if (html.includes('quest-config.js')) throw new Error('export: still loads quest-config.js');
+    console.log('PASS: the export embeds the package and loads the player from the pinned CDN version');
 
-    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'qv-export-ifid-'));
-    const aslxPath = path.join(tmp, 'game.aslx');
-    const questPath = path.join(tmp, 'game.quest');
-    const noIdPath = path.join(tmp, 'noid.aslx');
-    fs.writeFileSync(aslxPath, aslxWithId);
-    fs.writeFileSync(noIdPath, aslxNoId);
-    // Packager writes a deflated game.aslx entry — exercise the same shape.
-    const questBytes = zipSync({ 'game.aslx': new TextEncoder().encode(aslxWithId) });
-    fs.writeFileSync(questPath, questBytes);
-
-    const fromAslx = path.join(tmp, 'from-aslx.html');
-    exportHtml(aslxPath, fromAslx);
-    const aslxHtml = fs.readFileSync(fromAslx, 'utf8');
-    assertIfidMeta(aslxHtml, 'aslx export');
-    console.log('PASS: .aslx export includes uppercase ifiction:ifid meta + RDFa prefix');
-    assertPreviewMeta(aslxHtml, 'aslx export', { title: 'IFID Test', description: DESCRIPTION_ESCAPED });
-    console.log('PASS: .aslx export swaps the site preview tags for the game title + description');
-
-    const fromQuest = path.join(tmp, 'from-quest.html');
-    exportHtml(questPath, fromQuest);
-    const questHtml = fs.readFileSync(fromQuest, 'utf8');
-    assertIfidMeta(questHtml, 'quest export');
-    assertPreviewMeta(questHtml, 'quest export', { title: 'IFID Test', description: DESCRIPTION_ESCAPED });
-    console.log('PASS: .quest export reads gameid and description from game.aslx inside the zip');
-
-    const fromNoId = path.join(tmp, 'noid.html');
-    exportHtml(noIdPath, fromNoId);
-    const noIdHtml = fs.readFileSync(fromNoId, 'utf8');
-    if (noIdHtml.includes('ifiction:ifid')) throw new Error('noid: unexpected ifiction:ifid meta');
-    if (!noIdHtml.includes('<base href=')) throw new Error('noid: missing <base href>');
-    assertPreviewMeta(noIdHtml, 'noid', { title: 'No Id', description: null });
-    console.log('PASS: game without <gameid> omits the meta but still gets <base href>');
+    // A game with no gameid gets one in the package, which is the IFID the page carries too; qv
+    // says what it is, so the author can keep it.
+    const noIdResult = publishHtml(noIdPath);
+    const generated = /<gameid>([0-9a-f-]{36})<\/gameid>/.exec(noIdResult.output)?.[1];
+    if (!generated) throw new Error(`noid: qv didn't report the gameid it gave the game:\n${noIdResult.output}`);
+    assertIfidMeta(noIdResult.html, 'noid', generated.toUpperCase());
+    assertPreviewMeta(noIdResult.html, 'noid', { title: 'No Id', description: null });
+    console.log('PASS: a game without <gameid> gets one, reported by qv and carried by the page');
 
     console.log('PASS');
 } catch (err) {
     console.error('FAIL:', err.message);
     process.exitCode = 1;
+} finally {
+    if (tmp) fs.rmSync(tmp, { recursive: true, force: true });
 }

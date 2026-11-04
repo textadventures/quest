@@ -37,6 +37,11 @@
         <None Update="resources.quest">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <!-- WasmPlayer's page, for PlayerExportTests: the tracked source, which has the same tags as
+             the built one (the build splices in icons and stamps asset URLs with ?v=). -->
+        <None Include="..\..\src\WasmPlayer\index.html" Link="player-index.html">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Include="..\..\examples\test.asl" Link="quest4.asl">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>

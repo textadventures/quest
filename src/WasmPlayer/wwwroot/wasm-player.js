@@ -19,7 +19,7 @@ console.log(
 // used below to build an absolute URL for the dynamic `import()` of
 // dotnet.js. A relative specifier there (`import('./_framework/dotnet.js')`)
 // works when this script is same-origin, but when it's loaded cross-origin
-// (the single-file CDN-linked export, see scripts/export-embedded.mjs)
+// (the single-file CDN-linked export, see PlayerExport in src/PlayerCore)
 // Chromium has no usable base URL for a relative dynamic import from a
 // classic (non-module) cross-origin script and fails the whole import with
 // "The base URL is about:blank because import() is called from a
@@ -2607,7 +2607,7 @@ async function fetchGameBytes(url) {
         return;
     }
 
-    // Single-file export (see scripts/export-embedded.mjs): the game bytes are
+    // Single-file export (see PlayerExport in src/PlayerCore): the game bytes are
     // inlined as base64 by a <script> tag before this one, so there's nothing
     // to fetch at all — decode and hand straight to the same startGame() every
     // other boot source converges on. Checked first since, unlike the sources

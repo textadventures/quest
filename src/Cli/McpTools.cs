@@ -95,20 +95,23 @@ internal sealed class DebugTools(McpGame mcpGame)
         mcpGame.PreviewAsync(game);
 
     [McpServerTool(Name = "publish"),
-     Description("Publish the game as a .quest package, as the Editor's Publish does: the game with its libraries " +
+     Description("Publish the game as the Editor's Publish does. format quest makes a .quest package: the game with its libraries " +
                  "inlined, plus the other files in its folder, except .aslx and .xml files, hidden files and earlier " +
                  "publish output. Only for an .aslx game. Checks the game first and doesn't publish if check finds " +
                  "problems, unless force is set. Returns where it wrote the package, the files it included, and " +
                  "warnings, such as a file the game refers to that isn't in its folder. Walkthroughs are left out of " +
-                 "the package, as players don't use them.")]
+                 "the package, as players don't use them. format html makes one web page with the package in it, " +
+                 "which loads the player from jsDelivr (only from a released qv), and zip makes that page with a " +
+                 "copy of the player beside it, for any web host.")]
     public Task<string> Publish(
-        [Description("Where to write the package. By default, beside the game: game.aslx makes game.quest")]
+        [Description("quest (the default), html or zip")] string format = "quest",
+        [Description("Where to write it. By default, beside the game: game.aslx makes game.quest, game.html or game-html.zip")]
         string? output = null,
         [Description("Publish even if check finds problems")] bool force = false,
         [Description("Path to the game file, if it isn't the one already loaded. It becomes the current game, " +
                      "so start_game with no game then starts it. Only when the server wasn't given a game")]
         string? game = null) =>
-        mcpGame.PublishAsync(game, output, force);
+        mcpGame.PublishAsync(game, output, force, format);
 
     [McpServerTool(Name = "list_functions", ReadOnly = true),
      Description("List the functions the game's scripts can call, read from its file as it is now, with their " +
