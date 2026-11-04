@@ -75,5 +75,30 @@ var check = new Command("check",
 check.SetAction((parseResult, _) =>
     CheckCommand.RunAsync(parseResult.GetValue(checkGameArgument)!, parseResult.GetValue(jsonOption)));
 
-var root = new RootCommand("Quest Viva command-line tools") { play, serve, mcp, walkthrough, check };
+var publishGameArgument = new Argument<FileInfo>("game")
+{
+    Description = "The game to publish: an .aslx file"
+};
+var formatOption = new Option<string>("--format")
+{
+    Description = "What to make. Only quest, a .quest package as the Editor's Publish makes, so far",
+    DefaultValueFactory = _ => "quest"
+};
+var outputOption = new Option<FileInfo?>("--output", "-o")
+{
+    Description = "Where to write it. By default, beside the game with the same name: game.aslx makes game.quest"
+};
+var forceOption = new Option<bool>("--force")
+{
+    Description = "Publish even if qv check finds problems in the game"
+};
+var publish = new Command("publish",
+    "Publish a game as a .quest package, with the files in its folder, after checking it for problems")
+{
+    publishGameArgument, formatOption, outputOption, forceOption
+};
+publish.SetAction((parseResult, _) => PublishCommand.RunAsync(parseResult.GetValue(publishGameArgument)!,
+    parseResult.GetValue(formatOption)!, parseResult.GetValue(outputOption), parseResult.GetValue(forceOption)));
+
+var root = new RootCommand("Quest Viva command-line tools") { play, serve, mcp, walkthrough, check, publish };
 return await root.Parse(args).InvokeAsync();
