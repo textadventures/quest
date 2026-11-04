@@ -24,9 +24,13 @@ function readFrontMatterField(file, field) {
     return line?.[1].trim().replace(/^(["'])(.*)\1$/, "$2");
 }
 
-function readDescription(slug) {
+function pageFile(slug) {
     const candidates = [".md", ".mdx", "/index.md", "/index.mdx"].map((ext) => join(docsDir, slug + ext));
-    const file = candidates.find((path) => existsSync(path));
+    return candidates.find((path) => existsSync(path));
+}
+
+function readDescription(slug) {
+    const file = pageFile(slug);
     return file && readFrontMatterField(file, "description");
 }
 
@@ -39,6 +43,29 @@ function renderItems(items, site, depth) {
         const url = new URL(`/${item.slug}/`, site).href;
         const description = readDescription(item.slug);
         return [`${indent}- [${item.label}](${url})${description ? `: ${description}` : ""}`];
+    });
+}
+
+/**
+ * The ASL primer in asl-primer.md: what an agent needs to know before writing a
+ * game file, short enough to read up front. Its links are site-relative, so
+ * they also work as page ids in `qv mcp`'s docs tool; here they're made
+ * absolute, and the build fails if one names a page that doesn't exist or if
+ * the primer has a heading, which the llms.txt format doesn't allow here.
+ * @param {string} site the site's absolute URL
+ */
+export function llmsPrimer(site) {
+    const primer = readFileSync(fileURLToPath(new URL("./asl-primer.md", import.meta.url)), "utf8").trim();
+    let inFence = false;
+    for (const line of primer.split("\n")) {
+        if (fence.test(line)) inFence = !inFence;
+        if (!inFence && /^#/.test(line)) throw new Error(`llms-txt.mjs: asl-primer.md has a heading: ${line}`);
+    }
+    return primer.replace(relativeLink, (_, text, target) => {
+        if (target.startsWith("#") || !pageFile(target.replace(/#.*$/, "").replace(/^\/|\/$/g, ""))) {
+            throw new Error(`llms-txt.mjs: asl-primer.md links to ${target}, which isn't a page`);
+        }
+        return `[${text}](${new URL(target, site).href})`;
     });
 }
 
