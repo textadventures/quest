@@ -77,6 +77,7 @@ Evaluation-specific work that isn't Quest functionality:
 
 1. **`HeadlessSession` in PlayerCore**, ported from the e2e harness, with unit tests against EngineTests fixtures. Switch quest-e2e-tests to use it. **Done when every golden passes unchanged, with no re-recording.**
 2. **CLI**: `play`, then `serve`, then `mcp`. Dogfood by pointing an agent at `examples/` and at a corpus game.
+   Editing games through `qv` (checking, docs for agents, and maybe editing tools) is planned separately in [qv-editing.md](qv-editing.md).
 3. **New repo**: Python wrapper, an Inspect task over a few hand-built worlds, first baseline runs.
 4. **Generator + solver**: tunable difficulty, solvability proven by search.
 5. **Calibration** against existing benchmarks (TALES / Jericho), then the write-up.
