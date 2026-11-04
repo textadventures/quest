@@ -2,7 +2,7 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import starlightLlmsTxt from "starlight-llms-txt";
-import { llmsExampleGames, llmsPageIndex, llmsTxtLinks } from "./src/llms-txt.mjs";
+import { llmsExampleGames, llmsPageIndex, llmsPrimer, llmsTxtLinks } from "./src/llms-txt.mjs";
 import { questGrammar } from "./src/quest-grammar.mjs";
 import { redirects } from "./src/redirects.mjs";
 import { sidebar } from "./src/sidebar.mjs";
@@ -18,6 +18,7 @@ const llmsTxtOptions = {
         "Quest Viva is an open-source system for creating and playing text adventure games and gamebooks, the successor to Quest 5. " +
         "Games are written in ASLX, an XML format, with scripts in Quest's own script language; the editor runs in the browser and as a desktop app.",
     details: [
+        llmsPrimer(site),
         llmsExampleGames(site, [
             ["cloak_of_darkness.aslx", "the classic small text adventure, from the tutorial's worked example"],
             ["tutorial-game.aslx", "the game built step by step in the text adventure tutorial"],
