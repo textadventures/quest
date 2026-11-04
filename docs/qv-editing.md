@@ -1,6 +1,6 @@
 # Editing games with `qv`
 
-Status: phases 1 and 2 done: `qv check` and `qv walkthrough`, and in `qv mcp --debug-tools` the tools `check`, `run_walkthrough`, `docs`, `list_functions` and `describe_function`, with server instructions that teach enough ASL to start. Phase 2's `llms.txt` is done too. A first round of dogfooding found no case for phase 3 (editing tools); see "Dogfooding" below. Phase 4 is done: `qv publish` in all three formats, `qv preview`, and their `publish` and `preview` tools.
+Status: phases 1 and 2 done: `qv check` and `qv walkthrough`, and in `qv mcp --debug-tools` the tools `check`, `run_walkthrough`, `docs`, `list_functions` and `describe_function`, with server instructions that teach enough ASL to start. Phase 2's `llms.txt` is done too. A first round of dogfooding found no case for phase 3 (editing tools); see "Dogfooding" below. Phase 4 is done: `qv publish` in all three formats, `qv preview`, and their `publish` and `preview` tools. Some of it only runs in full at release time (the player built into `qv`, the html format against jsDelivr); #2717 lists what to check on the next release.
 
 `qv mcp` lets an agent play a game ([qv-mcp.md](qv-mcp.md)). This plan extends it to fixing and writing games: an author asks an agent to fix a bug it found while playtesting, or to add a room, and the agent checks and plays its change in the same session.
 
