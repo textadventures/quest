@@ -7,6 +7,7 @@
 - `qv mcp [game]` — an MCP server whose tools let an AI agent play games ([qv-mcp.md](qv-mcp.md)).
 - `qv walkthrough <game> [name]` — run a game's built-in walkthroughs, for example in CI (below).
 - `qv check <game>` — find problems in a game's scripts without playing it (below).
+- `qv publish <game>` — make a `.quest` package of a game, as the Editor's Publish does (below).
 
 The source is `src/Cli`; [headless-session.md](headless-session.md) has the design and plans.
 
@@ -43,6 +44,23 @@ Finds problems in a game without playing it, and prints each with where it is, s
 It checks the game file and any library included alongside it, not the libraries built into Quest. Object and variable names aren't checked: whether a name is an object or a variable can depend on what has run before.
 
 It exits 0 when there are no problems, 1 when there are, and 2 when it can't check the game at all (the file doesn't exist, or is from Quest 4 or earlier, which it doesn't support). `--json` prints the result as JSON for programs: `{"problems": [{"message", "kind", "element", "attribute", "filename"}], "loaded"}`, leaving out fields that don't apply.
+
+## `qv publish`
+
+```
+qv publish <game> [--format quest] [-o <out>] [--force]
+```
+
+Makes a `.quest` package from an `.aslx` game, as the Editor's Publish does: the game with its included libraries inlined, plus the files in its folder. By default it writes it beside the game with the same name, so `game.aslx` makes `game.quest`; `-o` writes it somewhere else. Only `--format quest` exists so far.
+
+It checks the game first, as `qv check` does, and if that finds problems it prints them and doesn't publish, unless `--force` is given. It then prints where it wrote the package and every file it put in it, and warns about:
+
+- a file the game refers to that isn't in the package, such as a `picture` attribute or a `picture ("map.png")` in a script. It goes by the extension, so it covers the usual images, sounds, scripts, stylesheets and fonts.
+- a game with no `gameid`. That's its IFID, which identifies the game on sites such as IFDB. The package is given a new one, and the warning shows the `<gameid>` line to add so the next publish keeps it. `qv publish` doesn't change the `.aslx` itself.
+
+Which files go in: every file at the top of the game's folder, except `.aslx` and `.xml` files (the game and its libraries, which are inlined), hidden files, macOS `._` files, and earlier publish output: any `.quest` file, and the game's own `.html`, `.zip` and `-html.zip`. Subfolders aren't included, as in the Editor. The package doesn't include the game's walkthroughs, which players don't use.
+
+It exits 0 when it publishes, 1 when it doesn't because of problems, and 2 when it can't publish the game at all, such as a `.quest` file, which is already published.
 
 ## Installing
 
