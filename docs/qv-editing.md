@@ -1,6 +1,6 @@
 # Editing games with `qv`
 
-Status: phases 1 and 2 done: `qv check` and `qv walkthrough`, and in `qv mcp --debug-tools` the tools `check`, `run_walkthrough`, `docs`, `list_functions` and `describe_function`, with server instructions that teach enough ASL to start. Phases 3 (editing tools) and 4 (`qv preview` and `qv publish`) are still plans, and the `llms.txt` idea in phase 2 isn't done.
+Status: phases 1 and 2 done: `qv check` and `qv walkthrough`, and in `qv mcp --debug-tools` the tools `check`, `run_walkthrough`, `docs`, `list_functions` and `describe_function`, with server instructions that teach enough ASL to start. Phase 2's `llms.txt` is done too. A first round of dogfooding found no case for phase 3 (editing tools); see "Dogfooding" below. Phase 4 (`qv preview` and `qv publish`) is still a plan.
 
 `qv mcp` lets an agent play a game ([qv-mcp.md](qv-mcp.md)). This plan extends it to fixing and writing games: an author asks an agent to fix a bug it found while playtesting, or to add a room, and the agent checks and plays its change in the same session.
 
@@ -40,7 +40,7 @@ Editing is allowed for `.aslx` only. A `.quest` file is a published package, so 
 
 ## Phase 2: teaching the agent ASL
 
-Done, except `llms.txt`. In order of value:
+Done. In order of value:
 
 1. **Fast feedback.** Phase 1. No amount of documentation stops an agent writing invalid ASL. What stops it is being told straight away.
 2. **Server instructions** (`McpInstructions`). MCP's `instructions` field is passed to the agent automatically. Without `--debug-tools` they only say how to play. With them, they add a few hundred words: the tools for fixing a game, the edit, `check`, `start_game` loop, a walkthrough with an `assert:` as the test for a fix, and the basics of ASL (blocks, `=` as both assignment and comparison, `<>`, `and`/`or`/`not`, attributes, `this`, `msg`, calling functions), ending with "look a function up with `docs`, and run `check` after every edit". `start_game`'s description now says that restarting re-reads the file.
@@ -49,7 +49,7 @@ Done, except `llms.txt`. In order of value:
 
    While a game is being edited, its `.aslx` doesn't contain the Core library: Core comes from the copy built into the engine running it, which is the same version as `qv`'s docs. A published `.quest` file has its libraries inlined, frozen at the version it was last saved with. They then load as the game's own elements (`GameLoader` only sets `Library` on elements loaded from an included file), so for a `.quest` file the two can't be told apart.
 
-Separately from `qv`: an `llms.txt` for questviva.com would help agents that aren't using `qv` at all. It's a small addition to the Astro build, not done yet.
+Separately from `qv`: an `llms.txt` for questviva.com helps agents that aren't using `qv` at all. Done (#2708).
 
 ## Phase 3: editing tools (if needed)
 
@@ -122,6 +122,18 @@ Open questions:
 
 Submitting to textadventures.co.uk is left out. The Editor only does it in server mode, and from a CLI it would need its own sign-in. The author can upload the `.quest` file themselves.
 
+## Dogfooding
+
+First round, 2026-11-04: four fresh Claude Code agents with `qv mcp --debug-tools`, their own file tools and no shell, each asked by an "author" to fix or extend one game. Three made their changes by editing the XML, taking 14 to 23 turns and under a minute each: missing functions in `examples/gamebook.aslx`'s saved copy of the text processor, an off-by-one in a small shop game, and a new kitchen, locked cupboard, key and bread for `examples/simple.aslx`, with a walkthrough. The fourth found its bug in `examples/map.quest` (a call to the long-gone `GetWindowsSafeName`) but rightly couldn't fix a published `.quest` file. `check` was clean on their first try every time.
+
+So editing raw XML wasn't the bottleneck, and phase 3 stays unbuilt. What went wrong was in `qv` itself, now fixed:
+
+- **`evaluate` hid script errors.** An error in a function the expression called made the call return null, and the error only appeared in the output of the next command, so the agent took a failed call for one that returned nothing. `evaluate` now returns what the game printed and logged while evaluating, and a failed `assert:` in a walkthrough says if a script error caused it. A null value had also come back as an empty string.
+- **`check` and `run_walkthrough` needed `start_game` first.** Three of the four agents called `check` straight away. The tools that read the game's file now take its path.
+- **`check` missed two verbs running the same attribute.** A game verb for `buy`, which Core already has, made every start print "Error adding key 'buy' to dictionary". `check` now reports it. One corpus game, The Zen Garden, has three.
+
+Smaller things: the agents fixed a bug before writing its test (the instructions now say to see the walkthrough fail first), and the new rooms and objects had no `editor_room`/`editor_object` types, which only affects how the Editor shows them, as in the file they were added to.
+
 ## Order of work
 
 1. ~~`qv check`, with lazy scripts forced and expressions checked, plus the `check` tool in `qv mcp`~~: done.
@@ -129,7 +141,7 @@ Submitting to textadventures.co.uk is left out. The Editor only does it in serve
 3. ~~`docs` with the built-in reference pages~~: done, with the how-to pages too.
 4. ~~`replay` on `start_game`~~: done as `qv walkthrough` and `run_walkthrough`.
 5. ~~`list_functions` / `describe_function`, with where each definition comes from~~: done.
-6. Dogfood: an agent fixes bugs in a few `examples/` games by editing the XML. Decide on phase 3 from what goes wrong.
+6. ~~Dogfood: an agent fixes bugs in a few `examples/` games by editing the XML. Decide on phase 3 from what goes wrong~~: first round done, see "Dogfooding". No phase 3 for now.
 7. `qv publish --format quest`, which needs no WasmPlayer bundle.
 8. The WasmPlayer bundle in `qv`, the `?source=qv` boot source and `qv preview`, with live reload and the `preview` tool.
 9. The HTML rewriting ported to C# and shared with AppShell, then `qv publish --format html|zip`.

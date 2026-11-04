@@ -16,7 +16,11 @@ namespace QuestViva.Cli;
 // and the status pane, such as score and health, when it shows its panes.
 internal sealed class McpGame(FileInfo? game, int? seed, bool textOnly = false)
 {
+    private const string NoGame =
+        "No game is loaded. Pass the path of a game file (.quest, .aslx, .asl or .cas) as game, or to start_game.";
+
     private readonly SemaphoreSlim _lock = new(1, 1);
+    private readonly bool _fixed = game != null;
     private FileInfo? _game = game;
     private int _seed = seed ?? Random.Shared.Next();
     private HeadlessSession? _session;
@@ -27,12 +31,7 @@ internal sealed class McpGame(FileInfo? game, int? seed, bool textOnly = false)
     {
         if (path != null)
         {
-            if (path.StartsWith("~/"))
-            {
-                path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), path[2..]);
-            }
-
-            var file = new FileInfo(Path.GetFullPath(path));
+            var file = Resolve(path);
             // Load before switching, so a bad path leaves the current game as it was.
             var newSeed = seed ?? Random.Shared.Next();
             var session = await HeadlessSession.StartAsync(GameFiles.Load(file), newSeed);
@@ -40,8 +39,7 @@ internal sealed class McpGame(FileInfo? game, int? seed, bool textOnly = false)
         }
         else
         {
-            var current = _game ?? throw new McpException(
-                "No game is loaded. Pass the path of a game file (.quest, .aslx, .asl or .cas) to start_game.");
+            var current = _game ?? throw new McpException(NoGame);
             _session = await HeadlessSession.StartAsync(GameFiles.Load(current), _seed);
         }
 
@@ -57,17 +55,38 @@ internal sealed class McpGame(FileInfo? game, int? seed, bool textOnly = false)
     public Task<string> SendEventAsync(string name, string param) =>
         RunAsync(async () => Describe(await Session.SendEventAsync(name, param), null));
 
-    public Task<string> EvaluateAsync(string expression) =>
-        RunAsync(async () => Convert.ToString(await Session.EvaluateAsync(expression),
-            System.Globalization.CultureInfo.InvariantCulture) ?? "null");
+    // The value, then anything the game printed while evaluating it, and any script errors it didn't
+    // print. A script error in a function the expression calls makes the call return null, so
+    // without the error an agent would see only a null and not know why.
+    public Task<string> EvaluateAsync(string expression) => RunAsync(async () =>
+    {
+        var evaluation = await Session.EvaluateWithOutputAsync(expression);
+        var result = new StringBuilder(evaluation.Value switch
+        {
+            null => "null",
+            "" => "\"\" (an empty string)",
+            var value => Convert.ToString(value, System.Globalization.CultureInfo.InvariantCulture)
+        });
+
+        if (evaluation.Text.Length > 0)
+        {
+            result.Append("\n[The game printed:]\n").Append(evaluation.Text.TrimEnd('\n'));
+        }
+
+        foreach (var error in StepText.UnprintedErrors(evaluation.Errors, evaluation.Text))
+        {
+            result.Append("\n[error] ").Append(error);
+        }
+
+        return result.ToString();
+    });
 
     // Restarts the game, re-reading its file, and runs one of its walkthroughs. The game is left
     // where the walkthrough stopped, so the agent can carry on playing from there. Without a name,
     // lists the walkthroughs instead.
-    public Task<string> RunWalkthroughAsync(string? name, bool transcript) => RunAsync(async () =>
+    public Task<string> RunWalkthroughAsync(string? name, bool transcript, string? path = null) => RunAsync(async () =>
     {
-        var current = _game ?? throw new McpException(
-            "No game is loaded. Pass the path of a game file (.quest, .aslx, .asl or .cas) to start_game.");
+        var current = SelectGame(path);
         var session = await HeadlessSession.StartAsync(GameFiles.Load(current), _seed);
         var names = HeadlessWalkthrough.Names(session);
 
@@ -117,19 +136,15 @@ internal sealed class McpGame(FileInfo? game, int? seed, bool textOnly = false)
         return result.ToString();
     });
 
-    // Checks the current game's file as it is on disk now, without restarting the game.
-    public Task<string> CheckAsync() => RunAsync(async () =>
-    {
-        var current = _game ?? throw new McpException(
-            "No game is loaded. Pass the path of a game file (.aslx or .quest) to start_game.");
-        return CheckCommand.Format(await GameCheck.CheckAsync(GameFiles.Load(current)));
-    });
+    // Checks the game's file as it is on disk now, without restarting the game.
+    public Task<string> CheckAsync(string? path = null) => RunAsync(async () =>
+        CheckCommand.Format(await GameCheck.CheckAsync(GameFiles.Load(SelectGame(path)))));
 
     // The game's functions, read from its file as it is now: its own and those of libraries the
     // author included, and with includeBuiltIn those of the libraries built into Quest too.
-    public Task<string> ListFunctionsAsync(string? filter, bool includeBuiltIn) => RunAsync(async () =>
+    public Task<string> ListFunctionsAsync(string? filter, bool includeBuiltIn, string? path = null) => RunAsync(async () =>
     {
-        var functions = (await LoadFunctionsAsync())
+        var functions = (await LoadFunctionsAsync(path))
             .Where(f => includeBuiltIn || !f.BuiltIn)
             .Where(f => filter == null || f.Name.Contains(filter, StringComparison.OrdinalIgnoreCase))
             .ToList();
@@ -152,9 +167,9 @@ internal sealed class McpGame(FileInfo? game, int? seed, bool textOnly = false)
     });
 
     // One function: where it comes from, its definition, and its entry in the docs if it has one.
-    public Task<string> DescribeFunctionAsync(string name) => RunAsync(async () =>
+    public Task<string> DescribeFunctionAsync(string name, string? path = null) => RunAsync(async () =>
     {
-        var functions = await LoadFunctionsAsync();
+        var functions = await LoadFunctionsAsync(path);
         var function = functions.FirstOrDefault(f => f.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
         var docs = QuestDocs.Pages.SelectMany(p => p.Sections)
             .Where(s => s.Page.Id.StartsWith("reference/", StringComparison.Ordinal) &&
@@ -204,11 +219,44 @@ internal sealed class McpGame(FileInfo? game, int? seed, bool textOnly = false)
         return result.ToString();
     });
 
-    private async Task<IReadOnlyList<FunctionInfo>> LoadFunctionsAsync()
+    private async Task<IReadOnlyList<FunctionInfo>> LoadFunctionsAsync(string? path) =>
+        await GameFunctions.LoadAsync(GameFiles.Load(SelectGame(path)));
+
+    // The game whose file a tool reads. Given a path, that game becomes the current one, so an agent
+    // can check a game before starting it; start_game with no path then starts it. Switching to
+    // another game ends the one being played.
+    private FileInfo SelectGame(string? path)
     {
-        var current = _game ?? throw new McpException(
-            "No game is loaded. Pass the path of a game file (.aslx or .quest) to start_game.");
-        return await GameFunctions.LoadAsync(GameFiles.Load(current));
+        if (path != null)
+        {
+            var file = Resolve(path);
+            if (_game == null || !string.Equals(file.FullName, _game.FullName, StringComparison.Ordinal))
+            {
+                if (_fixed)
+                {
+                    throw new McpException($"This server only plays {_game!.FullName}. Leave out game.");
+                }
+
+                if (!file.Exists)
+                {
+                    throw new McpException($"There's no file at {file.FullName}.");
+                }
+
+                (_game, _seed, _session) = (file, seed ?? Random.Shared.Next(), null);
+            }
+        }
+
+        return _game ?? throw new McpException(NoGame);
+    }
+
+    private static FileInfo Resolve(string path)
+    {
+        if (path.StartsWith("~/"))
+        {
+            path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), path[2..]);
+        }
+
+        return new FileInfo(Path.GetFullPath(path));
     }
 
     private static string Signature(FunctionInfo function) =>

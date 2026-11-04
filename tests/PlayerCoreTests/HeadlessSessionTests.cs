@@ -146,6 +146,22 @@ public class HeadlessSessionTests
     }
 
     [TestMethod]
+    public async Task EvaluateReturnsWhatTheGamePrintedAndLogged()
+    {
+        var session = await StartAsync();
+        Assert.AreEqual("", (await session.EvaluateWithOutputAsync("1 + 1")).Text);
+        var evaluation = await session.EvaluateWithOutputAsync("Broken()");
+        Assert.IsNull(evaluation.Value);
+        StringAssert.StartsWith(evaluation.Text, "about to fail\n");
+        StringAssert.Contains(evaluation.Errors.Single(), "nosuchobject");
+
+        // Taken by the evaluation, so not left for the next step.
+        var next = await session.SendAsync("look");
+        Assert.IsEmpty(next.Errors);
+        Assert.DoesNotContain("about to fail", next.Text);
+    }
+
+    [TestMethod]
     public async Task OutputWrittenSeesEverything()
     {
         var seen = new List<HeadlessOutput>();

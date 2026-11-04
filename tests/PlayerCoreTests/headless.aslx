@@ -119,6 +119,17 @@
       finish
     </script>
   </command>
+  <function name="Broken" type="string">
+    msg ("about to fail")
+    return (nosuchobject.attr)
+  </function>
+  <walkthrough name="asserterror">
+    <steps>
+      <![CDATA[
+      assert:Broken() = "x"
+      ]]>
+    </steps>
+  </walkthrough>
   <walkthrough name="passes">
     <steps>
       <![CDATA[

@@ -92,6 +92,24 @@ public class GameCheckTests
     }
 
     [TestMethod]
+    public async Task AVerbRepeatingABuiltInOneIsFound()
+    {
+        var problem = Single(await ProblemsAsync(), "runs the attribute 'buy'");
+        Assert.AreEqual("command", problem.Kind);
+        Assert.AreEqual("property", problem.Attribute);
+        StringAssert.Contains(problem.Message, "(buy)");
+        StringAssert.Contains(problem.Message, "built-in verb 'buy' in CoreCommands.aslx");
+    }
+
+    [TestMethod]
+    public async Task TwoGameVerbsWithOneAttributeAreReportedOnce()
+    {
+        var problem = Single(await ProblemsAsync(), "runs the attribute 'shine'");
+        Assert.AreEqual("buff", problem.Element);
+        StringAssert.Contains(problem.Message, "the verb 'polish'");
+    }
+
+    [TestMethod]
     public async Task BuiltInLibrariesAreNotChecked()
     {
         Assert.IsTrue((await ProblemsAsync()).All(p => p.Filename is null or "checklib.aslx"));
@@ -100,7 +118,7 @@ public class GameCheckTests
     [TestMethod]
     public async Task ExactlyTheExpectedProblems()
     {
-        Assert.HasCount(9, await ProblemsAsync());
+        Assert.HasCount(11, await ProblemsAsync());
     }
 
     [TestMethod]

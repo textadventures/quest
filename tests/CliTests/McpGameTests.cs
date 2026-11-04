@@ -67,6 +67,36 @@ public class McpGameTests
     }
 
     [TestMethod]
+    public async Task EvaluateShowsNullAndScriptErrors()
+    {
+        var game = Game();
+        await game.StartAsync();
+        var result = await game.EvaluateAsync("Broken()");
+        StringAssert.StartsWith(result, "null\n[The game printed:]\nabout to fail\nError running script: ");
+        StringAssert.Contains(result, "nosuchobject");
+        Assert.DoesNotContain("[error]", result);
+        Assert.AreEqual("\"\" (an empty string)", await game.EvaluateAsync("\"\""));
+    }
+
+    [TestMethod]
+    public async Task CheckTakesAGameBeforeStartGame()
+    {
+        var game = new McpGame(null, null);
+        Assert.AreEqual("No problems found.\n", await game.CheckAsync("headless.aslx"));
+        // That game is now the current one.
+        StringAssert.Contains(await game.StartAsync(), "Welcome.");
+    }
+
+    [TestMethod]
+    public async Task AServerGivenAGameOnlyTakesThatOne()
+    {
+        var game = Game();
+        Assert.AreEqual("No problems found.\n", await game.CheckAsync("headless.aslx"));
+        var ex = await Assert.ThrowsAsync<McpException>(() => game.CheckAsync("other.aslx"));
+        StringAssert.Contains(ex.Message, "only plays");
+    }
+
+    [TestMethod]
     public async Task MissingGameIsReported()
     {
         var ex = await Assert.ThrowsAsync<McpException>(() => new McpGame(new FileInfo("nosuch.quest"), 1).StartAsync());
@@ -185,14 +215,14 @@ public class McpGameTests
         var result = await new McpGame(new FileInfo("check.aslx"), 1234).CheckAsync();
         StringAssert.Contains(result, "game, attribute 'start': Unknown script command or function 'Prnt'\n");
         StringAssert.Contains(result, "checklib.aslx, function 'LibraryFunction', attribute 'script': Unknown function 'AlsoNoSuchFunction'");
-        StringAssert.EndsWith(result, "9 problems found.\n");
+        StringAssert.EndsWith(result, "11 problems found.\n");
     }
 
     [TestMethod]
     public async Task CheckWithNoGameSaysToLoadOne()
     {
         var ex = await Assert.ThrowsAsync<McpException>(() => new McpGame(null, null).CheckAsync());
-        StringAssert.Contains(ex.Message, "start_game");
+        StringAssert.Contains(ex.Message, "as game, or to start_game");
     }
 
     private static McpGame FunctionsGame() => new(new FileInfo("functions.aslx"), 1234);

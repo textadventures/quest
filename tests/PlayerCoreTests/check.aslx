@@ -35,4 +35,17 @@
   <function name="TwoParams" parameters="a, b" type="int">
     return (a + b)
   </function>
+  <verb>
+    <property>buy</property>
+    <pattern>buy</pattern>
+    <defaultexpression>"You can't buy that."</defaultexpression>
+  </verb>
+  <verb name="polish">
+    <property>shine</property>
+    <pattern>polish</pattern>
+  </verb>
+  <verb name="buff">
+    <property>shine</property>
+    <pattern>buff</pattern>
+  </verb>
 </asl>
