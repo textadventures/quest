@@ -60,6 +60,62 @@ internal sealed class McpGame(FileInfo? game, int? seed, bool textOnly = false)
         RunAsync(async () => Convert.ToString(await Session.EvaluateAsync(expression),
             System.Globalization.CultureInfo.InvariantCulture) ?? "null");
 
+    // Restarts the game, re-reading its file, and runs one of its walkthroughs. The game is left
+    // where the walkthrough stopped, so the agent can carry on playing from there. Without a name,
+    // lists the walkthroughs instead.
+    public Task<string> RunWalkthroughAsync(string? name, bool transcript) => RunAsync(async () =>
+    {
+        var current = _game ?? throw new McpException(
+            "No game is loaded. Pass the path of a game file (.quest, .aslx, .asl or .cas) to start_game.");
+        var session = await HeadlessSession.StartAsync(GameFiles.Load(current), _seed);
+        var names = HeadlessWalkthrough.Names(session);
+
+        if (name == null)
+        {
+            return names.Count == 0
+                ? "The game has no walkthroughs."
+                : "The game's walkthroughs: " + string.Join(", ", names);
+        }
+
+        if (!names.Contains(name))
+        {
+            throw new McpException(names.Count == 0
+                ? "The game has no walkthroughs."
+                : $"The game has no walkthrough called '{name}'. Its walkthroughs: {string.Join(", ", names)}");
+        }
+
+        _session = session;
+        var result = new StringBuilder();
+        WalkthroughStep? last = null;
+        var outcome = await HeadlessWalkthrough.RunAsync(session, name, step =>
+        {
+            last = step;
+            if (transcript)
+            {
+                result.Append(WalkthroughCommand.StepLine(step)).Append('\n');
+                if (step.Response != null)
+                {
+                    result.Append(StepText.Format(step.Response, step.Step));
+                }
+            }
+        });
+
+        // Without the transcript, the last step's response: where the game was left, or what it
+        // said at the step that failed.
+        if (!transcript && last is { Response: { } response })
+        {
+            result.Append(WalkthroughCommand.StepLine(last)).Append('\n').Append(Describe(response, last.Step));
+        }
+
+        if (result.Length > 0)
+        {
+            result.Append('\n');
+        }
+
+        result.Append(WalkthroughCommand.Summary(outcome)).Append('\n');
+        return result.ToString();
+    });
+
     private HeadlessSession Session =>
         _session ?? throw new InvalidOperationException("No game is running. Call start_game first.");
 

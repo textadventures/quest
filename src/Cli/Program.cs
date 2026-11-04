@@ -28,7 +28,7 @@ var textOnlyOption = new Option<bool>("--text-only")
 };
 var debugToolsOption = new Option<bool>("--debug-tools")
 {
-    Description = "Also offer tools that reach past what a player can do: evaluate, tick and send_event"
+    Description = "Also offer tools that reach past what a player can do: evaluate, tick, send_event and run_walkthrough"
 };
 var mcp = new Command("mcp", "Run an MCP server over stdio whose tools play a game, for AI agents")
 {
@@ -37,5 +37,27 @@ var mcp = new Command("mcp", "Run an MCP server over stdio whose tools play a ga
 mcp.SetAction((parseResult, _) => McpCommand.RunAsync(parseResult.GetValue(mcpGameArgument),
     parseResult.GetValue(seedOption), parseResult.GetValue(textOnlyOption), parseResult.GetValue(debugToolsOption)));
 
-var root = new RootCommand("Quest Viva command-line tools") { play, serve, mcp };
+var walkthroughNameArgument = new Argument<string?>("name")
+{
+    Description = "The walkthrough to run. Without one, every walkthrough runs, each from a fresh start",
+    Arity = ArgumentArity.ZeroOrOne
+};
+var quietOption = new Option<bool>("--quiet")
+{
+    Description = "Print only whether each walkthrough passed, not its transcript"
+};
+var walkthroughSeedOption = new Option<int?>("--seed")
+{
+    Description = $"Seed the game's random numbers (default {QuestViva.PlayerCore.HeadlessSession.DefaultSeed}, so every run gives the same results)"
+};
+var walkthrough = new Command("walkthrough",
+    "Run a game's built-in walkthroughs, exiting non-zero if any fails, for example in CI")
+{
+    gameArgument, walkthroughNameArgument, walkthroughSeedOption, quietOption
+};
+walkthrough.SetAction((parseResult, _) => WalkthroughCommand.RunAsync(parseResult.GetValue(gameArgument)!,
+    parseResult.GetValue(walkthroughNameArgument), parseResult.GetValue(walkthroughSeedOption),
+    parseResult.GetValue(quietOption)));
+
+var root = new RootCommand("Quest Viva command-line tools") { play, serve, mcp, walkthrough };
 return await root.Parse(args).InvokeAsync();
