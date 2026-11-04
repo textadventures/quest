@@ -94,6 +94,7 @@ export default defineConfig({
                 PageFrame: "./src/components/PageFrame.astro",
             },
             sidebar,
+            routeMiddleware: "./src/route-data.ts",
             plugins: [
                 starlightLlmsTxt(llmsTxtOptions),
             ],

@@ -1,5 +1,6 @@
 ---
 // Footer across the bottom of every page, in the same style as textadventures.co.uk's own
+import { playSiteUrl } from '../channel.mjs';
 ---
 
 <footer class="family-footer">
@@ -7,7 +8,7 @@
 		<div class="family-footer-columns">
 			<nav aria-labelledby="family-footer-questviva">
 				<h2 id="family-footer-questviva">Quest Viva</h2>
-				<a href="https://play.questviva.com/open">Start creating</a>
+				<a href={`${playSiteUrl}/open`}>Start creating</a>
 				<a href="/download/">Download the app</a>
 				<a href="/intro/">Documentation</a>
 				<a href="https://github.com/textadventures/quest">GitHub</a>

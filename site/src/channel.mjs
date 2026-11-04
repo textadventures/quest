@@ -12,3 +12,9 @@ export const betaSite = process.env.PUBLIC_BETA_SITE === "true";
 
 /** The site this build is served from, for canonical links, the sitemap and llms.txt. */
 export const siteUrl = betaSite ? betaSiteUrl : stableSiteUrl;
+
+export const stablePlaySiteUrl = "https://play.questviva.com";
+export const betaPlaySiteUrl = "https://play-beta.questviva.com";
+
+/** The web app that matches these docs, for "Start creating" and "Play games" links. */
+export const playSiteUrl = betaSite ? betaPlaySiteUrl : stablePlaySiteUrl;
