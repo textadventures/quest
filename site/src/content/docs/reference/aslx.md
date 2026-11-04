@@ -11,8 +11,8 @@ Generally you have no need to look at the full code view, but just occasionally 
 Here is a simple game, written the way the current editor saves it:
 
 ```quest
-<!--Saved by Quest Viva 6.1.0-->
-<asl version="610">
+<!--Saved by Quest Viva 6.0.0-->
+<asl version="600">
   <include ref="English.aslx" />
   <include ref="Core.aslx" />
   <game name="Test ASLX Game">
@@ -70,7 +70,7 @@ By nesting \<object\> elements, you can define further objects inside objects.
 
 ## The asl element and its version
 
-Everything in the file goes inside the `<asl>` element. Its `version` says which version of the file format the game was written for, and so which [behaviour fixes](/reference/asl-versions) apply to it. The current editor saves version 610. Quest Viva 6.0 saves version 600, and that's the highest version a 6.0 player can open, so use 600 if the game has to play on Quest Viva 6.0. A file without a version, or with a number Quest Viva doesn't know, won't load.
+Everything in the file goes inside the `<asl>` element. Its `version` says which version of the file format the game was written for, and so which [behaviour fixes](/reference/asl-versions) apply to it. The Quest Viva editor saves version 600. A file without a version, or with a number Quest Viva doesn't know, won't load.
 
 The `<!--Saved by Quest Viva ...-->` comment on the first line is written by the editor so you can tell which version saved the file. Quest Viva ignores it when loading, so you can leave it out.
 

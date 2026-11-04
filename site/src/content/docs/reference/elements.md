@@ -9,12 +9,12 @@ Note that this is about XML elements in the ASLX file, which is not quite the sa
 ## asl
 
 ```xml
-<asl version="610">all game content</asl>
+<asl version="600">all game content</asl>
 ```
 
 To load any game, the top-level element must be an \<asl\> element as shown above. All other XML elements in the file must appear within this tag.
 
-The `version` is required. The current editor saves 610; Quest Viva 6.0 saves 600, and can't open a game with a higher version. See [Game file versions](/reference/asl-versions).
+The `version` is required. The Quest Viva editor saves 600. See [Game file versions](/reference/asl-versions).
 
 ## library
 
