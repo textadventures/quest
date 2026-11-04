@@ -43,6 +43,24 @@ function renderItems(items, site, depth) {
 }
 
 /**
+ * The example games under public/examples, which are served as raw .aslx files:
+ * the most realistic reference for what a game file looks like.
+ * @param {string} site the site's absolute URL
+ * @param {Array<[string, string]>} games file name and description
+ */
+export function llmsExampleGames(site, games) {
+    for (const [name] of games) {
+        if (!existsSync(fileURLToPath(new URL(`../public/examples/${name}`, import.meta.url)))) {
+            throw new Error(`llms-txt.mjs: no example game public/examples/${name}`);
+        }
+    }
+    return [
+        "**Example games**, complete .aslx source files:",
+        games.map(([name, description]) => `- [${name}](${new URL(`/examples/${name}`, site).href}): ${description}`).join("\n"),
+    ].join("\n\n");
+}
+
+/**
  * @param {Array<any>} sidebar Starlight's sidebar config
  * @param {string} site the site's absolute URL
  * @param {string[]} priority top-level group labels to list first, in this order
@@ -64,9 +82,10 @@ export function llmsPageIndex(sidebar, site, priority) {
 // - llms-small.txt is the abridged docs, for agents short on context. Every
 //   mention of a script command, function, attribute or type links to its
 //   reference entry, and those links add up to about a tenth of the file, so
-//   each relative link is replaced by its text.
+//   each relative link is replaced by its text. Images are kept, with
+//   absolute URLs.
 // - llms-full.txt and the per-section files keep their links, made absolute
-//   so they work outside the site: "/reference/js" becomes
+//   so they work outside the site, and so are images: "/reference/js" becomes
 //   "https://questviva.com/reference/js", and "#msg" becomes the full URL of
 //   the page it's on.
 //
@@ -78,6 +97,8 @@ export function llmsPageIndex(sidebar, site, priority) {
 // writing wrong links.
 
 const relativeLink = /(?<!!)\[([^\]]+)\]\(((?:\/|#)[^)\s]*)\)/g;
+const relativeImage = /!\[([^\]]*)\]\((\/[^)\s]*)\)/g;
+const absoluteImages = (line, site) => line.replace(relativeImage, (_, alt, path) => `![${alt}](${new URL(path, site).href})`);
 const fence = /^\s*(```|~~~)/;
 
 // The plugin matches with micromatch. These options only use "dir" and
@@ -119,7 +140,7 @@ function rewriteLinks(markdown, pages, site, name) {
         if (fence.test(line)) inFence = !inFence;
         if (inFence) return line;
         if (next < pages.length && line === `# ${pages[next].title}`) page = pages[next++];
-        return line.replace(relativeLink, (_, text, target) => {
+        return absoluteImages(line, site).replace(relativeLink, (_, text, target) => {
             if (!page) throw new Error(`llms-txt.mjs: ${name} has a link before its first page`);
             const path = target.startsWith("#") ? `/${page.id === "index" ? "" : `${page.id}/`}${target}` : target;
             return `[${text}](${new URL(path, site).href})`;
@@ -134,13 +155,13 @@ function rewriteLinks(markdown, pages, site, name) {
     return lines.join("\n");
 }
 
-function unwrapRelativeLinks(markdown) {
+function unwrapRelativeLinks(markdown, site) {
     let inFence = false;
     return markdown
         .split("\n")
         .map((line) => {
             if (fence.test(line)) inFence = !inFence;
-            return inFence ? line : line.replace(relativeLink, "$1");
+            return inFence ? line : absoluteImages(line, site).replace(relativeLink, "$1");
         })
         .join("\n");
 }
@@ -165,7 +186,7 @@ export function llmsTxtLinks(site, options) {
                     writeFileSync(file, after);
                     logger.info(`${relative(outDir, file)}: ${before.length} -> ${after.length} bytes`);
                 };
-                rewrite("llms-small.txt", unwrapRelativeLinks);
+                rewrite("llms-small.txt", (text) => unwrapRelativeLinks(text, site));
                 rewrite("llms-full.txt", (text) => rewriteLinks(text, pagesInPluginOrder(docs, {}, options), site, "llms-full.txt"));
                 for (const set of options.customSets ?? []) {
                     const path = `_llms-txt/${set.label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.txt`;
