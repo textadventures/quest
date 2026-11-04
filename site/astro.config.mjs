@@ -2,7 +2,7 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import starlightLlmsTxt from "starlight-llms-txt";
-import { llmsPageIndex } from "./src/llms-txt.mjs";
+import { llmsPageIndex, llmsSmallWithoutLinks } from "./src/llms-txt.mjs";
 import { questGrammar } from "./src/quest-grammar.mjs";
 import { redirects } from "./src/redirects.mjs";
 import { sidebar } from "./src/sidebar.mjs";
@@ -75,5 +75,6 @@ export default defineConfig({
                 }),
             ],
         }),
+        llmsSmallWithoutLinks(),
     ],
 });
