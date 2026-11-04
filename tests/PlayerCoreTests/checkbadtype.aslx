@@ -1,0 +1,12 @@
+<asl version="600">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="checkbadtype">
+    <start type="script">
+      Prnt ("not reached")
+    </start>
+  </game>
+  <object name="room">
+    <inherit name="nosuchtype" />
+  </object>
+</asl>

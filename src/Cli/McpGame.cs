@@ -116,6 +116,14 @@ internal sealed class McpGame(FileInfo? game, int? seed, bool textOnly = false)
         return result.ToString();
     });
 
+    // Checks the current game's file as it is on disk now, without restarting the game.
+    public Task<string> CheckAsync() => RunAsync(async () =>
+    {
+        var current = _game ?? throw new McpException(
+            "No game is loaded. Pass the path of a game file (.aslx or .quest) to start_game.");
+        return CheckCommand.Format(await GameCheck.CheckAsync(GameFiles.Load(current)));
+    });
+
     private HeadlessSession Session =>
         _session ?? throw new InvalidOperationException("No game is running. Call start_game first.");
 

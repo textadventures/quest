@@ -255,7 +255,16 @@ public partial class WorldModel : IGame, IGameDebug
 
     public Elements Elements { get; }
 
-    public bool EditMode { get; private set; }
+    // GameChecker sets this to false while it parses an edit-mode game's scripts, to parse them as
+    // playing the game would.
+    public bool EditMode { get; internal set; }
+
+    // Called with every expression as it's created, for GameChecker to check them.
+    internal Action<string>? ExpressionCreated { get; set; }
+
+    // Called with every function call statement as it's created, with the function's name and how
+    // many arguments it's given (counting a script argument in braces), for GameChecker.
+    internal Action<string, int>? FunctionCallCreated { get; set; }
 
     internal ExpressionOwner ExpressionOwner { get; }
 

@@ -53,6 +53,19 @@ internal partial class GameLoader
 
     public async Task<bool> Load(GameData gameData, Stream? saveData)
     {
+        WorldModel.Elements.RecordDisplacedLocalElements = true;
+        try
+        {
+            return await LoadInternal(gameData, saveData);
+        }
+        finally
+        {
+            WorldModel.Elements.RecordDisplacedLocalElements = false;
+        }
+    }
+
+    private async Task<bool> LoadInternal(GameData gameData, Stream? saveData)
+    {
         Stream dataStream;
         Stream gameDataScanStream;
 
