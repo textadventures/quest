@@ -50,7 +50,11 @@ public class FunctionCallScriptConstructor : IScriptConstructor
             }
         }
 
-        if (!WorldModel.EditMode && WorldModel.Procedure(procName) == null)
+        WorldModel.FunctionCallCreated?.Invoke(procName,
+            (paramExpressions?.Count ?? 0) + (paramScript != null ? 1 : 0));
+
+        // GameChecker reports unknown functions itself, without stopping at the first.
+        if (!WorldModel.EditMode && WorldModel.FunctionCallCreated == null && WorldModel.Procedure(procName) == null)
         {
             throw new Exception(string.Format("Function not found: '{0}'", procName));
         }

@@ -1,0 +1,38 @@
+<asl version="600">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <include ref="checklib.aslx" />
+  <game name="check">
+    <start type="script">
+      msg ("Welcome.")
+      Prnt ("unknown command")
+      if (true) {
+        msgg ("unknown command in a block")
+      }
+      switch (7) {
+        case (7, 8, 9) {
+          msg ("several case values are fine")
+        }
+      }
+      TwoParams (1, 2, 3)
+    </start>
+  </game>
+  <object name="room">
+    <description type="script">
+      msg (NoSuchFunction(1) + ToString(2))
+      x = TwoParams(1, 2, 3)
+      y = TwoParams(1)
+      z = (1 +
+      MoveObject (player, )
+      msg (nosuchobject.attr)
+    </description>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+  <object name="lamp" />
+  <object name="lamp" />
+  <function name="TwoParams" parameters="a, b" type="int">
+    return (a + b)
+  </function>
+</asl>

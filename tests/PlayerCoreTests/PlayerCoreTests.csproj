@@ -40,6 +40,9 @@
         <None Include="..\..\examples\test.asl" Link="quest4.asl">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="check*.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="headless.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>

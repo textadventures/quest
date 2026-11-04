@@ -6,6 +6,7 @@
 - `qv serve` — let another program drive a game over JSON lines on stdin/stdout ([qv-serve.md](qv-serve.md)).
 - `qv mcp [game]` — an MCP server whose tools let an AI agent play games ([qv-mcp.md](qv-mcp.md)).
 - `qv walkthrough <game> [name]` — run a game's built-in walkthroughs, for example in CI (below).
+- `qv check <game>` — find problems in a game's scripts without playing it (below).
 
 The source is `src/Cli`; [headless-session.md](headless-session.md) has the design and plans.
 
@@ -23,6 +24,24 @@ The steps are the ones the player's walkthrough runner understands: a command, `
 - **`delay:` advances the game clock instead of waiting.** In the player a delay is real time between steps, during which timers keep running. Here, after every step from then on, the clock moves on by the delay, a whole second at a time.
 
 The seed is fixed (1234) unless `--seed` gives another, so a walkthrough that passes once passes every time.
+
+## `qv check`
+
+```
+qv check <game> [--json]
+```
+
+Finds problems in a game without playing it, and prints each with where it is, such as `object 'room', attribute 'description': Unknown function 'Prnt' in 'Prnt("x")'`. Many of these would otherwise only show when a player reached the script, because the engine parses a script only when it first runs. It reports:
+
+- script commands and functions that don't exist, including inside nested blocks
+- expressions that don't parse, or are empty, as in `if () { }`
+- functions given more arguments than they take, or, as a statement from ASL 520 on, fewer
+- two of the game's own elements with the same name, where the second silently replaces the first
+- anything that stops the game loading, such as an exit to a room that doesn't exist. Then nothing else is checked until that's fixed
+
+It checks the game file and any library included alongside it, not the libraries built into Quest. Object and variable names aren't checked: whether a name is an object or a variable can depend on what has run before.
+
+It exits 0 when there are no problems, 1 when there are, and 2 when it can't check the game at all (the file doesn't exist, or is from Quest 4 or earlier, which it doesn't support). `--json` prints the result as JSON for programs: `{"problems": [{"message", "kind", "element", "attribute", "filename"}], "loaded"}`, leaving out fields that don't apply.
 
 ## Installing
 

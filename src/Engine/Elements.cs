@@ -79,10 +79,23 @@ public class Elements
             {
                 _overriddenLibraryElements[key] = oldElement;
             }
+            else if (RecordDisplacedLocalElements)
+            {
+                _displacedLocalElements.Add(oldElement);
+            }
         }
 
         Register(t, key, e);
     }
+
+    // Elements from the game file (or a library the author included) that a later element with the
+    // same name replaced while the game loaded. Overriding a library element is how a game
+    // customises it, but two of the game's own elements sharing a name is almost always a mistake,
+    // which GameChecker reports. Only recorded while loading: the Editor's cut and paste moves an
+    // element by displacing it too.
+    private readonly List<Element> _displacedLocalElements = [];
+    internal IReadOnlyList<Element> DisplacedLocalElements => _displacedLocalElements;
+    internal bool RecordDisplacedLocalElements { get; set; }
 
     private void Register(ElementType t, string key, Element e)
     {

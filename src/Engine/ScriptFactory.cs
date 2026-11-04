@@ -12,15 +12,18 @@ public interface IScriptFactory
 
 public partial class ScriptFactory : IScriptFactory
 {
-    private readonly bool _lazyLoadingEnabled = true;
+    private readonly bool _lazyLoadingEnabled;
     private readonly FunctionCallScriptConstructor _procConstructor;
 
     private readonly Dictionary<string, IScriptConstructor> _scriptConstructors = [];
     private readonly SetScriptConstructor _setConstructor;
 
-    public ScriptFactory(WorldModel worldModel)
+    // lazy is false only for GameChecker, which parses every script up front to find errors that
+    // would otherwise only show when the script first runs.
+    public ScriptFactory(WorldModel worldModel, bool lazy = true)
     {
         WorldModel = worldModel;
+        _lazyLoadingEnabled = lazy;
 
         IScriptConstructor[] constructors =
         [

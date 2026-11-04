@@ -26,6 +26,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         _scriptContext = scriptContext;
         _expressionOwner = scriptContext.WorldModel.ExpressionOwner;
         _expression = Utility.ResolveElementName(expression);
+        scriptContext.WorldModel.ExpressionCreated?.Invoke(expression);
 
         _nCalcExpression = new QuestNCalcExpression(expression,
             // Invariant so "text" + 100.4 prints "100.4" whatever the host's locale (the default is

@@ -67,4 +67,10 @@ internal sealed class DebugTools(McpGame game)
         [Description("The walkthrough to run. Omit it to list them")] string? name = null,
         [Description("Return every step's response, not just the last")] bool transcript = false) =>
         game.RunWalkthroughAsync(name, transcript);
+
+    [McpServerTool(Name = "check"),
+     Description("Check the game's file for problems without playing it: scripts the engine can't parse, unknown " +
+                 "script commands and functions, functions given too many arguments, and elements with the same " +
+                 "name. Reads the file as it is now, so it sees edits; restart the game with start_game to play them.")]
+    public Task<string> Check() => game.CheckAsync();
 }

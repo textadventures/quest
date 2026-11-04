@@ -172,4 +172,26 @@ public class McpGameTests
         var ex = await Assert.ThrowsAsync<McpException>(() => Game().RunWalkthroughAsync("nosuch", false));
         StringAssert.Contains(ex.Message, "passes");
     }
+
+    [TestMethod]
+    public async Task CheckFindsNoProblemsInAWorkingGame()
+    {
+        Assert.AreEqual("No problems found.\n", await Game().CheckAsync());
+    }
+
+    [TestMethod]
+    public async Task CheckReportsWhereEachProblemIs()
+    {
+        var result = await new McpGame(new FileInfo("check.aslx"), 1234).CheckAsync();
+        StringAssert.Contains(result, "game, attribute 'start': Unknown script command or function 'Prnt'\n");
+        StringAssert.Contains(result, "checklib.aslx, function 'LibraryFunction', attribute 'script': Unknown function 'AlsoNoSuchFunction'");
+        StringAssert.EndsWith(result, "9 problems found.\n");
+    }
+
+    [TestMethod]
+    public async Task CheckWithNoGameSaysToLoadOne()
+    {
+        var ex = await Assert.ThrowsAsync<McpException>(() => new McpGame(null, null).CheckAsync());
+        StringAssert.Contains(ex.Message, "start_game");
+    }
 }

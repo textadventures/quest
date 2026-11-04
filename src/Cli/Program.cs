@@ -28,7 +28,7 @@ var textOnlyOption = new Option<bool>("--text-only")
 };
 var debugToolsOption = new Option<bool>("--debug-tools")
 {
-    Description = "Also offer tools that reach past what a player can do: evaluate, tick, send_event and run_walkthrough"
+    Description = "Also offer tools that reach past what a player can do: evaluate, tick, send_event, run_walkthrough and check"
 };
 var mcp = new Command("mcp", "Run an MCP server over stdio whose tools play a game, for AI agents")
 {
@@ -59,5 +59,21 @@ walkthrough.SetAction((parseResult, _) => WalkthroughCommand.RunAsync(parseResul
     parseResult.GetValue(walkthroughNameArgument), parseResult.GetValue(walkthroughSeedOption),
     parseResult.GetValue(quietOption)));
 
-var root = new RootCommand("Quest Viva command-line tools") { play, serve, mcp, walkthrough };
+var checkGameArgument = new Argument<FileInfo>("game")
+{
+    Description = "The game to check: an .aslx or .quest file"
+};
+var jsonOption = new Option<bool>("--json")
+{
+    Description = "Print the problems as JSON, for programs"
+};
+var check = new Command("check",
+    "Find problems in a game's scripts without playing it, exiting non-zero if there are any, for example in CI")
+{
+    checkGameArgument, jsonOption
+};
+check.SetAction((parseResult, _) =>
+    CheckCommand.RunAsync(parseResult.GetValue(checkGameArgument)!, parseResult.GetValue(jsonOption)));
+
+var root = new RootCommand("Quest Viva command-line tools") { play, serve, mcp, walkthrough, check };
 return await root.Parse(args).InvokeAsync();

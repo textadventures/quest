@@ -31,6 +31,9 @@ public class LazyLoadScript : IScript, IIfScript, IFirstTimeScript, IMultiScript
         _worldModel = scriptConstructor.WorldModel;
     }
 
+    // The script's text while it hasn't been parsed yet, and null once it has.
+    internal string? UnparsedScript => _scriptString;
+
     public void SetOtherwiseScript(IScript script)
     {
         Initialise();

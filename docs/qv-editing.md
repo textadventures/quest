@@ -1,6 +1,6 @@
 # Editing games with `qv`
 
-Status: plan. Nothing here is built yet.
+Status: phase 1 done: `qv check` and `qv walkthrough`, and their `qv mcp --debug-tools` tools `check` and `run_walkthrough`. Phases 2 and 3 are still plans.
 
 `qv mcp` lets an agent play a game ([qv-mcp.md](qv-mcp.md)). This plan extends it to fixing and writing games: an author asks an agent to fix a bug it found while playtesting, or to add a room, and the agent checks and plays its change in the same session.
 
@@ -18,19 +18,21 @@ The plan starts with the parts that make editing the XML directly work well, and
 
 ## Phase 1: checking
 
-**`qv check <game.aslx>`** loads the game and reports problems, one per line, with the element and attribute each is in. It exits non-zero on errors, so authors can run it in CI, and `--json` gives the same report for programs.
+**`qv check <game>`** loads the game and reports problems, one per line, with the element and attribute each is in. It exits non-zero on errors, so authors can run it in CI, and `--json` gives the same report for programs. Done: see [qv.md](qv.md) for what it reports. The checking itself is `GameChecker` in Engine, so the Editor can show the same problems later. How it works, and what it settled:
 
-It needs to go further than loading the game:
-
-- **Scripts are parsed lazily** (`LazyLoadScript`). Loading a game doesn't parse its scripts. In play mode a bad script throws the first time it runs, and in edit mode it becomes a `FailedScript`. `check` has to force every script to parse.
-- **Expressions** are only evaluated when a script runs, so a misspelt function name inside one (`Prnt ("x")`) goes unnoticed until then. `check` should parse each expression and resolve the function names it calls against the game's functions. Object and variable names can't always be resolved statically, so `check` only warns about those, and only when it's sure.
-- **Loader errors** (`WorldModel.Errors`) and the checks the Editor already makes: name clashes (`CanAdd`), exits whose `to` doesn't exist, types that aren't defined.
-
-Most of this belongs in Engine or EditorCore, not the CLI, so the Editor can show the same problems later.
+- **Loaded in edit mode, parsed as in play mode.** A play-mode load stops at the first script it can't create, while an edit-mode load (the Editor's) keeps going. But edit mode also keeps some things as the Editor shows them, such as a `switch` case's comma-separated values as one expression, so `GameChecker` collects every script's text from the edit-mode game and then parses it with `EditMode` off.
+- **Scripts are parsed lazily** (`LazyLoadScript`), so `GameChecker` parses them again with a `ScriptFactory` that defers nothing, nested blocks included. A script command it doesn't recognise looks like a call to a game function, so those are checked against the game's functions too.
+- **Expressions** are only evaluated when a script runs. Two `internal` hooks on `WorldModel`, `ExpressionCreated` and `FunctionCallCreated`, hand `GameChecker` every expression and function-call statement as the parse creates them. It parses each expression and resolves the function names it calls.
+- **Arguments.** Too many arguments is an error everywhere. Too few is an error for a statement call from ASL 520 on, as `FunctionCallScript` enforces, but fine in an expression, where the rest are null: Core itself relies on that (`QuickParams`).
+- **Object and variable names aren't checked.** Whether a name is an object, a local variable or a parameter depends on what has run before. Every report is something that fails when it runs, so there are no warnings.
+- **Duplicate element names.** A second element with the same name silently replaces the first, which is how a game overrides a library element, but two of the game's own elements sharing a name is a mistake. `Elements` now records the local elements it displaces.
+- **Loader errors**, such as an exit to a room that doesn't exist or an undefined type, stop the loader resolving the game, so when there are any `check` reports only those, and says the scripts weren't checked.
+- **Which elements.** Everything except the built-in libraries: the game file and any library the author included, which each report names. A `.quest` file has its libraries inlined, so its copies of Core functions are checked too.
+- **Tried on** the repo's example and test games and the 58 `.aslx` games in quest-e2e-tests' corpus, which take about 10 seconds together. 43 corpus games are clean. The rest are real bugs: misspelt calls (`DoesInherit (obj. "spell")`), missing arguments (`MoveObject (coin, )`), empty conditions (`if () { }`), calls to functions the game doesn't have, and old saved copies of Core text-processor functions that call functions gamebooks lack.
 
 **In `qv mcp`:**
 
-- A `check` tool, which returns the same report for the current game.
+- A `check` tool, which returns the same report for the current game's file as it is on disk. Done, with `--debug-tools` for now (later also `--edit`): the report names the game's elements, which a fair playtest shouldn't see.
 - `start_game` with no path already re-reads the file from disk when it restarts the game. Its description should say so, so the agent knows that editing the file and restarting picks up the change.
 - Walkthroughs in place of replaying commands by hand. `qv walkthrough` and `qv mcp`'s `run_walkthrough` (with `--debug-tools`, and later `--edit`) are done ([qv.md](qv.md), [qv-mcp.md](qv-mcp.md)). The plan had a `replay` argument to `start_game` here; a walkthrough is the same list of commands, saved in the game and able to check results with `assert:`, so it replaces it.
 
@@ -82,7 +84,7 @@ Editing a library element makes a local copy first, as the Editor does, and the 
 
 ## Order of work
 
-1. `qv check`, with lazy scripts forced and expressions checked, plus the `check` tool in `qv mcp`.
+1. ~~`qv check`, with lazy scripts forced and expressions checked, plus the `check` tool in `qv mcp`~~: done.
 2. Server instructions and the `start_game` description.
 3. `docs` with the built-in reference pages.
 4. ~~`replay` on `start_game`~~: done as `qv walkthrough` and `run_walkthrough`.
