@@ -885,13 +885,31 @@ export async function dismissBackupBanner(): Promise<void> {
 }
 
 // What a publish will include besides the game itself: every asset the adapter lists — for a
-// game opened from a real folder, that's every file in the folder. size is null where the
-// adapter can't report it cheaply (server mode).
+// game opened from a real folder, that's every file in the folder — except earlier publish
+// output (see isEarlierPublishOutput). size is null where the adapter can't report it cheaply
+// (server mode).
 export type PublishFile = { name: string; size: number | null };
+
+// Files a previous Publish, HTML export or Backup of this game would have written next to it:
+// any .quest package, and the game's own <base>.html, <base>-html.zip and <base>.zip. Without
+// this, publishing twice from the same folder packs the first game.quest inside the second.
+// Filtered here rather than in the adapters' listAssets(), which also drives the Assets dialog —
+// these are real files in the folder, and that's where a user would go to see or delete them.
+// Matches qv publish's own rule (GamePublisher.Included in src/Cli).
+export function isEarlierPublishOutput(name: string, gameFilename: string): boolean {
+    const lower = name.toLowerCase();
+    const base = gameFilename.replace(/\.aslx$/i, "").toLowerCase();
+    return lower.endsWith(".quest") ||
+        lower === base + ".html" || lower === base + ".zip" || lower === base + "-html.zip";
+}
+
+async function listPublishAssets(adapter: FileAdapter): Promise<AssetInfo[]> {
+    return (await adapter.listAssets()).filter(a => !isEarlierPublishOutput(a.key, adapter.filename));
+}
 
 export async function listPublishFiles(): Promise<{ files: PublishFile[]; folder: string | null }> {
     if (!_adapter) return { files: [], folder: null };
-    const assets = await _adapter.listAssets();
+    const assets = await listPublishAssets(_adapter);
     return {
         files: assets.map(a => ({ name: a.key, size: a.size ?? null })),
         folder: _adapter.assetFolderName ?? null,
@@ -970,7 +988,7 @@ async function buildPublishPackageBytes(signal: AbortSignal): Promise<PublishPac
     if (!_bridge || !_adapter) throw new Error("No game loaded.");
     // Read everything before staging anything, so cancelling mid-read leaves nothing half-staged
     // in the bridge for the next publish to pick up.
-    const assets = await _adapter.listAssets();
+    const assets = await listPublishAssets(_adapter);
     const files: { key: string; bytes: Uint8Array }[] = [];
     for (const [i, asset] of assets.entries()) {
         signal.throwIfAborted();
