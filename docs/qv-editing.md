@@ -1,6 +1,6 @@
 # Editing games with `qv`
 
-Status: phases 1 and 2 done: `qv check` and `qv walkthrough`, and in `qv mcp --debug-tools` the tools `check`, `run_walkthrough`, `docs`, `list_functions` and `describe_function`, with server instructions that teach enough ASL to start. Phase 2's `llms.txt` is done too. A first round of dogfooding found no case for phase 3 (editing tools); see "Dogfooding" below. Phase 4 has started: `qv publish --format quest` and the `publish` tool are done; `qv preview` and the HTML formats are still plans.
+Status: phases 1 and 2 done: `qv check` and `qv walkthrough`, and in `qv mcp --debug-tools` the tools `check`, `run_walkthrough`, `docs`, `list_functions` and `describe_function`, with server instructions that teach enough ASL to start. Phase 2's `llms.txt` is done too. A first round of dogfooding found no case for phase 3 (editing tools); see "Dogfooding" below. Phase 4 is mostly done: `qv publish --format quest`, `qv preview` and their `publish` and `preview` tools. The HTML and zip publish formats are still a plan.
 
 `qv mcp` lets an agent play a game ([qv-mcp.md](qv-mcp.md)). This plan extends it to fixing and writing games: an author asks an agent to fix a bug it found while playtesting, or to add a room, and the agent checks and plays its change in the same session.
 
@@ -143,5 +143,5 @@ Smaller things: the agents fixed a bug before writing its test (the instructions
 5. ~~`list_functions` / `describe_function`, with where each definition comes from~~: done.
 6. ~~Dogfood: an agent fixes bugs in a few `examples/` games by editing the XML. Decide on phase 3 from what goes wrong~~: first round done, see "Dogfooding". No phase 3 for now.
 7. ~~`qv publish --format quest`, which needs no WasmPlayer bundle~~: done ([qv.md](qv.md)). It matches the Editor's files with earlier output and hidden files left out, lists them, checks first unless `--force`, and warns about missing files and a missing `gameid`.
-8. The WasmPlayer bundle in `qv`, the `?source=qv` boot source and `qv preview`, with live reload and the `preview` tool.
+8. ~~The WasmPlayer bundle in `qv`, the `?source=qv` boot source and `qv preview`, with live reload and the `preview` tool~~: done ([qv.md](qv.md)). Live reload reloads the page, so the game starts again; keeping the author's place is still for later.
 9. The HTML rewriting ported to C# and shared with AppShell, then `qv publish --format html|zip`.

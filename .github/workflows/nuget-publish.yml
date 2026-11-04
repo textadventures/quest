@@ -34,8 +34,15 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
+      # qv preview's player, embedded in the QuestViva.Cli tool: the trimmed WasmPlayer publish,
+      # copied aside because the solution build below rebuilds WasmPlayer's AppBundle untrimmed.
+      - name: Publish WasmPlayer for qv
+        run: |
+          dotnet publish src/WasmPlayer/WasmPlayer.csproj --configuration Release
+          cp -r src/WasmPlayer/bin/Release/net10.0/browser-wasm/AppBundle "$RUNNER_TEMP/qv-player"
+
       - name: Build
-        run: dotnet build --no-restore --configuration Release
+        run: dotnet build --no-restore --configuration Release -p:QvPlayerBundle="$RUNNER_TEMP/qv-player"
 
       - name: Pack
         run: |

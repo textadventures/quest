@@ -8,6 +8,7 @@
 - `qv walkthrough <game> [name]` — run a game's built-in walkthroughs, for example in CI (below).
 - `qv check <game>` — find problems in a game's scripts without playing it (below).
 - `qv publish <game>` — make a `.quest` package of a game, as the Editor's Publish does (below).
+- `qv preview <game>` — play a game in your browser, served from its folder, reloading when its files change (below).
 
 The source is `src/Cli`; [headless-session.md](headless-session.md) has the design and plans.
 
@@ -62,6 +63,21 @@ Which files go in: every file at the top of the game's folder, except `.aslx` an
 
 It exits 0 when it publishes, 1 when it doesn't because of problems, and 2 when it can't publish the game at all, such as a `.quest` file, which is already published.
 
+## `qv preview`
+
+```
+qv preview <game> [--port N] [--seed N] [--player <folder>]
+```
+
+Serves the game in Quest's browser player on this computer, and prints the URL to open: `http://127.0.0.1:<port>/?source=qv`. It's for what playing in the terminal can't show: the game's JavaScript and stylesheets, its layout, pictures, sounds and panes. It runs until Ctrl+C.
+
+- The game's folder is served beside the player, so its pictures, sounds and `<javascript>` files load as they would once published, and a library of the author's own beside it (`<include ref="mylib.aslx"/>`) loads too. Hidden files and anything outside the folder aren't served.
+- Changing a file in the folder reloads the page, which starts the game again. So the author can keep the page open while they, or an agent, edit the game.
+- For an `.aslx`, Debug is available, as in the Editor's preview.
+- It only listens on 127.0.0.1, so other computers can't reach it. `--port` picks the port, and otherwise it uses a free one. `--seed` seeds the game's random numbers, as for `qv play`, so a browser run can be compared with a headless one.
+
+The player is built into `qv` (the published WasmPlayer, about 5.6 MB), so it's the same version as the engine `qv play` uses. A `qv` built from a checkout without it uses that checkout's own WasmPlayer build instead, and `--player` serves a WasmPlayer `AppBundle` folder you give it.
+
 ## Installing
 
 Every release from 6.1 publishes `qv` two ways. Until 6.1.0 itself ships, only beta releases include it.
@@ -99,3 +115,13 @@ curl -L https://github.com/textadventures/quest/releases/download/v6.1.0-beta.2/
 dotnet build src/Cli
 dotnet src/Cli/bin/Debug/net10.0/qv.dll play examples/simple.aslx
 ```
+
+`qv preview` needs a WasmPlayer build too: build `src/WasmPlayer` once, and a checkout's `qv` serves it. To embed the player as a release does, publish WasmPlayer and pass its `AppBundle` as `QvPlayerBundle`:
+
+```bash
+dotnet publish src/WasmPlayer/WasmPlayer.csproj -c Release
+cp -r src/WasmPlayer/bin/Release/net10.0/browser-wasm/AppBundle /tmp/qv-player
+dotnet build src/Cli -c Release -p:QvPlayerBundle=/tmp/qv-player
+```
+
+It's copied aside because building the whole solution rebuilds WasmPlayer's `AppBundle` untrimmed.

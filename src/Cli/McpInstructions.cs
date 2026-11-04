@@ -12,7 +12,7 @@ internal static class McpInstructions
     private const string Debug = """
 
 
-        The debug tools reach past what a player can do: evaluate reads the game's state, tick and send_event drive timers and JavaScript events, run_walkthrough runs a walkthrough saved in the game, check finds problems in the game's file, publish makes a .quest package of it, list_functions and describe_function show the functions it can call, and docs looks things up in Quest's documentation.
+        The debug tools reach past what a player can do: evaluate reads the game's state, tick and send_event drive timers and JavaScript events, run_walkthrough runs a walkthrough saved in the game, check finds problems in the game's file, preview serves it in a browser, publish makes a .quest package of it, list_functions and describe_function show the functions it can call, and docs looks things up in Quest's documentation.
 
         To fix or change a game, edit its .aslx file, which is XML, with your own file tools (a published .quest file can't be edited). Then call check, which reads the file as it is now, and start_game, which restarts the game from the file so you can play your change. check, run_walkthrough, list_functions and describe_function also take the game's path, so you can use them before starting it. To test a fix, add a walkthrough that reproduces the problem and ends in an assert:<expression> step, and run it with run_walkthrough to see it fail before you fix the game.
 

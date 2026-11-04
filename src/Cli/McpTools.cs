@@ -83,6 +83,17 @@ internal sealed class DebugTools(McpGame mcpGame)
         string? game = null) =>
         mcpGame.CheckAsync(game);
 
+    [McpServerTool(Name = "preview"),
+     Description("Serve the game in Quest's browser player on this computer and return its URL, for an author to " +
+                 "play or for a browser tool to look at. Unlike start_game, the browser runs the game's JavaScript " +
+                 "and stylesheets and shows its layout, pictures and panes. The page reloads when a file in the " +
+                 "game's folder changes. Calling it again returns the same URL, switched to the current game.")]
+    public Task<string> Preview(
+        [Description("Path to the game file, if it isn't the one already loaded. It becomes the current game, " +
+                     "so start_game with no game then starts it. Only when the server wasn't given a game")]
+        string? game = null) =>
+        mcpGame.PreviewAsync(game);
+
     [McpServerTool(Name = "publish"),
      Description("Publish the game as a .quest package, as the Editor's Publish does: the game with its libraries " +
                  "inlined, plus the other files in its folder, except .aslx and .xml files, hidden files and earlier " +
