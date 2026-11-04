@@ -8,7 +8,7 @@ sidebar:
 The first line of every game file says which version of Quest saved it:
 
 ```quest
-<asl version="600">
+<asl version="610">
 ```
 
 When a newer version of Quest Viva fixes something in a way that would change how an existing game plays, the fix only applies to games with a high enough version number. Older games keep the behaviour they were written for, so a game made in Quest 5 plays the same way in Quest Viva as it always did. The [changelog](https://github.com/textadventures/quest/blob/main/CHANGELOG.md) lists what has changed in each version.
