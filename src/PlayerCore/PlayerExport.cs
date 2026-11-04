@@ -91,14 +91,6 @@ public static class PlayerExport
         // quest-config.js configures a hosted player (API root, default game); nothing here uses it.
         html = ReplaceOrFail(html, ScriptLine("quest-config.js"), _ => "", "the quest-config.js tag");
 
-        // The game, before wasm-player.js, which looks for it first thing. Its filename's extension
-        // says how to load it (.quest, .aslx, or Quest 4's .asl/.cas).
-        var embed = "    <script type=\"text/javascript\">\n" +
-                    $"        window.QuestVivaEmbeddedGame = \"{Convert.ToBase64String(game.Package)}\";\n" +
-                    $"        window.QuestVivaEmbeddedGameFilename = \"{JsonEncodedText.Encode(game.Filename)}\";\n" +
-                    "    </script>\n";
-        html = ReplaceOrFail(html, ScriptLine("wasm-player.js"), line => embed + line, "the wasm-player.js tag");
-
         // A stylesheet from the CDN needs crossorigin for scripts to read its cssRules (#2192).
         // jsDelivr allows any origin. Not for a zip, whose player is on the page's own host, which
         // may not send the header. The player UI's own stylesheets aren't in the page: wasm-player.js
@@ -111,7 +103,17 @@ public static class PlayerExport
         }
 
         // Notes about the player shell's own implementation are no use in a game's page.
-        return Regex.Replace(html, @"[ \t]*<!--[\s\S]*?-->\r?\n?", "");
+        html = Regex.Replace(html, @"[ \t]*<!--[\s\S]*?-->\r?\n?", "");
+
+        // The game, before wasm-player.js, which looks for it first thing. Its filename's extension
+        // says how to load it (.quest, .aslx, or Quest 4's .asl/.cas). Embedded last, so none of the
+        // rewriting above has to scan or copy the package, which can run to tens of megabytes: in
+        // the Editor this runs in interpreted .NET on the browser's one thread.
+        var embed = "    <script type=\"text/javascript\">\n" +
+                    $"        window.QuestVivaEmbeddedGame = \"{Convert.ToBase64String(game.Package)}\";\n" +
+                    $"        window.QuestVivaEmbeddedGameFilename = \"{JsonEncodedText.Encode(game.Filename)}\";\n" +
+                    "    </script>\n";
+        return ReplaceOrFail(html, ScriptLine("wasm-player.js"), line => embed + line, "the wasm-player.js tag");
     }
 
     // The player files a zip export needs beside its page: the shell files that
