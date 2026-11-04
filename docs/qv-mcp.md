@@ -38,6 +38,7 @@ Each response also ends with what a browser player sees beside the text:
 | `evaluate` | `expression` | Evaluates an ASL expression against the game's current state. Not available for Quest 4 and earlier |
 | `tick` | `seconds` | Advances the game clock, firing timers that come due |
 | `send_event` | `name`, `param` | Fires an event the game's own JavaScript would send with `ASLEvent` |
+| `run_walkthrough` | `name`, optional; `transcript`, optional | Restarts the game, re-reading its file, and runs one of its walkthroughs, as `qv walkthrough` does ([qv.md](qv.md)). Returns the last step's response and whether it passed, or the step it failed at and why; `transcript` returns every step's response. Leaves the game where the walkthrough stopped, so the agent can carry on from there. With no `name`, lists the game's walkthroughs. A game's own walkthrough is often its solution, which is another reason this is a debug tool |
 
 ## Trying it with Claude Code
 

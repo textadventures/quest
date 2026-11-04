@@ -5,8 +5,24 @@
 - `qv play <game>` — play in the terminal.
 - `qv serve` — let another program drive a game over JSON lines on stdin/stdout ([qv-serve.md](qv-serve.md)).
 - `qv mcp [game]` — an MCP server whose tools let an AI agent play games ([qv-mcp.md](qv-mcp.md)).
+- `qv walkthrough <game> [name]` — run a game's built-in walkthroughs, for example in CI (below).
 
 The source is `src/Cli`; [headless-session.md](headless-session.md) has the design and plans.
+
+## `qv walkthrough`
+
+```
+qv walkthrough <game> [name] [--seed N] [--quiet]
+```
+
+Runs one of the game's walkthroughs, or with no name every one of them, each from a fresh start. It prints each walkthrough's transcript and then a `PASS` or `FAIL` line; `--quiet` prints only those lines. It exits non-zero if any walkthrough fails, so authors can run it in CI.
+
+The steps are the ones the player's walkthrough runner understands: a command, `menu:<key>` and `answer:yes`/`answer:no` for a pending menu or question, `assert:<expression>`, `event:<name>;<param>`, `delay:<milliseconds>`, and `label:`, which is a note. For a Quest 4 or earlier game an assert is a condition in that syntax, such as `got <lamp>`. It differs from the player's runner in two ways:
+
+- **Anything that means the walkthrough no longer does what its author wrote fails it**: a failed assert, one that can't be evaluated, a script error, a menu answer that isn't an option, a step that doesn't match what the game is waiting for, or the game ending before the last step. The player's runner only stops at a failed assert.
+- **`delay:` advances the game clock instead of waiting.** In the player a delay is real time between steps, during which timers keep running. Here, after every step from then on, the clock moves on by the delay, a whole second at a time.
+
+The seed is fixed (1234) unless `--seed` gives another, so a walkthrough that passes once passes every time.
 
 ## Installing
 

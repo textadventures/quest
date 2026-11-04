@@ -119,6 +119,75 @@
       finish
     </script>
   </command>
+  <walkthrough name="passes">
+    <steps>
+      <![CDATA[
+      label:start
+      take lamp
+      assert:lamp.parent = player
+      testmenu
+      menu:g
+      testask
+      answer:yes
+      ]]>
+    </steps>
+  </walkthrough>
+  <walkthrough name="failsassert">
+    <steps>
+      <![CDATA[
+      assert:lamp.parent = player
+      take lamp
+      ]]>
+    </steps>
+  </walkthrough>
+  <walkthrough name="badassert">
+    <steps>
+      <![CDATA[
+      assert:nosuchthing.attr = 1
+      ]]>
+    </steps>
+  </walkthrough>
+  <walkthrough name="scripterror">
+    <steps>
+      <![CDATA[
+      testerror
+      look
+      ]]>
+    </steps>
+  </walkthrough>
+  <walkthrough name="wrongmenukey">
+    <steps>
+      <![CDATA[
+      testmenu
+      menu:blue
+      ]]>
+    </steps>
+  </walkthrough>
+  <walkthrough name="unansweredmenu">
+    <steps>
+      <![CDATA[
+      testmenu
+      look
+      ]]>
+    </steps>
+  </walkthrough>
+  <walkthrough name="endsearly">
+    <steps>
+      <![CDATA[
+      testend
+      look
+      ]]>
+    </steps>
+  </walkthrough>
+  <walkthrough name="delayticks">
+    <steps>
+      <![CDATA[
+      testclock
+      delay:5000
+      look
+      ]]>
+    </steps>
+  </walkthrough>
   <timer name="clock">
     <interval>10</interval>
     <script>

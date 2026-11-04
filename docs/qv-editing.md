@@ -12,7 +12,7 @@ An agent can already edit an `.aslx` file with its own file tools, and for many 
 - **The editor's rules.** A two-way exit needs a matching exit back. Editing a library function makes a local copy that shadows the library from then on. Types are inherited. Some properties only apply once a feature is turned on. XML that ignores these still loads, but behaves oddly in the Editor.
 - **The schema.** The editor definitions record which properties each type has, what kind of value each takes and which feature unlocks it. That's hard to work out from reading Core.aslx.
 - **Knowing ASL.** Agents have seen some Quest 5 code, but mix it up with other languages and older versions. See "Teaching the agent ASL" below.
-- **A short loop.** Edit, restart with the same seed, replay the commands that led to the bug.
+- **A short loop.** Write a walkthrough that reproduces the bug, ending in an `assert:` that fails; fix the game; run the walkthrough again to see it pass, and the game's other walkthroughs to check nothing else broke. The test stays in the game for the author.
 
 The plan starts with the parts that make editing the XML directly work well, and only adds editing tools if that turns out to be the bottleneck.
 
@@ -32,7 +32,7 @@ Most of this belongs in Engine or EditorCore, not the CLI, so the Editor can sho
 
 - A `check` tool, which returns the same report for the current game.
 - `start_game` with no path already re-reads the file from disk when it restarts the game. Its description should say so, so the agent knows that editing the file and restarting picks up the change.
-- A `replay` argument to `start_game`: a list of commands to send after restarting, returning only the last response (plus any errors on the way). That replaces several `send_command` calls when retrying the same path after an edit.
+- Walkthroughs in place of replaying commands by hand. `qv walkthrough` and `qv mcp`'s `run_walkthrough` (with `--debug-tools`, and later `--edit`) are done ([qv.md](qv.md), [qv-mcp.md](qv-mcp.md)). The plan had a `replay` argument to `start_game` here; a walkthrough is the same list of commands, saved in the game and able to check results with `assert:`, so it replaces it.
 
 Editing is allowed for `.aslx` only. A `.quest` file is a published package, so `check` can read one but nothing edits it.
 
@@ -85,6 +85,6 @@ Editing a library element makes a local copy first, as the Editor does, and the 
 1. `qv check`, with lazy scripts forced and expressions checked, plus the `check` tool in `qv mcp`.
 2. Server instructions and the `start_game` description.
 3. `docs` with the built-in reference pages.
-4. `replay` on `start_game`.
+4. ~~`replay` on `start_game`~~: done as `qv walkthrough` and `run_walkthrough`.
 5. `list_functions` / `describe_function`, with where each definition comes from.
 6. Dogfood: an agent fixes bugs in a few `examples/` games by editing the XML. Decide on phase 3 from what goes wrong.

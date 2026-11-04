@@ -1,6 +1,6 @@
 # Headless Session, CLI and Agent Interface
 
-Status: phase 1 done — `HeadlessSession` is in PlayerCore and quest-e2e-tests runs on it. Phase 2 done: `qv play`, `qv serve` ([qv-serve.md](qv-serve.md)) and `qv mcp` ([qv-mcp.md](qv-mcp.md)), published with each release ([qv.md](qv.md)). `qv walkthrough` is still a maybe. The tool isn't published yet (`nuget-publish` doesn't pack `src/Cli`) — see Distribution below.
+Status: phase 1 done — `HeadlessSession` is in PlayerCore and quest-e2e-tests runs on it. Phase 2 done: `qv play`, `qv serve` ([qv-serve.md](qv-serve.md)) and `qv mcp` ([qv-mcp.md](qv-mcp.md)), published with each release ([qv.md](qv.md)). `qv walkthrough` runs a game's built-in walkthroughs, and `run_walkthrough` is its `qv mcp --debug-tools` counterpart. The tool isn't published yet (`nuget-publish` doesn't pack `src/Cli`) — see Distribution below.
 
 ## Motivation
 
@@ -34,7 +34,7 @@ Pulling this into a supported `HeadlessSession` in PlayerCore, and building a CL
   - `qv play <game>` — interactive terminal play
   - `qv serve` — JSON-lines protocol over stdio, for programmatic drivers
   - `qv mcp` — the same operations exposed as MCP tools
-  - possibly `qv walkthrough <game> [name]` — run built-in walkthroughs, for authors' CI
+  - `qv walkthrough <game> [name]` — run built-in walkthroughs, for authors' CI
 
 ### quest-e2e-tests
 

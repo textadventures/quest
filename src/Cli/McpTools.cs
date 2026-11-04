@@ -57,4 +57,14 @@ internal sealed class DebugTools(McpGame game)
     public Task<string> SendEvent([Description("The event name")] string name,
         [Description("The event's parameter")] string param = "") =>
         game.SendEventAsync(name, param);
+
+    [McpServerTool(Name = "run_walkthrough"),
+     Description("Restart the game, re-reading its file, and run one of its built-in walkthroughs: a list of " +
+                 "steps saved in the game, such as commands and assert:<expression> checks. Reports whether it " +
+                 "passed, or the step it failed at and why, and leaves the game where the walkthrough stopped. " +
+                 "With no name, lists the game's walkthroughs.")]
+    public Task<string> RunWalkthrough(
+        [Description("The walkthrough to run. Omit it to list them")] string? name = null,
+        [Description("Return every step's response, not just the last")] bool transcript = false) =>
+        game.RunWalkthroughAsync(name, transcript);
 }

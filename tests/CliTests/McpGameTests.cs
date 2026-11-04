@@ -133,4 +133,43 @@ public class McpGameTests
         StringAssert.Contains(await game.SendAsync("testscore"), "[Status: Score: 5]");
         Assert.DoesNotContain("[Status:", await game.SendAsync("testnopanes"));
     }
+
+    [TestMethod]
+    public async Task WalkthroughWithNoNameListsThem()
+    {
+        StringAssert.Contains(await Game().RunWalkthroughAsync(null, false), "passes");
+    }
+
+    [TestMethod]
+    public async Task WalkthroughLeavesTheGameWhereItStopped()
+    {
+        var game = Game();
+        var result = await game.RunWalkthroughAsync("passes", false);
+        StringAssert.Contains(result, "[answer:yes]\nanswer True");
+        StringAssert.EndsWith(result, "PASS passes (7 steps)\n");
+        StringAssert.Contains(await game.SendAsync("inventory"), "lamp");
+    }
+
+    [TestMethod]
+    public async Task WalkthroughTranscriptHasEveryStep()
+    {
+        var result = await Game().RunWalkthroughAsync("passes", true);
+        StringAssert.Contains(result, "> take lamp\n");
+        StringAssert.Contains(result, "[assert:lamp.parent = player: passed]");
+        StringAssert.Contains(result, "chose g");
+    }
+
+    [TestMethod]
+    public async Task FailedWalkthroughSaysWhere()
+    {
+        StringAssert.Contains(await Game().RunWalkthroughAsync("failsassert", false),
+            "FAIL failsassert at step 1 of 2: Assert failed: lamp.parent = player");
+    }
+
+    [TestMethod]
+    public async Task UnknownWalkthroughListsTheOthers()
+    {
+        var ex = await Assert.ThrowsAsync<McpException>(() => Game().RunWalkthroughAsync("nosuch", false));
+        StringAssert.Contains(ex.Message, "passes");
+    }
 }
