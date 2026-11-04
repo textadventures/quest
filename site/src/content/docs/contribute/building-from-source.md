@@ -65,6 +65,8 @@ It's worth testing against that one before you open a pull request that touches 
 
 ### WebPlayer
 
+WebPlayer is deprecated and will be removed in 6.1.
+
 ```bash
 docker compose up --build
 ```

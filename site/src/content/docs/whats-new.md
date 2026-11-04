@@ -66,7 +66,7 @@ See [Hosting your game](/publishing/hosting) for all the options.
 
 Published `.quest` files now also follow the [Treaty of Babel](https://babel.ifarchive.org/babel.html), a standard that interactive fiction catalogues and tools use to identify games. Each one carries your game's IFID - a unique ID for your game, which is the Game ID on the Setup tab - and an iFiction record of its title, author, cover and other details. Exported HTML includes the IFID too. There's also a new version code on the Setup tab, a number you increase with each release - see [Version and Game ID](/publishing/game-details#version-and-game-id).
 
-WebPlayer, the server-based player, has been rewritten for Quest Viva - Quest 5's needed Windows, and this one runs on cross-platform .NET, so you can host it wherever you like. WasmPlayer has rather overtaken it since, though, so it's a specialist choice now: worth it if you specifically don't want players to be able to download your `.quest` file, for a treasure hunt or a competition say. See the [WebPlayer guide](/publishing/webplayer).
+WebPlayer, the server-based player, has been rewritten for Quest Viva - Quest 5's needed Windows, and this one runs on cross-platform .NET, so you can host it wherever you like. WasmPlayer has rather overtaken it since, though, so it's a specialist choice now: worth it if you specifically don't want players to be able to download your `.quest` file, for a treasure hunt or a competition say. See the [WebPlayer guide](/publishing/webplayer). 6.0 is the last version that will include WebPlayer: it will be removed in 6.1.
 
 ## Players can save without an account
 
@@ -100,7 +100,7 @@ Most of the scripting language is unchanged, but there are some additions:
 - **Questions and menus in the game text.** In games saved in Quest Viva, a question or menu now appears as numbered links in the game text instead of a pop-up window. Players can click an option or type its number.
 - Plenty of smaller additions and fixes besides - the [changelog](https://github.com/textadventures/quest/blob/main/CHANGELOG.md) lists these from 6.0.0-beta.36 onwards.
 
-A game saved in the Quest Viva editor is marked as ASL version 600 - `<asl version="600">` at the top of the file. Older games load and run unchanged - the version number just tells the engine which behaviour to use where something has been fixed in a way that would otherwise change an existing game.
+A game saved in the Quest Viva editor is marked as ASL version 600 - `<asl version="600">` at the top of the file. Older games load and run unchanged - the version number just tells the engine which behaviour to use where something has been fixed in a way that would otherwise change an existing game. Once a game is saved in Quest Viva, Quest 5 can no longer open it. See [Game file versions](/reference/asl-versions).
 
 ## Why isn't it called Quest 6?
 
