@@ -24,6 +24,7 @@ internal sealed class McpGame(FileInfo? game, int? seed, bool textOnly = false)
     private FileInfo? _game = game;
     private int _seed = seed ?? Random.Shared.Next();
     private HeadlessSession? _session;
+    private PreviewServer? _preview;
 
     // Loads the game at path, relative to the working directory, or with no path restarts the
     // current game.
@@ -139,6 +140,27 @@ internal sealed class McpGame(FileInfo? game, int? seed, bool textOnly = false)
     // Checks the game's file as it is on disk now, without restarting the game.
     public Task<string> CheckAsync(string? path = null) => RunAsync(async () =>
         CheckCommand.Format(await GameCheck.CheckAsync(GameFiles.Load(SelectGame(path)))));
+
+    // Serves the game in WasmPlayer for a browser, as `qv preview` does, and returns the URL. The
+    // server lasts as long as this process, and follows the current game: previewing another game
+    // reloads open pages with it.
+    public Task<string> PreviewAsync(string? path) => RunAsync(() =>
+    {
+        var game = SelectGame(path);
+        if (_preview == null)
+        {
+            _preview = PreviewServer.Start(PreviewCommand.FindPlayer(null), game, seed: seed);
+        }
+        else
+        {
+            _preview.SetGame(game);
+        }
+
+        return Task.FromResult(
+            $"Open {_preview.Url} to play {game.Name} in a browser. The page reloads when a file in the " +
+            "game's folder changes. Unlike start_game, it runs the game's JavaScript and stylesheets, and " +
+            "shows its layout, pictures and panes.\n");
+    });
 
     // Publishes the game's .aslx as a .quest package, as `qv publish` does. Refusing because of
     // problems isn't an error: the report says what to fix.

@@ -31,6 +31,20 @@
         <EmbeddedResource Include="..\..\site\src\content\docs\howto\**\*.md"
                           LogicalName="docs/howto/%(RecursiveDir)%(Filename)%(Extension)" />
     </ItemGroup>
+    <!-- qv preview's player: the WasmPlayer AppBundle in the folder QvPlayerBundle names, zipped
+         and embedded as player.zip. The release workflows publish src/WasmPlayer first and pass
+         its published (trimmed) AppBundle. Without it, a qv built in a checkout serves that
+         checkout's own WasmPlayer build instead (PlayerBundle.FromCheckout). -->
+    <Target Name="EmbedPlayerBundle" BeforeTargets="BeforeBuild" Condition="'$(QvPlayerBundle)' != ''">
+        <Error Condition="!Exists('$(QvPlayerBundle)/index.html') Or !Exists('$(QvPlayerBundle)/_framework/dotnet.js')"
+               Text="QvPlayerBundle ($(QvPlayerBundle)) isn't a WasmPlayer AppBundle." />
+        <!-- Not there yet in a clean checkout, notably for a runtime-specific publish. -->
+        <MakeDir Directories="$(IntermediateOutputPath)" />
+        <ZipDirectory SourceDirectory="$(QvPlayerBundle)" DestinationFile="$(IntermediateOutputPath)player.zip" Overwrite="true" />
+        <ItemGroup>
+            <EmbeddedResource Include="$(IntermediateOutputPath)player.zip" LogicalName="player.zip" />
+        </ItemGroup>
+    </Target>
     <ItemGroup>
         <InternalsVisibleTo Include="CliTests" />
     </ItemGroup>

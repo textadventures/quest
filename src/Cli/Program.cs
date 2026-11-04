@@ -100,5 +100,25 @@ var publish = new Command("publish",
 publish.SetAction((parseResult, _) => PublishCommand.RunAsync(parseResult.GetValue(publishGameArgument)!,
     parseResult.GetValue(formatOption)!, parseResult.GetValue(outputOption), parseResult.GetValue(forceOption)));
 
-var root = new RootCommand("Quest Viva command-line tools") { play, serve, mcp, walkthrough, check, publish };
+var previewGameArgument = new Argument<FileInfo>("game")
+{
+    Description = "The game to preview: usually an .aslx file, but any game the player can play"
+};
+var portOption = new Option<int>("--port")
+{
+    Description = "The port to serve on. By default, a free one"
+};
+var playerOption = new Option<DirectoryInfo?>("--player")
+{
+    Description = "Serve the WasmPlayer bundle in this folder instead of the one built into qv"
+};
+var preview = new Command("preview",
+    "Play a game in your browser, served by qv on this computer only, reloading it when its files change")
+{
+    previewGameArgument, portOption, seedOption, playerOption
+};
+preview.SetAction((parseResult, _) => PreviewCommand.RunAsync(parseResult.GetValue(previewGameArgument)!,
+    parseResult.GetValue(portOption), parseResult.GetValue(seedOption), parseResult.GetValue(playerOption)));
+
+var root = new RootCommand("Quest Viva command-line tools") { play, serve, mcp, walkthrough, check, publish, preview };
 return await root.Parse(args).InvokeAsync();

@@ -2685,6 +2685,49 @@ async function fetchGameBytes(url) {
         return;
     }
 
+    // `qv preview` (src/Cli/PreviewServer.cs): this page is served by qv on loopback, with the
+    // author's game folder under game/. qv/game names the game file and every .aslx beside it
+    // that it could include, like the Editor's listLibraryCandidates, so an <include ref> of the
+    // author's own library resolves; resourceRoot makes its images, sounds and scripts load from
+    // the folder. An .aslx is the author's work in progress, so Debug is on for it, as for
+    // source=local. qv/events sends 'reload' when a file in the folder changes, and the page
+    // reloads to play the edited game from the start.
+    if (params.get('source') === 'qv') {
+        preloadRuntime();
+        const gamePromise = (async () => {
+            const infoResponse = await fetch('qv/game', { cache: 'no-store' });
+            if (!infoResponse.ok) throw new Error(`qv/game: HTTP ${infoResponse.status}`);
+            const { file, libraries } = await infoResponse.json();
+            const fetchFile = async (name) => {
+                const response = await fetch('game/' + encodeURIComponent(name), { cache: 'no-store' });
+                if (!response.ok) {
+                    const err = new Error(`HTTP ${response.status}`);
+                    err.status = response.status;
+                    throw err;
+                }
+                return new Uint8Array(await response.arrayBuffer());
+            };
+            const adjacentFiles = {};
+            for (const library of libraries ?? []) adjacentFiles[library] = await fetchFile(library);
+            return { bytes: await fetchFile(file), filename: file, adjacentFiles };
+        })();
+        resourceRoot = 'game/';
+
+        new EventSource('qv/events').addEventListener('reload', () => window.location.reload());
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            showLoading();
+            try {
+                const { bytes, filename, adjacentFiles } = await gamePromise;
+                await startGame(bytes, filename, null, null, false, null, null, adjacentFiles,
+                    /\.aslx$/i.test(filename));
+            } catch (err) {
+                showError('qv/game', false, err);
+            }
+        });
+        return;
+    }
+
     const id = params.get('id');
     // A URL-supplied game always wins over the configured default, so authors
     // testing/sharing a specific ?url= link aren't stuck on their own game.

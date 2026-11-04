@@ -16,6 +16,7 @@ on:
   pull_request:
     paths:
       - 'src/Cli/**'
+      - 'src/WasmPlayer/**'
       - '.github/workflows/cli-publish.yml'
   workflow_dispatch:
 
@@ -55,12 +56,25 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+
+      # qv preview's player, embedded in every binary: the trimmed WasmPlayer publish, which is the
+      # same for every platform.
+      - name: Publish WasmPlayer for qv
+        run: |
+          dotnet workload install wasm-tools
+          dotnet publish src/WasmPlayer/WasmPlayer.csproj --configuration Release
+          cp -r src/WasmPlayer/bin/Release/net10.0/browser-wasm/AppBundle "$RUNNER_TEMP/qv-player"
+
       - name: Build binaries
         run: |
           for rid in ${{ matrix.rids }}; do
             dotnet publish src/Cli --configuration Release --runtime "$rid" --self-contained \
               -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true \
-              -p:DebugType=none -p:Version="$(cat VERSION)" --output "out/$rid"
+              -p:DebugType=none -p:Version="$(cat VERSION)" -p:QvPlayerBundle="$RUNNER_TEMP/qv-player" \
+              --output "out/$rid"
           done
 
       # The same throwaway-keychain setup as electron-publish.yml, which explains why it doesn't
@@ -130,6 +144,16 @@ jobs:
           esac
           "out/$rid/qv" --version
           printf 'look\nquit\n' | "out/$rid/qv" play examples/simple.aslx | grep -q "The game has ended."
+          # The player for qv preview is built in: run from a folder with no checkout around it,
+          # so it can't fall back to one.
+          cp "out/$rid/qv" "$RUNNER_TEMP/qv" && cp examples/simple.aslx "$RUNNER_TEMP/"
+          (cd "$RUNNER_TEMP" && ./qv preview simple.aslx --port 5199 > preview.log 2>&1 &)
+          for i in $(seq 1 20); do
+            curl -sf http://127.0.0.1:5199/_framework/dotnet.js > /dev/null && break
+            [ "$i" -eq 20 ] && { cat "$RUNNER_TEMP/preview.log"; echo "qv preview served no player"; exit 1; }
+            sleep 1
+          done
+          pkill -f "qv preview" || true
 
       - name: Package binaries
         run: |
