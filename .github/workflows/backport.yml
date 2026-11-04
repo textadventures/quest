@@ -1,0 +1,94 @@
+name: Backport
+
+# Opens the backport PR for a fix merged into main: label the PR
+# "backport release/6.0" (before or after merging it) and this cherry-picks its
+# squash commit onto release/6.0 and opens "chore(release/6.0): backport #N".
+# Any "backport <branch>" label works the same way, for whatever release branch
+# follows release/6.0. If the cherry-pick doesn't apply cleanly, it comments on
+# the PR instead, and the backport is done by hand. Either way the backport PR is
+# merged with a merge commit, not squashed. See "Backporting" in
+# docs/release-channels.md.
+#
+# pull_request_target, so it has secrets for PRs from forks too. That's safe
+# here because nothing from the PR is checked out or run: the commit it
+# cherry-picks is the squash commit already on main.
+on:
+  pull_request_target:
+    types: [closed, labeled]
+
+permissions:
+  contents: read
+
+jobs:
+  backport:
+    if: >-
+      github.event.pull_request.merged &&
+      github.event.pull_request.base.ref == 'main' &&
+      (github.event.action == 'closed' && contains(join(github.event.pull_request.labels.*.name, '|'), 'backport ') ||
+       github.event.action == 'labeled' && startsWith(github.event.label.name, 'backport '))
+    runs-on: ubuntu-latest
+    steps:
+      # The PR is pushed and opened with RELEASE_PAT rather than GITHUB_TOKEN:
+      # a PR opened with GITHUB_TOKEN doesn't trigger workflows, so its required
+      # build_and_test check would never run.
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_PAT }}
+
+      - name: Cherry-pick and open the backport PRs
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PAT }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          COMMIT: ${{ github.event.pull_request.merge_commit_sha }}
+          ACTION: ${{ github.event.action }}
+          ADDED_LABEL: ${{ github.event.label.name }}
+          LABELS: ${{ toJSON(github.event.pull_request.labels.*.name) }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # On "closed", every backport label the PR already has; on "labeled",
+          # just the one added (the others were handled when they were added, or
+          # will be on merge).
+          if [ "$ACTION" = labeled ]; then
+            labels="$ADDED_LABEL"
+          else
+            labels="$(jq -r '.[]' <<< "$LABELS")"
+          fi
+
+          status=0
+          while IFS= read -r label; do
+            case "$label" in "backport "*) ;; *) continue ;; esac
+            target="${label#backport }"
+            branch="backport/$PR_NUMBER-${target//\//-}"
+            echo "::group::$label"
+
+            if ! git ls-remote --exit-code --heads origin "$target" > /dev/null; then
+              gh pr comment "$PR_NUMBER" --body "Can't backport to \`$target\`: there's no such branch."
+              status=1
+              echo "::endgroup::"
+              continue
+            fi
+            if git ls-remote --exit-code --heads origin "$branch" > /dev/null; then
+              echo "$branch already exists, so the backport has already been opened."
+              echo "::endgroup::"
+              continue
+            fi
+
+            git switch --quiet -C "$branch" "origin/$target"
+            if git cherry-pick -x "$COMMIT"; then
+              git push origin "$branch"
+              body="$(printf 'Backports #%s (%s) to `%s`.\n\nMerge this with a **merge commit**, not a squash, so the changelog lists the original fix. See "Backporting" in docs/release-channels.md.' "$PR_NUMBER" "$PR_TITLE" "$target")"
+              url="$(gh pr create --base "$target" --head "$branch" --title "chore($target): backport #$PR_NUMBER" --body "$body")"
+              gh pr comment "$PR_NUMBER" --body "Backport to \`$target\` opened: $url"
+            else
+              git cherry-pick --abort
+              gh pr comment "$PR_NUMBER" --body "$(printf 'The cherry-pick onto `%s` has conflicts, so this needs backporting by hand:\n\n```\ngit switch -c %s origin/%s\ngit cherry-pick -x %s\n```\n\nThen open a PR into `%s` titled `chore(%s): backport #%s`, and merge it with a merge commit. See "Backporting" in docs/release-channels.md.' "$target" "$branch" "$target" "$COMMIT" "$target" "$target" "$PR_NUMBER")"
+              status=1
+            fi
+            echo "::endgroup::"
+          done <<< "$labels"
+          exit $status

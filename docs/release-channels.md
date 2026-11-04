@@ -48,11 +48,34 @@ Why it works this way: release-please builds the changelog from every commit sin
 
 ## Docs site
 
-There's one docs site, questviva.com, deployed from `main`, with no per-version copies. Content for features that aren't in a stable release yet is marked where it appears:
+The docs have the same two channels as the player (decided in #2720, replacing an earlier plan of one site with "New in 6.1" markers):
 
-- a `<Since version="6.1" />` component that renders "New in 6.1 (beta)" while 6.1 is unreleased. It compares against a single stable-version constant, so bumping that constant at release time removes "(beta)" everywhere. Build it along with the first 6.1 docs change.
-- `sidebar.badge` in the frontmatter of pages that are entirely new.
-- a `:::caution` note on pages where the behaviour of an existing feature changes.
+| Site | Built from | Documents |
+|---|---|---|
+| questviva.com | the stable release branch (`release/6.0`, then `release/6.1` and so on) | what's in the current stable release |
+| beta.questviva.com | `main` | the next release, as it's being built |
+
+So docs for a new feature are written on `main` as if it already shipped: pages are changed in place, with no version markers. The stable site keeps describing the current release until the next one is stable and questviva.com moves to its branch. The homepage and `/download` come from the stable branch, which suits them, since their download links point at the latest stable release.
+
+Both are one Cloudflare Pages project, set up in its dashboard (nothing in the repo sets this):
+
+- **Production branch:** `release/6.0`, serving questviva.com. When a new stable release branch is cut, point production at it.
+- **`main`**, serving beta.questviva.com through a custom domain on the `main` branch deployment.
+- **`PUBLIC_BETA_SITE=true`** in the Preview environment's variables, so every non-production build is a beta build: `main`, and PR previews.
+
+A beta build (`site/src/channel.mjs`):
+
+- shows a banner above every page (`site/src/components/Banner.astro`), saying these are the docs for the next release and linking to questviva.com.
+- has a `noindex` robots meta tag, so search results go to the stable docs.
+- uses beta.questviva.com for its canonical links, sitemap and `llms.txt`.
+
+To build one locally: `PUBLIC_BETA_SITE=true npm run build` in `site/`.
+
+The editor links to its own channel's docs. AppShell's help links (`docs-links.ts`) go to beta.questviva.com when it's built with `PUBLIC_BETA_DOCS=true`, which `deploy-play.yml` sets for play-beta.questviva.com and `electron-publish.yml` sets for Quest Viva Beta. Help links are checked against `docs-index.generated.ts`, built from the same branch's `site/`, so each channel's editor links to pages that exist on its docs site. The Electron Help menu (`main.ts`) goes to the beta docs when the app's version is a prerelease.
+
+### Backporting docs fixes
+
+A docs fix that applies to the stable release lands on `main` first and is backported like a code fix (see "Backporting" above). To have it done for you, add the **`backport release/6.0`** label to the PR, before or after merging it. `backport.yml` then cherry-picks the squash commit onto `release/6.0` and opens `chore(release/6.0): backport #N`, which you merge with a merge commit. If the cherry-pick conflicts, it comments on the PR with the commands to do it by hand. The label works for code fixes too, and any `backport <branch>` label targets that branch.
 
 ## 6.0.0 cut runbook
 

@@ -6,8 +6,9 @@ import { llmsExampleGames, llmsPageIndex, llmsPrimer, llmsTxtLinks } from "./src
 import { questGrammar } from "./src/quest-grammar.mjs";
 import { redirects } from "./src/redirects.mjs";
 import { sidebar } from "./src/sidebar.mjs";
+import { betaSite, siteUrl } from "./src/channel.mjs";
 
-const site = "https://questviva.com";
+const site = siteUrl;
 
 // Options for starlight-llms-txt, which builds llms.txt, llms-full.txt and
 // llms-small.txt for AI agents that aren't using `qv mcp`'s docs tool
@@ -84,7 +85,11 @@ export default defineConfig({
                 baseUrl: "https://github.com/textadventures/quest/edit/main/site/",
             },
             customCss: ["./src/styles/custom.css"],
+            // beta.questviva.com stays out of search results, so searches land on the docs for the
+            // release people actually have.
+            head: betaSite ? [{ tag: "meta", attrs: { name: "robots", content: "noindex" } }] : [],
             components: {
+                Banner: "./src/components/Banner.astro",
                 Header: "./src/components/Header.astro",
                 PageFrame: "./src/components/PageFrame.astro",
             },

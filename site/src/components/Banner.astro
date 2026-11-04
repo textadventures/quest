@@ -1,0 +1,35 @@
+---
+import Default from '@astrojs/starlight/components/Banner.astro';
+import { betaSite, stableSiteUrl } from '../channel.mjs';
+
+// Starlight's page banner, with a notice above it on beta.questviva.com, which documents the next
+// release and is built from main. questviva.com, built from the stable release branch, has no
+// notice. See "Docs site" in docs/release-channels.md.
+---
+
+{
+	betaSite && (
+		<div class="beta-banner" data-pagefind-ignore>
+			These are the docs for the next Quest Viva release, which is still in beta. Some of what's
+			here isn't in the current release yet.{' '}
+			<a href={stableSiteUrl}>Go to the docs for the current release</a>
+		</div>
+	)
+}
+<Default />
+
+<style>
+	.beta-banner {
+		padding: var(--sl-nav-pad-y) var(--sl-nav-pad-x);
+		background-color: var(--sl-color-orange-low);
+		border-bottom: 1px solid var(--sl-color-orange);
+		color: var(--sl-color-orange-high);
+		line-height: var(--sl-line-height-headings);
+		text-align: center;
+		text-wrap: balance;
+	}
+	.beta-banner a {
+		color: inherit;
+		font-weight: 600;
+	}
+</style>

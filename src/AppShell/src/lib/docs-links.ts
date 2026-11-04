@@ -1,6 +1,14 @@
 // Single source of truth for links out to the documentation site
 // (questviva.com — the Astro/Starlight project in site/).
 //
+// Each release channel has its own docs site: questviva.com is built from the
+// stable release branch, beta.questviva.com from main. A beta build of the
+// editor (play-beta.questviva.com, Quest Viva Beta) sets PUBLIC_BETA_DOCS so
+// its help links go to the beta docs, which document what that editor does.
+// docs-index.generated.ts is built from this branch's site/, so either way the
+// links are checked against the pages on the site they point to. See "Docs
+// site" in docs/release-channels.md.
+//
 // questviva.com's root is a marketing splash (site/src/content/docs/index.mdx,
 // template: splash), so it's the wrong landing spot for someone who clicked
 // "Documentation" from inside the app — that page's own Documentation action
@@ -10,9 +18,10 @@
 // separate build (Electron main process) with no import path into AppShell, so
 // it stays duplicated rather than shared.
 
+import { PUBLIC_BETA_DOCS } from "$app/env/public";
 import { DOCS_INDEX } from "./docs-index.generated";
 
-const DOCS_BASE_URL = "https://questviva.com";
+const DOCS_BASE_URL = PUBLIC_BETA_DOCS === "true" ? "https://beta.questviva.com" : "https://questviva.com";
 
 // Trailing slashes are deliberate: the site builds to directory-style routes,
 // so questviva.com/intro answers 308 -> /intro/. Linking to the canonical form

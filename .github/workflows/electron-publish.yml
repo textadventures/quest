@@ -93,6 +93,8 @@ jobs:
           PUBLIC_APPSHELL_VERSION: ${{ github.ref_name }}
           PUBLIC_HAS_SERVER: false
           PUBLIC_SHOW_HOME: true
+          # Quest Viva Beta's help links go to beta.questviva.com; see docs-links.ts.
+          PUBLIC_BETA_DOCS: ${{ env.RELEASE_CHANNEL == 'prerelease' }}
 
       - name: Write Apple API key for notarization
         # electron-builder's APPLE_API_KEY env var wants a file path, not the
