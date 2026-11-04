@@ -31,6 +31,8 @@ export interface WasmBridge {
   GetGameDescription(): string
   GetGameCover(): string
   IsGamebook(): boolean
+  BuildEmbeddedPlayerHtml(template: string, packageBytes: Uint8Array, filename: string, cdnBase: string | null, title: string, description: string, coverUrl: string | null, ifid: string): string
+  GetPlayerExportFiles(exportManifestJson: string, bootJs: string): string[]
   GetAslVersion(): number
   SaveWillUpgrade(): boolean
   GetOwnJavascriptFiles(): string

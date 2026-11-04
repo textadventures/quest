@@ -811,6 +811,23 @@ public partial class WasmEditorBridge
     [JSExport]
     public static bool IsGamebook() => _controller?.EditorStyle == EditorStyle.GameBook;
 
+    // The HTML exports' page: WasmPlayer's index.html (template) with the game's package embedded,
+    // as PlayerExport builds it for qv publish too. cdnBase is set for the single file, which loads
+    // the player from jsDelivr, and null for the zip, which has the player beside it. description
+    // is already plain text.
+    [JSExport]
+    public static string BuildEmbeddedPlayerHtml(string template, byte[] package, string filename, string? cdnBase,
+        string title, string description, string? coverUrl, string ifid) =>
+        PlayerExport.BuildHtml(template,
+            new ExportedGame(package, filename, title, description, ifid, coverUrl),
+            string.IsNullOrEmpty(cdnBase) ? null : cdnBase);
+
+    // The player files the zip export puts beside its page, from the player's export-manifest.json
+    // and _framework/dotnet.boot.js.
+    [JSExport]
+    public static string[] GetPlayerExportFiles(string exportManifestJson, string bootJs) =>
+        [.. PlayerExport.PlayerFiles(exportManifestJson, bootJs)];
+
     [JSExport]
     public static int GetAslVersion() => _controller?.AslVersion ?? 0;
 

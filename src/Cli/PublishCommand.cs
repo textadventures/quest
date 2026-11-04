@@ -7,19 +7,13 @@ namespace QuestViva.Cli;
 // when it refuses, and 2 when it can't publish the game at all.
 internal static class PublishCommand
 {
-    public static async Task<int> RunAsync(FileInfo game, string format, FileInfo? output, bool force)
+    public static async Task<int> RunAsync(FileInfo game, string format, FileInfo? output, bool force,
+        DirectoryInfo? playerFolder, string? cdnVersion)
     {
-        if (format != "quest")
-        {
-            await Console.Error.WriteLineAsync(
-                $"Unknown format '{format}'. Only --format quest is supported so far.");
-            return 2;
-        }
-
         PublishResult result;
         try
         {
-            result = await GamePublisher.PublishAsync(game, output, force);
+            result = await PublishAsync(game, format, output, force, playerFolder, cdnVersion);
         }
         catch (Exception ex) when (ex is FileNotFoundException or NotSupportedException or InvalidOperationException
                                        or IOException or UnauthorizedAccessException)
@@ -31,6 +25,49 @@ internal static class PublishCommand
         Console.Write(Format(result));
         return result.Output == null ? 1 : 0;
     }
+
+    // Publishes in the format named, finding the player the HTML formats need as qv preview does.
+    public static Task<PublishResult> PublishAsync(FileInfo game, string format, FileInfo? output, bool force,
+        DirectoryInfo? playerFolder, string? cdnVersion = null)
+    {
+        var publishFormat = format.ToLowerInvariant() switch
+        {
+            "quest" => PublishFormat.Quest,
+            "html" => PublishFormat.Html,
+            "zip" => PublishFormat.Zip,
+            _ => throw new NotSupportedException($"Unknown format '{format}'. The formats are quest, html and zip.")
+        };
+        if (publishFormat == PublishFormat.Quest)
+        {
+            return GamePublisher.PublishAsync(game, output, force);
+        }
+
+        var player = PreviewCommand.FindPlayer(playerFolder);
+        if (publishFormat == PublishFormat.Html && cdnVersion == null)
+        {
+            // The page loads the player from jsDelivr, so it needs a version that's been published
+            // there, which is what a released qv is. One built from a checkout says the version it
+            // was built after, whose player can be older than its engine.
+            if (!player.BuiltIn)
+            {
+                throw new NotSupportedException(
+                    "--format html loads the player from jsDelivr at qv's own version, so it needs a released " +
+                    "qv. This one was built from a checkout. Use --format zip, which includes the player, or " +
+                    "name a published player version with --cdn-version.");
+            }
+
+            cdnVersion = Version;
+        }
+
+        return GamePublisher.PublishAsync(game, output, force, publishFormat, player,
+            publishFormat == PublishFormat.Html ? cdnVersion : null);
+    }
+
+    public static string Version =>
+        typeof(PublishCommand).Assembly
+            .GetCustomAttributes(typeof(System.Reflection.AssemblyInformationalVersionAttribute), false)
+            .OfType<System.Reflection.AssemblyInformationalVersionAttribute>().FirstOrDefault()?.InformationalVersion
+        ?? "";
 
     // force names the option, as the command line or the MCP tool spells it.
     public static string Format(PublishResult result, string force = "pass --force")

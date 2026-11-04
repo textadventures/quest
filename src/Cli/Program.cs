@@ -81,24 +81,34 @@ var publishGameArgument = new Argument<FileInfo>("game")
 };
 var formatOption = new Option<string>("--format")
 {
-    Description = "What to make. Only quest, a .quest package as the Editor's Publish makes, so far",
+    Description = "What to make, as the Editor's Publish does: quest, a .quest package; html, one web page that " +
+                  "loads the player from jsDelivr (a released qv only); or zip, the page and the player for any web host",
     DefaultValueFactory = _ => "quest"
 };
 var outputOption = new Option<FileInfo?>("--output", "-o")
 {
-    Description = "Where to write it. By default, beside the game with the same name: game.aslx makes game.quest"
+    Description = "Where to write it. By default, beside the game: game.aslx makes game.quest, game.html or game-html.zip"
 };
 var forceOption = new Option<bool>("--force")
 {
     Description = "Publish even if qv check finds problems in the game"
 };
-var publish = new Command("publish",
-    "Publish a game as a .quest package, with the files in its folder, after checking it for problems")
+var publishPlayerOption = new Option<DirectoryInfo?>("--player")
 {
-    publishGameArgument, formatOption, outputOption, forceOption
+    Description = "For --format zip, use the WasmPlayer bundle in this folder instead of the one built into qv"
+};
+var cdnVersionOption = new Option<string?>("--cdn-version")
+{
+    Description = "For --format html, load the player from jsDelivr at this published version instead of qv's own"
+};
+var publish = new Command("publish",
+    "Publish a game, with the files in its folder, after checking it for problems")
+{
+    publishGameArgument, formatOption, outputOption, forceOption, publishPlayerOption, cdnVersionOption
 };
 publish.SetAction((parseResult, _) => PublishCommand.RunAsync(parseResult.GetValue(publishGameArgument)!,
-    parseResult.GetValue(formatOption)!, parseResult.GetValue(outputOption), parseResult.GetValue(forceOption)));
+    parseResult.GetValue(formatOption)!, parseResult.GetValue(outputOption), parseResult.GetValue(forceOption),
+    parseResult.GetValue(publishPlayerOption), parseResult.GetValue(cdnVersionOption)));
 
 var previewGameArgument = new Argument<FileInfo>("game")
 {

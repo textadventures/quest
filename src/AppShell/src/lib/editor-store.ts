@@ -959,16 +959,6 @@ async function publishQuestPackage(signal: AbortSignal): Promise<void> {
     triggerDownload(packageBytes, embeddedFilename);
 }
 
-function bytesToBase64(bytes: Uint8Array): string {
-    let binary = "";
-    const chunkSize = 0x8000; // avoid a call-stack overflow from String.fromCharCode(...bytes) on a large package
-    for (let i = 0; i < bytes.length; i += chunkSize) {
-        binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
-    }
-    return btoa(binary);
-}
-
-
 function playerBaseUrl(): string {
     const base = PUBLIC_WASM_PLAYER_URL || "/player/";
     return base.endsWith("/") ? base : base + "/";
@@ -1016,90 +1006,20 @@ async function buildPublishPackageBytes(signal: AbortSignal): Promise<PublishPac
     return { packageBytes, baseName, embeddedFilename: baseName + ".quest", gameTitle, gameDescription, cover };
 }
 
-// Same transforms as export-embedded.mjs — see that file's comments for why each is needed.
-// inject-version.mjs stamps ?v=<version> onto every asset URL in the template, so the
-// patterns below must accept an optional query (exact "src=wasm-player.js" misses and
-// produces a spinner-forever export — see issue #2233).
+// The page both HTML exports use: the player's index.html with the game's package embedded.
+// PlayerExport (in PlayerCore, shared with qv publish) does the rewriting.
 //
-// cdnBase: when set, insert <base href> + crossorigin on stylesheets (CDN-linked small HTML).
-// when unset, leave relative URLs alone (zip that includes the player next to index.html).
+// cdnBase: set for the single file, which loads the player from jsDelivr; null for the zip,
+// which has the player beside the page.
 //
 // coverUrl: og:image for the game's cover art. Relative, since an export doesn't know where it'll be
 // hosted — Discourse and most unfurlers resolve it against the page URL. Only the zip can ship the
 // cover as its own file, so the single-file export passes null.
 function buildEmbeddedPlayerHtml(template: string, packageBytes: Uint8Array, embeddedFilename: string, cdnBase: string | null, gameTitle: string, gameDescription: string, coverUrl: string | null): string {
-    const scriptLine = (file: string) => new RegExp(
-        `^[ \\t]*<script type="text/javascript" src="${file.replace(/\./g, "\\.")}(?:\\?[^"]*)?"></script>\\r?\\n`,
-        "m");
-    const styleLine = (file: string) => new RegExp(
-        `^[ \\t]*<link rel="stylesheet" type="text/css" href="${file.replace(/\./g, "\\.")}(?:\\?[^"]*)?" />\\r?\\n`,
-        "m");
-    function replaceOrFail(haystack: string, pattern: RegExp, replacement: (matched: string) => string, what: string): string {
-        const match = pattern.exec(haystack);
-        if (!match) throw new Error(`HTML export: could not find ${what} in WasmPlayer template`);
-        return haystack.slice(0, match.index) + replacement(match[0]) + haystack.slice(match.index + match[0].length);
-    }
-
-    const escapeAttr = (value: string) => value
-        .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-
-    let html = template;
-    html = html.replace('<html lang="en">', '<html lang="en" class="qv-booting">');
-    // Retitle from the shared shell's "Quest Viva" to the game's own name.
-    if (gameTitle) {
-        html = replaceOrFail(html, /<title>[^<]*<\/title>/, () => `<title>${escapeAttr(gameTitle)}</title>`, "the <title> tag");
-    }
-    // The shell's link-preview tags describe Quest Viva itself. An export is the author's own
-    // game, hosted wherever they put it, so swap them for the game's title and description
-    // (no og:site_name — the site isn't ours).
-    html = html.replace(/^[ \t]*<meta (?:name="description"|property="og:[^"]*"|name="twitter:[^"]*")[^>]*\/>\r?\n/gm, "");
-    const previewTags = [
-        gameDescription ? `    <meta name="description" content="${escapeAttr(gameDescription)}" />` : null,
-        "    <meta property=\"og:type\" content=\"website\" />",
-        gameTitle ? `    <meta property="og:title" content="${escapeAttr(gameTitle)}" />` : null,
-        gameDescription ? `    <meta property="og:description" content="${escapeAttr(gameDescription)}" />` : null,
-        coverUrl ? `    <meta property="og:image" content="${escapeAttr(coverUrl)}" />` : null,
-        coverUrl ? "    <meta name=\"twitter:card\" content=\"summary\" />" : null,
-    ].filter(Boolean).join("\n");
-    html = replaceOrFail(html, /<\/title>\r?\n/, (line) => `${line}${previewTags}\n`, "the </title> line");
-    // Babel Treaty §"The IFID for an HTML story file": expose <gameid> as an
-    // ifiction:ifid meta so IFDB/babel/etc. can identify the export without
-    // unpacking the embedded .quest. Uppercase matches the UUID:// form the
-    // treaty requires elsewhere; the RDFa prefix keeps the markup valid RDFa.
-    const ifid = (_bridge?.GetGameId() || _loadedGameId || "").trim().toUpperCase();
-    const headAttrs = ifid
-        ? ' prefix="ifiction: http://babel.ifarchive.org/protocol/iFiction/"'
-        : "";
-    const headExtras = [
-        cdnBase ? `    <base href="${cdnBase}" />` : null,
-        ifid ? `    <meta property="ifiction:ifid" content="${ifid}" />` : null,
-    ].filter(Boolean).join("\n");
-    if (headAttrs || headExtras) {
-        html = html.replace("<head>", headExtras
-            ? `<head${headAttrs}>\n${headExtras}`
-            : `<head${headAttrs}>`);
-    }
-    html = replaceOrFail(html, scriptLine("quest-config.js"), () => "", "the quest-config.js tag");
-    const embedScript = "    <script type=\"text/javascript\">\n"
-        + `        window.QuestVivaEmbeddedGame = ${JSON.stringify(bytesToBase64(packageBytes))};\n`
-        + `        window.QuestVivaEmbeddedGameFilename = ${JSON.stringify(embeddedFilename)};\n`
-        + "    </script>\n";
-    html = replaceOrFail(html, scriptLine("wasm-player.js"), (line) => embedScript + line, "the wasm-player.js tag");
-    // CDN stylesheets need crossorigin for cssRules (issue #2192). Same-origin zip exports
-    // don't — and adding it can break file hosts that omit ACAO — so only when cdnBase is set.
-    if (cdnBase) {
-        // The player UI's own stylesheets aren't in the page: wasm-player.js adds them once a
-        // game has picked its UI, setting crossorigin itself when they come from another origin.
-        for (const file of ["chrome.css"]) {
-            html = replaceOrFail(html, styleLine(file),
-                (line) => line.replace(/ \/>(\r?\n)$/, ' crossorigin="anonymous" />$1'),
-                `the ${file} stylesheet link`);
-        }
-    }
-    // Dev-facing implementation notes about the WasmPlayer shell itself are dead weight in a
-    // downloaded game file — strip them rather than ship them to every player.
-    html = html.replace(/[ \t]*<!--[\s\S]*?-->\r?\n?/g, "");
-    return html;
+    if (!_bridge) throw new Error("No game loaded.");
+    // The Babel Treaty IFID for an HTML story file — see PlayerExport.
+    const ifid = (_bridge.GetGameId() || _loadedGameId || "").trim();
+    return _bridge.BuildEmbeddedPlayerHtml(template, packageBytes, embeddedFilename, cdnBase, gameTitle, gameDescription, coverUrl, ifid);
 }
 
 // Small HTML that embeds the game and loads the WasmPlayer runtime from jsDelivr —
@@ -1127,28 +1047,6 @@ async function exportHtmlCdn(signal: AbortSignal): Promise<void> {
         null,
     );
     triggerDownload(html, baseName + ".html");
-}
-
-function frameworkPathsFromBoot(bootJs: string): string[] {
-    const startMarker = "/*json-start*/";
-    const endMarker = "/*json-end*/";
-    const start = bootJs.indexOf(startMarker);
-    const end = bootJs.indexOf(endMarker);
-    if (start < 0 || end < 0) throw new Error("HTML export: could not parse WasmPlayer boot manifest.");
-    const config = JSON.parse(bootJs.slice(start + startMarker.length, end)) as {
-        resources: Record<string, unknown>;
-    };
-    const names = new Set<string>(["dotnet.boot.js", "dotnet.js"]);
-    for (const [group, value] of Object.entries(config.resources)) {
-        if (group === "hash") continue;
-        if (!Array.isArray(value)) continue;
-        for (const item of value) {
-            if (item && typeof item === "object" && typeof (item as { name?: unknown }).name === "string") {
-                names.add((item as { name: string }).name);
-            }
-        }
-    }
-    return [...names].map(n => `_framework/${n}`);
 }
 
 async function fetchPlayerFile(playerBase: string, relativePath: string): Promise<Uint8Array | null> {
@@ -1192,28 +1090,23 @@ async function exportHtmlZip(signal: AbortSignal): Promise<void> {
     const html = buildEmbeddedPlayerHtml(template, packageBytes, embeddedFilename, null, gameTitle, gameDescription, coverPath);
 
     // Shell file list is generated into the AppBundle at WasmPlayer build time
-    // (scripts/write-export-manifest.mjs) so it can't drift from the layout.
+    // (scripts/write-export-manifest.mjs) so it can't drift from the layout; the runtime's
+    // files come from its boot manifest. PlayerExport.PlayerFiles combines the two, leaving out
+    // quest-config.js, which the exported page doesn't load.
     const manifestResponse = await fetch(`${playerBase}export-manifest.json`);
     if (!manifestResponse.ok) {
         throw new Error(`HTML export: player export manifest missing (HTTP ${manifestResponse.status}).`);
     }
-    const shellFiles = await manifestResponse.json() as unknown;
-    if (!Array.isArray(shellFiles) || shellFiles.some(p => typeof p !== "string")) {
-        throw new Error("HTML export: invalid player export manifest.");
-    }
-    // quest-config.js is local-hosting config; the embedded export drops its <script>
-    // tag, so omit it from the zip rather than shipping an unused file.
-    const shellPaths = (shellFiles as string[]).filter(p => p !== "quest-config.js");
-
     const bootBytes = await fetchPlayerFile(playerBase, "_framework/dotnet.boot.js");
     if (!bootBytes) throw new Error("HTML export: WasmPlayer boot manifest missing from /player/.");
-    const frameworkPaths = frameworkPathsFromBoot(new TextDecoder().decode(bootBytes));
+    const paths = _bridge!.GetPlayerExportFiles(await manifestResponse.text(), new TextDecoder().decode(bootBytes));
 
-    const paths = [...new Set([...shellPaths, ...frameworkPaths])];
     const zipEntries = await fetchPlayerFiles(playerBase, paths);
     signal.throwIfAborted();
 
-    for (const path of shellPaths) {
+    // The shell files must all be there; a runtime file the boot manifest names but the player
+    // doesn't have is left out, as before.
+    for (const path of paths.filter(p => !p.startsWith("_framework/"))) {
         if (!zipEntries[path]) throw new Error(`HTML export: required player file missing: ${path}`);
     }
     // Embedded index replaces the stock start-screen template.

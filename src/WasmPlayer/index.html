@@ -33,7 +33,8 @@
         (function () {
             var params = new URLSearchParams(location.search);
             if (params.get('id') || params.get('url') || params.get('source') === 'editor'
-                || params.get('source') === 'local' || window.QuestVivaConfig?.defaultGameUrl) {
+                || params.get('source') === 'local' || params.get('source') === 'qv'
+                || window.QuestVivaConfig?.defaultGameUrl) {
                 document.documentElement.classList.add('qv-booting');
             }
         })();

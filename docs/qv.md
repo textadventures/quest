@@ -49,10 +49,16 @@ It exits 0 when there are no problems, 1 when there are, and 2 when it can't che
 ## `qv publish`
 
 ```
-qv publish <game> [--format quest] [-o <out>] [--force]
+qv publish <game> [--format quest|html|zip] [-o <out>] [--force] [--player <folder>] [--cdn-version <v>]
 ```
 
-Makes a `.quest` package from an `.aslx` game, as the Editor's Publish does: the game with its included libraries inlined, plus the files in its folder. By default it writes it beside the game with the same name, so `game.aslx` makes `game.quest`; `-o` writes it somewhere else. Only `--format quest` exists so far.
+Publishes an `.aslx` game as the Editor's Publish does, in one of its three formats:
+
+- `quest` (the default): a `.quest` package, the game with its included libraries inlined plus the files in its folder, to upload to textadventures.co.uk or play in any Quest player. `game.aslx` makes `game.quest`.
+- `html`: one web page with the package in it, which loads the player from jsDelivr. `game.aslx` makes `game.html`. The player is pinned to `qv`'s own version, which has to be one published on npm, so this needs a released `qv` (one with the player built in, as for `qv preview`). A `qv` built from a checkout refuses unless `--cdn-version` names a published version.
+- `zip`: that page with a copy of the player beside it, to put on any web host. `game.aslx` makes `game-html.zip`. The player is the one built into `qv`, or a checkout's own build, or the folder `--player` names. If the game has cover art, it goes beside the page for link previews.
+
+The page is the player's own, with the game's title, description and IFID in its head; the Editor's two HTML exports use the same code (`PlayerExport` in PlayerCore). `-o` writes the output somewhere else.
 
 It checks the game first, as `qv check` does, and if that finds problems it prints them and doesn't publish, unless `--force` is given. It then prints where it wrote the package and every file it put in it, and warns about:
 
