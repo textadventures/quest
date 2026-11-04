@@ -8,6 +8,8 @@
 // - The themes apply as tokens.
 // - Pane themes are the classic interface's (#2719): v2 ignores one, and a game with
 //   classicinterface still gets it on legacy.
+// - A game's border colour colours v2's border line, and its location bar colours apply without
+//   turning off the classic location style, which v2 doesn't have (#2719).
 // - axe-core finds no WCAG A/AA violations in any of them, light and dark. The one exception is
 //   theme_hotdogstand's own yellow on red, which is below AA by design: nothing but its yellow text
 //   may fail.
@@ -32,7 +34,7 @@ let browser;
 try {
     browser = await chromium.launch();
 
-    async function open({ theme = '', panesTheme = '', classic = false, scheme = 'light', width = 1200 } = {}) {
+    async function open({ theme = '', panesTheme = '', classic = false, extra = '', scheme = 'light', width = 1200 } = {}) {
         const page = await browser.newPage({ viewport: { width, height: 700 }, colorScheme: scheme });
         const errors = [];
         page.on('pageerror', (err) => errors.push(String(err)));
@@ -45,7 +47,7 @@ try {
             body: fixture
                 .replace('<!--THEME-->', theme ? `<inherit name="${theme}"/>` : '')
                 .replace('<!--PANESTHEME-->', (panesTheme ? `<panestheme>${panesTheme}</panestheme>` : '')
-                    + (classic ? '<classicinterface type="boolean">true</classicinterface>' : '')),
+                    + (classic ? '<classicinterface type="boolean">true</classicinterface>' : '') + extra),
         }));
         // A classic game is left to choose its own UI, which is legacy.
         await page.goto(`${baseUrl}/?url=/e2e-fixtures/v2-theme-test.aslx${classic ? '' : '&ui=v2'}`);
@@ -164,6 +166,30 @@ try {
         }));
         check(!applied.v2 && applied.paneBg === 'midnightblue', 'with classicinterface, the Midnight pane theme colours the classic panes');
         await done(page, errors, 'Midnight on legacy');
+    }
+
+    // ── Border and location bar colours ─────────────────────────────────────
+
+    {
+        const borderColour = (page) => page.evaluate(() =>
+            getComputedStyle(document.querySelector('[data-qv-part="border"]')).borderLeftColor);
+        const plain = await open();
+        const hairline = await borderColour(plain.page);
+        await done(plain.page, plain.errors, 'default border');
+
+        const { page, errors } = await open({
+            extra: '<bordercolour>red</bordercolour><customlocationcolour>navy</customlocationcolour>'
+                + '<customlocationtextcolour>white</customlocationtextcolour>',
+        });
+        check(hairline !== 'rgb(255, 0, 0)' && await borderColour(page) === 'rgb(255, 0, 0)',
+            `a game's border colour colours the border line (${hairline} by default)`);
+        const bar = await page.evaluate(() => {
+            const style = getComputedStyle(document.querySelector('.qv-topbar'));
+            return { bg: style.backgroundColor, fg: style.color };
+        });
+        check(bar.bg === 'rgb(0, 0, 128)' && bar.fg === 'rgb(255, 255, 255)',
+            `the location bar takes the game's colours with the classic location style still on (${bar.fg} on ${bar.bg})`);
+        await done(page, errors, 'border and location bar colours');
     }
 
     console.log('\nAll checks passed.');

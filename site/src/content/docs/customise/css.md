@@ -104,7 +104,7 @@ Each of these goes in the user interface initialisation script unless it says ot
 
 ### Colouring the location bar
 
-For plain colours, untick "Classic location style" on the Interface tab and set "Location bar colour", "Location text colour" and "Location border colour". For anything more, use CSS:
+For plain colours, set the location bar's "Background colour", "Text colour" and "Border colour" on the Appearance tab. With the classic interface, untick "Classic location style" first. For anything more, use CSS:
 
 ```quest
 JS.setCss ("#qv-status", "background:#3b2f2f;color:wheat;border:none")

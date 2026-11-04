@@ -322,6 +322,8 @@ export class QvPlayer extends HTMLElement {
         // background too (v2.css).
         this.toggleAttribute('data-qv-own-accent', !!this.style.getPropertyValue('--qv-accent'));
         this.toggleAttribute('data-qv-own-background', !!this.style.getPropertyValue('--qv-bg'));
+        // The page's border line is a faint hairline until the game gives it a colour (v2.css).
+        this.toggleAttribute('data-qv-own-border', !!this.style.getPropertyValue('--qv-border-colour'));
     }
 
     setLocation(html: string): void {

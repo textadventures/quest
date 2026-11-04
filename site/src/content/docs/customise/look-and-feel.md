@@ -7,8 +7,8 @@ Three tabs on the "game" element control how your game looks and how it describe
 
 | You want to change | Tab |
 |---|---|
-| How it looks: the theme, fonts, colours, the background, and the look of links, menus, the location bar, border and command bar | [Appearance](#the-appearance-tab) |
-| What's on screen and how it behaves: the panes, command bar, location bar, border, map, picture frame, links and menus | [Interface](#the-interface-tab) |
+| How it looks: the theme, fonts and colours, and the look of the location bar, command bar and verb menus | [Appearance](#the-appearance-tab) |
+| What's on screen and how it behaves: the location bar, border, command bar, picture frame, panes, map, links, menus and game text | [Interface](#the-interface-tab) |
 | What the player sees on entering a room or typing `LOOK` | [Room Descriptions](#the-room-descriptions-tab) |
 
 Everything here can be changed without code. Each option is also an attribute of `game`, so a script can change it during play too, as described [at the end](#changing-the-look-during-the-game). For anything these tabs can't do, see [Styling the player](/customise/css).
@@ -33,108 +33,86 @@ A theme only provides starting values. Anything you set yourself on the Appearan
 
 ### Text
 
-- **Colour** - the colour of the game text.
 - **Base font** - a font from the list, each with fallbacks, such as "Georgia, serif". These work on every device.
 - **Web font** - optionally, any font from [Google Fonts](https://fonts.google.com/) (the **Browse available web fonts** link opens the catalogue). The player's browser downloads it from Google when the game starts. If it can't - because the player is offline, for example - the base font is used instead, so choose a base font that's a reasonable substitute.
 - **Font size** - in points. The default is 12.
+- **Text colour** - the colour of the game text.
+- **Interface font** - the font of the location bar, panes, menus and buttons. Leave it empty for the player's own.
 
-For all the colour boxes on this tab, you can choose a colour name from the list or type any HTML colour, such as `#336699`.
+For all the colour boxes on these tabs, you can choose a colour name from the list or type any HTML colour, such as `#336699`.
 
-### Links
-
-- **Link colour** and **Underline hyperlinks** - how links look, when hyperlinks are on (on the Interface tab). An object can have its own link colour on its [Object tab](/customise/object-verbs#the-object-tab).
-
-### Background
+### Colours
 
 The page is the column the text appears in, and the margins are either side of it. On a phone, the page fills the screen and the margins disappear.
 
+- **Accent colour** - the game's one highlight colour, for links, the compass and the command prompt. Leave it empty to use the link colour if you've changed the colours, or the player's own if you haven't.
+- **Link colour** and **Underline links** - how links look, when objects and exits are links (on the Interface tab). An object can have its own link colour on its [Object tab](/customise/object-verbs#the-object-tab).
 - **Page colour** - the background of the page.
-- **Set page opacity** and **Opacity** - make the page partly see-through, from 0 (clear) to 1 (solid), so a margin image shows through it.
-- **Margin colour** - the colour either side of the page.
-- **Margin image** - a picture to fill the margins instead.
-- **Colour blend for background?** - replaces the page and margin colours with a fade from **Colour at top** to **Colour at bottom**. The command bar keeps the page colour, so it shows up as a box of that colour against the blend.
+- **Margin colour** and **Margin image** - the colour either side of the page, or a picture to fill it instead.
+- **Border colour** - the colour of the border either side of the page, when it's shown (on the Interface tab).
 
-### Game panes
-
-With the classic interface (see [Advanced](#advanced)), **Colour scheme for panes** picks the panes' colours: Classic (light blue, the default), Midnight, Nature, Vanilla, Black, Blood, Tranquil or Parchment. Otherwise the panes follow the game's own colours.
+With the [classic interface](#advanced), **Colour scheme for panes** picks the panes' colours: Classic (light blue, the default), Midnight, Nature, Vanilla, Black, Blood, Tranquil or Parchment. Otherwise the panes follow the game's own colours.
 
 ### Location bar
 
-When the location bar is shown (on the Interface tab):
+When the location bar is shown (on the Interface tab), give it your own **Background colour**, **Text colour**, **Border colour** and **Background image**. Without them, it follows the game's colours.
 
-- **Classic location style** - the blue bar. Untick it to use your own **Location bar colour**, **Location text colour**, **Location border colour** and **Location Bar Background Image**. With no colour set, the bar is transparent.
-
-### Border
-
-When the border is shown (on the Interface tab), choose its colour with **Border colour**.
+With the classic interface, these appear once you untick **Classic location style**, which is the classic interface's blue bar.
 
 ### Command bar
 
-When the command bar is shown (on the Interface tab):
+When the command bar is shown (on the Interface tab), **Plain command bar with a prompt** drops the box or line the player types into, and shows a **Prompt** in front of what they type. The default is `>`. Any character works, such as `▶`, but check it appears in the fonts your players will have.
 
-- **Grey shadow box for the command bar** - a soft grey glow around the box.
-- **Use a cursor instead of a box for commands?** - drops the box and shows a prompt in front of what the player types. Enter the prompt in **Cursor for commands**; the default is `>`. Any character works, such as `▶`, but check it appears in the fonts your players will have.
+### Verb menus
 
-### Verb Menus
+When objects are links, **Font** and **Font size** style the pop-up menu of verbs that appears when the player clicks an object. On a phone, the menu's text is made larger if needed, so it's easy to tap.
 
-When hyperlinks are on, these style the pop-up menu of verbs that appears when the player clicks an object: **Font**, **Font size**, **Background**, **Foreground**, **Hover background** and **Hover foreground**. On a phone, the menu's text is made larger if needed, so it's easy to tap.
+### Advanced
 
-### Layout
+These are under **Advanced** at the bottom of the tab.
 
-These are under **Advanced** at the bottom of the tab, along with the game's [stylesheet](/customise/css).
-
-- **Set a custom display width** - the width of the game in pixels, including the panes. The default is 950. The panes move into the ☰ drawer whenever the window is narrower than this, so a very wide setting puts laptops into the phone layout too.
+- **Set a custom display width** - the width of the game in pixels. The panes move into the ☰ drawer whenever the window is narrower than this, so a very wide setting puts laptops into the phone layout too.
 - **Set custom padding** - the space around the text, in pixels: **Top**, **Bottom**, **Left** and **Right**.
+- **Stylesheet** - your own CSS, for anything these options can't do. See [Styling the player](/customise/css).
+
+### Options from older versions
+
+Some options from older versions of Quest are no longer offered: page opacity, a colour blend in the margins, a shadow around the command bar, and the verb menu's colours. A game that already uses one still shows it, with a **Remove** button, and it still works. The stylesheet can do the same for a new game.
 
 ## The Interface tab
 
+### On screen
+
+- **Show location bar** - the bar across the top of the screen, with the current room's name. It also holds the Save / Load button and, on a phone, the ☰ button, so it stays on screen even if you hide the room name.
+- **Show border** - a thin line either side of the page. Its colour is on the Appearance tab.
+- **Show command bar** - on by default. Without it, the player can only play by clicking links and panes. See [The player interface](/customise/player-interface) before turning it off. **Hint shown in the empty command bar** is a placeholder, such as "What now?".
+- **Show a picture frame above the text** - a fixed area for a picture, which can change from room to room. **Empty the picture frame in rooms without a picture** clears it in rooms without one; otherwise the last picture stays. See [The picture frame](/howto/media/pictures#the-picture-frame).
+
 ### Game panes
 
-**Show panes (Inventory, Places and Objects, Compass)** is on by default. The panes sit to the right of the text on a wide screen. On a phone, or any window narrower than the game's width, they move into a drawer that the player opens with the ☰ button at the top right.
+**Show panes (inventory, places and objects, compass)** is on by default. **Where the panes go** puts them beside the game (in a drawer on a phone), in a sheet opened from beside the command bar, or nowhere, and **On a phone** can choose differently for a narrow screen.
 
 With panes on, you can also:
 
-- **Turn off compass**, **Turn off inventory** or **Turn off places and objects** - hide individual panes. The Status pane appears by itself whenever there are [status attributes](/reference/attributes/status) to show.
-- **Alternative pane order (status and compass at top)** - put Status and Compass above Inventory, so they don't move up and down as the inventory grows.
+- **Hide the compass**, **Hide the inventory** or **Hide places and objects** - hide individual panes. The Status pane appears by itself whenever there are [status attributes](/reference/attributes/status) to show.
+- **Put status and compass above the inventory** - so they don't move up and down as the inventory grows.
 - **Show a command pane** and **Show a custom status pane** - extra panes you fill from a script. See [Panes](/customise/panes).
-
-### Command bar
-
-- **Show command bar** - on by default. Without it, the player can only play by clicking links and panes. See [The player interface](/customise/player-interface) before turning it off.
-
-### Location bar
-
-The bar across the top of the screen shows the current room's name. It also holds the Save / Load button and, on a phone, the ☰ button, so it stays on screen even if you hide the room name.
-
-- **Show location bar** - show the room name.
-
-### Border
-
-**Show border** draws a thin line either side of the page. Its colour is on the Appearance tab.
 
 ### Map
 
-**Map and Drawing Grid** adds a map that draws itself as the player explores. **Scale**, **Height (pixels)**, **Exit width** and **Exit colour** control how it looks, and **Map should respond to clicks?** lets your game react when the player clicks it. See [Showing a map](/howto/rooms/map).
+**Show a map that draws itself as the player explores** adds the map. **Scale (pixels per grid square)**, **Height (pixels)**, **Exit width** and **Exit colour** control how it looks, **Map can be dragged and zoomed** lets the player move it, and **Map position** puts it above the game or in the panes. **Respond to clicks on the map**, under Advanced, lets your game react when the player clicks it. See [Showing a map](/howto/rooms/map).
 
-### Picture frame
+### Links and menus
 
-**Picture frame** adds a fixed area above the text for a picture, which can change from room to room. **Clear picture panel if room has no picture** empties it in rooms without one; otherwise the last picture stays. See [The picture frame](/howto/media/pictures#the-picture-frame).
+- **Make objects and exits in the text into links** - on by default. Clicking an object shows a menu of its [display verbs](/customise/object-verbs), and clicking an exit goes that way. Untick it for plain text. Links you write yourself with `{command:...}`, `{exit:...}` and `{page:...}` still work - see [Links](/howto/text/text-processor#links).
+- **Deactivate a command link once it's been clicked** - each `{command:...}` link stops working after one use.
+- **Keep a menu in the text after a choice is made** and **Print the chosen menu option** - for menus the player chooses from with numbered links: the "Show a menu" script command, and the "Which do you mean?" menu when a command matches more than one object. The `ShowMenu()` function (see [Asking the player](/howto/scripting/asking-the-player#menus)) always removes its menu and prints the choice, whatever these are set to.
 
-### Hyperlinks
+### Game text
 
-- **Hyperlinks: players can access object verbs by clicking object names** - on by default. Objects and exits named in the text become links: clicking an object shows a menu of its [display verbs](/customise/object-verbs), and clicking an exit goes that way. Untick it for plain text. Links you write yourself with `{command:...}`, `{exit:...}` and `{page:...}` still work - see [Links](/howto/text/text-processor#links).
-- **After using a command hyperlink, deactivate it** - each `{command:...}` link stops working once it has been clicked.
-
-Their colour and underlining are on the Appearance tab.
-
-### Menus
-
-These apply to menus the player chooses from with numbered links: the "Show a menu" script command, and the "Which do you mean?" menu when a command matches more than one object.
-
-- **Do not clear menus after selections are made.** - leaves the menu in the text, with its links disabled, instead of removing it.
-- **Print responses after making menu selections.** - prints the chosen option, like an echoed command.
-
-The `ShowMenu()` function (see [Asking the player](/howto/scripting/asking-the-player#menus)) always removes its menu and prints the choice, whatever these are set to.
+- **Scroll to new text as it appears** - on by default.
+- **A click anywhere continues after a wait** - not just the Continue button.
+- **Fade the text from earlier turns** - so the latest turn stands out.
 
 ### Advanced
 

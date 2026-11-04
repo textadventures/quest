@@ -35,10 +35,10 @@ try {
     await page.getByRole('button', { name: 'Appearance', exact: true }).click();
 
     const advancedCheckbox = page.getByText('Set a custom display width', { exact: true });
-    const nonAdvancedCheckbox = page.getByText('Colour blend for background?', { exact: true });
+    const nonAdvancedCheckbox = page.getByText('Underline links', { exact: true });
 
     await nonAdvancedCheckbox.waitFor({ state: 'visible', timeout: 5000 });
-    console.log('PASS: non-advanced control ("Colour blend for background?") renders inline');
+    console.log('PASS: non-advanced control ("Underline links") renders inline');
 
     const isAdvancedVisibleBeforeExpand = await advancedCheckbox.isVisible().catch(() => false);
     if (isAdvancedVisibleBeforeExpand) throw new Error('Advanced control should be hidden until the expander is opened');

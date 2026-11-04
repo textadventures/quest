@@ -111,6 +111,63 @@ public class InterfaceTabOptionTests
     }
 
     [TestMethod]
+    public async Task RetiredOptions_ShowOnlyInAGameThatHasSetThem()
+    {
+        using var controller = await LoadController("English");
+        var game = controller.GetEditorData("game")!;
+        var controls = GameControls(controller);
+        string[] retired =
+        [
+            "setbackgroundopacity", "colourblend", "shadowbox",
+            "menubackground", "menuforeground", "menuhoverbackground", "menuhoverforeground"
+        ];
+
+        foreach (var attribute in retired)
+        {
+            Assert.IsFalse(await controls.Single(c => c.Attribute == attribute).IsControlVisible(game), $"{attribute} in a new game");
+        }
+
+        game.SetAttribute("colourblend", true);
+        game.SetAttribute("menubackground", "Black");
+        foreach (var attribute in new[] { "colourblend", "menubackground" })
+        {
+            var control = controls.Single(c => c.Attribute == attribute);
+            Assert.IsTrue(await control.IsControlVisible(game), $"{attribute} once set");
+            Assert.IsTrue(await control.IsControlVisibleOnlyBecauseSet(game), $"{attribute} is flagged as left over");
+        }
+    }
+
+    [TestMethod]
+    public async Task OnV2_TheLocationBarColoursShow_WithoutTheClassicLocationStyle()
+    {
+        using var controller = await LoadController("English");
+        var game = controller.GetEditorData("game")!;
+        var controls = GameControls(controller);
+
+        // classiclocation is on by default, which hid the colours.
+        Assert.IsFalse(await controls.Single(c => c.Attribute == "classiclocation").IsControlVisible(game));
+        Assert.IsTrue(await controls.Single(c => c.Attribute == "customlocationcolour").IsControlVisible(game));
+
+        game.SetAttribute("classicinterface", true);
+        Assert.IsTrue(await controls.Single(c => c.Attribute == "classiclocation").IsControlVisible(game));
+        Assert.IsFalse(await controls.Single(c => c.Attribute == "customlocationcolour").IsControlVisible(game));
+    }
+
+    [TestMethod]
+    public async Task DeactivatingCommandLinks_DoesNotNeedObjectLinks()
+    {
+        // {command:...} links work whether or not objects and exits are links.
+        using var controller = await LoadController("English");
+        var game = controller.GetEditorData("game")!;
+        game.SetAttribute("enablehyperlinks", false);
+
+        Assert.IsTrue(await GameControls(controller).Single(c => c.Attribute == "deactivatecommandlinks").IsControlVisible(game));
+    }
+
+    private static List<IEditorControl> GameControls(EditorController controller) =>
+        controller.GetEditorDefinition(controller.GetElementEditorName("game")!).Tabs.Values.SelectMany(t => t.Controls).ToList();
+
+    [TestMethod]
     public async Task TheGame_HasNoDisplayTab()
     {
         using var controller = await LoadController("English");

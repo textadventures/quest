@@ -263,7 +263,7 @@ That is the specification met. The rest of this chapter is the difference betwee
 
 ## The look of it
 
-The puzzle in Cloak of Darkness is working out that the darkness is something you are carrying. An inventory pane listing a cloak gives that away before the player has begun, so this game wants the old school treatment: no hyperlinks and no panes at all, both on the _Interface_ tab. Turn off the location bar on the same tab, and turn on the command bar cursor on the _Appearance_ tab.
+The puzzle in Cloak of Darkness is working out that the darkness is something you are carrying. An inventory pane listing a cloak gives that away before the player has begun, so this game wants the old school treatment: no hyperlinks and no panes at all, both on the _Interface_ tab. Turn off the location bar on the same tab, and tick "Plain command bar with a prompt" on the _Appearance_ tab.
 
 Then pick a font and colours to suit. The finished game uses Kavivanar, a handwriting font that is still perfectly legible, in pink on `#333` - a very dark grey, which is softer to read against than pure black. Any colour box takes a hex value of three or six digits, beginning with `#`.
 

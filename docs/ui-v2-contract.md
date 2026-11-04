@@ -259,9 +259,9 @@ Values are CSS values, as a stylesheet would write them: colours as any CSS colo
 | `--qv-bg-blend-top`, `--qv-bg-blend-bottom` | `colourblendtop`, `colourblendbottom` |
 | `--qv-output-width` | `customwidth` |
 | `--qv-padding-top`, `-bottom`, `-left`, `-right` | `custompadding*` |
-| `--qv-border-colour` | `bordercolour`. `showborder = false` is `setVisible("border", false)`, not a token |
+| `--qv-border-colour` | `bordercolour`, which on v2 also colours the page's border line (otherwise a fainter hairline). `showborder = false` is `setVisible("border", false)`, not a token |
 | `--qv-pane-fg`, `--qv-pane-bg`, `--qv-pane-heading-fg`, `--qv-pane-heading-bg`, `--qv-pane-highlight` | `panestheme`, only with `classicinterface` (#2719): the seven named themes become token sets for legacy. On v2 the panes follow the game's own colours, and a stylesheet can set these tokens |
-| `--qv-status-fg`, `--qv-status-bg`, `--qv-status-border`, `--qv-status-image` | `customlocationtextcolour`, `customlocationcolour`, `customlocationbordercolour`, `locationbarimage` |
+| `--qv-status-fg`, `--qv-status-bg`, `--qv-status-border`, `--qv-status-image` | `customlocationtextcolour`, `customlocationcolour`, `customlocationbordercolour`, `locationbarimage`. On v2 each is sent once the game sets it. With `classicinterface` they're sent only once the game turns off `classiclocation`, legacy's blue bar, as before (#2719) |
 | `--qv-menu-fg`, `--qv-menu-bg`, `--qv-menu-hover-fg`, `--qv-menu-hover-bg`, `--qv-menu-font`, `--qv-menu-font-size` | `menuforeground`, … `menufontsize`. The four colours only once one differs from the editor's defaults On a narrow layout, `--qv-menu-font-size` is at least 1rem. |
 | `--qv-command-fg`, `--qv-command-bg` | command bar format |
 
@@ -334,7 +334,9 @@ What it may rely on is the rest of this contract: the `--qv-*` tokens and the `d
 The game's Appearance and Interface tabs show an option only for the interface it affects (#2719). A game saved by the editor is 610, so `classicinterface` alone says which one it gets:
 
 - **v2 only**, hidden with `classicinterface`: `layoutpreset` and `narrowlayoutpreset` (legacy's `setLayoutPreset` only acts on `nopanes`, which *Show panes* already covers), `accentcolour` (legacy ignores `--qv-accent`), `interfacefont` (legacy ignores `--qv-font-ui`) and `mapposition` (legacy's `setMapPosition` does nothing).
-- **Legacy only**, shown only with `classicinterface`: `panestheme`, which 610 Core sends only to the classic interface.
+- **Legacy only**, shown only with `classicinterface`: `panestheme`, which 610 Core sends only to the classic interface, and `classiclocation`, which v2 has no equivalent of.
+
+Some older options are retired from the editor (#2719): `setbackgroundopacity`, `colourblend`, `shadowbox` and the four verb menu colours. They're shown only in a game that has already set them (`<alsodisplayifset>`), with a Remove button, and 610 Core still applies them, so the tokens and presets behind them stay in the contract.
 
 Every other option on the two tabs reaches both interfaces, through `QuestUI` or a token.
 

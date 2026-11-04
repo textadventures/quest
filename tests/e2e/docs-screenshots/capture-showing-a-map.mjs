@@ -113,7 +113,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await createLocalDraft(page, baseUrl, 'Tutorial Game');
     await selectTreeNode(page, 'game');
     await openTab(page, 'Interface');
-    await toggleFeature(page, 'Map and Drawing Grid:');
+    await toggleFeature(page, 'Show a map that draws itself');
 
     await selectTreeNode(page, 'room');
     await addElement(page, 'Add Room', 'kitchen');
@@ -196,7 +196,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await createLocalDraft(page, baseUrl, 'Tutorial Game');
     await selectTreeNode(page, 'game');
     await openTab(page, 'Interface');
-    await toggleFeature(page, 'Map and Drawing Grid:');
+    await toggleFeature(page, 'Show a map that draws itself');
 
     await selectTreeNode(page, 'room');
     await page.locator('span:has-text("Name:")').locator('..').locator('input').fill('Lobby W');
@@ -297,7 +297,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await createLocalDraft(page, baseUrl, 'Tutorial Game');
     await selectTreeNode(page, 'game');
     await openTab(page, 'Interface');
-    await toggleFeature(page, 'Map and Drawing Grid:');
+    await toggleFeature(page, 'Show a map that draws itself');
     // Default grid canvas height (300px) clips the top of this layout (Lounge ends up out of
     // frame above Kitchen) - confirmed live by screenshotting the raw player page, not just the
     // cropped #gridPanel. Give it more room.
@@ -426,7 +426,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await createLocalDraft(page, baseUrl, 'Tutorial Game');
     await selectTreeNode(page, 'game');
     await openTab(page, 'Interface');
-    await toggleFeature(page, 'Map and Drawing Grid:');
+    await toggleFeature(page, 'Show a map that draws itself');
     await mapField(page, 'Height (pixels):').fill('450');
 
     await selectTreeNode(page, 'room');

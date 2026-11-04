@@ -117,12 +117,33 @@
       if (HasString(game, "bordercolour")) {
         AddUIToken (tokens, "--qv-border-colour", game.bordercolour)
       }
-      if (not game.classiclocation) {
+      if (GetBoolean(game, "classicinterface")) {
+        // The classic interface keeps its blue location bar unless the game turns off the
+        // classic location style, which gives the bar the game's colours, or none.
+        if (not game.classiclocation) {
+          if (HasString(game, "customlocationcolour")) {
+            AddUIToken (tokens, "--qv-status-bg", game.customlocationcolour)
+          }
+          else {
+            AddUIToken (tokens, "--qv-status-bg", "transparent")
+          }
+          if (HasString(game, "customlocationtextcolour")) {
+            AddUIToken (tokens, "--qv-status-fg", game.customlocationtextcolour)
+          }
+          if (HasString(game, "customlocationbordercolour")) {
+            AddUIToken (tokens, "--qv-status-border", "1px solid " + game.customlocationbordercolour)
+          }
+          else {
+            AddUIToken (tokens, "--qv-status-border", "none")
+          }
+          AddUIToken (tokens, "--qv-status-image", LocationBarImageToken())
+        }
+      }
+      else {
+        // v2 has no classic location style: its bar follows the game's colours, and takes
+        // each location bar option the game sets.
         if (HasString(game, "customlocationcolour")) {
           AddUIToken (tokens, "--qv-status-bg", game.customlocationcolour)
-        }
-        else {
-          AddUIToken (tokens, "--qv-status-bg", "transparent")
         }
         if (HasString(game, "customlocationtextcolour")) {
           AddUIToken (tokens, "--qv-status-fg", game.customlocationtextcolour)
@@ -130,16 +151,10 @@
         if (HasString(game, "customlocationbordercolour")) {
           AddUIToken (tokens, "--qv-status-border", "1px solid " + game.customlocationbordercolour)
         }
-        else {
-          AddUIToken (tokens, "--qv-status-border", "none")
+        statusimage = LocationBarImageToken()
+        if (statusimage <> "none") {
+          AddUIToken (tokens, "--qv-status-image", statusimage)
         }
-        statusimage = "none"
-        if (HasString(game, "locationbarimage")){
-          if (not Trim(game.locationbarimage) = ""){
-            statusimage = "url(\"" + GetFileURL(game.locationbarimage) + "\")"
-          }
-        }
-        AddUIToken (tokens, "--qv-status-image", statusimage)
       }
       JS.QuestUI.setVisible ("location", game.showlocation)
       if (HasString(game, "marginscolour")) {
@@ -222,6 +237,17 @@
       if (HasScript(game, "inituserinterface")) {
         do (game, "inituserinterface")
       }
+  ]]></function>
+
+  <function name="LocationBarImageToken" type="string">
+    <![CDATA[
+      // The location bar's background image as a CSS value, or "none" without one.
+      if (HasString(game, "locationbarimage")) {
+        if (not Trim(game.locationbarimage) = "") {
+          return ("url(\"" + GetFileURL(game.locationbarimage) + "\")")
+        }
+      }
+      return ("none")
   ]]></function>
 
   <function name="AddPanesThemeTokens" parameters="tokens, theme">

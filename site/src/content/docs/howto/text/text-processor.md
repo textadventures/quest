@@ -146,11 +146,11 @@ msg ("Read more on <a href=\"https://questviva.com\">the Quest Viva website</a>.
 
 ### Hyperlink settings
 
-The game object's _Interface_ tab has a _Hyperlinks_ section, and the _Appearance_ tab has the links' colour and underlining:
+The game object's _Interface_ tab has a _Links and menus_ section, and the _Appearance_ tab has the links' colour and underlining:
 
-- **Hyperlinks: players can access object verbs by clicking object names** - on by default. Untick it and `{object:...}` shows plain text, as do the objects and exits listed in room descriptions. `{command:...}`, `{exit:...}` and `{page:...}` links still appear.
-- **Link colour** and **Underline hyperlinks** (on the _Appearance_ tab) - how links look.
-- **After using a command hyperlink, deactivate it** - each command link stops working once the player has clicked it.
+- **Make objects and exits in the text into links** - on by default. Untick it and `{object:...}` shows plain text, as do the objects and exits listed in room descriptions. `{command:...}`, `{exit:...}` and `{page:...}` links still appear.
+- **Link colour** and **Underline links** (on the _Appearance_ tab) - how links look.
+- **Deactivate a command link once it's been clicked** - each command link stops working once the player has clicked it.
 
 In code, these are `game.enablehyperlinks`, `game.defaultlinkforeground`, `game.underlinehyperlinks` and `game.deactivatecommandlinks`.
 

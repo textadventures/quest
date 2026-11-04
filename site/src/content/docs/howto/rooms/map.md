@@ -7,12 +7,12 @@ sidebar:
 
 Many players map a text adventure with pencil and paper as they go. Quest Viva can draw that map for them: each room appears on a grid the first time the player reaches it, with a dot showing where they are. This page shows you how to turn the map on, tune how each room and exit is drawn, and deal with the cases the automatic map can't work out by itself - levels, teleporting and clicks.
 
-To turn the map on, select "game" in the tree, go to the _Interface_ tab, and tick "Map and Drawing Grid". More settings appear underneath:
+To turn the map on, select "game" in the tree, go to the _Interface_ tab, and tick "Show a map that draws itself as the player explores". More settings appear underneath:
 
-- **Scale** - the width and height of one grid square, in pixels (30 by default).
+- **Scale (pixels per grid square)** - the width and height of one grid square, in pixels (30 by default).
 - **Height (pixels)** - the height of the map panel (300 by default).
 - **Exit width** and **Exit colour** - how the lines between rooms are drawn.
-- **Map should respond to clicks?** - see [Handling player clicks](#handling-player-clicks).
+- **Respond to clicks on the map**, under Advanced - see [Handling player clicks](#handling-player-clicks).
 
 Run your game and move between rooms. When the player first enters a room, it's drawn on the map, and the yellow dot shows where they are. This is what it looks like for the tutorial game:
 
@@ -208,7 +208,7 @@ Going back works the same way, with `TeleportTo (station one)`. Each time the pl
 
 ### Handling player clicks
 
-To make the map respond when the player clicks it, tick "Map should respond to clicks?" on the game's _Interface_ tab, then override the `GridSquareClick` function (see [Overriding functions](/customise/overriding)): in the tree options, turn on "Show Library Elements", select `GridSquareClick`, and click "Copy into your game". It's given the `x` and `y` of the grid square that was clicked.
+To make the map respond when the player clicks it, tick "Respond to clicks on the map" under Advanced on the game's _Interface_ tab, then override the `GridSquareClick` function (see [Overriding functions](/customise/overriding)): in the tree options, turn on "Show Library Elements", select `GridSquareClick`, and click "Copy into your game". It's given the `x` and `y` of the grid square that was clicked.
 
 Paste this into your copy of the function. It finds the room the player clicked on, if any, among the rooms already drawn on the current level:
 
