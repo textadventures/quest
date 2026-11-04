@@ -45,6 +45,8 @@ const llmsTxtOptions = {
     promote: ["reference/**", "understanding/**", "howto/**"],
     demote: ["tutorial/**", "contribute/**"],
     exclude: ["tutorial/**", "contribute/**"],
+    // The "Section titled ..." link Starlight puts beside every heading.
+    customSelectors: { all: [".sl-anchor-link"] },
 };
 
 // https://astro.build/config
