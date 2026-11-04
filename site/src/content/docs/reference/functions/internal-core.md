@@ -616,6 +616,11 @@ ListObjectContents(object)
 
 Lists the contents of the specified object, only if [isopen](/reference/attributes/all#isopen) and [listchildren](/reference/attributes/all#listchildren) are set.
 
+## LocationBarImageToken
+```quest
+string LocationBarImageToken()
+```
+
 ## MapPOVCoordinate
 ```quest
 MapPOVCoordinate(sourcedata, targetdata, name, offset)
