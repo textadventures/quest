@@ -9,10 +9,12 @@ Note that this is about XML elements in the ASLX file, which is not quite the sa
 ## asl
 
 ```xml
-<asl version="580">all game content</asl>
+<asl version="610">all game content</asl>
 ```
 
 To load any game, the top-level element must be an \<asl\> element as shown above. All other XML elements in the file must appear within this tag.
+
+The `version` is required. The current editor saves 610; Quest Viva 6.0 saves 600, and can't open a game with a higher version. See [Game file versions](/reference/asl-versions).
 
 ## library
 
@@ -28,7 +30,27 @@ The top-level element of any library must be a \<library\> element as shown abov
 <include ref="filename"/>
 ```
 
-Loads the specified library.
+Loads the specified library. A game normally includes its language library and then Core:
+
+```xml
+<include ref="English.aslx" />
+<include ref="Core.aslx" />
+```
+
+## attr
+
+```xml
+<attr name="attribute name" type="type">value</attr>
+```
+
+Sets an attribute on the element it's inside. This is another way of writing an attribute, for names that can't be written as an XML element name. These two lines are the same:
+
+```xml
+<look>Just a sofa.</look>
+<attr name="look">Just a sofa.</attr>
+```
+
+The editor writes this form for any attribute whose name has something other than letters and numbers in it (such as `feature_container` or `_initialise_`), or whose name is one of the element names on this page (or `output`). The `type` works the same way as it does in the shorter form. See [The attr form](/reference/aslx#the-attr-form).
 
 ## template
 
@@ -327,6 +349,22 @@ Creates an object.
 
 Objects can contain nested object definitions. In that case, all sub-objects are children of the parent object. This is how rooms work - rooms are just objects which contain other objects.
 
+The editor gives every room `<inherit name="editor_room" />` and every other object `<inherit name="editor_object" />`, and the player object `<inherit name="editor_player" />` as well. These tell the editor which tabs to show; a game plays the same without them. See [What's required, and what's there for the editor](/reference/aslx#whats-required-and-whats-there-for-the-editor).
+
+```xml
+<object name="lounge">
+  <inherit name="editor_room" />
+  <object name="player">
+    <inherit name="editor_object" />
+    <inherit name="editor_player" />
+  </object>
+  <object name="sofa">
+    <inherit name="editor_object" />
+    <look>Just a sofa.</look>
+  </object>
+</object>
+```
+
 Object attributes handled by Core.aslx:
 
 -   [alt](/reference/attributes/all#alt)
@@ -437,6 +475,7 @@ Object types defined by Core.aslx:
 -   [edible](/reference/attributes/all#edible)
 -   [editor\_object](/reference/attributes/all#editor_object)
 -   [editor\_room](/reference/attributes/all#editor_room)
+-   editor\_room\_object - for an object that is also a room, such as a vehicle
 -   [female](/reference/attributes/all#female)
 -   [femaleplural](/reference/attributes/all#femaleplural)
 -   [male](/reference/attributes/all#male)
@@ -459,6 +498,14 @@ Creates an exit from the exit's parent room to the specified room.
 The alias might be something like "east", "north", or the name of a room that the player can go to.
 
 The name is optional. If no name is specified, Quest Viva will generate a name for the exit.
+
+The editor gives a compass exit a direction type too, such as `eastdirection`, `updirection` or `indirection`. The map uses it to place the room the exit leads to:
+
+```xml
+<exit alias="east" to="hall">
+  <inherit name="eastdirection" />
+</exit>
+```
 
 Attributes:
 
@@ -558,7 +605,7 @@ Note that as of 5.7.2, turnscripts run in alphabetic order (in earlier versions 
 Specifies an implied type. For example, the "alt" attribute on an object is usually a list, so to save having to specify the type each time we can use this:
 
 ```xml
-<implied element="object" property="alt" type="list">
+<implied element="object" property="alt" type="simplestringlist"/>
 ```
 
 This means we can specify an alt attribute without specifying the type:
