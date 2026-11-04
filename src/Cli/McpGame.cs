@@ -1,5 +1,6 @@
 using System.Text;
 using ModelContextProtocol;
+using QuestViva.Engine;
 using QuestViva.PlayerCore;
 
 namespace QuestViva.Cli;
@@ -123,6 +124,100 @@ internal sealed class McpGame(FileInfo? game, int? seed, bool textOnly = false)
             "No game is loaded. Pass the path of a game file (.aslx or .quest) to start_game.");
         return CheckCommand.Format(await GameCheck.CheckAsync(GameFiles.Load(current)));
     });
+
+    // The game's functions, read from its file as it is now: its own and those of libraries the
+    // author included, and with includeBuiltIn those of the libraries built into Quest too.
+    public Task<string> ListFunctionsAsync(string? filter, bool includeBuiltIn) => RunAsync(async () =>
+    {
+        var functions = (await LoadFunctionsAsync())
+            .Where(f => includeBuiltIn || !f.BuiltIn)
+            .Where(f => filter == null || f.Name.Contains(filter, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        var result = new StringBuilder();
+        foreach (var function in functions)
+        {
+            result.Append(Signature(function)).Append("  [").Append(Source(function)).Append("]\n");
+        }
+
+        if (functions.Count == 0)
+        {
+            result.Append(filter == null ? "The game has no functions of its own." : $"No functions match '{filter}'.");
+            result.Append(includeBuiltIn ? "\n" : " Pass include_built_in to search Quest's built-in libraries too.\n");
+        }
+
+        result.Append("\nFunctions built into the engine itself, such as GetBoolean and ListCount, aren't listed: " +
+                      "look them up with docs. They take precedence over a game function with the same name.\n");
+        return result.ToString();
+    });
+
+    // One function: where it comes from, its definition, and its entry in the docs if it has one.
+    public Task<string> DescribeFunctionAsync(string name) => RunAsync(async () =>
+    {
+        var functions = await LoadFunctionsAsync();
+        var function = functions.FirstOrDefault(f => f.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+        var docs = QuestDocs.Pages.SelectMany(p => p.Sections)
+            .Where(s => s.Page.Id.StartsWith("reference/", StringComparison.Ordinal) &&
+                        s.Heading.Equals(name, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        if (function == null)
+        {
+            if (docs.Count > 0)
+            {
+                return $"{name} is built into the engine, not defined in the game or a library. From the docs:\n\n" +
+                       string.Join("\n", docs.Select(d => QuestDocs.Read($"{d.Page.Id}#{d.Anchor}")));
+            }
+
+            var similar = functions.Where(f => f.Name.Contains(name, StringComparison.OrdinalIgnoreCase))
+                .Select(f => f.Name).Take(10).ToList();
+            return $"There's no function called '{name}'." +
+                   (similar.Count > 0 ? " Similar names: " + string.Join(", ", similar) + "." : "") + "\n";
+        }
+
+        var result = new StringBuilder();
+        result.Append(Signature(function)).Append('\n');
+        result.Append(function.Library == null
+            ? "Defined in the game file."
+            : function.BuiltIn
+                ? $"Defined in {function.Library}, built into Quest. Overriding it means adding a function with " +
+                  "the same name to the game file, which the game then keeps as it is."
+                : $"Defined in {function.Library}, a library the game includes.");
+        if (function.Overrides != null)
+        {
+            result.Append($" It replaces the function of the same name in {function.Overrides}: the game keeps its own copy, " +
+                          $"so changes to {function.Overrides} don't reach it.");
+        }
+
+        if (GameChecker.IsEngineFunction(function.Name))
+        {
+            result.Append($" {function.Name} is also built into the engine: a statement, {function.Name} (...), runs this " +
+                          $"function, but an expression such as x = {function.Name}(...) calls the engine's.");
+        }
+
+        result.Append("\n\n```quest\n").Append(function.Script.Trim()).Append("\n```\n");
+        foreach (var section in docs)
+        {
+            result.Append("\nFrom the docs:\n").Append(QuestDocs.Read($"{section.Page.Id}#{section.Anchor}"));
+        }
+
+        return result.ToString();
+    });
+
+    private async Task<IReadOnlyList<FunctionInfo>> LoadFunctionsAsync()
+    {
+        var current = _game ?? throw new McpException(
+            "No game is loaded. Pass the path of a game file (.aslx or .quest) to start_game.");
+        return await GameFunctions.LoadAsync(GameFiles.Load(current));
+    }
+
+    private static string Signature(FunctionInfo function) =>
+        $"{function.Name} ({string.Join(", ", function.Parameters)})" +
+        (function.ReturnType != null ? $" returns {function.ReturnType}" : "");
+
+    private static string Source(FunctionInfo function) =>
+        (function.Library ?? (function.Overrides != null ? $"game, replacing {function.Overrides}'s" : "game")) +
+        (GameChecker.IsEngineFunction(function.Name) ? $"; an expression calls the engine's own {function.Name} instead" : "");
 
     private HeadlessSession Session =>
         _session ?? throw new InvalidOperationException("No game is running. Call start_game first.");

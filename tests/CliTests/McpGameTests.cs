@@ -194,4 +194,53 @@ public class McpGameTests
         var ex = await Assert.ThrowsAsync<McpException>(() => new McpGame(null, null).CheckAsync());
         StringAssert.Contains(ex.Message, "start_game");
     }
+
+    private static McpGame FunctionsGame() => new(new FileInfo("functions.aslx"), 1234);
+
+    [TestMethod]
+    public async Task ListFunctionsShowsWhereEachComesFrom()
+    {
+        var result = await FunctionsGame().ListFunctionsAsync(null, false);
+        StringAssert.Contains(result, "TwoParams (a, b) returns int  [game]\n");
+        StringAssert.Contains(result, "GetDisplayAlias (obj) returns string  [game, replacing CoreDescriptions.aslx's]\n");
+        StringAssert.Contains(result, "LibraryFunction ()  [checklib.aslx]\n");
+        StringAssert.Contains(result, "[game; an expression calls the engine's own CapFirst instead]");
+        Assert.DoesNotContain("GetDisplayName", result);
+    }
+
+    [TestMethod]
+    public async Task ListFunctionsCanIncludeBuiltInLibraries()
+    {
+        StringAssert.Contains(await FunctionsGame().ListFunctionsAsync("GetDisplayName", true),
+            "GetDisplayName (obj) returns string  [CoreDescriptions.aslx]\n");
+    }
+
+    [TestMethod]
+    public async Task DescribeFunctionGivesItsBodyAndDocs()
+    {
+        var result = await FunctionsGame().DescribeFunctionAsync("GetDisplayAlias");
+        StringAssert.Contains(result, "replaces the function of the same name in CoreDescriptions.aslx");
+        StringAssert.Contains(result, "my own alias");
+        StringAssert.Contains(result, "[reference/functions/core#getdisplayalias]");
+    }
+
+    [TestMethod]
+    public async Task DescribeFunctionCoversEngineFunctionsFromTheDocs()
+    {
+        StringAssert.StartsWith(await FunctionsGame().DescribeFunctionAsync("GetBoolean"),
+            "GetBoolean is built into the engine");
+    }
+
+    [TestMethod]
+    public async Task DescribeFunctionSuggestsSimilarNames()
+    {
+        StringAssert.Contains(await FunctionsGame().DescribeFunctionAsync("TwoParam"), "Similar names: TwoParams.");
+    }
+
+    [TestMethod]
+    public void InstructionsTeachASLOnlyWithDebugTools()
+    {
+        Assert.DoesNotContain("ASL", McpInstructions.For(false));
+        StringAssert.Contains(McpInstructions.For(true), "= is both assignment and comparison");
+    }
 }

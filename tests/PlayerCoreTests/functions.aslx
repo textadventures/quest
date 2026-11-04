@@ -1,0 +1,20 @@
+<asl version="600">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <include ref="checklib.aslx" />
+  <game name="functions" />
+  <object name="room">
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+  <function name="TwoParams" parameters="a, b" type="int">
+    return (a + b)
+  </function>
+  <function name="GetDisplayAlias" parameters="obj" type="string">
+    return ("my own alias")
+  </function>
+  <function name="CapFirst" parameters="s" type="string">
+    return (s)
+  </function>
+</asl>

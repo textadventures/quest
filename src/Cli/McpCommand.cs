@@ -24,7 +24,11 @@ internal static class McpCommand
 
         builder.Services.AddSingleton(new McpGame(game, seed, textOnly));
         var mcp = builder.Services
-            .AddMcpServer(o => o.ServerInfo = new() { Name = "qv", Version = VersionInfo.Version })
+            .AddMcpServer(o =>
+            {
+                o.ServerInfo = new() { Name = "qv", Version = VersionInfo.Version };
+                o.ServerInstructions = McpInstructions.For(debugTools);
+            })
             .WithStdioServerTransport()
             .WithTools<PlayTools>();
         if (game != null)

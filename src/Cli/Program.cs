@@ -28,7 +28,7 @@ var textOnlyOption = new Option<bool>("--text-only")
 };
 var debugToolsOption = new Option<bool>("--debug-tools")
 {
-    Description = "Also offer tools that reach past what a player can do: evaluate, tick, send_event, run_walkthrough and check"
+    Description = "Also offer tools for debugging and fixing a game, which reach past what a player can do, such as evaluate, check and docs"
 };
 var mcp = new Command("mcp", "Run an MCP server over stdio whose tools play a game, for AI agents")
 {

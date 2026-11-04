@@ -1,6 +1,6 @@
 # Editing games with `qv`
 
-Status: phase 1 done: `qv check` and `qv walkthrough`, and their `qv mcp --debug-tools` tools `check` and `run_walkthrough`. Phases 2 and 3 are still plans.
+Status: phases 1 and 2 done: `qv check` and `qv walkthrough`, and in `qv mcp --debug-tools` the tools `check`, `run_walkthrough`, `docs`, `list_functions` and `describe_function`, with server instructions that teach enough ASL to start. Phase 3 is still a plan, and the `llms.txt` idea in phase 2 isn't done.
 
 `qv mcp` lets an agent play a game ([qv-mcp.md](qv-mcp.md)). This plan extends it to fixing and writing games: an author asks an agent to fix a bug it found while playtesting, or to add a room, and the agent checks and plays its change in the same session.
 
@@ -40,19 +40,16 @@ Editing is allowed for `.aslx` only. A `.quest` file is a published package, so 
 
 ## Phase 2: teaching the agent ASL
 
-In order of value:
+Done, except `llms.txt`. In order of value:
 
 1. **Fast feedback.** Phase 1. No amount of documentation stops an agent writing invalid ASL. What stops it is being told straight away.
-2. **Server instructions.** MCP's `instructions` field is passed to the agent automatically. `qv mcp` sends none today. A few hundred words: ASL isn't JavaScript or C#; the basics of `if`, `foreach` and `msg`, and how to refer to an object's attribute; `=` is both assignment and comparison; look a function up with `docs` before using it, and run `check` after editing. Keep it short enough that agents read it.
-3. **Built-in reference docs.** `site/src/content/docs/reference/` is 30 plain `.md` pages, about 300 KB: script commands, functions by category, attributes, elements. `Cli.csproj` includes them in the binary at build time, so the docs always match the version of `qv` and work offline. One tool, `docs`: `docs(query)` searches the pages and returns the matching sections, and `docs(page)` returns a whole page. They're too long to give the agent all at once (about 75k tokens), and most MCP clients don't read resources unless a person attaches one, so this is a tool, not resources. The how-to pages are longer and more about the Editor's screens, so they're left out at first.
-4. **Lookups in the loaded game.** `list_functions` and `describe_function(name)` (and the same for types) read the loaded game, so they cover its own functions and any other libraries it includes, which the docs don't. Each result says where the definition comes from:
-   - **local**: defined in the game file, including a library function the author has overridden (`MakeElementLocal` copies it into the `.aslx`)
-   - **library**, with the library's filename: loaded from Core or another included library
-   The loader already records this on every element (`MetaFieldDefinitions.Library` and `Filename`).
+2. **Server instructions** (`McpInstructions`). MCP's `instructions` field is passed to the agent automatically. Without `--debug-tools` they only say how to play. With them, they add a few hundred words: the tools for fixing a game, the edit, `check`, `start_game` loop, a walkthrough with an `assert:` as the test for a fix, and the basics of ASL (blocks, `=` as both assignment and comparison, `<>`, `and`/`or`/`not`, attributes, `this`, `msg`, calling functions), ending with "look a function up with `docs`, and run `check` after every edit". `start_game`'s description now says that restarting re-reads the file.
+3. **Built-in docs** (`QuestDocs`). `Cli.csproj` embeds the site's reference, "understanding" and how-to pages (about 800 KB of markdown) in the binary, so the docs match the version of `qv` and work offline. The how-to pages went in after all: the reference links to them constantly, and they answer "how do I make a locked door". Each page is split into sections at its `## ` headings, one per function or command on reference pages. One tool, `docs`: `query` searches, showing an exact heading match (a function or command name) on its own and otherwise the three best sections in full and up to ten more by id; `page` reads a page or `page#section`, and the docs' own links work as ids. With neither, it lists the pages. It's a tool, not MCP resources, because most clients don't read resources unless a person attaches one, and the docs are too long to hand over at once.
+4. **Lookups in the game** (`GameFunctions` in PlayerCore). `list_functions` lists the functions the game can call, read from its file as it is now, with parameters and where each is defined: the game file, a library the author included, or with `include_built_in` Quest's own libraries. `describe_function` adds the body and the function's docs entry, and covers engine functions such as `GetBoolean` from the docs alone. Both say when the game's function replaces a library one (`Elements.GetOverriddenLibraryElement`), and when an engine function has the same name: then a statement calls the game's function and an expression the engine's, which Core relies on with `Ask` and `ShowMenu`. That's why `check` doesn't report it. Types aren't covered yet.
 
-   Where the library comes from depends on the file. While a game is being edited, its `.aslx` doesn't contain the Core library: Core comes from the copy built into the engine running it, which is the same version as `qv`'s docs. A published `.quest` file has its libraries inlined, frozen at the version it was last saved with. They then load as local elements (`GameLoader` only sets `Library` on elements loaded from an included file), so for a `.quest` file the two can't be told apart. That doesn't matter for editing, which is `.aslx` only. It does mean the docs may not match an older published game exactly, which `describe_function` can show.
+   While a game is being edited, its `.aslx` doesn't contain the Core library: Core comes from the copy built into the engine running it, which is the same version as `qv`'s docs. A published `.quest` file has its libraries inlined, frozen at the version it was last saved with. They then load as the game's own elements (`GameLoader` only sets `Library` on elements loaded from an included file), so for a `.quest` file the two can't be told apart.
 
-Separately from `qv`: an `llms.txt` for questviva.com would help agents that aren't using `qv` at all. It's a small addition to the Astro build.
+Separately from `qv`: an `llms.txt` for questviva.com would help agents that aren't using `qv` at all. It's a small addition to the Astro build, not done yet.
 
 ## Phase 3: editing tools (if needed)
 
@@ -85,8 +82,8 @@ Editing a library element makes a local copy first, as the Editor does, and the 
 ## Order of work
 
 1. ~~`qv check`, with lazy scripts forced and expressions checked, plus the `check` tool in `qv mcp`~~: done.
-2. Server instructions and the `start_game` description.
-3. `docs` with the built-in reference pages.
+2. ~~Server instructions and the `start_game` description~~: done.
+3. ~~`docs` with the built-in reference pages~~: done, with the how-to pages too.
 4. ~~`replay` on `start_game`~~: done as `qv walkthrough` and `run_walkthrough`.
-5. `list_functions` / `describe_function`, with where each definition comes from.
+5. ~~`list_functions` / `describe_function`, with where each definition comes from~~: done.
 6. Dogfood: an agent fixes bugs in a few `examples/` games by editing the XML. Decide on phase 3 from what goes wrong.
