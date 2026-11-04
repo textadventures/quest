@@ -163,6 +163,7 @@
   <template name="EditorGameInroomdescriptions">In-room descriptions: additional text which each object contributes to a room description</template>
   <template name="EditorGameMultipleCommands">Allow input of multiple commands in one line separated by "."</template>
   <template name="EditorGameDisplay">Display</template>
+  <template name="EditorGameAppearance">Appearance</template>
   <template name="EditorGameTheme">Theme</template>
   <template name="EditorGameFont">Text</template>
   <template name="EditorGameThewebfont">The web font will override the base font if an internet connection is available, or the game is running in a web browser.</template>
@@ -218,7 +219,6 @@
   <template name="EditorGameLayoutDrawer">In a drawer opened from the top bar</template>
   <template name="EditorGameLayoutBottombar">In a sheet opened from beside the command bar</template>
   <template name="EditorGameLayoutNopanes">No panes</template>
-  <template name="EditorGameLayoutPresetHelp">The classic interface always shows the panes beside the game, and hides them only for "No panes".</template>
   <template name="EditorGameCommandPlaceholder">Hint shown in the empty command bar</template>
   <template name="EditorGameOutputCaption">Game text</template>
   <template name="EditorGameAutoscroll">Scroll to new text as it appears</template>

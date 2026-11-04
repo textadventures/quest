@@ -179,7 +179,11 @@
       else if (game.shadowbox) {
         JS.QuestUI.setCommandBarPreset ("shadow")
       }
-      AddPanesThemeTokens (tokens, game.panestheme)
+      // The pane colour schemes are the classic interface's. On v2 the panes follow the game's
+      // own colours, and a stylesheet can still set the --qv-pane-* tokens.
+      if (GetBoolean(game, "classicinterface")) {
+        AddPanesThemeTokens (tokens, game.panestheme)
+      }
       if (game.respondtogridclicks) {
         JS.QuestUI.map.respondToClicks (true)
       }

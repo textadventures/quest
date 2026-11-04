@@ -18,7 +18,7 @@ Select the object and go to its _Object_ tab. The options are:
 
 - **Other names** - words the player can type for this object, as well as its name or alias. A ball could also be called "sphere" or "orb".
 - **Alias to display in "Inventory" or "Places and Objects" pane** - a different name to show in the panes only, such as "bouncy ball" for an object called "ball".
-- **Link colour** - a colour for this object's links, overriding the game's link colour on the _Display_ tab.
+- **Link colour** - a colour for this object's links, overriding the game's link colour on the _Appearance_ tab.
 - **Display verbs** and **Inventory verbs** - the two lists of verbs.
 - **Disable automatically generated display verb list for this object** and **Only display verbs from this object's Verbs tab** - see [Verbs added automatically](#verbs-added-automatically).
 

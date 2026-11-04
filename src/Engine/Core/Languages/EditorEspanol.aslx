@@ -161,6 +161,7 @@
   <template name="EditorGamePrices">Precios: agrega una caja numérica a la pestaña de Inventario para el valor del artículo</template>
   <template name="EditorGameInroomdescriptions">Descripciones en sitio: texto adicional mediante el cual cada objeto contribuye a la descripción del lugar</template>
   <template name="EditorGameDisplay">Pantalla</template>
+  <template name="EditorGameAppearance">Apariencia</template>
   <template name="EditorGameTheme">Tema</template>
   <template name="EditorGameFont">Fuente</template>
   <template name="EditorGameThewebfont">La fuente web sobrescribirá la fuente base si hay disponible una conexión a internet, o si el juego se ejecuta en un navegador de internet.</template>
@@ -214,7 +215,6 @@
   <template name="EditorGameLayoutDrawer">En un cajón que se abre desde la barra superior</template>
   <template name="EditorGameLayoutBottombar">En una hoja que se abre junto a la barra de comandos</template>
   <template name="EditorGameLayoutNopanes">Sin paneles</template>
-  <template name="EditorGameLayoutPresetHelp">La interfaz clásica siempre muestra los paneles junto al juego, y solo los oculta con "Sin paneles".</template>
   <template name="EditorGameCommandPlaceholder">Pista que se muestra en la barra de comandos vacía</template>
   <template name="EditorGameOutputCaption">Texto del juego</template>
   <template name="EditorGameAutoscroll">Desplazarse hasta el texto nuevo cuando aparece</template>

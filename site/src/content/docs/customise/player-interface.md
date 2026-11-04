@@ -8,7 +8,7 @@ Players can interact with a Quest Viva text adventure in several ways, and you d
 | Way to play | What the player does | Turn it on or off |
 |---|---|---|
 | Command bar | Types commands such as `take lamp` | _Interface_ tab: **Show command bar** |
-| Links in the text | Clicks an object for a menu of verbs, an exit to go that way, or a link you've written | _Display_ tab: **Hyperlinks** |
+| Links in the text | Clicks an object for a menu of verbs, an exit to go that way, or a link you've written | _Interface_ tab: **Hyperlinks** |
 | Panes | Clicks objects in the Inventory and Places and Objects lists, or a direction on the compass | _Interface_ tab: **Show panes** |
 | Menus and pages | Chooses from numbered options in the text | Your scripts and pages |
 

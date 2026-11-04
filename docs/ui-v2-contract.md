@@ -260,7 +260,7 @@ Values are CSS values, as a stylesheet would write them: colours as any CSS colo
 | `--qv-output-width` | `customwidth` |
 | `--qv-padding-top`, `-bottom`, `-left`, `-right` | `custompadding*` |
 | `--qv-border-colour` | `bordercolour`. `showborder = false` is `setVisible("border", false)`, not a token |
-| `--qv-pane-fg`, `--qv-pane-bg`, `--qv-pane-heading-fg`, `--qv-pane-heading-bg`, `--qv-pane-highlight` | `panestheme` (the seven named themes become token sets) |
+| `--qv-pane-fg`, `--qv-pane-bg`, `--qv-pane-heading-fg`, `--qv-pane-heading-bg`, `--qv-pane-highlight` | `panestheme`, only with `classicinterface` (#2719): the seven named themes become token sets for legacy. On v2 the panes follow the game's own colours, and a stylesheet can set these tokens |
 | `--qv-status-fg`, `--qv-status-bg`, `--qv-status-border`, `--qv-status-image` | `customlocationtextcolour`, `customlocationcolour`, `customlocationbordercolour`, `locationbarimage` |
 | `--qv-menu-fg`, `--qv-menu-bg`, `--qv-menu-hover-fg`, `--qv-menu-hover-bg`, `--qv-menu-font`, `--qv-menu-font-size` | `menuforeground`, … `menufontsize`. The four colours only once one differs from the editor's defaults On a narrow layout, `--qv-menu-font-size` is at least 1rem. |
 | `--qv-command-fg`, `--qv-command-bg` | command bar format |
@@ -275,7 +275,7 @@ A game that keeps the editor's default colours (black text, blue links, a white 
 - **So do the menu colours:** all four, once one differs.
 - **The command bar** leaves its colour and background out while the game's text and background colours are the defaults.
 
-Any other colour an author sets (location bar, margins, border, pane theme) is sent as before. Legacy's own defaults match the editor's, so leaving the tokens out changes nothing there.
+Any other colour an author sets (location bar, margins, border, and the pane theme on the classic interface) is sent as before. Legacy's own defaults match the editor's, so leaving the tokens out changes nothing there.
 
 ### Accent
 
@@ -305,7 +305,7 @@ v2's defaults, light and dark (`--qv-surface`, `--qv-page-bg` and `--qv-border-c
 | `--qv-pane-highlight` | `#f59e0b` | the same |
 | `--qv-focus-ring` | `#2563eb` | `#60a5fa` |
 
-The built-in themes and pane themes keep WCAG AA contrast, except `theme_hotdogstand`'s yellow on red, which is the point of it. 610 Core's Nature pane theme draws its headings in `#254117` rather than legacy's `#306754`, which was too faint on its heading colour.
+The built-in themes and the pane themes (on legacy, where they apply) keep WCAG AA contrast, except `theme_hotdogstand`'s yellow on red, which is the point of it. 610 Core's Nature pane theme draws its headings in `#254117` rather than legacy's `#306754`, which was too faint on its heading colour.
 
 ### Inline output styles
 
@@ -319,7 +319,7 @@ The built-in themes and pane themes keep WCAG AA contrast, except `theme_hotdogs
 
 ## Game stylesheet
 
-A 610 game's own CSS is its `stylesheet` attribute, a string on `game`, edited as CSS under Advanced on the game's Interface tab (#2613, decision 6). It's saved and packaged like any other attribute, and like any other a script can change it, though it's only reapplied on the next start or restore.
+A 610 game's own CSS is its `stylesheet` attribute, a string on `game`, edited as CSS under Advanced on the game's Appearance tab (#2613, decision 6; it moved there from the Interface tab in #2719). It's saved and packaged like any other attribute, and like any other a script can change it, though it's only reapplied on the next start or restore.
 
 The host applies it, not the UI and not Core, so it needs no `QuestUI` call:
 
@@ -328,6 +328,15 @@ The host applies it, not the UI and not Core, so it needs no `QuestUI` call:
 - It's read only from 610, since an older game may use the attribute name for something of its own (`IGame.GetGameStylesheet`).
 
 What it may rely on is the rest of this contract: the `--qv-*` tokens and the `data-qv-part` names. Anything else in a UI's DOM is internal.
+
+## Editor options that only one interface uses
+
+The game's Appearance and Interface tabs show an option only for the interface it affects (#2719). A game saved by the editor is 610, so `classicinterface` alone says which one it gets:
+
+- **v2 only**, hidden with `classicinterface`: `layoutpreset` and `narrowlayoutpreset` (legacy's `setLayoutPreset` only acts on `nopanes`, which *Show panes* already covers), `accentcolour` (legacy ignores `--qv-accent`), `interfacefont` (legacy ignores `--qv-font-ui`) and `mapposition` (legacy's `setMapPosition` does nothing).
+- **Legacy only**, shown only with `classicinterface`: `panestheme`, which 610 Core sends only to the classic interface.
+
+Every other option on the two tabs reaches both interfaces, through `QuestUI` or a token.
 
 ## Part names
 

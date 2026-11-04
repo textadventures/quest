@@ -167,15 +167,21 @@
     </tab>
 
     <tab>
-      <caption>[EditorGameDisplay]</caption>
+      <caption>[EditorGameAppearance]</caption>
+      <!-- How the game looks. Options only one interface uses are shown only for it (classicinterface). -->
       <!-- Changes show in a running Preview straight away (InitInterface reads these) -->
       <liveinterface/>
-      <helpurl>/customise/look-and-feel/#the-display-tab</helpurl>
+      <helpurl>/customise/look-and-feel/#the-appearance-tab</helpurl>
 
       <control>
         <caption>[EditorGameTheme]</caption>
         <controltype>dropdowntypes</controltype>
         <types>*=[TypeThemeStandard]; theme_novella=[TypeThemeNovella]; theme_retro=[TypeThemeRetro]; theme_typewriter=[TypeThemeTypewriter]; theme_hotdogstand=[TypeThemeHotDog]</types>
+      </control>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>[EditorGameYoucanuseany]</caption>
       </control>
 
       <control>
@@ -230,11 +236,44 @@
         <attribute>interfacefont</attribute>
         <source>basefonts</source>
         <freetext/>
+        <onlydisplayif>not GetBoolean(game, "classicinterface")</onlydisplayif>
       </control>
 
       <control>
         <controltype>label</controltype>
         <caption>[EditorGameInterfacefontHelp]</caption>
+        <onlydisplayif>not GetBoolean(game, "classicinterface")</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>[EditorGameLinkcolour]</caption>
+        <attribute>defaultlinkforeground</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <freetext/>
+        <onlydisplayif>game.enablehyperlinks</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameUnderlinehyperlinks]</caption>
+        <attribute>underlinehyperlinks</attribute>
+        <onlydisplayif>game.enablehyperlinks</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>[EditorGameAccentColour]</caption>
+        <attribute>accentcolour</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <freetext/>
+        <onlydisplayif>not GetBoolean(game, "classicinterface")</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>[EditorGameAccentColourHelp]</caption>
+        <onlydisplayif>not GetBoolean(game, "classicinterface")</onlydisplayif>
       </control>
 
       <control>
@@ -253,19 +292,6 @@
         <attribute>defaultbackground</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
-      </control>
-
-      <control>
-        <controltype>dropdown</controltype>
-        <caption>[EditorGameAccentColour]</caption>
-        <attribute>accentcolour</attribute>
-        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
-      </control>
-
-      <control>
-        <controltype>label</controltype>
-        <caption>[EditorGameAccentColourHelp]</caption>
       </control>
 
       <control>
@@ -327,53 +353,106 @@
 
       <control>
         <controltype>title</controltype>
-        <caption>[EditorGameHyperlinks]</caption>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>[EditorGameFeaturesHyperlinks]</caption>
-        <attribute>enablehyperlinks</attribute>
+        <caption>[EditorGamePanesCaption]</caption>
+        <onlydisplayif>game.showpanes and GetBoolean(game, "classicinterface")</onlydisplayif>
       </control>
 
       <control>
         <controltype>dropdown</controltype>
-        <caption>[EditorGameLinkcolour]</caption>
-        <attribute>defaultlinkforeground</attribute>
-        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
-        <onlydisplayif>game.enablehyperlinks</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>[EditorGameUnderlinehyperlinks]</caption>
-        <attribute>underlinehyperlinks</attribute>
-        <onlydisplayif>game.enablehyperlinks</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>[EditorGameAfterusing]</caption>
-        <attribute>deactivatecommandlinks</attribute>
-        <onlydisplayif>game.enablehyperlinks</onlydisplayif>
+        <caption>[EditorGamePanesTheme]</caption>
+        <attribute>panestheme</attribute>
+        <validvalues type="simplestringlist">Classic;Midnight;Nature;Vanilla;Black;Blood;Tranquil;Parchment</validvalues>
+        <onlydisplayif>game.showpanes and GetBoolean(game, "classicinterface")</onlydisplayif>
       </control>
 
       <control>
         <controltype>title</controltype>
-        <caption>[EditorGameShowMenuOptionsCaption]</caption>
+        <caption>[EditorGameLocationCaption]</caption>
+        <onlydisplayif>game.showlocation</onlydisplayif>
       </control>
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>[EditorGameDoNotClearMenus]</caption>
-        <attribute>donotclearmenus</attribute>
+        <caption>[EditorGameClassiclocation]</caption>
+        <attribute>classiclocation</attribute>
+        <onlydisplayif>game.showlocation</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>file</controltype>
+        <caption>[EditorGameLocationBarBg]</caption>
+        <attribute>locationbarimage</attribute>
+        <source>[EditorImageFormats]</source>
+        <onlydisplayif>game.showlocation and not game.classiclocation</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>[EditorGameLocationColour]</caption>
+        <attribute>customlocationcolour</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <freetext/>
+        <onlydisplayif>game.showlocation and not game.classiclocation</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>[EditorGameLocationTextColour]</caption>
+        <attribute>customlocationtextcolour</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <freetext/>
+        <onlydisplayif>game.showlocation and not game.classiclocation</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>[EditorGameLocationBorderColour]</caption>
+        <attribute>customlocationbordercolour</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <freetext/>
+        <onlydisplayif>game.showlocation and not game.classiclocation</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>title</controltype>
+        <caption>[EditorGameBorderCaption]</caption>
+        <onlydisplayif>game.showborder</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>[EditorGameBorderColour]</caption>
+        <attribute>bordercolour</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <freetext/>
+        <onlydisplayif>game.showborder</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>title</controltype>
+        <caption>[EditorGameCommandBarCaption]</caption>
+        <onlydisplayif>game.showcommandbar</onlydisplayif>
       </control>
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>[EditorGameShowMenuResponses]</caption>
-        <attribute>showmenuresponses</attribute>
+        <caption>[EditorGameBorderlessCommand]</caption>
+        <attribute>borderlesscursor</attribute>
+        <onlydisplayif>game.showcommandbar</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>textbox</controltype>
+        <caption>[EditorGameCommandCursor]</caption>
+        <attribute>commandcursor</attribute>
+        <onlydisplayif>game.showcommandbar and game.borderlesscursor</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameShadowBox]</caption>
+        <attribute>shadowbox</attribute>
+        <onlydisplayif>game.showcommandbar and not game.borderlesscursor</onlydisplayif>
       </control>
 
       <control>
@@ -432,303 +511,6 @@
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
         <onlydisplayif>game.enablehyperlinks</onlydisplayif>
-      </control>
-
-    </tab>
-
-    <tab>
-      <caption>[EditorGameInterface]</caption>
-      <!-- Changes show in a running Preview straight away (InitInterface reads these) -->
-      <liveinterface/>
-      <helpurl>/customise/look-and-feel/#the-interface-tab</helpurl>
-
-      <control>
-        <controltype>label</controltype>
-        <caption>[EditorGameYoucanuseany]</caption>
-      </control>
-
-      <control>
-        <controltype>title</controltype>
-        <caption>[EditorGameMap]</caption>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>[EditorGameMapadynamically]</caption>
-        <attribute>gridmap</attribute>
-      </control>
-
-      <control>
-        <controltype>number</controltype>
-        <onlydisplayif>game.gridmap</onlydisplayif>
-        <attribute>mapscale</attribute>
-        <caption>[EditorGameScale]</caption>
-        <minimum>1</minimum>
-      </control>
-
-      <control>
-        <controltype>number</controltype>
-        <onlydisplayif>game.gridmap</onlydisplayif>
-        <attribute>mapsize</attribute>
-        <caption>[EditorGameHeightpixels]</caption>
-        <minimum>1</minimum>
-      </control>
-
-      <control>
-        <controltype>number</controltype>
-        <onlydisplayif>game.gridmap</onlydisplayif>
-        <attribute>mapexitwidth</attribute>
-        <caption>[EditorGameExitwidth]</caption>
-        <minimum>1</minimum>
-      </control>
-
-      <control>
-        <controltype>dropdown</controltype>
-        <onlydisplayif>game.gridmap</onlydisplayif>
-        <caption>[EditorGameExitcolour]</caption>
-        <attribute>mapexitcolour</attribute>
-        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <onlydisplayif>game.gridmap</onlydisplayif>
-        <caption>[EditorGameRespondtogridclicks]</caption>
-        <attribute>respondtogridclicks</attribute>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <onlydisplayif>game.gridmap</onlydisplayif>
-        <caption>[EditorGameMapinteractive]</caption>
-        <attribute>mapinteractive</attribute>
-      </control>
-
-      <control>
-        <controltype>dropdown</controltype>
-        <onlydisplayif>game.gridmap</onlydisplayif>
-        <caption>[EditorGameMapPosition]</caption>
-        <attribute>mapposition</attribute>
-        <validvalues type="simplestringdictionary">=[EditorGameMapPositionHeader]; panes=[EditorGameMapPositionPanes]</validvalues>
-      </control>
-
-      <control>
-        <controltype>title</controltype>
-        <caption>[EditorGamePanesCaption]</caption>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>[EditorGameShowpanesInventory,]</caption>
-        <attribute>showpanes</attribute>
-      </control>
-
-      <control>
-        <controltype>dropdown</controltype>
-        <caption>[EditorGameLayoutPreset]</caption>
-        <attribute>layoutpreset</attribute>
-        <validvalues type="simplestringdictionary">=[EditorGameLayoutSidepanes]; bottombar=[EditorGameLayoutBottombar]; nopanes=[EditorGameLayoutNopanes]</validvalues>
-        <onlydisplayif>game.showpanes</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>dropdown</controltype>
-        <caption>[EditorGameNarrowLayoutPreset]</caption>
-        <attribute>narrowlayoutpreset</attribute>
-        <validvalues type="simplestringdictionary">=[EditorGameLayoutSame]; sidepanes=[EditorGameLayoutDrawer]; bottombar=[EditorGameLayoutBottombar]; nopanes=[EditorGameLayoutNopanes]</validvalues>
-        <onlydisplayif>game.showpanes</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>label</controltype>
-        <caption>[EditorGameLayoutPresetHelp]</caption>
-        <onlydisplayif>game.showpanes</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>[EditorGameTurnOffCompass]</caption>
-        <attribute>turnoffcompass</attribute>
-        <onlydisplayif>game.showpanes</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>[EditorGameTurnOffInventory]</caption>
-        <attribute>turnoffinventory</attribute>
-        <onlydisplayif>game.showpanes</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>[EditorGameTurnOffPlacesAndObjects]</caption>
-        <attribute>turnoffplacesandobjects</attribute>
-        <onlydisplayif>game.showpanes</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>[EditorGameAltPaneOrder]</caption>
-        <attribute>statusandcompassattop</attribute>
-        <onlydisplayif>game.showpanes</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>[EditorGameShowCommandPane]</caption>
-        <attribute>commandpane</attribute>
-        <onlydisplayif>game.showpanes</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>[EditorGameShowCustomStatusPane]</caption>
-        <attribute>customstatuspane</attribute>
-        <onlydisplayif>game.showpanes</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>dropdown</controltype>
-        <caption>[EditorGamePanesTheme]</caption>
-        <attribute>panestheme</attribute>
-        <validvalues type="simplestringlist">Classic;Midnight;Nature;Vanilla;Black;Blood;Tranquil;Parchment</validvalues>
-        <onlydisplayif>game.showpanes</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>title</controltype>
-        <caption>[EditorGameCommandBarCaption]</caption>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>[EditorGameShowcommand]</caption>
-        <attribute>showcommandbar</attribute>
-      </control>
-
-      <control>
-        <controltype>textbox</controltype>
-        <caption>[EditorGameCommandPlaceholder]</caption>
-        <attribute>commandplaceholder</attribute>
-        <onlydisplayif>game.showcommandbar</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>[EditorGameBorderlessCommand]</caption>
-        <attribute>borderlesscursor</attribute>
-        <onlydisplayif>game.showcommandbar</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>textbox</controltype>
-        <caption>[EditorGameCommandCursor]</caption>
-        <attribute>commandcursor</attribute>
-        <onlydisplayif>game.showcommandbar and game.borderlesscursor</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>[EditorGameShadowBox]</caption>
-        <attribute>shadowbox</attribute>
-        <onlydisplayif>game.showcommandbar and not game.borderlesscursor</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>title</controltype>
-        <caption>[EditorGameOutputCaption]</caption>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>[EditorGameAutoscroll]</caption>
-        <attribute>autoscroll</attribute>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>[EditorGameContinueonclick]</caption>
-        <attribute>continueonclick</attribute>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>[EditorGameFadepreviousoutput]</caption>
-        <attribute>fadepreviousoutput</attribute>
-      </control>
-
-      <control>
-        <controltype>title</controltype>
-        <caption>[EditorGameLocationCaption]</caption>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>[EditorGameShowlocation]</caption>
-        <attribute>showlocation</attribute>
-      </control>
-
-      <control>
-        <controltype>file</controltype>
-        <caption>[EditorGameLocationBarBg]</caption>
-        <attribute>locationbarimage</attribute>
-        <source>[EditorImageFormats]</source>
-        <onlydisplayif>game.showlocation and not game.classiclocation</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>[EditorGameClassiclocation]</caption>
-        <attribute>classiclocation</attribute>
-        <onlydisplayif>game.showlocation</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>dropdown</controltype>
-        <caption>[EditorGameLocationColour]</caption>
-        <attribute>customlocationcolour</attribute>
-        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
-        <onlydisplayif>game.showlocation and not game.classiclocation</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>dropdown</controltype>
-        <caption>[EditorGameLocationTextColour]</caption>
-        <attribute>customlocationtextcolour</attribute>
-        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
-        <onlydisplayif>game.showlocation and not game.classiclocation</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>dropdown</controltype>
-        <caption>[EditorGameLocationBorderColour]</caption>
-        <attribute>customlocationbordercolour</attribute>
-        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
-        <onlydisplayif>game.showlocation and not game.classiclocation</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>title</controltype>
-        <caption>[EditorGameBorderCaption]</caption>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>[EditorGameShowborder]</caption>
-        <attribute>showborder</attribute>
-      </control>
-
-      <control>
-        <controltype>dropdown</controltype>
-        <caption>[EditorGameBorderColour]</caption>
-        <attribute>bordercolour</attribute>
-        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
-        <onlydisplayif>game.showborder</onlydisplayif>
       </control>
 
       <control>
@@ -798,6 +580,209 @@
 
       <control>
         <controltype>title</controltype>
+        <caption>[EditorGameStylesheetTitle]</caption>
+        <advanced/>
+      </control>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>[EditorGameStylesheetHelp]</caption>
+        <advanced/>
+      </control>
+
+      <control>
+        <controltype>csseditor</controltype>
+        <caption>[EditorGameStylesheet]</caption>
+        <attribute>stylesheet</attribute>
+        <advanced/>
+      </control>
+
+    </tab>
+
+    <tab>
+      <caption>[EditorGameInterface]</caption>
+      <!-- What's on screen, and how it behaves. Options only one interface uses are shown only for it (classicinterface). -->
+      <!-- Changes show in a running Preview straight away (InitInterface reads these) -->
+      <liveinterface/>
+      <helpurl>/customise/look-and-feel/#the-interface-tab</helpurl>
+
+      <control>
+        <controltype>title</controltype>
+        <caption>[EditorGamePanesCaption]</caption>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameShowpanesInventory,]</caption>
+        <attribute>showpanes</attribute>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>[EditorGameLayoutPreset]</caption>
+        <attribute>layoutpreset</attribute>
+        <validvalues type="simplestringdictionary">=[EditorGameLayoutSidepanes]; bottombar=[EditorGameLayoutBottombar]; nopanes=[EditorGameLayoutNopanes]</validvalues>
+        <onlydisplayif>game.showpanes and not GetBoolean(game, "classicinterface")</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>[EditorGameNarrowLayoutPreset]</caption>
+        <attribute>narrowlayoutpreset</attribute>
+        <validvalues type="simplestringdictionary">=[EditorGameLayoutSame]; sidepanes=[EditorGameLayoutDrawer]; bottombar=[EditorGameLayoutBottombar]; nopanes=[EditorGameLayoutNopanes]</validvalues>
+        <onlydisplayif>game.showpanes and not GetBoolean(game, "classicinterface")</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameTurnOffCompass]</caption>
+        <attribute>turnoffcompass</attribute>
+        <onlydisplayif>game.showpanes</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameTurnOffInventory]</caption>
+        <attribute>turnoffinventory</attribute>
+        <onlydisplayif>game.showpanes</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameTurnOffPlacesAndObjects]</caption>
+        <attribute>turnoffplacesandobjects</attribute>
+        <onlydisplayif>game.showpanes</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameAltPaneOrder]</caption>
+        <attribute>statusandcompassattop</attribute>
+        <onlydisplayif>game.showpanes</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameShowCommandPane]</caption>
+        <attribute>commandpane</attribute>
+        <onlydisplayif>game.showpanes</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameShowCustomStatusPane]</caption>
+        <attribute>customstatuspane</attribute>
+        <onlydisplayif>game.showpanes</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>title</controltype>
+        <caption>[EditorGameCommandBarCaption]</caption>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameShowcommand]</caption>
+        <attribute>showcommandbar</attribute>
+      </control>
+
+      <control>
+        <controltype>textbox</controltype>
+        <caption>[EditorGameCommandPlaceholder]</caption>
+        <attribute>commandplaceholder</attribute>
+        <onlydisplayif>game.showcommandbar</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>title</controltype>
+        <caption>[EditorGameLocationCaption]</caption>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameShowlocation]</caption>
+        <attribute>showlocation</attribute>
+      </control>
+
+      <control>
+        <controltype>title</controltype>
+        <caption>[EditorGameBorderCaption]</caption>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameShowborder]</caption>
+        <attribute>showborder</attribute>
+      </control>
+
+      <control>
+        <controltype>title</controltype>
+        <caption>[EditorGameMap]</caption>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameMapadynamically]</caption>
+        <attribute>gridmap</attribute>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <onlydisplayif>game.gridmap</onlydisplayif>
+        <attribute>mapscale</attribute>
+        <caption>[EditorGameScale]</caption>
+        <minimum>1</minimum>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <onlydisplayif>game.gridmap</onlydisplayif>
+        <attribute>mapsize</attribute>
+        <caption>[EditorGameHeightpixels]</caption>
+        <minimum>1</minimum>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <onlydisplayif>game.gridmap</onlydisplayif>
+        <attribute>mapexitwidth</attribute>
+        <caption>[EditorGameExitwidth]</caption>
+        <minimum>1</minimum>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <onlydisplayif>game.gridmap</onlydisplayif>
+        <caption>[EditorGameExitcolour]</caption>
+        <attribute>mapexitcolour</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <freetext/>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <onlydisplayif>game.gridmap</onlydisplayif>
+        <caption>[EditorGameRespondtogridclicks]</caption>
+        <attribute>respondtogridclicks</attribute>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <onlydisplayif>game.gridmap</onlydisplayif>
+        <caption>[EditorGameMapinteractive]</caption>
+        <attribute>mapinteractive</attribute>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <onlydisplayif>game.gridmap and not GetBoolean(game, "classicinterface")</onlydisplayif>
+        <caption>[EditorGameMapPosition]</caption>
+        <attribute>mapposition</attribute>
+        <validvalues type="simplestringdictionary">=[EditorGameMapPositionHeader]; panes=[EditorGameMapPositionPanes]</validvalues>
+      </control>
+
+      <control>
+        <controltype>title</controltype>
         <caption>[EditorGamePictureOptions]</caption>
       </control>
 
@@ -816,6 +801,64 @@
 
       <control>
         <controltype>title</controltype>
+        <caption>[EditorGameHyperlinks]</caption>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameFeaturesHyperlinks]</caption>
+        <attribute>enablehyperlinks</attribute>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameAfterusing]</caption>
+        <attribute>deactivatecommandlinks</attribute>
+        <onlydisplayif>game.enablehyperlinks</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>title</controltype>
+        <caption>[EditorGameShowMenuOptionsCaption]</caption>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameDoNotClearMenus]</caption>
+        <attribute>donotclearmenus</attribute>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameShowMenuResponses]</caption>
+        <attribute>showmenuresponses</attribute>
+      </control>
+
+      <control>
+        <controltype>title</controltype>
+        <caption>[EditorGameOutputCaption]</caption>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameAutoscroll]</caption>
+        <attribute>autoscroll</attribute>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameContinueonclick]</caption>
+        <attribute>continueonclick</attribute>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameFadepreviousoutput]</caption>
+        <attribute>fadepreviousoutput</attribute>
+      </control>
+
+      <control>
+        <controltype>title</controltype>
         <caption>[EditorGamePlayerInterfaceTitle]</caption>
         <advanced/>
       </control>
@@ -830,25 +873,6 @@
       <control>
         <controltype>label</controltype>
         <caption>[EditorGameClassicinterfaceHelp]</caption>
-        <advanced/>
-      </control>
-
-      <control>
-        <controltype>title</controltype>
-        <caption>[EditorGameStylesheetTitle]</caption>
-        <advanced/>
-      </control>
-
-      <control>
-        <controltype>label</controltype>
-        <caption>[EditorGameStylesheetHelp]</caption>
-        <advanced/>
-      </control>
-
-      <control>
-        <controltype>csseditor</controltype>
-        <caption>[EditorGameStylesheet]</caption>
-        <attribute>stylesheet</attribute>
         <advanced/>
       </control>
 

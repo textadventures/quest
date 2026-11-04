@@ -76,14 +76,19 @@ try {
     await openInterfaceTab();
     const summary = page.locator('summary', { hasText: 'Advanced' });
     if (!(await summary.evaluate((el) => el.closest('details')?.open))) await summary.click();
-    await page.getByLabel('Use the classic interface', { exact: true }).check();
-    await settle();
     await layout.selectOption({ label: 'Beside the game (in a drawer on a phone)' });
+    await settle();
+    await page.getByLabel('Use the classic interface', { exact: true }).check();
     await settle();
     xml = await rawXml();
     if (!xml.includes('<classicinterface />')) throw new Error('the game XML has no <classicinterface />');
     if (xml.includes('<layoutpreset>bottombar')) throw new Error('choosing the default layout again left bottombar saved');
     console.log('PASS: "Use the classic interface" is saved, and the default layout replaces bottombar');
+
+    // The classic interface has no layout presets (#2719), so they're hidden with it.
+    await layout.waitFor({ state: 'hidden', timeout: 5000 })
+        .catch(() => { throw new Error('"Where the panes go" still shows with the classic interface'); });
+    console.log('PASS: the layout presets are hidden with the classic interface');
 
     if (errors.length) throw new Error(`page errors:\n  ${errors.join('\n  ')}`);
     console.log('PASS: all checks passed');
