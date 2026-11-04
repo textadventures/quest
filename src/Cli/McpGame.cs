@@ -140,6 +140,12 @@ internal sealed class McpGame(FileInfo? game, int? seed, bool textOnly = false)
     public Task<string> CheckAsync(string? path = null) => RunAsync(async () =>
         CheckCommand.Format(await GameCheck.CheckAsync(GameFiles.Load(SelectGame(path)))));
 
+    // Publishes the game's .aslx as a .quest package, as `qv publish` does. Refusing because of
+    // problems isn't an error: the report says what to fix.
+    public Task<string> PublishAsync(string? path, string? output, bool force) => RunAsync(async () =>
+        PublishCommand.Format(await GamePublisher.PublishAsync(SelectGame(path),
+            output == null ? null : Resolve(output), force), "set force"));
+
     // The game's functions, read from its file as it is now: its own and those of libraries the
     // author included, and with includeBuiltIn those of the libraries built into Quest too.
     public Task<string> ListFunctionsAsync(string? filter, bool includeBuiltIn, string? path = null) => RunAsync(async () =>

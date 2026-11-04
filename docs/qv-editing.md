@@ -1,6 +1,6 @@
 # Editing games with `qv`
 
-Status: phases 1 and 2 done: `qv check` and `qv walkthrough`, and in `qv mcp --debug-tools` the tools `check`, `run_walkthrough`, `docs`, `list_functions` and `describe_function`, with server instructions that teach enough ASL to start. Phase 2's `llms.txt` is done too. A first round of dogfooding found no case for phase 3 (editing tools); see "Dogfooding" below. Phase 4 (`qv preview` and `qv publish`) is still a plan.
+Status: phases 1 and 2 done: `qv check` and `qv walkthrough`, and in `qv mcp --debug-tools` the tools `check`, `run_walkthrough`, `docs`, `list_functions` and `describe_function`, with server instructions that teach enough ASL to start. Phase 2's `llms.txt` is done too. A first round of dogfooding found no case for phase 3 (editing tools); see "Dogfooding" below. Phase 4 has started: `qv publish --format quest` and the `publish` tool are done; `qv preview` and the HTML formats are still plans.
 
 `qv mcp` lets an agent play a game ([qv-mcp.md](qv-mcp.md)). This plan extends it to fixing and writing games: an author asks an agent to fix a bug it found while playtesting, or to add a room, and the agent checks and plays its change in the same session.
 
@@ -117,8 +117,8 @@ Publishing only accepts an `.aslx`: a `.quest` file is already published.
 Open questions:
 
 - **The HTML rewriting would be in three places.** `buildEmbeddedPlayerHtml` in `editor-store.ts` is already a copy of `src/WasmPlayer/scripts/export-embedded.mjs`, and `qv` has no Node to run either. Port it to C# once, in EditorCore or PlayerCore, and have AppShell call it through the WasmEditor bridge, so every export shares one implementation with one set of tests. The rewriting is done with regular expressions and has broken before (#2233), so this matters.
-- **Which files go in the package.** The Editor's file adapters (`BrowserFileAdapter`, `ElectronFileAdapter`) publish every file at the top of the game's folder except `.aslx` files and macOS junk, and the Publish dialog names the folder to warn about it. A folder an agent works in is likely to hold more: notes, `.git`, earlier publish output, possibly the file being written. Options: match the Editor and always leave out the output file and earlier `.quest`, `.html` and `-html.zip` output; or include only the files the game refers to (images, `<javascript src>`, the cover) plus an `--include` flag for files it names at run time. Either way, list the files included in the result, so the agent and the author can see them. If the Editor includes earlier publish output too, it should be fixed in the Editor as well.
-- **Checking first.** `qv publish` could run `qv check` and refuse on errors unless given `--force`, and warn about a file the game refers to that isn't in its folder.
+- ~~**Which files go in the package.**~~ Settled for `qv publish --format quest`: the Editor's files (every file at the top of the folder except `.aslx`/`.xml` and macOS junk), with hidden files and earlier publish output (any `.quest`, and the game's own `.html`, `.zip` and `-html.zip`) left out, and the files listed in the result. Packing only the files the game refers to would miss ones it names at run time. The Editor does include earlier publish output, so a second publish from the same folder packs the first one; that's still to fix there.
+- ~~**Checking first.**~~ Settled: `qv publish` runs the check and refuses on problems unless given `--force`, and warns about a file the game refers to that isn't in its folder, and about a game with no `gameid`, which would get a new IFID every time.
 
 Submitting to textadventures.co.uk is left out. The Editor only does it in server mode, and from a CLI it would need its own sign-in. The author can upload the `.quest` file themselves.
 
@@ -142,6 +142,6 @@ Smaller things: the agents fixed a bug before writing its test (the instructions
 4. ~~`replay` on `start_game`~~: done as `qv walkthrough` and `run_walkthrough`.
 5. ~~`list_functions` / `describe_function`, with where each definition comes from~~: done.
 6. ~~Dogfood: an agent fixes bugs in a few `examples/` games by editing the XML. Decide on phase 3 from what goes wrong~~: first round done, see "Dogfooding". No phase 3 for now.
-7. `qv publish --format quest`, which needs no WasmPlayer bundle.
+7. ~~`qv publish --format quest`, which needs no WasmPlayer bundle~~: done ([qv.md](qv.md)). It matches the Editor's files with earlier output and hidden files left out, lists them, checks first unless `--force`, and warns about missing files and a missing `gameid`.
 8. The WasmPlayer bundle in `qv`, the `?source=qv` boot source and `qv preview`, with live reload and the `preview` tool.
 9. The HTML rewriting ported to C# and shared with AppShell, then `qv publish --format html|zip`.
