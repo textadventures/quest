@@ -1,6 +1,6 @@
 # Editing games with `qv`
 
-Status: phases 1 and 2 done: `qv check` and `qv walkthrough`, and in `qv mcp --debug-tools` the tools `check`, `run_walkthrough`, `docs`, `list_functions` and `describe_function`, with server instructions that teach enough ASL to start. Phase 3 is still a plan, and the `llms.txt` idea in phase 2 isn't done.
+Status: phases 1 and 2 done: `qv check` and `qv walkthrough`, and in `qv mcp --debug-tools` the tools `check`, `run_walkthrough`, `docs`, `list_functions` and `describe_function`, with server instructions that teach enough ASL to start. Phases 3 (editing tools) and 4 (`qv preview` and `qv publish`) are still plans, and the `llms.txt` idea in phase 2 isn't done.
 
 `qv mcp` lets an agent play a game ([qv-mcp.md](qv-mcp.md)). This plan extends it to fixing and writing games: an author asks an agent to fix a bug it found while playtesting, or to add a room, and the agent checks and plays its change in the same session.
 
@@ -79,6 +79,49 @@ Editing a library element makes a local copy first, as the Editor does, and the 
 - **Gamebooks** have different element kinds, so the tools need to know which mode the game is in.
 - **Playing the unsaved game.** `HeadlessSession.StartAsync` takes game bytes. Saving the in-memory game to bytes before each play is simplest; check how long that takes on a large game.
 
+## Phase 4: previewing in a browser, and publishing
+
+With these two commands, an author could do everything without opening the Editor: write the game with an agent, check it, test it with walkthroughs, play it in a browser, and publish it.
+
+### `qv preview`
+
+**`qv preview <game>`** serves the game in WasmPlayer on a local web server and prints the URL. (`qv serve` is already the JSON-lines protocol, so this needs another name.) It's for two things:
+
+- **Checking what the headless session can't see.** `HeadlessSession` doesn't run the game's JavaScript or CSS, so it can't catch a broken custom pane, a `JS.` call that throws, or a layout problem. An agent with a browser tool (Playwright, Chrome) can open the URL and look.
+- **Giving the author a link.** "Open http://localhost:5175 and try it" works without the desktop app and without uploading the game anywhere.
+
+WasmPlayer already has the hooks an agent needs: `?seed=N` (the same seeding as `qv serve`'s `seed`, so a browser run can be compared with a headless one), `?clock=manual`, `?transcript`, and `window.QuestVivaTest`, which has `evaluate`, `assert`, `tick`, `takeTranscript` and `fireNextTimeout`.
+
+What it needs:
+
+1. **The WasmPlayer bundle inside `qv`.** That's the published, trimmed AppBundle: about 50 files and 3.3 MB brotli, small next to the ~39 MB single-file binary. Embedding it means `cli-publish` and `nuget-publish` build WasmPlayer first. It's the same engine as the headless session, so the two agree, which they wouldn't if `qv` pointed at play.questviva.com.
+2. **A static server on loopback only.** It serves the bundle and the game's folder. `HttpListener` is enough; Kestrel isn't needed.
+3. **A way to boot the game with its folder.** `?url=` isn't enough. It fetches the game file, but doesn't set `resourceRoot`, so an `.aslx` game's images and sounds don't load, and it doesn't stage the game's included libraries (`AddAdjacentFile`), so an `<include ref="...">` of the author's own fails. Debug is also only turned on for the editor and Play-tab sources. Instead, add a boot source such as `?source=qv` that sets `resourceRoot` to the served game folder, fetches the library candidates (every `.aslx` beside the game, as `listLibraryCandidates` does), and turns Debug on for an `.aslx`.
+4. **Live reload.** Watch the game's folder and tell the page to restart the game, over server-sent events. The agent edits the `.aslx`, and the author's open tab picks it up. Restarting at the same seed and replaying the commands so far, so the author stays where they were, can come later.
+5. **In `qv mcp`,** a `preview` tool that starts the server if it isn't running and returns the URL. The server lasts as long as the MCP process. As a command, `qv preview` runs until Ctrl+C.
+
+Serving the AppShell editor the same way would be a natural next step, but isn't part of this.
+
+### `qv publish`
+
+**`qv publish <game> --format quest|html|zip [-o <out>]`** makes the Editor's three Publish targets (`PublishTarget` in AppShell) from the command line, and a `publish` tool in `qv mcp` does the same and returns the output's path.
+
+| Format | In the Editor | In `qv` |
+|---|---|---|
+| `quest` | `EditorController.Publish` → `Packager.CreatePackage` | The same C# code. |
+| `html` | `exportHtmlCdn` in `editor-store.ts`: one HTML file, with the game embedded and the runtime from jsDelivr | Pins the CDN URL to `qv`'s own version. A development build has no published npm version to pin to, so it refuses, as the Editor does. |
+| `zip` | `exportHtmlZip`: the WasmPlayer bundle, fetched from `/player/`, with the game embedded in `index.html` | Uses the bundle that `qv preview` embeds. |
+
+Publishing only accepts an `.aslx`: a `.quest` file is already published.
+
+Open questions:
+
+- **The HTML rewriting would be in three places.** `buildEmbeddedPlayerHtml` in `editor-store.ts` is already a copy of `src/WasmPlayer/scripts/export-embedded.mjs`, and `qv` has no Node to run either. Port it to C# once, in EditorCore or PlayerCore, and have AppShell call it through the WasmEditor bridge, so every export shares one implementation with one set of tests. The rewriting is done with regular expressions and has broken before (#2233), so this matters.
+- **Which files go in the package.** The Editor's file adapters (`BrowserFileAdapter`, `ElectronFileAdapter`) publish every file at the top of the game's folder except `.aslx` files and macOS junk, and the Publish dialog names the folder to warn about it. A folder an agent works in is likely to hold more: notes, `.git`, earlier publish output, possibly the file being written. Options: match the Editor and always leave out the output file and earlier `.quest`, `.html` and `-html.zip` output; or include only the files the game refers to (images, `<javascript src>`, the cover) plus an `--include` flag for files it names at run time. Either way, list the files included in the result, so the agent and the author can see them. If the Editor includes earlier publish output too, it should be fixed in the Editor as well.
+- **Checking first.** `qv publish` could run `qv check` and refuse on errors unless given `--force`, and warn about a file the game refers to that isn't in its folder.
+
+Submitting to textadventures.co.uk is left out. The Editor only does it in server mode, and from a CLI it would need its own sign-in. The author can upload the `.quest` file themselves.
+
 ## Order of work
 
 1. ~~`qv check`, with lazy scripts forced and expressions checked, plus the `check` tool in `qv mcp`~~: done.
@@ -87,3 +130,6 @@ Editing a library element makes a local copy first, as the Editor does, and the 
 4. ~~`replay` on `start_game`~~: done as `qv walkthrough` and `run_walkthrough`.
 5. ~~`list_functions` / `describe_function`, with where each definition comes from~~: done.
 6. Dogfood: an agent fixes bugs in a few `examples/` games by editing the XML. Decide on phase 3 from what goes wrong.
+7. `qv publish --format quest`, which needs no WasmPlayer bundle.
+8. The WasmPlayer bundle in `qv`, the `?source=qv` boot source and `qv preview`, with live reload and the `preview` tool.
+9. The HTML rewriting ported to C# and shared with AppShell, then `qv publish --format html|zip`.
