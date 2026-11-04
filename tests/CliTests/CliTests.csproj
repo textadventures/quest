@@ -28,6 +28,9 @@
         <None Include="..\PlayerCoreTests\check.aslx" Link="check.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Include="..\PlayerCoreTests\functions.aslx" Link="functions.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Include="..\PlayerCoreTests\checklib.aslx" Link="checklib.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>

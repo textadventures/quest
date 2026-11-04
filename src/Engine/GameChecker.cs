@@ -47,6 +47,12 @@ public static class GameChecker
             .Select(m => m.Name),
         StringComparer.InvariantCultureIgnoreCase);
 
+    // Whether name is a function built into the engine, which an expression calls in preference to
+    // a game function with the same name. A statement calls the game function. Core relies on this,
+    // with library functions such as Ask and ShowMenu beside the engine's own.
+    public static bool IsEngineFunction(string name) =>
+        EvaluatorFunctions.Contains(name, StringComparer.InvariantCultureIgnoreCase) || BuiltInFunctions.Contains(name);
+
     // The world is best loaded in edit mode (InitialiseEdit), which doesn't stop at the first
     // script it can't create. Its scripts are still parsed as playing the game would parse them:
     // edit mode keeps some things as the Editor shows them, such as a switch case's comma-separated
@@ -215,8 +221,7 @@ public static class GameChecker
         {
             var name = function.Identifier.Name;
             var argCount = function.Parameters.Count;
-            if (EvaluatorFunctions.Contains(name, StringComparer.InvariantCultureIgnoreCase) ||
-                BuiltInFunctions.Contains(name))
+            if (IsEngineFunction(name))
             {
                 continue;
             }

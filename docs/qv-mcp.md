@@ -17,7 +17,7 @@ Each game gets its seed when it's loaded: the `--seed` one, or else a random one
 
 | Tool | Arguments | Does |
 |---|---|---|
-| `start_game` | `game`: path, optional (only when the server wasn't given a game) | Loads the game at `game` and returns its opening text. Without `game`, restarts the current game. `~/` paths are expanded; relative paths are resolved against the server's working directory (for Claude Code, the project it was started in), so absolute paths are safest |
+| `start_game` | `game`: path, optional (only when the server wasn't given a game) | Loads the game at `game` and returns its opening text. Without `game`, restarts the current game. Either way the file is read again, so restarting picks up edits to it. `~/` paths are expanded; relative paths are resolved against the server's working directory (for Claude Code, the project it was started in), so absolute paths are safest |
 | `send_command` | `input` | Types `input` as a player would — a command, or the answer to a pending menu or yes/no question — and returns the game's response |
 
 Responses are the game's plain text, without the echo of the command. Anything the text doesn't already show is added in the same form a terminal player would see: a menu or question older games expect to show in a dialog, script errors that weren't printed, `[Choose an option by its number.]` when a menu answer was ignored, and `[The game has ended. Call start_game to play again.]`.
@@ -31,13 +31,18 @@ Each response also ends with what a browser player sees beside the text:
 
 ### Debug tools
 
-`--debug-tools` adds tools that reach past what a player can do. They're off by default so that a playtesting agent gets a fair game: `evaluate` can read the solution straight out of the world model.
+`--debug-tools` adds tools that reach past what a player can do, for debugging and fixing a game. They're off by default so that a playtesting agent gets a fair game: `evaluate` can read the solution straight out of the world model.
+
+The server's instructions, which clients pass to the agent, say how to play. With `--debug-tools` they also say how to fix a game (edit the `.aslx` file, `check` it, restart with `start_game`, test with a walkthrough), with a short introduction to ASL and a pointer to `docs`.
 
 | Tool | Arguments | Does |
 |---|---|---|
 | `evaluate` | `expression` | Evaluates an ASL expression against the game's current state. Not available for Quest 4 and earlier |
 | `tick` | `seconds` | Advances the game clock, firing timers that come due |
 | `send_event` | `name`, `param` | Fires an event the game's own JavaScript would send with `ASLEvent` |
+| `docs` | `query` or `page`, optional | Looks things up in Quest Viva's documentation, built into `qv` so it matches its version: the reference, the "understanding" pages and the how-to guides. `query` searches, giving a command or function's own entry when it's named exactly; `page` reads a page or one section (`reference/functions/string#template`; the docs' links work as they are). With neither, lists the pages |
+| `list_functions` | `filter`, `include_built_in`, optional | Lists the functions the game can call, read from its file as it is now, with their parameters and where each is defined: the game file (saying when it replaces a library function), a library the game includes, or with `include_built_in` Quest's own libraries |
+| `describe_function` | `name` | One function's parameters, where it's defined, its body and its docs entry. Covers functions built into the engine, such as `GetBoolean`, from the docs |
 | `check` | | Checks the game's file as it is on disk for problems, as `qv check` does ([qv.md](qv.md)), without restarting the game. For an agent editing the game: it sees edits, and `start_game` restarts the game to play them |
 | `run_walkthrough` | `name`, optional; `transcript`, optional | Restarts the game, re-reading its file, and runs one of its walkthroughs, as `qv walkthrough` does ([qv.md](qv.md)). Returns the last step's response and whether it passed, or the step it failed at and why; `transcript` returns every step's response. Leaves the game where the walkthrough stopped, so the agent can carry on from there. With no `name`, lists the game's walkthroughs. A game's own walkthrough is often its solution, which is another reason this is a debug tool |
 

@@ -21,6 +21,16 @@
         <PackageReference Include="ModelContextProtocol" Version="2.3.0" />
         <PackageReference Include="System.CommandLine" Version="2.0.14" />
     </ItemGroup>
+    <!-- The reference, "understanding" and how-to pages of the documentation site, for qv mcp's docs tool,
+         so an agent reads the docs for the version of Quest it's running. -->
+    <ItemGroup>
+        <EmbeddedResource Include="..\..\site\src\content\docs\reference\**\*.md"
+                          LogicalName="docs/reference/%(RecursiveDir)%(Filename)%(Extension)" />
+        <EmbeddedResource Include="..\..\site\src\content\docs\understanding\**\*.md"
+                          LogicalName="docs/understanding/%(RecursiveDir)%(Filename)%(Extension)" />
+        <EmbeddedResource Include="..\..\site\src\content\docs\howto\**\*.md"
+                          LogicalName="docs/howto/%(RecursiveDir)%(Filename)%(Extension)" />
+    </ItemGroup>
     <ItemGroup>
         <InternalsVisibleTo Include="CliTests" />
     </ItemGroup>

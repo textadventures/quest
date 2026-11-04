@@ -88,6 +88,14 @@ public class Elements
         Register(t, key, e);
     }
 
+    // The library element that the game's element called name replaces, if it replaces one: a
+    // game overrides a library function, say, by having its own copy with the same name.
+    public Element? GetOverriddenLibraryElement(string name) =>
+        _overriddenLibraryElements.TryGetValue(name, out var original) &&
+        _allElements.TryGetValue(name, out var current) && !ReferenceEquals(current, original)
+            ? original
+            : null;
+
     // Elements from the game file (or a library the author included) that a later element with the
     // same name replaced while the game loaded. Overriding a library element is how a game
     // customises it, but two of the game's own elements sharing a name is almost always a mistake,
