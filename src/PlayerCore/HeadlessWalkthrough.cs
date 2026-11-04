@@ -56,6 +56,7 @@ public static class HeadlessWalkthrough
 
             HeadlessStep? response = null;
             bool? assertPassed = null;
+            IReadOnlyList<HeadlessOutput> assertOutput = [];
 
             if (session.PendingMenu is { } menu)
             {
@@ -90,7 +91,7 @@ public static class HeadlessWalkthrough
             {
                 try
                 {
-                    assertPassed = await session.AssertAsync(step[7..]);
+                    (assertPassed, assertOutput) = await session.AssertWithOutputAsync(step[7..]);
                 }
                 catch (Exception ex)
                 {
@@ -134,7 +135,10 @@ public static class HeadlessWalkthrough
 
             if (assertPassed == false)
             {
-                return Fail($"Assert failed: {step[7..]}");
+                var assertError = assertOutput.FirstOrDefault(o => o.Kind == HeadlessOutputKind.Error);
+                return Fail(assertError == null
+                    ? $"Assert failed: {step[7..]}"
+                    : $"Assert failed: {step[7..]} (script error while evaluating it: {assertError.Text})");
             }
 
             if (response?.Errors.FirstOrDefault() is { } error)

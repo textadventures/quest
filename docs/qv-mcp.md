@@ -37,14 +37,16 @@ The server's instructions, which clients pass to the agent, say how to play. Wit
 
 | Tool | Arguments | Does |
 |---|---|---|
-| `evaluate` | `expression` | Evaluates an ASL expression against the game's current state. Not available for Quest 4 and earlier |
+| `evaluate` | `expression` | Evaluates an ASL expression against the game's current state. Also returns anything the game printed while evaluating it, and any script errors: an error in a function the expression calls makes that call return null. Not available for Quest 4 and earlier |
 | `tick` | `seconds` | Advances the game clock, firing timers that come due |
 | `send_event` | `name`, `param` | Fires an event the game's own JavaScript would send with `ASLEvent` |
 | `docs` | `query` or `page`, optional | Looks things up in Quest Viva's documentation, built into `qv` so it matches its version: the reference, the "understanding" pages and the how-to guides. `query` searches, giving a command or function's own entry when it's named exactly; `page` reads a page or one section (`reference/functions/string#template`; the docs' links work as they are). With neither, lists the pages |
-| `list_functions` | `filter`, `include_built_in`, optional | Lists the functions the game can call, read from its file as it is now, with their parameters and where each is defined: the game file (saying when it replaces a library function), a library the game includes, or with `include_built_in` Quest's own libraries |
-| `describe_function` | `name` | One function's parameters, where it's defined, its body and its docs entry. Covers functions built into the engine, such as `GetBoolean`, from the docs |
-| `check` | | Checks the game's file as it is on disk for problems, as `qv check` does ([qv.md](qv.md)), without restarting the game. For an agent editing the game: it sees edits, and `start_game` restarts the game to play them |
-| `run_walkthrough` | `name`, optional; `transcript`, optional | Restarts the game, re-reading its file, and runs one of its walkthroughs, as `qv walkthrough` does ([qv.md](qv.md)). Returns the last step's response and whether it passed, or the step it failed at and why; `transcript` returns every step's response. Leaves the game where the walkthrough stopped, so the agent can carry on from there. With no `name`, lists the game's walkthroughs. A game's own walkthrough is often its solution, which is another reason this is a debug tool |
+| `list_functions` | `filter`, `include_built_in`, `game`, optional | Lists the functions the game can call, read from its file as it is now, with their parameters and where each is defined: the game file (saying when it replaces a library function), a library the game includes, or with `include_built_in` Quest's own libraries |
+| `describe_function` | `name`; `game`, optional | One function's parameters, where it's defined, its body and its docs entry. Covers functions built into the engine, such as `GetBoolean`, from the docs |
+| `check` | `game`, optional | Checks the game's file as it is on disk for problems, as `qv check` does ([qv.md](qv.md)), without restarting the game. For an agent editing the game: it sees edits, and `start_game` restarts the game to play them |
+| `run_walkthrough` | `name`, `transcript`, `game`, optional | Restarts the game, re-reading its file, and runs one of its walkthroughs, as `qv walkthrough` does ([qv.md](qv.md)). Returns the last step's response and whether it passed, or the step it failed at and why; `transcript` returns every step's response. Leaves the game where the walkthrough stopped, so the agent can carry on from there. With no `name`, lists the game's walkthroughs. A game's own walkthrough is often its solution, which is another reason this is a debug tool |
+
+`game`, on the tools that read the game's file, is the path of a game to use instead of the current one, so an agent can check a game before starting it. It becomes the current game, and `start_game` with no path then starts it. A server started with a game only accepts that game's path.
 
 ## Trying it with Claude Code
 

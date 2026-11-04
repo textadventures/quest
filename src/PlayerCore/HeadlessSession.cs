@@ -49,6 +49,21 @@ public sealed class HeadlessStep
         Output.Where(o => o.Kind == HeadlessOutputKind.Text).Select(o => o.Text.EndsWith('\n') ? o.Text : o.Text + "\n")));
 }
 
+// The value of an expression, and anything the game printed or logged while evaluating it, such
+// as the error from a function it called: a script error makes that call return null instead of
+// failing the expression.
+public sealed record HeadlessEvaluation(object? Value, IReadOnlyList<HeadlessOutput> Output)
+{
+    public IEnumerable<string> Errors =>
+        Output.Where(o => o.Kind == HeadlessOutputKind.Error).Select(o => o.Text);
+
+    // The text output as one normalised string, errors left out, or "" if there was none.
+    public string Text => Output.Any(o => o.Kind == HeadlessOutputKind.Text)
+        ? HeadlessSession.Normalise(string.Concat(
+            Output.Where(o => o.Kind == HeadlessOutputKind.Text).Select(o => o.Text.EndsWith('\n') ? o.Text : o.Text + "\n")))
+        : "";
+}
+
 // Plays a game with no UI: a command goes in, and that turn's plain text comes back, along with
 // any menu or question the game is now waiting on. Waits, pauses and synchronous sounds are
 // advanced automatically, and SetTimeout timers that come due are drained after every step, so a
@@ -202,9 +217,35 @@ public sealed class HeadlessSession
     // For a Quest 1–4 game the expression is a condition in that syntax, such as "got <lamp>".
     public Task<bool> AssertAsync(string expression) => Game.AssertAsync(expression);
 
-    public Task<object?> EvaluateAsync(string expression) =>
-        _world?.EvaluateAsync(expression)
-        ?? throw new NotSupportedException("Games from Quest 4 and earlier can't evaluate expressions. Use assert with a condition in their syntax, such as \"got <lamp>\", instead.");
+    // An assert, with what the game printed or logged while evaluating it. A script error in a
+    // function the expression calls makes the call return null rather than throw, so the error is
+    // often the only sign of why an assert failed.
+    internal Task<(bool Passed, IReadOnlyList<HeadlessOutput> Output)> AssertWithOutputAsync(string expression) =>
+        CaptureAsync(() => Game.AssertAsync(expression));
+
+    // The expression's value. Anything the game prints or logs while evaluating it is left for the
+    // next step's output; EvaluateWithOutputAsync returns it with the value instead.
+    public Task<object?> EvaluateAsync(string expression) => World.EvaluateAsync(expression);
+
+    public async Task<HeadlessEvaluation> EvaluateWithOutputAsync(string expression)
+    {
+        var (value, output) = await CaptureAsync(() => World.EvaluateAsync(expression));
+        return new HeadlessEvaluation(value, output);
+    }
+
+    private WorldModel World => _world ?? throw new NotSupportedException(
+        "Games from Quest 4 and earlier can't evaluate expressions. Use assert with a condition in their syntax, such as \"got <lamp>\", instead.");
+
+    // Runs action and takes the output it produced, so it comes back with the result instead of
+    // turning up in the next step's output.
+    private async Task<(T Result, IReadOnlyList<HeadlessOutput> Output)> CaptureAsync<T>(Func<Task<T>> action)
+    {
+        var start = _output.Count;
+        var result = await action();
+        var output = _output.GetRange(start, _output.Count - start);
+        _output.RemoveRange(start, output.Count);
+        return (result, output);
+    }
 
     // V4Game's Tick doesn't return until a prompt one of its timers opens has been answered, which
     // only the caller can do once this returns.

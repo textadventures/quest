@@ -41,24 +41,24 @@ internal sealed class LoadGameTools(McpGame mcpGame)
 // Only registered with --debug-tools: these reach past what a player can do, and evaluate can read
 // the solution out of the game.
 [McpServerToolType]
-internal sealed class DebugTools(McpGame game)
+internal sealed class DebugTools(McpGame mcpGame)
 {
     [McpServerTool(Name = "evaluate"),
      Description("Evaluate a Quest ASL expression against the game's current state, e.g. " +
                  "\"player.parent.name\" or \"GetBoolean(door, \\\"locked\\\")\". For debugging; not something a player could do.")]
     public Task<string> Evaluate([Description("The ASL expression")] string expression) =>
-        game.EvaluateAsync(expression);
+        mcpGame.EvaluateAsync(expression);
 
     [McpServerTool(Name = "tick"),
      Description("Advance the game clock, firing any timers that come due. For games that do things in real time.")]
     public Task<string> Tick([Description("How many seconds to advance")] int seconds) =>
-        game.TickAsync(seconds);
+        mcpGame.TickAsync(seconds);
 
     [McpServerTool(Name = "send_event"),
      Description("Fire an event that the game's own JavaScript would normally send with ASLEvent.")]
     public Task<string> SendEvent([Description("The event name")] string name,
         [Description("The event's parameter")] string param = "") =>
-        game.SendEventAsync(name, param);
+        mcpGame.SendEventAsync(name, param);
 
     [McpServerTool(Name = "run_walkthrough"),
      Description("Restart the game, re-reading its file, and run one of its built-in walkthroughs: a list of " +
@@ -67,14 +67,21 @@ internal sealed class DebugTools(McpGame game)
                  "With no name, lists the game's walkthroughs.")]
     public Task<string> RunWalkthrough(
         [Description("The walkthrough to run. Omit it to list them")] string? name = null,
-        [Description("Return every step's response, not just the last")] bool transcript = false) =>
-        game.RunWalkthroughAsync(name, transcript);
+        [Description("Return every step's response, not just the last")] bool transcript = false,
+        [Description("Path to the game file, if it isn't the one already loaded. It becomes the current game, " +
+                     "so start_game with no game then starts it. Only when the server wasn't given a game")]
+        string? game = null) =>
+        mcpGame.RunWalkthroughAsync(name, transcript, game);
 
     [McpServerTool(Name = "check"),
      Description("Check the game's file for problems without playing it: scripts the engine can't parse, unknown " +
                  "script commands and functions, functions given too many arguments, and elements with the same " +
                  "name. Reads the file as it is now, so it sees edits; restart the game with start_game to play them.")]
-    public Task<string> Check() => game.CheckAsync();
+    public Task<string> Check(
+        [Description("Path to the game file, if it isn't the one already loaded. It becomes the current game, " +
+                     "so start_game with no game then starts it. Only when the server wasn't given a game")]
+        string? game = null) =>
+        mcpGame.CheckAsync(game);
 
     [McpServerTool(Name = "list_functions", ReadOnly = true),
      Description("List the functions the game's scripts can call, read from its file as it is now, with their " +
@@ -83,14 +90,20 @@ internal sealed class DebugTools(McpGame game)
                  "name as a library one replaces it.")]
     public Task<string> ListFunctions(
         [Description("Only list functions whose names contain this")] string? filter = null,
-        [Description("Also list the functions of Quest's built-in libraries")] bool include_built_in = false) =>
-        game.ListFunctionsAsync(filter, include_built_in);
+        [Description("Also list the functions of Quest's built-in libraries")] bool include_built_in = false,
+        [Description("Path to the game file, if it isn't the one already loaded. It becomes the current game, " +
+                     "so start_game with no game then starts it. Only when the server wasn't given a game")]
+        string? game = null) =>
+        mcpGame.ListFunctionsAsync(filter, include_built_in, game);
 
     [McpServerTool(Name = "describe_function", ReadOnly = true),
      Description("Show one function: its parameters, where it's defined, its body, and its entry in the docs. " +
                  "Works for functions built into the engine too, from the docs.")]
-    public Task<string> DescribeFunction([Description("The function's name")] string name) =>
-        game.DescribeFunctionAsync(name);
+    public Task<string> DescribeFunction([Description("The function's name")] string name,
+        [Description("Path to the game file, if it isn't the one already loaded. It becomes the current game, " +
+                     "so start_game with no game then starts it. Only when the server wasn't given a game")]
+        string? game = null) =>
+        mcpGame.DescribeFunctionAsync(name, game);
 
     [McpServerTool(Name = "docs", ReadOnly = true),
      Description("Look things up in Quest Viva's documentation, for the version of Quest that qv runs: the " +

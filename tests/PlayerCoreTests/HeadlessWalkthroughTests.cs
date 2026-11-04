@@ -53,6 +53,15 @@ public class HeadlessWalkthroughTests
     }
 
     [TestMethod]
+    public async Task AssertFailedByAScriptErrorSaysSo()
+    {
+        var result = await RunAsync("asserterror");
+        Assert.AreEqual(1, result.FailedStep);
+        StringAssert.Contains(result.Failure, "Assert failed");
+        StringAssert.Contains(result.Failure, "nosuchobject");
+    }
+
+    [TestMethod]
     public async Task ScriptErrorFails()
     {
         var result = await RunAsync("scripterror");

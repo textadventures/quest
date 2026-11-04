@@ -2,6 +2,7 @@ using NCalc;
 using QuestViva.Engine.Expressions;
 using QuestViva.Engine.Functions;
 using QuestViva.Engine.Scripts;
+using QuestViva.Engine.Types;
 
 namespace QuestViva.Engine;
 
@@ -70,6 +71,8 @@ public static class GameChecker
                 Kind(displaced), displaced.Name, null, LibraryFilename(displaced)));
         }
 
+        CheckVerbs(world, problems);
+
         // Every script's text first, in the mode the game was loaded in: getting the text of a
         // script that's partly parsed parses the rest, which must not happen in play mode, where
         // a script that can't be created throws.
@@ -127,6 +130,54 @@ public static class GameChecker
             catch (Exception ex)
             {
                 problems.Add(where with { Message = ex.Message });
+            }
+        }
+    }
+
+    // Core's InitVerbsList, which runs as the game starts, adds every verb to a dictionary keyed by
+    // the attribute it runs, for the verbs objects show in the panes. Two verbs with the same
+    // attribute make it stop with an error part way through, leaving the verbs after it out. A game verb that only repeats a built-in one, such as "buy", is the usual
+    // way to get there: giving the object a script attribute with the built-in verb's name is all
+    // that's needed. Replacing a library verb by giving it the same name is fine, as only one is left.
+    private static void CheckVerbs(WorldModel world, List<CheckProblem> problems)
+    {
+        if (!world.Elements.ContainsKey(ElementType.Function, "InitVerbsList"))
+        {
+            return;
+        }
+
+        var verbs = world.Elements.GetElements(ElementType.Object)
+            .Where(e => e.Type == ObjectType.Command && e.Fields.HasString("property"))
+            .GroupBy(e => e.Fields.GetString("property")!, StringComparer.Ordinal)
+            .Where(g => g.Count() > 1);
+
+        foreach (var group in verbs)
+        {
+            // One report per clash, on the verb the game added: either the game's verb beside a
+            // built-in one, or every game verb after the first.
+            var first = group.FirstOrDefault(IsBuiltIn) ?? group.First();
+            foreach (var verb in group.Where(v => v != first && !IsBuiltIn(v)))
+            {
+                var other = first;
+                var otherDescription = IsBuiltIn(other)
+                    ? $"the built-in verb '{other.Name}' in {LibraryFilename(other)}"
+                    : $"the verb '{other.Name}'" + (LibraryFilename(other) is { } file ? $" in {file}" : "");
+                // A verb added in the Editor gets a generated name such as "k94", so say which verb by
+                // its pattern too.
+                var pattern = verb.Fields.Get("pattern") switch
+                {
+                    EditorCommandPattern { Pattern.Length: > 0 } p => $" ({p.Pattern})",
+                    string { Length: > 0 } p => $" ({p})",
+                    _ => ""
+                };
+                problems.Add(new CheckProblem(
+                    $"This verb{pattern} runs the attribute '{group.Key}', and so does {otherDescription}. Two verbs " +
+                    "can't share an attribute: the game shows an error as it starts, and leaves some verbs out of " +
+                    "objects' verb lists. " +
+                    (IsBuiltIn(other)
+                        ? $"Remove this verb, and give objects a '{group.Key}' script or text for the built-in one to use."
+                        : "Give one of them a different attribute."),
+                    Kind(verb), verb.Name, "property", LibraryFilename(verb)));
             }
         }
     }

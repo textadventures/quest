@@ -88,6 +88,16 @@ public class ServeProtocolTests
     }
 
     [TestMethod]
+    public async Task EvaluateReturnsScriptErrors()
+    {
+        var (protocol, _) = await StartAsync();
+        var response = await protocol.HandleAsync("""{"op":"evaluate","expression":"Broken()"}""");
+        Assert.IsNull(response["value"]);
+        StringAssert.StartsWith(response["text"]!.GetValue<string>(), "about to fail\n");
+        StringAssert.Contains(response["errors"]![0]!.GetValue<string>(), "nosuchobject");
+    }
+
+    [TestMethod]
     public async Task FinishedGameRejectsFurtherSteps()
     {
         var (protocol, _) = await StartAsync();

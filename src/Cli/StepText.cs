@@ -22,5 +22,8 @@ internal static class StepText
 
     // Errors in a game's scripts are already printed in its text as "Error running script: ...".
     public static IEnumerable<string> UnprintedErrors(HeadlessStep step, string text) =>
-        step.Errors.Where(e => !text.Contains("Error running script: " + e));
+        UnprintedErrors(step.Errors, text);
+
+    public static IEnumerable<string> UnprintedErrors(IEnumerable<string> errors, string text) =>
+        errors.Where(e => !text.Contains("Error running script: " + e));
 }

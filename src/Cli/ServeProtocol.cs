@@ -54,11 +54,16 @@ internal sealed class ServeProtocol
                     await Session.SendEventAsync(GetString(request, "name"), request["param"]?.GetValue<string>() ?? ""),
                     null);
             case "evaluate":
+            {
+                var evaluation = await Session.EvaluateWithOutputAsync(GetString(request, "expression"));
                 return new JsonObject
                 {
                     ["ok"] = true,
-                    ["value"] = ToJson(await Session.EvaluateAsync(GetString(request, "expression")))
+                    ["value"] = ToJson(evaluation.Value),
+                    ["text"] = evaluation.Text,
+                    ["errors"] = Strings(evaluation.Errors)
                 };
+            }
             case "assert":
                 return new JsonObject
                 {

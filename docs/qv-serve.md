@@ -38,7 +38,7 @@ The same seed and the same requests always give the same responses.
 
 Waits and pauses are advanced automatically and `SetTimeout` timers are run before a step returns, so a response always reflects a game waiting for the player.
 
-`evaluate` returns `{"ok":true,"value":...}`: a string, number, boolean or `null`, or the value's text for anything else (objects, lists). `assert` returns `{"ok":true,"result":true|false}`.
+`evaluate` returns `{"ok":true,"value":...,"text":"...","errors":[...]}`. `value` is a string, number, boolean or `null`, or the value's text for anything else (objects, lists). `text` and `errors` are anything the game printed or logged while evaluating it. A script error in a function the expression calls makes that call return `null` rather than failing the request, so check `errors` when a value is unexpectedly `null`. `assert` returns `{"ok":true,"result":true|false}`.
 
 Anything that fails returns `{"ok":false,"error":"..."}`: malformed JSON, an unknown `op`, a missing or mistyped field, a game that can't be found or loaded, or a step after the game has finished. The process carries on.
 
