@@ -64,13 +64,13 @@
 </object>
 ```
 
-The other types are `double`, `object` (an object's name), `objectlist` and `simplestringlist` (items separated by semicolons), `stringdictionary`, `objectdictionary`, `scriptdictionary`, `list` and `dictionary`. An attribute whose name isn't a valid XML element name, such as one with a space, is written `<attr name="hit points" type="int">10</attr>`. Many attributes are both: `look`, `take` and verb attributes print a string, or run a script when `type="script"`. The ones Core understands, such as `alias`, `look`, `take`, `scenery`, `description`, `visible`, `locked` and `parent`, are in the [attributes reference](/reference/attributes/all/).
+The other types are `double`, `object` (an object's name), `objectlist` and `simplestringlist` (items separated by semicolons), `stringdictionary`, `objectdictionary`, `scriptdictionary`, `list` and `dictionary`. An attribute can also be written `<attr name="hit points" type="int">10</attr>`, which means the same. The editor saves this form for any name that has something other than letters and numbers in it, so names with underscores such as `feature_usegive` get it as well as names with spaces, and for names such as `object` that are XML elements themselves ([ASLX file format](/reference/aslx/)). Many attributes are both: `look`, `take` and verb attributes print a string, or run a script when `type="script"`. The ones Core understands, such as `alias`, `look`, `take`, `scenery`, `description`, `visible`, `locked` and `parent`, are in the [attributes reference](/reference/attributes/all/).
 
 **XML escaping.** A script or string containing `<`, `>` or `&` has to be escaped, or the file isn't valid XML and won't load. The editor wraps such text in CDATA, and so should you: comparisons, `and` written as `&&`, and HTML in a message all need it.
 
 ```xml
 <start type="script"><![CDATA[
-  if (player.health < 10) {
+  if (game.pov.health < 10) {
     msg ("You feel <b>weak</b>.")
   }
 ]]></start>
