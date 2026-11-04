@@ -64,6 +64,12 @@ app.on("open-file", (event, filePath) => {
 // titles and userData — so read the name back rather than hardcoding it.
 const appName = app.getName();
 
+// A prerelease build (a version with a "-" suffix, as release-channel.sh
+// decides) documents the next release, so its Help menu goes to the beta docs,
+// as the editor's own help links do (PUBLIC_BETA_DOCS in AppShell's
+// docs-links.ts). See "Docs site" in docs/release-channels.md.
+const docsUrl = app.getVersion().includes("-") ? "https://beta.questviva.com" : "https://questviva.com";
+
 // Packaged: resources/app-static ships via electron-builder's extraResources.
 // Dev: `npm run build` copies the same three directories here directly (see
 // scripts/copy-static.mjs) — one code path for both.
@@ -398,7 +404,7 @@ function buildAppMenu(recentGames: RecentGame[]): Menu {
             // appMenu role above, so it's just the docs link there; elsewhere
             // it's the only place About can go, so both are added.
             submenu: [
-                { label: "Quest Viva Documentation", click: () => void shell.openExternal("https://questviva.com") },
+                { label: "Quest Viva Documentation", click: () => void shell.openExternal(docsUrl) },
                 ...(isMac ? [] : [{ type: "separator" as const }, { role: "about" as const }]),
             ],
         },

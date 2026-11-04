@@ -49,7 +49,7 @@ For AppShell (Svelte/TS) changes specifically, also run `npm run lint` (eslint) 
 
 ## Documentation Site (site/)
 
-Separate Astro/Starlight project for the documentation website:
+Separate Astro/Starlight project for the documentation website. It has two channels, like the player: questviva.com is built from the stable release branch (`release/6.0`) and beta.questviva.com from `main`, with a banner and `noindex` when built with `PUBLIC_BETA_SITE=true`. So docs on `main` describe the next release, written as if it already shipped, and a docs fix that also applies to the stable release is backported like a code fix (the `backport release/6.0` label does it for you). See "Docs site" in `docs/release-channels.md`.
 
 ```bash
 cd site

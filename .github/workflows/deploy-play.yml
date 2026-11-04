@@ -110,6 +110,8 @@ jobs:
           PUBLIC_SHOW_HOME: true
           # Shows BetaBanner.svelte on play-beta.questviva.com only.
           PUBLIC_BETA_SITE: ${{ steps.channel.outputs.pages_project == 'play-questviva-beta' }}
+          # Points help links at beta.questviva.com; see docs-links.ts.
+          PUBLIC_BETA_DOCS: ${{ steps.channel.outputs.pages_project == 'play-questviva-beta' }}
 
       - name: Assemble deploy directory
         run: |
