@@ -1,5 +1,5 @@
-// Verifies the Publish dialog's file summary, file list, size warning, progress labels and
-// Cancel: everything the dialog shows about what a publish will include and how it's going.
+// Verifies the Publish dialog's file summary, file list (which leaves out earlier publish output),
+// size warning, progress labels and Cancel: everything the dialog shows about what a publish will include and how it's going.
 // (Target choice, downloads and the HTML zip itself are covered by verify-appshell-export-html.mjs.)
 // Requires AppShell + WasmPlayer: ./dev.sh (or AppShell on :5174 with player proxied).
 import { chromium } from './lib/tracked-chromium.mjs';
@@ -98,6 +98,34 @@ try {
         if (!labels.includes(expected)) throw new Error(`progress never showed "${expected}" (saw ${JSON.stringify(labels)})`);
     }
     console.log('PASS: progress labels shown while publishing:', labels.join(' → '));
+
+    // Earlier publish output sitting next to the game is left out of the list and the package:
+    // any .quest, plus this game's own <base>.html, <base>-html.zip and Backup <base>.zip.
+    // A same-named file for some other base (other.html) still goes in.
+    const baseName = questDownload.suggestedFilename().replace(/\.quest$/, '');
+    const earlierOutput = ['earlier.quest', `${baseName}.html`, `${baseName}-html.zip`, `${baseName}.zip`];
+    for (const name of [...earlierOutput, 'other.html']) {
+        await uploadAsset(page, { name, mimeType: 'application/octet-stream', buffer: Buffer.alloc(50, 1) });
+    }
+    dialog = await openPublish(page);
+    summary = await summaryText(dialog);
+    if (!/Also includes 2 files/.test(summary)) throw new Error(`earlier output should not be counted: "${summary}"`);
+    await dialog.locator('button', { hasText: 'Show files' }).click();
+    const listed = (await dialog.locator('.publish-files li').allTextContents()).join(' | ');
+    for (const name of earlierOutput) {
+        if (listed.includes(name)) throw new Error(`earlier output ${name} listed: ${listed}`);
+    }
+    if (!listed.includes('other.html') || !listed.includes('tiny.wav')) throw new Error(`expected tiny.wav and other.html listed: ${listed}`);
+    const [secondDownload] = await Promise.all([
+        page.waitForEvent('download', { timeout: 120000 }),
+        dialog.locator('button', { hasText: 'Publish' }).click(),
+    ]);
+    const secondEntries = Object.keys(unzipSync(readFileSync(await secondDownload.path())));
+    for (const name of earlierOutput) {
+        if (secondEntries.includes(name)) throw new Error(`.quest packed earlier output ${name}: ${secondEntries.join(', ')}`);
+    }
+    if (!secondEntries.includes('other.html')) throw new Error(`.quest missing other.html: ${secondEntries.join(', ')}`);
+    console.log('PASS: earlier publish output is neither listed nor packed');
 
     // Cancel while the zip export is still fetching the player: dialog closes, nothing downloads.
     dialog = await openPublish(page);
