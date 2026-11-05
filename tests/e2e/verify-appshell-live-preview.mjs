@@ -104,9 +104,16 @@ try {
             bg: player ? getComputedStyle(player).getPropertyValue('--qv-bg').trim() : null,
         };
     });
-    const darkBefore = await pageColours();
-    if (darkBefore.text !== '' || darkBefore.bg !== '#18181b') {
-        throw new Error(`A new game's Preview doesn't follow dark mode: ${JSON.stringify(darkBefore)}`);
+    // The player picks the scheme up from the media query's change event (scheme.ts), which the
+    // browser dispatches a little after emulateMedia returns, so wait for it rather than read at once.
+    try {
+        await preview.waitForFunction(() => {
+            const player = document.querySelector('qv-player');
+            return player?.style.getPropertyValue('--qv-text').trim() === ''
+                && getComputedStyle(player).getPropertyValue('--qv-bg').trim() === '#18181b';
+        }, null, { timeout: 5000 });
+    } catch {
+        throw new Error(`A new game's Preview doesn't follow dark mode: ${JSON.stringify(await pageColours())}`);
     }
     const textColour = page.locator('label', { hasText: /^\s*Text colour/ }).locator('input').first();
     await textColour.fill('DarkRed');
