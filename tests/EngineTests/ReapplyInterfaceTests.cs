@@ -97,6 +97,57 @@ public class ReapplyInterfaceTests
         (await driver.FinishWaitAsync()).ShouldContain("resumed");
     }
 
+    private static Dictionary<string, string> Tokens(GameDriver driver) =>
+        driver.PlayerMock.Invocations
+            .Where(i => i.Method.Name == nameof(IPlayer.RunScriptAsync)
+                        && (string)i.Arguments[0] == "QuestUI.setTokens")
+            .SelectMany(i => (IDictionary<string, string>)((object[])i.Arguments[1])[0])
+            .GroupBy(pair => pair.Key)
+            .ToDictionary(group => group.Key, group => group.Last().Value);
+
+    [TestMethod]
+    public async Task ATextColourFromTheEditor_GivesTheGameItsOwnColours()
+    {
+        // A new game follows the player's light or dark mode until it has colours of its own
+        var driver = await LoadAsync();
+        Tokens(driver).ShouldNotContainKey("--qv-text");
+        driver.PlayerMock.Invocations.Clear();
+
+        driver.Model.SetGameAttributeFromEditor("defaultforeground", "DarkRed");
+        await driver.Model.ReapplyInterfaceAsync("<p>so far</p>");
+
+        var tokens = Tokens(driver);
+        tokens["--qv-text"].ShouldBe("DarkRed");
+        tokens["--qv-bg"].ShouldBe("White");
+        tokens["--qv-link"].ShouldBe("Blue");
+    }
+
+    [TestMethod]
+    public async Task ClearingTheTextColourInTheEditor_FollowsThePlayersModeAgain()
+    {
+        var driver = await LoadAsync("<defaultlinkforeground>Purple</defaultlinkforeground>");
+        Tokens(driver)["--qv-link"].ShouldBe("Purple");
+        driver.PlayerMock.Invocations.Clear();
+
+        driver.Model.SetGameAttributeFromEditor("defaultlinkforeground", null);
+        await driver.Model.ReapplyInterfaceAsync("<p>so far</p>");
+
+        Tokens(driver).ShouldNotContainKey("--qv-link");
+        Tokens(driver).ShouldNotContainKey("--qv-text");
+    }
+
+    [TestMethod]
+    public async Task AFontFromTheEditor_BecomesTheTextToken()
+    {
+        var driver = await LoadAsync();
+        driver.PlayerMock.Invocations.Clear();
+
+        driver.Model.SetGameAttributeFromEditor("defaultfont", "Verdana, sans-serif");
+        await driver.Model.ReapplyInterfaceAsync("<p>so far</p>");
+
+        Tokens(driver)["--qv-font-body"].ShouldBe("Verdana, sans-serif");
+    }
+
     [TestMethod]
     public async Task SetGameAttributeFromEditor_KeepsADoubleADouble()
     {

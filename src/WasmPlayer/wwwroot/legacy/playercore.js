@@ -39,6 +39,12 @@ function initPlayerUI() {
     const gameBorder = document.getElementById("gameBorder");
     gameBorder.style.display = "block";
 
+    // The verb menus' classic Arial at 9pt. 610 Core leaves the menu font out when a game
+    // doesn't set one, so v2 can use its interface font (#2725); a game's own, from its tokens or
+    // an older Core, replaces this.
+    SetMenuFontName("Arial");
+    SetMenuFontSize("9pt");
+
     addPaperScript();
 
     $("#txtCommand").bind("inview", function (event, visible) {

@@ -262,18 +262,20 @@ Values are CSS values, as a stylesheet would write them: colours as any CSS colo
 | `--qv-border-colour` | `bordercolour`, which on v2 also colours the page's border line (otherwise a fainter hairline). `showborder = false` is `setVisible("border", false)`, not a token |
 | `--qv-pane-fg`, `--qv-pane-bg`, `--qv-pane-heading-fg`, `--qv-pane-heading-bg`, `--qv-pane-highlight` | `panestheme`, only with `classicinterface` (#2719): the seven named themes become token sets for legacy. On v2 the panes follow the game's own colours, and a stylesheet can set these tokens |
 | `--qv-status-fg`, `--qv-status-bg`, `--qv-status-border`, `--qv-status-image` | `customlocationtextcolour`, `customlocationcolour`, `customlocationbordercolour`, `locationbarimage`. On v2 each is sent once the game sets it. With `classicinterface` they're sent only once the game turns off `classiclocation`, legacy's blue bar, as before (#2719) |
-| `--qv-menu-fg`, `--qv-menu-bg`, `--qv-menu-hover-fg`, `--qv-menu-hover-bg`, `--qv-menu-font`, `--qv-menu-font-size` | `menuforeground`, … `menufontsize`. The four colours only once one differs from the editor's defaults On a narrow layout, `--qv-menu-font-size` is at least 1rem. |
+| `--qv-menu-fg`, `--qv-menu-bg`, `--qv-menu-hover-fg`, `--qv-menu-hover-bg`, `--qv-menu-font`, `--qv-menu-font-size` | `menuforeground`, … `menufontsize`. The four colours only once one differs from Quest's classic ones (white, black, light grey, black), and then all four. The font and size only once the game sets them, with Quest 5's Arial and 9pt counting as unset, so v2's menus use `--qv-font-ui` at 1rem (#2725). Legacy's own are Arial at 9pt. On a narrow layout, `--qv-menu-font-size` is at least 1rem. |
 | `--qv-command-fg`, `--qv-command-bg` | command bar format |
 
 v2 also defines tokens with no game attribute behind them yet (`--qv-surface`, `--qv-radius`, `--qv-space`, focus-ring colours). Those are in the contract too, and the editor gains options for them later.
 
 ### Light and dark
 
-A game that keeps the editor's default colours (black text, blue links, a white background) gets v2's own colours, which follow the player's `prefers-color-scheme`. So 610 Core sends colour tokens only once a game has changed one (#2613, decision 5):
+A new 610 game leaves `defaultforeground`, `defaultlinkforeground` and `defaultbackground` unset, and gets v2's own colours, which follow the player's `prefers-color-scheme`. A game that stores Quest 5's defaults (black text, blue links, a white background), as games saved by Quest 5 or an earlier Viva do, counts as unset too. So 610 Core sends colour tokens only once a game has colours of its own (`HasOwnColours`; #2613 decision 5, #2725):
 
-- **Text, links and background go together.** Once any of `defaultforeground`, `defaultlinkforeground` or `defaultbackground` differs from its default (text and links as the game started, the background as it is now), or the game sets a background opacity, Core sends all three. A game never gets its own text colour on the scheme's background. A mid-game `SetBackgroundColour` sends the text colours with it for the same reason.
+- **Text, links and background go together.** Once any of `defaultforeground`, `defaultlinkforeground` or `defaultbackground` differs from its default (text and links as the game started, the background as it is now), or the game sets a background opacity, Core sends all three, with Quest's classic black, blue and white for any the game leaves unset. A game never gets its own text colour on the scheme's background. A mid-game `SetBackgroundColour` sends the text colours with it for the same reason.
+- **So does a colour that text sits on or is drawn in.** On v2, a `marginscolour` (the panes sit on `--qv-page-bg`), a location bar `customlocationcolour` or `customlocationtextcolour`, or a colour blend also sends the three, so the game is always light rather than mixing its colours with the dark scheme's. A border colour, the menu colours (which go as a set) and the accent don't.
 - **So do the menu colours:** all four, once one differs.
-- **The command bar** leaves its colour and background out while the game's text and background colours are the defaults.
+- **The command bar** leaves its colour and background out while the game's text and background colours are the defaults and it has none of its own.
+- **A `{popup:}`** has no inline colours of its own, so it takes the UI's, unless the game has its own colours or an `altlinkforeground`.
 
 Any other colour an author sets (location bar, margins, border, and the pane theme on the classic interface) is sent as before. Legacy's own defaults match the editor's, so leaving the tokens out changes nothing there.
 

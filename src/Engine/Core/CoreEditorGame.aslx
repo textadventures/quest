@@ -247,6 +247,11 @@
       </control>
 
       <control>
+        <controltype>label</controltype>
+        <caption>[EditorGameColoursHelp]</caption>
+      </control>
+
+      <control>
         <controltype>colour</controltype>
         <caption>[EditorGameAccentColour]</caption>
         <attribute>accentcolour</attribute>
@@ -445,6 +450,7 @@
         <attribute>menufont</attribute>
         <source>basefonts</source>
         <freetext/>
+        <nullable/>
         <onlydisplayif>game.enablehyperlinks</onlydisplayif>
       </control>
 
@@ -452,6 +458,12 @@
         <controltype>number</controltype>
         <caption>[EditorGameFontsize]</caption>
         <attribute>menufontsize</attribute>
+        <onlydisplayif>game.enablehyperlinks</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>[EditorGameMenuFontHelp]</caption>
         <onlydisplayif>game.enablehyperlinks</onlydisplayif>
       </control>
 

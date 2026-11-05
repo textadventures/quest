@@ -183,7 +183,7 @@ By inheriting the "container\_open" type in an object, it becomes by default [op
 
 ## defaultbackground
 
-"defaultbackground" is a [string](/reference/attributes/types#string) attribute which should be set to a valid HTML colour name. It specifies the default background colour for the game.
+"defaultbackground" is a [string](/reference/attributes/types#string) attribute which should be set to a valid HTML colour name. It specifies the default background colour for the game. Leave it unset, as a new game does, to follow the player's light or dark mode - see [Light and dark](/customise/look-and-feel#light-and-dark).
 
 ## defaultfont
 
@@ -195,11 +195,11 @@ By inheriting the "container\_open" type in an object, it becomes by default [op
 
 ## defaultforeground
 
-"defaultforeground" is a [string](/reference/attributes/types#string) attribute which should be set to a valid HTML colour name. It specifies the default foreground colour for the game.
+"defaultforeground" is a [string](/reference/attributes/types#string) attribute which should be set to a valid HTML colour name. It specifies the default foreground colour for the game. Leave it unset, as a new game does, to follow the player's light or dark mode.
 
 ## defaultlinkforeground
 
-"defaultlinkforeground" is a [string](/reference/attributes/types#string) attribute which should be set to a valid HTML colour name. It specifies the default hyperlink foreground colour for the game.
+"defaultlinkforeground" is a [string](/reference/attributes/types#string) attribute which should be set to a valid HTML colour name. It specifies the default hyperlink foreground colour for the game. Leave it unset, as a new game does, to follow the player's light or dark mode.
 
 ## defaultobject
 
@@ -522,11 +522,11 @@ The "maleplural" type is defined in CoreTypes.aslx. It sets the [gender](#gender
 
 ## menufont
 
-"menufont" is a [string](/reference/attributes/types#string) attribute which should be set to a valid font name. It specifies the font for menus.
+"menufont" is a [string](/reference/attributes/types#string) attribute which should be set to a valid font name. It specifies the font for menus. Leave it unset, as a new game does, for the interface font (with the classic interface, Arial). Arial counts as unset.
 
 ## menufontsize
 
-"menufontsize" is an [int](/reference/attributes/types#int) attribute. It specifies the font size for menus.
+"menufontsize" is an [int](/reference/attributes/types#int) attribute. It specifies the font size for menus, in points. Leave it unset, as a new game does, for the game's text size (with the classic interface, 9). 9 counts as unset.
 
 ## menuforeground
 

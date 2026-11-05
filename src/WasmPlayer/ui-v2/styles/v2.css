@@ -585,7 +585,7 @@
         font-size: var(--qv-menu-font-size);
     }
 
-    /* Every game inherits Core's 9pt menu font, too small on a phone. A larger one is kept. */
+    /* A game's own small menu font is too small on a phone. A larger one is kept. */
     qv-player[data-qv-narrow] qv-verb-menu {
         font-size: max(var(--qv-menu-font-size), 1rem);
     }

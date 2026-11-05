@@ -1,0 +1,19 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- A game that sets only its location bar text colour (PlayersOwnDefaultsTests). -->
+  <game name="LocationTextOnlyTest">
+    <showtitle type="boolean">false</showtitle>
+    <customlocationtextcolour>Navy</customlocationtextcolour>
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+</asl>

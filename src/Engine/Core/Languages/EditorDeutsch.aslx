@@ -8,6 +8,7 @@
   <template name="EditorGBBackground">Hintergrund</template>
   <template name="EditorGBForeground">Vordergrund</template>
   <template name="EditorGBLinkForeground">Link-Vordergrund</template>
+  <template name="EditorGBColoursHelp">Leer lassen, damit das Spielbuch dem hellen oder dunklen Modus des Spielers folgt.</template>
   <template name="EditorGBYouCanChange">Du kannst den Anfang des Spiels verändern, indem du das Objekt "player" auf eine andere Seite verschiebst.</template>
   <template name="EditorGBPage">Seite</template>
   <template name="EditorGBLanguage">Sprache</template>
@@ -166,6 +167,7 @@
   <template name="EditorGameDisplay">Oberfläche</template>
   <template name="EditorGameAppearance">Darstellung</template>
   <template name="EditorGameColoursCaption">Farben</template>
+  <template name="EditorGameColoursHelp">Lass die Text-, Link- und Seitenfarbe leer, damit das Spiel dem hellen oder dunklen Modus des Spielers folgt. Wenn du eine davon oder die Rand-, Raumleisten- oder Verlaufsfarben setzt, bekommt das Spiel eigene Farben, die auch im dunklen Modus gleich bleiben.</template>
   <template name="EditorGameOnScreenCaption">Auf dem Bildschirm</template>
   <template name="EditorGameLinksMenusCaption">Links und Menüs</template>
   <template name="EditorGameMenuFont">Schriftart</template>
@@ -191,6 +193,7 @@
   <template name="EditorGameUnderlinehyperlinks">Links unterstreichen</template>
   <template name="EditorGameAfterusing">Einen Kommando-Link nach dem Anklicken deaktivieren</template>
   <template name="EditorGameVerbMenus">Verbmenüs</template>
+  <template name="EditorGameMenuFontHelp">Leer lassen für die des Spielers.</template>
   <template name="EditorGameBackground">Hintergrundfarbe</template>
   <template name="EditorGameHoverbackground">Hintergrundfarbe unter dem Mauszeiger</template>
   <template name="EditorGameHoverforeground">Textfarbe unter dem Mauszeiger</template>

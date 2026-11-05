@@ -14,6 +14,7 @@
   <template name="EditorGBBackground">Fondo</template>
   <template name="EditorGBForeground">Color de letra</template>
   <template name="EditorGBLinkForeground">Color de vínculo</template>
+  <template name="EditorGBColoursHelp">Déjalos vacíos para seguir el modo claro u oscuro del jugador.</template>
   <template name="EditorGBYouCanChange">Puedes cambiar dónde empieza el juego moviendo "player" a otra página.</template>
   <template name="EditorGBPage">Página</template>
   <template name="EditorGBLanguage">Idioma</template>
@@ -163,6 +164,7 @@
   <template name="EditorGameDisplay">Pantalla</template>
   <template name="EditorGameAppearance">Apariencia</template>
   <template name="EditorGameColoursCaption">Colores</template>
+  <template name="EditorGameColoursHelp">Deja vacíos los colores del texto, de los enlaces y de la página para seguir el modo claro u oscuro del jugador. Si eliges uno de ellos, o los colores de los márgenes, de la barra de ubicación o del degradado, el juego tendrá sus propios colores, que no cambian en el modo oscuro.</template>
   <template name="EditorGameOnScreenCaption">En pantalla</template>
   <template name="EditorGameLinksMenusCaption">Enlaces y menús</template>
   <template name="EditorGameMenuFont">Fuente</template>
@@ -188,6 +190,7 @@
   <template name="EditorGameUnderlinehyperlinks">Subrayar enlaces</template>
   <template name="EditorGameAfterusing">Desactivar un enlace de comando después de pulsarlo</template>
   <template name="EditorGameVerbMenus">Menú de verbos</template>
+  <template name="EditorGameMenuFontHelp">Déjalos vacíos para usar los del jugador.</template>
   <template name="EditorGameDoNotClearMenus">Mantener un menú en el texto después de elegir</template>
   <template name="EditorGameShowMenuResponses">Mostrar la opción elegida del menú</template>
   <template name="EditorGameBackground">Color de fondo</template>

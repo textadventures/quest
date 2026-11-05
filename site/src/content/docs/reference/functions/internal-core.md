@@ -66,6 +66,11 @@ AddAccentToken (tokens, owncolours)
 AddExternalStylesheet(stylesheet)
 ```
 
+## AddMenuTokens
+```quest
+AddMenuTokens (tokens)
+```
+
 ## AddPanesThemeTokens
 ```quest
 AddPanesThemeTokens (tokens, theme)
@@ -222,6 +227,11 @@ FormatTextStyle(colour, defaultcolour, omitdefaults)
 ## GenerateMenuChoices
 ```quest
 GenerateMenuChoices(dictionary, objects)
+```
+
+## GetColourAttribute
+```quest
+GetColourAttribute(attribute)
 ```
 
 ## GetCommandBarFormat
@@ -521,6 +531,11 @@ HandleUseOn(object1, object2)
 ## HasDefaultColours
 ```quest
 HasDefaultColours()
+```
+
+## HasOwnColours
+```quest
+HasOwnColours()
 ```
 
 ## HideOutputSection
@@ -944,6 +959,11 @@ Does not return a value.
 ## Tsplit
 ```quest
 Tsplit(splittext)
+```
+
+## UIValueOr
+```quest
+UIValueOr(value, fallback)
 ```
 
 ## UnescapeQuotes

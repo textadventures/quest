@@ -1,0 +1,20 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- A game on the classic interface with a margin colour (PlayersOwnDefaultsTests). -->
+  <game name="ClassicMarginsTest">
+    <showtitle type="boolean">false</showtitle>
+    <classicinterface/>
+    <marginscolour>LightGrey</marginscolour>
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+</asl>

@@ -38,13 +38,14 @@
   <function name="GetCommandBarFormat" type="string">
     <![CDATA[
       // In full, defaults included: a text input doesn't inherit the page's font. The colours are
-      // left out while they're the editor's defaults, so the UI's own (light or dark) apply.
-      // OutputTextRaw runs this after every line, so it checks inline rather than calling
-      // IsDefaultColour.
-      if (LCase(ToString(game.defaultforeground)) = "black" and LCase(ToString(game.defaultbackground)) = "white") {
+      // left out while the game follows the UI's own (light or dark) ones (HasOwnColours), unless
+      // it has since changed its text colour.
+      foreground = GetColourAttribute("defaultforeground")
+      background = GetColourAttribute("defaultbackground")
+      if (IsDefaultColour(foreground, "black") and IsDefaultColour(background, "white") and not HasOwnColours()) {
         return (FormatTextStyle("", "", false))
       }
-      return (FormatTextStyle(game.defaultforeground, "", false) + ";background:" + game.defaultbackground)
+      return (FormatTextStyle(UIValueOr(foreground, "Black"), "", false) + ";background:" + UIValueOr(background, "White"))
     ]]>
   </function>
 
@@ -65,7 +66,7 @@
     // inherits those from the UI (InitTextDefaults sets them as tokens), so themes and stylesheets
     // can change them. An explicit colour is always written.
     if (LengthOf(colour) = 0) {
-      return (FormatTextStyle(game.defaultforeground, GetUIDefault("foreground"), true))
+      return (FormatTextStyle(GetColourAttribute("defaultforeground"), GetUIDefault("foreground"), true))
     }
     else {
       return (FormatTextStyle(colour, "", true))
@@ -116,18 +117,17 @@
         game.uidefaults = NewStringDictionary()
         dictionary add (game.uidefaults, "font", GetCurrentFontFamily())
         dictionary add (game.uidefaults, "fontsize", ToString(game.defaultfontsize))
-        dictionary add (game.uidefaults, "foreground", game.defaultforeground)
-        dictionary add (game.uidefaults, "linkforeground", game.defaultlinkforeground)
+        dictionary add (game.uidefaults, "foreground", GetColourAttribute("defaultforeground"))
+        dictionary add (game.uidefaults, "linkforeground", GetColourAttribute("defaultlinkforeground"))
       }
-      // The colours go to the UI only once the game has changed one from the editor's defaults
-      // (black text, blue links, a white background), and then all three together, so a game
-      // that hasn't chosen colours gets the UI's own light or dark ones, and one that has never
-      // gets its text colour on the UI's background. A background opacity needs the colour it
-      // applies to.
-      if (not HasDefaultColours() or game.setbackgroundopacity) {
-        AddUIToken (tokens, "--qv-bg", game.defaultbackground)
-        AddUIToken (tokens, "--qv-text", GetUIDefault("foreground"))
-        AddUIToken (tokens, "--qv-link", GetUIDefault("linkforeground"))
+      // The colours go to the UI only once the game has colours of its own (HasOwnColours), and
+      // then all three together, so a game that hasn't chosen colours gets the UI's own light or
+      // dark ones, and one that has never gets its text colour on the UI's background. A colour
+      // the game leaves unset is Quest's classic one.
+      if (HasOwnColours()) {
+        AddUIToken (tokens, "--qv-bg", UIValueOr(GetColourAttribute("defaultbackground"), "White"))
+        AddUIToken (tokens, "--qv-text", UIValueOr(GetUIDefault("foreground"), "Black"))
+        AddUIToken (tokens, "--qv-link", UIValueOr(GetUIDefault("linkforeground"), "Blue"))
         AddAccentToken (tokens, true)
       }
       else {
@@ -150,7 +150,7 @@
         accent = Trim(game.accentcolour)
       }
       if (accent = "" and owncolours) {
-        accent = GetUIDefault("linkforeground")
+        accent = UIValueOr(GetUIDefault("linkforeground"), "Blue")
       }
       AddUIToken (tokens, "--qv-accent", accent)
     ]]>
@@ -159,16 +159,91 @@
   <function name="HasDefaultColours" type="boolean">
     // Whether the game started with the editor's text and link colours and still has its
     // background colour (a background set mid-game is kept in saves).
-    return (IsDefaultColour(GetUIDefault("foreground"), "black") and IsDefaultColour(GetUIDefault("linkforeground"), "blue") and IsDefaultColour(game.defaultbackground, "white"))
+    return (IsDefaultColour(GetUIDefault("foreground"), "black") and IsDefaultColour(GetUIDefault("linkforeground"), "blue") and IsDefaultColour(GetColourAttribute("defaultbackground"), "white"))
   </function>
 
   <function name="IsDefaultColour" type="boolean" parameters="colour, default">
     <![CDATA[
-      // A colour the game hasn't set counts as the default.
+      // A colour the game hasn't set, or has left empty, counts as the default.
       if (colour = null) {
         return (true)
       }
-      return (LCase(Trim(ToString(colour))) = default)
+      colour = LCase(Trim(ToString(colour)))
+      return (colour = "" or colour = default)
+    ]]>
+  </function>
+
+  <function name="HasOwnColours" type="boolean">
+    <![CDATA[
+      // Whether the UI gets the game's text, link and page colours rather than its own light or
+      // dark ones: once the game has changed one of them or set a background opacity, and on v2
+      // also once it sets a colour that text sits on or is drawn in (the margins, which the panes
+      // sit on, the location bar, or a colour blend), where the dark scheme's text could be
+      // unreadable. The game is then always light. The classic interface has no dark scheme.
+      if (not HasDefaultColours() or GetBoolean(game, "setbackgroundopacity")) {
+        return (true)
+      }
+      if (GetBoolean(game, "classicinterface")) {
+        return (false)
+      }
+      if (GetBoolean(game, "colourblend")) {
+        return (true)
+      }
+      return (LengthOf(GetColourAttribute("marginscolour")) > 0 or LengthOf(GetColourAttribute("customlocationcolour")) > 0 or LengthOf(GetColourAttribute("customlocationtextcolour")) > 0)
+    ]]>
+  </function>
+
+  <function name="GetColourAttribute" type="string" parameters="attribute">
+    <![CDATA[
+      // One of the game's colour attributes, or "" when it doesn't set it. A new game leaves its
+      // text, link and page colours unset, and follows the UI's light or dark scheme.
+      if (HasString(game, attribute)) {
+        return (Trim(GetString(game, attribute)))
+      }
+      return ("")
+    ]]>
+  </function>
+
+  <function name="UIValueOr" type="string" parameters="value, fallback">
+    <![CDATA[
+      if (LengthOf(value) = 0) {
+        return (fallback)
+      }
+      return (value)
+    ]]>
+  </function>
+
+  <function name="AddMenuTokens" parameters="tokens">
+    <![CDATA[
+      // The menu colours go together, and only once the game has changed one, as with the text
+      // colours (InitTextDefaults).
+      if (not IsDefaultColour(GetColourAttribute("menubackground"), "white") or not IsDefaultColour(GetColourAttribute("menuforeground"), "black") or not IsDefaultColour(GetColourAttribute("menuhoverbackground"), "lightgrey") or not IsDefaultColour(GetColourAttribute("menuhoverforeground"), "black")) {
+        AddUIToken (tokens, "--qv-menu-bg", UIValueOr(GetColourAttribute("menubackground"), "White"))
+        AddUIToken (tokens, "--qv-menu-fg", UIValueOr(GetColourAttribute("menuforeground"), "Black"))
+        AddUIToken (tokens, "--qv-menu-hover-bg", UIValueOr(GetColourAttribute("menuhoverbackground"), "LightGrey"))
+        AddUIToken (tokens, "--qv-menu-hover-fg", UIValueOr(GetColourAttribute("menuhoverforeground"), "Black"))
+      }
+      // The font and size go only when the game sets them. Quest 5's Arial at 9pt, which most
+      // older games store, counts as unset, so v2's menus use its interface font at the text
+      // size. Legacy's own are Arial at 9pt.
+      font = ""
+      if (HasString(game, "menufont")) {
+        font = Trim(game.menufont)
+      }
+      if (LCase(font) = "arial") {
+        font = ""
+      }
+      size = 0
+      if (HasInt(game, "menufontsize")) {
+        size = game.menufontsize
+      }
+      if (size = 9) {
+        size = 0
+      }
+      AddUIToken (tokens, "--qv-menu-font", font)
+      if (size > 0) {
+        AddUIToken (tokens, "--qv-menu-font-size", ToString(size) + "pt")
+      }
     ]]>
   </function>
 
@@ -220,7 +295,7 @@
   </function>
 
   <function name="GetLinkTextColour" type="string">
-    return (game.defaultlinkforeground)
+    return (GetColourAttribute("defaultlinkforeground"))
   </function>
 
   <function name="ProcessText" type="string" parameters="text">
@@ -603,11 +678,25 @@
       list remove(ary, s1)
       s2 = Join (ary, ":")
       id = JSSafe(s1) + GetRandomInt(0, 999999999)
-      link = game.defaultlinkforeground
-      if (HasString(game, "altlinkforeground")) link = game.altlinkforeground
       // The UI opens and closes the popup itself (data-qv-popup), so this markup needs no
-      // inline handlers or positioning.
-      s = "<button type=\"button\" data-qv-popup=\"" + id + "\" style=\"color:" + link + ";\">" + s1 + "</button><div id=\"" + id + "\" data-qv-popup-content class=\"w3-theme-border\" style=\"background-color:" + game.defaultbackground + ";border-color:" + game.defaultforeground + ";color:" + link + ";\"><p>"
+      // inline handlers or positioning. Its colours are the UI's (which are the game's once it
+      // has its own, HasOwnColours), unless the game has its own now or an alternative link
+      // colour.
+      link = ""
+      background = ""
+      foreground = ""
+      if (HasOwnColours()) {
+        link = GetColourAttribute("defaultlinkforeground")
+        background = GetColourAttribute("defaultbackground")
+        foreground = GetColourAttribute("defaultforeground")
+      }
+      if (HasString(game, "altlinkforeground")) link = game.altlinkforeground
+      linkstyle = ""
+      if (LengthOf(link) > 0) linkstyle = "color:" + link + ";"
+      contentstyle = linkstyle
+      if (LengthOf(background) > 0) contentstyle = contentstyle + "background-color:" + background + ";"
+      if (LengthOf(foreground) > 0) contentstyle = contentstyle + "border-color:" + foreground + ";"
+      s = "<button type=\"button\" data-qv-popup=\"" + id + "\" style=\"" + linkstyle + "\">" + s1 + "</button><div id=\"" + id + "\" data-qv-popup-content class=\"w3-theme-border\" style=\"" + contentstyle + "\"><p>"
       s = s + s2 + "</p></div>"
       return(ProcessTextSection(s, data))
   ]]></function>
@@ -991,8 +1080,8 @@
     tokens = NewStringDictionary()
     AddUIToken (tokens, "--qv-bg", colour)
     // Once the game has chosen a background, its text colours go with it (InitTextDefaults)
-    AddUIToken (tokens, "--qv-text", GetUIDefault("foreground"))
-    AddUIToken (tokens, "--qv-link", GetUIDefault("linkforeground"))
+    AddUIToken (tokens, "--qv-text", UIValueOr(GetUIDefault("foreground"), "Black"))
+    AddUIToken (tokens, "--qv-link", UIValueOr(GetUIDefault("linkforeground"), "Blue"))
     AddAccentToken (tokens, true)
     JS.QuestUI.setTokens (tokens)
     game.defaultbackground = colour

@@ -30,6 +30,13 @@
     </script>
   </command>
 
+  <command name="popup">
+    <pattern>popup</pattern>
+    <script>
+      msg ("A {popup:word:Its meaning.}.")
+    </script>
+  </command>
+
   <command name="background">
     <pattern>background</pattern>
     <script>

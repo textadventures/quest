@@ -351,6 +351,11 @@
 
       <control>
         <controltype>label</controltype>
+        <caption>[EditorGBColoursHelp]</caption>
+      </control>
+
+      <control>
+        <controltype>label</controltype>
         <caption>[EditorGameYoucanuseany]</caption>
       </control>
       <control>

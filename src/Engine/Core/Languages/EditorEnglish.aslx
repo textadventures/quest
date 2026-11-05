@@ -7,6 +7,7 @@
   <template name="EditorGBBackground">Background</template>
   <template name="EditorGBForeground">Foreground</template>
   <template name="EditorGBLinkForeground">Link foreground</template>
+  <template name="EditorGBColoursHelp">Leave these empty to follow the player’s light or dark mode.</template>
   <template name="EditorGBYouCanChange">You can change where the game starts by moving "player" to a different page.</template>
   <template name="EditorGBPage">Page</template>
   <template name="EditorGBLanguage">Language</template>
@@ -165,6 +166,7 @@
   <template name="EditorGameDisplay">Display</template>
   <template name="EditorGameAppearance">Appearance</template>
   <template name="EditorGameColoursCaption">Colours</template>
+  <template name="EditorGameColoursHelp">Leave the text, link and page colours empty to follow the player’s light or dark mode. Setting one of them, or the margin, location bar or blend colours, gives the game its own colours, which stay the same in dark mode.</template>
   <template name="EditorGameOnScreenCaption">On screen</template>
   <template name="EditorGameLinksMenusCaption">Links and menus</template>
   <template name="EditorGameMenuFont">Font</template>
@@ -190,6 +192,7 @@
   <template name="EditorGameUnderlinehyperlinks">Underline links</template>
   <template name="EditorGameAfterusing">Deactivate a command link once it's been clicked</template>
   <template name="EditorGameVerbMenus">Verb menus</template>
+  <template name="EditorGameMenuFontHelp">Leave these empty for the player’s own.</template>
   <template name="EditorGameBackground">Background colour</template>
   <template name="EditorGameHoverbackground">Background colour under the pointer</template>
   <template name="EditorGameHoverforeground">Text colour under the pointer</template>
