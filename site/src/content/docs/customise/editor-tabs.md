@@ -294,7 +294,7 @@ A plain `dropdown` sets a string attribute from `<validvalues>`. Add `<freetext/
 
 `<validvalues>` can also be a string dictionary, in which case the key is stored in the attribute and the value is what the author sees.
 
-A `colour` control sets a string attribute to a colour. It shows a swatch of the colour that opens the system colour picker, and a box that takes any HTML colour, suggesting the names in `<validvalues>`. `[HTMLColorNames]` is the list of standard colour names. Leaving it empty means the attribute isn't set, and the author can clear it with the button beside the box. Add `<playertheme/>` if an empty value means the player's own light or dark mode colour, as it does for the game's text, link and page colours, and the empty state says so. Add `<nullable/>` to have clearing it remove the attribute, so it goes back to what the object's types give it:
+A `colour` control sets a string attribute to a colour. It's a box that takes any HTML colour, with a swatch of what's typed, suggesting the names in `<validvalues>` as the author types (its ▾ button lists them all), and a button beside it that opens the system colour picker. `[HTMLColorNames]` is the list of standard colour names. Leaving it empty means the attribute isn't set, and the author can clear it by emptying the box or with its × button. Add `<playertheme/>` if an empty value means the player's own light or dark mode colour, as it does for the game's text, link and page colours, and the empty state says so. Add `<nullable/>` to have clearing it remove the attribute, so it goes back to what the object's types give it:
 
 ```xml
 <control>

@@ -17,12 +17,18 @@
         // css has no syntax highlighting of its own yet: the editor's other features still apply.
         language: "xml" | "quest-script" | "javascript" | "css";
         readonly?: boolean;
+        // Whether the toolbar's Undo and Redo act on this editor's text (code-editor-registry).
+        // Right for a buffer that isn't applied to the game yet (Code view, the raw XML panel);
+        // wrong for one that writes each change to the game (the stylesheet on the Appearance
+        // tab), which the game's own undo already covers - and which, mounted on a tab of other
+        // options, would otherwise take Undo away from all of them.
+        toolbarUndo?: boolean;
         onChange?: (value: string) => void;
         minHeight?: string;
         class?: string;
     }
 
-    let { value, language, readonly = false, onChange, minHeight = "10rem", class: className = "" }: Props = $props();
+    let { value, language, readonly = false, toolbarUndo = true, onChange, minHeight = "10rem", class: className = "" }: Props = $props();
 
     let editorEl = $state<HTMLDivElement | null>(null);
     let view: EditorView | null = null;
@@ -103,7 +109,7 @@
         });
 
         return () => {
-            registerActiveCmView(null);
+            if (toolbarUndo) registerActiveCmView(null);
             view?.destroy();
             view = null;
         };
@@ -122,7 +128,7 @@
                 readonlyCompartment.reconfigure(readonlyExtension(readonly)),
             ],
         });
-        registerActiveCmView(readonly ? null : view);
+        if (toolbarUndo) registerActiveCmView(readonly ? null : view);
     });
 
     // External value sync: only replace the doc when the incoming prop actually differs from

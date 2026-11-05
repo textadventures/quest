@@ -512,5 +512,6 @@
     "colourInput.notSet": "Sin definir",
     "colourInput.notSetHint": "Sin definir: usa el valor predeterminado",
     "colourInput.pick": "Elegir un color",
-    "colourInput.clear": "Quitar color"
+    "colourInput.clear": "Quitar color",
+    "colourInput.showNames": "Mostrar nombres de colores"
 }

@@ -439,5 +439,6 @@
     "colourInput.notSet": "[Nót sét]",
     "colourInput.notSetHint": "[Nót sét: úsés thé défáúlt]",
     "colourInput.pick": "[Píck á cólóúr]",
-    "colourInput.clear": "[Cléár cólóúr]"
+    "colourInput.clear": "[Cléár cólóúr]",
+    "colourInput.showNames": "[Shów cólóúr námés]"
 }
