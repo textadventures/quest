@@ -544,6 +544,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-wasmplayer-v2-themes.mjs http://localhost:5175
         working-directory: tests/e2e
+      - run: node verify-wasmplayer-v2-colour-scheme.mjs http://localhost:5175
+        working-directory: tests/e2e
       - run: node verify-wasmplayer-v2-game-stylesheet.mjs http://localhost:5175
         working-directory: tests/e2e
       - run: node verify-wasmplayer-v2-map.mjs http://localhost:5175
@@ -631,6 +633,8 @@ jobs:
       - run: node verify-electron-recent-games.mjs
         working-directory: tests/e2e
       - run: node verify-electron-play-local-file.mjs
+        working-directory: tests/e2e
+      - run: node verify-electron-colour-scheme-persist.mjs
         working-directory: tests/e2e
       - run: node verify-electron-external-stylesheet.mjs
         working-directory: tests/e2e

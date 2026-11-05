@@ -741,6 +741,10 @@
   <template name="CommandInputLabel">Escribe tu comando</template>
   <template name="ShowPanesButton">Mostrar paneles</template>
   <template name="MapLabel">Mapa</template>
+  <template name="ColourSchemeButton">Claro u oscuro</template>
+  <template name="ColourSchemeSystem">Como mi dispositivo</template>
+  <template name="ColourSchemeLight">Claro</template>
+  <template name="ColourSchemeDark">Oscuro</template>
   <template name="MapZoomIn">Acercar</template>
   <template name="MapZoomOut">Alejar</template>
   <template name="YouTubeVideoTitle">Vídeo de YouTube</template>

@@ -59,7 +59,13 @@ The page is the column the text appears in, and the margins are either side of i
 
 A new game leaves **Text colour**, **Link colour** and **Page colour** empty, so it follows the player's light or dark mode: dark text on a light page for a player whose device is in light mode, and light text on a dark page in dark mode. An **Accent colour** on its own keeps this, and is lightened in dark mode so it stays readable.
 
-Setting the text, link or page colour, a **Margin colour**, or the location bar's **Background colour** or **Text colour** gives the game its own colours instead, which stay the same in dark mode. Any of the three you leave empty is then black text, blue links or a white page. That way, your colours are never mixed with the player's dark ones.
+Setting the text, link or page colour gives the game its own colours instead, which stay the same in dark mode. Any of the three you leave empty is then black text, blue links or a white page. That way, your colours are never mixed with the player's dark ones.
+
+To give players in dark mode colours of your own too, set a **Dark mode page colour** under **Dark mode**. Then a **Dark mode text colour**, **Dark mode link colour** and **Dark mode accent colour** appear, and any of them you leave empty is the player's own dark mode colour. With a dark mode page colour, the game shows your light colours in light mode and your dark ones in dark mode.
+
+While a game follows light and dark mode, either with the player's colours or with dark mode colours of your own, players get a light or dark button at the top of the game. It lets them choose **Light** or **Dark** whatever their device is set to, or go back to **Match my device**. Their choice is kept for every game they play in that browser.
+
+A **Margin colour**, a colour blend, or the location bar's **Background colour** or **Text colour**, has no dark mode version, so setting one keeps the game in its light colours, without the button. So does changing the page colour from a script, with `SetBackgroundColour`.
 
 With the [classic interface](#advanced), **Colour scheme for panes** picks the panes' colours: Classic (light blue, the default), Midnight, Nature, Vanilla, Black, Blood, Tranquil or Parchment. Otherwise the panes follow the game's own colours.
 

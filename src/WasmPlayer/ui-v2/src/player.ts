@@ -9,6 +9,7 @@ import { handleClick, handleKeyDown, updateLinks } from './links';
 import { setMapVisible, toggleMapCollapsed, updateMap } from './map';
 import type { QvOutput } from './output';
 import { builtInPanes, pane, setDrawerOpen, isDrawerOpen } from './panes';
+import { applyScheme, bindScheme } from './scheme';
 import type { QvVerbMenu } from './verb-menu';
 
 /** The layout presets a game can choose for each width (QuestUI.setLayoutPreset). */
@@ -54,6 +55,7 @@ export class QvPlayer extends HTMLElement {
             button.addEventListener('click', () => setDrawerOpen(!isDrawerOpen()));
         }
         this.mapButton?.addEventListener('click', toggleMapCollapsed);
+        bindScheme(this);
         new ResizeObserver(() => this.#updateLayout()).observe(this);
         this.panes?.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && isDrawerOpen() && !this.verbMenu?.isOpen) {
@@ -174,7 +176,7 @@ export class QvPlayer extends HTMLElement {
         if (!topbar) return;
         const location = this.location;
         // The panes button counts only where it's drawn, in the drawer layout.
-        const anyButton = [...topbar.querySelectorAll<HTMLElement>('.qv-toolbar button')]
+        const anyButton = [...topbar.querySelectorAll<HTMLElement>('.qv-toolbar > button, .qv-toolbar > .qv-scheme:not([hidden]) > button')]
             .some((button) => !button.hidden && button.style.display !== 'none' && getComputedStyle(button).display !== 'none');
         const statusBar = this.statusBar;
         const anyStatus = !!statusBar && !statusBar.hidden && statusBar.classList.contains('qv-status-bar-active')
@@ -318,12 +320,15 @@ export class QvPlayer extends HTMLElement {
             if (lengthTokens.has(name) && /^-?(\d+\.?\d*|\.\d+)$/.test(value)) value += 'px';
             this.style.setProperty(name, value);
         }
-        // Under the dark scheme, a game's own accent is lightened unless it has its own
-        // background too (v2.css).
+        // Under the dark scheme, a game's own accent for both schemes is lightened (v2.css).
         this.toggleAttribute('data-qv-own-accent', !!this.style.getPropertyValue('--qv-accent'));
-        this.toggleAttribute('data-qv-own-background', !!this.style.getPropertyValue('--qv-bg'));
+        this.toggleAttribute('data-qv-own-background', ['--qv-bg', '--qv-bg-light', '--qv-bg-dark']
+            .some((token) => !!this.style.getPropertyValue(token)));
         // The page's border line is a faint hairline until the game gives it a colour (v2.css).
         this.toggleAttribute('data-qv-own-border', !!this.style.getPropertyValue('--qv-border-colour'));
+        // A game with its own colours for light only is always light.
+        applyScheme(this);
+        this.updateTopbar();
     }
 
     setLocation(html: string): void {

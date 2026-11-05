@@ -528,9 +528,19 @@ HandleSingleCommandPattern(command, thiscommand, varlist)
 HandleUseOn(object1, object2)
 ```
 
+## HasDarkColours
+```quest
+HasDarkColours()
+```
+
 ## HasDefaultColours
 ```quest
 HasDefaultColours()
+```
+
+## HasLightOnlyColours
+```quest
+HasLightOnlyColours()
 ```
 
 ## HasOwnColours

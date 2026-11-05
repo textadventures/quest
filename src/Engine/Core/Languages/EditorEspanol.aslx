@@ -164,7 +164,7 @@
   <template name="EditorGameDisplay">Pantalla</template>
   <template name="EditorGameAppearance">Apariencia</template>
   <template name="EditorGameColoursCaption">Colores</template>
-  <template name="EditorGameColoursHelp">Deja vacíos los colores del texto, de los enlaces y de la página para seguir el modo claro u oscuro del jugador. Si eliges uno de ellos, o los colores de los márgenes, de la barra de ubicación o del degradado, el juego tendrá sus propios colores, que no cambian en el modo oscuro.</template>
+  <template name="EditorGameColoursHelp">Deja vacíos los colores del texto, de los enlaces y de la página para seguir el modo claro u oscuro del jugador. Si eliges uno de ellos, el juego tendrá sus propios colores, que no cambian en el modo oscuro, salvo que elijas también los colores del modo oscuro más abajo. Los colores de los márgenes, de la barra de ubicación y del degradado no tienen versión oscura, así que con cualquiera de ellos el juego siempre es claro.</template>
   <template name="EditorGameOnScreenCaption">En pantalla</template>
   <template name="EditorGameLinksMenusCaption">Enlaces y menús</template>
   <template name="EditorGameMenuFont">Fuente</template>
@@ -211,6 +211,12 @@
   <template name="EditorGameInterfacefontHelp">La fuente de la barra de ubicación, los paneles y los botones. Déjala vacía para usar la del jugador.</template>
   <template name="EditorGameAccentColour">Color de acento</template>
   <template name="EditorGameAccentColourHelp">Los enlaces, la brújula y el indicador de comandos se dibujan en este color. Déjalo vacío para usar el color de los enlaces si has cambiado los colores, o el del jugador si no. Con solo un color de acento, el juego sigue el modo claro u oscuro del jugador.</template>
+  <template name="EditorGameDarkColoursCaption">Modo oscuro</template>
+  <template name="EditorGameDarkColoursHelp">Colores para los jugadores que usan el modo oscuro. Con un color de fondo para el modo oscuro, el juego sigue el modo claro u oscuro del jugador, que puede cambiar entre ambos. Deja vacíos los demás para usar los colores propios del modo oscuro.</template>
+  <template name="EditorGameDarkBackgroundColour">Color de fondo en modo oscuro</template>
+  <template name="EditorGameDarkForeground">Color del texto en modo oscuro</template>
+  <template name="EditorGameDarkLinkcolour">Color de vínculo en modo oscuro</template>
+  <template name="EditorGameDarkAccentColour">Color de acento en modo oscuro</template>
   <template name="EditorGameMapPosition">Posición del mapa</template>
   <template name="EditorGameMapPositionHeader">Encima del juego</template>
   <template name="EditorGameMapPositionPanes">En los paneles</template>

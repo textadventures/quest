@@ -253,6 +253,7 @@ Values are CSS values, as a stylesheet would write them: colours as any CSS colo
 | `--qv-font-ui` | `interfacefont`: the font of the location bar, panes, menus and buttons |
 | `--qv-text`, `--qv-bg`, `--qv-link` | `defaultforeground`, `defaultbackground`, `defaultlinkforeground`, only once one differs from the editor's defaults (see "Light and dark") |
 | `--qv-accent` | `accentcolour`, or the link colour (see "Accent") |
+| `--qv-text-light`, `--qv-bg-light`, `--qv-link-light`, `--qv-accent-light` and the same with `-dark` | each scheme's colours, in place of the four above, for a game that has dark ones too (see "Light and dark") |
 | `--qv-link-decoration` | `underlinehyperlinks` |
 | `--qv-page-bg` | `marginscolour` |
 | `--qv-bg-image`, `--qv-bg-opacity` | `backgroundimage`, `backgroundopacity` |
@@ -279,11 +280,34 @@ A new 610 game leaves `defaultforeground`, `defaultlinkforeground` and `defaultb
 
 Any other colour an author sets (location bar, margins, border, and the pane theme on the classic interface) is sent as before. Legacy's own defaults match the editor's, so leaving the tokens out changes nothing there.
 
+#### A game's own dark colours
+
+A game can have colours for the dark scheme as well, usually from its theme: `darkbackground`, with `darkforeground`, `darklinkforeground` and `darkaccentcolour` optional. With a `darkbackground` (`HasDarkColours`), 610 Core sends each scheme's colours under its own names, and v2 shows whichever scheme is in use:
+
+- **Light:** `--qv-bg-light`, `--qv-text-light` and `--qv-link-light`, as the three above would be. They're left out when the game has no light colours of its own, so the light scheme is v2's.
+- **Dark:** `--qv-bg-dark`, and `--qv-text-dark` and `--qv-link-dark` where the game sets them. Any it leaves out is v2's dark one.
+- **Accent:** with a `darkaccentcolour` (or, failing that, a `darklinkforeground`), the accent goes as `--qv-accent-light` and `--qv-accent-dark`. Otherwise it's `--qv-accent` as before, lightened on the dark scheme.
+- **The command bar and `{popup:}`** have no inline colours, so they follow the scheme.
+
+The game is light-only, as before, when:
+- it sets a colour with no dark version (a margin, location bar or blend colour, `HasLightOnlyColours`)
+- it uses the classic interface
+- a script sets its background (`SetBackgroundColour` marks it with `midgamebackground`, kept in saves).
+
+#### The player's choice
+
+`qv-player`'s `data-qv-scheme` (`light` or `dark`) is the scheme v2 draws, set by `scheme.ts`. Its `@media (prefers-color-scheme)` rules became rules on this attribute, so the player's choice can override their device's:
+
+- **The choice:** the toolbar's light or dark button opens a menu of "Match my device", "Light" and "Dark" (`ColourSchemeButton` and friends in the chrome strings). The choice is the player's, kept for every game in `localStorage` (`questviva-colour-scheme`; nothing is stored for "Match my device"). Without storage, it lasts for the page.
+- **Who gets it:** the button is shown only while the game suits both schemes, that is, while it has no `--qv-bg` token. A game with its own colours for light only is always `light`, whatever the choice.
+- **The host's dialogs:** `scheme.ts` sets the same attribute on `<html>`, and the Save/Load dialog and debugger (`chrome.css`) follow it, through a Tailwind `dark` variant on it. `wasm-player.js` sets it to `light` for a legacy game. Until a game has set it, on the start screen, the dialogs follow the device.
+- **Electron:** the desktop app's local server is on a new origin each launch, so `localStorage` wouldn't keep it. There it's kept in the app's own settings instead, through `player-preload.ts`'s `electronPlayerSettings` (`userData/player-settings.json`), which stores only the three choices.
+
 ### Accent
 
 `--qv-accent` is the game's one highlight colour. v2 uses it for links (`--qv-link` defaults to it), the player's dot on the map, the compass directions the player can take, the command prompt, and the menu's hover background. It lets an author change "blue" to their own colour without taking on a whole colour scheme:
 
-- **`accentcolour` is sent on its own.** Unlike the link colour, it doesn't bring the text and background colours with it, so a game that only sets an accent still follows light and dark. Under v2's dark scheme the accent is lightened enough to keep AA contrast on the dark background. A game that has sent its own background gets its accent as given.
+- **`accentcolour` is sent on its own.** Unlike the link colour, it doesn't bring the text and background colours with it, so a game that only sets an accent still follows light and dark. Under v2's dark scheme the accent is lightened enough to keep AA contrast on the dark background. A game with a dark accent of its own gets that instead (see "A game's own dark colours"), and a game that's always light gets its accent as given.
 - **A game that changes its link colour but has no `accentcolour`** gets the link colour as its accent too, so the rest of v2's highlights match its links.
 - **A game with both** keeps its own link colour for links, and the accent for everything else.
 

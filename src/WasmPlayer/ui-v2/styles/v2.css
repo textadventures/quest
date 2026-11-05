@@ -15,25 +15,27 @@
     qv-player {
         /* Text and links. 610 Core sets the game's own over these once it has changed one from the
            editor's defaults (InitTextDefaults); until then they follow the light or dark scheme
-           (below). */
+           (below). A game with dark colours as well sends each scheme's as --qv-text-light and
+           --qv-text-dark (and the same for the link, accent and background), which the scheme
+           picks from. */
         --qv-font-body: Georgia, serif;
         --qv-font-size: 12pt;
         --qv-font-ui: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-        --qv-text: #1a1a1a;
-        --qv-link: var(--qv-accent-shown);
+        --qv-text: var(--qv-text-light, #1a1a1a);
+        --qv-link: var(--qv-link-light, var(--qv-accent-shown));
         --qv-link-decoration: underline;
 
         /* The game's one highlight colour (links, the compass's open directions, the command
            prompt, the menu's hover, the player on the map), from accentcolour or the link colour.
            --qv-accent-shown is internal: the accent as drawn, lightened under the dark scheme when
            the game gave its own accent but not its own background (below). */
-        --qv-accent: #1f6f78;
+        --qv-accent: var(--qv-accent-light, #1f6f78);
         --qv-accent-shown: var(--qv-accent);
 
         /* Surfaces. --qv-bg is the game's background; --qv-page-bg is the margin around it. The
            neutral ones are mixed from the text and background, so they suit whatever colours the
            game or the scheme gives those. */
-        --qv-bg: #ffffff;
+        --qv-bg: var(--qv-bg-light, #ffffff);
         --qv-bg-opacity: 1;
         --qv-bg-image: none;
         --qv-page-bg: color-mix(in srgb, var(--qv-text) 5%, var(--qv-bg));
@@ -99,22 +101,23 @@
         line-height: 1.6;
     }
 
-    /* Dark: for a game that hasn't chosen its own colours (610 Core then sends none). */
-    @media (prefers-color-scheme: dark) {
-        qv-player {
-            --qv-text: #e4e4e7;
-            --qv-accent: #7cc4cc;
-            --qv-bg: #18181b;
-            --qv-focus-ring: #60a5fa;
+    /* Dark: for a game that hasn't chosen its own colours (610 Core then sends none), or has
+       chosen dark ones too. data-qv-scheme is the player's choice, or their system's
+       (scheme.ts); a game whose own colours are for light only is always light. */
+    qv-player[data-qv-scheme="dark"] {
+        --qv-text: var(--qv-text-dark, #e4e4e7);
+        --qv-link: var(--qv-link-dark, var(--qv-accent-shown));
+        --qv-accent: var(--qv-accent-dark, #7cc4cc);
+        --qv-bg: var(--qv-bg-dark, #18181b);
+        --qv-focus-ring: #60a5fa;
 
-            color-scheme: dark;
-        }
+        color-scheme: dark;
+    }
 
-        /* A game's own accent was chosen for a light background. On the dark one it's lightened
-           enough to read, unless the game has sent its own background too (setTokens marks both). */
-        qv-player[data-qv-own-accent]:not([data-qv-own-background]) {
-            --qv-accent-shown: color-mix(in oklab, var(--qv-accent) 45%, white);
-        }
+    /* A game's own accent (--qv-accent, one for both schemes) was chosen for a light background.
+       On the dark one it's lightened enough to read (setTokens marks it). */
+    qv-player[data-qv-scheme="dark"][data-qv-own-accent] {
+        --qv-accent-shown: color-mix(in oklab, var(--qv-accent) 45%, white);
     }
 
     /* A game's own colours may leave no room to fade text toward the background, so with its own
@@ -336,19 +339,18 @@
     }
 
     /* On the dark scheme, Core's default white rooms and black lines and labels would glare or
-       vanish, so they take the scheme's colours. A game with its own background keeps them. */
-    @media (prefers-color-scheme: dark) {
-        qv-player:not([data-qv-own-background]) .qv-map-svg [fill="white" i] {
-            fill: var(--qv-surface);
-        }
+       vanish, so they take the scheme's colours. (A game whose own colours are for light only is
+       never shown dark.) */
+    qv-player[data-qv-scheme="dark"] .qv-map-svg [fill="white" i] {
+        fill: var(--qv-surface);
+    }
 
-        qv-player:not([data-qv-own-background]) .qv-map-svg [stroke="black" i]:not(.qv-map-player) {
-            stroke: var(--qv-border-colour);
-        }
+    qv-player[data-qv-scheme="dark"] .qv-map-svg [stroke="black" i]:not(.qv-map-player) {
+        stroke: var(--qv-border-colour);
+    }
 
-        qv-player:not([data-qv-own-background]) .qv-map-svg text[fill="black" i] {
-            fill: var(--qv-text);
-        }
+    qv-player[data-qv-scheme="dark"] .qv-map-svg text[fill="black" i] {
+        fill: var(--qv-text);
     }
 
     qv-player[data-qv-narrow] [data-qv-part="map"] {
@@ -612,6 +614,65 @@
         outline: none;
         background-color: var(--qv-menu-hover-bg);
         color: var(--qv-menu-hover-fg);
+    }
+
+    /* The light or dark menu (scheme.ts), dropped from its toolbar button like the verb menu. */
+    .qv-scheme {
+        position: relative;
+        display: flex;
+    }
+
+    .qv-scheme-icon {
+        display: contents;
+    }
+
+    .qv-scheme-menu {
+        position: absolute;
+        inset-block-start: calc(100% + 4px);
+        inset-inline-end: 0;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        min-width: 12rem;
+        padding: 4px;
+        border: 1px solid var(--qv-border-colour);
+        border-radius: var(--qv-radius);
+        background-color: var(--qv-menu-bg);
+        box-shadow: 0 4px 16px rgb(0 0 0 / 0.2);
+        color: var(--qv-menu-fg);
+        font-family: var(--qv-menu-font);
+        font-size: var(--qv-menu-font-size);
+    }
+
+    .qv-scheme-menu [role="menuitemradio"] {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        min-height: 44px;
+        padding: 0.25rem 0.75rem;
+        border: none;
+        border-radius: calc(var(--qv-radius) - 2px);
+        background: none;
+        color: inherit;
+        font: inherit;
+        text-align: start;
+        white-space: nowrap;
+        cursor: pointer;
+    }
+
+    .qv-scheme-menu [role="menuitemradio"] > span {
+        flex: 1;
+    }
+
+    .qv-scheme-menu [role="menuitemradio"]:hover,
+    .qv-scheme-menu [role="menuitemradio"]:focus-visible {
+        outline: none;
+        background-color: var(--qv-menu-hover-bg);
+        color: var(--qv-menu-hover-fg);
+    }
+
+    .qv-scheme-menu [aria-checked="false"] .qv-scheme-check {
+        visibility: hidden;
     }
 
     /* ── Panes ── */
