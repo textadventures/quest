@@ -176,8 +176,8 @@
       if (game.borderlesscursor) {
         JS.QuestUI.setCommandBarPreset ("borderless")
         // The typed command matches the game's text, which is the UI's own until the game sets
-        // its colours (InitTextDefaults)
-        if (HasOwnColours()) {
+        // its colours (InitTextDefaults), and follows the scheme when it has dark ones too
+        if (HasOwnColours() and not HasDarkColours()) {
           AddUIToken (tokens, "--qv-command-fg", UIValueOr(GetColourAttribute("defaultforeground"), "Black"))
         }
         JS.QuestUI.setCommandPrompt (game.commandcursor)

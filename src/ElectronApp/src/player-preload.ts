@@ -7,7 +7,7 @@ import { contextBridge, ipcRenderer } from "electron";
 // (see ipc/player.ts's existing comment on why these windows otherwise get
 // no preload at all). Electron only allows one preload script per window, so
 // both bridges this untrusted context needs — transcripts and game saves —
-// live in this single file rather than one each.
+// live in this single file rather than one each (and the player's settings).
 //
 // electronTranscripts.append: writes a chunk of text to the game's own named
 // transcript. transcript-store.ts always escapes `name` into a single path
@@ -18,6 +18,10 @@ import { contextBridge, ipcRenderer } from "electron";
 // electronGameSaves: save/list/load/delete, keyed by [gameId, slotIndex]
 // exactly like the IndexedDB store this replaces (see save-store.ts) — same
 // per-game path escaping, so a game can only ever touch its own save slots.
+//
+// electronPlayerSettings: the player's light or dark choice, shared by every game, which a
+// browser keeps in localStorage (v2's scheme.ts). Main only stores or returns one of its three
+// values (player-settings-store.ts), so a game can do no more than change it.
 //
 // Neither bridge exposes list/read/delete for transcripts, or any operation
 // on another game's saves — those stay on transcript-viewer-preload.ts's
@@ -42,4 +46,9 @@ contextBridge.exposeInMainWorld("electronGameSaves", {
     load: (gameId: string, slotIndex: number): Promise<Uint8Array | null> =>
         ipcRenderer.invoke("gamesave:load", gameId, slotIndex),
     delete: (gameId: string, slotIndex: number): Promise<void> => ipcRenderer.invoke("gamesave:delete", gameId, slotIndex),
+});
+
+contextBridge.exposeInMainWorld("electronPlayerSettings", {
+    getColourScheme: (): string | null => ipcRenderer.sendSync("playersettings:getColourSchemeSync") as string | null,
+    setColourScheme: (value: string): Promise<void> => ipcRenderer.invoke("playersettings:setColourScheme", value),
 });

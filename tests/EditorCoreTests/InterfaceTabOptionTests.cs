@@ -17,7 +17,8 @@ public class InterfaceTabOptionTests
         "autoscroll", "continueonclick", "fadepreviousoutput", "classicinterface"
     ];
 
-    private static readonly string[] AppearanceAttributes = ["accentcolour", "interfacefont"];
+    private static readonly string[] AppearanceAttributes =
+        ["accentcolour", "interfacefont", "darkbackground", "darkforeground", "darklinkforeground", "darkaccentcolour"];
 
     // Shown only for v2, and only for the classic interface (docs/ui-v2-contract.md).
     private static readonly string[] V2OnlyAttributes =
@@ -108,6 +109,33 @@ public class InterfaceTabOptionTests
         game.SetAttribute("classicinterface", true);
         foreach (var attribute in V2OnlyAttributes) await AssertVisible(attribute, false, "classic");
         foreach (var attribute in ClassicOnlyAttributes) await AssertVisible(attribute, true, "classic");
+    }
+
+    [TestMethod]
+    public async Task TheOtherDarkModeColours_ShowOnceThereIsADarkPageColour()
+    {
+        using var controller = await LoadController("English");
+        var game = controller.GetEditorData("game")!;
+        var controls = GameControls(controller);
+        string[] others = ["darkforeground", "darklinkforeground", "darkaccentcolour"];
+
+        Assert.IsTrue(await controls.Single(c => c.Attribute == "darkbackground").IsControlVisible(game));
+        foreach (var attribute in others)
+        {
+            Assert.IsFalse(await controls.Single(c => c.Attribute == attribute).IsControlVisible(game), $"{attribute} without a dark page colour");
+        }
+
+        game.SetAttribute("darkbackground", "#1a1a2e");
+        foreach (var attribute in others)
+        {
+            Assert.IsTrue(await controls.Single(c => c.Attribute == attribute).IsControlVisible(game), $"{attribute} with a dark page colour");
+        }
+
+        game.SetAttribute("classicinterface", true);
+        foreach (var attribute in others.Append("darkbackground"))
+        {
+            Assert.IsFalse(await controls.Single(c => c.Attribute == attribute).IsControlVisible(game), $"{attribute} on the classic interface");
+        }
     }
 
     [TestMethod]

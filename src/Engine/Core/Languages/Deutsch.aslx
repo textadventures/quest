@@ -585,6 +585,10 @@
   <template name="CommandInputLabel">Gib deinen Befehl ein</template>
   <template name="ShowPanesButton">Bereiche anzeigen</template>
   <template name="MapLabel">Karte</template>
+  <template name="ColourSchemeButton">Hell oder dunkel</template>
+  <template name="ColourSchemeSystem">Wie mein Gerät</template>
+  <template name="ColourSchemeLight">Hell</template>
+  <template name="ColourSchemeDark">Dunkel</template>
   <template name="MapZoomIn">Vergrößern</template>
   <template name="MapZoomOut">Verkleinern</template>
   <template name="YouTubeVideoTitle">YouTube-Video</template>

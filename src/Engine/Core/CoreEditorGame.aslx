@@ -179,7 +179,7 @@
         <types>*=[TypeThemeStandard]; theme_novella=[TypeThemeNovella]; theme_retro=[TypeThemeRetro]; theme_typewriter=[TypeThemeTypewriter]; theme_hotdogstand=[TypeThemeHotDog]</types>
         <!-- Choosing a theme, or its Reset button, clears the game's own value for anything a theme sets and for the rest of the look below, so the theme isn't hidden by options chosen under another. Images, the stylesheet and link underlining are the author's own and are kept. -->
         <resetoverrides/>
-        <resetattributes type="simplestringlist">defaultfont;defaultwebfont;defaultfontsize;defaultforeground;interfacefont;accentcolour;defaultlinkforeground;defaultbackground;marginscolour;colourblend;colourblendtop;colourblendbottom;bordercolour;panestheme;customlocationcolour;customlocationtextcolour;customlocationbordercolour;borderlesscursor;commandcursor;shadowbox;menufont;menufontsize;menubackground;menuforeground;menuhoverbackground;menuhoverforeground</resetattributes>
+        <resetattributes type="simplestringlist">defaultfont;defaultwebfont;defaultfontsize;defaultforeground;interfacefont;accentcolour;defaultlinkforeground;defaultbackground;darkbackground;darkforeground;darklinkforeground;darkaccentcolour;marginscolour;colourblend;colourblendtop;colourblendbottom;bordercolour;panestheme;customlocationcolour;customlocationtextcolour;customlocationbordercolour;borderlesscursor;commandcursor;shadowbox;menufont;menufontsize;menubackground;menuforeground;menuhoverbackground;menuhoverforeground</resetattributes>
       </control>
 
       <control>
@@ -366,6 +366,54 @@
         <attribute>panestheme</attribute>
         <validvalues type="simplestringlist">Classic;Midnight;Nature;Vanilla;Black;Blood;Tranquil;Parchment</validvalues>
         <onlydisplayif>game.showpanes and GetBoolean(game, "classicinterface")</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>title</controltype>
+        <caption>[EditorGameDarkColoursCaption]</caption>
+        <onlydisplayif>not GetBoolean(game, "classicinterface")</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>[EditorGameDarkColoursHelp]</caption>
+        <onlydisplayif>not GetBoolean(game, "classicinterface")</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>colour</controltype>
+        <caption>[EditorGameDarkBackgroundColour]</caption>
+        <attribute>darkbackground</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <nullable/>
+        <onlydisplayif>not GetBoolean(game, "classicinterface")</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>colour</controltype>
+        <caption>[EditorGameDarkForeground]</caption>
+        <attribute>darkforeground</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <nullable/>
+        <onlydisplayif>not GetBoolean(game, "classicinterface") and HasString(game, "darkbackground")</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>colour</controltype>
+        <caption>[EditorGameDarkLinkcolour]</caption>
+        <attribute>darklinkforeground</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <nullable/>
+        <onlydisplayif>not GetBoolean(game, "classicinterface") and HasString(game, "darkbackground") and game.enablehyperlinks</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>colour</controltype>
+        <caption>[EditorGameDarkAccentColour]</caption>
+        <attribute>darkaccentcolour</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <nullable/>
+        <onlydisplayif>not GetBoolean(game, "classicinterface") and HasString(game, "darkbackground")</onlydisplayif>
       </control>
 
       <control>

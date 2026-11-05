@@ -38,11 +38,11 @@
   <function name="GetCommandBarFormat" type="string">
     <![CDATA[
       // In full, defaults included: a text input doesn't inherit the page's font. The colours are
-      // left out while the game follows the UI's own (light or dark) ones (HasOwnColours), unless
-      // it has since changed its text colour.
+      // left out while the game follows the UI's own (light or dark) ones (HasOwnColours), or its
+      // own light and dark ones (HasDarkColours), unless it has since changed its text colour.
       foreground = GetColourAttribute("defaultforeground")
       background = GetColourAttribute("defaultbackground")
-      if (IsDefaultColour(foreground, "black") and IsDefaultColour(background, "white") and not HasOwnColours()) {
+      if ((IsDefaultColour(foreground, "black") and IsDefaultColour(background, "white") and not HasOwnColours()) or (HasDarkColours() and foreground = GetUIDefault("foreground"))) {
         return (FormatTextStyle("", "", false))
       }
       return (FormatTextStyle(UIValueOr(foreground, "Black"), "", false) + ";background:" + UIValueOr(background, "White"))
@@ -123,15 +123,27 @@
       // The colours go to the UI only once the game has colours of its own (HasOwnColours), and
       // then all three together, so a game that hasn't chosen colours gets the UI's own light or
       // dark ones, and one that has never gets its text colour on the UI's background. A colour
-      // the game leaves unset is Quest's classic one.
+      // the game leaves unset is Quest's classic one. A game with dark colours too
+      // (HasDarkColours) sends each set under its own names, and the UI shows whichever suits
+      // the player's light or dark scheme; otherwise the game's colours are always shown, light.
+      dark = HasDarkColours()
+      suffix = ""
+      if (dark) {
+        suffix = "-light"
+      }
       if (HasOwnColours()) {
-        AddUIToken (tokens, "--qv-bg", UIValueOr(GetColourAttribute("defaultbackground"), "White"))
-        AddUIToken (tokens, "--qv-text", UIValueOr(GetUIDefault("foreground"), "Black"))
-        AddUIToken (tokens, "--qv-link", UIValueOr(GetUIDefault("linkforeground"), "Blue"))
+        AddUIToken (tokens, "--qv-bg" + suffix, UIValueOr(GetColourAttribute("defaultbackground"), "White"))
+        AddUIToken (tokens, "--qv-text" + suffix, UIValueOr(GetUIDefault("foreground"), "Black"))
+        AddUIToken (tokens, "--qv-link" + suffix, UIValueOr(GetUIDefault("linkforeground"), "Blue"))
         AddAccentToken (tokens, true)
       }
       else {
         AddAccentToken (tokens, false)
+      }
+      if (dark) {
+        AddUIToken (tokens, "--qv-bg-dark", GetColourAttribute("darkbackground"))
+        AddUIToken (tokens, "--qv-text-dark", GetColourAttribute("darkforeground"))
+        AddUIToken (tokens, "--qv-link-dark", GetColourAttribute("darklinkforeground"))
       }
       AddUIToken (tokens, "--qv-font-body", GetUIDefault("font"))
       if (LengthOf(GetUIDefault("fontsize")) > 0) {
@@ -143,16 +155,25 @@
   <function name="AddAccentToken" parameters="tokens, owncolours">
     <![CDATA[
       // The accent is accentcolour, sent on its own so a game that only sets an accent still
-      // follows the UI's light and dark schemes. A game that has its own colours but no accent
-      // gets its link colour, so the UI's other highlights match its links.
-      accent = ""
-      if (HasString(game, "accentcolour")) {
-        accent = Trim(game.accentcolour)
-      }
+      // follows the UI's light and dark schemes (the UI lightens it on a dark background). A game
+      // that has its own colours but no accent gets its link colour, so the UI's other highlights
+      // match its links. A game with dark colours that include an accent or link colour sends
+      // that as the dark scheme's accent, and its other accent as the light scheme's.
+      accent = GetColourAttribute("accentcolour")
       if (accent = "" and owncolours) {
         accent = UIValueOr(GetUIDefault("linkforeground"), "Blue")
       }
-      AddUIToken (tokens, "--qv-accent", accent)
+      darkaccent = ""
+      if (HasDarkColours()) {
+        darkaccent = UIValueOr(GetColourAttribute("darkaccentcolour"), GetColourAttribute("darklinkforeground"))
+      }
+      if (darkaccent = "") {
+        AddUIToken (tokens, "--qv-accent", accent)
+      }
+      else {
+        AddUIToken (tokens, "--qv-accent-light", accent)
+        AddUIToken (tokens, "--qv-accent-dark", darkaccent)
+      }
     ]]>
   </function>
 
@@ -173,6 +194,21 @@
     ]]>
   </function>
 
+  <function name="HasDarkColours" type="boolean">
+    <![CDATA[
+      // Whether the game (usually through its theme) has colours for the UI's dark scheme as
+      // well: a darkbackground, with darkforeground, darklinkforeground and darkaccentcolour
+      // optional (the UI's own dark ones otherwise). Its colours then follow the player's light
+      // or dark scheme rather than always being shown light. The classic interface has no dark
+      // scheme, and a background set mid-game (SetBackgroundColour) is for both, as are the
+      // colours that have no dark versions (HasLightOnlyColours).
+      if (GetBoolean(game, "classicinterface") or HasAttribute(game, "midgamebackground") or HasLightOnlyColours()) {
+        return (false)
+      }
+      return (LengthOf(GetColourAttribute("darkbackground")) > 0)
+    ]]>
+  </function>
+
   <function name="HasOwnColours" type="boolean">
     <![CDATA[
       // Whether the UI gets the game's text, link and page colours rather than its own light or
@@ -186,6 +222,15 @@
       if (GetBoolean(game, "classicinterface")) {
         return (false)
       }
+      return (HasLightOnlyColours())
+    ]]>
+  </function>
+
+  <function name="HasLightOnlyColours" type="boolean">
+    <![CDATA[
+      // Whether the game sets a colour that text sits on or is drawn in and that has no dark
+      // version (the margins, which the panes sit on, the location bar, or a colour blend), so
+      // it's always shown light.
       if (GetBoolean(game, "colourblend")) {
         return (true)
       }
@@ -685,7 +730,7 @@
       link = ""
       background = ""
       foreground = ""
-      if (HasOwnColours()) {
+      if (HasOwnColours() and not HasDarkColours()) {
         link = GetColourAttribute("defaultlinkforeground")
         background = GetColourAttribute("defaultbackground")
         foreground = GetColourAttribute("defaultforeground")
@@ -1077,6 +1122,8 @@
   </function>
 
   <function name="SetBackgroundColour" parameters="colour">
+    // From now on the game is one colour scheme, whatever its dark colours (HasDarkColours)
+    game.midgamebackground = true
     tokens = NewStringDictionary()
     AddUIToken (tokens, "--qv-bg", colour)
     // Once the game has chosen a background, its text colours go with it (InitTextDefaults)

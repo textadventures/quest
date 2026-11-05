@@ -530,6 +530,10 @@
   <template name="CommandInputLabel">Type your command</template>
   <template name="ShowPanesButton">Show panels</template>
   <template name="MapLabel">Map</template>
+  <template name="ColourSchemeButton">Light or dark</template>
+  <template name="ColourSchemeSystem">Match my device</template>
+  <template name="ColourSchemeLight">Light</template>
+  <template name="ColourSchemeDark">Dark</template>
   <template name="MapZoomIn">Zoom in</template>
   <template name="MapZoomOut">Zoom out</template>
   <template name="YouTubeVideoTitle">YouTube video</template>
