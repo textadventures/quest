@@ -167,7 +167,7 @@
   <template name="EditorGameDisplay">Oberfläche</template>
   <template name="EditorGameAppearance">Darstellung</template>
   <template name="EditorGameColoursCaption">Farben</template>
-  <template name="EditorGameColoursHelp">Lass die Text-, Link- und Seitenfarbe leer, damit das Spiel dem hellen oder dunklen Modus des Spielers folgt. Wenn du eine davon setzt, bekommt das Spiel eigene Farben, die auch im dunklen Modus gleich bleiben, außer du wählst unten auch Farben für den dunklen Modus. Rand-, Raumleisten- und Verlaufsfarben gibt es nicht in dunkel, mit einer davon ist das Spiel also immer hell.</template>
+  <template name="EditorGameColoursHelp">Lass die Text-, Link- und Seitenfarbe leer, damit das Spiel dem hellen oder dunklen Modus des Spielers folgt. Wenn du eine davon setzt, bekommt das Spiel eigene Farben, die auch im dunklen Modus gleich bleiben, außer du wählst auch Farben in der Spalte „Dunkel“. Rand-, Raumleisten- und Verlaufsfarben gibt es nicht in dunkel, mit einer davon ist das Spiel also immer hell.</template>
   <template name="EditorGameOnScreenCaption">Auf dem Bildschirm</template>
   <template name="EditorGameLinksMenusCaption">Links und Menüs</template>
   <template name="EditorGameMenuFont">Schriftart</template>
@@ -215,8 +215,7 @@
   <template name="EditorGameInterfacefontHelp">Die Schriftart der Raumleiste, der Bereiche und der Schaltflächen. Leer lassen für die des Spielers.</template>
   <template name="EditorGameAccentColour">Akzentfarbe</template>
   <template name="EditorGameAccentColourHelp">Links, der Kompass und die Eingabeaufforderung werden darin gezeichnet. Leer lassen für die Linkfarbe, wenn du die Farben geändert hast, sonst für die des Spielers. Mit nur einer Akzentfarbe folgt das Spiel weiter dem hellen oder dunklen Modus des Spielers.</template>
-  <template name="EditorGameDarkColoursCaption">Dunkler Modus</template>
-  <template name="EditorGameDarkColoursHelp">Farben für Spieler, die den dunklen Modus nutzen. Mit einer Spielfeldfarbe für den dunklen Modus folgt das Spiel dem hellen oder dunklen Modus des Spielers, und er kann zwischen beiden wechseln. Lass die anderen leer, um die eigenen Farben des dunklen Modus zu verwenden.</template>
+  <template name="EditorGameDarkColoursHelp">Die Spalte „Dunkel“ ist für Spieler, die den dunklen Modus nutzen. Sobald das Spiel eine dunkle Spielfeldfarbe hat, folgt es dem hellen oder dunklen Modus des Spielers, er kann zwischen beiden wechseln, und die anderen dunklen Farben erscheinen. Lass eine davon leer, um die eigene Farbe des dunklen Modus zu verwenden.</template>
   <template name="EditorGameDarkBackgroundColour">Spielfeldfarbe im dunklen Modus</template>
   <template name="EditorGameDarkForeground">Textfarbe im dunklen Modus</template>
   <template name="EditorGameDarkLinkcolour">Linkfarbe im dunklen Modus</template>

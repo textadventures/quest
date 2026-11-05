@@ -31,9 +31,9 @@ async function run(colorScheme) {
     await page.locator('[data-value="game"][data-part="branch-control"]').click();
     await page.getByRole('button', { name: 'Appearance', exact: true }).click();
 
-    const caption = page.locator('label', { hasText: /^\s*Text colour:/ }).first();
+    // Text colour sits in the Light column of the Light/Dark colour table (data-colour-grid).
+    const caption = page.locator('[data-colour-grid] [data-colour-cell="defaultforeground"]');
     const control = caption.locator('[data-colour-input]');
-    // The location bar has a "Text colour" of its own, further down the tab.
     await control.waitFor({ timeout: 5000 });
     const text = control.locator('input[role="combobox"]');
     const picker = caption.locator('input[type="color"]');
@@ -42,10 +42,9 @@ async function run(colorScheme) {
     const settle = () => page.evaluate(() => { if (document.activeElement instanceof HTMLElement) document.activeElement.blur(); })
         .then(() => page.waitForTimeout(300));
 
-    // The caption labels the text field, not the colour input layered over the swatch.
-    const labelled = await page.locator('label', { hasText: /^\s*Text colour:/ }).first()
-        .evaluate(el => el.control?.getAttribute('role') ?? el.control?.getAttribute('type'));
-    if (labelled !== 'combobox') throw new Error(`the Text colour caption labels a ${labelled}, not the text field`);
+    // The text field carries the caption as its name, not the colour input layered over the swatch.
+    const named = await page.locator('[data-colour-grid]').getByRole('combobox', { name: 'Text colour', exact: true }).count();
+    if (named !== 1) throw new Error(`${named} text fields in the colour table are named "Text colour"`);
 
     // As wide as the plain text fields around it (Font size, Interface font), set or not.
     const checkWidth = async (when) => {

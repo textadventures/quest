@@ -235,15 +235,39 @@
         return { main: controls.filter(c => !c.advanced), advanced };
     }
 
+    // A light colour and its dark mode counterpart (<darkattribute>), one row of a ColourGrid.
+    // dark is null where the dark control is hidden (until the game has a dark page colour, say).
+    interface ColourPair { light: ControlInfo; dark: ControlInfo | null }
+
+    type ControlRow =
+        | { kind: "row"; controls: ControlInfo[] }
+        | { kind: "colourGrid"; pairs: ColourPair[] };
+
     // <samerow/> - pack consecutive controls onto one horizontal flex row. A control with
     // sameRow joins the previous row; one without starts a new row.
-    function groupControlRows(controls: ControlInfo[]): ControlInfo[][] {
-        const rows: ControlInfo[][] = [];
+    // <darkattribute> - a colour control naming its dark mode counterpart joins a Light/Dark
+    // table with the dark control beside it (taken out of its own place in the list), and
+    // consecutive ones share a table. Only while at least one dark control is shown, so where
+    // they all are hidden (the classic interface) the light colours are ordinary rows.
+    function groupControlRows(controls: ControlInfo[]): ControlRow[] {
+        const colours = new Map(controls.filter(c => c.controlType === "colour" && c.attribute).map(c => [c.attribute!, c]));
+        const darkPartners = new Set(controls.flatMap(c =>
+            c.controlType === "colour" && c.darkAttribute && colours.has(c.darkAttribute) ? [c.darkAttribute] : []));
+        const rows: ControlRow[] = [];
         for (const ctrl of controls) {
-            if (ctrl.sameRow && rows.length > 0) {
-                rows[rows.length - 1].push(ctrl);
+            if (ctrl.attribute && darkPartners.has(ctrl.attribute)) continue;
+            const last = rows.at(-1);
+            if (darkPartners.size > 0 && ctrl.controlType === "colour" && ctrl.darkAttribute) {
+                const pair = { light: ctrl, dark: colours.get(ctrl.darkAttribute) ?? null };
+                if (last?.kind === "colourGrid") {
+                    last.pairs.push(pair);
+                } else {
+                    rows.push({ kind: "colourGrid", pairs: [pair] });
+                }
+            } else if (ctrl.sameRow && last?.kind === "row") {
+                last.controls.push(ctrl);
             } else {
-                rows.push([ctrl]);
+                rows.push({ kind: "row", controls: [ctrl] });
             }
         }
         return rows;
@@ -544,17 +568,7 @@
             <div class="flex-1 overflow-hidden flex flex-col min-h-0 {readOnly ? "pointer-events-none opacity-60" : ""}">
                 <AttributesEditor>
                     {#snippet extraControls()}
-                        {#each groupControlRows(main) as row, ri (ri)}
-                            {#if row.length === 1}
-                                {@render controlRow(row[0])}
-                            {:else}
-                                <div class="flex flex-wrap items-start gap-x-2">
-                                    {#each row as ctrl, ci (ci)}
-                                        {@render controlRow(ctrl)}
-                                    {/each}
-                                </div>
-                            {/if}
-                        {/each}
+                        {@render controlRows(main)}
                         {@render advancedExpander(advanced)}
                     {/snippet}
                 </AttributesEditor>
@@ -562,17 +576,7 @@
         {:else}
             {@const { main, advanced } = partitionControls(viewControls)}
             <div class="flex-1 overflow-y-auto {readOnly ? "pointer-events-none opacity-60" : ""}">
-                {#each groupControlRows(main) as row, ri (ri)}
-                    {#if row.length === 1}
-                        {@render controlRow(row[0])}
-                    {:else}
-                        <div class="flex flex-wrap items-start gap-x-2">
-                            {#each row as ctrl, ci (ci)}
-                                {@render controlRow(ctrl)}
-                            {/each}
-                        </div>
-                    {/if}
-                {/each}
+                {@render controlRows(main)}
                 {@render advancedExpander(advanced)}
             </div>
         {/if}
@@ -1098,23 +1102,66 @@
     {/if}
 {/snippet}
 
+{#snippet controlRows(controls: ControlInfo[])}
+    {#each groupControlRows(controls) as row, ri (ri)}
+        {#if row.kind === "colourGrid"}
+            {@render colourGrid(row.pairs)}
+        {:else if row.controls.length === 1}
+            {@render controlRow(row.controls[0])}
+        {:else}
+            <div class="flex flex-wrap items-start gap-x-2">
+                {#each row.controls as ctrl, ci (ci)}
+                    {@render controlRow(ctrl)}
+                {/each}
+            </div>
+        {/if}
+    {/each}
+{/snippet}
+
+{#snippet colourCell(ctrl: ControlInfo)}
+    <div class="min-w-0" data-colour-cell={ctrl.attribute}>
+        <ColourInput
+            value={attrValue(ctrl.attribute!) ?? ""}
+            options={ctrl.options ?? []}
+            playerTheme={ctrl.playerTheme}
+            ariaLabel={ctrl.caption ?? ctrl.attribute!}
+            onchange={(v) => onDropdownChange(ctrl.attribute!, v, ctrl.nullable)}
+            class="input text-xs py-0.5 px-1.5 w-auto min-w-24"
+        />
+        {#if attributeErrors[ctrl.attribute!]}
+            <p class="text-xs text-error-500" role="alert">{attributeErrors[ctrl.attribute!]}</p>
+        {/if}
+    </div>
+{/snippet}
+
+<!-- Colours with a dark mode counterpart (<darkattribute>): a table with the light colour and
+     the dark one side by side. Each cell is labelled by its own control's caption ("Dark mode
+     link colour"); the row's caption is the light one's. In a narrow pane the caption goes above
+     its two colours. -->
+{#snippet colourGrid(pairs: ColourPair[])}
+    <div class="grid grid-cols-[repeat(2,max-content)] @xl:grid-cols-[8rem_repeat(2,max-content)] items-center gap-x-2 gap-y-1 px-3 py-1.5" data-colour-grid>
+        <span class="hidden @xl:block" aria-hidden="true"></span>
+        <span class="text-xs font-semibold text-surface-600-400" aria-hidden="true">{t("propertyEditor.colourGridLight")}</span>
+        <span class="text-xs font-semibold text-surface-600-400" aria-hidden="true">{t("propertyEditor.colourGridDark")}</span>
+        {#each pairs as pair (pair.light.attribute)}
+            <span class="col-span-2 @xl:col-span-1 pt-1 @xl:pt-0 text-xs text-surface-600-400">{pair.light.caption ?? pair.light.attribute}:</span>
+            {@render colourCell(pair.light)}
+            {#if pair.dark}
+                {@render colourCell(pair.dark)}
+            {:else}
+                <span></span>
+            {/if}
+        {/each}
+    </div>
+{/snippet}
+
 {#snippet advancedExpander(controls: ControlInfo[])}
     {#if controls.length > 0}
         <details class="mt-2 border-t border-surface-200-800">
             <summary class="px-3 pt-2.5 pb-1.5 text-xs font-semibold uppercase text-surface-600-400 cursor-pointer select-none">
                 {t("common.advanced")}
             </summary>
-            {#each groupControlRows(controls) as row, ri (ri)}
-                {#if row.length === 1}
-                    {@render controlRow(row[0])}
-                {:else}
-                    <div class="flex flex-wrap items-start gap-x-2">
-                        {#each row as ctrl, ci (ci)}
-                            {@render controlRow(ctrl)}
-                        {/each}
-                    </div>
-                {/if}
-            {/each}
+            {@render controlRows(controls)}
         </details>
     {/if}
 {/snippet}

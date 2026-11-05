@@ -198,6 +198,8 @@
     "propertyEditor.resetToThemeNothing": "Nichts zurückzusetzen: Du hast nichts geändert, was das Thema festlegt",
     "propertyEditor.resetToThemeHint": "Deine eigenen Einstellungen für {options} entfernen, damit die des Themas gelten",
     "propertyEditor.resetToTheme": "Zurücksetzen",
+    "propertyEditor.colourGridLight": "Hell",
+    "propertyEditor.colourGridDark": "Dunkel",
     "propertyEditor.generateButton": "Erzeugen",
     "propertyEditor.selectOption": "Wähle…",
     "propertyEditor.keyFallback": "Schlüssel",

@@ -81,7 +81,7 @@ try {
 
     // The accent colour, on the Appearance tab: a dropdown of colour names that also takes free text.
     await openGameTab('Appearance');
-    const accent = page.locator('label', { hasText: /^\s*Accent colour/ }).locator('input, select').first();
+    const accent = page.locator('[data-colour-grid]').getByRole('combobox', { name: 'Accent colour', exact: true });
     await accent.waitFor({ timeout: 5000 });
     if (await accent.evaluate(el => el.tagName === 'SELECT')) {
         await accent.selectOption({ label: 'Red' });
@@ -108,7 +108,7 @@ try {
     if (darkBefore.text !== '' || darkBefore.bg !== '#18181b') {
         throw new Error(`A new game's Preview doesn't follow dark mode: ${JSON.stringify(darkBefore)}`);
     }
-    const textColour = page.locator('label', { hasText: /^\s*Text colour/ }).locator('input').first();
+    const textColour = page.locator('[data-colour-grid]').getByRole('combobox', { name: 'Text colour', exact: true });
     await textColour.fill('DarkRed');
     await settle();
     await waitForPreview(() => {
@@ -119,7 +119,7 @@ try {
     await assertKept('changing the text colour');
     console.log('PASS: in dark mode, setting a text colour makes the Preview use the game\'s own light colours');
 
-    await page.locator('label', { hasText: /^\s*Text colour/ }).first().getByRole('button', { name: 'Clear colour' }).click();
+    await page.locator('[data-colour-grid] [data-colour-cell="defaultforeground"]').getByRole('button', { name: 'Clear colour' }).click();
     await settle();
     await waitForPreview(() => {
         const player = document.querySelector('qv-player');
