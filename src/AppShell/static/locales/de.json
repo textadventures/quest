@@ -45,6 +45,8 @@
 
     "editorStore.startingEditor": "Editor wird gestartet…",
     "editorStore.loadingGame": "Spiel wird geladen…",
+    "editorStore.themeReset.one": "Das neue Thema hat deine eigene Einstellung für {options} ersetzt. Mit „Rückgängig“ kommt sie zurück.",
+    "editorStore.themeReset.other": "Das neue Thema hat deine eigenen Einstellungen für {options} ersetzt. Mit „Rückgängig“ kommen sie zurück.",
 
     "addElementModal.labels.room": "Raum",
     "addElementModal.labels.object": "Objekt",

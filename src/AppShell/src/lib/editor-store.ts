@@ -11,7 +11,7 @@ import { withGuessedMimeType } from "./filesystem/mime";
 import { savePublishTarget, type PublishTarget } from "./publish-target";
 import { confirmDialog } from "./confirm";
 import { showToast } from "./toast";
-import { t } from "./i18n";
+import { t, tPlural, locale } from "./i18n";
 import type { TreeNode, EditorDataResponse, ScriptBlockData, ScriptCommandCategoriesData, ExpressionTemplateData, ExpressionTemplate, FullAttributeData, ExitsData, VerbInfo, ExpressionFunctionInfo, FeatureLeftover } from "./types";
 
 export type AddElementModalState = { type: "room" | "object" | "page" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type"; parent: string | null; folder: string | null } | null;
@@ -601,11 +601,20 @@ export function setSelectedFilter(elementKey: string, filterGroupName: string, f
     return result;
 }
 
+// Returns "ok", "error" or why the type couldn't be set. A control with <resetoverrides/> (the
+// game's Theme) also clears the element's own values for what its types set; the author is told
+// which, since undo is the only way back.
 export function setDropdownType(elementKey: string, controlId: string, selectedType: string): string {
     if (!_bridge) return "error";
-    const result = _bridge.SetDropdownType(elementKey, controlId, selectedType);
+    const raw = _bridge.SetDropdownType(elementKey, controlId, selectedType);
     refreshSelectedData();
     refreshUndoRedo();
+    if (!raw.startsWith("{")) return raw;
+    const { result, reset } = JSON.parse(raw) as { result: string; reset: string[] };
+    if (reset.length > 0) {
+        const options = new Intl.ListFormat(get(locale), { type: "conjunction" }).format(reset);
+        showToast(tPlural("editorStore.themeReset", reset.length, { options }), "info", 10000);
+    }
     return result;
 }
 

@@ -177,6 +177,8 @@
         <caption>[EditorGameTheme]</caption>
         <controltype>dropdowntypes</controltype>
         <types>*=[TypeThemeStandard]; theme_novella=[TypeThemeNovella]; theme_retro=[TypeThemeRetro]; theme_typewriter=[TypeThemeTypewriter]; theme_hotdogstand=[TypeThemeHotDog]</types>
+        <!-- Choosing a theme clears the game's own value for anything a theme sets, so the new theme isn't hidden by options chosen under the old one -->
+        <resetoverrides/>
       </control>
 
       <control>

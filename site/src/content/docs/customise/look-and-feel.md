@@ -31,6 +31,8 @@ The **Theme** dropdown is the quickest way to change the look of your game. It s
 
 A theme only provides starting values. Anything you set yourself on the Appearance or Interface tab wins, so you can pick Novella and then turn the panes back on, or pick Retro and change the page colour.
 
+Choosing a different theme clears anything you've set yourself that a theme also sets, so the new theme shows as it's meant to. The editor tells you which options it cleared, and **Undo** brings back the old theme with your settings. Options that no theme sets, such as the accent colour, are kept.
+
 ### Text
 
 - **Base font** - a font from the list, each with fallbacks, such as "Georgia, serif". These work on every device.

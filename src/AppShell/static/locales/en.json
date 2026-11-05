@@ -45,6 +45,8 @@
 
     "editorStore.startingEditor": "Starting editor…",
     "editorStore.loadingGame": "Loading game…",
+    "editorStore.themeReset.one": "The new theme replaced your own setting for {options}. Undo brings it back.",
+    "editorStore.themeReset.other": "The new theme replaced your own settings for {options}. Undo brings them back.",
 
     "addElementModal.labels.room": "Room",
     "addElementModal.labels.object": "Object",

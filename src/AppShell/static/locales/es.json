@@ -45,6 +45,8 @@
 
     "editorStore.startingEditor": "Iniciando editor…",
     "editorStore.loadingGame": "Cargando juego…",
+    "editorStore.themeReset.one": "El nuevo tema ha sustituido tu ajuste de {options}. Con «Deshacer» lo recuperas.",
+    "editorStore.themeReset.other": "El nuevo tema ha sustituido tus ajustes de {options}. Con «Deshacer» los recuperas.",
 
     "addElementModal.labels.room": "Lugar",
     "addElementModal.labels.object": "Objeto",

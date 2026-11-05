@@ -1430,6 +1430,66 @@ public sealed class EditorController : IDisposable
         }
     }
 
+    // Sets which of a dropdowntypes control's types the element inherits, in one undo step. With
+    // <resetoverrides/> (the game's Theme), it also removes the element's own value for every
+    // attribute that any of the control's types sets, so the new type's values aren't hidden by
+    // ones chosen under the old one. Returns the attributes it removed.
+    public SetDropdownTypeResult SetDropdownType(string elementKey, IEditorControl control, string selectedType)
+    {
+        const string noType = "*";
+        var typeNames = (control.GetDictionary("types") ?? new Dictionary<string, string>()).Keys
+            .Where(k => k != noType)
+            .ToList();
+
+        if (selectedType != noType && !typeNames.Contains(selectedType))
+        {
+            return new SetDropdownTypeResult(false, $"Unknown type '{selectedType}'", []);
+        }
+
+        var element = WorldModel.Elements.Get(elementKey);
+        var reset = new List<string>();
+
+        WorldModel.UndoLogger.StartTransaction(string.Format("Set type of '{0}'", elementKey));
+        try
+        {
+            foreach (var typeName in typeNames.Where(t => DoesElementInheritType(elementKey, t)))
+            {
+                RemoveInheritedTypeFromElement(elementKey, typeName, false);
+            }
+
+            if (selectedType != noType)
+            {
+                var result = AddInheritedTypeToElement(elementKey, selectedType, false);
+                if (!result.Valid)
+                {
+                    return new SetDropdownTypeResult(false, result.Message.ToString(), []);
+                }
+            }
+
+            if (control.GetBool("resetoverrides"))
+            {
+                var typeAttributes = typeNames
+                    .Select(t => WorldModel.Elements.TryGetValue(ElementType.ObjectType, t, out var type) ? type : null)
+                    .OfType<Element>()
+                    .SelectMany(t => t.Fields.GetAttributeNames(true))
+                    .Where(a => a != "name" && a != "elementtype")
+                    .ToHashSet();
+
+                foreach (var attribute in element.Fields.GetAttributeNames(false).Where(typeAttributes.Contains).ToList())
+                {
+                    element.Fields.RemoveField(attribute);
+                    reset.Add(attribute);
+                }
+            }
+        }
+        finally
+        {
+            WorldModel.UndoLogger.EndTransaction();
+        }
+
+        return new SetDropdownTypeResult(true, null, reset);
+    }
+
     public bool DoesElementInheritType(string elementName, string typeName)
     {
         var element = WorldModel.Elements.Get(elementName);

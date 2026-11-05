@@ -87,6 +87,10 @@ internal record TabInfo(
 
 internal record FeatureLeftoverInfo(string Element, List<string> Labels);
 
+// SetDropdownType's answer: "ok", "error" or why the type couldn't be set, and the captions of the
+// options a <resetoverrides/> control reset.
+internal record SetDropdownTypeResponse(string Result, List<string> Reset);
+
 // See WasmEditorBridge.ResolveLocalCover — DataUrl is null when Name is only a resource name
 // the caller must resolve itself (a plain unpacked .aslx's sibling-file cover).
 internal record LocalCoverResult(string Name, string? DataUrl);
@@ -251,6 +255,7 @@ internal record ExpressionFunctionData(string Name, List<string> Parameters, boo
 [JsonSerializable(typeof(List<ExpressionFunctionData>))]
 [JsonSerializable(typeof(LocalCoverResult))]
 [JsonSerializable(typeof(List<FeatureLeftoverInfo>))]
+[JsonSerializable(typeof(SetDropdownTypeResponse))]
 [JsonSerializable(typeof(Dictionary<string, string>))]
 [JsonSerializable(typeof(IReadOnlyList<LegacyUiHack>))]
 internal partial class WasmEditorJsonContext : JsonSerializerContext
@@ -1035,38 +1040,22 @@ public partial class WasmEditorBridge
             return "error";
         }
 
-        var types = ctrl.GetDictionary("types");
-        if (types == null)
+        if (ctrl.GetDictionary("types") == null)
         {
             return "error";
         }
 
-        _controller.StartTransaction("Set type");
-        try
-        {
-            foreach (var typeName in types.Keys.Where(k => k != "*"))
-            {
-                if (_controller.DoesElementInheritType(elementKey, typeName))
-                {
-                    _controller.RemoveInheritedTypeFromElement(elementKey, typeName, false);
-                }
-            }
-
-            if (selectedType != "*")
-            {
-                var result = _controller.AddInheritedTypeToElement(elementKey, selectedType, false);
-                if (!result.Valid)
-                {
-                    return result.Message.ToString();
-                }
-            }
-
-            return "ok";
-        }
-        finally
-        {
-            _controller.EndTransaction();
-        }
+        // The options a <resetoverrides/> control reset, by their captions where the element's
+        // editor has a control for them.
+        var result = _controller.SetDropdownType(elementKey, ctrl, selectedType);
+        var captions = def.Tabs.Values.SelectMany(t => t.Controls)
+            .Where(c => c.Attribute != null && !string.IsNullOrEmpty(c.Caption) && c.ControlType != "title" && c.ControlType != "label")
+            .GroupBy(c => c.Attribute!)
+            .ToDictionary(g => g.Key, g => g.First().Caption!);
+        return JsonSerializer.Serialize(
+            new SetDropdownTypeResponse(result.Valid ? "ok" : result.Message ?? "error",
+                [.. result.ResetAttributes.Select(a => captions.GetValueOrDefault(a, a)).Distinct()]),
+            WasmEditorJsonContext.Default.SetDropdownTypeResponse);
     }
 
     [JSExport]
