@@ -906,6 +906,11 @@
   <template name="TypeThemeNovella">Novela</template>
   <template name="TypeThemeRetro">Retro</template>
   <template name="TypeThemeTypewriter">Máquina de Escribir</template>
+  <template name="TypeThemeParchment">Pergamino</template>
+  <template name="TypeThemeNoir">Cine negro</template>
+  <template name="TypeThemeStorybook">Cuento</template>
+  <template name="TypeThemeMidnight">Medianoche</template>
+  <template name="TypeThemeTerminal">Terminal</template>
   <template name="TypeThemeHotDog">Puesto de Perritos Calientes</template>
   <template name="TypeContainerNot">No es un recipiente</template>
   <template name="TypeContainer">Recipiente</template>

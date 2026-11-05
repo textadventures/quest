@@ -299,7 +299,7 @@ The game is light-only, as before, when:
 `qv-player`'s `data-qv-scheme` (`light` or `dark`) is the scheme v2 draws, set by `scheme.ts`. Its `@media (prefers-color-scheme)` rules became rules on this attribute, so the player's choice can override their device's:
 
 - **The choice:** the toolbar's light or dark button opens a menu of "Match my device", "Light" and "Dark" (`ColourSchemeButton` and friends in the chrome strings). The choice is the player's, kept for every game in `localStorage` (`questviva-colour-scheme`; nothing is stored for "Match my device"). Without storage, it lasts for the page.
-- **Who gets it:** the button is shown only while the game suits both schemes, that is, while it has no `--qv-bg` token. A game with its own colours for light only is always `light`, whatever the choice.
+- **Who gets it:** the button is shown only while the game suits both schemes, that is, while it has no `--qv-bg` token. A game with its own colours for one scheme is always the scheme its background suits, whatever the choice: `dark` for a dark background (Retro, Midnight, Terminal), so the dialogs and the browser's own controls match it, and `light` otherwise. `data-qv-fixed-scheme` marks it, and its accent is then drawn as given, not lightened.
 - **The host's dialogs:** `scheme.ts` sets the same attribute on `<html>`, and the Save/Load dialog and debugger (`chrome.css`) follow it, through a Tailwind `dark` variant on it. `wasm-player.js` sets it to `light` for a legacy game. Until a game has set it, on the start screen, the dialogs follow the device.
 - **Electron:** the desktop app's local server is on a new origin each launch, so `localStorage` wouldn't keep it. There it's kept in the app's own settings instead, through `player-preload.ts`'s `electronPlayerSettings` (`userData/player-settings.json`), which stores only the three choices.
 
@@ -331,7 +331,7 @@ v2's defaults, light and dark (`--qv-surface`, `--qv-page-bg` and `--qv-border-c
 | `--qv-pane-highlight` | `#f59e0b` | the same |
 | `--qv-focus-ring` | `#2563eb` | `#60a5fa` |
 
-The built-in themes and the pane themes (on legacy, where they apply) keep WCAG AA contrast, except `theme_hotdogstand`'s yellow on red, which is the point of it. 610 Core's Nature pane theme draws its headings in `#254117` rather than legacy's `#306754`, which was too faint on its heading colour.
+The built-in themes and the pane themes (on legacy, where they apply) keep WCAG AA contrast, in each scheme a theme has colours for. `theme_hotdogstand`'s yellow on red doesn't, so it's retired (#2656): the editor's Theme chooser offers it only to a game that still has it (`<hiddentypes>`), and the type stays so such a game still loads. 610 Core's Nature pane theme draws its headings in `#254117` rather than legacy's `#306754`, which was too faint on its heading colour.
 
 ### Inline output styles
 

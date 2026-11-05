@@ -238,6 +238,72 @@
     <defaultwebfont>Special Elite</defaultwebfont>
   </type>
 
+  <!-- Light and dark (#2656): each sets its colours for both schemes, so the game follows the
+       player's light or dark choice. -->
+  <type name="theme_parchment">
+    <defaultfont>Georgia, serif</defaultfont>
+    <defaultwebfont>Literata</defaultwebfont>
+    <defaultbackground>#faf3e3</defaultbackground>
+    <defaultforeground>#3b2f22</defaultforeground>
+    <defaultlinkforeground>#8a3b12</defaultlinkforeground>
+    <accentcolour>#8a3b12</accentcolour>
+    <darkbackground>#2a2119</darkbackground>
+    <darkforeground>#efe4cf</darkforeground>
+    <darklinkforeground>#e8a873</darklinkforeground>
+    <darkaccentcolour>#e8a873</darkaccentcolour>
+  </type>
+
+  <type name="theme_noir">
+    <defaultfont>'Courier New', Courier, monospace</defaultfont>
+    <defaultwebfont>Courier Prime</defaultwebfont>
+    <defaultbackground>#f2f1ee</defaultbackground>
+    <defaultforeground>#121212</defaultforeground>
+    <defaultlinkforeground>#a31515</defaultlinkforeground>
+    <accentcolour>#a31515</accentcolour>
+    <darkbackground>#121212</darkbackground>
+    <darkforeground>#e9e7e3</darkforeground>
+    <darklinkforeground>#f07070</darklinkforeground>
+    <darkaccentcolour>#f07070</darkaccentcolour>
+  </type>
+
+  <type name="theme_storybook">
+    <defaultfont>'Trebuchet MS', sans-serif</defaultfont>
+    <defaultwebfont>Nunito</defaultwebfont>
+    <defaultfontsize type="int">14</defaultfontsize>
+    <defaultbackground>#fff6ee</defaultbackground>
+    <defaultforeground>#43305a</defaultforeground>
+    <defaultlinkforeground>#b93d1e</defaultlinkforeground>
+    <accentcolour>#b93d1e</accentcolour>
+    <darkbackground>#2d2338</darkbackground>
+    <darkforeground>#f8eaf4</darkforeground>
+    <darklinkforeground>#ff9e85</darklinkforeground>
+    <darkaccentcolour>#ff9e85</darkaccentcolour>
+  </type>
+
+  <!-- Dark only, whatever the player's choice, as Retro is. -->
+  <type name="theme_midnight">
+    <defaultbackground>#101a30</defaultbackground>
+    <defaultforeground>#e6e9f2</defaultforeground>
+    <defaultlinkforeground>#f2b13c</defaultlinkforeground>
+    <accentcolour>#f2b13c</accentcolour>
+    <borderlesscursor />
+  </type>
+
+  <type name="theme_terminal">
+    <defaultfont>'Lucida Console', Monaco, monospace</defaultfont>
+    <defaultwebfont>VT323</defaultwebfont>
+    <defaultfontsize type="int">15</defaultfontsize>
+    <defaultbackground>#0b0f0b</defaultbackground>
+    <defaultforeground>#4ff07a</defaultforeground>
+    <defaultlinkforeground>#a6ffbf</defaultlinkforeground>
+    <accentcolour>#4ff07a</accentcolour>
+    <borderlesscursor />
+    <commandcursor>&gt;</commandcursor>
+  </type>
+
+  <!-- Retired (#2656): no longer offered by the editor's Theme dropdown, which shows it only in a
+       game that still has it (hiddentypes). Kept so a game being edited that has it still loads.
+       A published .quest has its own copy. -->
   <type name="theme_hotdogstand">
     <defaultbackground>Red</defaultbackground>
     <defaultforeground>Yellow</defaultforeground>

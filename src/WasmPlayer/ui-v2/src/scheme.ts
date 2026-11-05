@@ -2,8 +2,8 @@
 //
 // qv-player's data-qv-scheme says which scheme v2.css draws: "dark" or "light". It's the player's
 // choice from the toolbar's menu ("system" follows their device), unless the game has colours of
-// its own for light only (a --qv-bg token, one for both schemes), when it's always light and the
-// menu isn't offered. The choice is a reader's preference, so it's kept for every game: in the
+// its own for one scheme only (a --qv-bg token, one for both schemes), when it's whichever its
+// background suits and the menu isn't offered. The choice is a reader's preference, so it's kept for every game: in the
 // desktop app's settings (player-preload.ts's electronPlayerSettings, since its origin changes
 // every launch), or else this browser's localStorage, which may be unavailable (then it lasts
 // for this page only).
@@ -57,11 +57,34 @@ function canChoose(player: HTMLElement): boolean {
     return !player.style.getPropertyValue('--qv-bg');
 }
 
+/**
+ * Whether a game's own colours (for one scheme) are dark ones, judged by its background: then it's
+ * drawn as the dark scheme, so the host's dialogs and the browser's own controls suit it.
+ */
+function hasDarkBackground(player: HTMLElement): boolean {
+    const probe = document.createElement('span');
+    probe.style.color = player.style.getPropertyValue('--qv-bg');
+    probe.hidden = true;
+    player.append(probe);
+    const match = /rgba?\(([\d.]+),\s*([\d.]+),\s*([\d.]+)/.exec(getComputedStyle(probe).color);
+    probe.remove();
+    if (!match) return false;
+    const [r, g, b] = match.slice(1, 4).map((c) => {
+        const v = Number(c) / 255;
+        return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+    });
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b < 0.18;
+}
+
 /** Sets data-qv-scheme from the choice and the game's colours, and shows the menu where it applies. */
 export function applyScheme(player: HTMLElement): void {
     const choosable = canChoose(player);
-    const dark = choosable && (choice === 'dark' || (choice === 'system' && !!systemDark?.matches));
+    const dark = choosable
+        ? choice === 'dark' || (choice === 'system' && !!systemDark?.matches)
+        : hasDarkBackground(player);
     player.setAttribute('data-qv-scheme', dark ? 'dark' : 'light');
+    // Colours for one scheme are shown as they are, whichever that is (v2.css)
+    player.toggleAttribute('data-qv-fixed-scheme', !choosable);
     // And the host's dialogs (Save/Load, the debugger: chrome.css), which aren't inside qv-player
     document.documentElement.setAttribute('data-qv-scheme', dark ? 'dark' : 'light');
 

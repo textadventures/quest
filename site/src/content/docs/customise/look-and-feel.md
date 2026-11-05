@@ -19,15 +19,23 @@ A tip before you start: text adventures involve a lot of reading. Whatever you c
 
 ### Theme
 
-The **Theme** dropdown is the quickest way to change the look of your game. It sets a group of the options below in one go:
+The **Theme** is the quickest way to change the look of your game. Each theme is shown as a little page in its own colours and font, split in two for a theme with light and dark mode colours. Choosing one sets a group of the options below in one go:
 
 | Theme | What it does |
 |---|---|
-| Quest Standard | The default: black Georgia text on white, with panes on the right. |
+| Quest Standard | The default: Georgia text in the player's own light or dark mode colours, with panes on the right. |
+| Parchment | Dark brown text on cream, with rust links, in the Literata web font (falling back to Georgia). In dark mode, cream text on deep brown. |
+| Noir | Near-black text on off-white, with deep red links, in the Courier Prime web font (falling back to Courier New). In dark mode, off-white on near-black. |
+| Storybook | Plum text on a soft peach page, with coral links, in the Nunito web font (falling back to Trebuchet MS), slightly larger. In dark mode, pale pink on deep plum. |
 | Novella | A narrow 650-pixel column of text with extra space at the top, like a page of a book. Turns off the panes, the room name in the location bar and the border. |
-| Retro | White text on black, in the Press Start 2P web font (falling back to Lucida Console). |
 | Typewriter | Novella's layout, in the Special Elite web font (falling back to Courier New). |
-| Hot Dog Stand | Yellow Comic Sans on red. Mostly a demonstration of what not to do. |
+| Midnight | Soft white text on deep navy, with amber links and a plain command bar, in dark mode or not. |
+| Terminal | Green text on black in the VT323 web font (falling back to Lucida Console), with a plain command bar and a `>` prompt, in dark mode or not. |
+| Retro | White text on black, in the Press Start 2P web font (falling back to Lucida Console). |
+
+Parchment, Noir and Storybook have colours for both light and dark mode, so players can switch between them (see [Light and dark](#light-and-dark)). Quest Standard, Novella and Typewriter use the player's own light or dark mode colours. Midnight, Terminal and Retro look the same in either.
+
+Hot Dog Stand, yellow Comic Sans on red, is no longer offered. A game that already uses it keeps it, and can still see and change it.
 
 A theme only provides starting values. Anything you set yourself on the Appearance or Interface tab wins, so you can pick Novella and then turn the panes back on, or pick Retro and change the page colour.
 

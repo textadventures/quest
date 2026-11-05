@@ -901,6 +901,11 @@
   <template name="TypeThemeNovella">Novella</template>
   <template name="TypeThemeRetro">Retro</template>
   <template name="TypeThemeTypewriter">Typewriter</template>
+  <template name="TypeThemeParchment">Parchment</template>
+  <template name="TypeThemeNoir">Noir</template>
+  <template name="TypeThemeStorybook">Storybook</template>
+  <template name="TypeThemeMidnight">Midnight</template>
+  <template name="TypeThemeTerminal">Terminal</template>
   <template name="TypeThemeHotDog">Hot Dog Stand</template>
   <template name="TypeContainerNot">Not a container</template>
   <template name="TypeContainer">Container</template>

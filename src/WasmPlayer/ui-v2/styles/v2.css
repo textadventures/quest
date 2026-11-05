@@ -103,7 +103,8 @@
 
     /* Dark: for a game that hasn't chosen its own colours (610 Core then sends none), or has
        chosen dark ones too. data-qv-scheme is the player's choice, or their system's
-       (scheme.ts); a game whose own colours are for light only is always light. */
+       (scheme.ts). A game whose own colours are for one scheme is that one, and its --qv-text and
+       --qv-bg tokens win over these. */
     qv-player[data-qv-scheme="dark"] {
         --qv-text: var(--qv-text-dark, #e4e4e7);
         --qv-link: var(--qv-link-dark, var(--qv-accent-shown));
@@ -115,8 +116,9 @@
     }
 
     /* A game's own accent (--qv-accent, one for both schemes) was chosen for a light background.
-       On the dark one it's lightened enough to read (setTokens marks it). */
-    qv-player[data-qv-scheme="dark"][data-qv-own-accent] {
+       On the dark one it's lightened enough to read (setTokens marks it). A game whose own colours
+       are for one scheme, light or dark, has its accent as given (scheme.ts marks it). */
+    qv-player[data-qv-scheme="dark"][data-qv-own-accent]:not([data-qv-fixed-scheme]) {
         --qv-accent-shown: color-mix(in oklab, var(--qv-accent) 45%, white);
     }
 
@@ -339,8 +341,8 @@
     }
 
     /* On the dark scheme, Core's default white rooms and black lines and labels would glare or
-       vanish, so they take the scheme's colours. (A game whose own colours are for light only is
-       never shown dark.) */
+       vanish, so they take the scheme's colours, which for a game with its own dark colours are
+       its own. */
     qv-player[data-qv-scheme="dark"] .qv-map-svg [fill="white" i] {
         fill: var(--qv-surface);
     }
