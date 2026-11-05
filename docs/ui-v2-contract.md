@@ -300,6 +300,7 @@ The game is light-only, as before, when:
 
 - **The choice:** the toolbar's light or dark button opens a menu of "Match my device", "Light" and "Dark" (`ColourSchemeButton` and friends in the chrome strings). The choice is the player's, kept for every game in `localStorage` (`questviva-colour-scheme`; nothing is stored for "Match my device"). Without storage, it lasts for the page.
 - **Who gets it:** the button is shown only while the game suits both schemes, that is, while it has no `--qv-bg` token. A game with its own colours for light only is always `light`, whatever the choice.
+- **The host's dialogs:** `scheme.ts` sets the same attribute on `<html>`, and the Save/Load dialog and debugger (`chrome.css`) follow it, through a Tailwind `dark` variant on it. `wasm-player.js` sets it to `light` for a legacy game. Until a game has set it, on the start screen, the dialogs follow the device.
 - **Electron:** the desktop app's local server is on a new origin each launch, so `localStorage` wouldn't keep it. There it's kept in the app's own settings instead, through `player-preload.ts`'s `electronPlayerSettings` (`userData/player-settings.json`), which stores only the three choices.
 
 ### Accent

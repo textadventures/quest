@@ -20,6 +20,37 @@
 @import '@skeletonlabs/skeleton';
 @import '@skeletonlabs/skeleton/themes/wintry';
 
+/* Dark mode follows the game's light or dark scheme rather than only the device's, so the
+   dialogs match a v2 game whose player has chosen Light or Dark (ui-v2's scheme.ts sets
+   data-qv-scheme on <html>, and wasm-player.js sets it light for a legacy game, which has no
+   dark scheme). Until a game has set it (the start screen), they follow the device. Skeleton's dark: variants and the
+   light-dark() paired tokens both key off this, as AppShell's app.css does with its .dark. */
+@custom-variant dark {
+    &:where([data-qv-scheme="dark"], [data-qv-scheme="dark"] *) {
+        @slot;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        &:where(:root:not([data-qv-scheme]) *) {
+            @slot;
+        }
+    }
+}
+
+:scope {
+    color-scheme: light;
+}
+
+:scope:where([data-qv-scheme="dark"] *) {
+    color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+    :scope:where(:root:not([data-qv-scheme]) *) {
+        color-scheme: dark;
+    }
+}
+
 /* Hand-written rules for elements that carry the `.qv-chrome` scope-root
    class itself. Bare selectors inside `@scope (.qv-chrome)` only ever match
    *descendants* of the root (see scripts/scope-css.mjs), so the root can't
@@ -282,7 +313,7 @@
     font-size: var(--text-xs);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--color-surface-500);
+    color: var(--color-surface-700-300);
     border: none;
     border-bottom: 1px solid var(--color-surface-300-700);
     background: none;
@@ -406,7 +437,7 @@
    darker shade of the same selected color keeps it readable and still gives
    hover feedback that the row remains clickable. */
 .qv-debugger-list-item.qv-debugger-row-selected:hover {
-    background: var(--color-primary-600);
+    background: var(--color-primary-800);
 }
 
 /* Skeleton's plain .input class (used elsewhere, e.g. #qv-saves-name-input)
@@ -469,7 +500,7 @@
     font-size: var(--text-xs);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--color-surface-500);
+    color: var(--color-surface-700-300);
     border-bottom: 1px solid var(--color-surface-300-700);
     padding-bottom: 0.5rem;
 }
@@ -518,7 +549,7 @@
    leaving low-contrast light-grey-on-light-blue text once a row was both
    inherited and selected. */
 .qv-debugger-row-inherited {
-    color: var(--color-surface-500);
+    color: var(--color-surface-700-300);
 }
 
 /* Shared selected-row highlight — the left-hand list (.qv-debugger-list-item)
@@ -526,9 +557,10 @@
    Declared after .qv-debugger-row-inherited so an inherited *and* selected
    row's color still resolves to the readable contrast color, not the muted
    one (same specificity — source order decides the tie). */
+/* Primary 700 rather than 500, whose light contrast colour falls short of AA. */
 .qv-debugger-row-selected {
-    background: var(--color-primary-500);
-    color: var(--color-primary-contrast-500);
+    background: var(--color-primary-700);
+    color: var(--color-primary-contrast-700);
 }
 
 /* Icons reference the inline sprite in index.html (a curated subset of Lucide's sprite,

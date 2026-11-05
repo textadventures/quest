@@ -11,6 +11,9 @@
 // - The menu works from the keyboard: arrows open it on its current choice and move through it,
 //   Escape closes it back to its button.
 // - axe-core finds no WCAG A/AA violations with the menu open, on the dark scheme.
+// - The host's Save/Load dialog and debugger (chrome.css) follow the game's scheme, the player's
+//   choice included, and stay light over a legacy game, which has no dark scheme. axe-core finds
+//   no violations in them, dark.
 //
 // Requires the WasmPlayer dev server running locally:
 //   node src/WasmPlayer/dev-server.mjs
@@ -75,6 +78,29 @@ try {
         };
     }).then((s) => ({ ...s, bg: rgb(s.bg) }));
 
+    // The host's dialogs' scheme, with axe-core run over the open dialog
+    async function dialogs(page, what) {
+        const result = {};
+        if (!await page.evaluate(() => !!window.axe)) await page.addScriptTag({ path: axePath });
+        for (const [name, open, selector] of [
+            ['saves', () => page.click('#cmdSave'), '#qv-saves'],
+            ['debugger', async () => {
+                await page.evaluate(() => WebPlayer.setCanDebug(true));
+                await page.click('#cmdDebug');
+            }, '#questVivaDebugger'],
+        ]) {
+            await open();
+            await page.waitForSelector(`${selector}[open]`, { timeout: 5000 });
+            result[name] = await page.evaluate((sel) => getComputedStyle(document.querySelector(sel)).colorScheme, selector);
+            const violations = await page.evaluate(async (sel) => (await window.axe.run(sel, {
+                runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'] },
+            })).violations.flatMap((v) => v.nodes.map((n) => `${v.id}: ${n.target.join(' ')}`)), selector);
+            if (violations.length) throw new Error(`${what}: WCAG violations in ${name}: ${violations.slice(0, 5).join('; ')}`);
+            await page.evaluate((sel) => document.querySelector(sel).close(), selector);
+        }
+        return result;
+    }
+
     async function choose(page, label) {
         await page.locator('.qv-scheme-button').click();
         await page.getByRole('menuitemradio', { name: label }).click();
@@ -104,6 +130,8 @@ try {
         })).violations.flatMap((v) => v.nodes.map((n) => `${v.id}: ${n.target.join(' ')}`)));
         check(violations.length === 0, `no WCAG violations with the menu open, dark (${violations.slice(0, 5).join('; ')})`);
         await page.keyboard.press('Escape');
+        const dark = await dialogs(page, 'chosen Dark');
+        check(dark.saves === 'dark' && dark.debugger === 'dark', `the Save/Load dialog and debugger are dark too, on a light device (${JSON.stringify(dark)})`);
         check(errors.length === 0, `no page errors (${errors.join('; ')})`);
         await page.close();
     }
@@ -142,6 +170,8 @@ try {
         await choose(page, 'Light');
         s = await state(page);
         check(s.scheme === 'light' && s.bg === 'rgb(255, 255, 255)', `choosing Light overrides the dark device (${s.bg})`);
+        const light = await dialogs(page, 'chosen Light');
+        check(light.saves === 'light' && light.debugger === 'light', `and the dialogs are light (${JSON.stringify(light)})`);
         await choose(page, 'Match my device');
         await page.close();
     }
@@ -171,6 +201,17 @@ try {
         const s = await state(page);
         check(s.scheme === 'light' && !s.offered, `${what}: always light, the menu not offered (${JSON.stringify(s)})`);
         await page.evaluate(() => localStorage.removeItem('questviva-colour-scheme'));
+        await page.close();
+    }
+    {
+        // A legacy game is light, so its dialogs are too
+        const page = await dark.newPage();
+        await page.goto(`${baseUrl}/?url=/examples/simple.aslx`);
+        await page.waitForSelector('#txtCommand', { state: 'visible', timeout: 30000 });
+        await page.click('#cmdSave');
+        await page.waitForSelector('#qv-saves[open]', { timeout: 5000 });
+        const saves = await page.evaluate(() => getComputedStyle(document.getElementById('qv-saves')).colorScheme);
+        check(saves === 'light', `over a legacy game on a dark device, the Save/Load dialog is light (${saves})`);
         await page.close();
     }
     await dark.close();

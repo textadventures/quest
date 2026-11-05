@@ -426,7 +426,7 @@ await previewPage.click('#cmdDebug');
 await previewPage.waitForSelector('#questVivaDebugger[open]');
 
 const reopenedState = await previewPage.evaluate(() => ({
-    activeTab: document.querySelector('#qv-debugger-tabs button.preset-filled-primary-500')?.textContent,
+    activeTab: document.querySelector('#qv-debugger-tabs button.preset-filled-primary-700-300')?.textContent,
     status: document.querySelector('[data-walkthrough-status]')?.textContent,
     cancelHidden: document.querySelector('[data-cancel-walkthrough]')?.classList.contains('hidden'),
     runDisabled: document.querySelector('[data-run-walkthrough="slow"]')?.disabled,

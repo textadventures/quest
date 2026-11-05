@@ -62,6 +62,8 @@ export function applyScheme(player: HTMLElement): void {
     const choosable = canChoose(player);
     const dark = choosable && (choice === 'dark' || (choice === 'system' && !!systemDark?.matches));
     player.setAttribute('data-qv-scheme', dark ? 'dark' : 'light');
+    // And the host's dialogs (Save/Load, the debugger: chrome.css), which aren't inside qv-player
+    document.documentElement.setAttribute('data-qv-scheme', dark ? 'dark' : 'light');
 
     const wrapper = player.querySelector<HTMLElement>('.qv-scheme');
     if (!wrapper) return;

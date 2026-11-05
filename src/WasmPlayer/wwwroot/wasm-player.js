@@ -844,6 +844,9 @@ function loadPlayerUi(name) {
 async function preparePlayerUi(choice) {
     const name = playerUiOverride() ?? choice;
     const { adapter, html } = await loadPlayerUi(name);
+    // The host's dialogs (chrome.css) follow the game's light or dark scheme, which v2 sets on
+    // <html> (its scheme.ts). Legacy has no dark scheme, so they're light over a legacy game too.
+    if (name === 'legacy') document.documentElement.setAttribute('data-qv-scheme', 'light');
     // Game time then only advances via QuestVivaTest's tick/fireNextTimeout.
     if (manualClock) adapter.useManualClock();
     playerUi = adapter;
@@ -1412,7 +1415,7 @@ function renderSavesList(saves, mode) {
     if (!list) return;
     if (!saves.length) {
         const noSavesText = WebPlayer.chromeStrings?.NoSavedGamesYet ?? 'No saved games yet.';
-        list.innerHTML = `<li class="text-sm text-surface-500">${_esc(noSavesText)}</li>`;
+        list.innerHTML = `<li class="text-sm text-surface-700-300">${_esc(noSavesText)}</li>`;
         return;
     }
     // s.name already carries a human-readable date/time when the user didn't
@@ -1881,7 +1884,7 @@ function renderDebuggerTabs(types) {
     const tabs = document.getElementById('qv-debugger-tabs');
     const allTabs = ['Walkthrough', ...types];
     tabs.innerHTML = allTabs.map(tab =>
-        `<button type="button" class="btn btn-sm ${tab === debuggerActiveTab ? 'preset-filled-primary-500' : 'preset-tonal-surface'}" data-tab="${_esc(tab)}">${_esc(tab)}</button>`
+        `<button type="button" class="btn btn-sm ${tab === debuggerActiveTab ? 'preset-filled-primary-700-300' : 'preset-tonal-surface'}" data-tab="${_esc(tab)}">${_esc(tab)}</button>`
     ).join('');
 }
 
@@ -1903,7 +1906,7 @@ function renderDebuggerList() {
     if (!debuggerListSortAscending) sorted.reverse();
 
     if (!sorted.length) {
-        list.innerHTML = '<li class="text-sm text-surface-500 px-2 py-1">Nothing here.</li>';
+        list.innerHTML = '<li class="text-sm text-surface-700-300 px-2 py-1">Nothing here.</li>';
         return items;
     }
 
@@ -1927,7 +1930,7 @@ function renderDebuggerWalkthroughDetail(name) {
         + '</ol>'
         + '</div>'
         + '<div class="qv-debugger-footer flex gap-2 items-center">'
-        + `<button type="button" class="btn preset-filled-primary-500" data-run-walkthrough="${_esc(name)}"${running ? ' disabled' : ''}>Run</button>`
+        + `<button type="button" class="btn preset-filled-primary-700-300" data-run-walkthrough="${_esc(name)}"${running ? ' disabled' : ''}>Run</button>`
         + `<button type="button" class="btn preset-tonal-surface${running ? '' : ' hidden'}" data-cancel-walkthrough>Cancel</button>`
         + `<span class="text-sm" data-walkthrough-status>${running ? 'Running…' : ''}</span>`
         + '</div>';
@@ -1983,7 +1986,7 @@ function renderDebuggerAttrRows() {
 
     const attrs = sortedFilteredDebuggerAttrs();
     if (!attrs.length) {
-        tbody.innerHTML = '<tr><td colspan="3" class="text-surface-500">No matching attributes.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="3" class="text-surface-700-300">No matching attributes.</td></tr>';
         return;
     }
 
@@ -2013,7 +2016,7 @@ function renderDebuggerAttributesDetail(tab, obj) {
     const attrs = Object.keys(debuggerAttrData);
 
     if (!attrs.length) {
-        detail.innerHTML = '<p class="text-surface-500">No attributes.</p>';
+        detail.innerHTML = '<p class="text-surface-700-300">No attributes.</p>';
         return;
     }
 
@@ -2074,7 +2077,7 @@ function renderDebuggerOverridePanel(attr, item) {
 
     if (!item.CanOverride) {
         panel.innerHTML = `<div class="text-sm font-semibold mb-1">${_esc(attr)}</div>`
-            + '<div class="text-xs text-surface-500">This value isn\'t a simple type the debugger can override directly.</div>';
+            + '<div class="text-xs text-surface-700-300">This value isn\'t a simple type the debugger can override directly.</div>';
         return;
     }
 
@@ -2083,14 +2086,14 @@ function renderDebuggerOverridePanel(attr, item) {
         + `<input class="qv-debugger-input flex-1" type="text" value="${_esc(item.EditValue ?? item.Value)}" id="qv-debugger-override-input">`
         + '<button type="button" class="btn preset-tonal-primary" id="qv-debugger-override-apply">Apply</button>'
         + '</div>'
-        + `<div class="text-xs text-surface-500 mt-1">${_esc(DEBUGGER_OVERRIDE_HINT)}</div>`
+        + `<div class="text-xs text-surface-700-300 mt-1">${_esc(DEBUGGER_OVERRIDE_HINT)}</div>`
         + '<div class="text-xs preset-tonal-error hidden mt-1" id="qv-debugger-override-error"></div>';
 }
 
 function renderDebuggerDetail() {
     const detail = document.getElementById('qv-debugger-detail');
     if (!debuggerSelectedItem) {
-        detail.innerHTML = '<p class="text-surface-500">Select an item to view details.</p>';
+        detail.innerHTML = '<p class="text-surface-700-300">Select an item to view details.</p>';
         return;
     }
 
