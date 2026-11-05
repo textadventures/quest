@@ -1,9 +1,11 @@
 // Checks the editor's colour control (ColourInput.svelte), used by every "colour" control and by
-// script commands' "colour" parameters: a swatch of the current colour that opens the native
-// colour picker (committing #rrggbb), a text field taking any CSS colour with the colour names as
-// swatched suggestions, and a distinct empty state ("Player's own" for the game's text colour,
-// "Not set" otherwise), with a button to clear the colour. Runs in the light and the dark editor theme, with
-// SCREENSHOT_DIR set saving a picture of the Appearance tab in each.
+// script commands' "colour" parameters: a text field taking any CSS colour, which keeps its text
+// when clicked so it can be edited, with a swatch that follows what's typed and the colour names
+// as swatched suggestions (as you type, or from its ▾ button); a "Pick a colour" button beside it
+// that opens the native colour picker (committing #rrggbb); and a distinct empty state ("Player's
+// own" for the game's text colour, "Not set" otherwise), reached with the clear button or by
+// emptying the field. Runs in the light and the dark editor theme, with SCREENSHOT_DIR set saving
+// a picture of the Appearance tab in each.
 //
 // Requires the AppShell dev server (5174).
 import { chromium } from './lib/tracked-chromium.mjs';
@@ -29,11 +31,12 @@ async function run(colorScheme) {
     await page.locator('[data-value="game"][data-part="branch-control"]').click();
     await page.getByRole('button', { name: 'Appearance', exact: true }).click();
 
-    const control = page.locator('label', { hasText: /^\s*Text colour:/ }).first().locator('[data-colour-input]');
+    const caption = page.locator('label', { hasText: /^\s*Text colour:/ }).first();
+    const control = caption.locator('[data-colour-input]');
     // The location bar has a "Text colour" of its own, further down the tab.
     await control.waitFor({ timeout: 5000 });
     const text = control.locator('input[role="combobox"]');
-    const picker = control.locator('input[type="color"]');
+    const picker = caption.locator('input[type="color"]');
     const swatch = control.locator('.colour-swatch').first();
     const swatchColour = () => swatch.evaluate(el => getComputedStyle(el).backgroundColor);
     const settle = () => page.evaluate(() => { if (document.activeElement instanceof HTMLElement) document.activeElement.blur(); })
@@ -64,13 +67,70 @@ async function run(colorScheme) {
     console.log(`PASS [${colorScheme}]: a typed CSS colour shows on the swatch and seeds the picker`);
     console.log(`PASS [${colorScheme}]: the control is as wide as the text fields beside it`);
 
+    // The picker is a visible button beside the field, and it (and the swatch) really open it: a
+    // real click reaches them and calls showPicker. (The colour input used to be laid invisibly
+    // over the swatch, and never got the click.)
+    const pickButton = caption.getByRole('button', { name: 'Pick a colour' });
+    const pickBox = await pickButton.boundingBox();
+    const fieldBox = await control.boundingBox();
+    if (!pickBox || pickBox.width < 16 || pickBox.x < fieldBox.x + fieldBox.width) {
+        throw new Error(`the Pick a colour button isn't a visible button after the field: ${JSON.stringify({ pickBox, fieldBox })}`);
+    }
+    await page.evaluate(() => {
+        window.__pickerOpened = [];
+        const showPicker = HTMLInputElement.prototype.showPicker;
+        HTMLInputElement.prototype.showPicker = function () {
+            showPicker.call(this);
+            window.__pickerOpened.push(this.type);
+        };
+    });
+    await pickButton.click();
+    await control.locator('button[title="Pick a colour"]').click();
+    const opened = await page.evaluate(() => window.__pickerOpened);
+    if (JSON.stringify(opened) !== '["color","color"]') throw new Error(`clicking the button and the swatch opened the picker: ${JSON.stringify(opened)}`);
+    await page.keyboard.press('Escape');
     await picker.fill('#336699');
     await settle();
     if (await text.inputValue() !== '#336699') throw new Error(`picking #336699 left the field at "${await text.inputValue()}"`);
     if (await swatchColour() !== 'rgb(51, 102, 153)') throw new Error(`the swatch for #336699 is ${await swatchColour()}`);
-    console.log(`PASS [${colorScheme}]: the native picker writes #rrggbb`);
+    console.log(`PASS [${colorScheme}]: clicking the Pick a colour button beside the field, or the swatch, opens the native picker, which writes #rrggbb`);
 
+    // Clicking keeps the text, so it can be edited in place, and the swatch follows the typing
+    // before it's committed.
     await text.click();
+    if (await text.inputValue() !== '#336699') throw new Error(`clicking the field changed it to "${await text.inputValue()}"`);
+    await page.keyboard.press('End');
+    await page.keyboard.press('Backspace');
+    await page.keyboard.press('Backspace');
+    await page.keyboard.type('00');
+    if (await text.inputValue() !== '#336600') throw new Error(`editing gave "${await text.inputValue()}"`);
+    if (await swatchColour() !== 'rgb(51, 102, 0)') throw new Error(`while typing #336600 the swatch is ${await swatchColour()}`);
+    await page.keyboard.press('Escape');
+    if (await text.inputValue() !== '#336699' || await swatchColour() !== 'rgb(51, 102, 153)') {
+        throw new Error(`Escape left "${await text.inputValue()}" with a ${await swatchColour()} swatch`);
+    }
+    await page.keyboard.press('End');
+    await page.keyboard.press('Backspace');
+    await page.keyboard.press('Backspace');
+    await page.keyboard.type('00');
+    await page.keyboard.press('Enter');
+    await settle();
+    if (await text.inputValue() !== '#336600') throw new Error(`Enter committed "${await text.inputValue()}"`);
+    console.log(`PASS [${colorScheme}]: the field keeps its text on click, can be edited, previews as you type, and Escape undoes it`);
+
+    // Typing suggests the colour names that match.
+    await text.click();
+    await page.keyboard.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
+    await page.keyboard.type('nav');
+    const suggestions = await page.locator('[role="listbox"]').last().locator('[role="option"]').allInnerTexts();
+    if (!suggestions.map(o => o.trim()).includes('Navy') || suggestions.length > 3) {
+        throw new Error(`typing "nav" suggests ${JSON.stringify(suggestions)}`);
+    }
+    await page.keyboard.press('Escape');
+    await settle();
+    console.log(`PASS [${colorScheme}]: typing suggests the matching colour names`);
+
+    await control.getByRole('button', { name: 'Show colour names' }).click();
     const listbox = page.locator('[role="listbox"]').last();
     await listbox.waitFor({ timeout: 3000 });
     const first = listbox.locator('[role="option"]').first();
@@ -84,7 +144,7 @@ async function run(colorScheme) {
     console.log(`PASS [${colorScheme}]: the suggestions start with the empty state and carry swatches`);
 
     if (screenshotDir) {
-        await text.click();
+        await control.getByRole('button', { name: 'Show colour names' }).click();
         await listbox.waitFor({ timeout: 3000 });
         await page.screenshot({ path: join(screenshotDir, `colour-input-open-${colorScheme}.png`), clip: { x: 240, y: 380, width: 600, height: 300 } });
         await page.keyboard.press('Escape');
@@ -95,22 +155,35 @@ async function run(colorScheme) {
 
     // Text colour is <nullable/>: clearing removes the attribute, so it shows the game type's
     // default - empty, shown as "Player's own", or a named colour on engines from before the
-    // default text colour was emptied (#2725).
+    // default text colour was emptied (#2725). Clearing is the clear button, or emptying the
+    // field.
+    const checkCleared = async (how) => {
+        const cleared = await text.inputValue();
+        if (cleared === '') {
+            if (await text.getAttribute('placeholder') !== "Player's own") throw new Error(`${how}, the empty field reads "${await text.getAttribute('placeholder')}"`);
+            if (!await swatch.evaluate(el => el.classList.contains('colour-swatch-player'))) throw new Error(`${how}, the swatch is not the player's own one`);
+            if (await control.getByRole('button', { name: 'Clear colour' }).count() !== 0) throw new Error(`${how}, the clear button still shows`);
+        } else if (cleared === 'Navy') {
+            throw new Error(`${how} left the field showing "${cleared}"`);
+        }
+        console.log(`PASS [${colorScheme}]: ${how} returns Text colour to its default (${cleared || "Player's own"})`);
+    };
     await control.getByRole('button', { name: 'Clear colour' }).click();
     await settle();
-    const cleared = await text.inputValue();
-    if (cleared === "Player's own") {
-        if (!await swatch.evaluate(el => el.classList.contains('colour-swatch-player'))) throw new Error('the cleared swatch is not the player\'s own one');
-        if (await control.getByRole('button', { name: 'Clear colour' }).count() !== 0) throw new Error('the clear button still shows when empty');
-    } else if (cleared === 'Navy' || cleared === '') {
-        throw new Error(`clearing left the field showing "${cleared}"`);
-    }
-    console.log(`PASS [${colorScheme}]: clearing returns Text colour to its default (${cleared})`);
+    await checkCleared('the clear button');
+
+    await text.fill('Navy');
+    await settle();
+    await text.click();
+    await page.keyboard.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
+    await page.keyboard.press('Backspace');
+    await settle();
+    await checkCleared('emptying the field');
 
     // Margin colour isn't <playertheme/>: its empty state reads "Not set".
     const margin = page.locator('label', { hasText: /^\s*Margin colour:/ }).first().locator('[data-colour-input]');
-    if (await margin.locator('input[role="combobox"]').inputValue() !== 'Not set') {
-        throw new Error(`an empty Margin colour shows "${await margin.locator('input[role="combobox"]').inputValue()}"`);
+    if (await margin.locator('input[role="combobox"]').getAttribute('placeholder') !== 'Not set') {
+        throw new Error(`an empty Margin colour reads "${await margin.locator('input[role="combobox"]').getAttribute('placeholder')}"`);
     }
     if (!await margin.locator('.colour-swatch-unset').count()) throw new Error('an empty Margin colour has no "not set" swatch');
     console.log(`PASS [${colorScheme}]: a plain colour's empty state reads "Not set"`);
@@ -127,7 +200,7 @@ async function run(colorScheme) {
     await scriptColour.waitFor({ timeout: 5000 });
     const scriptText = scriptColour.locator('input[role="combobox"]');
     if (await scriptText.inputValue() !== 'Black') throw new Error(`the new command's colour shows "${await scriptText.inputValue()}"`);
-    await scriptColour.locator('input[type="color"]').fill('#ff8800');
+    await scriptColour.locator('xpath=..').locator('input[type="color"]').fill('#ff8800');
     await settle();
     await page.waitForFunction(() => document.querySelector('[data-colour-input] input[role="combobox"]')?.value === '#ff8800',
         null, { timeout: 5000 }).catch(async () => {

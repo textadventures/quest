@@ -3,13 +3,19 @@
     import { t } from "#lib/i18n/index.js";
     import type { Snippet } from "svelte";
 
-    let { value, options, onchange, oninput, onEnter, strict = false, class: className = "", wrapperClass = "", style = "", placeholder, optionPrefix, ariaLabel, title }: {
+    let { value, options, onchange, oninput, onEnter, strict = false, freeEdit = false, class: className = "", wrapperClass = "", style = "", placeholder, optionPrefix, ariaLabel, title }: {
         value: string;
         options: ControlOption[];
         // Only commit typed text that names one of the options (e.g. an object reference);
         // anything else reverts to the current value. Off by default, where free text is the
         // point (a colour parameter can be any CSS colour).
         strict?: boolean;
+        // A field to type a value into, with the options as suggestions (ColourInput): it keeps
+        // its text on focus, so it can be edited, and shows the raw value rather than an
+        // option's label. The list opens as you type, or with showOptions(). Emptying it and
+        // leaving commits "". Off by default, where the field is for choosing from the list and
+        // empties on focus to show all of it.
+        freeEdit?: boolean;
         onchange: (value: string) => void;
         // Fires on every keystroke, unlike onchange (which only commits on blur/select/Enter) —
         // for callers that need the live typed text, e.g. to drive a submit button's disabled
@@ -76,6 +82,23 @@
         return options.find(o => o.value === v)?.label ?? v;
     }
 
+    // What the field shows for a committed value.
+    function displayFor(v: string) {
+        return freeEdit ? v : labelFor(v);
+    }
+
+    // Opens the whole list (a freeEdit field's ▾ button), keeping the field's focus and text.
+    export function showOptions() {
+        if (open) {
+            open = false;
+            return;
+        }
+        inputEl?.focus();
+        dirty = false;
+        updatePosition();
+        open = true;
+    }
+
     // Opens downward by default, flips upward when there isn't room below.
     function updatePosition() {
         if (!inputEl) return;
@@ -89,7 +112,7 @@
     }
 
     $effect(() => {
-        if (!open) inputValue = labelFor(value);
+        if (!open) inputValue = displayFor(value);
     });
 
     // Reset highlight when filtered list changes
@@ -122,12 +145,14 @@
         };
     });
 
+    // A freeEdit field filters by what's been typed, not by the value it started with.
+    let filterText = $derived(freeEdit && !dirty ? "" : inputValue);
     let filtered = $derived(
-        inputValue === ""
+        filterText === ""
             ? options
             : options.filter(o =>
-                o.label.toLowerCase().includes(inputValue.toLowerCase()) ||
-                    o.value.toLowerCase().includes(inputValue.toLowerCase())
+                o.label.toLowerCase().includes(filterText.toLowerCase()) ||
+                    o.value.toLowerCase().includes(filterText.toLowerCase())
             )
     );
 
@@ -136,7 +161,7 @@
     );
 
     function select(optValue: string) {
-        inputValue = labelFor(optValue);
+        inputValue = displayFor(optValue);
         dirty = false;
         open = false;
         activeIndex = -1;
@@ -167,6 +192,7 @@
     }
 
     function handleFocus() {
+        if (freeEdit) return;
         inputValue = "";
         dirty = false;
         updatePosition();
@@ -174,7 +200,7 @@
     }
 
     function handleClick() {
-        if (!open) {
+        if (!open && !freeEdit) {
             inputValue = "";
             dirty = false;
             updatePosition();
@@ -185,7 +211,10 @@
     function handleBlur() {
         open = false;
         activeIndex = -1;
-        if (!dirty || inputValue === "") {
+        if (freeEdit) {
+            if (dirty) commitTyped(inputValue);
+            else inputValue = displayFor(value);
+        } else if (!dirty || inputValue === "") {
             inputValue = labelFor(value);
         } else {
             commitTyped(inputValue);
@@ -209,6 +238,18 @@
             e.preventDefault();
             if (!open) return;
             activeIndex = Math.max(activeIndex - 1, 0);
+        } else if (e.key === "Enter" && freeEdit) {
+            // What's typed, as typed, unless a suggestion is highlighted: "red" is red, not the
+            // first of the reds the list suggests.
+            e.preventDefault();
+            if (open && activeIndex >= 0) {
+                select(filtered[activeIndex].value);
+            } else {
+                open = false;
+                if (dirty) commitTyped(inputValue);
+                dirty = false;
+            }
+            onEnter?.();
         } else if (e.key === "Enter") {
             e.preventDefault();
             if (open && activeIndex >= 0) {
@@ -227,9 +268,10 @@
             onEnter?.();
         } else if (e.key === "Escape") {
             open = false;
-            inputValue = labelFor(value);
+            inputValue = displayFor(value);
             dirty = false;
             activeIndex = -1;
+            if (freeEdit) oninput?.(inputValue);
         }
     }
 </script>
