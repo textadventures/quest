@@ -76,6 +76,11 @@ AddMenuTokens (tokens)
 AddPanesThemeTokens (tokens, theme)
 ```
 
+## AddSchemeToken
+```quest
+AddSchemeToken (tokens, name, attribute, darkattribute, prefix, dark)
+```
+
 ## AddStatusAttributeItems
 ```quest
 AddStatusAttributeItems (items, element, statusAttributes)
@@ -84,6 +89,11 @@ AddStatusAttributeItems (items, element, statusAttributes)
 ## AddStatusAttributesForElement
 ```quest
 AddStatusAttributesForElement (status, element, statusAttributes)
+```
+
+## AddSurfaceTokens
+```quest
+AddSurfaceTokens (tokens, dark)
 ```
 
 ## AddToResolvedNames
@@ -548,6 +558,11 @@ HasLightOnlyColours()
 HasOwnColours()
 ```
 
+## HasSurfaceColours
+```quest
+HasSurfaceColours()
+```
+
 ## HideOutputSection
 ```quest
 HideOutputSection(name)
@@ -623,6 +638,11 @@ IsGameRunning ()
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [boolean](/reference/attributes/types#boolean) indicating whether the game is currently running (i.e. false when the game has finished).
+
+## IsLightOnlyColour
+```quest
+IsLightOnlyColour (attribute, darkattribute)
+```
 
 ## JS_GridSquareClick
 ```quest
