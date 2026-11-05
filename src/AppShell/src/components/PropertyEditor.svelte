@@ -1154,7 +1154,7 @@
      link colour"); the row's caption is the light one's. In a narrow pane the caption goes above
      its two colours. -->
 {#snippet colourGrid(pairs: ColourPair[])}
-    <div class="grid grid-cols-[repeat(2,max-content)] @xl:grid-cols-[8rem_repeat(2,max-content)] items-center gap-x-2 gap-y-1 px-3 py-1.5" data-colour-grid>
+    <div class="grid grid-cols-[repeat(2,max-content)] @xl:grid-cols-[8rem_repeat(2,max-content)] items-center gap-x-2 gap-y-1 px-3 py-1.5" data-colour-grid={pairs[0].light.attribute}>
         <span class="hidden @xl:block" aria-hidden="true"></span>
         <span class="text-xs font-semibold text-surface-600-400" aria-hidden="true">{t("propertyEditor.colourGridLight")}</span>
         <span class="text-xs font-semibold text-surface-600-400" aria-hidden="true">{t("propertyEditor.colourGridDark")}</span>

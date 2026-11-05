@@ -166,7 +166,7 @@
   <template name="EditorGameDisplay">Display</template>
   <template name="EditorGameAppearance">Appearance</template>
   <template name="EditorGameColoursCaption">Colours</template>
-  <template name="EditorGameColoursHelp">Leave the text, link and page colours empty to follow the player’s light or dark mode. Setting one of them gives the game its own colours, which stay the same in dark mode unless you also choose colours in the Dark column. The margin, location bar and blend colours have no dark versions, so with any of them the game is always light.</template>
+  <template name="EditorGameColoursHelp">Leave the text, link and page colours empty to follow the player’s light or dark mode. Setting one of them gives the game its own colours, which stay the same in dark mode unless you also choose colours in the Dark column. A margin or location bar colour keeps the game always light until it has a dark version too.</template>
   <template name="EditorGameOnScreenCaption">On screen</template>
   <template name="EditorGameLinksMenusCaption">Links and menus</template>
   <template name="EditorGameMenuFont">Font</template>
@@ -220,6 +220,11 @@
   <template name="EditorGameDarkForeground">Dark mode text colour</template>
   <template name="EditorGameDarkLinkcolour">Dark mode link colour</template>
   <template name="EditorGameDarkAccentColour">Dark mode accent colour</template>
+  <template name="EditorGameDarkMarginColour">Dark mode margin colour</template>
+  <template name="EditorGameDarkBorderColour">Dark mode border colour</template>
+  <template name="EditorGameDarkLocationColour">Dark mode location bar colour</template>
+  <template name="EditorGameDarkLocationTextColour">Dark mode location bar text colour</template>
+  <template name="EditorGameDarkLocationBorderColour">Dark mode location bar border colour</template>
   <template name="EditorGameMapPosition">Map position</template>
   <template name="EditorGameMapPositionHeader">Above the game</template>
   <template name="EditorGameMapPositionPanes">In the panes</template>

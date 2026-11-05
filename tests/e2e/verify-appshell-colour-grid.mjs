@@ -38,18 +38,21 @@ try {
         await page.click('button[title="Raw XML code view"]');
         return text;
     };
-    const grid = page.locator('[data-colour-grid]');
-    const cells = () => grid.locator('[data-colour-cell]').evaluateAll(els => els.map(el => el.dataset.colourCell));
+    // The game's colours, and the location bar's (in its own table further down)
+    const grid = page.locator('[data-colour-grid="defaultbackground"]');
+    const locationGrid = page.locator('[data-colour-grid="customlocationcolour"]');
+    const cellsOf = (table) => table.locator('[data-colour-cell]').evaluateAll(els => els.map(el => el.dataset.colourCell));
+    const cells = () => cellsOf(grid);
     const field = (name) => grid.getByRole('combobox', { name, exact: true });
 
     await grid.waitFor({ timeout: 5000 }).catch(() => { throw new Error('the Appearance tab has no colour table'); });
-    if (await page.locator('[data-colour-grid]').count() !== 1) throw new Error('the colours are split over more than one table');
+    if (await page.locator('[data-colour-grid]').count() !== 2) throw new Error(`there are ${await page.locator('[data-colour-grid]').count()} colour tables, not the game's and the location bar's`);
     const headers = await grid.locator(':scope > span[aria-hidden="true"]').allInnerTexts();
     if (JSON.stringify(headers.map(h => h.trim()).filter(Boolean)) !== '["Light","Dark"]') {
         throw new Error(`the table's headings are ${JSON.stringify(headers)}`);
     }
     const before = await cells();
-    if (JSON.stringify(before) !== JSON.stringify(['defaultbackground', 'darkbackground', 'defaultforeground', 'defaultlinkforeground', 'accentcolour'])) {
+    if (JSON.stringify(before) !== JSON.stringify(['defaultbackground', 'darkbackground', 'defaultforeground', 'defaultlinkforeground', 'accentcolour', 'marginscolour', 'bordercolour'])) {
         throw new Error(`with no dark page colour, the table's cells are ${JSON.stringify(before)}`);
     }
     // The dark page colour isn't also drawn as a row of its own.
@@ -58,7 +61,11 @@ try {
     }
     // (The preview above the table labels its dark sample "Dark mode" too: a section heading is a title row.)
     if (await page.locator('div.uppercase', { hasText: /^\s*Dark mode\s*$/ }).count() !== 0) throw new Error('the old "Dark mode" section heading is still shown');
-    console.log('PASS: page, text, link and accent colours share one Light/Dark table, with only the dark page colour until it is set');
+    const locationBefore = await cellsOf(locationGrid);
+    if (JSON.stringify(locationBefore) !== JSON.stringify(['customlocationcolour', 'customlocationtextcolour', 'customlocationbordercolour'])) {
+        throw new Error(`with no dark page colour, the location bar's table has ${JSON.stringify(locationBefore)}`);
+    }
+    console.log('PASS: page, text, link, accent, margin and border colours share one Light/Dark table, and the location bar\'s have their own, with only the dark page colour until it is set');
 
     if (screenshotDir) await grid.screenshot({ path: join(screenshotDir, 'colour-grid-unset.png') });
 
@@ -66,9 +73,16 @@ try {
     await settle();
     const after = await cells();
     const expected = ['defaultbackground', 'darkbackground', 'defaultforeground', 'darkforeground',
-        'defaultlinkforeground', 'darklinkforeground', 'accentcolour', 'darkaccentcolour'];
+        'defaultlinkforeground', 'darklinkforeground', 'accentcolour', 'darkaccentcolour',
+        'marginscolour', 'darkmarginscolour', 'bordercolour', 'darkbordercolour'];
     if (JSON.stringify(after) !== JSON.stringify(expected)) throw new Error(`with a dark page colour, the table's cells are ${JSON.stringify(after)}`);
-    console.log('PASS: setting a dark page colour fills in the dark text, link and accent colours beside their light ones');
+    const locationAfter = await cellsOf(locationGrid);
+    const locationExpected = ['customlocationcolour', 'darkcustomlocationcolour', 'customlocationtextcolour', 'darkcustomlocationtextcolour',
+        'customlocationbordercolour', 'darkcustomlocationbordercolour'];
+    if (JSON.stringify(locationAfter) !== JSON.stringify(locationExpected)) {
+        throw new Error(`with a dark page colour, the location bar's table has ${JSON.stringify(locationAfter)}`);
+    }
+    console.log('PASS: setting a dark page colour fills in the other dark colours beside their light ones, the location bar\'s too');
 
     // Each cell writes its own attribute, the dark ones beside the light ones in the same row.
     await field('Dark mode text colour').fill('#e9e7e3');

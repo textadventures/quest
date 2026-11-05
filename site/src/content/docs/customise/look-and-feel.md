@@ -58,7 +58,7 @@ The page is the column the text appears in, and the margins are either side of i
 
 At the top of **Colours**, a preview shows some sample text in the game's font and colours, with the location bar and command bar when they're turned on. It shows the game in light mode and dark mode side by side, or once when the game looks the same in both, with the reason underneath. The classic interface has no preview.
 
-The page, text, link and accent colours are in a table with a **Light** and a **Dark** column (see [Light and dark](#light-and-dark) for the Dark one):
+The page, text, link, accent, margin and border colours are in a table with a **Light** and a **Dark** column (see [Light and dark](#light-and-dark) for the Dark one):
 
 - **Page colour** - the background of the page.
 - **Text colour** - the colour of the game's text. Leave it empty to follow the player's light or dark mode.
@@ -68,7 +68,8 @@ The page, text, link and accent colours are in a table with a **Light** and a **
 Below the table:
 
 - **Underline links** - whether links are underlined.
-- **Margin colour** and **Margin image** - the colour either side of the page, or a picture to fill it instead.
+- **Margin image** - a picture to fill the margins instead of their colour.
+- **Margin colour** - the colour either side of the page.
 - **Border colour** - the colour of the border either side of the page, when it's shown (on the Interface tab).
 
 #### Light and dark
@@ -81,13 +82,13 @@ To give players in dark mode colours of your own too, set a page colour in the *
 
 While a game follows light and dark mode, either with the player's colours or with dark mode colours of your own, players get a light or dark button at the top of the game. It lets them choose **Light** or **Dark** whatever their device is set to, or go back to **Match my device**. Their choice is kept for every game they play in that browser.
 
-A **Margin colour**, a colour blend, or the location bar's **Background colour** or **Text colour**, has no dark mode version, so setting one keeps the game in its light colours, without the button. So does changing the page colour from a script, with `SetBackgroundColour`.
+A **Margin colour**, or the location bar's **Background colour** or **Text colour**, keeps the game in its light colours, without the button, until you give it a dark version in the **Dark** column too, since your light colour might not suit the player's dark text. A border colour without a dark version is the same in both modes. A colour blend, which has no dark version, keeps the game light, and so does changing the page colour from a script, with `SetBackgroundColour`. The preview at the top of **Colours** says which colour is keeping the game light.
 
 With the [classic interface](#advanced), **Colour scheme for panes** picks the panes' colours: Classic (light blue, the default), Midnight, Nature, Vanilla, Black, Blood, Tranquil or Parchment. Otherwise the panes follow the game's own colours.
 
 ### Location bar
 
-When the location bar is shown (on the Interface tab), give it your own **Background colour**, **Text colour**, **Border colour** and **Background image**. Without them, it follows the game's colours.
+When the location bar is shown (on the Interface tab), give it your own **Background colour**, **Text colour**, **Border colour** and **Background image**. Without them, it follows the game's colours. Like the game's colours, its colours are in a table with a **Light** and a **Dark** column, for players in dark mode (see [Light and dark](#light-and-dark)).
 
 With the classic interface, these appear once you untick **Classic location style**, which is the classic interface's blue bar.
 

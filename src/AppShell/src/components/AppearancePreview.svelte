@@ -5,7 +5,7 @@
     // location bar and the command bar when they're turned on, and links when objects are links.
     // The colours are worked out in lib/appearance.ts.
     import { computeAppearance, type SchemeLook } from "#lib/appearance.js";
-    import { t } from "#lib/i18n/index.js";
+    import { locale, t } from "#lib/i18n/index.js";
 
     let { get }: {
         // The game's value for an attribute, its own or its theme's
@@ -96,7 +96,13 @@
     </div>
     {#if look.fixedReason}
         <p class="text-xs text-surface-600-400 italic" data-appearance-fixed>
-            {t(`appearancePreview.${look.fixedReason === "lightOnlyColours" ? "fixedLightOnly" : look.fixedReason === "ownDarkColours" ? "fixedOwnDarkColours" : "fixedOwnColours"}`)}
+            {#if look.fixedReason === "lightOnlyColours" && look.missingDark.includes("colourblend")}
+                {t("appearancePreview.fixedBlend")}
+            {:else if look.fixedReason === "lightOnlyColours"}
+                {t("appearancePreview.fixedLightOnly", { colours: new Intl.ListFormat($locale, { type: "conjunction" }).format(look.missingDark.map(a => t(`appearancePreview.colour.${a}`))) })}
+            {:else}
+                {t(look.fixedReason === "ownDarkColours" ? "appearancePreview.fixedOwnDarkColours" : "appearancePreview.fixedOwnColours")}
+            {/if}
         </p>
     {/if}
 </div>

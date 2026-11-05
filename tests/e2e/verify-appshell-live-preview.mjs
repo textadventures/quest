@@ -81,7 +81,7 @@ try {
 
     // The accent colour, on the Appearance tab: a dropdown of colour names that also takes free text.
     await openGameTab('Appearance');
-    const accent = page.locator('[data-colour-grid]').getByRole('combobox', { name: 'Accent colour', exact: true });
+    const accent = page.locator('[data-colour-grid="defaultbackground"]').getByRole('combobox', { name: 'Accent colour', exact: true });
     await accent.waitFor({ timeout: 5000 });
     if (await accent.evaluate(el => el.tagName === 'SELECT')) {
         await accent.selectOption({ label: 'Red' });
@@ -115,7 +115,7 @@ try {
     } catch {
         throw new Error(`A new game's Preview doesn't follow dark mode: ${JSON.stringify(await pageColours())}`);
     }
-    const textColour = page.locator('[data-colour-grid]').getByRole('combobox', { name: 'Text colour', exact: true });
+    const textColour = page.locator('[data-colour-grid="defaultbackground"]').getByRole('combobox', { name: 'Text colour', exact: true });
     await textColour.fill('DarkRed');
     await settle();
     await waitForPreview(() => {

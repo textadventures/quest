@@ -30,6 +30,9 @@ export interface SchemeLook {
 export type FixedReason = "lightOnlyColours" | "ownColours" | "ownDarkColours";
 
 export interface AppearanceLook {
+    // With fixedReason "lightOnlyColours": the colours that keep the game light, which have no dark
+    // version ("colourblend" for a colour blend, which can't have one)
+    missingDark: string[];
     // Whether the game has colours of its own (HasOwnColours), so an empty text, link or page
     // colour is Quest's classic Black, Blue or White rather than the player's own
     ownColours: boolean;
@@ -52,30 +55,41 @@ export function computeAppearance(get: (attribute: string) => string | null): Ap
     const linkForeground = str("defaultlinkforeground");
     const background = str("defaultbackground");
 
-    const lightOnly = bool("colourblend") || str("marginscolour") !== "" || str("customlocationcolour") !== ""
-        || str("customlocationtextcolour") !== "";
+    // HasSurfaceColours and HasLightOnlyColours: a colour text sits on gives the game its own
+    // colours, and keeps it always light until it has a dark version too (a blend has none).
+    const surfaces = Object.keys(DARK_SURFACES);
+    const surface = bool("colourblend") || surfaces.some(a => str(a) !== "");
+    const missingDark = [
+        ...(bool("colourblend") ? ["colourblend"] : []),
+        ...surfaces.filter(a => str(a) !== "" && str(DARK_SURFACES[a]) === ""),
+    ];
+    const lightOnly = missingDark.length > 0;
     const classic = bool("classicinterface");
     const ownColours = !(isDefault(foreground, "black") && isDefault(linkForeground, "blue") && isDefault(background, "white"))
-        || bool("setbackgroundopacity") || (!classic && lightOnly);
+        || bool("setbackgroundopacity") || (!classic && surface);
     const dark = !classic && !lightOnly && str("darkbackground") !== "";
 
     let accent = str("accentcolour");
     if (accent === "" && ownColours) accent = linkForeground || "Blue";
     const darkAccent = dark ? (str("darkaccentcolour") || str("darklinkforeground")) : "";
 
+    // A margin, location bar or border colour in this scheme: with dark colours, the dark scheme
+    // has its dark version (or for a border, the light one), as AddSurfaceTokens sends them
+    const pick = (scheme: "light" | "dark", attribute: string, darkAttribute: string) =>
+        (scheme === "dark" && dark ? str(darkAttribute) : "") || str(attribute);
     const look = (scheme: "light" | "dark", bg: string, text: string, link: string | null, accentShown: string): SchemeLook => ({
         scheme,
         background: bg,
         text,
         link: link ?? accentShown,
         accent: accentShown,
-        margin: str("marginscolour") || `color-mix(in srgb, ${text} 5%, ${bg})`,
+        margin: pick(scheme, "marginscolour", "darkmarginscolour") || `color-mix(in srgb, ${text} 5%, ${bg})`,
         // With a background of the game's own, light or dark, v2's muted text is its text colour
         // (player.ts's data-qv-own-background).
         muted: ownColours || dark ? text : `color-mix(in srgb, ${text} 68%, ${bg})`,
-        locationBackground: str("customlocationcolour") || bg,
-        locationText: str("customlocationtextcolour") || text,
-        locationBorder: str("customlocationbordercolour") || null,
+        locationBackground: pick(scheme, "customlocationcolour", "darkcustomlocationcolour") || bg,
+        locationText: pick(scheme, "customlocationtextcolour", "darkcustomlocationtextcolour") || text,
+        locationBorder: pick(scheme, "customlocationbordercolour", "darkcustomlocationbordercolour") || null,
     });
 
     const light = ownColours
@@ -105,6 +119,7 @@ export function computeAppearance(get: (attribute: string) => string | null): Ap
     const size = Number(str("defaultfontsize"));
     return {
         ownColours,
+        missingDark: fixedReason === "lightOnlyColours" ? missingDark : [],
         schemes,
         fixedReason,
         font: webFont ? `'${webFont}', ${baseFont}` : baseFont,
@@ -113,6 +128,14 @@ export function computeAppearance(get: (attribute: string) => string | null): Ap
         underlineLinks: get("underlinehyperlinks") === null || bool("underlinehyperlinks"),
     };
 }
+
+// The colours text sits on that have no dark mode default of the player's, each with its dark
+// version (HasLightOnlyColours)
+export const DARK_SURFACES: Record<string, string> = {
+    marginscolour: "darkmarginscolour",
+    customlocationcolour: "darkcustomlocationcolour",
+    customlocationtextcolour: "darkcustomlocationtextcolour",
+};
 
 // What an empty text, link or page colour is once the game has colours of its own
 // (InitTextDefaults's fallbacks)

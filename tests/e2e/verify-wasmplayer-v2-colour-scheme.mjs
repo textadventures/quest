@@ -8,7 +8,10 @@
 //   each scheme's, and offers the menu too.
 // - A game whose colours are for one scheme is always that one, as its background suits, whatever
 //   the choice, and doesn't offer it: Retro and Midnight are dark, and light and dark colours with
-//   a margin colour (which has no dark version) are light. The dialogs follow it.
+//   a margin or location bar colour that has no dark version are light. The dialogs follow it.
+// - Margin and location bar colours with dark versions (darkmarginscolour, ...) keep the game
+//   following the player's scheme, each scheme with its own; a border colour without one is the
+//   same in both.
 // - The menu works from the keyboard: arrows open it on its current choice and move through it,
 //   Escape closes it back to its button.
 // - axe-core finds no WCAG A/AA violations with the menu open, on the dark scheme.
@@ -191,11 +194,46 @@ try {
         await page.close();
     }
 
+    // ── Margin, location bar and border colours with dark versions too ──
+    {
+        const surfaces = dual
+            + '<marginscolour>Tan</marginscolour><darkmarginscolour>#3a2e22</darkmarginscolour>'
+            + '<customlocationcolour>Wheat</customlocationcolour><darkcustomlocationcolour>#4a3b2c</darkcustomlocationcolour>'
+            + '<customlocationtextcolour>Maroon</customlocationtextcolour><darkcustomlocationtextcolour>Pink</darkcustomlocationtextcolour>'
+            + '<customlocationbordercolour>Brown</customlocationbordercolour><darkcustomlocationbordercolour>Orange</darkcustomlocationbordercolour>'
+            + '<bordercolour>Sienna</bordercolour>';
+        const { page } = await open(dark, { extra: surfaces });
+        const surfaceState = () => page.evaluate(() => {
+            const player = document.querySelector('qv-player');
+            const bar = player.querySelector('.qv-topbar');
+            return {
+                margin: getComputedStyle(player).backgroundColor,
+                bar: getComputedStyle(bar).backgroundColor,
+                barText: getComputedStyle(bar).color,
+                barBorder: getComputedStyle(bar).borderTopColor,
+                border: getComputedStyle(player.querySelector('[data-qv-part="border"]')).borderInlineStartColor,
+            };
+        });
+        let s = await state(page);
+        check(s.scheme === 'dark' && s.offered, `with dark margin and location bar colours too, the game still follows dark mode, the menu offered (${JSON.stringify(s)})`);
+        let surf = await surfaceState();
+        check(surf.margin === 'rgb(58, 46, 34)' && surf.bar === 'rgb(74, 59, 44)' && surf.barText === 'rgb(255, 192, 203)'
+            && surf.barBorder === 'rgb(255, 165, 0)', `on a dark device, the dark margin and location bar colours (${JSON.stringify(surf)})`);
+        check(surf.border === 'rgb(160, 82, 45)', `a border colour with no dark version is the same in dark mode (${surf.border})`);
+        await choose(page, 'Light');
+        surf = await surfaceState();
+        check(surf.margin === 'rgb(210, 180, 140)' && surf.bar === 'rgb(245, 222, 179)' && surf.barText === 'rgb(128, 0, 0)'
+            && surf.barBorder === 'rgb(165, 42, 42)', `choosing Light shows the light ones (${JSON.stringify(surf)})`);
+        await choose(page, 'Match my device');
+        await page.close();
+    }
+
     // ── Colours for one scheme: whichever their background is, whatever the device ──
     for (const [what, options, context, expected] of [
         ['Retro', { theme: 'theme_retro' }, light, 'dark'],
         ['Midnight', { theme: 'theme_midnight' }, light, 'dark'],
         ['light and dark colours with a margin colour', { extra: dual + '<marginscolour>Tan</marginscolour>' }, dark, 'light'],
+        ['a dark margin colour but a location bar colour with none', { extra: dual + '<marginscolour>Tan</marginscolour><darkmarginscolour>#3a2e22</darkmarginscolour><customlocationcolour>Wheat</customlocationcolour>' }, dark, 'light'],
     ]) {
         const { page } = await open(context, options);
         const s = await state(page);

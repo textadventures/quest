@@ -34,8 +34,8 @@ try {
         .then(() => page.waitForTimeout(300));
     const preview = page.locator('[data-appearance-preview]');
     const colour = (field) => page.locator('[data-colour-grid]').getByRole('combobox', { name: field, exact: true });
-    const rowColour = (caption) => page.locator('label', { hasText: new RegExp(`^\\s*${caption}:`) }).first()
-        .locator('[data-colour-input] input[role="combobox"]');
+    // (Text and Border colour are in the location bar's table too, so these are in the game's own.)
+    const gameColour = (field) => page.locator('[data-colour-grid="defaultbackground"]').getByRole('combobox', { name: field, exact: true });
     const shot = async (name) => {
         if (screenshotDir) await preview.screenshot({ path: join(screenshotDir, `appearance-preview-${name}.png`) });
     };
@@ -56,6 +56,7 @@ try {
             underline: link ? getComputedStyle(link).textDecorationLine : null,
             accent: accent ? getComputedStyle(accent).color : null,
             location: !!fig.querySelector('[data-appearance-location]'),
+            locationBackground: fig.querySelector('[data-appearance-location]') ? getComputedStyle(fig.querySelector('[data-appearance-location]')).backgroundColor : null,
             command: !!fig.querySelector('[data-appearance-command]'),
         };
     }));
@@ -80,7 +81,7 @@ try {
     expectEqual('the text size', s[0].fontSize, '16px');
     if (!s[0].fontFamily.includes('Georgia')) throw new Error(`the sample text is in ${s[0].fontFamily}, not the base font Georgia`);
     expectEqual('the note under a game that follows light and dark mode', await fixedNote(), null);
-    expectEqual('an empty Text colour in a new game', await colour('Text colour').getAttribute('placeholder'), "Player's own");
+    expectEqual('an empty Text colour in a new game', await gameColour('Text colour').getAttribute('placeholder'), "Player's own");
     console.log('PASS: a new game shows the player\'s own light and dark colours side by side, with the location bar, links and command bar');
     await shot('new-game');
 
@@ -105,7 +106,7 @@ try {
     expectEqual('the link with only a page colour (Quest\'s classic Blue)', s[0].link, 'rgb(0, 0, 255)');
     if (!(await fixedNote())?.includes('Dark column')) throw new Error(`the note under one sample is ${JSON.stringify(await fixedNote())}`);
     // The empty text and link colours say what they now are, as the sample shows.
-    expectEqual('an empty Text colour with a page colour', await colour('Text colour').getAttribute('placeholder'), 'Black (default)');
+    expectEqual('an empty Text colour with a page colour', await gameColour('Text colour').getAttribute('placeholder'), 'Black (default)');
     expectEqual('an empty Link colour with a page colour', await colour('Link colour').getAttribute('placeholder'), 'Blue (default)');
     const textSwatch = await page.locator('[data-colour-cell="defaultforeground"] .colour-swatch').first()
         .evaluate(el => getComputedStyle(el).backgroundColor);
@@ -139,15 +140,34 @@ try {
     expectEqual('the links without underlining', s[0].underline, 'none');
     console.log('PASS: the font size and link underlining follow');
 
-    // A margin colour has no dark version, so the game is always light, whatever its dark colours.
-    await rowColour('Margin colour').fill('#d8d4c8');
+    // A margin colour without a dark version keeps the game light, and the note says which.
+    await colour('Margin colour').fill('#d8d4c8');
     await settle();
     s = await schemes();
     expectEqual('the schemes with a margin colour', s.map(x => x.scheme).join(','), 'light');
-    if (!(await fixedNote())?.includes('no dark versions')) throw new Error(`the note with a margin colour is ${JSON.stringify(await fixedNote())}`);
-    const margin = await preview.locator('.appearance-margin').first().evaluate(el => getComputedStyle(el).backgroundColor);
-    expectEqual('the margin', margin, 'rgb(216, 212, 200)');
-    console.log('PASS: a margin colour keeps the game light, and says why');
+    expectEqual('the note with a margin colour', await fixedNote(),
+        'The game looks the same in light and dark mode. Choose a dark mode margin colour in the Dark column too, and it will follow the player’s mode.');
+    const margins = () => preview.locator('.appearance-margin').evaluateAll(els => els.map(el => getComputedStyle(el).backgroundColor));
+    expectEqual('the margin', (await margins())[0], 'rgb(216, 212, 200)');
+    console.log('PASS: a margin colour without a dark version keeps the game light, and the note names it');
+
+    // Two of them are both named.
+    await page.locator('[data-colour-grid="customlocationcolour"]').getByRole('combobox', { name: 'Background colour', exact: true }).fill('Tan');
+    await settle();
+    expectEqual('the note with a margin and location bar colour', await fixedNote(),
+        'The game looks the same in light and dark mode. Choose a dark mode margin colour and location bar colour in the Dark column too, and it will follow the player’s mode.');
+    await colour('Dark mode location bar colour').fill('#3a2e22');
+    await settle();
+
+    // With its dark version too, the game follows light and dark mode again, with each margin.
+    await colour('Dark mode margin colour').fill('#2b2b2b');
+    await settle();
+    s = await schemes();
+    expectEqual('the schemes with a dark margin colour', s.map(x => x.scheme).join(','), 'light,dark');
+    expectEqual('the margins in each mode', JSON.stringify(await margins()), JSON.stringify(['rgb(216, 212, 200)', 'rgb(43, 43, 43)']));
+    expectEqual('the location bar in dark mode', s[1].locationBackground, 'rgb(58, 46, 34)');
+    expectEqual('the note with dark versions', await fixedNote(), null);
+    console.log('PASS: with dark versions of its margin and location bar colours, the game follows light and dark mode, each with its own');
 
     // A dark-only theme with a web font: drawn once, as dark, in its web font.
     await page.getByRole('group', { name: 'Theme', exact: true }).getByRole('button', { name: 'Terminal', exact: true }).click();

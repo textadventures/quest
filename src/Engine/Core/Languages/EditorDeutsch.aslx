@@ -167,7 +167,7 @@
   <template name="EditorGameDisplay">Oberfläche</template>
   <template name="EditorGameAppearance">Darstellung</template>
   <template name="EditorGameColoursCaption">Farben</template>
-  <template name="EditorGameColoursHelp">Lass die Text-, Link- und Seitenfarbe leer, damit das Spiel dem hellen oder dunklen Modus des Spielers folgt. Wenn du eine davon setzt, bekommt das Spiel eigene Farben, die auch im dunklen Modus gleich bleiben, außer du wählst auch Farben in der Spalte „Dunkel“. Rand-, Raumleisten- und Verlaufsfarben gibt es nicht in dunkel, mit einer davon ist das Spiel also immer hell.</template>
+  <template name="EditorGameColoursHelp">Lass die Text-, Link- und Seitenfarbe leer, damit das Spiel dem hellen oder dunklen Modus des Spielers folgt. Wenn du eine davon setzt, bekommt das Spiel eigene Farben, die auch im dunklen Modus gleich bleiben, außer du wählst auch Farben in der Spalte „Dunkel“. Eine Rand- oder Raumleistenfarbe hält das Spiel immer hell, bis sie auch eine dunkle Version hat.</template>
   <template name="EditorGameOnScreenCaption">Auf dem Bildschirm</template>
   <template name="EditorGameLinksMenusCaption">Links und Menüs</template>
   <template name="EditorGameMenuFont">Schriftart</template>
@@ -220,6 +220,11 @@
   <template name="EditorGameDarkForeground">Textfarbe im dunklen Modus</template>
   <template name="EditorGameDarkLinkcolour">Linkfarbe im dunklen Modus</template>
   <template name="EditorGameDarkAccentColour">Akzentfarbe im dunklen Modus</template>
+  <template name="EditorGameDarkMarginColour">Hintergrundfarbe im dunklen Modus</template>
+  <template name="EditorGameDarkBorderColour">Randfarbe im dunklen Modus</template>
+  <template name="EditorGameDarkLocationColour">Raumleistenfarbe im dunklen Modus</template>
+  <template name="EditorGameDarkLocationTextColour">Raumleisten-Textfarbe im dunklen Modus</template>
+  <template name="EditorGameDarkLocationBorderColour">Raumleisten-Rahmenfarbe im dunklen Modus</template>
   <template name="EditorGameMapPosition">Position der Karte</template>
   <template name="EditorGameMapPositionHeader">Über dem Spiel</template>
   <template name="EditorGameMapPositionPanes">In den Bereichen</template>

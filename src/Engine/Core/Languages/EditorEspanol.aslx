@@ -164,7 +164,7 @@
   <template name="EditorGameDisplay">Pantalla</template>
   <template name="EditorGameAppearance">Apariencia</template>
   <template name="EditorGameColoursCaption">Colores</template>
-  <template name="EditorGameColoursHelp">Deja vacíos los colores del texto, de los enlaces y de la página para seguir el modo claro u oscuro del jugador. Si eliges uno de ellos, el juego tendrá sus propios colores, que no cambian en el modo oscuro, salvo que elijas también colores en la columna Oscuro. Los colores de los márgenes, de la barra de ubicación y del degradado no tienen versión oscura, así que con cualquiera de ellos el juego siempre es claro.</template>
+  <template name="EditorGameColoursHelp">Deja vacíos los colores del texto, de los enlaces y de la página para seguir el modo claro u oscuro del jugador. Si eliges uno de ellos, el juego tendrá sus propios colores, que no cambian en el modo oscuro, salvo que elijas también colores en la columna Oscuro. Un color de los márgenes o de la barra de ubicación mantiene el juego siempre claro hasta que también tenga una versión oscura.</template>
   <template name="EditorGameOnScreenCaption">En pantalla</template>
   <template name="EditorGameLinksMenusCaption">Enlaces y menús</template>
   <template name="EditorGameMenuFont">Fuente</template>
@@ -216,6 +216,11 @@
   <template name="EditorGameDarkForeground">Color del texto en modo oscuro</template>
   <template name="EditorGameDarkLinkcolour">Color de vínculo en modo oscuro</template>
   <template name="EditorGameDarkAccentColour">Color de acento en modo oscuro</template>
+  <template name="EditorGameDarkMarginColour">Color de los márgenes en modo oscuro</template>
+  <template name="EditorGameDarkBorderColour">Color del borde en modo oscuro</template>
+  <template name="EditorGameDarkLocationColour">Color de la barra de ubicación en modo oscuro</template>
+  <template name="EditorGameDarkLocationTextColour">Color del texto de la barra de ubicación en modo oscuro</template>
+  <template name="EditorGameDarkLocationBorderColour">Color del borde de la barra de ubicación en modo oscuro</template>
   <template name="EditorGameMapPosition">Posición del mapa</template>
   <template name="EditorGameMapPositionHeader">Encima del juego</template>
   <template name="EditorGameMapPositionPanes">En los paneles</template>
