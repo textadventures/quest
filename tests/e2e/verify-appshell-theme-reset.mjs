@@ -31,9 +31,9 @@ try {
 
     // The page, text, link and accent colours are in the Light/Dark colour table, named by their
     // captions; the others are rows labelled by theirs. (The location bar has a Text colour too.)
-    const tableColours = ['Page colour', 'Text colour', 'Link colour', 'Accent colour'];
+    const tableColours = ['Page colour', 'Text colour', 'Link colour', 'Accent colour', 'Margin colour'];
     const field = (caption) => tableColours.includes(caption)
-        ? page.locator('[data-colour-grid]').getByRole('combobox', { name: caption, exact: true })
+        ? page.locator('[data-colour-grid="defaultbackground"]').getByRole('combobox', { name: caption, exact: true })
         : page.locator('label', { hasText: new RegExp(`^\\s*${caption}:`) }).first()
             .locator('[data-colour-input] input[role="combobox"]');
     const picker = page.getByRole('group', { name: 'Theme', exact: true });

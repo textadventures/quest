@@ -127,6 +127,73 @@ public class DarkColourTokenTests
     }
 
     [TestMethod]
+    [DataRow("<marginscolour>Tan</marginscolour><darkmarginscolour>#3a2e22</darkmarginscolour>", "--qv-page-bg", "Tan", "#3a2e22")]
+    [DataRow("<customlocationcolour>Tan</customlocationcolour><darkcustomlocationcolour>#3a2e22</darkcustomlocationcolour>", "--qv-status-bg", "Tan", "#3a2e22")]
+    [DataRow("<customlocationtextcolour>Maroon</customlocationtextcolour><darkcustomlocationtextcolour>Pink</darkcustomlocationtextcolour>", "--qv-status-fg", "Maroon", "Pink")]
+    public async Task AColourWithADarkVersion_GoesUnderEachSchemesNames(string extra, string token, string light, string dark)
+    {
+        var driver = await LoadAsync(Parchment + extra);
+
+        var tokens = Tokens(driver);
+        tokens[token + "-light"].ShouldBe(light);
+        tokens[token + "-dark"].ShouldBe(dark);
+        tokens.ShouldNotContainKey(token);
+        // The game still follows light and dark mode
+        tokens["--qv-bg-dark"].ShouldBe("#2a2119");
+        tokens.ShouldNotContainKey("--qv-bg");
+    }
+
+    [TestMethod]
+    public async Task OneLightOnlyColour_StillKeepsTheGameLight()
+    {
+        var driver = await LoadAsync(Parchment
+            + "<marginscolour>Tan</marginscolour><darkmarginscolour>#3a2e22</darkmarginscolour><customlocationcolour>Tan</customlocationcolour>");
+
+        var tokens = Tokens(driver);
+        tokens["--qv-bg"].ShouldBe("#faf3e3");
+        tokens["--qv-page-bg"].ShouldBe("Tan");
+        tokens["--qv-status-bg"].ShouldBe("Tan");
+        tokens.ShouldNotContainKey("--qv-bg-dark");
+        tokens.ShouldNotContainKey("--qv-page-bg-dark");
+    }
+
+    [TestMethod]
+    public async Task ADarkMarginWithoutDarkColours_IsLight()
+    {
+        // A dark margin only counts once the game has a dark page colour too
+        var driver = await LoadAsync("<defaultbackground>#faf3e3</defaultbackground><marginscolour>Tan</marginscolour><darkmarginscolour>#3a2e22</darkmarginscolour>");
+
+        var tokens = Tokens(driver);
+        tokens["--qv-bg"].ShouldBe("#faf3e3");
+        tokens["--qv-page-bg"].ShouldBe("Tan");
+        tokens.ShouldNotContainKey("--qv-page-bg-dark");
+    }
+
+    [TestMethod]
+    public async Task BorderColours_KeepTheLightOneInDarkModeWithoutADarkVersion()
+    {
+        var driver = await LoadAsync(Parchment
+            + "<bordercolour>Tan</bordercolour><customlocationbordercolour>Maroon</customlocationbordercolour><darkcustomlocationbordercolour>Pink</darkcustomlocationbordercolour>");
+
+        var tokens = Tokens(driver);
+        tokens["--qv-border-colour-light"].ShouldBe("Tan");
+        tokens["--qv-border-colour-dark"].ShouldBe("Tan");
+        tokens["--qv-status-border-light"].ShouldBe("1px solid Maroon");
+        tokens["--qv-status-border-dark"].ShouldBe("1px solid Pink");
+        // Border colours have no say in whether the game follows dark mode
+        tokens["--qv-bg-dark"].ShouldBe("#2a2119");
+    }
+
+    [TestMethod]
+    public async Task ABackgroundSetMidGame_MakesTheMarginOneSchemeToo()
+    {
+        var driver = await LoadAsync(Parchment + "<marginscolour>Tan</marginscolour><darkmarginscolour>#3a2e22</darkmarginscolour>");
+        await driver.SendCommandAsync("background");
+
+        Tokens(driver)["--qv-page-bg"].ShouldBe("Tan");
+    }
+
+    [TestMethod]
     public async Task TheCommandBar_TakesTheUIsColours()
     {
         var driver = await LoadAsync(Parchment);

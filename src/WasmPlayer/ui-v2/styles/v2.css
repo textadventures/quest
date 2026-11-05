@@ -34,15 +34,16 @@
 
         /* Surfaces. --qv-bg is the game's background; --qv-page-bg is the margin around it. The
            neutral ones are mixed from the text and background, so they suit whatever colours the
-           game or the scheme gives those. */
+           game or the scheme gives those. A game with dark colours sends its margin and border
+           colours under each scheme's name too (--qv-page-bg-light, --qv-page-bg-dark, ...). */
         --qv-bg: var(--qv-bg-light, #ffffff);
         --qv-bg-opacity: 1;
         --qv-bg-image: none;
-        --qv-page-bg: color-mix(in srgb, var(--qv-text) 5%, var(--qv-bg));
+        --qv-page-bg: var(--qv-page-bg-light, color-mix(in srgb, var(--qv-text) 5%, var(--qv-bg)));
         --qv-bg-blend-top: var(--qv-page-bg);
         --qv-bg-blend-bottom: var(--qv-page-bg);
         --qv-surface: color-mix(in srgb, var(--qv-text) 5%, var(--qv-bg));
-        --qv-border-colour: color-mix(in srgb, var(--qv-text) 20%, var(--qv-bg));
+        --qv-border-colour: var(--qv-border-colour-light, color-mix(in srgb, var(--qv-text) 20%, var(--qv-bg)));
         /* Internal: the fainter lines that divide the bars and panes, and muted text. */
         --qv-hairline: color-mix(in srgb, var(--qv-text) 10%, var(--qv-bg));
         --qv-muted: color-mix(in srgb, var(--qv-text) 68%, var(--qv-bg));
@@ -57,10 +58,11 @@
         --qv-padding-right: var(--qv-space);
 
         /* The location bar (the contract's "status" tokens, from the location bar options): on
-           the game's own background unless the game colours it. */
-        --qv-status-fg: var(--qv-text);
-        --qv-status-bg: var(--qv-bg);
-        --qv-status-border: none;
+           the game's own background unless the game colours it, for each scheme with dark colours
+           (--qv-status-bg-light, --qv-status-bg-dark, ...). */
+        --qv-status-fg: var(--qv-status-fg-light, var(--qv-text));
+        --qv-status-bg: var(--qv-status-bg-light, var(--qv-bg));
+        --qv-status-border: var(--qv-status-border-light, none);
         --qv-status-image: none;
 
         /* The command bar. */
@@ -110,6 +112,11 @@
         --qv-link: var(--qv-link-dark, var(--qv-accent-shown));
         --qv-accent: var(--qv-accent-dark, #7cc4cc);
         --qv-bg: var(--qv-bg-dark, #18181b);
+        --qv-page-bg: var(--qv-page-bg-dark, color-mix(in srgb, var(--qv-text) 5%, var(--qv-bg)));
+        --qv-border-colour: var(--qv-border-colour-dark, color-mix(in srgb, var(--qv-text) 20%, var(--qv-bg)));
+        --qv-status-fg: var(--qv-status-fg-dark, var(--qv-text));
+        --qv-status-bg: var(--qv-status-bg-dark, var(--qv-bg));
+        --qv-status-border: var(--qv-status-border-dark, none);
         --qv-focus-ring: #60a5fa;
 
         color-scheme: dark;

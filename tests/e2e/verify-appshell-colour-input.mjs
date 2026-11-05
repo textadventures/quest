@@ -43,7 +43,7 @@ async function run(colorScheme) {
         .then(() => page.waitForTimeout(300));
 
     // The text field carries the caption as its name, not the colour input layered over the swatch.
-    const named = await page.locator('[data-colour-grid]').getByRole('combobox', { name: 'Text colour', exact: true }).count();
+    const named = await page.locator('[data-colour-grid="defaultbackground"]').getByRole('combobox', { name: 'Text colour', exact: true }).count();
     if (named !== 1) throw new Error(`${named} text fields in the colour table are named "Text colour"`);
 
     // As wide as the plain text fields around it (Font size, Interface font), set or not.
@@ -194,7 +194,7 @@ async function run(colorScheme) {
     await checkCleared('emptying the field');
 
     // Margin colour isn't <playertheme/>: its empty state reads "Not set".
-    const margin = page.locator('label', { hasText: /^\s*Margin colour:/ }).first().locator('[data-colour-input]');
+    const margin = page.locator('[data-colour-cell="marginscolour"] [data-colour-input]');
     if (await margin.locator('input[role="combobox"]').getAttribute('placeholder') !== 'Not set') {
         throw new Error(`an empty Margin colour reads "${await margin.locator('input[role="combobox"]').getAttribute('placeholder')}"`);
     }

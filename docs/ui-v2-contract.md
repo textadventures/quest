@@ -255,14 +255,14 @@ Values are CSS values, as a stylesheet would write them: colours as any CSS colo
 | `--qv-accent` | `accentcolour`, or the link colour (see "Accent") |
 | `--qv-text-light`, `--qv-bg-light`, `--qv-link-light`, `--qv-accent-light` and the same with `-dark` | each scheme's colours, in place of the four above, for a game that has dark ones too (see "Light and dark") |
 | `--qv-link-decoration` | `underlinehyperlinks` |
-| `--qv-page-bg` | `marginscolour` |
+| `--qv-page-bg` | `marginscolour` (with `-light`/`-dark` for a game with dark colours, see "Light and dark") |
 | `--qv-bg-image`, `--qv-bg-opacity` | `backgroundimage`, `backgroundopacity` |
 | `--qv-bg-blend-top`, `--qv-bg-blend-bottom` | `colourblendtop`, `colourblendbottom` |
 | `--qv-output-width` | `customwidth` |
 | `--qv-padding-top`, `-bottom`, `-left`, `-right` | `custompadding*` |
-| `--qv-border-colour` | `bordercolour`, which on v2 also colours the page's border line (otherwise a fainter hairline). `showborder = false` is `setVisible("border", false)`, not a token |
+| `--qv-border-colour` | `bordercolour`, which on v2 also colours the page's border line (otherwise a fainter hairline). `showborder = false` is `setVisible("border", false)`, not a token. With `-light`/`-dark` for a game with dark colours |
 | `--qv-pane-fg`, `--qv-pane-bg`, `--qv-pane-heading-fg`, `--qv-pane-heading-bg`, `--qv-pane-highlight` | `panestheme`, only with `classicinterface` (#2719): the seven named themes become token sets for legacy. On v2 the panes follow the game's own colours, and a stylesheet can set these tokens |
-| `--qv-status-fg`, `--qv-status-bg`, `--qv-status-border`, `--qv-status-image` | `customlocationtextcolour`, `customlocationcolour`, `customlocationbordercolour`, `locationbarimage`. On v2 each is sent once the game sets it. With `classicinterface` they're sent only once the game turns off `classiclocation`, legacy's blue bar, as before (#2719) |
+| `--qv-status-fg`, `--qv-status-bg`, `--qv-status-border`, `--qv-status-image` | `customlocationtextcolour`, `customlocationcolour`, `customlocationbordercolour`, `locationbarimage`. On v2 each is sent once the game sets it, with `-light`/`-dark` for a game with dark colours. With `classicinterface` they're sent only once the game turns off `classiclocation`, legacy's blue bar, as before (#2719) |
 | `--qv-menu-fg`, `--qv-menu-bg`, `--qv-menu-hover-fg`, `--qv-menu-hover-bg`, `--qv-menu-font`, `--qv-menu-font-size` | `menuforeground`, … `menufontsize`. The four colours only once one differs from Quest's classic ones (white, black, light grey, black), and then all four. The font and size only once the game sets them, with Quest 5's Arial and 9pt counting as unset, so v2's menus use `--qv-font-ui` at 1rem (#2725). Legacy's own are Arial at 9pt. On a narrow layout, `--qv-menu-font-size` is at least 1rem. |
 | `--qv-command-fg`, `--qv-command-bg` | command bar format |
 
@@ -273,7 +273,7 @@ v2 also defines tokens with no game attribute behind them yet (`--qv-surface`, `
 A new 610 game leaves `defaultforeground`, `defaultlinkforeground` and `defaultbackground` unset, and gets v2's own colours, which follow the player's `prefers-color-scheme`. A game that stores Quest 5's defaults (black text, blue links, a white background), as games saved by Quest 5 or an earlier Viva do, counts as unset too. So 610 Core sends colour tokens only once a game has colours of its own (`HasOwnColours`; #2613 decision 5, #2725):
 
 - **Text, links and background go together.** Once any of `defaultforeground`, `defaultlinkforeground` or `defaultbackground` differs from its default (text and links as the game started, the background as it is now), or the game sets a background opacity, Core sends all three, with Quest's classic black, blue and white for any the game leaves unset. A game never gets its own text colour on the scheme's background. A mid-game `SetBackgroundColour` sends the text colours with it for the same reason.
-- **So does a colour that text sits on or is drawn in.** On v2, a `marginscolour` (the panes sit on `--qv-page-bg`), a location bar `customlocationcolour` or `customlocationtextcolour`, or a colour blend also sends the three, so the game is always light rather than mixing its colours with the dark scheme's. A border colour, the menu colours (which go as a set) and the accent don't.
+- **So does a colour that text sits on or is drawn in** (`HasSurfaceColours`). On v2, a `marginscolour` (the panes sit on `--qv-page-bg`), a location bar `customlocationcolour` or `customlocationtextcolour`, or a colour blend also sends the three, so the game's colours are never mixed with the dark scheme's: it's always light, unless it has dark versions of them too (below). A border colour, the menu colours (which go as a set) and the accent don't.
 - **So do the menu colours:** all four, once one differs.
 - **The command bar** leaves its colour and background out while the game's text and background colours are the defaults and it has none of its own.
 - **A `{popup:}`** has no inline colours of its own, so it takes the UI's, unless the game has its own colours or an `altlinkforeground`.
@@ -287,10 +287,11 @@ A game can have colours for the dark scheme as well, usually from its theme: `da
 - **Light:** `--qv-bg-light`, `--qv-text-light` and `--qv-link-light`, as the three above would be. They're left out when the game has no light colours of its own, so the light scheme is v2's.
 - **Dark:** `--qv-bg-dark`, and `--qv-text-dark` and `--qv-link-dark` where the game sets them. Any it leaves out is v2's dark one.
 - **Accent:** with a `darkaccentcolour` (or, failing that, a `darklinkforeground`), the accent goes as `--qv-accent-light` and `--qv-accent-dark`. Otherwise it's `--qv-accent` as before, lightened on the dark scheme.
+- **Margin, location bar and border colours** (`AddSurfaceTokens`) go as `--qv-page-bg-light`/`-dark`, `--qv-status-bg-light`/`-dark`, `--qv-status-fg-light`/`-dark`, `--qv-status-border-light`/`-dark` and `--qv-border-colour-light`/`-dark`, from `marginscolour`/`darkmarginscolour`, `customlocationcolour`/`darkcustomlocationcolour`, `customlocationtextcolour`/`darkcustomlocationtextcolour`, `customlocationbordercolour`/`darkcustomlocationbordercolour` and `bordercolour`/`darkbordercolour`. A border colour without a dark version is the same in both. Any the game leaves out is v2's, mixed from the scheme's text and background.
 - **The command bar and `{popup:}`** have no inline colours, so they follow the scheme.
 
 The game is light-only, as before, when:
-- it sets a colour with no dark version (a margin, location bar or blend colour, `HasLightOnlyColours`)
+- it sets a margin or location bar colour without its dark version, or a colour blend, which has none (`HasLightOnlyColours`)
 - it uses the classic interface
 - a script sets its background (`SetBackgroundColour` marks it with `midgamebackground`, kept in saves).
 

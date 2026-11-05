@@ -325,7 +325,8 @@ export class QvPlayer extends HTMLElement {
         this.toggleAttribute('data-qv-own-background', ['--qv-bg', '--qv-bg-light', '--qv-bg-dark']
             .some((token) => !!this.style.getPropertyValue(token)));
         // The page's border line is a faint hairline until the game gives it a colour (v2.css).
-        this.toggleAttribute('data-qv-own-border', !!this.style.getPropertyValue('--qv-border-colour'));
+        this.toggleAttribute('data-qv-own-border', ['--qv-border-colour', '--qv-border-colour-light', '--qv-border-colour-dark']
+            .some((token) => !!this.style.getPropertyValue(token)));
         // A game with its own colours for light only is always light.
         applyScheme(this);
         this.updateTopbar();

@@ -105,9 +105,8 @@
         }
       }
       InitTextDefaults (tokens)
-      if (HasString(game, "bordercolour")) {
-        AddUIToken (tokens, "--qv-border-colour", game.bordercolour)
-      }
+      // The border and margin colours, and on v2 the location bar's, with their dark versions
+      AddSurfaceTokens (tokens, HasDarkColours())
       if (GetBoolean(game, "classicinterface")) {
         // The classic interface keeps its blue location bar unless the game turns off the
         // classic location style, which gives the bar the game's colours, or none.
@@ -132,25 +131,13 @@
       }
       else {
         // v2 has no classic location style: its bar follows the game's colours, and takes
-        // each location bar option the game sets.
-        if (HasString(game, "customlocationcolour")) {
-          AddUIToken (tokens, "--qv-status-bg", game.customlocationcolour)
-        }
-        if (HasString(game, "customlocationtextcolour")) {
-          AddUIToken (tokens, "--qv-status-fg", game.customlocationtextcolour)
-        }
-        if (HasString(game, "customlocationbordercolour")) {
-          AddUIToken (tokens, "--qv-status-border", "1px solid " + game.customlocationbordercolour)
-        }
+        // each location bar option the game sets (its colours in AddSurfaceTokens).
         statusimage = LocationBarImageToken()
         if (statusimage <> "none") {
           AddUIToken (tokens, "--qv-status-image", statusimage)
         }
       }
       JS.QuestUI.setVisible ("location", game.showlocation)
-      if (HasString(game, "marginscolour")) {
-        AddUIToken (tokens, "--qv-page-bg", game.marginscolour)
-      }
       if (game.turnoffcompass) {
         JS.QuestUI.setVisible ("compass", false)
       }

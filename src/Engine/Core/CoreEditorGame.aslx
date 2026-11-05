@@ -183,7 +183,7 @@
         <previews/>
         <!-- Choosing a theme, or its Reset button, clears the game's own value for anything a theme sets and for the rest of the look below, so the theme isn't hidden by options chosen under another. Images, the stylesheet and link underlining are the author's own and are kept. -->
         <resetoverrides/>
-        <resetattributes type="simplestringlist">defaultfont;defaultwebfont;defaultfontsize;defaultforeground;interfacefont;accentcolour;defaultlinkforeground;defaultbackground;darkbackground;darkforeground;darklinkforeground;darkaccentcolour;marginscolour;colourblend;colourblendtop;colourblendbottom;bordercolour;panestheme;customlocationcolour;customlocationtextcolour;customlocationbordercolour;borderlesscursor;commandcursor;shadowbox;menufont;menufontsize;menubackground;menuforeground;menuhoverbackground;menuhoverforeground</resetattributes>
+        <resetattributes type="simplestringlist">defaultfont;defaultwebfont;defaultfontsize;defaultforeground;interfacefont;accentcolour;defaultlinkforeground;defaultbackground;darkbackground;darkforeground;darklinkforeground;darkaccentcolour;marginscolour;darkmarginscolour;darkbordercolour;darkcustomlocationcolour;darkcustomlocationtextcolour;darkcustomlocationbordercolour;colourblend;colourblendtop;colourblendbottom;bordercolour;panestheme;customlocationcolour;customlocationtextcolour;customlocationbordercolour;borderlesscursor;commandcursor;shadowbox;menufont;menufontsize;menubackground;menuforeground;menuhoverbackground;menuhoverforeground</resetattributes>
       </control>
 
       <control>
@@ -255,7 +255,7 @@
         <caption>[EditorGameColoursHelp]</caption>
       </control>
 
-      <!-- Page, text, link and accent colours: each light one names its dark mode one (<darkattribute>), so the editor shows them as one table with Light and Dark columns. The dark controls keep their own captions, visibility and nullable hints, and are left out of the table where they are hidden. -->
+      <!-- Page, text, link, accent, margin and border colours: each light one names its dark mode one (<darkattribute>), so the editor shows them as one table with Light and Dark columns. The dark controls keep their own captions, visibility and nullable hints, and are left out of the table where they are hidden. -->
       <control>
         <controltype>colour</controltype>
         <darkattribute>darkbackground</darkattribute>
@@ -335,6 +335,42 @@
       </control>
 
       <control>
+        <controltype>colour</controltype>
+        <darkattribute>darkmarginscolour</darkattribute>
+        <caption>[EditorGameMarginColour]</caption>
+        <attribute>marginscolour</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <onlydisplayif>not game.colourblend</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>colour</controltype>
+        <caption>[EditorGameDarkMarginColour]</caption>
+        <attribute>darkmarginscolour</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <nullable/>
+        <onlydisplayif>not GetBoolean(game, "classicinterface") and HasString(game, "darkbackground") and not game.colourblend</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>colour</controltype>
+        <darkattribute>darkbordercolour</darkattribute>
+        <caption>[EditorGameBorderColour]</caption>
+        <attribute>bordercolour</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <onlydisplayif>game.showborder</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>colour</controltype>
+        <caption>[EditorGameDarkBorderColour]</caption>
+        <attribute>darkbordercolour</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <nullable/>
+        <onlydisplayif>not GetBoolean(game, "classicinterface") and HasString(game, "darkbackground") and game.showborder</onlydisplayif>
+      </control>
+
+      <control>
         <controltype>label</controltype>
         <caption>[EditorGameDarkColoursHelp]</caption>
         <onlydisplayif>not GetBoolean(game, "classicinterface")</onlydisplayif>
@@ -351,14 +387,6 @@
         <caption>[EditorGameUnderlinehyperlinks]</caption>
         <attribute>underlinehyperlinks</attribute>
         <onlydisplayif>game.enablehyperlinks</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>colour</controltype>
-        <caption>[EditorGameMarginColour]</caption>
-        <attribute>marginscolour</attribute>
-        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <onlydisplayif>not game.colourblend</onlydisplayif>
       </control>
 
       <control>
@@ -412,14 +440,6 @@
       </control>
 
       <control>
-        <controltype>colour</controltype>
-        <caption>[EditorGameBorderColour]</caption>
-        <attribute>bordercolour</attribute>
-        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <onlydisplayif>game.showborder</onlydisplayif>
-      </control>
-
-      <control>
         <controltype>dropdown</controltype>
         <caption>[EditorGamePanesTheme]</caption>
         <attribute>panestheme</attribute>
@@ -442,6 +462,7 @@
 
       <control>
         <controltype>colour</controltype>
+        <darkattribute>darkcustomlocationcolour</darkattribute>
         <caption>[EditorGameLocationColour]</caption>
         <attribute>customlocationcolour</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
@@ -450,6 +471,16 @@
 
       <control>
         <controltype>colour</controltype>
+        <caption>[EditorGameDarkLocationColour]</caption>
+        <attribute>darkcustomlocationcolour</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <nullable/>
+        <onlydisplayif>game.showlocation and not GetBoolean(game, "classicinterface") and HasString(game, "darkbackground")</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>colour</controltype>
+        <darkattribute>darkcustomlocationtextcolour</darkattribute>
         <caption>[EditorGameLocationTextColour]</caption>
         <attribute>customlocationtextcolour</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
@@ -458,10 +489,29 @@
 
       <control>
         <controltype>colour</controltype>
+        <caption>[EditorGameDarkLocationTextColour]</caption>
+        <attribute>darkcustomlocationtextcolour</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <nullable/>
+        <onlydisplayif>game.showlocation and not GetBoolean(game, "classicinterface") and HasString(game, "darkbackground")</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>colour</controltype>
+        <darkattribute>darkcustomlocationbordercolour</darkattribute>
         <caption>[EditorGameLocationBorderColour]</caption>
         <attribute>customlocationbordercolour</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <onlydisplayif>game.showlocation and (not GetBoolean(game, "classicinterface") or not game.classiclocation)</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>colour</controltype>
+        <caption>[EditorGameDarkLocationBorderColour]</caption>
+        <attribute>darkcustomlocationbordercolour</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <nullable/>
+        <onlydisplayif>game.showlocation and not GetBoolean(game, "classicinterface") and HasString(game, "darkbackground")</onlydisplayif>
       </control>
 
       <control>
