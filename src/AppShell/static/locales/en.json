@@ -198,6 +198,8 @@
     "propertyEditor.resetToThemeNothing": "Nothing to reset: you haven't changed anything the theme sets",
     "propertyEditor.resetToThemeHint": "Clear your own settings for {options} and use the theme's",
     "propertyEditor.resetToTheme": "Reset",
+    "propertyEditor.colourGridLight": "Light",
+    "propertyEditor.colourGridDark": "Dark",
     "propertyEditor.generateButton": "Generate",
     "propertyEditor.selectOption": "Select…",
     "propertyEditor.keyFallback": "Key",

@@ -95,6 +95,9 @@ export interface ControlInfo {
   // <previews/> - on a "dropdowntypes" control (the game's Theme): how each type looks, for
   // ThemePicker to draw in place of a plain dropdown.
   previews?: DropdownTypePreview[] | null
+  // <darkattribute> - on a "colour" control: the attribute of its dark mode counterpart, another
+  // colour control in the same tab, shown beside it in a Light/Dark table (ColourGrid).
+  darkAttribute?: string | null
 }
 
 // A theme's look (EditorController.GetDropdownTypePreviews). A null colour is the player's own,

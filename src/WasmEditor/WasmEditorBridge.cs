@@ -79,7 +79,11 @@ internal record ControlInfo(
     List<string>? Overrides = null,
     // <previews/> - on a "dropdowntypes" control (the game's Theme): how each type looks, drawn by
     // ThemePicker.svelte in place of a plain dropdown.
-    List<DropdownTypePreview>? Previews = null);
+    List<DropdownTypePreview>? Previews = null,
+    // <darkattribute> - on a "colour" control: the attribute of its dark mode counterpart, another
+    // colour control in the same tab. The property editor shows each such pair side by side, in a
+    // table with Light and Dark columns, rather than as two separate rows.
+    string? DarkAttribute = null);
 
 // LeftoverFeature is set when the tab is shown only because its feature (a "feature_..."
 // checkbox, on the game when LeftoverFeatureOnGame) is turned off while the element still has
@@ -4597,7 +4601,8 @@ public partial class WasmEditorBridge
                 : null,
             Previews: ctrl.ControlType == "dropdowntypes" && ctrl.GetBool("previews")
                 ? _controller!.GetDropdownTypePreviews(ctrl)
-                : null);
+                : null,
+            DarkAttribute: ctrl.ControlType == "colour" ? ctrl.GetString("darkattribute") : null);
     }
 
     // The attributes by their captions on the editor, where it has a control for them.

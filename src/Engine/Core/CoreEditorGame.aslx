@@ -225,15 +225,6 @@
       </control>
 
       <control>
-        <controltype>colour</controltype>
-        <caption>[EditorGameForeground]</caption>
-        <attribute>defaultforeground</attribute>
-        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <playertheme/>
-        <nullable/>
-      </control>
-
-      <control>
         <controltype>dropdown</controltype>
         <caption>[EditorGameInterfacefont]</caption>
         <attribute>interfacefont</attribute>
@@ -258,11 +249,88 @@
         <caption>[EditorGameColoursHelp]</caption>
       </control>
 
+      <!-- Page, text, link and accent colours: each light one names its dark mode one (<darkattribute>), so the editor shows them as one table with Light and Dark columns. The dark controls keep their own captions, visibility and nullable hints, and are left out of the table where they are hidden. -->
       <control>
         <controltype>colour</controltype>
+        <darkattribute>darkbackground</darkattribute>
+        <caption>[EditorGameBackgroundColour]</caption>
+        <attribute>defaultbackground</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <playertheme/>
+        <nullable/>
+      </control>
+
+      <control>
+        <controltype>colour</controltype>
+        <caption>[EditorGameDarkBackgroundColour]</caption>
+        <attribute>darkbackground</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <nullable/>
+        <onlydisplayif>not GetBoolean(game, "classicinterface")</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>colour</controltype>
+        <darkattribute>darkforeground</darkattribute>
+        <caption>[EditorGameForeground]</caption>
+        <attribute>defaultforeground</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <playertheme/>
+        <nullable/>
+      </control>
+
+      <control>
+        <controltype>colour</controltype>
+        <caption>[EditorGameDarkForeground]</caption>
+        <attribute>darkforeground</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <playertheme/>
+        <nullable/>
+        <onlydisplayif>not GetBoolean(game, "classicinterface") and HasString(game, "darkbackground")</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>colour</controltype>
+        <darkattribute>darklinkforeground</darkattribute>
+        <caption>[EditorGameLinkcolour]</caption>
+        <attribute>defaultlinkforeground</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <playertheme/>
+        <nullable/>
+        <onlydisplayif>game.enablehyperlinks</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>colour</controltype>
+        <caption>[EditorGameDarkLinkcolour]</caption>
+        <attribute>darklinkforeground</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <playertheme/>
+        <nullable/>
+        <onlydisplayif>not GetBoolean(game, "classicinterface") and HasString(game, "darkbackground") and game.enablehyperlinks</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>colour</controltype>
+        <darkattribute>darkaccentcolour</darkattribute>
         <caption>[EditorGameAccentColour]</caption>
         <attribute>accentcolour</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <onlydisplayif>not GetBoolean(game, "classicinterface")</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>colour</controltype>
+        <caption>[EditorGameDarkAccentColour]</caption>
+        <attribute>darkaccentcolour</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <nullable/>
+        <onlydisplayif>not GetBoolean(game, "classicinterface") and HasString(game, "darkbackground")</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>[EditorGameDarkColoursHelp]</caption>
         <onlydisplayif>not GetBoolean(game, "classicinterface")</onlydisplayif>
       </control>
 
@@ -273,29 +341,10 @@
       </control>
 
       <control>
-        <controltype>colour</controltype>
-        <caption>[EditorGameLinkcolour]</caption>
-        <attribute>defaultlinkforeground</attribute>
-        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <playertheme/>
-        <nullable/>
-        <onlydisplayif>game.enablehyperlinks</onlydisplayif>
-      </control>
-
-      <control>
         <controltype>checkbox</controltype>
         <caption>[EditorGameUnderlinehyperlinks]</caption>
         <attribute>underlinehyperlinks</attribute>
         <onlydisplayif>game.enablehyperlinks</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>colour</controltype>
-        <caption>[EditorGameBackgroundColour]</caption>
-        <attribute>defaultbackground</attribute>
-        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <playertheme/>
-        <nullable/>
       </control>
 
       <control>
@@ -370,54 +419,6 @@
         <attribute>panestheme</attribute>
         <validvalues type="simplestringlist">Classic;Midnight;Nature;Vanilla;Black;Blood;Tranquil;Parchment</validvalues>
         <onlydisplayif>game.showpanes and GetBoolean(game, "classicinterface")</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>title</controltype>
-        <caption>[EditorGameDarkColoursCaption]</caption>
-        <onlydisplayif>not GetBoolean(game, "classicinterface")</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>label</controltype>
-        <caption>[EditorGameDarkColoursHelp]</caption>
-        <onlydisplayif>not GetBoolean(game, "classicinterface")</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>colour</controltype>
-        <caption>[EditorGameDarkBackgroundColour]</caption>
-        <attribute>darkbackground</attribute>
-        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <nullable/>
-        <onlydisplayif>not GetBoolean(game, "classicinterface")</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>colour</controltype>
-        <caption>[EditorGameDarkForeground]</caption>
-        <attribute>darkforeground</attribute>
-        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <nullable/>
-        <onlydisplayif>not GetBoolean(game, "classicinterface") and HasString(game, "darkbackground")</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>colour</controltype>
-        <caption>[EditorGameDarkLinkcolour]</caption>
-        <attribute>darklinkforeground</attribute>
-        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <nullable/>
-        <onlydisplayif>not GetBoolean(game, "classicinterface") and HasString(game, "darkbackground") and game.enablehyperlinks</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>colour</controltype>
-        <caption>[EditorGameDarkAccentColour]</caption>
-        <attribute>darkaccentcolour</attribute>
-        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <nullable/>
-        <onlydisplayif>not GetBoolean(game, "classicinterface") and HasString(game, "darkbackground")</onlydisplayif>
       </control>
 
       <control>

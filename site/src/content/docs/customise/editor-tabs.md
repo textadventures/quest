@@ -189,7 +189,7 @@ Every `<control>` needs a `<controltype>`, and almost all of them need a `<capti
 | `number` | an int | `<minimum>`, `<maximum>`, `<increment>` |
 | `numberdouble` | a double | `<minimum>`, `<maximum>`, `<increment>` |
 | `dropdown` | a string chosen from a list | `<validvalues>`, `<freetext/>` |
-| `colour` | a string holding a colour, with a swatch and colour picker | `<validvalues>`, `<playertheme/>` |
+| `colour` | a string holding a colour, with a swatch and colour picker | `<validvalues>`, `<playertheme/>`, `<darkattribute>` |
 | `dropdowntypes` | which of your types the object inherits | `<types>` (no `<attribute>`) |
 | `objects` | an object, chosen from the objects in the game | |
 | `file` | a file from the game's assets | |
@@ -301,6 +301,25 @@ A `colour` control sets a string attribute to a colour. It's a box that takes an
   <controltype>colour</controltype>
   <caption>Spell glow</caption>
   <attribute>glowcolour</attribute>
+  <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+</control>
+```
+
+A colour with a separate dark mode version can name it with `<darkattribute>`, the attribute of another `colour` control on the same tab. The two are then shown side by side, in a table with a **Light** and a **Dark** column, and consecutive pairs share the table. The dark control keeps its own caption, which names its box, and its own hints. Where it's hidden, its cell is left empty, and where every dark control in the tab is hidden, the light ones are shown as ordinary rows:
+
+```xml
+<control>
+  <controltype>colour</controltype>
+  <caption>Spell glow</caption>
+  <attribute>glowcolour</attribute>
+  <darkattribute>darkglowcolour</darkattribute>
+  <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+</control>
+
+<control>
+  <controltype>colour</controltype>
+  <caption>Dark mode spell glow</caption>
+  <attribute>darkglowcolour</attribute>
   <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
 </control>
 ```

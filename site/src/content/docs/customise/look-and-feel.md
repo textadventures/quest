@@ -48,7 +48,6 @@ To go back to the theme's own look without choosing a different one, click **Res
 - **Base font** - a font from the list, each with fallbacks, such as "Georgia, serif". These work on every device.
 - **Web font** - optionally, any font from [Google Fonts](https://fonts.google.com/) (the **Browse available web fonts** link opens the catalogue). The player's browser downloads it from Google when the game starts. If it can't - because the player is offline, for example - the base font is used instead, so choose a base font that's a reasonable substitute.
 - **Font size** - in points. The default is 12.
-- **Text colour** - the colour of the game text. Leave it empty to follow the player's light or dark mode (see [Light and dark](#light-and-dark)).
 - **Interface font** - the font of the location bar, panes, menus and buttons. Leave it empty for the player's own.
 
 For all the colour boxes on these tabs, type any HTML colour, such as `DarkOrange` or `#336699`, or click the palette button beside the box to pick one. As you type, the matching colour names are suggested, and the ▾ button lists them all. To clear a colour, empty the box or click its ×. Cleared, the text, link and page colours go back to the theme's own, which for the Quest Standard theme is **Player's own**: the game follows the player's light or dark mode.
@@ -57,9 +56,16 @@ For all the colour boxes on these tabs, type any HTML colour, such as `DarkOrang
 
 The page is the column the text appears in, and the margins are either side of it. On a phone, the page fills the screen and the margins disappear.
 
-- **Accent colour** - the game's one highlight colour, for links, the compass and the command prompt. Leave it empty to use the link colour if you've changed the colours, or the player's own if you haven't.
-- **Link colour** and **Underline links** - how links look, when objects and exits are links (on the Interface tab). An object can have its own link colour on its [Object tab](/customise/object-verbs#the-object-tab).
+The page, text, link and accent colours are in a table with a **Light** and a **Dark** column (see [Light and dark](#light-and-dark) for the Dark one):
+
 - **Page colour** - the background of the page.
+- **Text colour** - the colour of the game's text. Leave it empty to follow the player's light or dark mode.
+- **Link colour** - how links look, when objects and exits are links (on the Interface tab). An object can have its own link colour on its [Object tab](/customise/object-verbs#the-object-tab).
+- **Accent colour** - the game's one highlight colour, for links, the compass and the command prompt. Leave it empty to use the link colour if you've changed the colours, or the player's own if you haven't.
+
+Below the table:
+
+- **Underline links** - whether links are underlined.
 - **Margin colour** and **Margin image** - the colour either side of the page, or a picture to fill it instead.
 - **Border colour** - the colour of the border either side of the page, when it's shown (on the Interface tab).
 
@@ -69,7 +75,7 @@ A new game leaves **Text colour**, **Link colour** and **Page colour** empty, so
 
 Setting the text, link or page colour gives the game its own colours instead, which stay the same in dark mode. Any of the three you leave empty is then black text, blue links or a white page. That way, your colours are never mixed with the player's dark ones.
 
-To give players in dark mode colours of your own too, set a **Dark mode page colour** under **Dark mode**. Then a **Dark mode text colour**, **Dark mode link colour** and **Dark mode accent colour** appear, and any of them you leave empty is the player's own dark mode colour. With a dark mode page colour, the game shows your light colours in light mode and your dark ones in dark mode.
+To give players in dark mode colours of your own too, set a page colour in the **Dark** column. Then the dark text, link and accent colours appear beside their light ones, and any of them you leave empty is the player's own dark mode colour. With a dark mode page colour, the game shows your light colours in light mode and your dark ones in dark mode.
 
 While a game follows light and dark mode, either with the player's colours or with dark mode colours of your own, players get a light or dark button at the top of the game. It lets them choose **Light** or **Dark** whatever their device is set to, or go back to **Match my device**. Their choice is kept for every game they play in that browser.
 

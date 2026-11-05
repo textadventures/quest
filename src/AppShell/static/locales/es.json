@@ -198,6 +198,8 @@
     "propertyEditor.resetToThemeNothing": "No hay nada que restablecer: no has cambiado nada de lo que define el tema",
     "propertyEditor.resetToThemeHint": "Quitar tus ajustes de {options} para que se vean los del tema",
     "propertyEditor.resetToTheme": "Restablecer",
+    "propertyEditor.colourGridLight": "Claro",
+    "propertyEditor.colourGridDark": "Oscuro",
     "propertyEditor.generateButton": "Generar",
     "propertyEditor.selectOption": "Selecciona…",
     "propertyEditor.keyFallback": "Clave",
