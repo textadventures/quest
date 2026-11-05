@@ -44,12 +44,25 @@ async function run(colorScheme) {
         .evaluate(el => el.control?.getAttribute('role') ?? el.control?.getAttribute('type'));
     if (labelled !== 'combobox') throw new Error(`the Text colour caption labels a ${labelled}, not the text field`);
 
+    // As wide as the plain text fields around it (Font size, Interface font), set or not.
+    const checkWidth = async (when) => {
+        const fontSize = await page.locator('label', { hasText: /^\s*Font size:/ }).first().locator('input').evaluate(el => el.getBoundingClientRect().width);
+        const colour = await control.evaluate(el => el.getBoundingClientRect().width);
+        const field = await text.evaluate(el => el.getBoundingClientRect().width);
+        if (Math.abs(colour - fontSize) > 0.5 || Math.abs(field - fontSize) > 0.5) {
+            throw new Error(`${when}, the colour control is ${colour}px (its field ${field}px), Font size ${fontSize}px`);
+        }
+    };
+    await checkWidth('before setting it');
+
     await text.fill('red');
     await settle();
     if (await text.inputValue() !== 'red') throw new Error(`typed "red", the field shows "${await text.inputValue()}"`);
     if (await swatchColour() !== 'rgb(255, 0, 0)') throw new Error(`the swatch for "red" is ${await swatchColour()}`);
     if (await picker.inputValue() !== '#ff0000') throw new Error(`the picker is seeded with ${await picker.inputValue()}, not #ff0000`);
+    await checkWidth('with a colour set');
     console.log(`PASS [${colorScheme}]: a typed CSS colour shows on the swatch and seeds the picker`);
+    console.log(`PASS [${colorScheme}]: the control is as wide as the text fields beside it`);
 
     await picker.fill('#336699');
     await settle();

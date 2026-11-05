@@ -62,7 +62,10 @@
     {@render swatch(opt.value, "size-3")}
 {/snippet}
 
-<div class="relative inline-flex items-center gap-0.5 max-w-full" data-colour-input>
+<!-- Sized like a plain text field with the same classes, so a colour lines up with the font and
+     size boxes around it: an invisible plain input sets the width (in the same grid cell), and the
+     real field fills it, with the swatch and clear button inside its padding. -->
+<div class="relative inline-grid max-w-full" data-colour-input>
     <!-- The text field comes first in the DOM, so a wrapping <label> (PropertyEditor's caption)
          labels it rather than the native colour input layered over the swatch. -->
     <Combobox
@@ -73,7 +76,16 @@
         placeholder={value === "" ? emptyLabel : undefined}
         optionPrefix={optionSwatch}
         class={className}
-        style="padding-left: 1.6rem; {style}"
+        wrapperClass="col-start-1 row-start-1 w-0 min-w-full"
+        style="{style ? `${style}; ` : ""}width: 100%; padding-left: 1.6rem;{value !== "" ? " padding-right: 1.5rem;" : ""}"
+    />
+    <input
+        type="text"
+        class="{className} invisible col-start-1 row-start-1"
+        {style}
+        tabindex="-1"
+        aria-hidden="true"
+        inert
     />
     <span class="absolute left-1 top-1/2 -translate-y-1/2 flex" title={value === "" ? emptyHint : t("colourInput.pick")}>
         {@render swatch(shown, "size-4")}
@@ -90,7 +102,7 @@
     {#if value !== ""}
         <button
             type="button"
-            class="btn-icon size-6 shrink-0 rounded text-surface-600-400 hover:bg-surface-100-900 hover:text-surface-950-50"
+            class="absolute right-0.5 top-1/2 -translate-y-1/2 size-5 flex items-center justify-center rounded text-surface-600-400 hover:bg-surface-100-900 hover:text-surface-950-50"
             title={t("colourInput.clear")}
             aria-label={t("colourInput.clear")}
             onclick={() => onchange("")}
