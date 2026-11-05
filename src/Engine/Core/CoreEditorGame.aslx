@@ -244,6 +244,12 @@
         <caption>[EditorGameColoursCaption]</caption>
       </control>
 
+      <!-- Sample text in the game's font and colours, as the v2 player shows it in light mode and dark mode (AppearancePreview.svelte) -->
+      <control>
+        <controltype>appearancepreview</controltype>
+        <onlydisplayif>not GetBoolean(game, "classicinterface")</onlydisplayif>
+      </control>
+
       <control>
         <controltype>label</controltype>
         <caption>[EditorGameColoursHelp]</caption>

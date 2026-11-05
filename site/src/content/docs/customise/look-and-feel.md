@@ -56,6 +56,8 @@ For all the colour boxes on these tabs, type any HTML colour, such as `DarkOrang
 
 The page is the column the text appears in, and the margins are either side of it. On a phone, the page fills the screen and the margins disappear.
 
+At the top of **Colours**, a preview shows some sample text in the game's font and colours, with the location bar and command bar when they're turned on. It shows the game in light mode and dark mode side by side, or once when the game looks the same in both, with the reason underneath. The classic interface has no preview.
+
 The page, text, link and accent colours are in a table with a **Light** and a **Dark** column (see [Light and dark](#light-and-dark) for the Dark one):
 
 - **Page colour** - the background of the page.

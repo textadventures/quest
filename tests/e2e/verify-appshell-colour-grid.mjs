@@ -56,7 +56,8 @@ try {
     if (await page.locator('label', { hasText: /^\s*Dark mode page colour:/ }).count() !== 0) {
         throw new Error('"Dark mode page colour" is still a row of its own');
     }
-    if (await page.getByText('Dark mode', { exact: true }).count() !== 0) throw new Error('the old "Dark mode" section heading is still shown');
+    // (The preview above the table labels its dark sample "Dark mode" too: a section heading is a title row.)
+    if (await page.locator('div.uppercase', { hasText: /^\s*Dark mode\s*$/ }).count() !== 0) throw new Error('the old "Dark mode" section heading is still shown');
     console.log('PASS: page, text, link and accent colours share one Light/Dark table, with only the dark page colour until it is set');
 
     if (screenshotDir) await grid.screenshot({ path: join(screenshotDir, 'colour-grid-unset.png') });
