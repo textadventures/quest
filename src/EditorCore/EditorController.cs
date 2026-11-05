@@ -1430,6 +1430,57 @@ public sealed class EditorController : IDisposable
         }
     }
 
+    // A dropdowntypes control's types to offer the element: all but its <hiddentypes> (a retired
+    // theme), which are offered only to an element that already has one, so it can see and change it.
+    public List<string> GetOfferedDropdownTypes(string elementKey, IEditorControl control)
+    {
+        var hidden = (control.GetListString("hiddentypes") ?? []).ToHashSet();
+        return [.. (control.GetDictionary("types") ?? new Dictionary<string, string>()).Keys
+            .Where(t => !hidden.Contains(t) || DoesElementInheritType(elementKey, t))];
+    }
+
+    // For a dropdowntypes control with <previews/> (the game's Theme): the look of each of its
+    // types, from the attributes it sets, for the editor to draw. A colour the type leaves unset is
+    // null, which means the player's own (v2's) light or dark one.
+    public List<DropdownTypePreview> GetDropdownTypePreviews(IEditorControl control)
+    {
+        if (!control.GetBool("previews"))
+        {
+            return [];
+        }
+
+        string? Value(Element? type, string attribute)
+        {
+            var value = type?.Fields.GetString(attribute)?.Trim();
+            return string.IsNullOrEmpty(value) ? null : value;
+        }
+
+        var result = new List<DropdownTypePreview>();
+        foreach (var typeName in (control.GetDictionary("types") ?? new Dictionary<string, string>()).Keys)
+        {
+            Element? type = null;
+            if (typeName != "*" && !WorldModel.Elements.TryGetValue(ElementType.ObjectType, typeName, out type))
+            {
+                continue;
+            }
+
+            var background = Value(type, "defaultbackground");
+            var darkBackground = Value(type, "darkbackground");
+            result.Add(new DropdownTypePreview(
+                typeName,
+                Value(type, "defaultwebfont"),
+                Value(type, "defaultfont"),
+                background,
+                background == null ? null : Value(type, "defaultforeground") ?? "Black",
+                background == null ? Value(type, "accentcolour") : Value(type, "defaultlinkforeground") ?? "Blue",
+                darkBackground,
+                darkBackground == null ? null : Value(type, "darkforeground"),
+                darkBackground == null ? null : Value(type, "darklinkforeground") ?? Value(type, "darkaccentcolour")));
+        }
+
+        return result;
+    }
+
     // For a dropdowntypes control with <resetoverrides/> (the game's Theme): the element's own
     // values that choosing a type clears, so the type's look isn't hidden by options chosen under
     // another. That's every attribute any of the control's types sets, and those in its

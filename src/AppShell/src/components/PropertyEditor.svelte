@@ -29,6 +29,7 @@
     import ListPlus from "@lucide/svelte/icons/list-plus";
     import ScriptEditor from "./ScriptEditor.svelte";
     import ColourInput from "./ColourInput.svelte";
+    import ThemePicker from "./ThemePicker.svelte";
     import CodeEditor from "./CodeEditor.svelte";
     import DropdownMenu from "./DropdownMenu.svelte";
     import type { DropdownMenuItem } from "./DropdownMenu.svelte";
@@ -628,6 +629,23 @@
     </div>
 {/snippet}
 
+{#snippet themeReset(ctrl: ControlInfo)}
+    {#if ctrl.overrides}
+        <!-- The game's Theme: clears the author's own settings that the theme would otherwise
+             provide, keeping the theme itself (choosing the type it already has) -->
+        {@const overrides = ctrl.overrides}
+        <button
+            type="button"
+            class="btn btn-xs preset-outlined-primary-500 text-xs px-2 py-0.5 whitespace-nowrap self-start"
+            disabled={overrides.length === 0}
+            title={overrides.length === 0
+                ? t("propertyEditor.resetToThemeNothing")
+                : t("propertyEditor.resetToThemeHint", { options: new Intl.ListFormat($locale, { type: "conjunction" }).format(overrides) })}
+            onclick={() => $selectedKey && setDropdownType($selectedKey, ctrl.attribute!, attrValue(ctrl.attribute!) ?? "*", true)}
+        >{t("propertyEditor.resetToTheme")}</button>
+    {/if}
+{/snippet}
+
 {#snippet controlOnly(ctrl: ControlInfo)}
     {#if ctrl.controlType === "number"}
         <input
@@ -683,6 +701,14 @@
             class="input text-xs py-0.5 px-1.5 w-auto min-w-24"
             style={widthStyle(ctrl) ?? ""}
         />
+    {:else if ctrl.controlType === "dropdowntypes" && ctrl.options && ctrl.attribute && ctrl.previews}
+        <ThemePicker
+            value={attrValue(ctrl.attribute) ?? "*"}
+            options={ctrl.options}
+            previews={ctrl.previews}
+            onchange={(v) => $selectedKey && setDropdownType($selectedKey, ctrl.attribute!, v)}
+        />
+        {@render themeReset(ctrl)}
     {:else if ctrl.controlType === "dropdowntypes" && ctrl.options && ctrl.attribute}
         <select
             class="select text-xs py-0.5 px-1.5 w-auto"
@@ -694,20 +720,7 @@
                 <option value={opt.value}>{opt.label}</option>
             {/each}
         </select>
-        {#if ctrl.overrides}
-            <!-- The game's Theme: clears the author's own settings that the theme would otherwise
-                 provide, keeping the theme itself (choosing the type it already has) -->
-            {@const overrides = ctrl.overrides}
-            <button
-                type="button"
-                class="btn btn-xs preset-outlined-primary-500 text-xs px-2 py-0.5 whitespace-nowrap"
-                disabled={overrides.length === 0}
-                title={overrides.length === 0
-                    ? t("propertyEditor.resetToThemeNothing")
-                    : t("propertyEditor.resetToThemeHint", { options: new Intl.ListFormat($locale, { type: "conjunction" }).format(overrides) })}
-                onclick={() => $selectedKey && setDropdownType($selectedKey, ctrl.attribute!, attrValue(ctrl.attribute!) ?? "*", true)}
-            >{t("propertyEditor.resetToTheme")}</button>
-        {/if}
+        {@render themeReset(ctrl)}
     {:else if ctrl.controlType === "richtext"}
         {#if ctrl.textProcessorCommands?.length}
             <div class="flex flex-col gap-1 w-full">
@@ -1249,7 +1262,7 @@
             </div>
         {:else}
             {@const label = ctrl.caption ?? ctrl.attribute}
-            {@const isMultiline = ctrl.controlType === "richtext" || ctrl.controlType === "script" || ctrl.controlType === "texteditor" || ctrl.controlType === "csseditor" || ctrl.controlType === "list" || ctrl.controlType === "stringdictionary" || ctrl.controlType === "scriptdictionary" || ctrl.controlType === "gamebookoptions"}
+            {@const isMultiline = ctrl.controlType === "richtext" || ctrl.controlType === "script" || ctrl.controlType === "texteditor" || ctrl.controlType === "csseditor" || ctrl.controlType === "list" || ctrl.controlType === "stringdictionary" || ctrl.controlType === "scriptdictionary" || ctrl.controlType === "gamebookoptions" || (ctrl.controlType === "dropdowntypes" && !!ctrl.previews)}
             {@const stacksBelowLabel = label.length > 20 || isMultiline}
             {#if stacksBelowLabel}
                 <div class="flex flex-col gap-1 px-3 py-1.5">

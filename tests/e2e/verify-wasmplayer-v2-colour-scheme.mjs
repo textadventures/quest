@@ -6,8 +6,9 @@
 //   (localStorage), and "Match my device" goes back to following it.
 // - A game with light and dark colours of its own (a darkbackground, HasDarkColours) shows
 //   each scheme's, and offers the menu too.
-// - A game whose colours are for light only (Retro, or light and dark colours with a margin
-//   colour, which has no dark version) is always light, whatever the choice, and doesn't offer it.
+// - A game whose colours are for one scheme is always that one, as its background suits, whatever
+//   the choice, and doesn't offer it: Retro and Midnight are dark, and light and dark colours with
+//   a margin colour (which has no dark version) are light. The dialogs follow it.
 // - The menu works from the keyboard: arrows open it on its current choice and move through it,
 //   Escape closes it back to its button.
 // - axe-core finds no WCAG A/AA violations with the menu open, on the dark scheme.
@@ -159,7 +160,6 @@ try {
         check(await page.evaluate(() => localStorage.getItem('questviva-colour-scheme')) === null, 'and forgets the choice');
         await page.close();
     }
-    await light.close();
 
     // ── On a dark device ──
     const dark = await browser.newContext({ viewport: { width: 1200, height: 700 }, colorScheme: 'dark' });
@@ -191,16 +191,19 @@ try {
         await page.close();
     }
 
-    // ── Colours for light only ──
-    for (const [what, options] of [
-        ['Retro', { theme: 'theme_retro' }],
-        ['light and dark colours with a margin colour', { extra: dual + '<marginscolour>Tan</marginscolour>' }],
+    // ── Colours for one scheme: whichever their background is, whatever the device ──
+    for (const [what, options, context, expected] of [
+        ['Retro', { theme: 'theme_retro' }, light, 'dark'],
+        ['Midnight', { theme: 'theme_midnight' }, light, 'dark'],
+        ['light and dark colours with a margin colour', { extra: dual + '<marginscolour>Tan</marginscolour>' }, dark, 'light'],
     ]) {
-        const { page } = await open(dark, options);
-        await page.evaluate(() => localStorage.setItem('questviva-colour-scheme', 'dark'));
+        const { page } = await open(context, options);
         const s = await state(page);
-        check(s.scheme === 'light' && !s.offered, `${what}: always light, the menu not offered (${JSON.stringify(s)})`);
-        await page.evaluate(() => localStorage.removeItem('questviva-colour-scheme'));
+        check(s.scheme === expected && !s.offered, `${what}: always ${expected}, the menu not offered (${JSON.stringify(s)})`);
+        const fixed = await page.evaluate(() => document.querySelector('qv-player').hasAttribute('data-qv-fixed-scheme'));
+        check(fixed, `${what}: marked as one scheme, so its own accent isn't lightened`);
+        const d = await dialogs(page, what);
+        check(d.saves === expected && d.debugger === expected, `${what}: the dialogs are ${expected} too (${JSON.stringify(d)})`);
         await page.close();
     }
     {
@@ -215,6 +218,7 @@ try {
         await page.close();
     }
     await dark.close();
+    await light.close();
 } catch (err) {
     console.error(`FAIL: ${err.message}`);
     process.exitCode = 1;

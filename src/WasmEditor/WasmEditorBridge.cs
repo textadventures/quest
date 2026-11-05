@@ -76,7 +76,10 @@ internal record ControlInfo(
     bool PlayerTheme = false,
     // <resetoverrides/> - on a "dropdowntypes" control (the game's Theme): the captions of the
     // element's own settings that choosing a type, or the control's Reset button, would clear.
-    List<string>? Overrides = null);
+    List<string>? Overrides = null,
+    // <previews/> - on a "dropdowntypes" control (the game's Theme): how each type looks, drawn by
+    // ThemePicker.svelte in place of a plain dropdown.
+    List<DropdownTypePreview>? Previews = null);
 
 // LeftoverFeature is set when the tab is shown only because its feature (a "feature_..."
 // checkbox, on the game when LeftoverFeatureOnGame) is turned off while the element still has
@@ -4487,7 +4490,8 @@ public partial class WasmEditorBridge
             var dict = ctrl.GetDictionary("types");
             if (dict != null)
             {
-                options = dict.Select(kv => new ControlOption(kv.Key, kv.Value)).ToList();
+                var offered = _controller!.GetOfferedDropdownTypes(key, ctrl);
+                options = dict.Where(kv => offered.Contains(kv.Key)).Select(kv => new ControlOption(kv.Key, kv.Value)).ToList();
             }
 
             attribute = ctrl.Id;
@@ -4590,6 +4594,9 @@ public partial class WasmEditorBridge
             PlayerTheme: ctrl.ControlType == "colour" && ctrl.GetBool("playertheme"),
             Overrides: ctrl.ControlType == "dropdowntypes" && ctrl.GetBool("resetoverrides") && ctrl.Parent != null
                 ? AttributeCaptions(ctrl.Parent, _controller!.GetDropdownTypeOverrides(key, ctrl))
+                : null,
+            Previews: ctrl.ControlType == "dropdowntypes" && ctrl.GetBool("previews")
+                ? _controller!.GetDropdownTypePreviews(ctrl)
                 : null);
     }
 

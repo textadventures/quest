@@ -92,6 +92,23 @@ export interface ControlInfo {
   // <resetoverrides/> - on a "dropdowntypes" control (the game's Theme): the captions of the
   // element's own settings that choosing a type, or the Reset button beside it, would clear.
   overrides?: string[] | null
+  // <previews/> - on a "dropdowntypes" control (the game's Theme): how each type looks, for
+  // ThemePicker to draw in place of a plain dropdown.
+  previews?: DropdownTypePreview[] | null
+}
+
+// A theme's look (EditorController.GetDropdownTypePreviews). A null colour is the player's own,
+// and a null darkBackground with a background means the theme has colours for one scheme only.
+export interface DropdownTypePreview {
+  type: string
+  webFont: string | null
+  font: string | null
+  background: string | null
+  text: string | null
+  link: string | null
+  darkBackground: string | null
+  darkText: string | null
+  darkLink: string | null
 }
 
 export interface TabInfo {

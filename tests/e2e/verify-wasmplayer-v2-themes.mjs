@@ -4,8 +4,10 @@
 //
 // - A game that keeps the editor's default colours gets no colour tokens from 610 Core (decision
 //   5), so it follows the light or dark scheme, command bar included.
-// - A game with colours of its own (theme_retro, theme_hotdogstand) keeps them in either scheme.
-// - The themes apply as tokens.
+// - A game with colours of its own for one scheme (theme_retro, theme_midnight, theme_terminal)
+//   keeps them in either scheme, and one with light and dark colours (theme_parchment, theme_noir,
+//   theme_storybook) shows each scheme's (#2656).
+// - The themes apply as tokens. The retired theme_hotdogstand still loads.
 // - Pane themes are the classic interface's (#2719): v2 ignores one, and a game with
 //   classicinterface still gets it on legacy.
 // - A game's border colour colours v2's border line, and its location bar colours apply without
@@ -13,9 +15,7 @@
 // - A new game's verb menus use the interface font, and so do those of a game that stores Quest
 //   5's defaults (Arial, 9pt, black on white), which also still follows the dark scheme. A margin
 //   colour gives the game its own colours, and the classic interface keeps Arial at 9pt (#2725).
-// - axe-core finds no WCAG A/AA violations in any of them, light and dark. The one exception is
-//   theme_hotdogstand's own yellow on red, which is below AA by design: nothing but its yellow text
-//   may fail.
+// - axe-core finds no WCAG A/AA violations in any of them, light and dark.
 //
 // Requires the WasmPlayer dev server running locally:
 //   node src/WasmPlayer/dev-server.mjs
@@ -66,19 +66,16 @@ try {
         return { page, errors };
     }
 
-    // `allowed` is a text colour that may fall short of AA (a theme's own, on its own background
-    // and the panes mixed from it).
-    async function audit(page, state, allowed) {
-        const violations = await page.evaluate(async (allow) => {
+    async function audit(page, state) {
+        const violations = await page.evaluate(async () => {
             const result = await window.axe.run(document, {
                 runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'] },
             });
             return result.violations.flatMap((v) => v.nodes
-                .filter((n) => !(allow && v.id === 'color-contrast' && n.any[0]?.data?.fgColor === allow))
                 .map((n) => `${v.id}: ${n.target.join(' ')} ${n.any[0]?.message ?? ''}`));
-        }, allowed ?? null);
+        });
         if (violations.length) throw new Error(`axe found WCAG violations ${state}:\n    ${violations.slice(0, 8).join('\n    ')}`);
-        console.log(`PASS: no WCAG A/AA violations ${state}${allowed ? ' (beyond the theme\'s own colours)' : ''}`);
+        console.log(`PASS: no WCAG A/AA violations ${state}`);
     }
 
     const colours = (page) => page.evaluate(() => {
@@ -135,12 +132,41 @@ try {
         await done(page, errors, `theme_retro ${scheme}`);
     }
 
-    for (const scheme of ['light', 'dark']) {
-        const { page, errors } = await open({ theme: 'theme_hotdogstand', scheme });
+    {
+        // Retired: no longer offered, but a game that has it still plays
+        const { page, errors } = await open({ theme: 'theme_hotdogstand' });
         const c = await colours(page);
-        check(c.bg === 'Red' && c.text === 'rgb(255, 255, 0)', `${scheme}: theme_hotdogstand keeps its own yellow on red`);
-        await audit(page, `with theme_hotdogstand, ${scheme}`, '#ffff00');
-        await done(page, errors, `theme_hotdogstand ${scheme}`);
+        check(c.bg === 'Red' && c.text === 'rgb(255, 255, 0)', 'the retired theme_hotdogstand still loads, yellow on red');
+        await done(page, errors, 'theme_hotdogstand');
+    }
+
+    // One scheme's colours, whatever the device's
+    for (const [theme, bg, text] of [
+        ['theme_midnight', '#101a30', 'rgb(230, 233, 242)'],
+        ['theme_terminal', '#0b0f0b', 'rgb(79, 240, 122)'],
+    ]) {
+        for (const scheme of ['light', 'dark']) {
+            const { page, errors } = await open({ theme, scheme });
+            const c = await colours(page);
+            check(c.inlineBg === bg && c.text === text, `${scheme}: ${theme} keeps its own colours (${c.text} on ${c.bg})`);
+            await audit(page, `with ${theme}, ${scheme}`);
+            await done(page, errors, `${theme} ${scheme}`);
+        }
+    }
+
+    // Light and dark colours, following the device
+    for (const [theme, light, dark] of [
+        ['theme_parchment', ['#faf3e3', 'rgb(59, 47, 34)'], ['#2a2119', 'rgb(239, 228, 207)']],
+        ['theme_noir', ['#f2f1ee', 'rgb(18, 18, 18)'], ['#121212', 'rgb(233, 231, 227)']],
+        ['theme_storybook', ['#fff6ee', 'rgb(67, 48, 90)'], ['#2d2338', 'rgb(248, 234, 244)']],
+    ]) {
+        for (const [scheme, [bg, text]] of [['light', light], ['dark', dark]]) {
+            const { page, errors } = await open({ theme, scheme });
+            const c = await colours(page);
+            check(c.inlineBg === '' && c.bg === bg && c.text === text, `${scheme}: ${theme} shows its ${scheme} colours (${c.text} on ${c.bg})`);
+            await audit(page, `with ${theme}, ${scheme}`);
+            await done(page, errors, `${theme} ${scheme}`);
+        }
     }
 
     for (const theme of ['theme_novella', 'theme_typewriter']) {
