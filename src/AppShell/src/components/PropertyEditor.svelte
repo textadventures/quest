@@ -31,6 +31,7 @@
     import ColourInput from "./ColourInput.svelte";
     import ThemePicker from "./ThemePicker.svelte";
     import AppearancePreview from "./AppearancePreview.svelte";
+    import { CLASSIC_COLOURS, computeAppearance } from "#lib/appearance.js";
     import CodeEditor from "./CodeEditor.svelte";
     import DropdownMenu from "./DropdownMenu.svelte";
     import type { DropdownMenuItem } from "./DropdownMenu.svelte";
@@ -276,6 +277,17 @@
 
     function attrValue(attribute: string): string | null {
         return $selectedData?.attributes[attribute] ?? null;
+    }
+
+    // A <playertheme/> colour left empty is the player's own, until the game has colours of its
+    // own: then the game's text, link and page colours fall back to Quest's classic ones. Judged
+    // as if this colour were empty, since that's what its empty state describes (a text colour
+    // that is itself the game's only colour would leave the player's own when cleared).
+    function emptyColour(ctrl: ControlInfo): string | null {
+        const attribute = ctrl.attribute;
+        const classic = attribute ? CLASSIC_COLOURS[attribute] : undefined;
+        if (!ctrl.playerTheme || !attribute || !classic) return null;
+        return computeAppearance(a => (a === attribute ? null : attrValue(a))).ownColours ? classic : null;
     }
 
     // <width> - a per-instance pixel width, only known at runtime, so it has to be an inline
@@ -702,6 +714,7 @@
             value={attrValue(ctrl.attribute!) ?? ""}
             options={ctrl.options ?? []}
             playerTheme={ctrl.playerTheme}
+            emptyColour={emptyColour(ctrl)}
             onchange={(v) => onDropdownChange(ctrl.attribute!, v, ctrl.nullable)}
             class="input text-xs py-0.5 px-1.5 w-auto min-w-24"
             style={widthStyle(ctrl) ?? ""}
@@ -1125,6 +1138,7 @@
             value={attrValue(ctrl.attribute!) ?? ""}
             options={ctrl.options ?? []}
             playerTheme={ctrl.playerTheme}
+            emptyColour={emptyColour(ctrl)}
             ariaLabel={ctrl.caption ?? ctrl.attribute!}
             onchange={(v) => onDropdownChange(ctrl.attribute!, v, ctrl.nullable)}
             class="input text-xs py-0.5 px-1.5 w-auto min-w-24"

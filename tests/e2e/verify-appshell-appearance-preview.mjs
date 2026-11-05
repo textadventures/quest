@@ -80,6 +80,7 @@ try {
     expectEqual('the text size', s[0].fontSize, '16px');
     if (!s[0].fontFamily.includes('Georgia')) throw new Error(`the sample text is in ${s[0].fontFamily}, not the base font Georgia`);
     expectEqual('the note under a game that follows light and dark mode', await fixedNote(), null);
+    expectEqual('an empty Text colour in a new game', await colour('Text colour').getAttribute('placeholder'), "Player's own");
     console.log('PASS: a new game shows the player\'s own light and dark colours side by side, with the location bar, links and command bar');
     await shot('new-game');
 
@@ -103,6 +104,13 @@ try {
     expectEqual('the text with only a page colour (Quest\'s classic Black)', s[0].text, 'rgb(0, 0, 0)');
     expectEqual('the link with only a page colour (Quest\'s classic Blue)', s[0].link, 'rgb(0, 0, 255)');
     if (!(await fixedNote())?.includes('Dark column')) throw new Error(`the note under one sample is ${JSON.stringify(await fixedNote())}`);
+    // The empty text and link colours say what they now are, as the sample shows.
+    expectEqual('an empty Text colour with a page colour', await colour('Text colour').getAttribute('placeholder'), 'Black (default)');
+    expectEqual('an empty Link colour with a page colour', await colour('Link colour').getAttribute('placeholder'), 'Blue (default)');
+    const textSwatch = await page.locator('[data-colour-cell="defaultforeground"] .colour-swatch').first()
+        .evaluate(el => getComputedStyle(el).backgroundColor);
+    expectEqual('the empty Text colour\'s swatch', textSwatch, 'rgb(0, 0, 0)');
+    console.log('PASS: with a page colour of its own, an empty text or link colour reads as Quest\'s Black or Blue, not the player\'s own');
     console.log('PASS: a page colour of the game\'s own shows one sample, with a note to set dark colours');
     await shot('own-colours');
 

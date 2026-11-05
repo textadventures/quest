@@ -532,6 +532,8 @@
 
     "colourInput.playersOwn": "Wie beim Spieler",
     "colourInput.playersOwnHint": "Nicht festgelegt: folgt dem hellen oder dunklen Modus des Spielers",
+    "colourInput.defaultColour": "{colour} (Standard)",
+    "colourInput.defaultColourHint": "Nicht gesetzt: Das Spiel hat eigene Farben, also ist das {colour}",
     "colourInput.notSet": "Nicht festgelegt",
     "colourInput.notSetHint": "Nicht festgelegt: verwendet den Standard",
     "colourInput.pick": "Farbe auswählen",

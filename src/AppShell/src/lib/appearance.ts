@@ -30,6 +30,9 @@ export interface SchemeLook {
 export type FixedReason = "lightOnlyColours" | "ownColours" | "ownDarkColours";
 
 export interface AppearanceLook {
+    // Whether the game has colours of its own (HasOwnColours), so an empty text, link or page
+    // colour is Quest's classic Black, Blue or White rather than the player's own
+    ownColours: boolean;
     // One scheme for a game whose colours are the same in light and dark mode, or both
     schemes: SchemeLook[];
     fixedReason: FixedReason | null;
@@ -51,9 +54,10 @@ export function computeAppearance(get: (attribute: string) => string | null): Ap
 
     const lightOnly = bool("colourblend") || str("marginscolour") !== "" || str("customlocationcolour") !== ""
         || str("customlocationtextcolour") !== "";
+    const classic = bool("classicinterface");
     const ownColours = !(isDefault(foreground, "black") && isDefault(linkForeground, "blue") && isDefault(background, "white"))
-        || bool("setbackgroundopacity") || lightOnly;
-    const dark = !lightOnly && str("darkbackground") !== "";
+        || bool("setbackgroundopacity") || (!classic && lightOnly);
+    const dark = !classic && !lightOnly && str("darkbackground") !== "";
 
     let accent = str("accentcolour");
     if (accent === "" && ownColours) accent = linkForeground || "Blue";
@@ -100,6 +104,7 @@ export function computeAppearance(get: (attribute: string) => string | null): Ap
     const webFont = str("defaultwebfont") || null;
     const size = Number(str("defaultfontsize"));
     return {
+        ownColours,
         schemes,
         fixedReason,
         font: webFont ? `'${webFont}', ${baseFont}` : baseFont,
@@ -108,6 +113,14 @@ export function computeAppearance(get: (attribute: string) => string | null): Ap
         underlineLinks: get("underlinehyperlinks") === null || bool("underlinehyperlinks"),
     };
 }
+
+// What an empty text, link or page colour is once the game has colours of its own
+// (InitTextDefaults's fallbacks)
+export const CLASSIC_COLOURS: Record<string, string> = {
+    defaultforeground: "Black",
+    defaultlinkforeground: "Blue",
+    defaultbackground: "White",
+};
 
 // As scheme.ts's hasDarkBackground: a relative luminance under 0.18
 function isDarkColour(colour: string): boolean {

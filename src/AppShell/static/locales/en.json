@@ -532,6 +532,8 @@
 
     "colourInput.playersOwn": "Player's own",
     "colourInput.playersOwnHint": "Not set: follows the player's light or dark mode",
+    "colourInput.defaultColour": "{colour} (default)",
+    "colourInput.defaultColourHint": "Not set: the game has colours of its own, so this is {colour}",
     "colourInput.notSet": "Not set",
     "colourInput.notSetHint": "Not set: uses the default",
     "colourInput.pick": "Pick a colour",

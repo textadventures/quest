@@ -532,6 +532,8 @@
 
     "colourInput.playersOwn": "La del jugador",
     "colourInput.playersOwnHint": "Sin definir: sigue el modo claro u oscuro del jugador",
+    "colourInput.defaultColour": "{colour} (predeterminado)",
+    "colourInput.defaultColourHint": "Sin definir: el juego tiene colores propios, así que es {colour}",
     "colourInput.notSet": "Sin definir",
     "colourInput.notSetHint": "Sin definir: usa el valor predeterminado",
     "colourInput.pick": "Elegir un color",

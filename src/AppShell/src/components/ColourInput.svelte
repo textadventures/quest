@@ -4,7 +4,9 @@
     // of what's typed and the named colours as suggestions, and a button beside it that opens
     // the native colour picker (so does the swatch). Empty is a first-class value
     // - "not set", or for the game's text, link and page colours (<playertheme/>) the player's
-    // own light or dark theme colour - shown as a half-light, half-dark swatch.
+    // own light or dark theme colour - shown as a half-light, half-dark swatch. Once the game has
+    // colours of its own, an empty text, link or page colour is Quest's classic one instead
+    // (emptyColour), and the empty state says which.
     import type { ControlOption } from "#lib/types.js";
     import { t } from "#lib/i18n/index.js";
     import { isCssColour, toHexColour } from "#lib/colour.js";
@@ -13,12 +15,14 @@
     import ChevronDown from "@lucide/svelte/icons/chevron-down";
     import Palette from "@lucide/svelte/icons/palette";
 
-    let { value, options, onchange, playerTheme = false, ariaLabel, class: className = "", style = "" }: {
+    let { value, options, onchange, playerTheme = false, emptyColour = null, ariaLabel, class: className = "", style = "" }: {
         value: string;
         // The suggested colour names (the control's <validvalues>).
         options: ControlOption[];
         onchange: (value: string) => void;
         playerTheme?: boolean;
+        // What empty means instead of the player's own colour, such as "Black"
+        emptyColour?: string | null;
         ariaLabel?: string;
         class?: string;
         style?: string;
@@ -33,8 +37,10 @@
     let combobox = $state<ReturnType<typeof Combobox> | null>(null);
     let pickerEl = $state<HTMLInputElement | null>(null);
 
-    let emptyLabel = $derived(playerTheme ? t("colourInput.playersOwn") : t("colourInput.notSet"));
-    let emptyHint = $derived(playerTheme ? t("colourInput.playersOwnHint") : t("colourInput.notSetHint"));
+    let emptyLabel = $derived(emptyColour ? t("colourInput.defaultColour", { colour: emptyColour })
+        : playerTheme ? t("colourInput.playersOwn") : t("colourInput.notSet"));
+    let emptyHint = $derived(emptyColour ? t("colourInput.defaultColourHint", { colour: emptyColour })
+        : playerTheme ? t("colourInput.playersOwnHint") : t("colourInput.notSetHint"));
     let allOptions = $derived([
         { value: "", label: emptyLabel },
         ...options.filter(o => o.value !== "").map(o => ({ value: o.value, label: o.label.trim() })),
@@ -71,7 +77,9 @@
 
 {#snippet swatch(colour: string, size: string)}
     {@const trimmed = colour.trim()}
-    {#if trimmed === ""}
+    {#if trimmed === "" && emptyColour}
+        <span class="colour-swatch {size}" style:background-color={emptyColour} aria-hidden="true"></span>
+    {:else if trimmed === ""}
         <span class="colour-swatch {playerTheme ? "colour-swatch-player" : "colour-swatch-unset"} {size}" aria-hidden="true"></span>
     {:else if isCssColour(trimmed)}
         <span class="colour-swatch {size}" style:background-color={trimmed} aria-hidden="true"></span>
