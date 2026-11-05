@@ -57,9 +57,9 @@ That's usually the easiest way to give an object a picture: select it, go to its
 
 A picture per room quickly becomes tedious if you have to script each one, and you probably don't want the picture scrolling away as the player reads. The picture frame is a fixed area above the text: the text scrolls underneath it, and the picture changes as the player moves.
 
-Select the **game** object, go to the _Interface_ tab, and tick **Picture frame** at the bottom. Each room then gets a **Room picture** box at the top of its _Room_ tab - pick or upload a picture there, and it appears in the frame whenever the player is in that room.
+Select the **game** object, go to the _Interface_ tab, and tick **Show a picture frame above the text**. Each room then gets a **Room picture** box at the top of its _Room_ tab - pick or upload a picture there, and it appears in the frame whenever the player is in that room.
 
-**Clear picture panel if room has no picture** is ticked as well by default, so moving into a room with no picture empties the frame. Untick it and the last picture stays up until another room replaces it, which suits a game where the picture stands for a whole region rather than a single room.
+**Empty the picture frame in rooms without a picture** is ticked as well by default, so moving into a room with no picture empties the frame. Untick it and the last picture stays up until another room replaces it, which suits a game where the picture stands for a whole region rather than a single room.
 
 Turning the frame on also adds two more script commands to the **Output** category, for changing the picture mid-room:
 

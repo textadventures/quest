@@ -62,8 +62,8 @@ You can also keep the CSS in a separate `.css` file in your game folder, and loa
 
 Quest Viva sets some styles directly on elements, and these beat an ordinary rule in a stylesheet:
 
-- The game text carries its font and colour on every line, so change those on the Display tab, or during play with functions like `SetFontName` and `SetForegroundColour`.
-- Links in the text carry the link colour from the Display tab.
+- The game text carries its font and colour on every line, so change those on the Appearance tab, or during play with functions like `SetFontName` and `SetForegroundColour`.
+- Links in the text carry the link colour from the Appearance tab.
 - The page font and colour, the location bar colours from the Interface tab, and the colours from "Colour scheme for panes" are set on their elements.
 
 `JS.setCss` sets styles the same way, and because the initialisation script runs last, it wins. In a stylesheet, add `!important` to a rule that needs to override one of these.
@@ -104,7 +104,7 @@ Each of these goes in the user interface initialisation script unless it says ot
 
 ### Colouring the location bar
 
-For plain colours, untick "Classic location style" on the Interface tab and set "Location bar colour", "Location text colour" and "Location border colour". For anything more, use CSS:
+For plain colours, set the location bar's "Background colour", "Text colour" and "Border colour" on the Appearance tab. With the classic interface, untick "Classic location style" first. For anything more, use CSS:
 
 ```quest
 JS.setCss ("#qv-status", "background:#3b2f2f;color:wheat;border:none")

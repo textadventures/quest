@@ -107,7 +107,7 @@ await runCapture(async ({ page, baseUrl }) => {
     // --- overview-multimedia.png: room picture (Picture frame feature) shown in the game pane ---
     await selectTreeNode(page, 'game');
     await openTab(page, 'Interface');
-    await toggleFeature(page, 'Picture frame:');
+    await toggleFeature(page, 'Show a picture frame above the text');
     await selectTreeNode(page, 'room');
     await openTab(page, 'Room');
     await page.waitForSelector('text=Room picture:', { timeout: 10000 });

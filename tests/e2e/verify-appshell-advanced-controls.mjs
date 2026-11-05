@@ -3,7 +3,7 @@
 // collapsed "Advanced" expander at the bottom of their tab instead of being
 // rendered inline, and still round-trip edits once expanded.
 //
-// Target: the game element's "Interface" tab, whose "Set a custom display
+// Target: the game element's "Appearance" tab, whose "Set a custom display
 // width" checkbox (EditorGameSetacustom) is <advanced/> with no onlydisplayif,
 // so it's always present without extra game setup.
 //
@@ -32,13 +32,13 @@ try {
     // properties pane on narrow viewports; tap it explicitly to be safe.
     await page.locator('[data-value="game"][data-part="branch-control"]').click();
 
-    await page.getByRole('button', { name: 'Interface', exact: true }).click();
+    await page.getByRole('button', { name: 'Appearance', exact: true }).click();
 
     const advancedCheckbox = page.getByText('Set a custom display width', { exact: true });
-    const nonAdvancedCheckbox = page.getByText('Show border', { exact: true });
+    const nonAdvancedCheckbox = page.getByText('Underline links', { exact: true });
 
     await nonAdvancedCheckbox.waitFor({ state: 'visible', timeout: 5000 });
-    console.log('PASS: non-advanced control ("Show border") renders inline');
+    console.log('PASS: non-advanced control ("Underline links") renders inline');
 
     const isAdvancedVisibleBeforeExpand = await advancedCheckbox.isVisible().catch(() => false);
     if (isAdvancedVisibleBeforeExpand) throw new Error('Advanced control should be hidden until the expander is opened');
@@ -61,7 +61,7 @@ try {
 
     // Switch tabs away and back, then re-open the expander, to confirm the edit persisted.
     await page.getByRole('button', { name: 'Setup', exact: true }).click();
-    await page.getByRole('button', { name: 'Interface', exact: true }).click();
+    await page.getByRole('button', { name: 'Appearance', exact: true }).click();
     const summary2 = page.locator('summary', { hasText: 'Advanced' });
     await summary2.waitFor({ state: 'visible', timeout: 5000 });
     // The <details> DOM node is reused (not recreated) across this tab-away-and-back,

@@ -1,4 +1,4 @@
-// Verifies the game stylesheet editor (#2613 PR 7): a CSS code editor under the game's Interface
+// Verifies the game stylesheet editor (#2613 PR 7): a CSS code editor under the game's Appearance
 // tab, in its Advanced section, that edits game.stylesheet. The CSS is pasted in (a single
 // CodeMirror transaction, as verify-appshell-code-view.mjs explains), committed on blur, still
 // there after switching tabs, saved into the game's XML with its line breaks, and removed again
@@ -30,7 +30,7 @@ try {
     await page.waitForSelector('button[title="More"]', { timeout: 30000 });
 
     await page.locator('[data-value="game"][data-part="branch-control"]').click();
-    await page.getByRole('button', { name: 'Interface', exact: true }).click();
+    await page.getByRole('button', { name: 'Appearance', exact: true }).click();
 
     const editorGroup = page.getByRole('group', { name: 'Stylesheet' });
     const openAdvanced = async () => {
@@ -42,7 +42,7 @@ try {
     await openAdvanced();
     const cm = editorGroup.locator('.cm-content');
     if (!(await cm.count())) throw new Error('The Stylesheet control has no code editor');
-    console.log('PASS: the Interface tab\'s Advanced section has a Stylesheet code editor');
+    console.log('PASS: the Appearance tab\'s Advanced section has a Stylesheet code editor');
 
     const setCss = async (text) => {
         await cm.click();
@@ -59,7 +59,7 @@ try {
     await setCss(css);
 
     await page.getByRole('button', { name: 'Setup', exact: true }).click();
-    await page.getByRole('button', { name: 'Interface', exact: true }).click();
+    await page.getByRole('button', { name: 'Appearance', exact: true }).click();
     await openAdvanced();
     const shown = await cm.innerText();
     if (shown.replace(/\n+/g, '\n').trim() !== css) throw new Error(`The stylesheet didn't persist: ${JSON.stringify(shown)}`);
@@ -79,7 +79,7 @@ try {
     console.log('PASS: the CSS is saved as the game\'s stylesheet attribute, line breaks and all');
 
     await page.locator('[data-value="game"][data-part="branch-control"]').click();
-    await page.getByRole('button', { name: 'Interface', exact: true }).click();
+    await page.getByRole('button', { name: 'Appearance', exact: true }).click();
     await openAdvanced();
     await setCss('');
     xml = await rawXml();

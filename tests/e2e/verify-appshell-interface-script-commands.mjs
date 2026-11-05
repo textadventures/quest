@@ -58,7 +58,7 @@ try {
     await page.getByRole('dialog').waitFor({ state: 'hidden', timeout: 3000 });
 
     await page.getByRole('button', { name: 'Interface', exact: true }).click();
-    await page.getByText('Map and Drawing Grid', { exact: false }).click();
+    await page.getByText('Show a map that draws itself', { exact: false }).click();
     await page.getByRole('button', { name: 'Scripts', exact: true }).click();
     let list;
     ({ list, labels } = await interfaceCommands());

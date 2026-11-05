@@ -158,6 +158,11 @@
         border-inline: 1px solid var(--qv-hairline);
     }
 
+    /* A game's own border colour (game.bordercolour) colours the border line too. */
+    qv-player[data-qv-own-border] [data-qv-part="border"] {
+        border-inline-color: var(--qv-border-colour);
+    }
+
     [data-qv-part="border"].qv-borderless {
         border-inline: none;
     }

@@ -156,7 +156,7 @@ export const DOCS_INDEX: Readonly<Record<string, DocsIndexEntry>> = {
 
 /** Documentation path (as used in a <helpurl>) -> that page's title. */
 export const HELP_PAGE_TITLES: Readonly<Record<string, string>> = {
-    "/customise/look-and-feel/#the-display-tab": "The Display tab",
+    "/customise/look-and-feel/#the-appearance-tab": "The Appearance tab",
     "/customise/look-and-feel/#the-interface-tab": "The Interface tab",
     "/customise/look-and-feel/#the-room-descriptions-tab": "The Room Descriptions tab",
     "/customise/object-verbs/": "Object verbs",

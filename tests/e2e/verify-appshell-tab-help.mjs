@@ -67,11 +67,11 @@ async function run() {
 
     // /customise/look-and-feel/ has a section per tab, so the link is anchored and
     // names the section rather than the whole page.
-    await selectTab('Display');
-    check('help link on game > Display is anchored at its section',
-        await helpLink().getAttribute('href'), 'https://questviva.com/customise/look-and-feel/#the-display-tab');
+    await selectTab('Appearance');
+    check('help link on game > Appearance is anchored at its section',
+        await helpLink().getAttribute('href'), 'https://questviva.com/customise/look-and-feel/#the-appearance-tab');
     check('anchored help link names the section, not the page',
-        (await helpLink().textContent()).trim(), 'Help: The Display tab');
+        (await helpLink().textContent()).trim(), 'Help: The Appearance tab');
 
     // --- a room: Exits carries its own target ---
     await page.click('text=room');

@@ -14,7 +14,7 @@ On a wide screen, the panes sit to the right of the game text: Inventory, Status
 
 ## The standard panes
 
-Select the `game` object and go to the _Interface_ tab. "Show panes (Inventory, Places and Objects, Compass)" turns the panes on or off, and with them on you can turn off individual panes, move Status and Compass to the top, add a command pane or custom status pane, and choose a "Colour scheme for panes". [Look and feel](/customise/look-and-feel#game-panes) describes each option.
+Select the `game` object and go to the _Interface_ tab. "Show panes (inventory, places and objects, compass)" turns the panes on or off, and with them on you can choose where they go, hide individual panes, move Status and Compass to the top, add a command pane or custom status pane, and with the classic interface, choose a "Colour scheme for panes" on the _Appearance_ tab. [Look and feel](/customise/look-and-feel#the-interface-tab) describes each option.
 
 The Status pane appears by itself whenever there is something to show in it: the built-in [score, health and money](/howto/score/score-health-money), and any status attributes you add.
 

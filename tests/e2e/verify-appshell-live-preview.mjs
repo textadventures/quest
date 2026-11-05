@@ -1,5 +1,5 @@
 // Checks the editor's live Preview (#2650 part 5): with a game running in Preview, changing the
-// accent colour (Display tab), the layout and the stylesheet (Interface tab) in the editor shows
+// accent colour and the stylesheet (Appearance tab) and the layout (Interface tab) in the editor shows
 // in the Preview straight away, without it restarting or losing what's been played so far.
 // Turning an option back off takes it away again, since the Preview sets up a fresh UI each time.
 //
@@ -78,8 +78,8 @@ try {
         }
     };
 
-    // The accent colour, on the Display tab: a dropdown of colour names that also takes free text.
-    await openGameTab('Display');
+    // The accent colour, on the Appearance tab: a dropdown of colour names that also takes free text.
+    await openGameTab('Appearance');
     const accent = page.locator('label', { hasText: /^\s*Accent colour/ }).locator('input, select').first();
     await accent.waitFor({ timeout: 5000 });
     if (await accent.evaluate(el => el.tagName === 'SELECT')) {
@@ -92,6 +92,19 @@ try {
         'the accent colour');
     await assertKept('changing the accent colour');
     console.log('PASS: the accent colour shows in Preview without restarting it');
+
+    // The stylesheet, in the Appearance tab's Advanced section.
+    const summary = page.locator('summary', { hasText: 'Advanced' });
+    if (!(await summary.evaluate(el => el.closest('details')?.open))) await summary.click();
+    const cm = page.getByRole('group', { name: 'Stylesheet' }).locator('.cm-content');
+    await cm.click();
+    await page.keyboard.press(selectAllKey);
+    await page.evaluate(t => navigator.clipboard.writeText(t), 'qv-player { --qv-link: sienna; }');
+    await page.keyboard.press(pasteKey);
+    await settle();
+    await waitForPreview(() => document.getElementById('qv-game-stylesheet')?.textContent.includes('sienna'), 'the stylesheet');
+    await assertKept('changing the stylesheet');
+    console.log('PASS: the stylesheet shows in Preview without restarting it');
 
     // The layout, on the Interface tab.
     await openGameTab('Interface');
@@ -108,19 +121,6 @@ try {
     await waitForPreview(() => document.querySelector('qv-player')?.dataset.qvLayout === 'side', 'the default layout');
     await assertKept('changing the layout back');
     console.log('PASS: going back to the default layout shows in Preview too');
-
-    // The stylesheet, in the Interface tab's Advanced section.
-    const summary = page.locator('summary', { hasText: 'Advanced' });
-    if (!(await summary.evaluate(el => el.closest('details')?.open))) await summary.click();
-    const cm = page.getByRole('group', { name: 'Stylesheet' }).locator('.cm-content');
-    await cm.click();
-    await page.keyboard.press(selectAllKey);
-    await page.evaluate(t => navigator.clipboard.writeText(t), 'qv-player { --qv-link: sienna; }');
-    await page.keyboard.press(pasteKey);
-    await settle();
-    await waitForPreview(() => document.getElementById('qv-game-stylesheet')?.textContent.includes('sienna'), 'the stylesheet');
-    await assertKept('changing the stylesheet');
-    console.log('PASS: the stylesheet shows in Preview without restarting it');
 
     // The game carries on as before.
     await commandInput.fill('look');

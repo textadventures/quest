@@ -39,11 +39,11 @@ try {
     // "game" is auto-selected but doesn't push into the mobile properties pane; tap it.
     await page.locator('[data-value="game"][data-part="branch-control"]').click();
 
-    // Enable "Map and Drawing Grid" on the Interface tab so the (entirely-advanced) Drawing
+    // Enable "Show a map that draws itself as the player explores" on the Interface tab so the (entirely-advanced) Drawing
     // script category actually has visible commands. The checkbox itself isn't <advanced/>,
     // so it renders directly without needing to open an expander.
     await page.getByRole('button', { name: 'Interface', exact: true }).click();
-    await page.getByText('Map and Drawing Grid', { exact: false }).click();
+    await page.getByText('Show a map that draws itself', { exact: false }).click();
 
     await page.getByRole('button', { name: 'Scripts', exact: true }).click();
     await page.getByText('+ Add script', { exact: false }).first().click();
