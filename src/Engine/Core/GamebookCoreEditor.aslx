@@ -359,27 +359,27 @@
         <caption>[EditorGameYoucanuseany]</caption>
       </control>
       <control>
-        <controltype>dropdown</controltype>
+        <controltype>colour</controltype>
         <caption>[EditorGBBackground]</caption>
         <attribute>defaultbackground</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
+        <playertheme/>
         <nullable/>
       </control>
       <control>
-        <controltype>dropdown</controltype>
+        <controltype>colour</controltype>
         <caption>[EditorGBForeground]</caption>
         <attribute>defaultforeground</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
+        <playertheme/>
         <nullable/>
       </control>
       <control>
-        <controltype>dropdown</controltype>
+        <controltype>colour</controltype>
         <caption>[EditorGBLinkForeground]</caption>
         <attribute>defaultlinkforeground</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
+        <playertheme/>
         <nullable/>
       </control>
 

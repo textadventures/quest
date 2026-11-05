@@ -21,11 +21,10 @@
     </control>
 
     <control>
-      <controltype>dropdown</controltype>
+      <controltype>colour</controltype>
       <caption>[EditorObjectMapFillcolour]</caption>
       <attribute>grid_fill</attribute>
       <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-      <freetext/>
     </control>
 
     <control>
@@ -36,19 +35,17 @@
     </control>
 
     <control>
-      <controltype>dropdown</controltype>
+      <controltype>colour</controltype>
       <caption>[EditorObjectMapLabelcolour]</caption>
       <attribute>grid_label_colour</attribute>
       <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-      <freetext/>
     </control>
 
     <control>
-      <controltype>dropdown</controltype>
+      <controltype>colour</controltype>
       <caption>[EditorObjectMapBordercolour]</caption>
       <attribute>grid_border</attribute>
       <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-      <freetext/>
     </control>
 
     <control>
