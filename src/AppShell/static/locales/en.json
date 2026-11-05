@@ -45,6 +45,10 @@
 
     "editorStore.startingEditor": "Starting editor…",
     "editorStore.loadingGame": "Loading game…",
+    "editorStore.themeReset.one": "The new theme replaced your own setting for {options}. Undo brings it back.",
+    "editorStore.themeReset.other": "The new theme replaced your own settings for {options}. Undo brings them back.",
+    "editorStore.themeResetToTheme.other": "Cleared your own settings for {options}, so the theme's are used. Undo brings them back.",
+    "editorStore.themeResetToTheme.one": "Cleared your own setting for {options}, so the theme's is used. Undo brings it back.",
 
     "addElementModal.labels.room": "Room",
     "addElementModal.labels.object": "Object",
@@ -191,6 +195,9 @@
     "propertyEditor.noProperties": "No properties available.",
     "propertyEditor.helpGuide": "Help: {title}",
     "propertyEditor.tabFallback": "Tab",
+    "propertyEditor.resetToThemeNothing": "Nothing to reset: you haven't changed anything the theme sets",
+    "propertyEditor.resetToThemeHint": "Clear your own settings for {options} and use the theme's",
+    "propertyEditor.resetToTheme": "Reset",
     "propertyEditor.generateButton": "Generate",
     "propertyEditor.selectOption": "Select…",
     "propertyEditor.keyFallback": "Key",

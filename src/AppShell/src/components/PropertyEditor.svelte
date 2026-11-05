@@ -3,7 +3,7 @@
     import { chooseDialog } from "#lib/confirm.js";
     import { showToast } from "#lib/toast.js";
     import { isLibraryFilename } from "#lib/filesystem/types.js";
-    import { t } from "#lib/i18n/index.js";
+    import { t, locale } from "#lib/i18n/index.js";
     import { docsUrlForPath } from "#lib/docs-links.js";
     import { HELP_PAGE_TITLES } from "#lib/docs-index.generated.js";
     import type { ControlInfo, ControlOption, FeatureLeftover, TextProcessorCommand } from "#lib/types.js";
@@ -694,6 +694,20 @@
                 <option value={opt.value}>{opt.label}</option>
             {/each}
         </select>
+        {#if ctrl.overrides}
+            <!-- The game's Theme: clears the author's own settings that the theme would otherwise
+                 provide, keeping the theme itself (choosing the type it already has) -->
+            {@const overrides = ctrl.overrides}
+            <button
+                type="button"
+                class="btn btn-xs preset-outlined-primary-500 text-xs px-2 py-0.5 whitespace-nowrap"
+                disabled={overrides.length === 0}
+                title={overrides.length === 0
+                    ? t("propertyEditor.resetToThemeNothing")
+                    : t("propertyEditor.resetToThemeHint", { options: new Intl.ListFormat($locale, { type: "conjunction" }).format(overrides) })}
+                onclick={() => $selectedKey && setDropdownType($selectedKey, ctrl.attribute!, attrValue(ctrl.attribute!) ?? "*", true)}
+            >{t("propertyEditor.resetToTheme")}</button>
+        {/if}
     {:else if ctrl.controlType === "richtext"}
         {#if ctrl.textProcessorCommands?.length}
             <div class="flex flex-col gap-1 w-full">

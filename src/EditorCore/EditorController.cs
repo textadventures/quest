@@ -1430,6 +1430,78 @@ public sealed class EditorController : IDisposable
         }
     }
 
+    // For a dropdowntypes control with <resetoverrides/> (the game's Theme): the element's own
+    // values that choosing a type clears, so the type's look isn't hidden by options chosen under
+    // another. That's every attribute any of the control's types sets, and those in its
+    // <resetattributes> list, which no type sets yet but which would clash with one (a margin or
+    // menu colour, say). Empty for any other control.
+    public List<string> GetDropdownTypeOverrides(string elementKey, IEditorControl control)
+    {
+        if (!control.GetBool("resetoverrides"))
+        {
+            return [];
+        }
+
+        var scope = (control.GetDictionary("types") ?? new Dictionary<string, string>()).Keys
+            .Where(k => k != "*")
+            .Select(t => WorldModel.Elements.TryGetValue(ElementType.ObjectType, t, out var type) ? type : null)
+            .OfType<Element>()
+            .SelectMany(t => t.Fields.GetAttributeNames(true))
+            .Concat(control.GetListString("resetattributes") ?? [])
+            .Where(a => a != "name" && a != "elementtype")
+            .ToHashSet();
+
+        return [.. WorldModel.Elements.Get(elementKey).Fields.GetAttributeNames(false).Where(scope.Contains)];
+    }
+
+    // Sets which of a dropdowntypes control's types the element inherits, in one undo step, and
+    // clears what GetDropdownTypeOverrides finds. Choosing the type the element already has just
+    // clears them, which is how the Theme's Reset button works. Returns the attributes it removed.
+    public SetDropdownTypeResult SetDropdownType(string elementKey, IEditorControl control, string selectedType)
+    {
+        const string noType = "*";
+        var typeNames = (control.GetDictionary("types") ?? new Dictionary<string, string>()).Keys
+            .Where(k => k != noType)
+            .ToList();
+
+        if (selectedType != noType && !typeNames.Contains(selectedType))
+        {
+            return new SetDropdownTypeResult(false, $"Unknown type '{selectedType}'", []);
+        }
+
+        var element = WorldModel.Elements.Get(elementKey);
+        var reset = GetDropdownTypeOverrides(elementKey, control);
+
+        WorldModel.UndoLogger.StartTransaction(string.Format("Set type of '{0}'", elementKey));
+        try
+        {
+            foreach (var typeName in typeNames.Where(t => DoesElementInheritType(elementKey, t)))
+            {
+                RemoveInheritedTypeFromElement(elementKey, typeName, false);
+            }
+
+            if (selectedType != noType)
+            {
+                var result = AddInheritedTypeToElement(elementKey, selectedType, false);
+                if (!result.Valid)
+                {
+                    return new SetDropdownTypeResult(false, result.Message.ToString(), []);
+                }
+            }
+
+            foreach (var attribute in reset)
+            {
+                element.Fields.RemoveField(attribute);
+            }
+        }
+        finally
+        {
+            WorldModel.UndoLogger.EndTransaction();
+        }
+
+        return new SetDropdownTypeResult(true, null, reset);
+    }
+
     public bool DoesElementInheritType(string elementName, string typeName)
     {
         var element = WorldModel.Elements.Get(elementName);

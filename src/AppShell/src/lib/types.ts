@@ -89,6 +89,9 @@ export interface ControlInfo {
   // <playertheme/> - on a "colour" control: empty means the player's own light or dark theme
   // colour, so ColourInput labels the empty state that way rather than "not set".
   playerTheme?: boolean
+  // <resetoverrides/> - on a "dropdowntypes" control (the game's Theme): the captions of the
+  // element's own settings that choosing a type, or the Reset button beside it, would clear.
+  overrides?: string[] | null
 }
 
 export interface TabInfo {

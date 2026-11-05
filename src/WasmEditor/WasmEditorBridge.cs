@@ -73,7 +73,10 @@ internal record ControlInfo(
     // <playertheme/> - on a "colour" control: leaving it empty means the player's own light or dark
     // theme colour (the game's text, link and page colours), so the empty state is labelled
     // that way rather than as a plain "not set".
-    bool PlayerTheme = false);
+    bool PlayerTheme = false,
+    // <resetoverrides/> - on a "dropdowntypes" control (the game's Theme): the captions of the
+    // element's own settings that choosing a type, or the control's Reset button, would clear.
+    List<string>? Overrides = null);
 
 // LeftoverFeature is set when the tab is shown only because its feature (a "feature_..."
 // checkbox, on the game when LeftoverFeatureOnGame) is turned off while the element still has
@@ -86,6 +89,10 @@ internal record TabInfo(
     bool LeftoverFeatureOnGame = false);
 
 internal record FeatureLeftoverInfo(string Element, List<string> Labels);
+
+// SetDropdownType's answer: "ok", "error" or why the type couldn't be set, and the captions of the
+// options a <resetoverrides/> control reset.
+internal record SetDropdownTypeResponse(string Result, List<string> Reset);
 
 // See WasmEditorBridge.ResolveLocalCover — DataUrl is null when Name is only a resource name
 // the caller must resolve itself (a plain unpacked .aslx's sibling-file cover).
@@ -251,6 +258,7 @@ internal record ExpressionFunctionData(string Name, List<string> Parameters, boo
 [JsonSerializable(typeof(List<ExpressionFunctionData>))]
 [JsonSerializable(typeof(LocalCoverResult))]
 [JsonSerializable(typeof(List<FeatureLeftoverInfo>))]
+[JsonSerializable(typeof(SetDropdownTypeResponse))]
 [JsonSerializable(typeof(Dictionary<string, string>))]
 [JsonSerializable(typeof(IReadOnlyList<LegacyUiHack>))]
 internal partial class WasmEditorJsonContext : JsonSerializerContext
@@ -1035,38 +1043,16 @@ public partial class WasmEditorBridge
             return "error";
         }
 
-        var types = ctrl.GetDictionary("types");
-        if (types == null)
+        if (ctrl.GetDictionary("types") == null)
         {
             return "error";
         }
 
-        _controller.StartTransaction("Set type");
-        try
-        {
-            foreach (var typeName in types.Keys.Where(k => k != "*"))
-            {
-                if (_controller.DoesElementInheritType(elementKey, typeName))
-                {
-                    _controller.RemoveInheritedTypeFromElement(elementKey, typeName, false);
-                }
-            }
-
-            if (selectedType != "*")
-            {
-                var result = _controller.AddInheritedTypeToElement(elementKey, selectedType, false);
-                if (!result.Valid)
-                {
-                    return result.Message.ToString();
-                }
-            }
-
-            return "ok";
-        }
-        finally
-        {
-            _controller.EndTransaction();
-        }
+        var result = _controller.SetDropdownType(elementKey, ctrl, selectedType);
+        return JsonSerializer.Serialize(
+            new SetDropdownTypeResponse(result.Valid ? "ok" : result.Message ?? "error",
+                AttributeCaptions(def, result.ResetAttributes)),
+            WasmEditorJsonContext.Default.SetDropdownTypeResponse);
     }
 
     [JSExport]
@@ -4601,7 +4587,20 @@ public partial class WasmEditorBridge
             Width: ctrl.Width,
             Bold: bold,
             SameRow: sameRow,
-            PlayerTheme: ctrl.ControlType == "colour" && ctrl.GetBool("playertheme"));
+            PlayerTheme: ctrl.ControlType == "colour" && ctrl.GetBool("playertheme"),
+            Overrides: ctrl.ControlType == "dropdowntypes" && ctrl.GetBool("resetoverrides") && ctrl.Parent != null
+                ? AttributeCaptions(ctrl.Parent, _controller!.GetDropdownTypeOverrides(key, ctrl))
+                : null);
+    }
+
+    // The attributes by their captions on the editor, where it has a control for them.
+    private static List<string> AttributeCaptions(IEditorDefinition def, IEnumerable<string> attributes)
+    {
+        var captions = def.Tabs.Values.SelectMany(t => t.Controls)
+            .Where(c => c.Attribute != null && !string.IsNullOrEmpty(c.Caption) && c.ControlType != "title" && c.ControlType != "label")
+            .GroupBy(c => c.Attribute!)
+            .ToDictionary(g => g.Key, g => g.First().Caption!);
+        return [.. attributes.Select(a => captions.GetValueOrDefault(a, a)).Distinct()];
     }
 
     // <minimum>/<maximum>/<increment> can be authored as either an int or a double literal in
