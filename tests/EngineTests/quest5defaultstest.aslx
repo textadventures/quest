@@ -1,0 +1,27 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- A game that stores Quest 5’s default colours and verb menu font explicitly, as games saved by Quest 5 or an earlier Viva do (PlayersOwnDefaultsTests). -->
+  <game name="Quest5DefaultsTest">
+    <showtitle type="boolean">false</showtitle>
+    <defaultbackground>White</defaultbackground>
+    <defaultforeground>Black</defaultforeground>
+    <defaultlinkforeground>Blue</defaultlinkforeground>
+    <menufont>Arial</menufont>
+    <menufontsize type="int">9</menufontsize>
+    <menubackground>White</menubackground>
+    <menuforeground>Black</menuforeground>
+    <menuhoverbackground>LightGrey</menuhoverbackground>
+    <menuhoverforeground>Black</menuhoverforeground>
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+</asl>

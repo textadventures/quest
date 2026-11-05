@@ -7,18 +7,9 @@
     <autodescription/>
     <defaultfont>Georgia, serif</defaultfont>
     <defaultfontsize type="int">12</defaultfontsize>
-    <defaultbackground>White</defaultbackground>
-    <defaultforeground>Black</defaultforeground>
-    <defaultlinkforeground>Blue</defaultlinkforeground>
     <backgroundimage type="string"></backgroundimage>
     <setbackgroundopacity type="boolean">false</setbackgroundopacity>
     <backgroundopacity type="double">0.5</backgroundopacity>
-    <menufont>Arial</menufont>
-    <menufontsize type="int">9</menufontsize>
-    <menubackground>White</menubackground>
-    <menuforeground>Black</menuforeground>
-    <menuhoverbackground>LightGrey</menuhoverbackground>
-    <menuhoverforeground>Black</menuhoverforeground>
     <underlinehyperlinks/>
     <compassdirections type="simplestringlist">[CompassNW];[CompassN];[CompassNE];[CompassW];[CompassE];[CompassSW];[CompassS];[CompassSE];[CompassUp];[CompassDown];[CompassIn];[CompassOut]</compassdirections>
     <clearframe type="boolean">true</clearframe>

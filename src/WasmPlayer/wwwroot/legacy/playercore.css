@@ -568,8 +568,8 @@ div.jj_menu_item_hover {
     width: 40%;
     cursor: pointer;
     background-color: var(--qv-bg, white);
-    color: var(--qv-link, inherit);
-    border: 2px solid var(--qv-text, currentColor);
+    color: var(--qv-link, blue);
+    border: 2px solid var(--qv-text, black);
     border-radius: 5px;
     padding: 5px;
 }
@@ -580,7 +580,7 @@ div.jj_menu_item_hover {
 
 [data-qv-popup] {
     cursor: pointer;
-    color: var(--qv-link, inherit);
+    color: var(--qv-link, blue);
     background: none;
     border: none;
     padding: 0;

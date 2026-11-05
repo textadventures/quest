@@ -31,15 +31,6 @@
     <_editorstyle>gamebook</_editorstyle>
     <defaultfont>Georgia, serif</defaultfont>
     <defaultfontsize type="int">12</defaultfontsize>
-    <defaultbackground>White</defaultbackground>
-    <defaultforeground>Black</defaultforeground>
-    <defaultlinkforeground>Blue</defaultlinkforeground>
-    <menufont>Arial</menufont>
-    <menufontsize type="int">9</menufontsize>
-    <menubackground>White</menubackground>
-    <menuforeground>Black</menuforeground>
-    <menuhoverbackground>LightGrey</menuhoverbackground>
-    <menuhoverforeground>Black</menuhoverforeground>
     <description type="string"></description>
     <languageid>[LanguageId]</languageid>
     <versioncode type="int">1</versioncode>
@@ -181,12 +172,7 @@
     }
     // The game's colours go to the UI in InitTextDefaults, only once it has changed one from the
     // editor's defaults, so a gamebook that hasn't follows the UI's light or dark colours.
-    AddUIToken (tokens, "--qv-menu-bg", game.menubackground)
-    AddUIToken (tokens, "--qv-menu-fg", game.menuforeground)
-    AddUIToken (tokens, "--qv-menu-hover-bg", game.menuhoverbackground)
-    AddUIToken (tokens, "--qv-menu-hover-fg", game.menuhoverforeground)
-    AddUIToken (tokens, "--qv-menu-font", game.menufont)
-    AddUIToken (tokens, "--qv-menu-font-size", game.menufontsize + "pt")
+    AddMenuTokens (tokens)
     InitTextDefaults (tokens)
     JS.QuestUI.setTokens (tokens)
     if (not game.showborder) {

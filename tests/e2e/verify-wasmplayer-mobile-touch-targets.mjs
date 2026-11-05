@@ -9,9 +9,9 @@
 // including back down again when the window widens, since the desktop layout
 // must be untouched.
 //
-// The menu font size is the interesting one: game.menufontsize (9pt = 12px by
-// default) is inlined into every published game, so SetMenuFontSize applies a
-// floor rather than overriding the author. Both halves are checked - a default
+// The menu font size is the interesting one: game.menufontsize (9pt = 12px,
+// legacy's own default) is inlined into most published games, so
+// SetMenuFontSize applies a floor rather than overriding the author. Both halves are checked - a default
 // game gets lifted to 16px, an author asking for 20pt keeps 20pt.
 //
 // Two long-standing bugs in the same chrome are covered here too, since both

@@ -36,7 +36,7 @@ A theme only provides starting values. Anything you set yourself on the Appearan
 - **Base font** - a font from the list, each with fallbacks, such as "Georgia, serif". These work on every device.
 - **Web font** - optionally, any font from [Google Fonts](https://fonts.google.com/) (the **Browse available web fonts** link opens the catalogue). The player's browser downloads it from Google when the game starts. If it can't - because the player is offline, for example - the base font is used instead, so choose a base font that's a reasonable substitute.
 - **Font size** - in points. The default is 12.
-- **Text colour** - the colour of the game text.
+- **Text colour** - the colour of the game text. Leave it empty to follow the player's light or dark mode (see [Light and dark](#light-and-dark)).
 - **Interface font** - the font of the location bar, panes, menus and buttons. Leave it empty for the player's own.
 
 For all the colour boxes on these tabs, you can choose a colour name from the list or type any HTML colour, such as `#336699`.
@@ -50,6 +50,12 @@ The page is the column the text appears in, and the margins are either side of i
 - **Page colour** - the background of the page.
 - **Margin colour** and **Margin image** - the colour either side of the page, or a picture to fill it instead.
 - **Border colour** - the colour of the border either side of the page, when it's shown (on the Interface tab).
+
+#### Light and dark
+
+A new game leaves **Text colour**, **Link colour** and **Page colour** empty, so it follows the player's light or dark mode: dark text on a light page for a player whose device is in light mode, and light text on a dark page in dark mode. An **Accent colour** on its own keeps this, and is lightened in dark mode so it stays readable.
+
+Setting the text, link or page colour, a **Margin colour**, or the location bar's **Background colour** or **Text colour** gives the game its own colours instead, which stay the same in dark mode. Any of the three you leave empty is then black text, blue links or a white page. That way, your colours are never mixed with the player's dark ones.
 
 With the [classic interface](#advanced), **Colour scheme for panes** picks the panes' colours: Classic (light blue, the default), Midnight, Nature, Vanilla, Black, Blood, Tranquil or Parchment. Otherwise the panes follow the game's own colours.
 
@@ -65,7 +71,7 @@ When the command bar is shown (on the Interface tab), **Plain command bar with a
 
 ### Verb menus
 
-When objects are links, **Font** and **Font size** style the pop-up menu of verbs that appears when the player clicks an object. On a phone, the menu's text is made larger if needed, so it's easy to tap.
+When objects are links, **Font** and **Font size** style the pop-up menu of verbs that appears when the player clicks an object. Leave them empty for the interface font at the game's text size (with the classic interface, Arial at 9 points). On a phone, the menu's text is made larger if needed, so it's easy to tap.
 
 ### Advanced
 

@@ -10,6 +10,9 @@
 //   classicinterface still gets it on legacy.
 // - A game's border colour colours v2's border line, and its location bar colours apply without
 //   turning off the classic location style, which v2 doesn't have (#2719).
+// - A new game's verb menus use the interface font, and so do those of a game that stores Quest
+//   5's defaults (Arial, 9pt, black on white), which also still follows the dark scheme. A margin
+//   colour gives the game its own colours, and the classic interface keeps Arial at 9pt (#2725).
 // - axe-core finds no WCAG A/AA violations in any of them, light and dark. The one exception is
 //   theme_hotdogstand's own yellow on red, which is below AA by design: nothing but its yellow text
 //   may fail.
@@ -190,6 +193,72 @@ try {
         check(bar.bg === 'rgb(0, 0, 128)' && bar.fg === 'rgb(255, 255, 255)',
             `the location bar takes the game's colours with the classic location style still on (${bar.fg} on ${bar.bg})`);
         await done(page, errors, 'border and location bar colours');
+    }
+
+    // ── The player's own defaults (#2725) ───────────────────────────────────
+
+    const menuFont = (page) => page.evaluate(() => {
+        const menu = getComputedStyle(document.querySelector('qv-verb-menu'));
+        return {
+            font: menu.fontFamily,
+            size: menu.fontSize,
+            uiFont: getComputedStyle(document.querySelector('.qv-topbar')).fontFamily,
+        };
+    });
+
+    {
+        const { page, errors } = await open();
+        const m = await menuFont(page);
+        check(m.font === m.uiFont && !/arial/i.test(m.font) && m.size === '16px',
+            `a new game's verb menus use the interface font at 1rem (${m.font}, ${m.size})`);
+        await done(page, errors, 'default menu font');
+    }
+
+    {
+        // As games saved by Quest 5 or an earlier Viva store them
+        const quest5Defaults = '<defaultforeground>Black</defaultforeground><defaultlinkforeground>Blue</defaultlinkforeground>'
+            + '<defaultbackground>White</defaultbackground><menufont>Arial</menufont><menufontsize type="int">9</menufontsize>';
+        const { page, errors } = await open({ extra: quest5Defaults, scheme: 'dark' });
+        const c = await colours(page);
+        check(c.inlineText === '' && c.inlineBg === '' && c.bg === '#18181b',
+            `dark: a game that stores Quest 5's default colours still follows the dark scheme (${c.text} on ${c.bg})`);
+        const m = await menuFont(page);
+        check(m.font === m.uiFont && m.size === '16px',
+            `and Quest 5's Arial at 9pt counts as unset, so its verb menus use the interface font (${m.font}, ${m.size})`);
+        await done(page, errors, 'Quest 5 defaults');
+    }
+
+    {
+        const { page, errors } = await open({ extra: '<menufont>Courier New</menufont><menufontsize type="int">12</menufontsize>' });
+        const m = await menuFont(page);
+        check(/courier new/i.test(m.font) && m.size === '16px',
+            `a verb menu font of the game's own is used (${m.font}, 12pt = ${m.size})`);
+        await done(page, errors, 'own menu font');
+    }
+
+    {
+        const { page, errors } = await open({ extra: '<marginscolour>LightGrey</marginscolour>', scheme: 'dark' });
+        const c = await colours(page);
+        check(c.inlineBg === 'White' && c.inlineText === 'Black' && c.text === 'rgb(0, 0, 0)',
+            `dark: a margin colour gives the game its own colours, black on white (${c.text} on ${c.bg})`);
+        await audit(page, 'with only a margin colour, dark');
+        await done(page, errors, 'margins only');
+    }
+
+    {
+        const { page, errors } = await open({ classic: true });
+        const font = await page.evaluate(() => {
+            const probe = document.createElement('div');
+            probe.className = 'jjmenu';
+            document.body.append(probe);
+            const style = getComputedStyle(probe);
+            const result = { font: style.fontFamily, size: style.fontSize };
+            probe.remove();
+            return result;
+        });
+        check(/arial/i.test(font.font) && font.size === '12px',
+            `with classicinterface, the verb menus keep Arial at 9pt (${font.font}, ${font.size})`);
+        await done(page, errors, 'classic menu font');
     }
 
     console.log('\nAll checks passed.');

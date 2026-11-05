@@ -49,6 +49,21 @@
         <None Update="defaultcolourstest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="quest5defaultstest.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="marginsonlytest.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="locationtextonlytest.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="classicmarginstest.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="ownmenufonttest.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="mapimagetest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>

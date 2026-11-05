@@ -1,0 +1,21 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- A game that chooses its own verb menu font and size, and only a menu background (PlayersOwnDefaultsTests). -->
+  <game name="OwnMenuFontTest">
+    <showtitle type="boolean">false</showtitle>
+    <menufont>Courier New</menufont>
+    <menufontsize type="int">12</menufontsize>
+    <menubackground>Black</menubackground>
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+</asl>

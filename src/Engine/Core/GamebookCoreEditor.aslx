@@ -351,6 +351,11 @@
 
       <control>
         <controltype>label</controltype>
+        <caption>[EditorGBColoursHelp]</caption>
+      </control>
+
+      <control>
+        <controltype>label</controltype>
         <caption>[EditorGameYoucanuseany]</caption>
       </control>
       <control>
@@ -359,6 +364,7 @@
         <attribute>defaultbackground</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
+        <nullable/>
       </control>
       <control>
         <controltype>dropdown</controltype>
@@ -366,6 +372,7 @@
         <attribute>defaultforeground</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
+        <nullable/>
       </control>
       <control>
         <controltype>dropdown</controltype>
@@ -373,6 +380,7 @@
         <attribute>defaultlinkforeground</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
+        <nullable/>
       </control>
 
       <control>

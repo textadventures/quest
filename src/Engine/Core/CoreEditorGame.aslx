@@ -223,6 +223,7 @@
         <attribute>defaultforeground</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
+        <nullable/>
       </control>
 
       <control>
@@ -246,6 +247,11 @@
       </control>
 
       <control>
+        <controltype>label</controltype>
+        <caption>[EditorGameColoursHelp]</caption>
+      </control>
+
+      <control>
         <controltype>dropdown</controltype>
         <caption>[EditorGameAccentColour]</caption>
         <attribute>accentcolour</attribute>
@@ -266,6 +272,7 @@
         <attribute>defaultlinkforeground</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
+        <nullable/>
         <onlydisplayif>game.enablehyperlinks</onlydisplayif>
       </control>
 
@@ -282,6 +289,7 @@
         <attribute>defaultbackground</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
+        <nullable/>
       </control>
 
       <control>
@@ -450,6 +458,7 @@
         <attribute>menufont</attribute>
         <source>basefonts</source>
         <freetext/>
+        <nullable/>
         <onlydisplayif>game.enablehyperlinks</onlydisplayif>
       </control>
 
@@ -457,6 +466,12 @@
         <controltype>number</controltype>
         <caption>[EditorGameFontsize]</caption>
         <attribute>menufontsize</attribute>
+        <onlydisplayif>game.enablehyperlinks</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>[EditorGameMenuFontHelp]</caption>
         <onlydisplayif>game.enablehyperlinks</onlydisplayif>
       </control>
 

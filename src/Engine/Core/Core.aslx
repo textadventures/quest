@@ -73,19 +73,10 @@
       JS.QuestUI.setInterfaceString ("NothingSelectedLabel", "[NothingSelectedLabel]")
       JS.QuestUI.setInterfaceString ("TypeHereLabel", "[TypeHereLabel]")
       JS.QuestUI.setInterfaceString ("ContinueLabel", "[ContinueLabel]")
-      // The menu colours go together, and only once the game has changed one, as with the text
-      // colours (InitTextDefaults)
-      if (not IsDefaultColour(game.menubackground, "white") or not IsDefaultColour(game.menuforeground, "black") or not IsDefaultColour(game.menuhoverbackground, "lightgrey") or not IsDefaultColour(game.menuhoverforeground, "black")) {
-        AddUIToken (tokens, "--qv-menu-bg", game.menubackground)
-        AddUIToken (tokens, "--qv-menu-fg", game.menuforeground)
-        AddUIToken (tokens, "--qv-menu-hover-bg", game.menuhoverbackground)
-        AddUIToken (tokens, "--qv-menu-hover-fg", game.menuhoverforeground)
-      }
+      AddMenuTokens (tokens)
       if (HasString(game, "interfacefont")) {
         AddUIToken (tokens, "--qv-font-ui", game.interfacefont)
       }
-      AddUIToken (tokens, "--qv-menu-font", game.menufont)
-      AddUIToken (tokens, "--qv-menu-font-size", game.menufontsize + "pt")
       if (not game.underlinehyperlinks) {
         AddUIToken (tokens, "--qv-link-decoration", "none")
       }
@@ -186,8 +177,8 @@
         JS.QuestUI.setCommandBarPreset ("borderless")
         // The typed command matches the game's text, which is the UI's own until the game sets
         // its colours (InitTextDefaults)
-        if (not HasDefaultColours()) {
-          AddUIToken (tokens, "--qv-command-fg", game.defaultforeground)
+        if (HasOwnColours()) {
+          AddUIToken (tokens, "--qv-command-fg", UIValueOr(GetColourAttribute("defaultforeground"), "Black"))
         }
         JS.QuestUI.setCommandPrompt (game.commandcursor)
       }

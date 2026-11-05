@@ -5,9 +5,10 @@
 
   <!--
     Fixture for issue #2181 (menu/chrome too small on mobile). Deliberately
-    leaves game.menufontsize at the defaultgame default of 9pt (12px) - the
-    value every already-published game carries inlined - so the narrow-window
-    floor in playercore.js's SetMenuFontSize has something to lift.
+    leaves game.menufontsize unset, so the menus get legacy's own 9pt (12px) -
+    the value most already-published games carry inlined - and the
+    narrow-window floor in playercore.js's SetMenuFontSize has something to
+    lift.
   -->
   <game name="Touch Targets">
   </game>
