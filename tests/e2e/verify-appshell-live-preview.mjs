@@ -2,6 +2,7 @@
 // accent colour and the stylesheet (Appearance tab) and the layout (Interface tab) in the editor shows
 // in the Preview straight away, without it restarting or losing what's been played so far.
 // Turning an option back off takes it away again, since the Preview sets up a fresh UI each time.
+// In dark mode, a text colour of the game's own makes the Preview light (#2725).
 //
 // Requires both dev servers running (./dev.sh): AppShell on 5174, proxying /player to WasmPlayer,
 // so BroadcastChannel (same-origin only) reaches the Preview tab.
@@ -92,6 +93,42 @@ try {
         'the accent colour');
     await assertKept('changing the accent colour');
     console.log('PASS: the accent colour shows in Preview without restarting it');
+
+    // In dark mode, a text colour of the game's own makes the Preview light, as the game will be
+    // for a player in dark mode, and clearing it follows dark mode again (#2725).
+    await preview.emulateMedia({ colorScheme: 'dark' });
+    const pageColours = () => preview.evaluate(() => {
+        const player = document.querySelector('qv-player');
+        return {
+            text: player?.style.getPropertyValue('--qv-text').trim() ?? null,
+            bg: player ? getComputedStyle(player).getPropertyValue('--qv-bg').trim() : null,
+        };
+    });
+    const darkBefore = await pageColours();
+    if (darkBefore.text !== '' || darkBefore.bg !== '#18181b') {
+        throw new Error(`A new game's Preview doesn't follow dark mode: ${JSON.stringify(darkBefore)}`);
+    }
+    const textColour = page.locator('label', { hasText: /^\s*Text colour/ }).locator('input').first();
+    await textColour.fill('DarkRed');
+    await settle();
+    await waitForPreview(() => {
+        const player = document.querySelector('qv-player');
+        return player?.style.getPropertyValue('--qv-text').trim() === 'DarkRed'
+            && getComputedStyle(player).getPropertyValue('--qv-bg').trim() === 'White';
+    }, 'the text colour (in dark mode)');
+    await assertKept('changing the text colour');
+    console.log('PASS: in dark mode, setting a text colour makes the Preview use the game\'s own light colours');
+
+    await page.locator('label', { hasText: /^\s*Text colour/ }).first().getByRole('button', { name: 'Clear colour' }).click();
+    await settle();
+    await waitForPreview(() => {
+        const player = document.querySelector('qv-player');
+        return player?.style.getPropertyValue('--qv-text').trim() === ''
+            && getComputedStyle(player).getPropertyValue('--qv-bg').trim() === '#18181b';
+    }, 'clearing the text colour (in dark mode)');
+    await assertKept('clearing the text colour');
+    await preview.emulateMedia({ colorScheme: 'light' });
+    console.log('PASS: clearing it follows dark mode again');
 
     // The stylesheet, in the Appearance tab's Advanced section.
     const summary = page.locator('summary', { hasText: 'Advanced' });

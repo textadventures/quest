@@ -453,9 +453,21 @@ public partial class WorldModel : IGame, IGameDebug
     /// Sets one of the game's attributes from a value the editor sent (ReapplyInterfaceAsync):
     /// null removes the game's own value, so it inherits again. A whole number becomes a double
     /// when the attribute already is one, since JSON doesn't tell 1 from 1.0.
+    /// Changing the game's starting font or text colours also forgets the ones 610 Core recorded
+    /// when the game started (InitTextDefaults' uidefaults), so ReapplyInterfaceAsync records the
+    /// new ones. Otherwise a text colour set in the editor would still count as the default, and a
+    /// Preview in dark mode would keep the player's dark colours.
     /// </summary>
+    private static readonly HashSet<string> TextDefaultAttributes =
+        ["defaultforeground", "defaultlinkforeground", "defaultfont", "defaultwebfont", "defaultfontsize"];
+
     public void SetGameAttributeFromEditor(string name, object? value)
     {
+        if (TextDefaultAttributes.Contains(name) && Game.Fields.GetAttributeNames(false).Contains("uidefaults"))
+        {
+            Game.Fields.RemoveField("uidefaults");
+        }
+
         if (value == null)
         {
             if (Game.Fields.GetAttributeNames(false).Contains(name)) Game.Fields.RemoveField(name);
