@@ -47,6 +47,8 @@
     "editorStore.loadingGame": "Spiel wird geladen…",
     "editorStore.themeReset.one": "Das neue Thema hat deine eigene Einstellung für {options} ersetzt. Mit „Rückgängig“ kommt sie zurück.",
     "editorStore.themeReset.other": "Das neue Thema hat deine eigenen Einstellungen für {options} ersetzt. Mit „Rückgängig“ kommen sie zurück.",
+    "editorStore.themeResetToTheme.other": "Deine eigenen Einstellungen für {options} wurden entfernt, damit die des Themas gelten. Mit „Rückgängig“ kommen sie zurück.",
+    "editorStore.themeResetToTheme.one": "Deine eigene Einstellung für {options} wurde entfernt, damit die des Themas gilt. Mit „Rückgängig“ kommt sie zurück.",
 
     "addElementModal.labels.room": "Raum",
     "addElementModal.labels.object": "Objekt",
@@ -193,6 +195,9 @@
     "propertyEditor.noProperties": "Keine Eigenschaften verfügbar.",
     "propertyEditor.helpGuide": "Hilfe: {title}",
     "propertyEditor.tabFallback": "Tab",
+    "propertyEditor.resetToThemeNothing": "Nichts zurückzusetzen: Du hast nichts geändert, was das Thema festlegt",
+    "propertyEditor.resetToThemeHint": "Deine eigenen Einstellungen für {options} entfernen, damit die des Themas gelten",
+    "propertyEditor.resetToTheme": "Zurücksetzen",
     "propertyEditor.generateButton": "Erzeugen",
     "propertyEditor.selectOption": "Wähle…",
     "propertyEditor.keyFallback": "Schlüssel",

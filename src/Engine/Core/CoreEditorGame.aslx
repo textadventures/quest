@@ -177,8 +177,9 @@
         <caption>[EditorGameTheme]</caption>
         <controltype>dropdowntypes</controltype>
         <types>*=[TypeThemeStandard]; theme_novella=[TypeThemeNovella]; theme_retro=[TypeThemeRetro]; theme_typewriter=[TypeThemeTypewriter]; theme_hotdogstand=[TypeThemeHotDog]</types>
-        <!-- Choosing a theme clears the game's own value for anything a theme sets, so the new theme isn't hidden by options chosen under the old one -->
+        <!-- Choosing a theme, or its Reset button, clears the game's own value for anything a theme sets and for the rest of the look below, so the theme isn't hidden by options chosen under another. Images, the stylesheet and link underlining are the author's own and are kept. -->
         <resetoverrides/>
+        <resetattributes type="simplestringlist">defaultfont;defaultwebfont;defaultfontsize;defaultforeground;interfacefont;accentcolour;defaultlinkforeground;defaultbackground;marginscolour;colourblend;colourblendtop;colourblendbottom;bordercolour;panestheme;customlocationcolour;customlocationtextcolour;customlocationbordercolour;borderlesscursor;commandcursor;shadowbox;menufont;menufontsize;menubackground;menuforeground;menuhoverbackground;menuhoverforeground</resetattributes>
       </control>
 
       <control>

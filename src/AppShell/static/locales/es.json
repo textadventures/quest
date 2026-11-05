@@ -47,6 +47,8 @@
     "editorStore.loadingGame": "Cargando juego…",
     "editorStore.themeReset.one": "El nuevo tema ha sustituido tu ajuste de {options}. Con «Deshacer» lo recuperas.",
     "editorStore.themeReset.other": "El nuevo tema ha sustituido tus ajustes de {options}. Con «Deshacer» los recuperas.",
+    "editorStore.themeResetToTheme.other": "Se han quitado tus ajustes de {options} para que se vean los del tema. Con «Deshacer» los recuperas.",
+    "editorStore.themeResetToTheme.one": "Se ha quitado tu ajuste de {options} para que se vea el del tema. Con «Deshacer» lo recuperas.",
 
     "addElementModal.labels.room": "Lugar",
     "addElementModal.labels.object": "Objeto",
@@ -193,6 +195,9 @@
     "propertyEditor.noProperties": "No hay propiedades disponibles.",
     "propertyEditor.helpGuide": "Ayuda: {title}",
     "propertyEditor.tabFallback": "Pestaña",
+    "propertyEditor.resetToThemeNothing": "No hay nada que restablecer: no has cambiado nada de lo que define el tema",
+    "propertyEditor.resetToThemeHint": "Quitar tus ajustes de {options} para que se vean los del tema",
+    "propertyEditor.resetToTheme": "Restablecer",
     "propertyEditor.generateButton": "Generar",
     "propertyEditor.selectOption": "Selecciona…",
     "propertyEditor.keyFallback": "Clave",

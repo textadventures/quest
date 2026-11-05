@@ -1430,10 +1430,33 @@ public sealed class EditorController : IDisposable
         }
     }
 
-    // Sets which of a dropdowntypes control's types the element inherits, in one undo step. With
-    // <resetoverrides/> (the game's Theme), it also removes the element's own value for every
-    // attribute that any of the control's types sets, so the new type's values aren't hidden by
-    // ones chosen under the old one. Returns the attributes it removed.
+    // For a dropdowntypes control with <resetoverrides/> (the game's Theme): the element's own
+    // values that choosing a type clears, so the type's look isn't hidden by options chosen under
+    // another. That's every attribute any of the control's types sets, and those in its
+    // <resetattributes> list, which no type sets yet but which would clash with one (a margin or
+    // menu colour, say). Empty for any other control.
+    public List<string> GetDropdownTypeOverrides(string elementKey, IEditorControl control)
+    {
+        if (!control.GetBool("resetoverrides"))
+        {
+            return [];
+        }
+
+        var scope = (control.GetDictionary("types") ?? new Dictionary<string, string>()).Keys
+            .Where(k => k != "*")
+            .Select(t => WorldModel.Elements.TryGetValue(ElementType.ObjectType, t, out var type) ? type : null)
+            .OfType<Element>()
+            .SelectMany(t => t.Fields.GetAttributeNames(true))
+            .Concat(control.GetListString("resetattributes") ?? [])
+            .Where(a => a != "name" && a != "elementtype")
+            .ToHashSet();
+
+        return [.. WorldModel.Elements.Get(elementKey).Fields.GetAttributeNames(false).Where(scope.Contains)];
+    }
+
+    // Sets which of a dropdowntypes control's types the element inherits, in one undo step, and
+    // clears what GetDropdownTypeOverrides finds. Choosing the type the element already has just
+    // clears them, which is how the Theme's Reset button works. Returns the attributes it removed.
     public SetDropdownTypeResult SetDropdownType(string elementKey, IEditorControl control, string selectedType)
     {
         const string noType = "*";
@@ -1447,7 +1470,7 @@ public sealed class EditorController : IDisposable
         }
 
         var element = WorldModel.Elements.Get(elementKey);
-        var reset = new List<string>();
+        var reset = GetDropdownTypeOverrides(elementKey, control);
 
         WorldModel.UndoLogger.StartTransaction(string.Format("Set type of '{0}'", elementKey));
         try
@@ -1466,20 +1489,9 @@ public sealed class EditorController : IDisposable
                 }
             }
 
-            if (control.GetBool("resetoverrides"))
+            foreach (var attribute in reset)
             {
-                var typeAttributes = typeNames
-                    .Select(t => WorldModel.Elements.TryGetValue(ElementType.ObjectType, t, out var type) ? type : null)
-                    .OfType<Element>()
-                    .SelectMany(t => t.Fields.GetAttributeNames(true))
-                    .Where(a => a != "name" && a != "elementtype")
-                    .ToHashSet();
-
-                foreach (var attribute in element.Fields.GetAttributeNames(false).Where(typeAttributes.Contains).ToList())
-                {
-                    element.Fields.RemoveField(attribute);
-                    reset.Add(attribute);
-                }
+                element.Fields.RemoveField(attribute);
             }
         }
         finally

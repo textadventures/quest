@@ -603,8 +603,9 @@ export function setSelectedFilter(elementKey: string, filterGroupName: string, f
 
 // Returns "ok", "error" or why the type couldn't be set. A control with <resetoverrides/> (the
 // game's Theme) also clears the element's own values for what its types set; the author is told
-// which, since undo is the only way back.
-export function setDropdownType(elementKey: string, controlId: string, selectedType: string): string {
+// which, since undo is the only way back. Choosing the type the element already has only clears
+// them (the control's Reset button).
+export function setDropdownType(elementKey: string, controlId: string, selectedType: string, isReset = false): string {
     if (!_bridge) return "error";
     const raw = _bridge.SetDropdownType(elementKey, controlId, selectedType);
     refreshSelectedData();
@@ -613,7 +614,7 @@ export function setDropdownType(elementKey: string, controlId: string, selectedT
     const { result, reset } = JSON.parse(raw) as { result: string; reset: string[] };
     if (reset.length > 0) {
         const options = new Intl.ListFormat(get(locale), { type: "conjunction" }).format(reset);
-        showToast(tPlural("editorStore.themeReset", reset.length, { options }), "info", 10000);
+        showToast(tPlural(isReset ? "editorStore.themeResetToTheme" : "editorStore.themeReset", reset.length, { options }), "info", 10000);
     }
     return result;
 }

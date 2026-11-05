@@ -73,7 +73,10 @@ internal record ControlInfo(
     // <playertheme/> - on a "colour" control: leaving it empty means the player's own light or dark
     // theme colour (the game's text, link and page colours), so the empty state is labelled
     // that way rather than as a plain "not set".
-    bool PlayerTheme = false);
+    bool PlayerTheme = false,
+    // <resetoverrides/> - on a "dropdowntypes" control (the game's Theme): the captions of the
+    // element's own settings that choosing a type, or the control's Reset button, would clear.
+    List<string>? Overrides = null);
 
 // LeftoverFeature is set when the tab is shown only because its feature (a "feature_..."
 // checkbox, on the game when LeftoverFeatureOnGame) is turned off while the element still has
@@ -1045,16 +1048,10 @@ public partial class WasmEditorBridge
             return "error";
         }
 
-        // The options a <resetoverrides/> control reset, by their captions where the element's
-        // editor has a control for them.
         var result = _controller.SetDropdownType(elementKey, ctrl, selectedType);
-        var captions = def.Tabs.Values.SelectMany(t => t.Controls)
-            .Where(c => c.Attribute != null && !string.IsNullOrEmpty(c.Caption) && c.ControlType != "title" && c.ControlType != "label")
-            .GroupBy(c => c.Attribute!)
-            .ToDictionary(g => g.Key, g => g.First().Caption!);
         return JsonSerializer.Serialize(
             new SetDropdownTypeResponse(result.Valid ? "ok" : result.Message ?? "error",
-                [.. result.ResetAttributes.Select(a => captions.GetValueOrDefault(a, a)).Distinct()]),
+                AttributeCaptions(def, result.ResetAttributes)),
             WasmEditorJsonContext.Default.SetDropdownTypeResponse);
     }
 
@@ -4590,7 +4587,20 @@ public partial class WasmEditorBridge
             Width: ctrl.Width,
             Bold: bold,
             SameRow: sameRow,
-            PlayerTheme: ctrl.ControlType == "colour" && ctrl.GetBool("playertheme"));
+            PlayerTheme: ctrl.ControlType == "colour" && ctrl.GetBool("playertheme"),
+            Overrides: ctrl.ControlType == "dropdowntypes" && ctrl.GetBool("resetoverrides") && ctrl.Parent != null
+                ? AttributeCaptions(ctrl.Parent, _controller!.GetDropdownTypeOverrides(key, ctrl))
+                : null);
+    }
+
+    // The attributes by their captions on the editor, where it has a control for them.
+    private static List<string> AttributeCaptions(IEditorDefinition def, IEnumerable<string> attributes)
+    {
+        var captions = def.Tabs.Values.SelectMany(t => t.Controls)
+            .Where(c => c.Attribute != null && !string.IsNullOrEmpty(c.Caption) && c.ControlType != "title" && c.ControlType != "label")
+            .GroupBy(c => c.Attribute!)
+            .ToDictionary(g => g.Key, g => g.First().Caption!);
+        return [.. attributes.Select(a => captions.GetValueOrDefault(a, a)).Distinct()];
     }
 
     // <minimum>/<maximum>/<increment> can be authored as either an int or a double literal in

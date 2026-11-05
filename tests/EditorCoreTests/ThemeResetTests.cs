@@ -5,8 +5,9 @@ using QuestViva.EditorCore;
 namespace QuestViva.EditorCoreTests;
 
 // Choosing a theme on the game's Appearance tab (a dropdowntypes control with <resetoverrides/>)
-// clears the game's own value for anything a theme sets, so the new theme isn't hidden by options
-// the author chose under the old one. It's one undo step, and other type dropdowns don't do it.
+// clears the game's own value for anything a theme sets and the rest of the look, so the new theme
+// isn't hidden by options the author chose under the old one; choosing the same theme again (its
+// Reset button) just clears them. It's one undo step, and other type dropdowns don't do it.
 [TestClass]
 public class ThemeResetTests
 {
@@ -38,25 +39,54 @@ public class ThemeResetTests
     }
 
     [TestMethod]
-    public void ChoosingATheme_ClearsWhatAnyThemeSets()
+    public void ChoosingATheme_ClearsWhatAnyThemeSets_AndTheRestOfTheLook()
     {
         var game = Data("game");
         game.SetAttribute("defaultbackground", "Pink");
         game.SetAttribute("defaultfont", "Arial");
         // Set by Novella and Typewriter, not Retro: still cleared, so Retro's look is the whole of it
         game.SetAttribute("customwidth", 800);
-        // Not set by any theme
+        // Set by no theme, but part of the look (the Theme control's <resetattributes>)
+        game.SetAttribute("marginscolour", "Green");
         game.SetAttribute("accentcolour", "Purple");
+        // The author's own content, kept
+        game.SetAttribute("backgroundimage", "sky.png");
+        game.SetAttribute("underlinehyperlinks", false);
 
         var result = _controller.SetDropdownType("game", ThemeControl(), "theme_retro");
 
         Assert.IsTrue(result.Valid);
-        CollectionAssert.AreEquivalent(new[] { "defaultbackground", "defaultfont", "customwidth" }, result.ResetAttributes);
+        CollectionAssert.AreEquivalent(
+            new[] { "defaultbackground", "defaultfont", "customwidth", "marginscolour", "accentcolour" },
+            result.ResetAttributes);
         Assert.IsTrue(_controller.DoesElementInheritType("game", "theme_retro"));
         Assert.AreEqual("Black", Data("game").GetAttribute("defaultbackground"));
         Assert.AreEqual("'Lucida Console', Monaco, monospace", Data("game").GetAttribute("defaultfont"));
         Assert.AreEqual(950, Data("game").GetAttribute("customwidth"));
-        Assert.AreEqual("Purple", Data("game").GetAttribute("accentcolour"));
+        Assert.IsNull(Data("game").GetAttribute("marginscolour"));
+        Assert.AreEqual("sky.png", Data("game").GetAttribute("backgroundimage"));
+        Assert.AreEqual(false, Data("game").GetAttribute("underlinehyperlinks"));
+    }
+
+    [TestMethod]
+    public async Task Reset_ClearsTheOverridesAndKeepsTheTheme()
+    {
+        _controller.SetDropdownType("game", ThemeControl(), "theme_retro");
+        Data("game").SetAttribute("defaultforeground", "Lime");
+        Data("game").SetAttribute("marginscolour", "Green");
+        CollectionAssert.AreEquivalent(new[] { "defaultforeground", "marginscolour" },
+            _controller.GetDropdownTypeOverrides("game", ThemeControl()));
+
+        var result = _controller.SetDropdownType("game", ThemeControl(), "theme_retro");
+
+        CollectionAssert.AreEquivalent(new[] { "defaultforeground", "marginscolour" }, result.ResetAttributes);
+        Assert.IsTrue(_controller.DoesElementInheritType("game", "theme_retro"));
+        Assert.AreEqual("White", Data("game").GetAttribute("defaultforeground"));
+        Assert.AreEqual(0, _controller.GetDropdownTypeOverrides("game", ThemeControl()).Count);
+
+        await _controller.Undo();
+        Assert.AreEqual("Lime", Data("game").GetAttribute("defaultforeground"));
+        Assert.IsTrue(_controller.DoesElementInheritType("game", "theme_retro"));
     }
 
     [TestMethod]
@@ -110,6 +140,7 @@ public class ThemeResetTests
         Assert.IsTrue(result.Valid);
         Assert.AreEqual(0, result.ResetAttributes.Count);
         Assert.AreEqual("it", Data("thing").GetAttribute("gender"));
+        Assert.AreEqual(0, _controller.GetDropdownTypeOverrides("thing", setupType).Count);
     }
 
     [TestMethod]
