@@ -195,10 +195,9 @@
     <control>
       <controltype>expression</controltype>
       <simple>colour</simple>
-      <simpleeditor>dropdown</simpleeditor>
+      <simpleeditor>colour</simpleeditor>
       <attribute>0</attribute>
       <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-      <freetext/>
     </control>
   </editor>
 
@@ -217,10 +216,9 @@
     <control>
       <controltype>expression</controltype>
       <simple>colour</simple>
-      <simpleeditor>dropdown</simpleeditor>
+      <simpleeditor>colour</simpleeditor>
       <attribute>0</attribute>
       <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-      <freetext/>
     </control>
   </editor>
 

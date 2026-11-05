@@ -102,10 +102,9 @@
     <control>
       <controltype>expression</controltype>
       <simple>colour</simple>
-      <simpleeditor>dropdown</simpleeditor>
+      <simpleeditor>colour</simpleeditor>
       <attribute>4</attribute>
       <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-      <freetext/>
     </control>
 
     <control>
@@ -199,10 +198,9 @@
     <control>
       <controltype>expression</controltype>
       <simple>colour</simple>
-      <simpleeditor>dropdown</simpleeditor>
+      <simpleeditor>colour</simpleeditor>
       <attribute>5</attribute>
       <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-      <freetext/>
     </control>
 
     <control>
@@ -286,10 +284,9 @@
     <control>
       <controltype>expression</controltype>
       <simple>colour</simple>
-      <simpleeditor>dropdown</simpleeditor>
+      <simpleeditor>colour</simpleeditor>
       <attribute>4</attribute>
       <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-      <freetext/>
     </control>
 
   </editor>
@@ -417,10 +414,9 @@
     <control>
       <controltype>expression</controltype>
       <simple>colour</simple>
-      <simpleeditor>dropdown</simpleeditor>
+      <simpleeditor>colour</simpleeditor>
       <attribute>6</attribute>
       <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-      <freetext/>
     </control>
   </editor>
 
@@ -487,10 +483,9 @@
     <control>
       <controltype>expression</controltype>
       <simple>colour</simple>
-      <simpleeditor>dropdown</simpleeditor>
+      <simpleeditor>colour</simpleeditor>
       <attribute>1</attribute>
       <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-      <freetext/>
     </control>
 
     <control>
@@ -501,10 +496,9 @@
     <control>
       <controltype>expression</controltype>
       <simple>colour</simple>
-      <simpleeditor>dropdown</simpleeditor>
+      <simpleeditor>colour</simpleeditor>
       <attribute>2</attribute>
       <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-      <freetext/>
     </control>
 
     <control>

@@ -1,8 +1,9 @@
 <script lang="ts">
     import type { ControlOption } from "#lib/types.js";
     import { t } from "#lib/i18n/index.js";
+    import type { Snippet } from "svelte";
 
-    let { value, options, onchange, oninput, onEnter, strict = false, class: className = "", wrapperClass = "", style = "" }: {
+    let { value, options, onchange, oninput, onEnter, strict = false, class: className = "", wrapperClass = "", style = "", placeholder, optionPrefix, ariaLabel, title }: {
         value: string;
         options: ControlOption[];
         // Only commit typed text that names one of the options (e.g. an object reference);
@@ -27,6 +28,12 @@
         // Inline style for the <input> — e.g. a per-instance pixel width (<width> control hint)
         // that Tailwind's static class scanning can't express since it's only known at runtime.
         style?: string;
+        // Overrides the default placeholder ("(none)" while an empty option's value is current).
+        placeholder?: string;
+        // Rendered before each option's label in the list, e.g. ColourInput's colour swatch.
+        optionPrefix?: Snippet<[ControlOption]>;
+        ariaLabel?: string;
+        title?: string;
     } = $props();
 
     // Unique ID prefix for ARIA references
@@ -239,7 +246,9 @@
         aria-controls="{uid}-listbox"
         class={className}
         {style}
-        placeholder={value === "" && hasEmptyOption ? t("common.none") : ""}
+        placeholder={placeholder ?? (value === "" && hasEmptyOption ? t("common.none") : "")}
+        aria-label={ariaLabel}
+        {title}
         value={inputValue}
         onfocus={handleFocus}
         onclick={handleClick}
@@ -266,11 +275,12 @@
                     role="option"
                     tabindex="-1"
                     aria-selected={opt.value === value}
-                    class="px-2 py-1 text-xs cursor-pointer {i === activeIndex ? "bg-primary-100 dark:bg-primary-900" : "hover:bg-surface-100-900"} {opt.value === value ? "font-medium" : ""}"
+                    class="px-2 py-1 text-xs cursor-pointer {optionPrefix ? "flex items-center gap-1.5" : ""} {i === activeIndex ? "bg-primary-100 dark:bg-primary-900" : "hover:bg-surface-100-900"} {opt.value === value ? "font-medium" : ""}"
                     onmousedown={(e) => { e.preventDefault(); select(opt.value); }}
                     onmouseenter={() => { activeIndex = i; }}
                 >
-                    {opt.label || opt.value || t("common.none")}
+                    <!-- On one line: whitespace between the two would end up in the option's text. -->
+                    {#if optionPrefix}{@render optionPrefix(opt)}{/if}{opt.label || opt.value || t("common.none")}
                 </div>
             {/each}
         </div>

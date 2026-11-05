@@ -28,6 +28,7 @@
     import ChevronDown from "@lucide/svelte/icons/chevron-down";
     import ListPlus from "@lucide/svelte/icons/list-plus";
     import ScriptEditor from "./ScriptEditor.svelte";
+    import ColourInput from "./ColourInput.svelte";
     import CodeEditor from "./CodeEditor.svelte";
     import DropdownMenu from "./DropdownMenu.svelte";
     import type { DropdownMenuItem } from "./DropdownMenu.svelte";
@@ -673,6 +674,15 @@
                 {/each}
             </select>
         {/if}
+    {:else if ctrl.controlType === "colour"}
+        <ColourInput
+            value={attrValue(ctrl.attribute!) ?? ""}
+            options={ctrl.options ?? []}
+            playerTheme={ctrl.playerTheme}
+            onchange={(v) => onDropdownChange(ctrl.attribute!, v, ctrl.nullable)}
+            class="input text-xs py-0.5 px-1.5 w-auto min-w-24"
+            style={widthStyle(ctrl) ?? ""}
+        />
     {:else if ctrl.controlType === "dropdowntypes" && ctrl.options && ctrl.attribute}
         <select
             class="select text-xs py-0.5 px-1.5 w-auto"

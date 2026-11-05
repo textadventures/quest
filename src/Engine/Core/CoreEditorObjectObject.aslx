@@ -33,11 +33,10 @@
     </control>
 
     <control>
-      <controltype>dropdown</controltype>
+      <controltype>colour</controltype>
       <caption>[EditorObjectObjectLinkcolour]</caption>
       <attribute>linkcolour</attribute>
       <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-      <freetext/>
       <onlydisplayif>game.enablehyperlinks</onlydisplayif>
     </control>
 

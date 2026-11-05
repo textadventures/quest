@@ -5,6 +5,7 @@
     import AssetPicker from "./AssetPicker.svelte";
     import CodeEditor from "./CodeEditor.svelte";
     import Combobox from "./Combobox.svelte";
+    import ColourInput from "./ColourInput.svelte";
     import ExpressionInput from "./ExpressionInput.svelte";
     import { t } from "#lib/i18n/index.js";
     import { docsUrlForScriptKeyword } from "#lib/docs-links.js";
@@ -999,9 +1000,16 @@
                         strict
                         class="input text-xs py-0 px-1 max-w-40"
                     />
+                {:else if ctrl.simpleEditor === "colour"}
+                    <ColourInput
+                        value={toSimpleDisplay(ctrl)}
+                        options={ctrl.options ?? []}
+                        onchange={(v) => onSimpleValueChange(scriptIndex, ctrl, v)}
+                        ariaLabel={ctrl.caption ?? undefined}
+                        class="input text-xs py-0 px-1 max-w-40"
+                    />
                 {:else if ctrl.simpleEditor === "dropdown" && ctrl.options && ctrl.freetext}
-                    <!-- <freetext/> - lets the user type a value not in the list, e.g. a
-                         drawing command's colour parameter. -->
+                    <!-- <freetext/> - lets the user type a value not in the list. -->
                     <Combobox
                         value={toSimpleDisplay(ctrl)}
                         options={ctrl.options}

@@ -189,6 +189,7 @@ Every `<control>` needs a `<controltype>`, and almost all of them need a `<capti
 | `number` | an int | `<minimum>`, `<maximum>`, `<increment>` |
 | `numberdouble` | a double | `<minimum>`, `<maximum>`, `<increment>` |
 | `dropdown` | a string chosen from a list | `<validvalues>`, `<freetext/>` |
+| `colour` | a string holding a colour, with a swatch and colour picker | `<validvalues>`, `<playertheme/>` |
 | `dropdowntypes` | which of your types the object inherits | `<types>` (no `<attribute>`) |
 | `objects` | an object, chosen from the objects in the game | |
 | `file` | a file from the game's assets | |
@@ -292,6 +293,17 @@ A plain `dropdown` sets a string attribute from `<validvalues>`. Add `<freetext/
 ```
 
 `<validvalues>` can also be a string dictionary, in which case the key is stored in the attribute and the value is what the author sees.
+
+A `colour` control sets a string attribute to a colour. It shows a swatch of the colour that opens the system colour picker, and a box that takes any HTML colour, suggesting the names in `<validvalues>`. `[HTMLColorNames]` is the list of standard colour names. Leaving it empty means the attribute isn't set, and the author can clear it with the button beside the box. Add `<playertheme/>` if an empty value means the player's own light or dark mode colour, as it does for the game's text, link and page colours, and the empty state says so. Add `<nullable/>` to have clearing it remove the attribute, so it goes back to what the object's types give it:
+
+```xml
+<control>
+  <controltype>colour</controltype>
+  <caption>Spell glow</caption>
+  <attribute>glowcolour</attribute>
+  <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+</control>
+```
 
 A `dropdowntypes` control is different: it sets which type the object inherits, rather than an attribute, so it has no `<attribute>` element. The `<types>` element is a string dictionary of type name to label:
 
@@ -425,7 +437,7 @@ And the two controls - a label reading "Enable timer" and an expression control 
 
 Inside an `<editor>`, a control's `<attribute>` is the **parameter number**, counting from zero, rather than an attribute name. A control with no `<attribute>` (a `label`) is just text.
 
-Most controls in a script command are `expression`, because any parameter can be given an arbitrary expression. `<simple>` is the label for the friendlier alternative offered next to it, and `<simpleeditor>` says what that alternative looks like: `textbox`, `boolean`, `dropdown` (with `<validvalues>`, optionally `<freetext/>`), `number`, `numberdouble` (both with `<minimum>`, `<maximum>` and `<increment>`), `objects` or `file`. With `objects`, `<source>` narrows the list to elements of one kind, such as `timer` above. The other control types that work in a script command are `label`, `textbox`, `richtext`, `checkbox`, `dropdown`, `list`, `scriptdictionary` and `script`.
+Most controls in a script command are `expression`, because any parameter can be given an arbitrary expression. `<simple>` is the label for the friendlier alternative offered next to it, and `<simpleeditor>` says what that alternative looks like: `textbox`, `boolean`, `dropdown` (with `<validvalues>`, optionally `<freetext/>`), `colour` (with `<validvalues>`, as for a `colour` control), `number`, `numberdouble` (both with `<minimum>`, `<maximum>` and `<increment>`), `objects` or `file`. With `objects`, `<source>` narrows the list to elements of one kind, such as `timer` above. The other control types that work in a script command are `label`, `textbox`, `richtext`, `checkbox`, `dropdown`, `list`, `scriptdictionary` and `script`.
 
 ## See also
 

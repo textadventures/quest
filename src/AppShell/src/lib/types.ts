@@ -86,6 +86,9 @@ export interface ControlInfo {
   // Shown only because of <alsodisplayifset>: the element still has a value its other
   // visibility rules would hide, and that value still takes effect in the game.
   leftover?: boolean
+  // <playertheme/> - on a "colour" control: empty means the player's own light or dark theme
+  // colour, so ColourInput labels the empty state that way rather than "not set".
+  playerTheme?: boolean
 }
 
 export interface TabInfo {
