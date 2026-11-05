@@ -39,7 +39,7 @@ A theme only provides starting values. Anything you set yourself on the Appearan
 - **Text colour** - the colour of the game text.
 - **Interface font** - the font of the location bar, panes, menus and buttons. Leave it empty for the player's own.
 
-For all the colour boxes on these tabs, you can choose a colour name from the list or type any HTML colour, such as `#336699`.
+For all the colour boxes on these tabs, click the swatch to pick a colour, choose a colour name from the list, or type any HTML colour, such as `#336699`. The button beside a box clears it. Cleared, the text, link and page colours go back to the theme's own, which for the Quest Standard theme is **Player's own**: the game follows the player's light or dark mode.
 
 ### Colours
 

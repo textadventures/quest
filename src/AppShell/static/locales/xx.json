@@ -432,5 +432,12 @@
     "openPage.missingGameId": "[Néw gámé ís míssíng á gáméíd.]",
     "openPage.failedToLoadNewGame": "[Fáíléd tó lóád néw gámé.]",
     "openPage.newToQuestViva": "[Néw tó Qúést Vívá?]",
-    "openPage.readTheTutorial": "[Réád thé tútóríál]"
+    "openPage.readTheTutorial": "[Réád thé tútóríál]",
+
+    "colourInput.playersOwn": "[Pláyér's ówn]",
+    "colourInput.playersOwnHint": "[Nót sét: fóllóws thé pláyér's líght ór dárk módé]",
+    "colourInput.notSet": "[Nót sét]",
+    "colourInput.notSetHint": "[Nót sét: úsés thé défáúlt]",
+    "colourInput.pick": "[Píck á cólóúr]",
+    "colourInput.clear": "[Cléár cólóúr]"
 }

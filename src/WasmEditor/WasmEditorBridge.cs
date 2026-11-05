@@ -69,7 +69,11 @@ internal record ControlInfo(
     // Shown only because of <alsodisplayifset>: the element still has a value that its other
     // visibility rules would hide, so the frontend warns that it still takes effect and offers
     // to remove it.
-    bool Leftover = false);
+    bool Leftover = false,
+    // <playertheme/> - on a "colour" control: leaving it empty means the player's own light or dark
+    // theme colour (the game's text, link and page colours), so the empty state is labelled
+    // that way rather than as a plain "not set".
+    bool PlayerTheme = false);
 
 // LeftoverFeature is set when the tab is shown only because its feature (a "feature_..."
 // checkbox, on the game when LeftoverFeatureOnGame) is turned off while the element still has
@@ -2366,7 +2370,7 @@ public partial class WasmEditorBridge
                 var simpleEditor = simpleEditorTag ?? (simpleLabel != null ? "textbox" : null);
 
                 List<ControlOption>? options = null;
-                if (simpleEditor == "dropdown")
+                if (simpleEditor is "dropdown" or "colour")
                 {
                     var list = ctrl.GetListString("validvalues");
                     if (list != null)
@@ -4327,7 +4331,7 @@ public partial class WasmEditorBridge
             objectType = ctrl.GetString("objecttype");
             useTemplates = ctrl.GetString("usetemplates");
 
-            if (simpleEditor == "dropdown")
+            if (simpleEditor is "dropdown" or "colour")
             {
                 var list = ctrl.GetListString("validvalues");
                 if (list != null)
@@ -4460,7 +4464,9 @@ public partial class WasmEditorBridge
         var attribute = ctrl.Attribute;
         var freetext = false;
 
-        if (ctrl.ControlType == "dropdown")
+        // A "colour" control (ColourInput.svelte) offers its <validvalues> - the CSS colour names - the
+        // same way, as suggestions alongside its swatch and native picker; free text is implied.
+        if (ctrl.ControlType is "dropdown" or "colour")
         {
             freetext = ctrl.GetBool("freetext");
             var list = ctrl.GetListString("validvalues");
@@ -4594,7 +4600,8 @@ public partial class WasmEditorBridge
             Nullable: nullable,
             Width: ctrl.Width,
             Bold: bold,
-            SameRow: sameRow);
+            SameRow: sameRow,
+            PlayerTheme: ctrl.ControlType == "colour" && ctrl.GetBool("playertheme"));
     }
 
     // <minimum>/<maximum>/<increment> can be authored as either an int or a double literal in

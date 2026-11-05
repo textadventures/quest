@@ -505,5 +505,12 @@
     "openPage.missingGameId": "Al juego nuevo le falta un gameid.",
     "openPage.failedToLoadNewGame": "Error al cargar el juego nuevo.",
     "openPage.newToQuestViva": "¿Nuevo en Quest Viva?",
-    "openPage.readTheTutorial": "Lee el tutorial"
+    "openPage.readTheTutorial": "Lee el tutorial",
+
+    "colourInput.playersOwn": "La del jugador",
+    "colourInput.playersOwnHint": "Sin definir: sigue el modo claro u oscuro del jugador",
+    "colourInput.notSet": "Sin definir",
+    "colourInput.notSetHint": "Sin definir: usa el valor predeterminado",
+    "colourInput.pick": "Elegir un color",
+    "colourInput.clear": "Quitar color"
 }

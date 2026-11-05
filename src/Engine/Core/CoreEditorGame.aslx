@@ -218,11 +218,12 @@
       </control>
 
       <control>
-        <controltype>dropdown</controltype>
+        <controltype>colour</controltype>
         <caption>[EditorGameForeground]</caption>
         <attribute>defaultforeground</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
+        <playertheme/>
+        <nullable/>
       </control>
 
       <control>
@@ -246,11 +247,10 @@
       </control>
 
       <control>
-        <controltype>dropdown</controltype>
+        <controltype>colour</controltype>
         <caption>[EditorGameAccentColour]</caption>
         <attribute>accentcolour</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
         <onlydisplayif>not GetBoolean(game, "classicinterface")</onlydisplayif>
       </control>
 
@@ -261,11 +261,12 @@
       </control>
 
       <control>
-        <controltype>dropdown</controltype>
+        <controltype>colour</controltype>
         <caption>[EditorGameLinkcolour]</caption>
         <attribute>defaultlinkforeground</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
+        <playertheme/>
+        <nullable/>
         <onlydisplayif>game.enablehyperlinks</onlydisplayif>
       </control>
 
@@ -277,19 +278,19 @@
       </control>
 
       <control>
-        <controltype>dropdown</controltype>
+        <controltype>colour</controltype>
         <caption>[EditorGameBackgroundColour]</caption>
         <attribute>defaultbackground</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
+        <playertheme/>
+        <nullable/>
       </control>
 
       <control>
-        <controltype>dropdown</controltype>
+        <controltype>colour</controltype>
         <caption>[EditorGameMarginColour]</caption>
         <attribute>marginscolour</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
         <onlydisplayif>not game.colourblend</onlydisplayif>
       </control>
 
@@ -328,29 +329,26 @@
       </control>
 
       <control>
-        <controltype>dropdown</controltype>
+        <controltype>colour</controltype>
         <caption>[EditorGameColourBlendTop]</caption>
         <attribute>colourblendtop</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
         <onlydisplayif>game.colourblend</onlydisplayif>
       </control>
 
       <control>
-        <controltype>dropdown</controltype>
+        <controltype>colour</controltype>
         <caption>[EditorGameColourBlendBottom]</caption>
         <attribute>colourblendbottom</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
         <onlydisplayif>game.colourblend</onlydisplayif>
       </control>
 
       <control>
-        <controltype>dropdown</controltype>
+        <controltype>colour</controltype>
         <caption>[EditorGameBorderColour]</caption>
         <attribute>bordercolour</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
         <onlydisplayif>game.showborder</onlydisplayif>
       </control>
 
@@ -376,29 +374,26 @@
       </control>
 
       <control>
-        <controltype>dropdown</controltype>
+        <controltype>colour</controltype>
         <caption>[EditorGameLocationColour]</caption>
         <attribute>customlocationcolour</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
         <onlydisplayif>game.showlocation and (not GetBoolean(game, "classicinterface") or not game.classiclocation)</onlydisplayif>
       </control>
 
       <control>
-        <controltype>dropdown</controltype>
+        <controltype>colour</controltype>
         <caption>[EditorGameLocationTextColour]</caption>
         <attribute>customlocationtextcolour</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
         <onlydisplayif>game.showlocation and (not GetBoolean(game, "classicinterface") or not game.classiclocation)</onlydisplayif>
       </control>
 
       <control>
-        <controltype>dropdown</controltype>
+        <controltype>colour</controltype>
         <caption>[EditorGameLocationBorderColour]</caption>
         <attribute>customlocationbordercolour</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
         <onlydisplayif>game.showlocation and (not GetBoolean(game, "classicinterface") or not game.classiclocation)</onlydisplayif>
       </control>
 
@@ -461,41 +456,37 @@
       </control>
 
       <control>
-        <controltype>dropdown</controltype>
+        <controltype>colour</controltype>
         <caption>[EditorGameBackground]</caption>
         <attribute>menubackground</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
         <onlydisplayif>game.enablehyperlinks and false</onlydisplayif>
         <alsodisplayifset>menubackground</alsodisplayifset>
       </control>
 
       <control>
-        <controltype>dropdown</controltype>
+        <controltype>colour</controltype>
         <caption>[EditorGameForeground]</caption>
         <attribute>menuforeground</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
         <onlydisplayif>game.enablehyperlinks and false</onlydisplayif>
         <alsodisplayifset>menuforeground</alsodisplayifset>
       </control>
 
       <control>
-        <controltype>dropdown</controltype>
+        <controltype>colour</controltype>
         <caption>[EditorGameHoverbackground]</caption>
         <attribute>menuhoverbackground</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
         <onlydisplayif>game.enablehyperlinks and false</onlydisplayif>
         <alsodisplayifset>menuhoverbackground</alsodisplayifset>
       </control>
 
       <control>
-        <controltype>dropdown</controltype>
+        <controltype>colour</controltype>
         <caption>[EditorGameHoverforeground]</caption>
         <attribute>menuhoverforeground</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
         <onlydisplayif>game.enablehyperlinks and false</onlydisplayif>
         <alsodisplayifset>menuhoverforeground</alsodisplayifset>
       </control>
@@ -765,11 +756,10 @@
       </control>
 
       <control>
-        <controltype>dropdown</controltype>
+        <controltype>colour</controltype>
         <caption>[EditorGameExitcolour]</caption>
         <attribute>mapexitcolour</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
         <onlydisplayif>game.gridmap</onlydisplayif>
       </control>
 
