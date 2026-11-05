@@ -4,7 +4,7 @@
 // as swatched suggestions (as you type, or from its ▾ button); a "Pick a colour" button beside it
 // that opens the native colour picker (committing #rrggbb); and a distinct empty state ("Player's
 // own" for the game's text colour, "Not set" otherwise), reached with the clear button or by
-// emptying the field. Runs in the light and the dark editor theme, with SCREENSHOT_DIR set saving
+// emptying the field; and the toolbar's Undo and Redo reaching it. Runs in the light and the dark editor theme, with SCREENSHOT_DIR set saving
 // a picture of the Appearance tab in each.
 //
 // Requires the AppShell dev server (5174).
@@ -94,6 +94,20 @@ async function run(colorScheme) {
     if (await text.inputValue() !== '#336699') throw new Error(`picking #336699 left the field at "${await text.inputValue()}"`);
     if (await swatchColour() !== 'rgb(51, 102, 153)') throw new Error(`the swatch for #336699 is ${await swatchColour()}`);
     console.log(`PASS [${colorScheme}]: clicking the Pick a colour button beside the field, or the swatch, opens the native picker, which writes #rrggbb`);
+
+    // The toolbar's Undo and Redo reach it. The stylesheet editor further down the tab used to
+    // take them over for its own (empty) text history, so nothing on the tab could be undone.
+    await page.getByRole('button', { name: 'Undo', exact: true }).click();
+    await page.waitForTimeout(300);
+    if (await text.inputValue() !== 'red' || await swatchColour() !== 'rgb(255, 0, 0)') {
+        throw new Error(`Undo left "${await text.inputValue()}" with a ${await swatchColour()} swatch, not red`);
+    }
+    await page.getByRole('button', { name: 'Redo', exact: true }).click();
+    await page.waitForTimeout(300);
+    if (await text.inputValue() !== '#336699' || await swatchColour() !== 'rgb(51, 102, 153)') {
+        throw new Error(`Redo left "${await text.inputValue()}" with a ${await swatchColour()} swatch, not #336699`);
+    }
+    console.log(`PASS [${colorScheme}]: the toolbar's Undo and Redo change the colour back and forth`);
 
     // Clicking keeps the text, so it can be edited in place, and the swatch follows the typing
     // before it's committed.

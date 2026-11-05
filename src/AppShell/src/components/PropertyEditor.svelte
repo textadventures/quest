@@ -1000,6 +1000,7 @@
             <CodeEditor
                 value={attrValue(ctrl.attribute) ?? ""}
                 language="css"
+                toolbarUndo={false}
                 onChange={(v) => {
                     if (v !== (attrValue(ctrl.attribute!) ?? "")) onTextChange(ctrl.attribute!, ctrl.controlType, v, true);
                 }}
