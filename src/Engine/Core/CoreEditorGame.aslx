@@ -708,6 +708,12 @@
       <liveinterface/>
       <helpurl>/customise/look-and-feel/#the-interface-tab</helpurl>
 
+      <!-- A miniature of the v2 player, wide and on a phone, with the parts this tab turns on where the layout puts them (InterfacePreview.svelte) -->
+      <control>
+        <controltype>interfacepreview</controltype>
+        <onlydisplayif>not GetBoolean(game, "classicinterface")</onlydisplayif>
+      </control>
+
       <control>
         <controltype>title</controltype>
         <caption>[EditorGameOnScreenCaption]</caption>
