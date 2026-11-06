@@ -10,11 +10,7 @@
   <template name="EditorObjectWearableAdjVerbs">Adaptar los verbos de inventario a los estados</template>
   <template name="EditorGBScriptWhenEnteringPage">Programa al entrar a la página</template>
   <template name="EditorGBClearScreenBetweenEachPage">Limpiar pantalla entre cada página</template>
-  <template name="EditorGBColour">Color</template>
-  <template name="EditorGBBackground">Fondo</template>
-  <template name="EditorGBForeground">Color de letra</template>
-  <template name="EditorGBLinkForeground">Color de vínculo</template>
-  <template name="EditorGBColoursHelp">Déjalos vacíos para seguir el modo claro u oscuro del jugador.</template>
+  <template name="EditorGBColoursHelp">El color del borde rodea las opciones de cada página, y el borde cuando se muestra. El color de acento es para los vínculos y las opciones mientras los colores de texto, vínculo y página estén vacíos.</template>
   <template name="EditorGBYouCanChange">Puedes cambiar dónde empieza el juego moviendo "player" a otra página.</template>
   <template name="EditorGBPage">Página</template>
   <template name="EditorGBLanguage">Idioma</template>
@@ -161,7 +157,6 @@
   <template name="EditorGameAnnotations">Anotaciones: agrega una pestaña en los lugares donde los autores pueden poner notas, no visibles a los jugadores</template>
   <template name="EditorGamePrices">Precios: agrega una caja numérica a la pestaña de Inventario para el valor del artículo</template>
   <template name="EditorGameInroomdescriptions">Descripciones en sitio: texto adicional mediante el cual cada objeto contribuye a la descripción del lugar</template>
-  <template name="EditorGameDisplay">Pantalla</template>
   <template name="EditorGameAppearance">Apariencia</template>
   <template name="EditorGameColoursCaption">Colores</template>
   <template name="EditorGameOnScreenCaption">En pantalla</template>
@@ -174,12 +169,10 @@
   <template name="EditorGameMapHelp">Los scripts también pueden dibujar en él con las funciones Grid.</template>
   <template name="EditorGameTheme">Tema</template>
   <template name="EditorGameFont">Fuente</template>
-  <template name="EditorGameThewebfont">La fuente web sobrescribirá la fuente base si hay disponible una conexión a internet, o si el juego se ejecuta en un navegador de internet.</template>
   <template name="EditorGameBasefont">Fuente base</template>
   <template name="EditorGameWebfont">Fuente web</template>
   <template name="EditorGameBrowseavailable">Navegar por fuentes web disponibles</template>
   <template name="EditorGameFontsize">Tamaño de fuente</template>
-  <template name="EditorGameYoucanuseany">Puedes usar cualquier nombre de color HTML válido, incluyendo la forma hexadecimal (#RRGGBB - valores válidos desde #000000 hasta #FFFFFF)</template>
   <template name="EditorGameBackgroundColour">Color de fondo</template>
   <template name="EditorGameBackground2">Imagen de fondo</template>
   <template name="EditorGameSetbackground">Definir transparencia del fondo</template>

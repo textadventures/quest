@@ -18,6 +18,7 @@
   <include ref="CoreParser.aslx"/>
   <include ref="CoreScopes.aslx"/>
   <include ref="CoreTypes.aslx"/>
+  <include ref="CoreThemes.aslx"/>
   <include ref="CoreDescriptions.aslx"/>
   <include ref="CoreTimers.aslx"/>
   <include ref="CoreTurnScripts.aslx"/>

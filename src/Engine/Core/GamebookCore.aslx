@@ -20,6 +20,7 @@
   <include ref="[GamebookEditorLibrary]"/>
   <include ref="CoreOutput.aslx"/>
   <include ref="CoreEffects.aslx"/>
+  <include ref="CoreThemes.aslx"/>
   <include ref="GamebookCoreEditor.aslx"/>
 
   <!-- Baseline default so game.languageid resolves even for a game whose own
@@ -174,6 +175,9 @@
     // editor's defaults, so a gamebook that hasn't follows the UI's light or dark colours.
     AddMenuTokens (tokens)
     InitTextDefaults (tokens)
+    // The margin and border colours (the border colour also outlines the page's choices), with
+    // their dark versions
+    AddSurfaceTokens (tokens, HasDarkColours())
     JS.QuestUI.setTokens (tokens)
     if (not game.showborder) {
       JS.QuestUI.setVisible ("border", false)

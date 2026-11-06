@@ -288,6 +288,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-appshell-appearance-preview.mjs http://localhost:5174
         working-directory: tests/e2e
+      - run: node verify-appshell-gamebook-appearance.mjs http://localhost:5174
+        working-directory: tests/e2e
       - run: node verify-appshell-interface-preview.mjs http://localhost:5174
         working-directory: tests/e2e
       - run: node verify-appshell-theme-reset.mjs http://localhost:5174

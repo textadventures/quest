@@ -288,6 +288,10 @@
         <EmbeddedResource Include="Core\CoreEffects.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </EmbeddedResource>
+        <None Remove="Core\CoreThemes.aslx" />
+        <EmbeddedResource Include="Core\CoreThemes.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </EmbeddedResource>
         <None Remove="Core\CoreFunctions.aslx" />
         <EmbeddedResource Include="Core\CoreFunctions.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>

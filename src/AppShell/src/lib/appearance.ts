@@ -3,7 +3,7 @@
 // in step with them:
 // - Core's choice of which colours reach the UI: HasOwnColours, HasDarkColours,
 //   HasLightOnlyColours, InitTextDefaults and AddAccentToken (Engine/Core/CoreOutput.aslx), and
-//   InitInterface's other tokens (Core.aslx).
+//   InitInterface's other tokens (Core.aslx, or GamebookCore.aslx for a gamebook).
 // - v2's own colours and how it draws the tokens (WasmPlayer/ui-v2/styles/v2.css), and which
 //   scheme a one-scheme game is drawn in (ui-v2/src/scheme.ts's hasDarkBackground).
 import { toHexColour } from "./colour.js";
@@ -24,6 +24,10 @@ export interface SchemeLook {
     locationBackground: string;
     locationText: string;
     locationBorder: string | null;
+    // The border line, and the outline of a gamebook page's choices
+    border: string;
+    // What a gamebook page's choices sit on
+    surface: string;
 }
 
 // Why a game is shown in one scheme only, whatever the player's choice
@@ -90,6 +94,8 @@ export function computeAppearance(get: (attribute: string) => string | null): Ap
         locationBackground: pick(scheme, "customlocationcolour", "darkcustomlocationcolour") || bg,
         locationText: pick(scheme, "customlocationtextcolour", "darkcustomlocationtextcolour") || text,
         locationBorder: pick(scheme, "customlocationbordercolour", "darkcustomlocationbordercolour") || null,
+        border: pick(scheme, "bordercolour", "darkbordercolour") || `color-mix(in srgb, ${text} 20%, ${bg})`,
+        surface: `color-mix(in srgb, ${text} 5%, ${bg})`,
     });
 
     const light = ownColours

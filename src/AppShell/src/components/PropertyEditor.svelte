@@ -1254,7 +1254,7 @@
                 />
             </div>
         {:else if ctrl.controlType === "appearancepreview"}
-            <AppearancePreview get={attrValue} />
+            <AppearancePreview get={attrValue} gamebook={$isGamebook} />
         {:else if ctrl.controlType === "interfacepreview"}
             <InterfacePreview get={attrValue} onselect={focusAttribute} />
         {:else if ctrl.controlType === "exits" && $selectedKey}

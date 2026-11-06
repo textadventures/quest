@@ -296,24 +296,29 @@
     </tab>
 
     <tab>
-      <caption>[EditorGameDisplay]</caption>
+      <caption>[EditorGameAppearance]</caption>
+      <!-- How the gamebook looks: the text adventure Appearance tab (CoreEditorGame.aslx) without
+           what a gamebook doesn't show (location bar, command bar, panes, verb menus), and with its
+           layout, which gamebooks have no Interface tab for. -->
       <!-- Changes show in a running Preview straight away (InitInterface reads these) -->
       <liveinterface/>
+      <helpurl>/tutorial/gamebook/publishing/#the-look-of-it</helpurl>
 
       <control>
-        <controltype>checkbox</controltype>
-        <attribute>clearlastpage</attribute>
-        <caption>[EditorGBClearScreenBetweenEachPage]</caption>
+        <caption>[EditorGameTheme]</caption>
+        <controltype>dropdowntypes</controltype>
+        <!-- Every theme but the retired ones, which no gamebook has ever had. A theme's width (Novella's and Typewriter's 650 pixels) replaces the gamebook's 700. -->
+        <types>*=[TypeThemeStandard]; theme_parchment=[TypeThemeParchment]; theme_noir=[TypeThemeNoir]; theme_storybook=[TypeThemeStorybook]; theme_novella=[TypeThemeNovella]; theme_typewriter=[TypeThemeTypewriter]; theme_midnight=[TypeThemeMidnight]; theme_terminal=[TypeThemeTerminal]</types>
+        <!-- Each theme is drawn as a little page in its colours and font (ThemePicker.svelte) -->
+        <previews/>
+        <!-- Choosing a theme, or its Reset button, clears the game's own value for anything a theme sets (the width and padding too) and for the colours below, so the theme isn't hidden by options chosen under another. -->
+        <resetoverrides/>
+        <resetattributes type="simplestringlist">defaultfont;defaultwebfont;defaultfontsize;defaultforeground;accentcolour;defaultlinkforeground;defaultbackground;darkbackground;darkforeground;darklinkforeground;darkaccentcolour;marginscolour;darkmarginscolour;bordercolour;darkbordercolour</resetattributes>
       </control>
 
       <control>
         <controltype>title</controltype>
         <caption>[EditorGameFont]</caption>
-      </control>
-
-      <control>
-        <controltype>label</controltype>
-        <caption>[EditorGameThewebfont]</caption>
       </control>
 
       <control>
@@ -334,6 +339,11 @@
 
       <control>
         <controltype>label</controltype>
+        <caption>[EditorGameWebfontHelp]</caption>
+      </control>
+
+      <control>
+        <controltype>label</controltype>
         <caption>[EditorGameBrowseavailable]</caption>
         <href>https://fonts.google.com/</href>
       </control>
@@ -346,7 +356,122 @@
 
       <control>
         <controltype>title</controltype>
-        <caption>[EditorGBColour]</caption>
+        <caption>[EditorGameColoursCaption]</caption>
+      </control>
+
+      <!-- Sample text and choices in the game's font and colours, as the v2 player shows them in light mode and dark mode (AppearancePreview.svelte) -->
+      <control>
+        <controltype>appearancepreview</controltype>
+      </control>
+
+      <!-- Page, text, link, accent, margin and border colours: each light one names its dark mode one (<darkattribute>), so the editor shows them as one table with Light and Dark columns. -->
+      <control>
+        <controltype>colour</controltype>
+        <darkattribute>darkbackground</darkattribute>
+        <caption>[EditorGameBackgroundColour]</caption>
+        <attribute>defaultbackground</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <playertheme/>
+        <nullable/>
+      </control>
+
+      <control>
+        <controltype>colour</controltype>
+        <caption>[EditorGameDarkBackgroundColour]</caption>
+        <attribute>darkbackground</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <nullable/>
+      </control>
+
+      <control>
+        <controltype>colour</controltype>
+        <darkattribute>darkforeground</darkattribute>
+        <caption>[EditorGameForeground]</caption>
+        <attribute>defaultforeground</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <playertheme/>
+        <nullable/>
+      </control>
+
+      <control>
+        <controltype>colour</controltype>
+        <caption>[EditorGameDarkForeground]</caption>
+        <attribute>darkforeground</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <playertheme/>
+        <nullable/>
+        <onlydisplayif>HasString(game, "darkbackground")</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>colour</controltype>
+        <darkattribute>darklinkforeground</darkattribute>
+        <caption>[EditorGameLinkcolour]</caption>
+        <attribute>defaultlinkforeground</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <playertheme/>
+        <nullable/>
+      </control>
+
+      <control>
+        <controltype>colour</controltype>
+        <caption>[EditorGameDarkLinkcolour]</caption>
+        <attribute>darklinkforeground</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <playertheme/>
+        <nullable/>
+        <onlydisplayif>HasString(game, "darkbackground")</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>colour</controltype>
+        <darkattribute>darkaccentcolour</darkattribute>
+        <caption>[EditorGameAccentColour]</caption>
+        <attribute>accentcolour</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+      </control>
+
+      <control>
+        <controltype>colour</controltype>
+        <caption>[EditorGameDarkAccentColour]</caption>
+        <attribute>darkaccentcolour</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <nullable/>
+        <onlydisplayif>HasString(game, "darkbackground")</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>colour</controltype>
+        <darkattribute>darkmarginscolour</darkattribute>
+        <caption>[EditorGameMarginColour]</caption>
+        <attribute>marginscolour</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+      </control>
+
+      <control>
+        <controltype>colour</controltype>
+        <caption>[EditorGameDarkMarginColour]</caption>
+        <attribute>darkmarginscolour</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <nullable/>
+        <onlydisplayif>HasString(game, "darkbackground")</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>colour</controltype>
+        <darkattribute>darkbordercolour</darkattribute>
+        <caption>[EditorGameBorderColour]</caption>
+        <attribute>bordercolour</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+      </control>
+
+      <control>
+        <controltype>colour</controltype>
+        <caption>[EditorGameDarkBorderColour]</caption>
+        <attribute>darkbordercolour</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <nullable/>
+        <onlydisplayif>HasString(game, "darkbackground")</onlydisplayif>
       </control>
 
       <control>
@@ -356,36 +481,19 @@
 
       <control>
         <controltype>label</controltype>
-        <caption>[EditorGameYoucanuseany]</caption>
-      </control>
-      <control>
-        <controltype>colour</controltype>
-        <caption>[EditorGBBackground]</caption>
-        <attribute>defaultbackground</attribute>
-        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <playertheme/>
-        <nullable/>
-      </control>
-      <control>
-        <controltype>colour</controltype>
-        <caption>[EditorGBForeground]</caption>
-        <attribute>defaultforeground</attribute>
-        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <playertheme/>
-        <nullable/>
-      </control>
-      <control>
-        <controltype>colour</controltype>
-        <caption>[EditorGBLinkForeground]</caption>
-        <attribute>defaultlinkforeground</attribute>
-        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <playertheme/>
-        <nullable/>
+        <caption>[EditorGameLightDarkHelp]</caption>
+        <href>/customise/look-and-feel/#light-and-dark</href>
       </control>
 
       <control>
         <controltype>title</controltype>
         <caption>[EditorGameLayout]</caption>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <attribute>clearlastpage</attribute>
+        <caption>[EditorGBClearScreenBetweenEachPage]</caption>
       </control>
 
       <control>
@@ -402,10 +510,12 @@
 
       <control>
         <controltype>number</controltype>
-        <onlydisplayif>game.setcustomwidth</onlydisplayif>
         <attribute>customwidth</attribute>
         <caption>[EditorGameWidth]</caption>
         <minimum>100</minimum>
+        <onlydisplayif>game.setcustomwidth</onlydisplayif>
+        <samerow/>
+        <width>80</width>
       </control>
 
       <control>
@@ -416,34 +526,41 @@
 
       <control>
         <controltype>number</controltype>
-        <onlydisplayif>game.setcustompadding</onlydisplayif>
         <attribute>custompaddingtop</attribute>
         <caption>[EditorGameTop]</caption>
         <minimum>0</minimum>
+        <onlydisplayif>game.setcustompadding</onlydisplayif>
+        <width>64</width>
       </control>
 
       <control>
         <controltype>number</controltype>
-        <onlydisplayif>game.setcustompadding</onlydisplayif>
         <attribute>custompaddingbottom</attribute>
         <caption>[EditorGameBottom]</caption>
         <minimum>0</minimum>
+        <onlydisplayif>game.setcustompadding</onlydisplayif>
+        <samerow/>
+        <width>64</width>
       </control>
 
       <control>
         <controltype>number</controltype>
-        <onlydisplayif>game.setcustompadding</onlydisplayif>
         <attribute>custompaddingleft</attribute>
         <caption>[EditorGameLeft]</caption>
         <minimum>0</minimum>
+        <onlydisplayif>game.setcustompadding</onlydisplayif>
+        <samerow/>
+        <width>64</width>
       </control>
 
       <control>
         <controltype>number</controltype>
-        <onlydisplayif>game.setcustompadding</onlydisplayif>
         <attribute>custompaddingright</attribute>
         <caption>[EditorGameRight]</caption>
         <minimum>0</minimum>
+        <onlydisplayif>game.setcustompadding</onlydisplayif>
+        <samerow/>
+        <width>64</width>
       </control>
     </tab>
 

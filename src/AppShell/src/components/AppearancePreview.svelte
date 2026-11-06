@@ -3,13 +3,15 @@
     // in the game's font and colours, as the v2 player will show it, in light mode and dark mode
     // side by side, or once with the reason when the game looks the same in both. It shows the
     // location bar and the command bar when they're turned on, and links when objects are links.
+    // For a gamebook, it's a page with its choices, drawn as v2's gamebook layout draws them.
     // The colours are worked out in lib/appearance.ts.
     import { computeAppearance, type SchemeLook } from "#lib/appearance.js";
     import { locale, t } from "#lib/i18n/index.js";
 
-    let { get }: {
+    let { get, gamebook = false }: {
         // The game's value for an attribute, its own or its theme's
         get: (attribute: string) => string | null;
+        gamebook?: boolean;
     } = $props();
 
     let look = $derived(computeAppearance(get));
@@ -51,37 +53,52 @@
                 style:font-family={look.font}
                 style:font-size="{look.fontSizePt}pt"
             >
-                {#if showLocation}
-                    <div
-                        class="appearance-location"
-                        style:background={scheme.locationBackground}
-                        style:color={scheme.locationText}
-                        style:font-family={uiFont}
-                        style:border-bottom={scheme.locationBorder ? `1px solid ${scheme.locationBorder}` : `1px solid color-mix(in srgb, ${scheme.text} 10%, ${scheme.background})`}
-                        data-appearance-location
-                    >{t("appearancePreview.room")}</div>
-                {/if}
-                <p class="appearance-text">
-                    {t("appearancePreview.textBefore")}{#if links}<span
-                        class="appearance-link"
-                        style:color={scheme.link}
-                        style:text-decoration={look.underlineLinks ? "underline" : "none"}
-                        data-appearance-link
-                    >{t("appearancePreview.object1")}</span>{:else}{t("appearancePreview.object1")}{/if}{t("appearancePreview.textBetween")}{#if links}<span
-                        class="appearance-link"
-                        style:color={scheme.link}
-                        style:text-decoration={look.underlineLinks ? "underline" : "none"}
-                    >{t("appearancePreview.object2")}</span>{:else}{t("appearancePreview.object2")}{/if}{t("appearancePreview.textAfter")}
-                </p>
-                {#if showCommandBar}
-                    <div
-                        class="appearance-command"
-                        style:border-top="1px solid color-mix(in srgb, {scheme.text} 20%, {scheme.background})"
-                        data-appearance-command
-                    >
-                        <span style:color={scheme.accent} data-appearance-accent>&gt;</span>
-                        <span style:color={scheme.muted}>{placeholder}</span>
+                {#if gamebook}
+                    <p class="appearance-text">{t("appearancePreview.gamebookText")}</p>
+                    <div class="appearance-choices">
+                        {#each [t("appearancePreview.gamebookChoice1"), t("appearancePreview.gamebookChoice2")] as choice, i (i)}
+                            <span
+                                class="appearance-choice"
+                                style:border-color={scheme.border}
+                                style:background={scheme.surface}
+                                style:color={scheme.link}
+                                data-appearance-choice
+                            >{choice}</span>
+                        {/each}
                     </div>
+                {:else}
+                    {#if showLocation}
+                        <div
+                            class="appearance-location"
+                            style:background={scheme.locationBackground}
+                            style:color={scheme.locationText}
+                            style:font-family={uiFont}
+                            style:border-bottom={scheme.locationBorder ? `1px solid ${scheme.locationBorder}` : `1px solid color-mix(in srgb, ${scheme.text} 10%, ${scheme.background})`}
+                            data-appearance-location
+                        >{t("appearancePreview.room")}</div>
+                    {/if}
+                    <p class="appearance-text">
+                        {t("appearancePreview.textBefore")}{#if links}<span
+                            class="appearance-link"
+                            style:color={scheme.link}
+                            style:text-decoration={look.underlineLinks ? "underline" : "none"}
+                            data-appearance-link
+                        >{t("appearancePreview.object1")}</span>{:else}{t("appearancePreview.object1")}{/if}{t("appearancePreview.textBetween")}{#if links}<span
+                            class="appearance-link"
+                            style:color={scheme.link}
+                            style:text-decoration={look.underlineLinks ? "underline" : "none"}
+                        >{t("appearancePreview.object2")}</span>{:else}{t("appearancePreview.object2")}{/if}{t("appearancePreview.textAfter")}
+                    </p>
+                    {#if showCommandBar}
+                        <div
+                            class="appearance-command"
+                            style:border-top="1px solid color-mix(in srgb, {scheme.text} 20%, {scheme.background})"
+                            data-appearance-command
+                        >
+                            <span style:color={scheme.accent} data-appearance-accent>&gt;</span>
+                            <span style:color={scheme.muted}>{placeholder}</span>
+                        </div>
+                    {/if}
                 {/if}
             </div>
         </div>
@@ -125,6 +142,19 @@
     .appearance-text {
         margin: 0;
         padding: 0.6rem 0.75rem;
+    }
+
+    .appearance-choices {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        padding: 0 0.75rem 0.6rem;
+    }
+
+    .appearance-choice {
+        padding: 0.25rem 0.75rem;
+        border: 1px solid;
+        border-radius: 6px;
     }
 
     .appearance-command {
