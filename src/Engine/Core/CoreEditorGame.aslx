@@ -250,11 +250,6 @@
         <onlydisplayif>not GetBoolean(game, "classicinterface")</onlydisplayif>
       </control>
 
-      <control>
-        <controltype>label</controltype>
-        <caption>[EditorGameColoursHelp]</caption>
-      </control>
-
       <!-- Page, text, link, accent, margin and border colours: each light one names its dark mode one (<darkattribute>), so the editor shows them as one table with Light and Dark columns. The dark controls keep their own captions, visibility and nullable hints, and are left out of the table where they are hidden. -->
       <control>
         <controltype>colour</controltype>
@@ -372,13 +367,14 @@
 
       <control>
         <controltype>label</controltype>
-        <caption>[EditorGameDarkColoursHelp]</caption>
+        <caption>[EditorGameAccentColourHelp]</caption>
         <onlydisplayif>not GetBoolean(game, "classicinterface")</onlydisplayif>
       </control>
 
       <control>
         <controltype>label</controltype>
-        <caption>[EditorGameAccentColourHelp]</caption>
+        <caption>[EditorGameLightDarkHelp]</caption>
+        <href>/customise/look-and-feel/#light-and-dark</href>
         <onlydisplayif>not GetBoolean(game, "classicinterface")</onlydisplayif>
       </control>
 
@@ -571,6 +567,8 @@
         <caption>[EditorGameFontsize]</caption>
         <attribute>menufontsize</attribute>
         <onlydisplayif>game.enablehyperlinks</onlydisplayif>
+        <samerow/>
+        <width>64</width>
       </control>
 
       <control>
@@ -635,6 +633,8 @@
         <minimum>100</minimum>
         <onlydisplayif>game.setcustomwidth</onlydisplayif>
         <advanced/>
+        <samerow/>
+        <width>80</width>
       </control>
 
       <control>
@@ -651,6 +651,7 @@
         <minimum>0</minimum>
         <onlydisplayif>game.setcustompadding</onlydisplayif>
         <advanced/>
+        <width>64</width>
       </control>
 
       <control>
@@ -660,6 +661,8 @@
         <minimum>0</minimum>
         <onlydisplayif>game.setcustompadding</onlydisplayif>
         <advanced/>
+        <samerow/>
+        <width>64</width>
       </control>
 
       <control>
@@ -669,6 +672,8 @@
         <minimum>0</minimum>
         <onlydisplayif>game.setcustompadding</onlydisplayif>
         <advanced/>
+        <samerow/>
+        <width>64</width>
       </control>
 
       <control>
@@ -678,6 +683,8 @@
         <minimum>0</minimum>
         <onlydisplayif>game.setcustompadding</onlydisplayif>
         <advanced/>
+        <samerow/>
+        <width>64</width>
       </control>
 
       <control>

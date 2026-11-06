@@ -8,10 +8,45 @@
     import { computeLayout, type PaneId } from "#lib/layout.js";
     import { t } from "#lib/i18n/index.js";
 
-    let { get }: {
+    let { get, onselect }: {
         // The game's value for an attribute, its own or its theme's
         get: (attribute: string) => string | null;
+        // Clicking a part: the attribute of the option on this tab that controls it
+        onselect?: (attribute: string) => void;
     } = $props();
+
+    // The option each part of the miniature comes from (a pointer shortcut: the options are all
+    // right below, for the keyboard too)
+    const PART_OPTIONS: Record<string, string> = {
+        location: "showlocation",
+        picture: "feature_pictureframe",
+        map: "gridmap",
+        command: "showcommandbar",
+        exits: "turnoffcompass",
+        panes: "layoutpreset",
+        drawer: "narrowlayoutpreset",
+    };
+    const PANE_OPTIONS: Record<string, string> = {
+        map: "mapposition",
+        inventory: "turnoffinventory",
+        objects: "turnoffplacesandobjects",
+        status: "statusandcompassattop",
+        compass: "turnoffcompass",
+        commands: "commandpane",
+        customstatus: "customstatuspane",
+    };
+
+    function onclick(e: MouseEvent) {
+        if (!onselect) return;
+        const target = e.target as HTMLElement;
+        const pane = target.closest<HTMLElement>("[data-ip-pane]")?.dataset.ipPane;
+        const part = target.closest<HTMLElement>("[data-ip-part]")?.dataset.ipPart;
+        const phone = target.closest<HTMLElement>("[data-ip-screen]")?.dataset.ipScreen === "phone";
+        const option = pane ? PANE_OPTIONS[pane]
+            : part === "sheet" ? (phone ? "narrowlayoutpreset" : "layoutpreset")
+            : part ? PART_OPTIONS[part] : undefined;
+        if (option) onselect(option);
+    }
 
     let layout = $derived(computeLayout(get));
     let appearance = $derived(computeAppearance(get));
@@ -98,7 +133,8 @@
     </div>
 {/snippet}
 
-<div class="flex flex-col gap-1 px-3 py-1.5" data-interface-preview role="img" aria-label={t("interfacePreview.label", { summary })}>
+<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
+<div class="flex flex-col gap-1 px-3 py-1.5" class:ip-clickable={!!onselect} data-interface-preview role="img" aria-label={t("interfacePreview.label", { summary })} {onclick}>
     <div class="flex flex-wrap items-end gap-4">
         <figure class="ip-figure m-0" data-ip-screen="wide">
             <figcaption class="text-xs font-semibold text-surface-600-400">{t("interfacePreview.wide")}</figcaption>
@@ -120,9 +156,23 @@
             </div>
         </figure>
     </div>
+    {#if onselect}
+        <p class="text-xs text-surface-600-400 italic m-0" aria-hidden="true">{t("interfacePreview.clickHint")}</p>
+    {/if}
 </div>
 
 <style>
+    .ip-clickable :global([data-ip-part]),
+    .ip-clickable :global([data-ip-pane]) {
+        cursor: pointer;
+    }
+
+    .ip-clickable :global([data-ip-part]:hover),
+    .ip-clickable :global([data-ip-pane]:hover) {
+        outline: 1px solid color-mix(in srgb, currentColor 55%, transparent);
+        outline-offset: -1px;
+    }
+
     .ip-figure {
         display: flex;
         flex-direction: column;
@@ -203,6 +253,9 @@
     }
 
     .ip-menu {
+        /* Above the top bar it sits in, so it, not the bar, takes a click */
+        position: relative;
+        z-index: 1;
         width: auto;
         height: auto;
         border: none;

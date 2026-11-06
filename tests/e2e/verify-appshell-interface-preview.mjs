@@ -4,7 +4,8 @@
 // objects, compass) and in a drawer on a phone, with the exits strip; the pane order, hidden and
 // added panes, the bottom bar and no-panes layouts, the phone's own layout, the location bar,
 // command bar, picture frame and map (above the game or in the panes) all follow; it takes the
-// page colour from the Appearance tab; and the classic interface has none.
+// page colour from the Appearance tab; clicking a part goes to its option; and the classic
+// interface has none.
 // With SCREENSHOT_DIR set, it saves pictures of the preview along the way.
 //
 // Requires the AppShell dev server (5174).
@@ -68,6 +69,27 @@ try {
     }
     console.log('PASS: a new game has its panes beside the game, and in a drawer with the exits strip on a phone, and says so');
     await shot('new-game');
+
+    // Clicking a part goes to its option: focused, scrolled to and briefly highlighted
+    const focusedAfterClicking = async (selector) => {
+        await preview.locator(selector).first().click();
+        await page.waitForTimeout(400);
+        return page.evaluate(() => {
+            const el = document.activeElement;
+            const row = el?.closest('[data-control-attribute]');
+            return { attribute: row?.getAttribute('data-control-attribute') ?? null, highlighted: !!row?.classList.contains('control-highlight') };
+        });
+    };
+    for (const [selector, attribute] of [
+        ['[data-ip-screen="wide"] [data-ip-pane="inventory"]', 'turnoffinventory'],
+        ['[data-ip-screen="wide"] [data-ip-part="location"]', 'showlocation'],
+        ['[data-ip-screen="phone"] [data-ip-part="drawer"]', 'narrowlayoutpreset'],
+        ['[data-ip-screen="wide"] [data-ip-part="command"]', 'showcommandbar'],
+    ]) {
+        const focused = await focusedAfterClicking(selector);
+        expectEqual(`what clicking ${selector} focuses`, focused, { attribute, highlighted: true });
+    }
+    console.log('PASS: clicking a part of the preview goes to its option, highlighted');
 
     // The pane order, a hidden pane and an added one
     await checkbox('Put status and compass above the inventory').check();

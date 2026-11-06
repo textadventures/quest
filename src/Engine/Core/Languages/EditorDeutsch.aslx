@@ -167,7 +167,6 @@
   <template name="EditorGameDisplay">Oberfläche</template>
   <template name="EditorGameAppearance">Darstellung</template>
   <template name="EditorGameColoursCaption">Farben</template>
-  <template name="EditorGameColoursHelp">Lass die Text-, Link- und Seitenfarbe leer, damit das Spiel dem hellen oder dunklen Modus des Spielers folgt. Wenn du eine davon setzt, bekommt das Spiel eigene Farben, die auch im dunklen Modus gleich bleiben, außer du wählst auch Farben in der Spalte „Dunkel“. Eine Rand- oder Raumleistenfarbe hält das Spiel immer hell, bis sie auch eine dunkle Version hat.</template>
   <template name="EditorGameOnScreenCaption">Auf dem Bildschirm</template>
   <template name="EditorGameLinksMenusCaption">Links und Menüs</template>
   <template name="EditorGameMenuFont">Schriftart</template>
@@ -185,7 +184,7 @@
   <template name="EditorGameFontsize">Schriftgröße</template>
   <template name="EditorGameYoucanuseany">Du kannst jeden gültigen HTML-Farbnamen verwenden, einschließlich der hexadezimalen Form (#RRGGBB - gültige Werte sind # 000000 bis #FFFFFF)</template>
   <template name="EditorGameBackgroundColour">Spielfeldfarbe</template>
-  <template name="EditorGameBackground2">Hintergrundbild</template>
+  <template name="EditorGameBackground2">Bild für die Seitenränder</template>
   <template name="EditorGameSetbackground">Spielfeldtransparenz aktivieren</template>
   <template name="EditorGameOpacity">Transparenz</template>
   <template name="EditorGameForeground">Textfarbe</template>
@@ -214,13 +213,13 @@
   <template name="EditorGameInterfacefont">Schriftart der Oberfläche</template>
   <template name="EditorGameInterfacefontHelp">Die Schriftart der Raumleiste, der Bereiche und der Schaltflächen. Leer lassen für die des Spielers.</template>
   <template name="EditorGameAccentColour">Akzentfarbe</template>
-  <template name="EditorGameAccentColourHelp">Links, der Kompass und die Eingabeaufforderung werden darin gezeichnet. Leer lassen für die Linkfarbe, wenn du die Farben geändert hast, sonst für die des Spielers. Mit nur einer Akzentfarbe folgt das Spiel weiter dem hellen oder dunklen Modus des Spielers.</template>
-  <template name="EditorGameDarkColoursHelp">Die Spalte „Dunkel“ ist für Spieler, die den dunklen Modus nutzen. Sobald das Spiel eine dunkle Spielfeldfarbe hat, folgt es dem hellen oder dunklen Modus des Spielers, er kann zwischen beiden wechseln, und die anderen dunklen Farben erscheinen. Lass eine davon leer, um die eigene Farbe des dunklen Modus zu verwenden.</template>
+  <template name="EditorGameAccentColourHelp">Die Akzentfarbe ist für Links, den Kompass und die Eingabeaufforderung.</template>
+  <template name="EditorGameLightDarkHelp">So funktionieren der helle und der dunkle Modus</template>
   <template name="EditorGameDarkBackgroundColour">Spielfeldfarbe im dunklen Modus</template>
   <template name="EditorGameDarkForeground">Textfarbe im dunklen Modus</template>
   <template name="EditorGameDarkLinkcolour">Linkfarbe im dunklen Modus</template>
   <template name="EditorGameDarkAccentColour">Akzentfarbe im dunklen Modus</template>
-  <template name="EditorGameDarkMarginColour">Hintergrundfarbe im dunklen Modus</template>
+  <template name="EditorGameDarkMarginColour">Farbe der Seitenränder im dunklen Modus</template>
   <template name="EditorGameDarkBorderColour">Randfarbe im dunklen Modus</template>
   <template name="EditorGameDarkLocationColour">Raumleistenfarbe im dunklen Modus</template>
   <template name="EditorGameDarkLocationTextColour">Raumleisten-Textfarbe im dunklen Modus</template>
@@ -261,7 +260,7 @@
   <template name="EditorGameColourBlend">Farbübergang für den Hintergrund aktivieren</template>
   <template name="EditorGameColourBlendTop">Obere Farbe</template>
   <template name="EditorGameColourBlendBottom">Untere Farbe</template>
-  <template name="EditorGameMarginColour">Hintergrundfarbe</template>
+  <template name="EditorGameMarginColour">Farbe der Seitenränder</template>
   <template name="EditorGameBorderColour">Randfarbe</template>
   <template name="EditorGameShowcommand">Kommandofeld anzeigen</template>
   <template name="EditorGameShowlocation">Raumleiste anzeigen</template>

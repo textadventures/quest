@@ -63,6 +63,9 @@ export interface ControlInfo {
   sourceType?: string | null
   checkboxCaption?: string | null
   isWalkthrough?: boolean
+  // <href> on a "label" control: a link, either a site-relative docs path (e.g.
+  // /howto/world/wearables/), which goes to the docs site this editor build uses (docsUrlForPath),
+  // or an external URL.
   href?: string | null
   newFile?: string | null
   lockedAfterCreate?: boolean

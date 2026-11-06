@@ -210,7 +210,7 @@
     <control>
       <controltype>label</controltype>
       <caption>[EditorObjectWearableInstructionsLink]</caption>
-      <href>https://questviva.com/howto/world/wearables/</href>
+      <href>/howto/world/wearables/</href>
     </control>
 
   </tab>

@@ -29,7 +29,7 @@
     <control>
       <controltype>label</controltype>
       <caption>[EditorObjectWearableInstructionsLink]</caption>
-      <href>https://questviva.com/howto/world/handling-light-and-dark/</href>
+      <href>/howto/world/handling-light-and-dark/</href>
     </control>
 
   </tab>
