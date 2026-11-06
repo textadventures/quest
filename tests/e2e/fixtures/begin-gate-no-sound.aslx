@@ -1,0 +1,27 @@
+<asl version="610">
+
+  <include ref="GamebookCore.aslx"/>
+
+  <!-- A gamebook with no sounds (verify-wasmplayer-begin-gate.mjs). A published game carries its
+       own copy of GamebookCore, whose page-sound line puts "play sound" in the game's text even
+       when no page has a sound; PlayPageSound stands in for it here. -->
+  <game name="BeginGateNoSound">
+  </game>
+
+  <function name="PlayPageSound">
+    play sound (player.parent.sound, false, false)
+  </function>
+
+  <object name="Page1">
+    <object name="player">
+      <inherit name="defaultplayer"/>
+    </object>
+    <description>This is the first page.</description>
+    <options type="simplestringdictionary">Page2 = Turn to page two</options>
+  </object>
+
+  <object name="Page2">
+    <description>This is page two.</description>
+  </object>
+
+</asl>

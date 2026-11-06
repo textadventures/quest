@@ -1,0 +1,29 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- A game with a sound it only plays on a command (verify-wasmplayer-begin-gate.mjs). -->
+  <game name="BeginGateSoundLater">
+    <start type="script">
+      msg ("The game has started.")
+    </start>
+  </game>
+
+  <command name="ring">
+    <pattern>ring</pattern>
+    <script>
+      play sound ("bell.wav", false, false)
+      msg ("Ding.")
+    </script>
+  </command>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="editor_object" />
+      <inherit name="editor_player" />
+    </object>
+  </object>
+
+</asl>

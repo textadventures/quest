@@ -52,6 +52,58 @@ const versioned = (url) => (assetVersionQuery && !url.includes('?') ? url + asse
 
 var _audio = null;
 
+// Browsers refuse to play sound on a page nobody has clicked or typed in yet. Every play() on a
+// media element is watched - Play a sound's, and any a game's own <audio> or JavaScript makes -
+// and one refused that way is kept, then played on the player's first click or keypress: the
+// Begin card's (see beginBehindStartScreen) if the game's start played it, or their first
+// command's if a timer played it later. Without this a synchronous sound would never end, and
+// the game would never resume.
+const blockedMedia = new Set();
+let startupPlays = null; // play() attempts made while the game's start runs, or null after it
+const nativePlay = HTMLMediaElement.prototype.play;
+const nativePause = HTMLMediaElement.prototype.pause;
+HTMLMediaElement.prototype.play = function () {
+    const result = nativePlay.call(this);
+    const refused = Promise.resolve(result).then(() => false, (err) => {
+        if (err?.name !== 'NotAllowedError') return false;
+        blockedMedia.add(this);
+        document.addEventListener('pointerdown', playBlockedMedia, { capture: true, once: true });
+        document.addEventListener('keydown', playBlockedMedia, { capture: true, once: true });
+        return true;
+    });
+    startupPlays?.push(refused);
+    return result;
+};
+HTMLMediaElement.prototype.pause = function () {
+    blockedMedia.delete(this);
+    return nativePause.call(this);
+};
+
+// Game time stands still while the game's start runs behind the start screen, and while Begin is
+// showing, so timers and an intro's pauses start when the player first sees the game, not part
+// way through. Holds the engine's requests to start the clock (requestNextTimerTick) and to pause.
+let heldClockCalls = null; // null while the clock runs
+function whenClockRuns(call) {
+    if (heldClockCalls) heldClockCalls.push(call);
+    else call();
+}
+function holdClock() {
+    heldClockCalls ??= [];
+}
+function releaseClock() {
+    const calls = heldClockCalls ?? [];
+    heldClockCalls = null;
+    for (const call of calls) call();
+}
+
+function playBlockedMedia() {
+    document.removeEventListener('pointerdown', playBlockedMedia, { capture: true });
+    document.removeEventListener('keydown', playBlockedMedia, { capture: true });
+    const media = [...blockedMedia];
+    blockedMedia.clear();
+    for (const element of media) element.play().catch(() => {});
+}
+
 const pendingResources = new Map();
 let editorChannel = null;
 let resourceRoot = null;
@@ -332,7 +384,7 @@ function playSound(url, synchronous, looped) {
         const showCommandBar = playerUi.beginSoundWait();
         _audio.addEventListener('ended', function () { playerUi.endSoundWait(showCommandBar); });
     }
-    _audio.play();
+    _audio.play().catch(() => {});
 }
 
 function stopSound() {
@@ -343,33 +395,13 @@ function stopSound() {
     }
 }
 
-// Chrome (and others) block unmuted audio until the page has "user
-// activation". A click through to this page (e.g. a target=_blank Play
-// button) does transfer that activation across the navigation, but it
-// doesn't reliably survive WasmPlayer's boot sequence (fetching the game,
-// booting the WASM runtime) for a slow-enough load — by the time the
-// game's start logic tries to play a sound, the activation can already be
-// gone, and the browser silently rejects it. Only relevant for games that
-// might play a sound before the player has had any chance to interact with
-// the page themselves (typing a command is itself a fresh activation).
-function activationLikelyGranted() {
-    // Electron's own default autoplay policy is already unrestricted (unlike
-    // stock Chrome's), and ipc/player.ts's player windows set it explicitly —
-    // true regardless of how the window was created (in-place nav, popup, or
-    // a main-process-created window), so the gate below would only ever add
-    // friction there, never actually prevent a blocked sound.
-    if (navigator.userAgent.includes('Electron/')) return true;
-    return !('userActivation' in navigator) || navigator.userActivation.hasBeenActive;
-}
-
 // Attached to the api/Game/{id} fetch below as analytics metadata (see
 // ClientInfo on textadventures.co.uk's ApiController) — mirrors AppShell's
 // home-catalog.ts clientInfoParams(), which does the same for the Catalog and
 // GameDetails calls. This player window runs untrusted game content and
 // deliberately has no preload bridge (see ipc/player.ts), so unlike
 // home-catalog.ts it can't read window.electronApp.platform; Electron and its
-// host OS are instead sniffed from the UA, the same signal
-// activationLikelyGranted() above already relies on.
+// host OS are instead sniffed from the UA.
 function clientInfoParams() {
     const params = new URLSearchParams();
     const isElectron = navigator.userAgent.includes('Electron/');
@@ -386,31 +418,46 @@ function clientInfoParams() {
     return params;
 }
 
-// Shows a "click to begin" prompt in the still-visible start screen and
-// waits for it, so the resulting click is a fresh, same-page activation —
-// but only when it's actually needed (see activationLikelyGranted) and only
-// for games that could plausibly play a sound before the player interacts
-// (see Bridge.GameLikelyPlaysSound). Call before Bridge.Begin() and before
-// the start screen overlay is removed.
-async function maybeGateOnActivation(gameBytes) {
-    if (activationLikelyGranted()) return;
-
-    let usesSound = true;
-    try { usesSound = Bridge.GameLikelyPlaysSound(gameBytes); } catch { /* don't block boot on detection failure */ }
-    if (!usesSound) return;
+// Runs the game's start behind the start screen. If it played a sound the browser refused,
+// because nobody has clicked the page yet, shows a Begin button on the start screen and plays
+// the sound when it's clicked (see blockedMedia) - the moment the player first sees the game.
+// Otherwise the game is revealed straight away. Game time starts then too (see holdClock).
+async function beginBehindStartScreen() {
+    startupPlays = [];
+    holdClock();
+    try {
+        await Bridge.Begin();
+        // An <audio autoplay> the browser refused never calls play(), so try it here.
+        for (const element of document.querySelectorAll('audio[autoplay], video[autoplay]')) {
+            if (element.paused && !element.muted) element.play().catch(() => {});
+        }
+        // A refusal comes as soon as play() is called, but an allowed play() only resolves once
+        // its sound has loaded, so don't wait long.
+        await Promise.race([Promise.all(startupPlays), new Promise(resolve => setTimeout(resolve, 250))]);
+    } catch (err) {
+        releaseClock();
+        throw err;
+    } finally {
+        startupPlays = null;
+    }
+    if (blockedMedia.size === 0) {
+        releaseClock();
+        return;
+    }
 
     const pickers = document.getElementById('qv-pickers');
     const msg = document.getElementById('qv-loading-msg');
     const gate = document.getElementById('qv-clicktobegin');
+    const button = document.getElementById('qv-clicktobegin-btn');
+    if (!gate || !button) return;
     if (pickers) pickers.style.display = 'none';
     if (msg) msg.style.display = 'none';
-    if (gate) gate.style.display = 'flex';
+    gate.style.display = 'flex';
+    button.focus();
 
-    await new Promise(resolve => {
-        document.getElementById('qv-clicktobegin-btn')?.addEventListener('click', resolve, { once: true });
-    });
-
-    if (gate) gate.style.display = 'none';
+    await new Promise(resolve => button.addEventListener('click', resolve, { once: true }));
+    playBlockedMedia();
+    releaseClock();
 }
 
 // Applies a resolved chrome-strings dictionary (see ChromeStrings.Resolve in
@@ -982,7 +1029,7 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
             playerUi.setTurnPending(pending);
             if (!pending) scheduleInterfaceChanges();
         },
-        beginPause: (ms) => playerUi.beginPause(ms),
+        beginPause: (ms) => whenClockRuns(() => playerUi.beginPause(ms)),
         updateLocation: (loc) => playerUi.updateLocation(loc),
         setGameName: (name) => {
             currentGameName = name;
@@ -997,7 +1044,7 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
         updateCompass: (data) => playerUi.updateCompass(data),
         updateObjectLinks: (verbsJson) => playerUi.updateObjectLinks(JSON.parse(verbsJson)),
         gameFinished: () => playerUi.gameFinished(),
-        requestNextTimerTick: (seconds) => playerUi.requestNextTimerTick(seconds),
+        requestNextTimerTick: (seconds) => whenClockRuns(() => playerUi.requestNextTimerTick(seconds)),
         uiShow: (element) => playerUi.uiShow(element),
         uiHide: (element) => playerUi.uiHide(element),
         addExternalScript: (url) => addExternalScript(url),
@@ -1086,13 +1133,6 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
     // boot prompt — see startGame below).
     applyGameLanguage();
 
-    await maybeGateOnActivation(gameBytes);
-
-    // Now that startup has actually succeeded, remove the start screen overlay
-    // to reveal the game UI underneath.
-    bootStartScreenEl?.remove();
-    bootStartScreenEl = null;
-
     WebPlayer.onSaveClick = () => openSavesDialog('manage');
     await WebPlayer.initUI();
     wireDebuggerButton();
@@ -1113,7 +1153,14 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
     // though the loaded game itself might have DebugEnabled true.
     WebPlayer.setCanDebug((isPreview || allowDebug) && Bridge.IsDebugEnabled());
 
-    await Bridge.Begin();
+    // The game's start runs behind the start screen, so a sound it plays can wait for a click
+    // on Begin if the browser won't play it yet.
+    await beginBehindStartScreen();
+
+    // Now that startup has actually succeeded, remove the start screen overlay
+    // to reveal the game UI underneath.
+    bootStartScreenEl?.remove();
+    bootStartScreenEl = null;
 
     // Both require the game to have already started (Begin() run) — see their
     // own doc comments — so they run after Bridge.Begin(), unlike the rest of
@@ -1284,8 +1331,6 @@ async function restartGameCore(saveBytes) {
 
         // The restarted game has a fresh copy of the UI, still in English.
         applyGameLanguage();
-
-        await maybeGateOnActivation(originalGameBytes);
 
         await WebPlayer.initUI();
         wireDebuggerButton();

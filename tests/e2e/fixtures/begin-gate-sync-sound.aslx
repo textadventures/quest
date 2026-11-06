@@ -1,0 +1,24 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- A game whose start plays a sound and waits for it to finish
+       (verify-wasmplayer-begin-gate.mjs). -->
+  <game name="BeginGateSyncSound">
+    <start type="script">
+      msg ("Before the sound.")
+      play sound ("intro.wav", true, false)
+      msg ("After the sound.")
+    </start>
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="editor_object" />
+      <inherit name="editor_player" />
+    </object>
+  </object>
+
+</asl>
