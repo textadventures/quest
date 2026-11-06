@@ -509,7 +509,39 @@
 
     /* The gamebook layout (setLayoutPreset("gamebook")): a page's options are the command links
        in the output section GamebookCore puts them in, drawn as full-width choices. An option
-       that links to a web address is drawn the same way. */
+       that links to a web address is drawn the same way. The page is spaced here, not with blank
+       lines: GamebookCore marks its picture and the option the player chose with classes. Each is
+       a line of its own, ended by a line break, so their margins stay inline-block's. */
+    qv-player[data-qv-gamebook] .qv-block[data-qv-sections] {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-top: 1.5em;
+    }
+
+    /* The option the player chose, echoed between the page they left and the next one. */
+    qv-player[data-qv-gamebook] .qv-gamebook-choice {
+        display: inline-block;
+        margin-block: 1.5em 1em;
+    }
+
+    /* A page's picture and video, above its text. */
+    qv-player[data-qv-gamebook] .qv-gamebook-picture {
+        margin-bottom: 1em;
+        vertical-align: top;
+    }
+
+    qv-player[data-qv-gamebook] .qv-video {
+        margin-bottom: 1em;
+    }
+
+    /* The line breaks between the options, and the blank lines that a gamebook saved by a 6.1
+       beta's GamebookCore writes between them. */
+    qv-player[data-qv-gamebook] .qv-block[data-qv-sections] > br,
+    qv-player[data-qv-gamebook] .qv-block[data-qv-sections] > span:empty {
+        display: none;
+    }
+
     qv-player[data-qv-gamebook] [data-qv-sections] a.commandlink,
     qv-player[data-qv-gamebook] [data-qv-sections] a[href]:not(.cmdlink) {
         display: flex;
