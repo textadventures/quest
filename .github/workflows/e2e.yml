@@ -586,6 +586,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-wasmplayer-begin-gate.mjs http://localhost:5175
         working-directory: tests/e2e
+      - run: node verify-wasmplayer-splash-progress.mjs http://localhost:5175
+        working-directory: tests/e2e
       - run: node verify-wasmplayer-v2-i18n.mjs http://localhost:5175
         working-directory: tests/e2e
 

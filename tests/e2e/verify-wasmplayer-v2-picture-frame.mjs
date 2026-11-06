@@ -75,6 +75,8 @@ try {
         page.on('console', (msg) => {
             if (msg.type() === 'error') errors.push(msg.text());
         });
+        // The player reports how far the game got (GameProgress); nothing to check here.
+        await page.route('**/api/gameprogress/**', (route) => route.fulfill({ status: 204 }));
         await page.route('**/api/game/**', (route) => route.fulfill({
             contentType: 'application/json',
             body: JSON.stringify({ sourceGameUrl: `${baseUrl}/e2e-fixtures/v2-picture-frame-test.aslx`, resourceRoot }),

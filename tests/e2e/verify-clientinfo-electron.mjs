@@ -36,6 +36,8 @@ try {
     // Intercept at the context level so the route is already active before
     // the new player window navigates and fires its api/game/{id} fetch.
     let capturedUrl = null;
+    // The player reports how far the game got (GameProgress); nothing to check here.
+    await app.context().route('**/api/gameprogress/**', (route) => route.fulfill({ status: 204 }));
     await app.context().route('**/api/game/**', async (route) => {
         capturedUrl = route.request().url();
         await route.fulfill({

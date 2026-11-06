@@ -7,6 +7,8 @@ const page = await browser.newPage();
 page.on('pageerror', err => console.log('[pageerror]', err.message));
 
 let capturedUrl = null;
+// The player reports how far the game got (GameProgress); nothing to check here.
+await page.route('**/api/gameprogress/**', (route) => route.fulfill({ status: 204 }));
 await page.route('**/api/game/**', async (route) => {
     capturedUrl = route.request().url();
     await route.fulfill({
