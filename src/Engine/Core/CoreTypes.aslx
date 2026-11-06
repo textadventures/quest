@@ -203,9 +203,6 @@
 
   <type name="theme_novella">
     <setcustompadding/>
-    <showborder type="boolean">false</showborder>
-    <showpanes type="boolean">false</showpanes>
-    <showlocation type="boolean">false</showlocation>
     <setcustomwidth/>
     <customwidth type="int">650</customwidth>
     <setcustompadding/>
@@ -227,9 +224,6 @@
 
   <type name="theme_typewriter">
     <setcustompadding/>
-    <showborder type="boolean">false</showborder>
-    <showpanes type="boolean">false</showpanes>
-    <showlocation type="boolean">false</showlocation>
     <setcustomwidth/>
     <customwidth type="int">650</customwidth>
     <setcustompadding/>

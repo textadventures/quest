@@ -175,7 +175,8 @@ try {
             width: document.querySelector('qv-player').style.getPropertyValue('--qv-output-width'),
             panes: !document.querySelector('[data-qv-part="panes"]').hidden,
         }));
-        check(applied.width === '650px' && !applied.panes, `${theme} applies as tokens and options (650px wide, no panes)`);
+        // A theme is only the look: the panes are the Interface tab's, and stay on
+        check(applied.width === '650px' && applied.panes, `${theme} applies as tokens (650px wide), leaving the panes on`);
         await audit(page, `with ${theme}`);
         await done(page, errors, theme);
     }

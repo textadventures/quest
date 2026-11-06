@@ -27,7 +27,7 @@ The **Theme** is the quickest way to change the look of your game. Each theme is
 | Parchment | Dark brown text on cream, with rust links, in the Literata web font (falling back to Georgia). In dark mode, cream text on deep brown. |
 | Noir | Near-black text on off-white, with deep red links, in the Courier Prime web font (falling back to Courier New). In dark mode, off-white on near-black. |
 | Storybook | Plum text on a soft peach page, with coral links, in the Nunito web font (falling back to Trebuchet MS), slightly larger. In dark mode, pale pink on deep plum. |
-| Novella | A narrow 650-pixel column of text with extra space at the top, like a page of a book. Turns off the panes, the room name in the location bar and the border. |
+| Novella | A narrow 650-pixel column of text with extra space at the top, like a page of a book. For more of a book's feel, turn off the panes, the location bar's room name and the border on the Interface tab. |
 | Typewriter | Novella's layout, in the Special Elite web font (falling back to Courier New). |
 | Midnight | Soft white text on deep navy, with amber links and a plain command bar, in dark mode or not. |
 | Terminal | Green text on black in the VT323 web font (falling back to Lucida Console), with a plain command bar and a `>` prompt, in dark mode or not. |
@@ -37,7 +37,7 @@ Parchment, Noir and Storybook have colours for both light and dark mode, so play
 
 Hot Dog Stand, yellow Comic Sans on red, is no longer offered. A game that already uses it keeps it, and can still see and change it.
 
-A theme only provides starting values. Anything you set yourself on the Appearance or Interface tab wins, so you can pick Novella and then turn the panes back on, or pick Retro and change the page colour.
+A theme is only the look: the fonts, colours, width and spacing on this tab. What's on screen, such as the panes, the location bar and the border, is up to you on the Interface tab, and choosing a theme leaves it as it is. A theme only provides starting values: anything you change on this tab afterwards wins, so you can pick Retro and then change the page colour, for example.
 
 Choosing a different theme clears the look you've set yourself (the fonts and colours on this tab, the command bar and verb menu styles, and anything else a theme sets, such as the width), so the new theme shows as it's meant to. Your background and location bar images, your stylesheet and link underlining are kept. The editor tells you which options it cleared, and **Undo** brings back the old theme with your settings.
 
