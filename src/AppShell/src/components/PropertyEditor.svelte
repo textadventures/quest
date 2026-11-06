@@ -31,6 +31,7 @@
     import ColourInput from "./ColourInput.svelte";
     import ThemePicker from "./ThemePicker.svelte";
     import AppearancePreview from "./AppearancePreview.svelte";
+    import InterfacePreview from "./InterfacePreview.svelte";
     import { CLASSIC_COLOURS, computeAppearance } from "#lib/appearance.js";
     import CodeEditor from "./CodeEditor.svelte";
     import DropdownMenu from "./DropdownMenu.svelte";
@@ -1225,6 +1226,8 @@
         </div>
     {:else if ctrl.controlType === "appearancepreview"}
         <AppearancePreview get={attrValue} />
+    {:else if ctrl.controlType === "interfacepreview"}
+        <InterfacePreview get={attrValue} />
     {:else if ctrl.controlType === "exits" && $selectedKey}
         <ExitsEditor elementKey={$selectedKey} />
     {:else if ctrl.controlType === "verbs" && $selectedKey}

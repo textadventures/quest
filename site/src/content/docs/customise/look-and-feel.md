@@ -114,6 +114,8 @@ Some options from older versions of Quest are no longer offered: page opacity, a
 
 ## The Interface tab
 
+At the top of the tab, a preview shows the player in miniature, on a wide screen and on a phone, in the game's colours. It shows the parts you turn on below, such as the location bar, picture frame, map, command bar and panes, where the layout puts them, with the panes in their order. Hover over a part to see its name. The classic interface has no preview.
+
 ### On screen
 
 - **Show location bar** - the bar across the top of the screen, with the current room's name. It also holds the Save / Load button and, on a phone, the ☰ button, so it stays on screen even if you hide the room name.
