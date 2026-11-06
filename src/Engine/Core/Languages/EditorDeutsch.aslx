@@ -4,11 +4,7 @@
   <template name="EditorObjectWearableAdjVerbs">Die Inventarverben den Zuständen anpassen</template>
   <template name="EditorGBScriptWhenEnteringPage">Skript starten bei Seitenaufruf</template>
   <template name="EditorGBClearScreenBetweenEachPage">Bildschirm zwischen jeder Seite leeren</template>
-  <template name="EditorGBColour">Farbe</template>
-  <template name="EditorGBBackground">Hintergrund</template>
-  <template name="EditorGBForeground">Vordergrund</template>
-  <template name="EditorGBLinkForeground">Link-Vordergrund</template>
-  <template name="EditorGBColoursHelp">Leer lassen, damit das Spielbuch dem hellen oder dunklen Modus des Spielers folgt.</template>
+  <template name="EditorGBColoursHelp">Die Rahmenfarbe umrandet die Auswahlmöglichkeiten jeder Seite und den Rahmen, wenn er angezeigt wird. Die Akzentfarbe gilt für Links und Auswahlmöglichkeiten, solange Text-, Link- und Seitenfarbe leer sind.</template>
   <template name="EditorGBYouCanChange">Du kannst den Anfang des Spiels verändern, indem du das Objekt "player" auf eine andere Seite verschiebst.</template>
   <template name="EditorGBPage">Seite</template>
   <template name="EditorGBLanguage">Sprache</template>
@@ -164,7 +160,6 @@
   <template name="EditorGamePrices">Preise: Ein Nummernfeld zur Angabe eines Artikelpreises wird der Registerkarte "Inventar" hinzugefügt</template>
   <template name="EditorGameInroomdescriptions">Beschreibungen im Raum: Zu jedem Objekt kann eine zusätzliche Beschreibung in den Räumen angezeigt werden</template>
   <template name="EditorGameMultipleCommands">Eingabe mehrerer Kommandos in einem Kommandofeld erlauben (Getrennt durch einen Punkt)</template>
-  <template name="EditorGameDisplay">Oberfläche</template>
   <template name="EditorGameAppearance">Darstellung</template>
   <template name="EditorGameColoursCaption">Farben</template>
   <template name="EditorGameOnScreenCaption">Auf dem Bildschirm</template>
@@ -177,12 +172,10 @@
   <template name="EditorGameMapHelp">Skripte können mit den Grid-Funktionen auch darauf zeichnen.</template>
   <template name="EditorGameTheme">Thema</template>
   <template name="EditorGameFont">Schriftart</template>
-  <template name="EditorGameThewebfont">Die Webschriftart überschreibt die Basisschriftart, wenn eine Internetverbindung verfügbar ist oder das Spiel in einem Webbrowser läuft.</template>
   <template name="EditorGameBasefont">Basisschriftart</template>
   <template name="EditorGameWebfont">Webschriftart</template>
   <template name="EditorGameBrowseavailable">Hier kannst du die verfügbaren Webschriftarten betrachten</template>
   <template name="EditorGameFontsize">Schriftgröße</template>
-  <template name="EditorGameYoucanuseany">Du kannst jeden gültigen HTML-Farbnamen verwenden, einschließlich der hexadezimalen Form (#RRGGBB - gültige Werte sind # 000000 bis #FFFFFF)</template>
   <template name="EditorGameBackgroundColour">Spielfeldfarbe</template>
   <template name="EditorGameBackground2">Bild für die Seitenränder</template>
   <template name="EditorGameSetbackground">Spielfeldtransparenz aktivieren</template>

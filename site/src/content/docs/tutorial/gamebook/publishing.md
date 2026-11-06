@@ -8,15 +8,15 @@ The Lighthouse works. Before anyone else reads it, there are two things worth do
 
 ## The look of it
 
-Select "game" at the top of the tree and open the _Display_ tab. Everything here applies to the whole game.
+Select "game" at the top of the tree and open the _Appearance_ tab. Everything here applies to the whole game, and a running Preview changes as you go.
+
+**Theme.** The quickest way to a look of your own. Each theme is drawn as a little page in its colours and font: Parchment, Noir and Storybook have colours for both light and dark mode, Novella and Typewriter set a narrower column of text, and Midnight and Terminal are dark whichever mode the reader is in. Choosing a theme clears the fonts, colours and layout you've set yourself, so it shows as it's meant to; **Undo** brings them back. Anything you change afterwards wins over the theme. [Look and feel](/customise/look-and-feel/#theme) describes each theme.
 
 **Fonts.** "Base font" is a list of the fonts every device has; "Web font" is a much longer list that the player loads as it needs them. A web font wins on character and loses on speed, and either way the thing that matters is that it stays readable in a long paragraph. Set the size a little larger than you think you need - people read gamebooks on phones.
 
-**Colours.** Background, foreground and link colour. Pick the link colour deliberately: it is the only signal the reader gets about what they can click, so it needs to stand out clearly against the text. Any box takes a colour name or a hex value beginning with `#`.
+**Colours.** A preview at the top shows a page and its choices in your fonts and colours, in light and dark mode. Below it, the page, text, link, accent, margin and border colours have a **Light** and a **Dark** column. Left empty, the game follows the reader's light or dark mode. Pick the link colour deliberately: it is how the choices are drawn, so it needs to stand out clearly against the text. The border colour outlines each choice. Setting your own light colours keeps the game in them whatever the reader's mode, until you give it a dark page colour too; [Light and dark](/customise/look-and-feel/#light-and-dark) explains how that works.
 
-**Clear the screen between pages** decides whether each page replaces the last one or adds to a scroll. Clearing gives you a book, one page at a time. Not clearing gives you a transcript the reader can scroll back through, which is kinder when a page refers to something a few choices ago.
-
-**Layout** - the border, a custom width, and padding. A custom width is worth setting: full-screen text on a wide monitor is a very long line to read. Somewhere around 700 pixels is comfortable.
+**Layout** - whether to clear the screen between pages, the border, a custom width, and padding. **Clear the screen between pages** decides whether each page replaces the last one or adds to a scroll. Clearing gives you a book, one page at a time. Not clearing gives you a transcript the reader can scroll back through, which is kinder when a page refers to something a few choices ago. A custom width is worth keeping: full-screen text on a wide monitor is a very long line to read. A new gamebook starts at 700 pixels.
 
 Set the cover art and description on the _Setup_ tab while you are there. They are what people see before they have read a word - the description is the blurb, so write it like one.
 

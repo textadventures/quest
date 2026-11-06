@@ -56,7 +56,7 @@ public class LiveInterfaceAttributesTests
     }
 
     [TestMethod]
-    public async Task AGamebookHasItsDisplayTab()
+    public async Task AGamebookHasItsAppearanceTab()
     {
         using var controller = await LoadController("Gamebook");
         Assert.IsTrue(controller.GetLiveInterfaceAttributes().ContainsKey("defaultforeground"));

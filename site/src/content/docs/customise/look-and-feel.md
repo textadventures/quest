@@ -13,6 +13,8 @@ Three tabs on the "game" element control how your game looks and how it describe
 
 Everything here can be changed without code. Each option is also an attribute of `game`, so a script can change it during play too, as described [at the end](#changing-the-look-during-the-game). For anything these tabs can't do, see [Styling the player](/customise/css).
 
+A gamebook has one of these tabs, Appearance, with the theme, fonts and colours described here, and its layout: see [Publishing your gamebook](/tutorial/gamebook/publishing/#the-look-of-it).
+
 A tip before you start: text adventures involve a lot of reading. Whatever you choose, check that the text is easy to read, including on a phone.
 
 ## The Appearance tab
@@ -193,6 +195,6 @@ SetFontName ("Georgia, serif")
 msg ("You decide to keep out.")
 ```
 
-`SetWebFontName` loads the font from Google Fonts and switches to it; `SetFontName` switches back to a base font. You can use as many web fonts as you like this way, and switching back to one you've already used doesn't load it again. As with the Display tab's web font, it needs an internet connection, so if the player is offline the text appears in the current base font instead.
+`SetWebFontName` loads the font from Google Fonts and switches to it; `SetFontName` switches back to a base font. You can use as many web fonts as you like this way, and switching back to one you've already used doesn't load it again. As with the Appearance tab's web font, it needs an internet connection, so if the player is offline the text appears in the current base font instead.
 
 For all the functions, see [User interface functions](/reference/functions/user-interface).

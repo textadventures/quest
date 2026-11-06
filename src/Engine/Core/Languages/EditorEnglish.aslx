@@ -3,11 +3,7 @@
   <template name="EditorObjectWearableAdjVerbs">Adapting the inventory verbs to the states</template>
   <template name="EditorGBScriptWhenEnteringPage">Script when entering page</template>
   <template name="EditorGBClearScreenBetweenEachPage">Clear screen between each page</template>
-  <template name="EditorGBColour">Colour</template>
-  <template name="EditorGBBackground">Background</template>
-  <template name="EditorGBForeground">Foreground</template>
-  <template name="EditorGBLinkForeground">Link foreground</template>
-  <template name="EditorGBColoursHelp">Leave these empty to follow the player’s light or dark mode.</template>
+  <template name="EditorGBColoursHelp">The border colour outlines each page’s choices, and the border when it’s shown. The accent colour is for links and choices while the text, link and page colours are empty.</template>
   <template name="EditorGBYouCanChange">You can change where the game starts by moving "player" to a different page.</template>
   <template name="EditorGBPage">Page</template>
   <template name="EditorGBLanguage">Language</template>
@@ -163,7 +159,6 @@
   <template name="EditorGamePrices">Prices: adds a number box to the Inventory tab for the price of the item</template>
   <template name="EditorGameInroomdescriptions">In-room descriptions: additional text which each object contributes to a room description</template>
   <template name="EditorGameMultipleCommands">Allow input of multiple commands in one line separated by "."</template>
-  <template name="EditorGameDisplay">Display</template>
   <template name="EditorGameAppearance">Appearance</template>
   <template name="EditorGameColoursCaption">Colours</template>
   <template name="EditorGameOnScreenCaption">On screen</template>
@@ -176,12 +171,10 @@
   <template name="EditorGameMapHelp">Scripts can also draw on it with the Grid functions.</template>
   <template name="EditorGameTheme">Theme</template>
   <template name="EditorGameFont">Text</template>
-  <template name="EditorGameThewebfont">The web font will override the base font if an internet connection is available, or the game is running in a web browser.</template>
   <template name="EditorGameBasefont">Base font</template>
   <template name="EditorGameWebfont">Web font</template>
   <template name="EditorGameBrowseavailable">Browse available web fonts</template>
   <template name="EditorGameFontsize">Font size</template>
-  <template name="EditorGameYoucanuseany">You can use any valid HTML colour name, including the hexadecimal form (#RRGGBB - valid values #000000 to #FFFFFF)</template>
   <template name="EditorGameBackgroundColour">Page colour</template>
   <template name="EditorGameBackground2">Margin image</template>
   <template name="EditorGameSetbackground">Set page opacity</template>
