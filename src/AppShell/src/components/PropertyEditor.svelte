@@ -280,6 +280,24 @@
         return $selectedData?.attributes[attribute] ?? null;
     }
 
+    // Scrolls to the control for an attribute on this tab, focuses it and briefly highlights it
+    // (the Interface tab preview's parts lead to their options). Opens the Advanced section if
+    // it's in there. Nothing happens if the control isn't shown.
+    let highlighted = $state<string | null>(null);
+    let highlightTimer: ReturnType<typeof setTimeout> | null = null;
+    function focusAttribute(attribute: string) {
+        const row = document.querySelector<HTMLElement>(`[data-control-attribute="${CSS.escape(attribute)}"]`);
+        const target = row?.querySelector<HTMLElement>("input, select, textarea, button");
+        if (!row || !target) return;
+        const details = row.closest("details");
+        if (details && !details.open) details.open = true;
+        target.scrollIntoView({ block: "center", behavior: "smooth" });
+        target.focus({ preventScroll: true });
+        highlighted = attribute;
+        if (highlightTimer) clearTimeout(highlightTimer);
+        highlightTimer = setTimeout(() => { highlighted = null; }, 1500);
+    }
+
     // A <playertheme/> colour left empty is the player's own, until the game has colours of its
     // own: then the game's text, link and page colours fall back to Quest's classic ones. Judged
     // as if this colour were empty, since that's what its empty state describes (a text colour
@@ -1124,9 +1142,10 @@
         {:else if row.controls.length === 1}
             {@render controlRow(row.controls[0])}
         {:else}
-            <div class="flex flex-wrap items-start gap-x-2">
+            <!-- items-center: a checkbox row is shorter than a field's, which has its own padding -->
+            <div class="flex flex-wrap items-center gap-x-2">
                 {#each row.controls as ctrl, ci (ci)}
-                    {@render controlRow(ctrl)}
+                    {@render controlRow(ctrl, ci > 0)}
                 {/each}
             </div>
         {/if}
@@ -1158,7 +1177,13 @@
     <div class="grid grid-cols-[repeat(2,max-content)] @xl:grid-cols-[8rem_repeat(2,max-content)] items-center gap-x-2 gap-y-1 px-3 py-1.5" data-colour-grid={pairs[0].light.attribute}>
         <span class="hidden @xl:block" aria-hidden="true"></span>
         <span class="text-xs font-semibold text-surface-600-400" aria-hidden="true">{t("propertyEditor.colourGridLight")}</span>
-        <span class="text-xs font-semibold text-surface-600-400" aria-hidden="true">{t("propertyEditor.colourGridDark")}</span>
+        <span class="text-xs font-semibold text-surface-600-400" data-colour-grid-dark>
+            <span aria-hidden="true">{t("propertyEditor.colourGridDark")}</span>
+            {#if pairs.some(p => !p.dark)}
+                <!-- Until the game has a dark page colour, the other dark colours aren't shown -->
+                <span class="font-normal italic">· {t("propertyEditor.colourGridDarkHint")}</span>
+            {/if}
+        </span>
         {#each pairs as pair (pair.light.attribute)}
             <span class="col-span-2 @xl:col-span-1 pt-1 @xl:pt-0 text-xs text-surface-600-400">{pair.light.caption ?? pair.light.attribute}:</span>
             {@render colourCell(pair.light)}
@@ -1182,183 +1207,198 @@
     {/if}
 {/snippet}
 
-{#snippet controlRow(ctrl: ControlInfo)}
-    {#if ctrl.leftover && ctrl.attribute !== null}
-        <div class="mx-3 mt-2 flex items-center gap-2 rounded-container border border-warning-300-700 bg-warning-100-900 px-2 py-1.5 text-xs">
-            <span class="flex-1">{t("propertyEditor.leftoverMessage")}</span>
-            <button
-                type="button"
-                class="btn btn-xs preset-filled-warning-500 flex-shrink-0"
-                onclick={() => { if ($selectedKey) recordResult(ctrl.attribute!, removeAttribute($selectedKey, ctrl.attribute!)); }}
-            >{t("propertyEditor.leftoverRemove")}</button>
-        </div>
-    {/if}
-    {#if ctrl.controlType === "attributes"}
-        <AttributesEditor />
-    {:else if ctrl.controlType === "title"}
-        <div class="px-3 pt-3 pb-1 text-xs font-semibold text-surface-600-400 uppercase tracking-wide">
-            {ctrl.caption ?? ""}
-        </div>
-    {:else if ctrl.controlType === "label"}
-        {#if ctrl.href}
-            <a
-                href={ctrl.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                class={"block px-3 py-1 text-xs text-primary-600-400 italic hover:underline" + (ctrl.bold ? " font-semibold" : "")}
-            >{ctrl.caption ?? ""}</a>
-        {:else}
-            <div class={"px-3 py-1 text-xs text-surface-600-400 italic" + (ctrl.bold ? " font-semibold" : "")}>
-                {ctrl.caption ?? ""}
+<!-- follower: a control joining a <samerow/> row after the first, whose caption is as wide as its
+     text rather than the column every row's first caption shares. Each row is tagged with its
+     attribute (data-control-attribute, display: contents) so focusAttribute can find it. -->
+{#snippet controlRow(ctrl: ControlInfo, follower: boolean = false)}
+    <div class="contents" class:control-highlight={highlighted !== null && highlighted === ctrl.attribute} data-control-attribute={ctrl.attribute ?? undefined}>
+        {#if ctrl.leftover && ctrl.attribute !== null}
+            <div class="mx-3 mt-2 flex items-center gap-2 rounded-container border border-warning-300-700 bg-warning-100-900 px-2 py-1.5 text-xs">
+                <span class="flex-1">{t("propertyEditor.leftoverMessage")}</span>
+                <button
+                    type="button"
+                    class="btn btn-xs preset-filled-warning-500 flex-shrink-0"
+                    onclick={() => { if ($selectedKey) recordResult(ctrl.attribute!, removeAttribute($selectedKey, ctrl.attribute!)); }}
+                >{t("propertyEditor.leftoverRemove")}</button>
             </div>
         {/if}
-    {:else if ctrl.controlType === "elementslist" && $selectedKey}
-        <div class="flex flex-col gap-1">
-            {#if ctrl.caption}
-                <span class="text-xs text-surface-600-400 px-3 pt-1.5">{ctrl.caption}</span>
+        {#if ctrl.controlType === "attributes"}
+            <AttributesEditor />
+        {:else if ctrl.controlType === "title"}
+            <div class="px-3 pt-3 pb-1 text-xs font-semibold text-surface-600-400 uppercase tracking-wide">
+                {ctrl.caption ?? ""}
+            </div>
+        {:else if ctrl.controlType === "label"}
+            {#if ctrl.href}
+                <a
+                    href={ctrl.href.startsWith("/") ? docsUrlForPath(ctrl.href) : ctrl.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class={"block px-3 py-1 text-xs text-primary-600-400 italic hover:underline" + (ctrl.bold ? " font-semibold" : "")}
+                >{ctrl.caption ?? ""}</a>
+            {:else}
+                <div class={"px-3 py-1 text-xs text-surface-600-400 italic" + (ctrl.bold ? " font-semibold" : "")}>
+                    {ctrl.caption ?? ""}
+                </div>
             {/if}
-            <ElementsList
-                elementKey={$selectedKey}
-                elementType={ctrl.elementType ?? "object"}
-                objectType={ctrl.objectType}
-                listFilter={ctrl.listFilter}
-            />
-        </div>
-    {:else if ctrl.controlType === "appearancepreview"}
-        <AppearancePreview get={attrValue} />
-    {:else if ctrl.controlType === "interfacepreview"}
-        <InterfacePreview get={attrValue} />
-    {:else if ctrl.controlType === "exits" && $selectedKey}
-        <ExitsEditor elementKey={$selectedKey} />
-    {:else if ctrl.controlType === "verbs" && $selectedKey}
-        <VerbsEditor elementKey={$selectedKey} />
-    {:else if ctrl.attribute !== null}
-        {#if ctrl.controlType === "checkbox"}
-            <label class="flex items-center gap-2 px-3 py-1.5 min-h-8 cursor-pointer">
-                <input
-                    type="checkbox"
-                    class="checkbox flex-shrink-0"
-                    checked={boolValue(ctrl.attribute)}
-                    onchange={(e) => onCheckboxChange(ctrl.attribute!, (e.target as HTMLInputElement).checked, e.target as HTMLInputElement)}
+        {:else if ctrl.controlType === "elementslist" && $selectedKey}
+            <div class="flex flex-col gap-1">
+                {#if ctrl.caption}
+                    <span class="text-xs text-surface-600-400 px-3 pt-1.5">{ctrl.caption}</span>
+                {/if}
+                <ElementsList
+                    elementKey={$selectedKey}
+                    elementType={ctrl.elementType ?? "object"}
+                    objectType={ctrl.objectType}
+                    listFilter={ctrl.listFilter}
                 />
-                <span class="text-xs text-surface-600-400">
-                    {ctrl.caption ?? ctrl.attribute}
-                </span>
-            </label>
-        {:else if ctrl.controlType === "multi" && ctrl.options}
-            {@const label = ctrl.caption ?? ctrl.attribute}
-            {@const selectedType = attrValue(ctrl.attribute!) ?? "null"}
-            {@const subEditorType = ctrl.subEditors?.find(e => e.value === selectedType)?.label ?? selectedType}
-            <div class="flex flex-col gap-1 px-3 py-1.5">
-                <label class="flex items-center gap-2">
-                    <span class="text-xs text-surface-600-400 whitespace-nowrap">{label}:</span>
-                    <select
-                        class="select text-xs py-0.5 px-1.5 w-auto"
-                        value={selectedType}
-                        onchange={(e) => onMultiTypeChange(ctrl.subAttribute!, (e.target as HTMLSelectElement).value)}
-                    >
-                        {#each ctrl.options as opt (opt.value)}
-                            <option value={opt.value}>{opt.label}</option>
-                        {/each}
-                    </select>
+            </div>
+        {:else if ctrl.controlType === "appearancepreview"}
+            <AppearancePreview get={attrValue} />
+        {:else if ctrl.controlType === "interfacepreview"}
+            <InterfacePreview get={attrValue} onselect={focusAttribute} />
+        {:else if ctrl.controlType === "exits" && $selectedKey}
+            <ExitsEditor elementKey={$selectedKey} />
+        {:else if ctrl.controlType === "verbs" && $selectedKey}
+            <VerbsEditor elementKey={$selectedKey} />
+        {:else if ctrl.attribute !== null}
+            {#if ctrl.controlType === "checkbox"}
+                <label class="flex items-center gap-2 px-3 py-1.5 min-h-8 cursor-pointer">
+                    <input
+                        type="checkbox"
+                        class="checkbox flex-shrink-0"
+                        checked={boolValue(ctrl.attribute)}
+                        onchange={(e) => onCheckboxChange(ctrl.attribute!, (e.target as HTMLInputElement).checked, e.target as HTMLInputElement)}
+                    />
+                    <span class="text-xs text-surface-600-400">
+                        {ctrl.caption ?? ctrl.attribute}
+                    </span>
                 </label>
-                {#if subEditorType === "richtext" && ctrl.subAttribute !== null}
-                    {#if ctrl.textProcessorCommands?.length}
-                        <div class="flex flex-col gap-1 w-full">
-                            {@render textProcessorPanel(ctrl.textProcessorCommands, ctrl.subAttribute, "richtext")}
+            {:else if ctrl.controlType === "multi" && ctrl.options}
+                {@const label = ctrl.caption ?? ctrl.attribute}
+                {@const selectedType = attrValue(ctrl.attribute!) ?? "null"}
+                {@const subEditorType = ctrl.subEditors?.find(e => e.value === selectedType)?.label ?? selectedType}
+                <div class="flex flex-col gap-1 px-3 py-1.5">
+                    <label class="flex items-center gap-2">
+                        <span class="text-xs text-surface-600-400 whitespace-nowrap">{label}:</span>
+                        <select
+                            class="select text-xs py-0.5 px-1.5 w-auto"
+                            value={selectedType}
+                            onchange={(e) => onMultiTypeChange(ctrl.subAttribute!, (e.target as HTMLSelectElement).value)}
+                        >
+                            {#each ctrl.options as opt (opt.value)}
+                                <option value={opt.value}>{opt.label}</option>
+                            {/each}
+                        </select>
+                    </label>
+                    {#if subEditorType === "richtext" && ctrl.subAttribute !== null}
+                        {#if ctrl.textProcessorCommands?.length}
+                            <div class="flex flex-col gap-1 w-full">
+                                {@render textProcessorPanel(ctrl.textProcessorCommands, ctrl.subAttribute, "richtext")}
+                                <textarea
+                                    id={textProcessorTextareaId(ctrl.subAttribute)}
+                                    autocapitalize="off"
+                                    aria-label={label}
+                                    class="input text-xs py-0.5 px-1.5 flex-1 min-h-32 resize-y"
+                                    value={attrValue(ctrl.subAttribute) ?? ""}
+                                    onchange={(e) => onTextChange(ctrl.subAttribute!, "richtext", (e.target as HTMLTextAreaElement).value)}
+                                ></textarea>
+                            </div>
+                        {:else}
                             <textarea
-                                id={textProcessorTextareaId(ctrl.subAttribute)}
                                 autocapitalize="off"
                                 aria-label={label}
-                                class="input text-xs py-0.5 px-1.5 flex-1 min-h-32 resize-y"
+                                class="input text-xs py-0.5 px-1.5 w-full min-h-24 resize-y"
                                 value={attrValue(ctrl.subAttribute) ?? ""}
                                 onchange={(e) => onTextChange(ctrl.subAttribute!, "richtext", (e.target as HTMLTextAreaElement).value)}
                             ></textarea>
-                        </div>
-                    {:else}
-                        <textarea
+                        {/if}
+                    {:else if (subEditorType === "textbox" || subEditorType === "string") && ctrl.subAttribute !== null}
+                        <input
+                            type="text"
                             autocapitalize="off"
                             aria-label={label}
-                            class="input text-xs py-0.5 px-1.5 w-full min-h-24 resize-y"
+                            class="input text-xs py-0.5 px-1.5 w-full"
                             value={attrValue(ctrl.subAttribute) ?? ""}
-                            onchange={(e) => onTextChange(ctrl.subAttribute!, "richtext", (e.target as HTMLTextAreaElement).value)}
-                        ></textarea>
-                    {/if}
-                {:else if (subEditorType === "textbox" || subEditorType === "string") && ctrl.subAttribute !== null}
-                    <input
-                        type="text"
-                        autocapitalize="off"
-                        aria-label={label}
-                        class="input text-xs py-0.5 px-1.5 w-full"
-                        value={attrValue(ctrl.subAttribute) ?? ""}
-                        onchange={(e) => onTextChange(ctrl.subAttribute!, "textbox", (e.target as HTMLInputElement).value)}
-                    />
-                {:else if subEditorType === "simplepattern" && ctrl.subAttribute !== null}
-                    <input
-                        type="text"
-                        autocapitalize="off"
-                        aria-label={label}
-                        class="input text-xs py-0.5 px-1.5 w-full"
-                        value={attrValue(ctrl.subAttribute) ?? ""}
-                        onchange={(e) => onPatternTextChange(ctrl.subAttribute!, (e.target as HTMLInputElement).value)}
-                    />
-                {:else if subEditorType === "script" && ctrl.subAttribute !== null && $selectedKey !== null}
-                    <div role="group" aria-label={label} class="contents">
-                        <ScriptEditor elementKey={$selectedKey} attribute={ctrl.subAttribute} />
-                    </div>
-                {:else if subEditorType === "boolean" && ctrl.subAttribute !== null}
-                    <label class="flex items-center gap-2">
+                            onchange={(e) => onTextChange(ctrl.subAttribute!, "textbox", (e.target as HTMLInputElement).value)}
+                        />
+                    {:else if subEditorType === "simplepattern" && ctrl.subAttribute !== null}
                         <input
-                            type="checkbox"
-                            class="checkbox flex-shrink-0"
-                            checked={boolValue(ctrl.subAttribute)}
-                            onchange={(e) => onCheckboxChange(ctrl.subAttribute!, (e.target as HTMLInputElement).checked)}
+                            type="text"
+                            autocapitalize="off"
+                            aria-label={label}
+                            class="input text-xs py-0.5 px-1.5 w-full"
+                            value={attrValue(ctrl.subAttribute) ?? ""}
+                            onchange={(e) => onPatternTextChange(ctrl.subAttribute!, (e.target as HTMLInputElement).value)}
                         />
-                        <span class="text-xs text-surface-600-400">{ctrl.checkboxCaption ?? ctrl.subAttribute}</span>
-                    </label>
-                {:else if subEditorType === "scriptdictionary" && ctrl.subAttribute !== null && $selectedKey !== null}
-                    <div role="group" aria-label={label} class="contents">
-                        <ScriptDictionaryEditor
-                            elementKey={$selectedKey}
-                            attribute={ctrl.subAttribute}
-                            value={attrValue(ctrl.subAttribute)}
-                            keySource={ctrl.source === "object" ? "object" : "text"}
-                        />
-                    </div>
-                {/if}
-            </div>
-        {:else}
-            {@const label = ctrl.caption ?? ctrl.attribute}
-            {@const isMultiline = ctrl.controlType === "richtext" || ctrl.controlType === "script" || ctrl.controlType === "texteditor" || ctrl.controlType === "csseditor" || ctrl.controlType === "list" || ctrl.controlType === "stringdictionary" || ctrl.controlType === "scriptdictionary" || ctrl.controlType === "gamebookoptions" || (ctrl.controlType === "dropdowntypes" && !!ctrl.previews)}
-            {@const stacksBelowLabel = label.length > 20 || isMultiline}
-            {#if stacksBelowLabel}
-                <div class="flex flex-col gap-1 px-3 py-1.5">
-                    <svelte:element
-                        this={isMultiline ? "div" : "label"}
-                        role={isMultiline ? "group" : undefined}
-                        aria-label={isMultiline ? label : undefined}
-                        class="contents"
-                    >
-                        {#if ctrl.controlType !== "texteditor"}
-                            <span class="text-xs text-surface-600-400">{label}:</span>
-                        {/if}
-                        {@render controlOnly(ctrl)}
-                    </svelte:element>
-                    {#if ctrl.attribute && attributeErrors[ctrl.attribute]}
-                        <p class="text-xs text-error-500" role="alert">{attributeErrors[ctrl.attribute]}</p>
+                    {:else if subEditorType === "script" && ctrl.subAttribute !== null && $selectedKey !== null}
+                        <div role="group" aria-label={label} class="contents">
+                            <ScriptEditor elementKey={$selectedKey} attribute={ctrl.subAttribute} />
+                        </div>
+                    {:else if subEditorType === "boolean" && ctrl.subAttribute !== null}
+                        <label class="flex items-center gap-2">
+                            <input
+                                type="checkbox"
+                                class="checkbox flex-shrink-0"
+                                checked={boolValue(ctrl.subAttribute)}
+                                onchange={(e) => onCheckboxChange(ctrl.subAttribute!, (e.target as HTMLInputElement).checked)}
+                            />
+                            <span class="text-xs text-surface-600-400">{ctrl.checkboxCaption ?? ctrl.subAttribute}</span>
+                        </label>
+                    {:else if subEditorType === "scriptdictionary" && ctrl.subAttribute !== null && $selectedKey !== null}
+                        <div role="group" aria-label={label} class="contents">
+                            <ScriptDictionaryEditor
+                                elementKey={$selectedKey}
+                                attribute={ctrl.subAttribute}
+                                value={attrValue(ctrl.subAttribute)}
+                                keySource={ctrl.source === "object" ? "object" : "text"}
+                            />
+                        </div>
                     {/if}
                 </div>
             {:else}
-                <div class="flex flex-col gap-1 px-3 py-1.5">
-                    <label class="flex items-center gap-2 min-h-8 cursor-pointer">
-                        <span class="text-xs text-surface-600-400 w-32 flex-shrink-0">{label}:</span>
-                        {@render controlOnly(ctrl)}
-                    </label>
-                    {#if ctrl.attribute && attributeErrors[ctrl.attribute]}
-                        <p class="text-xs text-error-500" role="alert">{attributeErrors[ctrl.attribute]}</p>
-                    {/if}
-                </div>
+                {@const label = ctrl.caption ?? ctrl.attribute}
+                {@const isMultiline = ctrl.controlType === "richtext" || ctrl.controlType === "script" || ctrl.controlType === "texteditor" || ctrl.controlType === "csseditor" || ctrl.controlType === "list" || ctrl.controlType === "stringdictionary" || ctrl.controlType === "scriptdictionary" || ctrl.controlType === "gamebookoptions" || (ctrl.controlType === "dropdowntypes" && !!ctrl.previews)}
+                {@const stacksBelowLabel = label.length > 20 || isMultiline}
+                {#if stacksBelowLabel}
+                    <div class="flex flex-col gap-1 px-3 py-1.5">
+                        <svelte:element
+                            this={isMultiline ? "div" : "label"}
+                            role={isMultiline ? "group" : undefined}
+                            aria-label={isMultiline ? label : undefined}
+                            class="contents"
+                        >
+                            {#if ctrl.controlType !== "texteditor"}
+                                <span class="text-xs text-surface-600-400">{label}:</span>
+                            {/if}
+                            {@render controlOnly(ctrl)}
+                        </svelte:element>
+                        {#if ctrl.attribute && attributeErrors[ctrl.attribute]}
+                            <p class="text-xs text-error-500" role="alert">{attributeErrors[ctrl.attribute]}</p>
+                        {/if}
+                    </div>
+                {:else}
+                    <div class={"flex flex-col gap-1 py-1.5 " + (follower ? "pr-3" : "px-3")}>
+                        <label class="flex items-center gap-2 min-h-8 cursor-pointer">
+                            <span class={"text-xs text-surface-600-400 flex-shrink-0" + (follower ? " whitespace-nowrap" : " w-32")}>{label}:</span>
+                            {@render controlOnly(ctrl)}
+                        </label>
+                        {#if ctrl.attribute && attributeErrors[ctrl.attribute]}
+                            <p class="text-xs text-error-500" role="alert">{attributeErrors[ctrl.attribute]}</p>
+                        {/if}
+                    </div>
+                {/if}
             {/if}
         {/if}
-    {/if}
+    </div>
 {/snippet}
+
+<style>
+    /* A control focusAttribute led to: its row, briefly tinted (the wrapper is display: contents,
+       so the tint goes on what's in it) */
+    .control-highlight > :global(*) {
+        border-radius: 4px;
+        background-color: color-mix(in oklab, var(--color-primary-500) 15%, transparent);
+        transition: background-color 0.3s;
+    }
+</style>

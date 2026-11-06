@@ -11,9 +11,11 @@
 // Also fails if a <helpurl> sits anywhere other than directly inside a <tab> -
 // only tabs read it, so one on a <control> would be silently dead.
 //
-// <href> on a label control is checked the same way when it points at the
-// documentation site: those are ordinary links in an editor tab, and three of
-// them were still aimed at the retired Quest 5 docs site until 2026-09.
+// <href> on a label control is checked the same way when it's a site-relative
+// docs path: those are ordinary links in an editor tab, which the editor points
+// at the docs site its build uses (questviva.com, or beta.questviva.com for a
+// beta build), so they must not name a docs site themselves. Three of them were
+// still aimed at the retired Quest 5 docs site until 2026-09.
 
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -23,7 +25,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const repoRoot = join(__dirname, "..", "..");
 const coreDir = join(repoRoot, "src", "Engine", "Core");
 const dist = join(repoRoot, "site", "dist");
-const DOCS_SITE = "https://questviva.com";
 
 if (!existsSync(dist)) {
   console.error("site/dist not found - run `npm run build` in site/ first.");
@@ -87,10 +88,14 @@ for (const entry of readdirSync(coreDir, { withFileTypes: true })) {
       problems.push(`${where}: "${url}" points at the retired Quest 5 documentation site`);
       continue;
     }
-    if (!url.startsWith(DOCS_SITE)) continue;
+    if (/^https?:\/\/(beta\.)?questviva\.com/.test(url)) {
+      problems.push(`${where}: "${url}" names a docs site - use a site-relative path (e.g. ${url.replace(/^https?:\/\/(beta\.)?questviva\.com/, "")}), so a beta editor links to the beta docs`);
+      continue;
+    }
+    if (!url.startsWith("/")) continue;
 
     checked++;
-    const [path, anchor] = url.slice(DOCS_SITE.length).split("#");
+    const [path, anchor] = url.split("#");
     if (!path.startsWith("/") || !path.endsWith("/")) {
       problems.push(`${where}: "${url}" should end with a trailing slash, so the link costs no redirect hop`);
       continue;

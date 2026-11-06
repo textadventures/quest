@@ -192,6 +192,18 @@ try {
     if (s.some(x => x.location)) throw new Error('the preview still shows the location bar after it was turned off');
     console.log('PASS: the preview leaves out the location bar when it\'s turned off');
 
+    // The Layout section's padding boxes share one row (<samerow/>), each caption as wide as its text
+    const advanced = page.locator('summary', { hasText: 'Advanced' });
+    if (!(await advanced.evaluate(el => el.closest('details')?.open))) await advanced.click();
+    await page.getByLabel('Set custom padding', { exact: true }).first().check();
+    await settle();
+    const boxes = await Promise.all(['Top', 'Bottom', 'Left', 'Right'].map(caption =>
+        page.locator('label', { hasText: new RegExp(`^\\s*${caption}:`) }).first().locator('input').boundingBox()));
+    if (boxes.some(b => !b) || boxes.some(b => Math.abs(b.y - boxes[0].y) > 1) || boxes.some((b, i) => i > 0 && b.x <= boxes[i - 1].x)) {
+        throw new Error(`the padding boxes aren't on one row: ${JSON.stringify(boxes)}`);
+    }
+    console.log('PASS: the padding boxes share one row');
+
     // The classic interface: no preview.
     await page.getByRole('button', { name: 'Interface', exact: true }).click();
     const summary = page.locator('summary', { hasText: 'Advanced' });

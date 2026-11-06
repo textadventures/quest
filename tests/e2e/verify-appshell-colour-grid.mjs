@@ -47,10 +47,16 @@ try {
 
     await grid.waitFor({ timeout: 5000 }).catch(() => { throw new Error('the Appearance tab has no colour table'); });
     if (await page.locator('[data-colour-grid]').count() !== 2) throw new Error(`there are ${await page.locator('[data-colour-grid]').count()} colour tables, not the game's and the location bar's`);
-    const headers = await grid.locator(':scope > span[aria-hidden="true"]').allInnerTexts();
-    if (JSON.stringify(headers.map(h => h.trim()).filter(Boolean)) !== '["Light","Dark"]') {
+    const headers = [
+        (await grid.locator(':scope > span[aria-hidden="true"]').allInnerTexts()).map(h => h.trim()).filter(Boolean),
+        (await grid.locator('[data-colour-grid-dark] > span[aria-hidden="true"]').innerText()).trim(),
+    ].flat();
+    if (JSON.stringify(headers) !== '["Light","Dark"]') {
         throw new Error(`the table's headings are ${JSON.stringify(headers)}`);
     }
+    // Until there's a dark page colour, the Dark heading says to choose one first
+    const darkHint = () => grid.locator('[data-colour-grid-dark] .italic').count();
+    if (await darkHint() !== 1) throw new Error('with no dark page colour, the Dark heading has no hint to choose one');
     const before = await cells();
     if (JSON.stringify(before) !== JSON.stringify(['defaultbackground', 'darkbackground', 'defaultforeground', 'defaultlinkforeground', 'accentcolour', 'marginscolour', 'bordercolour'])) {
         throw new Error(`with no dark page colour, the table's cells are ${JSON.stringify(before)}`);
@@ -65,6 +71,9 @@ try {
     if (JSON.stringify(locationBefore) !== JSON.stringify(['customlocationcolour', 'customlocationtextcolour', 'customlocationbordercolour'])) {
         throw new Error(`with no dark page colour, the location bar's table has ${JSON.stringify(locationBefore)}`);
     }
+    // The docs link is site-relative in the editor definition, so it goes to this build's docs site
+    const docsLink = await page.getByRole('link', { name: 'How light and dark mode work', exact: true }).getAttribute('href');
+    if (docsLink !== 'https://questviva.com/customise/look-and-feel/#light-and-dark') throw new Error(`the light and dark docs link goes to ${docsLink}`);
     console.log('PASS: page, text, link, accent, margin and border colours share one Light/Dark table, and the location bar\'s have their own, with only the dark page colour until it is set');
 
     if (screenshotDir) await grid.screenshot({ path: join(screenshotDir, 'colour-grid-unset.png') });
@@ -82,6 +91,7 @@ try {
     if (JSON.stringify(locationAfter) !== JSON.stringify(locationExpected)) {
         throw new Error(`with a dark page colour, the location bar's table has ${JSON.stringify(locationAfter)}`);
     }
+    if (await darkHint() !== 0) throw new Error('with a dark page colour, the Dark heading still says to choose one');
     console.log('PASS: setting a dark page colour fills in the other dark colours beside their light ones, the location bar\'s too');
 
     // Each cell writes its own attribute, the dark ones beside the light ones in the same row.

@@ -166,7 +166,6 @@
   <template name="EditorGameDisplay">Display</template>
   <template name="EditorGameAppearance">Appearance</template>
   <template name="EditorGameColoursCaption">Colours</template>
-  <template name="EditorGameColoursHelp">Leave the text, link and page colours empty to follow the player’s light or dark mode. Setting one of them gives the game its own colours, which stay the same in dark mode unless you also choose colours in the Dark column. A margin or location bar colour keeps the game always light until it has a dark version too.</template>
   <template name="EditorGameOnScreenCaption">On screen</template>
   <template name="EditorGameLinksMenusCaption">Links and menus</template>
   <template name="EditorGameMenuFont">Font</template>
@@ -214,8 +213,8 @@
   <template name="EditorGameInterfacefont">Interface font</template>
   <template name="EditorGameInterfacefontHelp">The font of the location bar, panes and buttons. Leave it empty for the player’s own.</template>
   <template name="EditorGameAccentColour">Accent colour</template>
-  <template name="EditorGameAccentColourHelp">Links, the compass and the command prompt are drawn in it. Leave it empty for the link colour if you’ve changed the colours, or the player’s own if you haven’t. An accent on its own still lets the game follow the player’s light or dark mode.</template>
-  <template name="EditorGameDarkColoursHelp">The Dark column is for players who use dark mode. Once the game has a dark page colour, it follows the player’s light or dark mode and they can switch between them, and the other dark colours appear. Leave any of those empty for the player’s own dark mode colour.</template>
+  <template name="EditorGameAccentColourHelp">The accent colour is for links, the compass and the command prompt.</template>
+  <template name="EditorGameLightDarkHelp">How light and dark mode work</template>
   <template name="EditorGameDarkBackgroundColour">Dark mode page colour</template>
   <template name="EditorGameDarkForeground">Dark mode text colour</template>
   <template name="EditorGameDarkLinkcolour">Dark mode link colour</template>
