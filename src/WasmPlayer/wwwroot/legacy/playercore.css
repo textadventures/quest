@@ -317,6 +317,40 @@ div#divOutput iframe {
     box-sizing: border-box;
 }
 
+/* A gamebook page (setLayoutPreset("gamebook")), spaced as GamebookCore's blank lines used to:
+   its picture and video, the options in their output section, and the option the player chose,
+   echoed before the next page. A gamebook published with an older GamebookCore never sets the
+   class, and still writes its own blank lines. */
+body.qv-gamebook #divOutput img.qv-gamebook-picture {
+    margin-bottom: 1em;
+    vertical-align: top;
+}
+
+body.qv-gamebook #divOutput iframe {
+    display: block;
+    margin-bottom: 2em;
+}
+
+body.qv-gamebook #divOutput div[class^="section"] {
+    margin-top: 2em;
+}
+
+body.qv-gamebook #divOutput div[class^="section"] > span {
+    display: inline-block;
+    margin-bottom: 1em;
+}
+
+/* The blank lines a gamebook saved by a 6.1 beta's GamebookCore writes between its options */
+body.qv-gamebook #divOutput div[class^="section"] > span:empty,
+body.qv-gamebook #divOutput div[class^="section"] > span:empty + br {
+    display: none;
+}
+
+body.qv-gamebook #divOutput .qv-gamebook-choice {
+    display: inline-block;
+    margin-block: 2em 1em;
+}
+
 div.jjmenu {
     font-size: 12px;
     position: absolute;

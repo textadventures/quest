@@ -246,8 +246,7 @@
           if (not game.clearlastpage and HasAttribute(player.parent, "options")) {
             if (DictionaryContains(player.parent.options, command)) {
               optiontext = StringDictionaryItem(player.parent.options, command)
-              msg ("<b>" + optiontext + "</b>")
-              msg ("")
+              msg ("<b class=\"qv-gamebook-choice\">" + optiontext + "</b>")
             }
             JS.QuestUI.disableCommandLinks()
           }
@@ -294,22 +293,19 @@
             }
           }
 
+          // The page is spaced by the player's gamebook layout (setLayoutPreset), from the
+          // classes on the picture and the chosen option, and the options' output section.
           if (HasString(player.parent, "picture")) {
             if (LengthOf(player.parent.picture) > 0) {
-              picture (player.parent.picture)
-              msg ("")
+              msg ("<img class=\"qv-gamebook-picture\" src=\"" + GetFileURL(player.parent.picture) + "\" />")
             }
           }
           if (HasString(player.parent, "youtube")) {
             if (LengthOf(player.parent.youtube) > 0) {
               JS.QuestUI.addYouTube(player.parent.youtube)
-              msg ("")
-              msg ("")
             }
           }
           msg (player.parent.description)
-          msg ("")
-          msg ("")
           game.optionsoutputsection = StartNewOutputSection()
           if (TypeOf(player.parent, "options") = "stringdictionary") {
             foreach (key, player.parent.options) {
@@ -325,7 +321,6 @@
                   msg (CommandLink(key, StringDictionaryItem(player.parent.options, key)))
                 }
               }
-              msg ("")
             }
           }
           EndOutputSection (game.optionsoutputsection)

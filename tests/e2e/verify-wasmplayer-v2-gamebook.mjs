@@ -5,7 +5,7 @@
 // - fixtures/v2-gamebook-test.aslx: GamebookCore's setLayoutPreset("gamebook") gives a page in a
 //   centred reading column, with no panes, location, command bar, exits strip or pinned status
 //   bar, and Save/Load still in the top bar. The first page shows its picture, YouTube video and
-//   sound, and its options are full-width choices at least 44px high. Choosing one turns the page:
+//   sound, and its options are full-width choices at least 44px high, a small even gap apart. Choosing one turns the page:
 //   the old choices go, the chosen one is echoed, and keyboard focus moves to the new page's first
 //   choice. A page that asks for input (GamebookCore's GetInput) shows the command bar until it's
 //   answered. A web link option is drawn as a choice too.
@@ -98,7 +98,7 @@ try {
             .filter((a) => a.isConnected && !a.closest('.qv-hiding'))
             .map((a) => {
                 const box = a.getBoundingClientRect();
-                return { text: a.textContent.trim(), height: box.height, width: box.width, display: getComputedStyle(a).display, disabled: a.classList.contains('disabled') };
+                return { text: a.textContent.trim(), top: box.top, bottom: box.bottom, height: box.height, width: box.width, display: getComputedStyle(a).display, disabled: a.classList.contains('disabled') };
             });
         return {
             gamebook: q('qv-player').hasAttribute('data-qv-gamebook'),
@@ -144,6 +144,9 @@ try {
             `its options are the choices (${l.choices.map((c) => c.text).join(', ')})`);
         check(l.choices.every((c) => c.display === 'flex' && c.height >= 44 && Math.abs(c.width - (l.outputWidth - 32)) < 40),
             `each choice is full width and at least 44px high (${Math.round(l.choices[0].width)}×${Math.round(l.choices[0].height)})`);
+        const gaps = l.choices.slice(1).map((c, i) => c.top - l.choices[i].bottom);
+        check(gaps.every((g) => g > 0 && g < 24),
+            `the choices are evenly spaced, without GamebookCore's blank lines between them (${gaps.map(Math.round).join(', ')}px)`);
         await audit(page, 'with a gamebook page');
 
         await choose(page, 'Turn to page two', 'This is page two.');

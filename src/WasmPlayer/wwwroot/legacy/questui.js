@@ -361,6 +361,8 @@
         },
         setLayoutPreset: function (name, narrow) {
             if (name === "gamebook") {
+                // playercore.css spaces a gamebook page from this class.
+                $("body").addClass("qv-gamebook");
                 panesVisible(false);
                 uiHide("#location");
                 uiHide("#txtCommandDiv");
