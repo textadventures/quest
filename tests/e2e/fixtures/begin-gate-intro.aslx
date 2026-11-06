@@ -1,0 +1,26 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- An intro that plays a sound and shows its second line a second later
+       (verify-wasmplayer-begin-gate.mjs). -->
+  <game name="BeginGateIntro">
+    <start type="script">
+      play sound ("intro.wav", false, false)
+      msg ("Intro line one.")
+      SetTimeout (1) {
+        msg ("Intro line two.")
+      }
+    </start>
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="editor_object" />
+      <inherit name="editor_player" />
+    </object>
+  </object>
+
+</asl>

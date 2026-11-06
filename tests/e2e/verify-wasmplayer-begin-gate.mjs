@@ -1,13 +1,24 @@
-// Checks when WasmPlayer asks for a click (the Begin card) before starting a game, so the browser
-// lets it play sound. Both gamebooks are loaded as if from textadventures.co.uk (?id=, with the
-// API mocked), where the player has the game's text but no list of its files, and the page has
-// not been clicked yet (navigator.userActivation is faked, since headless Chromium reports it
-// as already clicked).
+// Checks when WasmPlayer asks for a click (the Begin card) before revealing a game. The game's
+// start runs behind the start screen, and Begin only shows if that played a sound the browser
+// refused, because nobody has clicked the page yet. The sound then plays on the click.
+//
+// Media elements' play() is replaced by a fake that's refused (NotAllowedError) until the page
+// has had a click or keypress, as a browser's autoplay rules do.
 //
 // - fixtures/begin-gate-no-sound.aslx: a gamebook with "play sound" in its text, as every
-//   published gamebook has from its copy of GamebookCore, but no sound file. It starts straight away.
-// - fixtures/v2-gamebook-test.aslx: a page with a sound file. It shows Begin, and starts once
-//   that's clicked.
+//   published gamebook has from its copy of GamebookCore, but no sound. No Begin.
+// - fixtures/begin-gate-sound-later.aslx: a sound played only on a command. No Begin, and the
+//   command's sound plays.
+// - fixtures/v2-gamebook-test.aslx: a first page with a sound, loaded as if from
+//   textadventures.co.uk (?id=, API mocked). Begin shows, and the sound plays on the click.
+// - fixtures/begin-gate-sync-sound.aslx: a start script that waits for its sound to finish.
+//   Begin shows, and the script carries on once the sound has played.
+// - fixtures/begin-gate-autoplay.aslx: a start script that writes an <audio autoplay>. Begin
+//   shows, and the music plays on the click.
+// - fixtures/begin-gate-intro.aslx: an intro whose second line comes from a 1-second timer.
+//   Game time stands still while Begin shows, so the line only comes after the click.
+// - fixtures/begin-gate-v4-wait.asl: a Quest 4 start script that waits for a key. The game is
+//   revealed at the wait rather than left behind the start screen.
 //
 // Requires the WasmPlayer dev server running locally:
 //   node src/WasmPlayer/dev-server.mjs
@@ -24,36 +35,119 @@ let browser;
 try {
     browser = await chromium.launch();
 
-    // Returns 'begin' if the Begin card shows, or 'started' if the game starts without it.
-    async function open(fixture) {
+    // Opens a game and returns 'begin' if the Begin card shows, or 'started' if the game is
+    // revealed without it.
+    async function open(fixture, { viaApi = false } = {}) {
         const page = await browser.newPage();
+        const errors = [];
+        page.on('pageerror', (err) => errors.push(String(err)));
         await page.addInitScript(() => {
-            Object.defineProperty(navigator, 'userActivation', { get: () => ({ hasBeenActive: false, isActive: false }) });
+            let activated = false;
+            const activate = () => { activated = true; };
+            document.addEventListener('pointerdown', activate, { capture: true });
+            document.addEventListener('keydown', activate, { capture: true });
+            window.__played = [];
+            HTMLMediaElement.prototype.play = function () {
+                if (!activated) return Promise.reject(new DOMException('No click yet', 'NotAllowedError'));
+                window.__played.push(this.getAttribute('src')?.split('/').pop() ?? this.src.split('/').pop());
+                setTimeout(() => this.dispatchEvent(new Event('ended')), 100);
+                return Promise.resolve();
+            };
         });
-        await page.route('**/api/game/**', (route) => route.fulfill({
-            contentType: 'application/json',
-            body: JSON.stringify({ sourceGameUrl: `${baseUrl}/e2e-fixtures/${fixture}.aslx` }),
-        }));
-        await page.goto(`${baseUrl}/?id=${fixture}`);
+        if (viaApi) {
+            await page.route('**/api/game/**', (route) => route.fulfill({
+                contentType: 'application/json',
+                body: JSON.stringify({ sourceGameUrl: `${baseUrl}/e2e-fixtures/${fixture}`, resourceRoot: `${baseUrl}/e2e-fixtures/` }),
+            }));
+            await page.goto(`${baseUrl}/?id=${fixture}`);
+        } else {
+            await page.goto(`${baseUrl}/?url=/e2e-fixtures/${fixture}`);
+        }
         const outcome = await page.waitForFunction(() => {
             if (document.getElementById('qv-clicktobegin')?.offsetParent) return 'begin';
-            if (!document.getElementById('qv-start') && window.canSendCommand) return 'started';
+            if (!document.getElementById('qv-start')) return 'started';
             return null;
         }, null, { timeout: 30000 }).then((h) => h.jsonValue()).catch(() => { throw new Error(`${fixture} never loaded`); });
-        return { page, outcome };
+        return { page, outcome, errors };
     }
 
-    const noSound = await open('begin-gate-no-sound');
-    check(noSound.outcome === 'started', 'a gamebook with no sound file starts without Begin');
-    await noSound.page.close();
+    const output = (page) => page.evaluate(() => document.body.innerText);
+    const played = (page) => page.evaluate(() => window.__played);
+    const waitForText = (page, text) => page.waitForFunction((t) => document.body.innerText.includes(t), text, { timeout: 10000 })
+        .catch(() => { throw new Error(`"${text}" never appeared`); });
 
-    const sound = await open('v2-gamebook-test');
-    check(sound.outcome === 'begin', 'a gamebook with a sound file shows Begin');
-    await sound.page.click('#qv-clicktobegin-btn');
-    await sound.page.waitForFunction(() => !document.getElementById('qv-start') && window.canSendCommand, null, { timeout: 30000 })
-        .catch(() => { throw new Error('the game never started after Begin'); });
-    check(true, 'clicking Begin starts the game');
-    await sound.page.close();
+    {
+        const { page, outcome } = await open('begin-gate-no-sound.aslx', { viaApi: true });
+        check(outcome === 'started', 'a gamebook with no sound starts without Begin');
+        await waitForText(page, 'This is the first page.');
+        await page.close();
+    }
+
+    {
+        const { page, outcome } = await open('begin-gate-sound-later.aslx');
+        check(outcome === 'started', 'a game that only plays a sound on a command starts without Begin');
+        await waitForText(page, 'The game has started.');
+        await page.waitForFunction(() => window.canSendCommand, null, { timeout: 10000 });
+        await page.keyboard.type('ring');
+        await page.keyboard.press('Enter');
+        await waitForText(page, 'Ding.');
+        await page.waitForFunction(() => window.__played.length > 0, null, { timeout: 5000 }).catch(() => {});
+        check((await played(page)).join() === 'bell.wav', 'the command\'s sound plays');
+        await page.close();
+    }
+
+    {
+        const { page, outcome, errors } = await open('v2-gamebook-test.aslx', { viaApi: true });
+        check(outcome === 'begin', 'a gamebook whose first page has a sound shows Begin');
+        check((await played(page)).length === 0, 'the sound waits for the click');
+        await page.click('#qv-clicktobegin-btn');
+        await page.waitForFunction(() => !document.getElementById('qv-start'), null, { timeout: 10000 });
+        check((await played(page)).join() === 'short-beep.wav', 'clicking Begin plays the sound and reveals the game');
+        check((await output(page)).includes('This is the first page.'), 'the first page is on screen');
+        check(errors.length === 0, `no page errors (${errors.join('; ')})`);
+        await page.close();
+    }
+
+    {
+        const { page, outcome } = await open('begin-gate-sync-sound.aslx');
+        check(outcome === 'begin', 'a start script that waits for a sound shows Begin');
+        await page.keyboard.press('Enter'); // Begin has the focus
+        await waitForText(page, 'After the sound.');
+        check((await played(page)).join() === 'intro.wav', 'the start script carries on once its sound has played');
+        await page.close();
+    }
+
+    {
+        const { page, outcome } = await open('begin-gate-autoplay.aslx');
+        check(outcome === 'begin', 'a start script that writes an <audio autoplay> shows Begin');
+        await page.click('#qv-clicktobegin-btn');
+        await page.waitForFunction(() => window.__played.length > 0, null, { timeout: 5000 }).catch(() => {});
+        check((await played(page)).join() === 'theme.mp3', 'clicking Begin plays the music');
+        await page.close();
+    }
+
+    {
+        const { page, outcome } = await open('begin-gate-intro.aslx');
+        check(outcome === 'begin', 'an intro that plays a sound shows Begin');
+        await page.waitForTimeout(3000);
+        check(!(await output(page)).includes('Intro line two.'), 'its timer doesn\'t run while Begin shows');
+        await page.click('#qv-clicktobegin-btn');
+        const shownAt = Date.now();
+        await waitForText(page, 'Intro line two.');
+        check(Date.now() - shownAt >= 800, 'the timer starts when Begin is clicked');
+        await page.close();
+    }
+
+    {
+        const { page, outcome } = await open('begin-gate-v4-wait.asl');
+        check(outcome === 'started', 'a Quest 4 start script that waits for a key is revealed at the wait');
+        await waitForText(page, 'Before the wait.');
+        check(!(await output(page)).includes('After the wait.'), 'the start script is still waiting');
+        await page.keyboard.press('Space');
+        await waitForText(page, 'After the wait.');
+        check(true, 'a key carries the start script on');
+        await page.close();
+    }
 } catch (err) {
     console.error(`FAIL: ${err.message}`);
     process.exitCode = 1;

@@ -7,7 +7,6 @@ using System.Linq;
 using System.Runtime.InteropServices.JavaScript;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using QuestViva.Common;
 using QuestViva.Engine;
@@ -72,50 +71,6 @@ public partial class WasmPlayerBridge
         PendingAdjacentFiles.Clear();
         return files;
     }
-
-    private static readonly string[] AudioExtensions = [".mp3", ".wav", ".ogg"];
-
-    // Heuristic used to decide whether to gate the boot-time autoplay
-    // permission check on a click (see wasm-player.js's maybeGateOnActivation) —
-    // does this game plausibly play a sound before the player has had a
-    // chance to interact with the page? Not a proof of reachability from
-    // start/beforeenter specifically vs. only from a player command; a
-    // false positive just costs one extra click, a false negative silently
-    // breaks the game's audio, so this deliberately rounds towards
-    // over-detecting.
-    [JSExport]
-    public static bool GameLikelyPlaysSound(byte[] gameFileBytes)
-    {
-        if (_game == null) return true; // conservative default
-
-        // Primary signal: any bundled audio resource, regardless of format.
-        // Works for .quest zip packages and Legacy .asl/.cas alike, since
-        // both populate GetResourceNames() from their own self-contained
-        // archive — no script-syntax assumptions needed here at all.
-        var resourceNames = _game.GetResourceNames();
-        if (resourceNames.Any(name =>
-                AudioExtensions.Contains(Path.GetExtension(name), StringComparer.OrdinalIgnoreCase)))
-        {
-            return true;
-        }
-
-        // Fallback: GetResourceNames() is only empty when the game was
-        // loaded as plain aslx text with no local resource archive at all —
-        // a bare .aslx file, or textadventures.co.uk's remote-resource-mode
-        // (resourceRoot) API path. Both are guaranteed modern aslx script
-        // text (Legacy games are always self-contained archives, so they
-        // never reach here). Look for an audio filename rather than the
-        // "play sound" keyword: Core is inlined into every published game, and
-        // GamebookCore's own page-sound line put "play sound" in every
-        // gamebook, sound or not. A game can hardly play a sound without
-        // naming its file, and requiring a filename character before the dot
-        // skips the "*.wav;*.mp3" extension lists Core also carries.
-        var source = System.Text.Encoding.UTF8.GetString(gameFileBytes);
-        return AudioFileNamePattern().IsMatch(source);
-    }
-
-    [GeneratedRegex(@"[\w\-]\.(?:mp3|wav|ogg)\b", RegexOptions.IgnoreCase)]
-    private static partial Regex AudioFileNamePattern();
 
     // Test hooks (wasm-player.js's ?seed= and ?transcript= parameters) so a browser run of a
     // walkthrough can be diffed against the headless quest-e2e-tests harness's goldens.
@@ -356,10 +311,25 @@ public partial class WasmPlayerBridge
     public static string GetLanguageId() => (_game as WorldModel)?.LanguageId ?? string.Empty;
 
     [JSExport]
+    // Returns once the game's start has finished or is waiting on the player, whichever is first.
+    // A Quest 5+ game's Begin() already does that, but a Quest 4 game's doesn't return until its
+    // start script has finished, menus and "press a key" included - and wasm-player.js keeps the
+    // start screen up until this returns.
     public static async Task Begin()
     {
         if (_game == null || _ui == null) return;
-        await _game.Begin();
+        var suspended = new TaskCompletionSource();
+        void OnSuspended() => suspended.TrySetResult();
+        _game.TurnSuspended += OnSuspended;
+        try
+        {
+            var begin = _game.Begin();
+            if (await Task.WhenAny(begin, suspended.Task) == begin) await begin;
+        }
+        finally
+        {
+            _game.TurnSuspended -= OnSuspended;
+        }
         await _ui.FlushBufferAndYieldAsync();
     }
 

@@ -1,0 +1,22 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- A game whose start writes an <audio autoplay> element, as the sound docs show
+       (verify-wasmplayer-begin-gate.mjs). -->
+  <game name="BeginGateAutoplay">
+    <start type="script">
+      msg ("&lt;audio src='theme.mp3' autoplay loop&gt;&lt;/audio&gt;The music starts.")
+    </start>
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="editor_object" />
+      <inherit name="editor_player" />
+    </object>
+  </object>
+
+</asl>

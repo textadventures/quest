@@ -68,7 +68,9 @@ A complete worked example - ambient sound in one room, silence in another, a sou
 
 Browsers don't let a page start making noise until the player has interacted with it - clicked something, or typed. This applies on desktops as well as phones, and it hits games that play a sound in the start script, before the player has done anything at all.
 
-Quest Viva's player handles this for you: if the game contains sound files or uses **Play a sound**, and the browser hasn't registered any interaction yet, the player shows a **Begin** button on the loading screen instead of starting straight away. Clicking it is the interaction the browser wants, and sound works from then on.
+Quest Viva's player handles this for you. It runs the start of the game behind the loading screen, and if that tries to play a sound the browser won't allow yet, it shows a **Begin** button instead of revealing the game straight away. Clicking it is the interaction the browser wants, and the sound plays then, as the player first sees the game. A game that doesn't play a sound at the start doesn't show the button, even if it has sounds for later.
+
+This covers **Play a sound**, an `<audio>` element with `autoplay`, and your own JavaScript calling `play()`. If a timer plays a sound before the player has done anything, it plays as soon as they click or type.
 
 You don't need to do anything about this, but it's worth knowing why a game that plays music at the start asks the player to click first. Sounds triggered by anything the player types or clicks are never affected.
 
