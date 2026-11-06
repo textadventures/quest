@@ -184,6 +184,7 @@ export const HELP_PAGE_TITLES: Readonly<Record<string, string>> = {
     "/publishing/game-details/": "Your game's details",
     "/tutorial/custom-attributes/#the-attributes-tab": "The attributes tab",
     "/tutorial/gamebook/": "Creating a gamebook",
+    "/tutorial/gamebook/publishing/#the-look-of-it": "The look of it",
     "/tutorial/more-things-to-do-with-objects/": "More things to do with objects",
     "/tutorial/turns-and-timers/#real-time-timers": "Real-time timers",
     "/understanding/when-scripts-run/#object-initialisation-scripts": "Object initialisation scripts",
