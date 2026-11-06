@@ -201,7 +201,7 @@
     "propertyEditor.colourGridLight": "Hell",
     "propertyEditor.colourGridDark": "Dunkel",
     "propertyEditor.colourGridDarkHint": "wähle zuerst eine dunkle Spielfeldfarbe",
-    "interfacePreview.label": "Vorschau des Spieler-Layouts: {summary}",
+    "interfacePreview.label": "Vorschau des Spiel-Layouts: {summary}",
     "interfacePreview.clickHint": "Klicke auf einen Teil, um zu seiner Option zu gelangen.",
     "interfacePreview.wide": "Breiter Bildschirm",
     "interfacePreview.phone": "Telefon",
@@ -559,7 +559,7 @@
     "openPage.newToQuestViva": "Neu bei Quest Viva?",
     "openPage.readTheTutorial": "Lies das Tutorial",
 
-    "colourInput.playersOwn": "Wie beim Spieler",
+    "colourInput.playersOwn": "Standard",
     "colourInput.playersOwnHint": "Nicht festgelegt: folgt dem hellen oder dunklen Modus des Spielers",
     "colourInput.defaultColour": "{colour} (Standard)",
     "colourInput.defaultColourHint": "Nicht gesetzt: Das Spiel hat eigene Farben, also ist das {colour}",

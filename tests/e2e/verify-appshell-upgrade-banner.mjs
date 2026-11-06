@@ -30,7 +30,7 @@ const page = await browser.newPage({ acceptDownloads: true });
 page.on('pageerror', err => console.log('[pageerror]', err.message));
 
 const banner = page.getByText('This game was saved by an older version of Quest.');
-const legacyUiBanner = page.getByText("This game changes the player's interface with JavaScript");
+const legacyUiBanner = page.getByText("This game changes its own interface with JavaScript");
 
 async function importGame(path) {
     await page.goto(`${baseUrl}/open`);

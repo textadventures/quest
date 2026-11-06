@@ -80,11 +80,9 @@
                         <span class="theme-link" style:color={half.link}>link</span>
                     </span>
                 {/each}
+                {#if chosen}<span class="theme-check"><Check size={10} strokeWidth={3} /></span>{/if}
             </span>
-            <span class="theme-name">
-                {#if chosen}<Check size={12} aria-hidden="true" />{/if}
-                {opt.label}
-            </span>
+            <span class="theme-name">{opt.label}</span>
         </button>
     {/each}
 </div>
@@ -125,6 +123,7 @@
     }
 
     .theme-swatch {
+        position: relative;
         display: flex;
         height: 3rem;
         overflow: hidden;
@@ -150,10 +149,24 @@
         text-decoration: underline;
     }
 
-    .theme-name {
+    /* The chosen theme's tick sits on its swatch, not beside its name, so choosing one doesn't
+       make the name wider and wrap it. */
+    .theme-check {
+        position: absolute;
+        top: 0.2rem;
+        right: 0.2rem;
         display: flex;
-        align-items: center;
-        gap: 0.25rem;
+        padding: 0.1rem;
+        border-radius: 9999px;
+        background: var(--color-primary-500);
+        color: white;
+        box-shadow: 0 0 0 1px rgb(255 255 255 / 0.8);
+    }
+
+    .theme-name {
+        overflow: hidden;
         font-size: 0.75rem;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 </style>

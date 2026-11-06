@@ -189,7 +189,7 @@
   <template name="EditorGameUnderlinehyperlinks">Subrayar enlaces</template>
   <template name="EditorGameAfterusing">Desactivar un enlace de comando después de pulsarlo</template>
   <template name="EditorGameVerbMenus">Menú de verbos</template>
-  <template name="EditorGameMenuFontHelp">Déjalos vacíos para usar los del jugador.</template>
+  <template name="EditorGameMenuFontHelp">Déjalos vacíos para usar los predeterminados.</template>
   <template name="EditorGameDoNotClearMenus">Mantener un menú en el texto después de elegir</template>
   <template name="EditorGameShowMenuResponses">Mostrar la opción elegida del menú</template>
   <template name="EditorGameBackground">Color de fondo</template>
@@ -207,7 +207,7 @@
   <template name="EditorGamePanesCaption">Paneles de Juego</template>
   <template name="EditorGameMapinteractive">El mapa se puede arrastrar y ampliar</template>
   <template name="EditorGameInterfacefont">Fuente de la interfaz</template>
-  <template name="EditorGameInterfacefontHelp">La fuente de la barra de ubicación, los paneles y los botones. Déjala vacía para usar la del jugador.</template>
+  <template name="EditorGameInterfacefontHelp">La fuente de la barra de ubicación, los paneles y los botones. Déjala vacía para usar la predeterminada.</template>
   <template name="EditorGameAccentColour">Color de acento</template>
   <template name="EditorGameAccentColourHelp">El color de acento es para los enlaces, la brújula y el indicador de comandos.</template>
   <template name="EditorGameLightDarkHelp">Cómo funcionan el modo claro y el oscuro</template>
@@ -271,7 +271,7 @@
   <template name="EditorGameOptions">Opciones</template>
   <template name="EditorGameClearpicture">Vaciar el cuadro de imagen en lugares sin imagen</template>
   <template name="EditorGameStylesheetTitle">Hoja de estilo</template>
-  <template name="EditorGameStylesheetHelp">CSS para la interfaz del juego, que se aplica sobre los estilos del reproductor al jugar.</template>
+  <template name="EditorGameStylesheetHelp">CSS para la interfaz del juego, que se aplica sobre los estilos predeterminados al jugar.</template>
   <template name="EditorGameStylesheet">Hoja de estilo</template>
   <template name="EditorGameScript">Programas</template>
   <template name="EditorGameAdvancedScript">Programas Avanzados</template>
@@ -905,7 +905,7 @@
   <template name="TypeNoDescription">Sin descripción</template>
   <template name="TypeText">Texto</template>
   <template name="TypeRunScript">Ejecutar programa</template>
-  <template name="TypeThemeStandard">Quest Estándar</template>
+  <template name="TypeThemeStandard">Estándar</template>
   <template name="TypeThemeNovella">Novela</template>
   <template name="TypeThemeRetro">Retro</template>
   <template name="TypeThemeTypewriter">Máquina de Escribir</template>

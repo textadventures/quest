@@ -178,7 +178,7 @@
         <controltype>dropdowntypes</controltype>
         <types>*=[TypeThemeStandard]; theme_parchment=[TypeThemeParchment]; theme_noir=[TypeThemeNoir]; theme_storybook=[TypeThemeStorybook]; theme_novella=[TypeThemeNovella]; theme_typewriter=[TypeThemeTypewriter]; theme_midnight=[TypeThemeMidnight]; theme_terminal=[TypeThemeTerminal]; theme_retro=[TypeThemeRetro]; theme_hotdogstand=[TypeThemeHotDog]</types>
         <!-- Retired themes: offered only to a game that already has one, so it can be seen and changed -->
-        <hiddentypes type="simplestringlist">theme_hotdogstand</hiddentypes>
+        <hiddentypes type="simplestringlist">theme_retro;theme_hotdogstand</hiddentypes>
         <!-- Each theme is drawn as a little page in its colours and font (ThemePicker.svelte) -->
         <previews/>
         <!-- Choosing a theme, or its Reset button, clears the game's own value for anything a theme sets and for the rest of the look below, so the theme isn't hidden by options chosen under another. Images, the stylesheet and link underlining are the author's own and are kept. -->

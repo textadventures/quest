@@ -81,7 +81,7 @@ try {
     expectEqual('the text size', s[0].fontSize, '16px');
     if (!s[0].fontFamily.includes('Georgia')) throw new Error(`the sample text is in ${s[0].fontFamily}, not the base font Georgia`);
     expectEqual('the note under a game that follows light and dark mode', await fixedNote(), null);
-    expectEqual('an empty Text colour in a new game', await gameColour('Text colour').getAttribute('placeholder'), "Player's own");
+    expectEqual('an empty Text colour in a new game', await gameColour('Text colour').getAttribute('placeholder'), "Default");
     console.log('PASS: a new game shows the player\'s own light and dark colours side by side, with the location bar, links and command bar');
     await shot('new-game');
 
