@@ -103,6 +103,28 @@ public class ThemeResetTests
     }
 
     [TestMethod]
+    [DataRow("theme_novella")]
+    [DataRow("theme_typewriter")]
+    [DataRow("theme_retro")]
+    public void ChoosingATheme_KeepsTheInterface(string theme)
+    {
+        // Themes are only the look: what's on screen is the Interface tab's, the author's own
+        // settings kept, and a theme's defaults left as the game's.
+        var game = Data("game");
+        game.SetAttribute("showpanes", false);
+        game.SetAttribute("showborder", false);
+
+        var result = _controller.SetDropdownType("game", ThemeControl(), theme);
+
+        Assert.IsTrue(result.Valid);
+        CollectionAssert.DoesNotContain(result.ResetAttributes, "showpanes");
+        CollectionAssert.DoesNotContain(result.ResetAttributes, "showborder");
+        Assert.AreEqual(false, Data("game").GetAttribute("showpanes"));
+        Assert.AreEqual(false, Data("game").GetAttribute("showborder"));
+        Assert.AreEqual(true, Data("game").GetAttribute("showlocation"));
+    }
+
+    [TestMethod]
     public async Task OneUndo_BringsBackTheOldThemeAndSettings()
     {
         _controller.SetDropdownType("game", ThemeControl(), "theme_novella");
