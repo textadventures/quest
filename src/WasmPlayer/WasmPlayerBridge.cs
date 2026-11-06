@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices.JavaScript;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using QuestViva.Common;
 using QuestViva.Engine;
@@ -103,12 +104,18 @@ public partial class WasmPlayerBridge
         // a bare .aslx file, or textadventures.co.uk's remote-resource-mode
         // (resourceRoot) API path. Both are guaranteed modern aslx script
         // text (Legacy games are always self-contained archives, so they
-        // never reach here), so searching for the literal "play sound"
-        // script keyword (PlaySoundScriptConstructor.Keyword) is reliable
-        // in this branch only.
+        // never reach here). Look for an audio filename rather than the
+        // "play sound" keyword: Core is inlined into every published game, and
+        // GamebookCore's own page-sound line put "play sound" in every
+        // gamebook, sound or not. A game can hardly play a sound without
+        // naming its file, and requiring a filename character before the dot
+        // skips the "*.wav;*.mp3" extension lists Core also carries.
         var source = System.Text.Encoding.UTF8.GetString(gameFileBytes);
-        return source.Contains("play sound", StringComparison.OrdinalIgnoreCase);
+        return AudioFileNamePattern().IsMatch(source);
     }
+
+    [GeneratedRegex(@"[\w\-]\.(?:mp3|wav|ogg)\b", RegexOptions.IgnoreCase)]
+    private static partial Regex AudioFileNamePattern();
 
     // Test hooks (wasm-player.js's ?seed= and ?transcript= parameters) so a browser run of a
     // walkthrough can be diffed against the headless quest-e2e-tests harness's goldens.
