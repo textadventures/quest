@@ -177,7 +177,7 @@ Before you publish, check each change:
 
 - **At phone width.** Make your browser window narrow, or use your browser's developer tools to emulate a phone about 375 pixels wide. Check the location bar, the text, and the panes in the ☰ drawer.
 - **After loading a saved game.** Play a few turns, save, then load the game again. Anything that only appears at the start of the game belongs in the user interface initialisation script.
-- **In light and dark mode.** A game that leaves its text, link and page colours empty follows the player's light or dark mode (see [Light and dark](/customise/look-and-feel#light-and-dark)), so check anything you've styled both ways - switch your device or browser to dark mode, or emulate it in the developer tools. A game with its own colours, such as one using the Retro theme, always uses them, so check your styles against those. Set a text colour whenever you set a background colour, and vice versa.
+- **In light and dark mode.** A game that leaves its text, link and page colours empty follows the player's light or dark mode (see [Light and dark](/customise/look-and-feel#light-and-dark)), so check anything you've styled both ways - switch your device or browser to dark mode, or emulate it in the developer tools. A game with its own colours, such as one using the Terminal theme, always uses them, so check your styles against those. Set a text colour whenever you set a background colour, and vice versa.
 
 To see what's on the page and which styles apply, right-click while playing and choose "Inspect" (or similar) to open your browser's developer tools.
 

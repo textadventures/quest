@@ -201,7 +201,7 @@
     "propertyEditor.colourGridLight": "Light",
     "propertyEditor.colourGridDark": "Dark",
     "propertyEditor.colourGridDarkHint": "choose a dark page colour first",
-    "interfacePreview.label": "Preview of the player's layout: {summary}",
+    "interfacePreview.label": "Preview of the game's layout: {summary}",
     "interfacePreview.clickHint": "Click a part to go to its option.",
     "interfacePreview.wide": "Wide screen",
     "interfacePreview.phone": "Phone",
@@ -408,7 +408,7 @@
     "upgradeBanner.message": "This game was saved by an older version of Quest. Once you change it, Quest Viva saves it in a newer format, which older versions of Quest can't open.",
     "upgradeBanner.learnMore": "Learn more",
     "upgradeBanner.downloadOriginal": "Download original",
-    "upgradeBanner.legacyUiMessage": "This game changes the player's interface with JavaScript, which the new interface doesn't support. Keep the classic interface?",
+    "upgradeBanner.legacyUiMessage": "This game changes its own interface with JavaScript, which the new interface doesn't support. Keep the classic interface?",
     "upgradeBanner.legacyUiMore": "...and {count} more",
     "upgradeBanner.keepClassicInterface": "Keep the classic interface",
 
@@ -559,7 +559,7 @@
     "openPage.newToQuestViva": "New to Quest Viva?",
     "openPage.readTheTutorial": "Read the tutorial",
 
-    "colourInput.playersOwn": "Player's own",
+    "colourInput.playersOwn": "Default",
     "colourInput.playersOwnHint": "Not set: follows the player's light or dark mode",
     "colourInput.defaultColour": "{colour} (default)",
     "colourInput.defaultColourHint": "Not set: the game has colours of its own, so this is {colour}",

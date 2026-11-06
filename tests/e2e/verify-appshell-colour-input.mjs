@@ -147,7 +147,7 @@ async function run(colorScheme) {
     const listbox = page.locator('[role="listbox"]').last();
     await listbox.waitFor({ timeout: 3000 });
     const first = listbox.locator('[role="option"]').first();
-    if ((await first.innerText()).trim() !== "Player's own") throw new Error(`the first suggestion is "${await first.innerText()}"`);
+    if ((await first.innerText()).trim() !== "Default") throw new Error(`the first suggestion is "${await first.innerText()}"`);
     const navy = listbox.locator('[role="option"]', { hasText: /^\s*Navy\s*$/ });
     const navySwatch = await navy.locator('.colour-swatch').evaluate(el => getComputedStyle(el).backgroundColor);
     if (navySwatch !== 'rgb(0, 0, 128)') throw new Error(`Navy's suggestion swatch is ${navySwatch}`);
@@ -167,19 +167,19 @@ async function run(colorScheme) {
     }
 
     // Text colour is <nullable/>: clearing removes the attribute, so it shows the game type's
-    // default - empty, shown as "Player's own", or a named colour on engines from before the
+    // default - empty, shown as "Default", or a named colour on engines from before the
     // default text colour was emptied (#2725). Clearing is the clear button, or emptying the
     // field.
     const checkCleared = async (how) => {
         const cleared = await text.inputValue();
         if (cleared === '') {
-            if (await text.getAttribute('placeholder') !== "Player's own") throw new Error(`${how}, the empty field reads "${await text.getAttribute('placeholder')}"`);
+            if (await text.getAttribute('placeholder') !== "Default") throw new Error(`${how}, the empty field reads "${await text.getAttribute('placeholder')}"`);
             if (!await swatch.evaluate(el => el.classList.contains('colour-swatch-player'))) throw new Error(`${how}, the swatch is not the player's own one`);
             if (await control.getByRole('button', { name: 'Clear colour' }).count() !== 0) throw new Error(`${how}, the clear button still shows`);
         } else if (cleared === 'Navy') {
             throw new Error(`${how} left the field showing "${cleared}"`);
         }
-        console.log(`PASS [${colorScheme}]: ${how} returns Text colour to its default (${cleared || "Player's own"})`);
+        console.log(`PASS [${colorScheme}]: ${how} returns Text colour to its default (${cleared || "Default"})`);
     };
     await control.getByRole('button', { name: 'Clear colour' }).click();
     await settle();

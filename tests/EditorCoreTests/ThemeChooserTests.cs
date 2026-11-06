@@ -5,16 +5,18 @@ using QuestViva.EditorCore;
 namespace QuestViva.EditorCoreTests;
 
 // The game's Theme chooser (#2656): every built-in theme, captioned in each editor language; the
-// retired Hot Dog Stand offered only to a game that still has it (<hiddentypes>); and each theme's
-// look for ThemePicker.svelte to draw (<previews/>).
+// retired Retro and Hot Dog Stand offered only to a game that still has one (<hiddentypes>); and
+// each theme's look for ThemePicker.svelte to draw (<previews/>).
 [TestClass]
 public class ThemeChooserTests
 {
     private static readonly string[] Offered =
     [
         "*", "theme_parchment", "theme_noir", "theme_storybook", "theme_novella", "theme_typewriter",
-        "theme_midnight", "theme_terminal", "theme_retro"
+        "theme_midnight", "theme_terminal"
     ];
+
+    private static readonly string[] Retired = ["theme_retro", "theme_hotdogstand"];
 
     private static async Task<EditorController> LoadController(string templateName)
     {
@@ -44,7 +46,7 @@ public class ThemeChooserTests
     [DataRow("English", "Parchment", "Midnight")]
     [DataRow("Deutsch", "Pergament", "Mitternacht")]
     [DataRow("Español", "Pergamino", "Medianoche")]
-    public async Task ANewGame_IsOfferedEveryThemeButHotDogStand(string templateName, string parchment, string midnight)
+    public async Task ANewGame_IsOfferedEveryThemeButTheRetiredOnes(string templateName, string parchment, string midnight)
     {
         using var controller = await LoadController(templateName);
         var control = ThemeControl(controller);
@@ -60,15 +62,17 @@ public class ThemeChooserTests
     }
 
     [TestMethod]
-    public async Task AGameWithHotDogStand_IsStillOfferedIt()
+    [DataRow("theme_retro")]
+    [DataRow("theme_hotdogstand")]
+    public async Task AGameWithARetiredTheme_IsStillOfferedIt(string theme)
     {
         using var controller = await LoadController("English");
-        controller.AddInheritedTypeToElement("game", "theme_hotdogstand", false);
+        controller.AddInheritedTypeToElement("game", theme, false);
 
         var offered = controller.GetOfferedDropdownTypes("game", ThemeControl(controller));
 
-        CollectionAssert.Contains(offered, "theme_hotdogstand");
-        Assert.AreEqual("theme_hotdogstand", controller.GetSelectedDropDownType(ThemeControl(controller), "game"));
+        CollectionAssert.Contains(offered, theme);
+        Assert.AreEqual(theme, controller.GetSelectedDropDownType(ThemeControl(controller), "game"));
     }
 
     [TestMethod]
@@ -77,10 +81,10 @@ public class ThemeChooserTests
         using var controller = await LoadController("English");
         var previews = controller.GetDropdownTypePreviews(ThemeControl(controller)).ToDictionary(p => p.Type);
 
-        // Every theme, including the retired one (shown only to a game that has it)
-        CollectionAssert.AreEquivalent(Offered.Append("theme_hotdogstand").ToArray(), previews.Keys.ToArray());
+        // Every theme, including the retired ones (shown only to a game that has one)
+        CollectionAssert.AreEquivalent(Offered.Concat(Retired).ToArray(), previews.Keys.ToArray());
 
-        // The player's own light and dark colours
+        // The default light and dark colours
         var standard = previews["*"];
         Assert.IsNull(standard.Background);
         Assert.IsNull(standard.DarkBackground);
@@ -96,10 +100,10 @@ public class ThemeChooserTests
         Assert.AreEqual("Literata", parchment.WebFont);
 
         // One scheme only
-        var retro = previews["theme_retro"];
-        Assert.AreEqual("Black", retro.Background);
-        Assert.AreEqual("White", retro.Text);
-        Assert.IsNull(retro.DarkBackground);
+        var terminal = previews["theme_terminal"];
+        Assert.AreEqual("#0b0f0b", terminal.Background);
+        Assert.AreEqual("#4ff07a", terminal.Text);
+        Assert.IsNull(terminal.DarkBackground);
 
         // A layout theme leaves the colours to the player, but has a font
         var typewriter = previews["theme_typewriter"];

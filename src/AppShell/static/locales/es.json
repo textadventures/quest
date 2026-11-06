@@ -201,7 +201,7 @@
     "propertyEditor.colourGridLight": "Claro",
     "propertyEditor.colourGridDark": "Oscuro",
     "propertyEditor.colourGridDarkHint": "elige primero un color de fondo oscuro",
-    "interfacePreview.label": "Vista previa del diseño del reproductor: {summary}",
+    "interfacePreview.label": "Vista previa del diseño del juego: {summary}",
     "interfacePreview.clickHint": "Haz clic en una parte para ir a su opción.",
     "interfacePreview.wide": "Pantalla ancha",
     "interfacePreview.phone": "Teléfono",
@@ -408,7 +408,7 @@
     "upgradeBanner.message": "Este juego se guardó con una versión anterior de Quest. En cuanto lo cambies, Quest Viva lo guardará en un formato más reciente, que las versiones anteriores de Quest no pueden abrir.",
     "upgradeBanner.learnMore": "Más información",
     "upgradeBanner.downloadOriginal": "Descargar original",
-    "upgradeBanner.legacyUiMessage": "Este juego cambia la interfaz del reproductor con JavaScript, algo que la nueva interfaz no admite. ¿Quieres mantener la interfaz clásica?",
+    "upgradeBanner.legacyUiMessage": "Este juego cambia su propia interfaz con JavaScript, algo que la nueva interfaz no admite. ¿Quieres mantener la interfaz clásica?",
     "upgradeBanner.legacyUiMore": "...y {count} más",
     "upgradeBanner.keepClassicInterface": "Mantener la interfaz clásica",
 
@@ -559,7 +559,7 @@
     "openPage.newToQuestViva": "¿Nuevo en Quest Viva?",
     "openPage.readTheTutorial": "Lee el tutorial",
 
-    "colourInput.playersOwn": "La del jugador",
+    "colourInput.playersOwn": "Predeterminado",
     "colourInput.playersOwnHint": "Sin definir: sigue el modo claro u oscuro del jugador",
     "colourInput.defaultColour": "{colour} (predeterminado)",
     "colourInput.defaultColourHint": "Sin definir: el juego tiene colores propios, así que es {colour}",

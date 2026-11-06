@@ -192,7 +192,7 @@
   <template name="EditorGameUnderlinehyperlinks">Links unterstreichen</template>
   <template name="EditorGameAfterusing">Einen Kommando-Link nach dem Anklicken deaktivieren</template>
   <template name="EditorGameVerbMenus">Verbmenüs</template>
-  <template name="EditorGameMenuFontHelp">Leer lassen für die des Spielers.</template>
+  <template name="EditorGameMenuFontHelp">Leer lassen für die Standardwerte.</template>
   <template name="EditorGameBackground">Hintergrundfarbe</template>
   <template name="EditorGameHoverbackground">Hintergrundfarbe unter dem Mauszeiger</template>
   <template name="EditorGameHoverforeground">Textfarbe unter dem Mauszeiger</template>
@@ -211,7 +211,7 @@
   <template name="EditorGamePanesCaption">Spielleisten</template>
   <template name="EditorGameMapinteractive">Karte kann verschoben und gezoomt werden</template>
   <template name="EditorGameInterfacefont">Schriftart der Oberfläche</template>
-  <template name="EditorGameInterfacefontHelp">Die Schriftart der Raumleiste, der Bereiche und der Schaltflächen. Leer lassen für die des Spielers.</template>
+  <template name="EditorGameInterfacefontHelp">Die Schriftart der Raumleiste, der Bereiche und der Schaltflächen. Leer lassen für die Standardschrift.</template>
   <template name="EditorGameAccentColour">Akzentfarbe</template>
   <template name="EditorGameAccentColourHelp">Die Akzentfarbe ist für Links, den Kompass und die Eingabeaufforderung.</template>
   <template name="EditorGameLightDarkHelp">So funktionieren der helle und der dunkle Modus</template>
@@ -275,7 +275,7 @@
   <template name="EditorGameOptions">Optionen</template>
   <template name="EditorGameClearpicture">Bilderrahmen in Räumen ohne Bild leeren</template>
   <template name="EditorGameStylesheetTitle">Stylesheet</template>
-  <template name="EditorGameStylesheetHelp">CSS für die Oberfläche des Spiels, die beim Spielen über die eigenen Stile des Players angewendet wird.</template>
+  <template name="EditorGameStylesheetHelp">CSS für die Oberfläche des Spiels, die beim Spielen über die Standardstile angewendet wird.</template>
   <template name="EditorGameStylesheet">Stylesheet</template>
   <template name="EditorGameScript">Skripte</template>
   <template name="EditorGameAdvancedScript">Erweiterte Skripte</template>
@@ -901,7 +901,7 @@
   <template name="TypeNoDescription">Keine Beschreibung</template>
   <template name="TypeText">Text anzeigen</template>
   <template name="TypeRunScript">Skript starten</template>
-  <template name="TypeThemeStandard">Quest Standard</template>
+  <template name="TypeThemeStandard">Standard</template>
   <template name="TypeThemeNovella">Novella</template>
   <template name="TypeThemeRetro">Retro</template>
   <template name="TypeThemeTypewriter">Typewriter</template>

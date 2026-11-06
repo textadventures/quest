@@ -209,6 +209,7 @@
     <custompaddingtop type="int">60</custompaddingtop>
   </type>
 
+  <!-- Retired (#2656), like Hot Dog Stand below: Terminal has taken its place. -->
   <type name="theme_retro">
     <defaultbackground>Black</defaultbackground>
     <defaultforeground>White</defaultforeground>
@@ -274,7 +275,7 @@
     <darkaccentcolour>#ff9e85</darkaccentcolour>
   </type>
 
-  <!-- Dark only, whatever the player's choice, as Retro is. -->
+  <!-- Dark only, whatever the player's choice, as Terminal is. -->
   <type name="theme_midnight">
     <defaultbackground>#101a30</defaultbackground>
     <defaultforeground>#e6e9f2</defaultforeground>

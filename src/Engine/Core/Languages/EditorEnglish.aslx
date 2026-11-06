@@ -191,7 +191,7 @@
   <template name="EditorGameUnderlinehyperlinks">Underline links</template>
   <template name="EditorGameAfterusing">Deactivate a command link once it's been clicked</template>
   <template name="EditorGameVerbMenus">Verb menus</template>
-  <template name="EditorGameMenuFontHelp">Leave these empty for the player’s own.</template>
+  <template name="EditorGameMenuFontHelp">Leave these empty for the defaults.</template>
   <template name="EditorGameBackground">Background colour</template>
   <template name="EditorGameHoverbackground">Background colour under the pointer</template>
   <template name="EditorGameHoverforeground">Text colour under the pointer</template>
@@ -211,7 +211,7 @@
   <template name="EditorGamePanesCaption">Game panes</template>
   <template name="EditorGameMapinteractive">Map can be dragged and zoomed</template>
   <template name="EditorGameInterfacefont">Interface font</template>
-  <template name="EditorGameInterfacefontHelp">The font of the location bar, panes and buttons. Leave it empty for the player’s own.</template>
+  <template name="EditorGameInterfacefontHelp">The font of the location bar, panes and buttons. Leave it empty for the default.</template>
   <template name="EditorGameAccentColour">Accent colour</template>
   <template name="EditorGameAccentColourHelp">The accent colour is for links, the compass and the command prompt.</template>
   <template name="EditorGameLightDarkHelp">How light and dark mode work</template>
@@ -275,7 +275,7 @@
   <template name="EditorGameOptions">Options</template>
   <template name="EditorGameClearpicture">Empty the picture frame in rooms without a picture</template>
   <template name="EditorGameStylesheetTitle">Stylesheet</template>
-  <template name="EditorGameStylesheetHelp">CSS for the game's interface, applied over the player's own styles when the game is played.</template>
+  <template name="EditorGameStylesheetHelp">CSS for the game's interface, applied over the default styles when the game is played.</template>
   <template name="EditorGameStylesheet">Stylesheet</template>
   <template name="EditorGameScript">Scripts</template>
   <template name="EditorGameAdvancedScript">Advanced Scripts</template>
@@ -900,7 +900,7 @@
   <template name="TypeNoDescription">No description</template>
   <template name="TypeText">Text</template>
   <template name="TypeRunScript">Run script</template>
-  <template name="TypeThemeStandard">Quest Standard</template>
+  <template name="TypeThemeStandard">Standard</template>
   <template name="TypeThemeNovella">Novella</template>
   <template name="TypeThemeRetro">Retro</template>
   <template name="TypeThemeTypewriter">Typewriter</template>
