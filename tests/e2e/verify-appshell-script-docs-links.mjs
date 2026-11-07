@@ -1,6 +1,6 @@
 // Verifies the contextual documentation deep-links on script commands:
-//   - ScriptEditor's hover "?" on a script row, and the "Help" button in the
-//     selection toolbar (the touch path to the same link)
+//   - the "Help" item in a ScriptEditor row's ⋯ menu (on touch too, where ⋯ is
+//     always shown)
 //   - AddScriptModal's footer "Learn more" link for the highlighted command
 // Both resolve through docsUrlForScriptKeyword(), backed by the generated
 // src/AppShell/src/lib/docs-index.generated.ts. Commands with no reference
@@ -97,34 +97,21 @@ async function run() {
     await page.getByRole('button', { name: 'Print', exact: true }).click();
     await page.waitForSelector('input[type="checkbox"]', { timeout: 10000 });
 
-    // --- ScriptEditor row: hover "?" ---
-    const row = page.locator('div.group.relative').first();
+    // --- ScriptEditor row: ⋯ → Help ---
+    const row = page.locator('div.script-row').first();
     await row.hover();
-    const helpButton = row.locator('button[aria-label^="Help for"]');
-    if (await helpButton.count() !== 1) {
-        throw new Error(`expected exactly one "?" help button on the script row, found ${await helpButton.count()}`);
+    await row.locator('button[aria-label="More actions"]').click();
+    const helpItem = page.getByRole('menuitem', { name: 'Help', exact: true });
+    if (await helpItem.count() !== 1) {
+        throw new Error(`expected exactly one "Help" item in the row's ⋯ menu, found ${await helpItem.count()}`);
     }
     const [popup] = await Promise.all([
         page.waitForEvent('popup', { timeout: 10000 }),
-        helpButton.click(),
+        helpItem.click(),
     ]);
     const popupUrl = popup.url();
     await popup.close();
-    check('script row "?" opens the msg reference', popupUrl, 'https://questviva.com/reference/script-commands/#msg');
-
-    // --- Selection toolbar: "? Help" (the touch path) ---
-    await row.locator('input[type="checkbox"]').check();
-    const toolbarHelp = page.locator('button:has-text("Help")');
-    if (await toolbarHelp.count() !== 1) {
-        throw new Error(`expected a "Help" button in the selection toolbar, found ${await toolbarHelp.count()}`);
-    }
-    const [popup2] = await Promise.all([
-        page.waitForEvent('popup', { timeout: 10000 }),
-        toolbarHelp.click(),
-    ]);
-    const popup2Url = popup2.url();
-    await popup2.close();
-    check('selection toolbar "Help" opens the msg reference', popup2Url, 'https://questviva.com/reference/script-commands/#msg');
+    check('script row ⋯ → Help opens the msg reference', popupUrl, 'https://questviva.com/reference/script-commands/#msg');
 
     console.log('PASS');
 }

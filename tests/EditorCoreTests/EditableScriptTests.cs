@@ -184,4 +184,31 @@ public class EditableScriptTests : EditorControllerTestBase
         Assert.AreEqual(1, newScripts.Scripts.Count());
         Assert.AreEqual("Print \"hello\"", newScripts[0].DisplayString());
     }
+
+    [TestMethod]
+    public void TestAddNewAtIndexInsertsInTheMiddleAndUndoes()
+    {
+        var newScripts = Controller.CreateNewEditableScripts("game", "somescript", "msg (\"one\")", true);
+        newScripts.AddNew("msg (\"three\")", "game");
+
+        newScripts.AddNew("msg (\"two\")", "game", 1);
+
+        Assert.AreEqual("msg (\"one\")\nmsg (\"two\")\nmsg (\"three\")", newScripts.Code);
+        Assert.AreEqual(3, newScripts.Count);
+        Assert.AreEqual("Print \"two\"", newScripts[1].DisplayString());
+
+        Controller.Undo();
+        Assert.AreEqual("msg (\"one\")\nmsg (\"three\")", newScripts.Code);
+        Assert.AreEqual(2, newScripts.Count);
+    }
+
+    [TestMethod]
+    public void TestAddNewWithIndexPastTheEndAppends()
+    {
+        var newScripts = Controller.CreateNewEditableScripts("game", "somescript", "msg (\"one\")", true);
+
+        newScripts.AddNew("msg (\"two\")", "game", 5);
+
+        Assert.AreEqual("msg (\"one\")\nmsg (\"two\")", newScripts.Code);
+    }
 }

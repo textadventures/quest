@@ -23,7 +23,8 @@ public interface IEditableScripts : IDataWrapper
     int Count { get; }
     string? Owner { get; }
     string Code { get; set; }
-    void AddNew(string keyword, string elementName);
+    // index: where to insert the new script; null (or past the end) adds it at the end.
+    void AddNew(string keyword, string elementName, int? index = null);
     event EventHandler<EditableScriptsUpdatedEventArgs> Updated;
     void Remove(int[] indexes);
     string DisplayString(int index, string newValue);

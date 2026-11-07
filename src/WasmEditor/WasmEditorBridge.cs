@@ -1783,7 +1783,8 @@ public partial class WasmEditorBridge
     }
 
     [JSExport]
-    public static string PasteScripts(string elementKey, string attribute, string containerPath)
+    // index: where in the container to paste; -1 (or past the end) pastes at the end.
+    public static string PasteScripts(string elementKey, string attribute, string containerPath, int index)
     {
         if (_controller == null)
         {
@@ -1834,7 +1835,7 @@ public partial class WasmEditorBridge
             return "error";
         }
 
-        container.Paste(container.Count, true);
+        container.Paste(index < 0 || index > container.Count ? container.Count : index, true);
         return "ok";
     }
 
@@ -1980,7 +1981,8 @@ public partial class WasmEditorBridge
     }
 
     [JSExport]
-    public static string AddScript(string elementKey, string attribute, string containerPath, string keyword)
+    // index: where in the container to insert; -1 (or past the end) adds at the end.
+    public static string AddScript(string elementKey, string attribute, string containerPath, string keyword, int index)
     {
         if (_controller == null)
         {
@@ -2016,7 +2018,7 @@ public partial class WasmEditorBridge
 
         try
         {
-            container.AddNew(keyword, elementKey);
+            container.AddNew(keyword, elementKey, index < 0 ? null : index);
             return "ok";
         }
         catch (Exception ex)
@@ -2078,6 +2080,61 @@ public partial class WasmEditorBridge
         try
         {
             container.Swap(index1, index2);
+            return "ok";
+        }
+        finally
+        {
+            _controller.EndTransaction();
+        }
+    }
+
+    // Moves the contiguous run of `count` scripts starting at `start` up (delta -1) or down
+    // (delta 1) by one place, as a single undo step: the script just outside the run swaps
+    // its way to the other end of it.
+    [JSExport]
+    public static string MoveScriptRange(string elementKey, string attribute, string containerPath, int start, int count, int delta)
+    {
+        if (_controller == null)
+        {
+            return "error";
+        }
+
+        var scripts = GetScripts(elementKey, attribute);
+        if (scripts == null)
+        {
+            return "error";
+        }
+
+        var container = ResolveContainer(scripts, containerPath);
+        if (container == null)
+        {
+            return "error";
+        }
+
+        var end = start + count - 1;
+        if (count < 1 || (delta != -1 && delta != 1) || start + Math.Min(delta, 0) < 0 || end + Math.Max(delta, 0) >= container.Count)
+        {
+            return "error";
+        }
+
+        _controller.StartTransaction("Move scripts");
+        try
+        {
+            if (delta < 0)
+            {
+                for (var i = start; i <= end; i++)
+                {
+                    container.Swap(i - 1, i);
+                }
+            }
+            else
+            {
+                for (var i = end; i >= start; i--)
+                {
+                    container.Swap(i, i + 1);
+                }
+            }
+
             return "ok";
         }
         finally
