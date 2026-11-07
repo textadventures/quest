@@ -7,7 +7,7 @@
     import Combobox from "./Combobox.svelte";
     import ColourInput from "./ColourInput.svelte";
     import ExpressionInput from "./ExpressionInput.svelte";
-    import { t } from "#lib/i18n/index.js";
+    import { t, tPlural } from "#lib/i18n/index.js";
     import { docsUrlForScriptKeyword } from "#lib/docs-links.js";
     import {
         scriptVersion,
@@ -108,6 +108,17 @@
     // Tracks which switch cases (scriptdictionary control entries) are expanded, keyed by
     // `${scriptIndex}:${paramAttribute}:${caseKey}` - see switchCasesEditor.
     const expandedCases = new SvelteSet<string>();
+    // Nested blocks the author has collapsed (#2661): an if's then/else if/else branches
+    // and a command's own script parameter (for, while, firsttime, show menu ...). Keyed
+    // by the owning script's id, not its index, so a collapsed block stays collapsed when
+    // an edit reloads the script data or a script above it is added, moved or removed:
+    // EditableScripts wraps each IScript once, so its id survives a scriptVersion bump.
+    // Kept per editor instance, so it resets when the author opens another element.
+    const collapsedBlocks = new SvelteSet<string>();
+
+    function toggleCollapsed(key: string) {
+        if (collapsedBlocks.has(key)) collapsedBlocks.delete(key); else collapsedBlocks.add(key);
+    }
     // Staged "add case" key text, keyed by `${scriptIndex}:${paramAttribute}` - one row of
     // scriptdictionary controls can only appear once per script node, so this is unambiguous.
     let newCaseKeys = $state<Record<string, string>>({});
@@ -193,6 +204,10 @@
             codeViewError = null;
         }
     });
+
+    function siblingScriptId(index: number): string {
+        return scripts()[index]?.id ?? String(index);
+    }
 
     function scripts(): ScriptNodeData[] {
         if (!isRoot && initialData !== null) return initialData;
@@ -712,8 +727,6 @@
     // repeated that column's width as extra indent. An if's else/else-if lines and
     // its add buttons use it too, so they line up with the blocks between them.
     const nestedBlockOutdent = "-ml-[1.375rem]";
-    // Keeps a nested block's caption ("Run script:") lined up with the row's text.
-    const nestedCaptionIndent = "pl-[1.375rem]";
 
     // Widens a full-width nested block (script/case editor) back out over the
     // row's reserved action-cluster padding, leaving the same 0.5rem inset as the left,
@@ -926,17 +939,29 @@
         {/if}
     {:else if ctrl.controlType === "script" && ctrl.attribute !== null}
         <!-- Nested script block for commands like for/while/foreach/firsttime -->
+        {@const blockKey = `${siblingScriptId(scriptIndex)}/param/${ctrl.attribute}`}
+        {@const collapsed = collapsedBlocks.has(blockKey)}
         <div class="{nestedBlockWidth} mt-0.5">
-            {#if ctrl.caption}
-                <span class="block {nestedCaptionIndent} text-surface-600-400 text-xs italic">{ctrl.caption}:</span>
+            <!-- The toggle sits in the outdented checkbox column (0.375rem + w-3 + gap-1
+                 = 1.375rem), so the caption still lines up with the row's own text. -->
+            <div class="flex items-center gap-1 pl-1.5 text-xs">
+                {@render collapseToggle(blockKey, collapsed)}
+                {#if ctrl.caption}
+                    <span class="text-surface-600-400 italic">{ctrl.caption}:</span>
+                {/if}
+                {#if collapsed}
+                    {@render blockCount(ctrl.scripts ?? [])}
+                {/if}
+            </div>
+            {#if !collapsed}
+                <ScriptEditor
+                    {elementKey}
+                    {attribute}
+                    containerPath={paramPath(scriptIndex, ctrl.attribute)}
+                    initialData={ctrl.scripts ?? []}
+                    depth={depth + 1}
+                />
             {/if}
-            <ScriptEditor
-                {elementKey}
-                {attribute}
-                containerPath={paramPath(scriptIndex, ctrl.attribute)}
-                initialData={ctrl.scripts ?? []}
-                depth={depth + 1}
-            />
         </div>
     {:else if ctrl.attribute !== null}
         {@render valueControl(ctrl, scriptIndex, siblingControls)}
@@ -1217,6 +1242,9 @@
                     <button
                         type="button"
                         class="text-surface-600-400 hover:text-primary-600-400 text-xs"
+                        aria-expanded={expanded}
+                        title={expanded ? t("scriptEditor.collapseBlock") : t("scriptEditor.expandBlock")}
+                        aria-label={expanded ? t("scriptEditor.collapseBlock") : t("scriptEditor.expandBlock")}
                         onclick={() => toggleCaseExpanded(scriptIndex, paramAttribute, item.key)}
                     >{expanded ? "▼" : "▶"}</button>
                     <ExpressionInput
@@ -1458,9 +1486,12 @@
 {/snippet}
 
 {#snippet ifBlock(script: ScriptNodeData, i: number)}
+    {@const thenKey = `${script.id}/then`}
+    {@const thenCollapsed = collapsedBlocks.has(thenKey)}
     <div class="px-2 py-1 text-xs {rowActionsPadding(script)}">
         <!-- If condition - the only line the hover action cluster can overlap -->
         <div class="flex items-center gap-1 flex-wrap pr-[calc(var(--row-actions-pad)_-_0.5rem)]">
+            {@render collapseToggle(thenKey, thenCollapsed)}
             <span class="text-surface-600-400 font-medium select-none">{t("scriptEditor.ifKeyword")}</span>
             {@render expressionField(
                 script.expression ?? "",
@@ -1470,22 +1501,30 @@
                 "input text-xs py-0 px-1 min-w-24 max-w-64 flex-1",
             )}
             <span class="text-surface-600-400 select-none">{t("scriptEditor.thenKeyword")}</span>
+            {#if thenCollapsed}
+                {@render blockCount(script.thenScripts ?? [])}
+            {/if}
         </div>
 
         <!-- Then block -->
-        <div class="mt-1 {nestedBlockOutdent}">
-            <ScriptEditor
-                {elementKey}
-                {attribute}
-                containerPath={thenPath(i)}
-                initialData={script.thenScripts ?? []}
-                depth={depth + 1}
-            />
-        </div>
+        {#if !thenCollapsed}
+            <div class="mt-1 {nestedBlockOutdent}">
+                <ScriptEditor
+                    {elementKey}
+                    {attribute}
+                    containerPath={thenPath(i)}
+                    initialData={script.thenScripts ?? []}
+                    depth={depth + 1}
+                />
+            </div>
+        {/if}
 
         <!-- Else-if blocks -->
         {#each script.elseIfClauses ?? [] as elseIf, ei (elseIf.id)}
+            {@const elseIfKey = `${script.id}/elseif/${elseIf.id}`}
+            {@const elseIfCollapsed = collapsedBlocks.has(elseIfKey)}
             <div class="mt-1 {nestedBlockOutdent} flex items-center gap-1 flex-wrap">
+                {@render collapseToggle(elseIfKey, elseIfCollapsed)}
                 <span class="text-surface-600-400 font-medium select-none">{t("scriptEditor.elseIfKeyword")}</span>
                 {@render expressionField(
                     elseIf.expression ?? "",
@@ -1495,6 +1534,9 @@
                     "input text-xs py-0 px-1 min-w-24 max-w-64 flex-1",
                 )}
                 <span class="text-surface-600-400 select-none">{t("scriptEditor.thenKeyword")}</span>
+                {#if elseIfCollapsed}
+                    {@render blockCount(elseIf.scripts)}
+                {/if}
                 <button
                     type="button"
                     class="btn btn-xs preset-tonal-error px-1 py-0 text-xs leading-none ml-auto"
@@ -1502,21 +1544,29 @@
                     onclick={() => onRemoveElseIf(i, ei)}
                 >×</button>
             </div>
-            <div class="mt-1 {nestedBlockOutdent}">
-                <ScriptEditor
-                    {elementKey}
-                    {attribute}
-                    containerPath={elseIfPath(i, ei)}
-                    initialData={elseIf.scripts}
-                    depth={depth + 1}
-                />
-            </div>
+            {#if !elseIfCollapsed}
+                <div class="mt-1 {nestedBlockOutdent}">
+                    <ScriptEditor
+                        {elementKey}
+                        {attribute}
+                        containerPath={elseIfPath(i, ei)}
+                        initialData={elseIf.scripts}
+                        depth={depth + 1}
+                    />
+                </div>
+            {/if}
         {/each}
 
         <!-- Else block -->
         {#if script.elseScripts !== null && script.elseScripts !== undefined}
+            {@const elseKey = `${script.id}/else`}
+            {@const elseCollapsed = collapsedBlocks.has(elseKey)}
             <div class="mt-1 {nestedBlockOutdent} flex items-center gap-1">
+                {@render collapseToggle(elseKey, elseCollapsed)}
                 <span class="text-surface-600-400 font-medium select-none">{t("scriptEditor.elseKeyword")}</span>
+                {#if elseCollapsed}
+                    {@render blockCount(script.elseScripts)}
+                {/if}
                 <button
                     type="button"
                     class="btn btn-xs preset-tonal-error px-1 py-0 text-xs leading-none ml-auto"
@@ -1524,15 +1574,17 @@
                     onclick={() => onRemoveElse(i)}
                 >×</button>
             </div>
-            <div class="mt-1 {nestedBlockOutdent}">
-                <ScriptEditor
-                    {elementKey}
-                    {attribute}
-                    containerPath={elsePath(i)}
-                    initialData={script.elseScripts}
-                    depth={depth + 1}
-                />
-            </div>
+            {#if !elseCollapsed}
+                <div class="mt-1 {nestedBlockOutdent}">
+                    <ScriptEditor
+                        {elementKey}
+                        {attribute}
+                        containerPath={elsePath(i)}
+                        initialData={script.elseScripts}
+                        depth={depth + 1}
+                    />
+                </div>
+            {/if}
         {/if}
 
         <!-- Add else if / Add else buttons -->
@@ -1551,4 +1603,19 @@
             {/if}
         </div>
     </div>
+{/snippet}
+
+{#snippet collapseToggle(key: string, collapsed: boolean)}
+    <button
+        type="button"
+        class="w-3 flex-shrink-0 text-surface-600-400 hover:text-primary-600-400 text-xs leading-none"
+        aria-expanded={!collapsed}
+        title={collapsed ? t("scriptEditor.expandBlock") : t("scriptEditor.collapseBlock")}
+        aria-label={collapsed ? t("scriptEditor.expandBlock") : t("scriptEditor.collapseBlock")}
+        onclick={() => toggleCollapsed(key)}
+    >{collapsed ? "▶" : "▼"}</button>
+{/snippet}
+
+{#snippet blockCount(scripts: ScriptNodeData[])}
+    <span class="text-surface-600-400 italic select-none">({tPlural("scriptEditor.blockCount", scripts.length)})</span>
 {/snippet}

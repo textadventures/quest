@@ -368,6 +368,10 @@
     "scriptEditor.simpleOption": "einfach",
     "scriptEditor.selectedCount": "{count} ausgewählt",
     "scriptEditor.helpForCommand": "Hilfe zu {command}",
+    "scriptEditor.collapseBlock": "Block einklappen",
+    "scriptEditor.expandBlock": "Block ausklappen",
+    "scriptEditor.blockCount.one": "{count} Skript",
+    "scriptEditor.blockCount.other": "{count} Skripte",
 
     "expressionInput.insertTitle": "Objekt oder Funktion einfügen",
     "expressionInput.filterPlaceholder": "Filter…",
