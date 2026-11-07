@@ -184,4 +184,6 @@ So, as a rule of thumb:
 
 Games written for Quest 5 often use the `get input`, `ask`, `show menu` and `wait` script commands, which work like the block form above - the answer arrives in `result` inside a nested block. They still work, and you can still edit them, but the editor no longer offers them when you add a new script command.
 
+One difference to watch for: `get input`, `ask` and `show menu` end the turn as soon as they ask, so the game's [turn scripts](/howto/time/time-turns-and-timers#turn-scripts) run while the question is still waiting, before the player has answered. `GetInput()`, `Ask()` and `ShowMenu()`, and the block forms of `Ask` and `ShowMenu`, run turn scripts once the player has answered. If a turn script in an older game seems to fire too early, switching to the newer function fixes it.
+
 `GetInput()`, `Ask()` and `ShowMenu()` need a game saved in Quest Viva. In a game still marked as Quest 5.4 to 5.8, they stop with an error that suggests the older command instead. Opening and saving the game in the Quest Viva editor upgrades it.
