@@ -4,8 +4,10 @@
 // Checks that:
 // - a row's ⋯ menu adds a script above or below that row, not at the end
 // - Copy clears the ticks, and the ⋯ menu's Paste above puts the copy beside a row
-// - the selection toolbar's Paste below pastes after the ticked row
+// - ⋯ → Paste below pastes after the row
 // - Move up/down move a run of several ticked rows together, as one undo step
+// - the × beside the selected count deselects everything
+// - the ⋯ menu on the last row isn't clipped by the panel or covered by other rows
 // - a nested block's Add script button names its block, and focusing a script inside
 //   the block highlights the block's frame
 import { chromium } from './lib/tracked-chromium.mjs';
@@ -134,26 +136,33 @@ try {
     await expectRows(page, ['one', 'two', 'one', 'three', '(if)'], 'after ⋯ → Paste above "three"');
     console.log('PASS: Copy clears the ticks, and ⋯ → Paste above pastes before the row');
 
-    // Toolbar Paste below, with "two" ticked.
-    await rowCheckbox(page, 1).check();
-    await page.locator('div[role="region"] button:text-is("Paste below")').first().click();
-    await expectRows(page, ['one', 'two', 'one', 'one', 'three', '(if)'], 'after toolbar Paste below "two"');
-    console.log('PASS: the selection toolbar\'s Paste below pastes after the ticked row');
+    // ⋯ → Paste below on "two".
+    menu = await openRowMenu(page, 1);
+    await menu.getByRole('menuitem', { name: 'Paste below' }).click();
+    await expectRows(page, ['one', 'two', 'one', 'one', 'three', '(if)'], 'after ⋯ → Paste below "two"');
+    console.log('PASS: ⋯ → Paste below pastes after the row');
 
     // Tick rows 2-3 (the two pasted "one"s) and move them up together, then undo once.
     await page.keyboard.press('Escape');
     for (let i = 0; i < 6; i++) if (await rowCheckbox(page, i).isChecked()) await rowCheckbox(page, i).uncheck();
     await rowCheckbox(page, 2).check();
     await rowCheckbox(page, 3).check();
-    await page.locator('div[role="region"] button:has-text("Move up")').first().click();
+    await page.locator('div[role="region"] button[aria-label="Move up"]').first().click();
     await expectRows(page, ['one', 'one', 'one', 'two', 'three', '(if)'], 'after moving two rows up');
     if (!(await rowCheckbox(page, 1).isChecked()) || !(await rowCheckbox(page, 2).isChecked())) {
         throw new Error('The moved rows should stay ticked at their new positions');
     }
-    await page.locator('div[role="region"] button:has-text("Move down")').first().click();
-    await page.locator('div[role="region"] button:has-text("Move down")').first().click();
+    await page.locator('div[role="region"] button[aria-label="Move down"]').first().click();
+    await page.locator('div[role="region"] button[aria-label="Move down"]').first().click();
     await expectRows(page, ['one', 'two', 'three', 'one', 'one', '(if)'], 'after moving two rows down twice');
     console.log('PASS: Move up/down move a run of ticked rows together');
+
+    // The × beside the count clears every tick.
+    await page.locator('div[role="region"] button[aria-label="Deselect all"]').first().click();
+    for (let i = 0; i < 5; i++) {
+        if (await rowCheckbox(page, i).isChecked()) throw new Error(`Deselect all should untick row ${i}`);
+    }
+    console.log('PASS: Deselect all clears the ticks');
 
     // Undo should reverse one whole move of the run, not one swap.
     await page.locator('button[aria-label="Undo"]').first().click();
@@ -186,6 +195,34 @@ try {
         throw new Error(`Focusing a script in else should highlight else's frame differently from then's (both ${borders.elseBlock})`);
     }
     console.log(`PASS: focus highlights the block it's in (${borders.elseBlock} vs ${borders.thenBlock})`);
+
+    // The ⋯ menu on the last root row (the if) opens fully on screen, flipping upwards if
+    // need be, and nothing from another row covers it.
+    await page.setViewportSize({ width: 1280, height: 600 });
+    const lastRow = rootRow(page, 5);
+    await lastRow.scrollIntoViewIfNeeded();
+    await page.evaluate(() => {
+        // Put the last row at the bottom of the viewport, where the bug showed.
+        const rows = document.querySelector('div[role="region"]').querySelectorAll(':scope > div.script-row');
+        rows[rows.length - 1].scrollIntoView({ block: 'end' });
+    });
+    menu = await openRowMenu(page, 5);
+    await page.waitForTimeout(200);
+    const box = await menu.boundingBox();
+    if (!box || box.y < 0 || box.y + box.height > 600) {
+        throw new Error(`The last row's ⋯ menu should be fully on screen, was ${JSON.stringify(box)}`);
+    }
+    const covered = await menu.evaluate(m => {
+        const items = [...m.querySelectorAll('[role="menuitem"]')];
+        return items.filter(it => {
+            const r = it.getBoundingClientRect();
+            const top = document.elementFromPoint(r.left + r.width - 8, r.top + r.height / 2);
+            return !m.contains(top);
+        }).map(it => it.textContent.trim());
+    });
+    if (covered.length > 0) throw new Error(`Menu items covered by something else: ${covered.join(', ')}`);
+    console.log('PASS: the last row\'s ⋯ menu is fully visible and on top');
+    await page.keyboard.press('Escape');
 
     console.log('PASS: all checks passed');
 } catch (err) {

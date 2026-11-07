@@ -14,9 +14,16 @@
         trigger: Snippet<[toggle: (e: MouseEvent) => void, open: boolean]>;
         items: DropdownMenuItem[];
         align?: "left" | "right";
+        // Position the menu against the viewport instead of its trigger's box, so a
+        // scrolling ancestor can't clip it. It opens upwards when there isn't room below,
+        // and closes if the page scrolls, since it would otherwise drift off its trigger.
+        fixed?: boolean;
     }
 
-    let { trigger, items, align = "right" }: Props = $props();
+    let { trigger, items, align = "right", fixed = false }: Props = $props();
+    // Inline position for a fixed menu, computed from the trigger when it opens.
+    let fixedStyle = $state("");
+    let menuEl = $state<HTMLDivElement | undefined>();
 
     let open = $state(false);
     let rootEl = $state<HTMLDivElement | undefined>();
@@ -27,7 +34,37 @@
         e.stopPropagation();
         triggerEl = e.currentTarget as HTMLElement;
         open = !open;
+        if (open && fixed) placeFixed();
     }
+
+    // Below the trigger, or above it when the menu wouldn't fit below. The menu's height
+    // isn't known until it renders, so estimate from the item count and correct after.
+    function placeFixed(menuHeight = items.length * 30 + 16) {
+        if (!triggerEl) return;
+        const r = triggerEl.getBoundingClientRect();
+        const horizontal = align === "right"
+            ? `right: ${window.innerWidth - r.right}px;`
+            : `left: ${r.left}px;`;
+        const fitsBelow = r.bottom + 4 + menuHeight <= window.innerHeight || r.top < menuHeight + 4;
+        const vertical = fitsBelow
+            ? `top: ${r.bottom + 4}px;`
+            : `bottom: ${window.innerHeight - r.top + 4}px;`;
+        fixedStyle = `position: fixed; ${horizontal} ${vertical}`;
+    }
+
+    $effect(() => {
+        if (!open || !fixed || !menuEl) return;
+        placeFixed(menuEl.offsetHeight);
+        function onScroll(e: Event) {
+            if (!menuEl?.contains(e.target as Node)) close(false);
+        }
+        window.addEventListener("scroll", onScroll, true);
+        window.addEventListener("resize", onScroll);
+        return () => {
+            window.removeEventListener("scroll", onScroll, true);
+            window.removeEventListener("resize", onScroll);
+        };
+    });
 
     function close(restoreFocus = true) {
         open = false;
@@ -41,7 +78,7 @@
     }
 
     function focusItem(index: number) {
-        itemEls[index]?.focus();
+        itemEls[index]?.focus({ preventScroll: true });
     }
 
     // Roving focus between enabled items, wrapping past either end.
@@ -107,9 +144,11 @@
     {@render trigger(toggle, open)}
     {#if open}
         <div
+            bind:this={menuEl}
             role="menu"
             tabindex="-1"
-            class="absolute {align === "right" ? "right-0" : "left-0"} top-full z-[999] mt-1 w-56 bg-surface-50-950 border border-surface-200-800 rounded shadow-lg py-1"
+            style={fixed ? fixedStyle : undefined}
+            class="{fixed ? "" : `absolute ${align === "right" ? "right-0" : "left-0"} top-full mt-1`} z-[999] w-56 bg-surface-50-950 border border-surface-200-800 rounded shadow-lg py-1"
             onkeydown={onMenuKeydown}
         >
             {#each items as item, i (item.label)}

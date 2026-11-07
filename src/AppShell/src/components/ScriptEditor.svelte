@@ -576,6 +576,15 @@
                 { label: t("scriptEditor.pasteBelow"), action: () => onPaste(i + 1) },
             );
         }
+        // Move and delete are also hover buttons, but repeated here for touch, where the
+        // menu is all a row shows.
+        items.push(
+            { label: t("common.moveUp"), action: () => onMoveUp(i), disabled: i === 0, divider: true },
+            { label: t("common.moveDown"), action: () => onMoveDown(i), disabled: i === scripts().length - 1 },
+        );
+        const docsUrl = docsUrlFor(scripts()[i]);
+        if (docsUrl) items.push({ label: t("common.help"), action: () => openDocs(docsUrl), divider: true });
+        items.push({ label: t("common.delete"), action: () => onDelete(i), divider: !docsUrl });
         return items;
     }
 
@@ -752,18 +761,13 @@
         return docsUrlForScriptKeyword(script.keyword, $isGamebook);
     }
 
-    // Right padding reserving room for the hover action cluster, so it never
-    // overlaps the row's own controls. 4rem (64px) was an exact fit for the
-    // original three buttons, and each of the ⋯ and help buttons adds ~19px,
-    // hence 5.25rem, or 7.25rem when help is present. pointer-coarse drops both to 0.5rem - the whole cluster
-    // is hover-only, so there's nothing to reserve space for on touch.
+    // Right padding reserving room for the action cluster, so it never overlaps the
+    // row's own controls: 5.25rem fits its four buttons, and on touch, where only ⋯
+    // shows, 1.75rem fits that.
     // Set as --row-actions-pad so full-width nested blocks below the first line
     // (nestedBlockWidth) can reclaim it: the cluster only sits at the top-right,
     // and reserving it at every nesting level squeezed deep nesting (#2544).
-    function rowActionsPadding(script: ScriptNodeData): string {
-        return (docsUrlFor(script) ? "[--row-actions-pad:7.25rem]" : "[--row-actions-pad:5.25rem]")
-            + " pointer-coarse:[--row-actions-pad:0.5rem]";
-    }
+    const rowActionsPadding = "[--row-actions-pad:5.25rem] pointer-coarse:[--row-actions-pad:1.75rem]";
 
     // Pulls a nested block (below its row's first line, so never beside the checkbox)
     // left by the width of the row's checkbox column: the label's pl-1.5 + the
@@ -815,7 +819,6 @@
         {/if}
         <div role="region" inert={isLocked || undefined} class={isLocked ? "opacity-60" : ""}>
             {#each scripts() as script, i (script.id)}
-                {@const docsUrl = docsUrlFor(script)}
                 <div class="script-row group relative border border-surface-200-800 rounded mb-1 bg-surface-50-950 flex items-start">
                     <label class="flex items-start pt-1.5 pl-1.5 pr-0.5 cursor-pointer flex-shrink-0">
                         <input
@@ -826,34 +829,33 @@
                         />
                     </label>
                     <div class="flex-1 min-w-0">
-                        <!-- Script row actions (hover). Every row also has a checkbox + selection
-                             toolbar below (Cut/Copy/Delete/Move) that already covers this on
-                             touch, so these stay hover-only at all nesting levels. -->
-                        <div class="absolute right-1 top-1 flex gap-0.5 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity z-10">
-                            {#if docsUrl}
-                                <button
-                                    type="button"
-                                    class="btn btn-xs preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
-                                    title={t("scriptEditor.helpForCommand", { command: script.displayString ?? "" })}
-                                    aria-label={t("scriptEditor.helpForCommand", { command: script.displayString ?? "" })}
-                                    onclick={() => openDocs(docsUrl)}
-                                >?</button>
-                            {/if}
+                        <!-- Script row actions. On hover: move up/down, delete, and a ⋯ menu with
+                             the rest (add/paste above or below, help). On touch there's no hover,
+                             so only ⋯ shows, always, and its menu repeats move and delete. While
+                             the menu is open the cluster stays visible and sits above the
+                             clusters of the rows after it, which would otherwise cover the menu. -->
+                        <div class="absolute right-1 top-1 flex gap-0.5 opacity-0 group-hover:opacity-100 focus-within:opacity-100 pointer-coarse:opacity-100 has-[[aria-expanded=true]]:opacity-100 has-[[aria-expanded=true]]:z-30 transition-opacity z-10">
                             <button
                                 type="button"
-                                class="btn btn-xs preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
+                                class="btn btn-xs preset-outlined-primary-500 px-1 py-0 text-xs leading-none pointer-coarse:hidden"
                                 title={t("common.moveUp")}
                                 disabled={i === 0}
                                 onclick={() => onMoveUp(i)}
                             >↑</button>
                             <button
                                 type="button"
-                                class="btn btn-xs preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
+                                class="btn btn-xs preset-outlined-primary-500 px-1 py-0 text-xs leading-none pointer-coarse:hidden"
                                 title={t("common.moveDown")}
                                 disabled={i === scripts().length - 1}
                                 onclick={() => onMoveDown(i)}
                             >↓</button>
-                            <DropdownMenu items={rowMenuItems(i)}>
+                            <button
+                                type="button"
+                                class="btn btn-xs preset-tonal-error px-1 py-0 text-xs leading-none pointer-coarse:hidden"
+                                title={t("common.delete")}
+                                onclick={() => onDelete(i)}
+                            >×</button>
+                            <DropdownMenu items={rowMenuItems(i)} fixed>
                                 {#snippet trigger(toggle, open)}
                                     <button
                                         type="button"
@@ -866,12 +868,6 @@
                                     ><Ellipsis size={12} /></button>
                                 {/snippet}
                             </DropdownMenu>
-                            <button
-                                type="button"
-                                class="btn btn-xs preset-tonal-error px-1 py-0 text-xs leading-none"
-                                title={t("common.delete")}
-                                onclick={() => onDelete(i)}
-                            >×</button>
                         </div>
 
                         {#if script.type === "if"}
@@ -909,57 +905,28 @@
                         <button
                             type="button"
                             class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
+                            title={t("common.moveUp")}
+                            aria-label={t("common.moveUp")}
                             disabled={sel[0] === 0}
                             onclick={onMoveUpSelected}
-                        >↑ {t("common.moveUp")}</button>
+                        >↑</button>
                         <button
                             type="button"
                             class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
+                            title={t("common.moveDown")}
+                            aria-label={t("common.moveDown")}
                             disabled={sel[sel.length - 1] === scripts().length - 1}
                             onclick={onMoveDownSelected}
-                        >↓ {t("common.moveDown")}</button>
-                    {/if}
-                    <!-- The row's ⋯ menu is hover-only, so these are the touch path to it. -->
-                    {#if sel.length === 1 || $scriptClipboardHasContent}
-                        <span class="w-px h-4 bg-surface-300-700 mx-0.5 flex-shrink-0"></span>
-                    {/if}
-                    {#if sel.length === 1}
-                        <button
-                            type="button"
-                            class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
-                            onclick={() => openAddModal(sel[0])}
-                        >{t("scriptEditor.addAbove")}</button>
-                        <button
-                            type="button"
-                            class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
-                            onclick={() => openAddModal(sel[0] + 1)}
-                        >{t("scriptEditor.addBelow")}</button>
-                    {/if}
-                    {#if $scriptClipboardHasContent}
-                        <button
-                            type="button"
-                            class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
-                            onclick={() => onPaste(sel[0])}
-                        >{t("scriptEditor.pasteAbove")}</button>
-                        <button
-                            type="button"
-                            class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
-                            onclick={() => onPaste(sel[sel.length - 1] + 1)}
-                        >{t("scriptEditor.pasteBelow")}</button>
-                    {/if}
-                    {#if sel.length === 1}
-                        <!-- The row's own "?" is hover-only, so this is the
-                             touch path to the same link. -->
-                        {@const selDocsUrl = docsUrlFor(scripts()[sel[0]])}
-                        {#if selDocsUrl}
-                            <button
-                                type="button"
-                                class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
-                                onclick={() => openDocs(selDocsUrl)}
-                            >{t("common.help")}</button>
-                        {/if}
+                        >↓</button>
                     {/if}
                     <span class="ml-auto pl-2 flex-shrink-0 text-surface-600-400">{t("scriptEditor.selectedCount", { count: sel.length })}</span>
+                    <button
+                        type="button"
+                        class="btn btn-xs px-1 py-0.5 text-xs leading-none flex-shrink-0 text-surface-600-400 hover:text-primary-600-400"
+                        title={t("scriptEditor.deselectAll")}
+                        aria-label={t("scriptEditor.deselectAll")}
+                        onclick={() => selectedIndices.clear()}
+                    >×</button>
                 </div>
             {/if}
         </div>
@@ -1007,7 +974,7 @@
 </div>
 
 {#snippet normalBlock(script: ScriptNodeData, i: number)}
-    <div class="px-2 py-1 {rowActionsPadding(script)} pr-(--row-actions-pad) flex flex-wrap items-center gap-x-1 gap-y-0.5 text-xs">
+    <div class="px-2 py-1 {rowActionsPadding} pr-(--row-actions-pad) flex flex-wrap items-center gap-x-1 gap-y-0.5 text-xs">
         {#each script.controls ?? [] as ctrl, ci (ci)}
             {@render inlineControl(ctrl, i, script.controls ?? [], ci)}
         {/each}
@@ -1580,7 +1547,7 @@
 {#snippet ifBlock(script: ScriptNodeData, i: number)}
     {@const thenKey = `${script.id}/then`}
     {@const thenCollapsed = collapsedBlocks.has(thenKey)}
-    <div class="px-2 py-1 text-xs {rowActionsPadding(script)}">
+    <div class="px-2 py-1 text-xs {rowActionsPadding}">
         <!-- If condition - the only line the hover action cluster can overlap -->
         <div class="flex items-center gap-1 flex-wrap pr-[calc(var(--row-actions-pad)_-_0.5rem)]">
             {@render collapseToggle(thenKey, thenCollapsed)}

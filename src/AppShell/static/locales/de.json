@@ -367,6 +367,7 @@
     "scriptEditor.expressionOption": "Ausdruck",
     "scriptEditor.simpleOption": "einfach",
     "scriptEditor.selectedCount": "{count} ausgewählt",
+    "scriptEditor.deselectAll": "Auswahl aufheben",
     "scriptEditor.helpForCommand": "Hilfe zu {command}",
     "scriptEditor.collapseBlock": "Block einklappen",
     "scriptEditor.expandBlock": "Block ausklappen",

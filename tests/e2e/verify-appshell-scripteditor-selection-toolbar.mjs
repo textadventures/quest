@@ -3,7 +3,10 @@
 // checkbox is checked) got clipped on a narrow mobile screen instead of
 // scrolling — the row had no overflow handling and its buttons weren't
 // flex-shrink-0, so they just got cut off past the container edge. It should
-// scroll horizontally instead, and the background should read a bit lighter.
+// scroll horizontally if it ever overflows, and the background should read a bit
+// lighter. Since the row ⋯ menu became the touch path to single-row actions, the
+// toolbar only holds multi-row ones (Cut/Copy/Delete/↑/↓ + count + deselect), so it
+// should now fit a 375px screen without scrolling at all.
 import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
@@ -38,23 +41,22 @@ try {
     await selectOneRootScript(page);
 
     const toolbar = page.locator('text=selected').locator('..');
-    const isScrollable = await toolbar.evaluate(el => el.scrollWidth > el.clientWidth);
-    if (!isScrollable) throw new Error('Expected the selection toolbar to overflow (and be scrollable) at 375px width with 5 buttons + a count');
-    console.log('PASS: selection toolbar overflows its container at mobile width (needs to scroll)');
+    const widths = await toolbar.evaluate(el => ({ scroll: el.scrollWidth, client: el.clientWidth }));
+    if (widths.scroll > widths.client) throw new Error(`Expected the selection toolbar to fit at 375px width without scrolling, needed ${widths.scroll}px of ${widths.client}px`);
+    console.log(`PASS: selection toolbar fits at mobile width (${widths.scroll}px of ${widths.client}px)`);
 
-    // Nothing outside the toolbar's own box should be clipped/hidden — i.e.
-    // the overflow is contained (scrollable), not just visually cut off by a
-    // parent with overflow:hidden.
+    // If it ever does overflow (a longer translation, say), the overflow must be
+    // contained (scrollable), not just visually cut off by a parent with
+    // overflow:hidden.
     const overflowX = await toolbar.evaluate(el => getComputedStyle(el).overflowX);
     if (overflowX !== 'auto' && overflowX !== 'scroll') throw new Error(`Expected overflow-x auto/scroll on the toolbar, got ${overflowX}`);
     console.log(`PASS: toolbar has overflow-x: ${overflowX}`);
 
-    // Scrolling reveals the buttons/count that didn't fit initially.
-    await toolbar.evaluate(el => { el.scrollLeft = el.scrollWidth; });
-    const moveDownVisible = await page.getByRole('button', { name: /Move down/ }).isVisible();
+    const moveDownVisible = await toolbar.getByRole('button', { name: 'Move down' }).isVisible();
     const countVisible = await page.getByText('1 selected').isVisible();
-    if (!moveDownVisible || !countVisible) throw new Error('Expected "Move down" and "1 selected" to become visible after scrolling the toolbar right');
-    console.log('PASS: scrolling the toolbar reveals the buttons/count that didn\'t fit');
+    const deselectVisible = await toolbar.getByRole('button', { name: 'Deselect all' }).isVisible();
+    if (!moveDownVisible || !countVisible || !deselectVisible) throw new Error('Expected "Move down", "1 selected" and "Deselect all" all to be visible without scrolling');
+    console.log('PASS: Move down, the count and Deselect all are all visible');
 
     // Background reads lighter than the old opaque bg-surface-100-900 (alpha < 1).
     const bg = await toolbar.evaluate(el => getComputedStyle(el).backgroundColor);

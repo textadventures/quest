@@ -271,6 +271,7 @@
     "scriptEditor.expressionOption": "[éxpréssíón]",
     "scriptEditor.simpleOption": "[símplé]",
     "scriptEditor.selectedCount": "[{count} séléctéd]",
+    "scriptEditor.deselectAll": "[Désélect áll]",
     "scriptEditor.helpForCommand": "[Hélp fór {command}]",
     "scriptEditor.collapseBlock": "[Cóllápsé blóck]",
     "scriptEditor.expandBlock": "[Éxpánd blóck]",
