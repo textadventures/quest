@@ -2,8 +2,8 @@
 //
 // Checks that a ticked row is tinted (so everything nested inside it visibly goes
 // with it), that Copy and Cut say how many scripts they took and how many were nested
-// inside them, that shift-click ticks a range, and that "Select to end" ticks every
-// row from the first ticked one down.
+// inside them, that shift-click ticks a range, and that the selected count's menu
+// ticks every row from the first ticked one down (Select to end), or all of them.
 import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
@@ -93,12 +93,21 @@ try {
     // Select to end, from row 2.
     await clearTicks(page);
     await rowCheckbox(page, 2).click();
-    await page.locator('div[role="region"] button:text-is("Select to end")').first().click();
+    const countMenu = page.locator('div[role="region"] button[aria-haspopup="menu"]', { hasText: '1 selected' });
+    await countMenu.click();
+    await page.getByRole('menuitem', { name: 'Select to end' }).click();
     await expectChecked(page, [2, 3], 'after Select to end from row 2');
-    if (await page.locator('div[role="region"] button:text-is("Select to end")').count() !== 0) {
-        throw new Error('"Select to end" should be hidden once the selection already reaches the end');
+    await page.locator('div[role="region"] button[aria-haspopup="menu"]', { hasText: '2 selected' }).click();
+    if (await page.getByRole('menuitem', { name: 'Select to end' }).count() !== 0) {
+        throw new Error('"Select to end" should be left out once the selection already reaches the end');
     }
-    console.log('PASS: Select to end ticks every row from the first ticked one');
+    await page.getByRole('menuitem', { name: 'Select all' }).click();
+    await expectChecked(page, [0, 1, 2, 3], 'after Select all');
+    console.log('PASS: the count\'s menu offers Select to end and Select all');
+
+    // Back to just rows 2-3 for the Cut below.
+    await rowCheckbox(page, 0).uncheck();
+    await rowCheckbox(page, 1).uncheck();
 
     // Cut the two plain scripts: no nested count.
     await page.locator('div[role="region"] button:text-is("Cut")').first().click();

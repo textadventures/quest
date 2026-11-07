@@ -386,6 +386,7 @@
     "scriptEditor.nestedInside.one": "(und {count} Skript darin)",
     "scriptEditor.nestedInside.other": "(und {count} Skripte darin)",
     "scriptEditor.selectToEnd": "Bis zum Ende auswählen",
+    "scriptEditor.selectAll": "Alle auswählen",
     "scriptEditor.selectRow": "Auswählen (Umschalt-Klick wählt einen Bereich)",
     "scriptEditor.selectRowLabel": "{command} auswählen",
 

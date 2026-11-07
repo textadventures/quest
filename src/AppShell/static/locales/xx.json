@@ -290,6 +290,7 @@
     "scriptEditor.nestedInside.one": "[(ánd {count} scrípt ínsídé ít)]",
     "scriptEditor.nestedInside.other": "[(ánd {count} scrípts ínsídé)]",
     "scriptEditor.selectToEnd": "[Séléct tó énd]",
+    "scriptEditor.selectAll": "[Séléct áll]",
     "scriptEditor.selectRow": "[Séléct (shíft-clíck tó séléct á rángé)]",
     "scriptEditor.selectRowLabel": "[Séléct {command}]",
     "expressionInput.insertTitle": "[Ínsért óbjéct ór fúnctíón]",

@@ -4,6 +4,7 @@
     import AddScriptModal from "./AddScriptModal.svelte";
     import DropdownMenu, { type DropdownMenuItem } from "./DropdownMenu.svelte";
     import Ellipsis from "@lucide/svelte/icons/ellipsis";
+    import ChevronDown from "@lucide/svelte/icons/chevron-down";
     import AssetPicker from "./AssetPicker.svelte";
     import CodeEditor from "./CodeEditor.svelte";
     import Combobox from "./Combobox.svelte";
@@ -530,6 +531,19 @@
         for (let r = first; r < scripts().length; r++) selectedIndices.add(r);
     }
 
+    function onSelectAll() {
+        for (let r = 0; r < scripts().length; r++) selectedIndices.add(r);
+    }
+
+    // The selected-count menu: ways to widen the selection that would add something.
+    function selectionMenuItems(sel: number[]): DropdownMenuItem[] {
+        const items: DropdownMenuItem[] = [];
+        const count = scripts().length;
+        if (sel.length < count - sel[0]) items.push({ label: t("scriptEditor.selectToEnd"), action: onSelectToEnd });
+        if (sel.length < count) items.push({ label: t("scriptEditor.selectAll"), action: onSelectAll });
+        return items;
+    }
+
     // How many scripts sit inside these ones (an if's branches, a wait's body, switch
     // cases ...), counted all the way down.
     function nestedCount(nodes: ScriptNodeData[]): number {
@@ -939,6 +953,7 @@
                  when it doesn't fit a narrow screen. -->
             {#if selectedIndices.size > 0}
                 {@const sel = sortedSelection()}
+                {@const widenItems = selectionMenuItems(sel)}
                 <div class="flex items-center gap-1 mb-1 px-1 py-1 bg-surface-100-900/60 rounded border border-surface-200-800 text-xs overflow-x-auto">
                     <button
                         type="button"
@@ -955,18 +970,10 @@
                         class="btn btn-xs preset-tonal-error text-xs py-0.5 flex-shrink-0"
                         onclick={onDeleteSelected}
                     >{t("common.delete")}</button>
-                    {#if sel.length < scripts().length - sel[0]}
-                        <button
-                            type="button"
-                            class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
-                            onclick={onSelectToEnd}
-                        >{t("scriptEditor.selectToEnd")}</button>
-                    {/if}
                     {#if isContiguous(sel)}
-                        <span class="w-px h-4 bg-surface-300-700 mx-0.5 flex-shrink-0"></span>
                         <button
                             type="button"
-                            class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
+                            class="btn btn-xs preset-outlined-primary-500 text-xs px-1.5 py-0.5 flex-shrink-0 ml-1"
                             title={t("common.moveUp")}
                             aria-label={t("common.moveUp")}
                             disabled={sel[0] === 0}
@@ -974,14 +981,31 @@
                         >↑</button>
                         <button
                             type="button"
-                            class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
+                            class="btn btn-xs preset-outlined-primary-500 text-xs px-1.5 py-0.5 flex-shrink-0"
                             title={t("common.moveDown")}
                             aria-label={t("common.moveDown")}
                             disabled={sel[sel.length - 1] === scripts().length - 1}
                             onclick={onMoveDownSelected}
                         >↓</button>
                     {/if}
-                    <span class="ml-auto pl-2 flex-shrink-0 text-surface-600-400">{t("scriptEditor.selectedCount", { count: sel.length })}</span>
+                    <!-- The count opens a menu for widening the selection, which keeps those
+                         actions off the toolbar itself so it fits a phone without scrolling. -->
+                    <span class="ml-auto flex-shrink-0"></span>
+                    {#if widenItems.length > 0}
+                        <DropdownMenu items={widenItems} fixed>
+                            {#snippet trigger(toggle, open)}
+                                <button
+                                    type="button"
+                                    class="btn btn-xs px-1 py-0.5 text-xs flex-shrink-0 text-surface-600-400 hover:text-primary-600-400 gap-0.5"
+                                    aria-haspopup="menu"
+                                    aria-expanded={open}
+                                    onclick={toggle}
+                                >{t("scriptEditor.selectedCount", { count: sel.length })} <ChevronDown size={12} /></button>
+                            {/snippet}
+                        </DropdownMenu>
+                    {:else}
+                        <span class="flex-shrink-0 text-surface-600-400">{t("scriptEditor.selectedCount", { count: sel.length })}</span>
+                    {/if}
                     <button
                         type="button"
                         class="btn btn-xs px-1 py-0.5 text-xs leading-none flex-shrink-0 text-surface-600-400 hover:text-primary-600-400"
