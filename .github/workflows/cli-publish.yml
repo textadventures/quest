@@ -9,14 +9,17 @@ name: Publish qv binaries
 #
 # finalize-release.yml waits for this, as well as deploy-play.yml and electron-publish.yml, before
 # making the release public. A pull request that changes the tool builds the binaries too, without
-# attaching them anywhere, so a break shows up before a release depends on it.
+# attaching them anywhere, so a break shows up before a release depends on it. Of WasmPlayer, only
+# the files that decide how its AppBundle is published count: the player's own code changes on most
+# player PRs, and building qv adds nothing to what those PRs' other checks already test.
 on:
   push:
     tags: ['v*']
   pull_request:
     paths:
       - 'src/Cli/**'
-      - 'src/WasmPlayer/**'
+      - 'src/WasmPlayer/WasmPlayer.csproj'
+      - 'src/WasmAppBundle.targets'
       - '.github/workflows/cli-publish.yml'
   workflow_dispatch:
 
