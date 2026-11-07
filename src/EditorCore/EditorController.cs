@@ -2437,7 +2437,10 @@ public sealed class EditorController : IDisposable
 
     internal void SetClipboardScript(IEnumerable<IScript> script)
     {
-        _clipboardScripts = [.. script];
+        // Snapshot the scripts as they are now. Holding the live scripts meant that editing
+        // a copied script before pasting it (adding to the body of a copied wait, say)
+        // changed what was pasted (#2662). Paste clones again, so each paste is independent.
+        _clipboardScripts = [.. script.Select(ScriptFactory.Clone)];
         ScriptClipboardUpdated?.Invoke(this, new ScriptClipboardUpdateEventArgs { HasScript = _clipboardScripts.Count > 0 });
     }
 

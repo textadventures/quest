@@ -11,6 +11,7 @@
     import ExpressionInput from "./ExpressionInput.svelte";
     import { t, tPlural } from "#lib/i18n/index.js";
     import { docsUrlForScriptKeyword } from "#lib/docs-links.js";
+    import { showToast } from "#lib/toast.js";
     import {
         scriptVersion,
         scriptClipboardHasContent,
@@ -505,12 +506,61 @@
         return [...selectedIndices].sort((a, b) => a - b);
     }
 
-    function toggleSelection(i: number, checked: boolean) {
-        if (checked) selectedIndices.add(i); else selectedIndices.delete(i);
+    // The row last ticked or unticked, for shift-click range selection (#2662).
+    let lastToggled: number | null = null;
+
+    function toggleSelection(i: number, checked: boolean, shiftKey = false) {
+        if (shiftKey && lastToggled !== null && lastToggled < scripts().length) {
+            // Shift-click sets every row from the last one toggled to this one the same way.
+            const [from, to] = lastToggled < i ? [lastToggled, i] : [i, lastToggled];
+            for (let r = from; r <= to; r++) {
+                if (checked) selectedIndices.add(r); else selectedIndices.delete(r);
+            }
+        } else if (checked) {
+            selectedIndices.add(i);
+        } else {
+            selectedIndices.delete(i);
+        }
+        lastToggled = i;
+    }
+
+    // Ticks every row from the first ticked one to the end of this block.
+    function onSelectToEnd() {
+        const [first] = sortedSelection();
+        for (let r = first; r < scripts().length; r++) selectedIndices.add(r);
+    }
+
+    // How many scripts sit inside these ones (an if's branches, a wait's body, switch
+    // cases ...), counted all the way down.
+    function nestedCount(nodes: ScriptNodeData[]): number {
+        let total = 0;
+        for (const node of nodes) {
+            const children: ScriptNodeData[] = [
+                ...(node.thenScripts ?? []),
+                ...(node.elseIfClauses ?? []).flatMap(e => e.scripts ?? []),
+                ...(node.elseScripts ?? []),
+                ...(node.controls ?? []).flatMap(c => [
+                    ...(c.scripts ?? []),
+                    ...(c.cases ?? []).flatMap(cs => cs.scripts ?? []),
+                ]),
+            ];
+            total += children.length + nestedCount(children);
+        }
+        return total;
+    }
+
+    // Says what Copy or Cut took, counting what's nested inside it, so taking a block
+    // with its body isn't mistaken for taking the scripts after it (#2662).
+    function clipboardToast(key: string, nodes: ScriptNodeData[]) {
+        const nested = nestedCount(nodes);
+        let text = tPlural(key, nodes.length);
+        if (nested > 0) text += " " + tPlural("scriptEditor.nestedInside", nested);
+        showToast(text, "info", 4000);
     }
 
     function onCopySelected() {
-        copyScripts(elementKey, attribute, containerPath, sortedSelection());
+        const sel = sortedSelection();
+        if (copyScripts(elementKey, attribute, containerPath, sel) === "ok") clipboardToast("scriptEditor.copiedToast", sel.map(i => scripts()[i]));
         // Copy doesn't bump scriptVersion, so clear the ticks here: the next tick is then
         // the row to paste beside (Paste above/below), not added to the copied ones.
         selectedIndices.clear();
@@ -518,7 +568,10 @@
 
     function onCutSelected() {
         // selectedIndices cleared by $effect when scriptVersion bumps
-        cutScripts(elementKey, attribute, containerPath, sortedSelection());
+        const sel = sortedSelection();
+        // Counted before the cut, while the rows are still there.
+        const nodes = sel.map(i => scripts()[i]);
+        if (cutScripts(elementKey, attribute, containerPath, sel) === "ok") clipboardToast("scriptEditor.cutToast", nodes);
     }
 
     function onDeleteSelected() {
@@ -825,7 +878,9 @@
                             type="checkbox"
                             class="checkbox size-3.5"
                             checked={selectedIndices.has(i)}
-                            onchange={(e) => toggleSelection(i, (e.target as HTMLInputElement).checked)}
+                            title={t("scriptEditor.selectRow")}
+                            aria-label={t("scriptEditor.selectRowLabel", { command: script.displayString ?? "" })}
+                            onclick={(e) => toggleSelection(i, (e.currentTarget as HTMLInputElement).checked, e.shiftKey)}
                         />
                     </label>
                     <div class="flex-1 min-w-0">
@@ -900,6 +955,13 @@
                         class="btn btn-xs preset-tonal-error text-xs py-0.5 flex-shrink-0"
                         onclick={onDeleteSelected}
                     >{t("common.delete")}</button>
+                    {#if sel.length < scripts().length - sel[0]}
+                        <button
+                            type="button"
+                            class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
+                            onclick={onSelectToEnd}
+                        >{t("scriptEditor.selectToEnd")}</button>
+                    {/if}
                     {#if isContiguous(sel)}
                         <span class="w-px h-4 bg-surface-300-700 mx-0.5 flex-shrink-0"></span>
                         <button
@@ -1689,6 +1751,12 @@
        Hovering or focusing an Add script row highlights the block it adds to. */
     .script-row:focus-within:not(:has(.script-row:focus-within)) {
         border-color: var(--color-primary-500);
+    }
+    /* #2662: a ticked row is tinted all the way down, so it's clear that Copy or Cut
+       takes everything nested inside it too. */
+    .script-row:has(> label > input:checked) {
+        border-color: var(--color-primary-500);
+        background-color: color-mix(in oklab, var(--color-primary-500) 8%, var(--color-surface-50-950));
     }
     .script-block:focus-within:not(:has(.script-block:focus-within)),
     .script-block:has(> .add-row:hover) {

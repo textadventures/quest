@@ -211,4 +211,21 @@ public class EditableScriptTests : EditorControllerTestBase
 
         Assert.AreEqual("msg (\"one\")\nmsg (\"two\")", newScripts.Code);
     }
+
+    [TestMethod]
+    public void TestCopyTakesASnapshotThatLaterEditsDontChange()
+    {
+        var source = Controller.CreateNewEditableScripts("game", "somescript", "msg (\"copied\")", true);
+        source.Copy([0]);
+
+        // Change the copied script in place after copying it.
+        Controller.StartTransaction("Edit copied script");
+        source[0].SetParameter("0", "\"changed\"");
+        Controller.EndTransaction();
+
+        var target = Controller.CreateNewEditableScripts("game", "otherscript", "msg (\"target\")", true);
+        target.Paste(1, true);
+
+        Assert.AreEqual("msg (\"target\")\nmsg (\"copied\")", target.Code);
+    }
 }
