@@ -53,15 +53,16 @@ export interface WasmBridge {
   CopyScripts(elementKey: string, attribute: string, containerPath: string, indicesJson: string): string
   CutScripts(elementKey: string, attribute: string, containerPath: string, indicesJson: string): string
   DeleteScripts(elementKey: string, attribute: string, containerPath: string, indicesJson: string): string
-  PasteScripts(elementKey: string, attribute: string, containerPath: string): string
+  PasteScripts(elementKey: string, attribute: string, containerPath: string, index: number): string
   CanPasteScript(): boolean
   GetScriptData(elementKey: string, attribute: string): string | null
   SetScriptParameter(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramName: string, value: string): string
   SetIfExpression(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, expression: string): string
   SetElseIfExpression(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, elseIfIndex: number, expression: string): string
-  AddScript(elementKey: string, attribute: string, containerPath: string, keyword: string): string
+  AddScript(elementKey: string, attribute: string, containerPath: string, keyword: string, index: number): string
   DeleteScript(elementKey: string, attribute: string, containerPath: string, scriptIndex: number): string
   MoveScript(elementKey: string, attribute: string, containerPath: string, index1: number, index2: number): string
+  MoveScriptRange(elementKey: string, attribute: string, containerPath: string, start: number, count: number, delta: number): string
   AddElse(elementKey: string, attribute: string, containerPath: string, scriptIndex: number): string
   AddElseIf(elementKey: string, attribute: string, containerPath: string, scriptIndex: number): string
   RemoveElse(elementKey: string, attribute: string, containerPath: string, scriptIndex: number): string

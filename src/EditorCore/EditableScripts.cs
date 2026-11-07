@@ -334,7 +334,15 @@ public class EditableScripts : IEditableScripts, IDataWrapper
             // script again!
 
             _adding = true;
-            _underlyingScript.Add(script.Script);
+            if (index.HasValue)
+            {
+                _underlyingScript.Insert(index.Value, script.Script);
+            }
+            else
+            {
+                _underlyingScript.Add(script.Script);
+            }
+
             _adding = false;
         }
 
@@ -346,15 +354,15 @@ public class EditableScripts : IEditableScripts, IDataWrapper
     // MultiScript.
     private bool _adding;
 
-    public void AddNew(string keyword, string elementName)
+    public void AddNew(string keyword, string elementName, int? index = null)
     {
         _controller.WorldModel.UndoLogger.StartTransaction(string.Format("Add '{0}' script to '{1}'", keyword,
             elementName));
-        AddNewInternal(keyword);
+        AddNewInternal(keyword, index);
         _controller.WorldModel.UndoLogger.EndTransaction();
     }
 
-    internal void AddNewInternal(string? keyword)
+    internal void AddNewInternal(string? keyword, int? index = null)
     {
         EditableScriptBase script;
         if (!string.IsNullOrEmpty(keyword))
@@ -366,7 +374,12 @@ public class EditableScripts : IEditableScripts, IDataWrapper
             script = _controller.ScriptFactory.CreateEditableFunctionCallScript();
         }
 
-        Add(script, false);
+        if (index.HasValue && (index.Value < 0 || index.Value >= _scripts.Count))
+        {
+            index = null;
+        }
+
+        Add(script, index, false);
     }
 
     public IEditableScript this[int index] => _scripts[index];

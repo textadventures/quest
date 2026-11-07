@@ -372,6 +372,12 @@
     "scriptEditor.expandBlock": "Expandir bloque",
     "scriptEditor.blockCount.one": "{count} script",
     "scriptEditor.blockCount.other": "{count} scripts",
+    "scriptEditor.moreActions": "Más acciones",
+    "scriptEditor.addAbove": "Añadir script encima",
+    "scriptEditor.addBelow": "Añadir script debajo",
+    "scriptEditor.pasteAbove": "Pegar encima",
+    "scriptEditor.pasteBelow": "Pegar debajo",
+    "scriptEditor.addScriptTo": "Añadir script a {block}",
 
     "expressionInput.insertTitle": "Insertar objeto o función",
     "expressionInput.filterPlaceholder": "Filtrar…",

@@ -1546,9 +1546,10 @@ export function deleteScripts(elementKey: string, attribute: string, containerPa
     return result;
 }
 
-export function pasteScripts(elementKey: string, attribute: string, containerPath: string): string {
+// index: where in the container to paste; omitted (-1) pastes at the end.
+export function pasteScripts(elementKey: string, attribute: string, containerPath: string, index = -1): string {
     if (!_bridge) return "error";
-    const result = _bridge.PasteScripts(elementKey, attribute, containerPath);
+    const result = _bridge.PasteScripts(elementKey, attribute, containerPath, index);
     if (result === "ok") bumpScriptVersion();
     refreshUndoRedo();
     return result;
@@ -1644,9 +1645,10 @@ export function setElseIfExpression(elementKey: string, attribute: string, conta
     return result;
 }
 
-export function addScript(elementKey: string, attribute: string, containerPath: string, keyword: string): string {
+// index: where in the container to insert; omitted (-1) adds at the end.
+export function addScript(elementKey: string, attribute: string, containerPath: string, keyword: string, index = -1): string {
     if (!_bridge) return "error";
-    const result = _bridge.AddScript(elementKey, attribute, containerPath, keyword);
+    const result = _bridge.AddScript(elementKey, attribute, containerPath, keyword, index);
     if (result === "ok") bumpScriptVersion();
     refreshUndoRedo();
     return result;
@@ -1663,6 +1665,16 @@ export function deleteScript(elementKey: string, attribute: string, containerPat
 export function moveScript(elementKey: string, attribute: string, containerPath: string, index1: number, index2: number): string {
     if (!_bridge) return "error";
     const result = _bridge.MoveScript(elementKey, attribute, containerPath, index1, index2);
+    if (result === "ok") bumpScriptVersion();
+    refreshUndoRedo();
+    return result;
+}
+
+// Moves the contiguous run of `count` scripts from `start` up (delta -1) or down (delta 1)
+// by one place, in one undo step.
+export function moveScriptRange(elementKey: string, attribute: string, containerPath: string, start: number, count: number, delta: -1 | 1): string {
+    if (!_bridge) return "error";
+    const result = _bridge.MoveScriptRange(elementKey, attribute, containerPath, start, count, delta);
     if (result === "ok") bumpScriptVersion();
     refreshUndoRedo();
     return result;

@@ -2,6 +2,8 @@
     import { SvelteSet } from "svelte/reactivity";
     import ScriptEditor from "./ScriptEditor.svelte";
     import AddScriptModal from "./AddScriptModal.svelte";
+    import DropdownMenu, { type DropdownMenuItem } from "./DropdownMenu.svelte";
+    import Ellipsis from "@lucide/svelte/icons/ellipsis";
     import AssetPicker from "./AssetPicker.svelte";
     import CodeEditor from "./CodeEditor.svelte";
     import Combobox from "./Combobox.svelte";
@@ -25,6 +27,7 @@
         addScript,
         deleteScript,
         moveScript,
+        moveScriptRange,
         addElse,
         addElseIf,
         removeElse,
@@ -72,6 +75,9 @@
         // bordered box), so the nested editor doesn't add a second indent inside it.
         indent?: boolean;
         isLocked?: boolean;
+        // What a nested block is ("then", "else", "Run script" ...), so its Add script
+        // button can say which block it adds to (#2663). Unset for the root.
+        blockLabel?: string;
     }
 
     let {
@@ -82,6 +88,7 @@
         depth = 0,
         indent = true,
         isLocked = false,
+        blockLabel = "",
     }: Props = $props();
 
     let scriptData = $state<ScriptBlockData | null>(null);
@@ -91,6 +98,9 @@
     let loadError = $state<string | null>(null);
     let categories = $state<ScriptCategoryInfo[]>([]);
     let showAddModal = $state(false);
+    // Where the Add script modal inserts: null adds at the end of this block, otherwise the
+    // index the new script takes (from a row's "Add script above/below", #2664).
+    let addAtIndex = $state<number | null>(null);
     let isRoot = $derived(initialData === null);
     let codeViewMode = $state(false);
     let scriptCode = $state("");
@@ -500,8 +510,10 @@
     }
 
     function onCopySelected() {
-        // no scriptVersion bump — selection intentionally preserved after copy
         copyScripts(elementKey, attribute, containerPath, sortedSelection());
+        // Copy doesn't bump scriptVersion, so clear the ticks here: the next tick is then
+        // the row to paste beside (Paste above/below), not added to the copied ones.
+        selectedIndices.clear();
     }
 
     function onCutSelected() {
@@ -513,26 +525,58 @@
         deleteScripts(elementKey, attribute, containerPath, sortedSelection());
     }
 
-    function onPaste() {
-        pasteScripts(elementKey, attribute, containerPath);
+    // index: where the pasted scripts go; omitted pastes at the end of this block.
+    function onPaste(index = -1) {
+        pasteScripts(elementKey, attribute, containerPath, index);
+    }
+
+    // Whether the ticked rows are one unbroken run, so Move up/down can move them together.
+    function isContiguous(sel: number[]): boolean {
+        return sel.length > 0 && sel[sel.length - 1] - sel[0] === sel.length - 1;
+    }
+
+    function moveSelected(delta: -1 | 1) {
+        const sel = sortedSelection();
+        if (!isContiguous(sel)) return;
+        const start = sel[0];
+        if (start + delta < 0 || sel[sel.length - 1] + delta >= scripts().length) return;
+        nextSelection = new Set(sel.map(i => i + delta));
+        mutate(() => moveScriptRange(elementKey, attribute, containerPath, start, sel.length, delta));
     }
 
     function onMoveUpSelected() {
-        const [idx] = sortedSelection();
-        if (idx <= 0) return;
-        nextSelection = new Set([idx - 1]);
-        mutate(() => moveScript(elementKey, attribute, containerPath, idx, idx - 1));
+        moveSelected(-1);
     }
 
     function onMoveDownSelected() {
-        const [idx] = sortedSelection();
-        if (idx >= scripts().length - 1) return;
-        nextSelection = new Set([idx + 1]);
-        mutate(() => moveScript(elementKey, attribute, containerPath, idx, idx + 1));
+        moveSelected(1);
+    }
+
+    // index: where the new script goes; null adds it at the end of this block.
+    function openAddModal(index: number | null) {
+        addAtIndex = index;
+        showAddModal = true;
     }
 
     function onAddScript(createString: string) {
-        mutate(() => addScript(elementKey, attribute, containerPath, createString));
+        const index = addAtIndex ?? -1;
+        addAtIndex = null;
+        mutate(() => addScript(elementKey, attribute, containerPath, createString, index));
+    }
+
+    // The row's ⋯ menu: add or paste beside this row rather than at the end of the block.
+    function rowMenuItems(i: number): DropdownMenuItem[] {
+        const items: DropdownMenuItem[] = [
+            { label: t("scriptEditor.addAbove"), action: () => openAddModal(i) },
+            { label: t("scriptEditor.addBelow"), action: () => openAddModal(i + 1) },
+        ];
+        if ($scriptClipboardHasContent) {
+            items.push(
+                { label: t("scriptEditor.pasteAbove"), action: () => onPaste(i), divider: true },
+                { label: t("scriptEditor.pasteBelow"), action: () => onPaste(i + 1) },
+            );
+        }
+        return items;
     }
 
     function onDelete(index: number) {
@@ -709,15 +753,15 @@
     }
 
     // Right padding reserving room for the hover action cluster, so it never
-    // overlaps the row's own controls. 4rem (64px) is an exact fit for the
-    // original three buttons; the help button adds ~19px, hence 6rem (96px)
-    // when it's present. pointer-coarse drops both to 0.5rem - the whole cluster
+    // overlaps the row's own controls. 4rem (64px) was an exact fit for the
+    // original three buttons, and each of the ⋯ and help buttons adds ~19px,
+    // hence 5.25rem, or 7.25rem when help is present. pointer-coarse drops both to 0.5rem - the whole cluster
     // is hover-only, so there's nothing to reserve space for on touch.
     // Set as --row-actions-pad so full-width nested blocks below the first line
     // (nestedBlockWidth) can reclaim it: the cluster only sits at the top-right,
     // and reserving it at every nesting level squeezed deep nesting (#2544).
     function rowActionsPadding(script: ScriptNodeData): string {
-        return (docsUrlFor(script) ? "[--row-actions-pad:6rem]" : "[--row-actions-pad:4rem]")
+        return (docsUrlFor(script) ? "[--row-actions-pad:7.25rem]" : "[--row-actions-pad:5.25rem]")
             + " pointer-coarse:[--row-actions-pad:0.5rem]";
     }
 
@@ -738,7 +782,7 @@
     }
 </script>
 
-<div class={indentClass}>
+<div class="script-block {indentClass}">
     {#if isRoot && isLocked}
         <div class="flex items-center gap-2 py-1 px-2 mb-1 text-xs text-surface-600-400 italic border border-surface-200-800 rounded">
             <span class="flex-1">{t("scriptEditor.inheritedReadOnly")}</span>
@@ -772,7 +816,7 @@
         <div role="region" inert={isLocked || undefined} class={isLocked ? "opacity-60" : ""}>
             {#each scripts() as script, i (script.id)}
                 {@const docsUrl = docsUrlFor(script)}
-                <div class="group relative border border-surface-200-800 rounded mb-1 bg-surface-50-950 flex items-start">
+                <div class="script-row group relative border border-surface-200-800 rounded mb-1 bg-surface-50-950 flex items-start">
                     <label class="flex items-start pt-1.5 pl-1.5 pr-0.5 cursor-pointer flex-shrink-0">
                         <input
                             type="checkbox"
@@ -785,7 +829,7 @@
                         <!-- Script row actions (hover). Every row also has a checkbox + selection
                              toolbar below (Cut/Copy/Delete/Move) that already covers this on
                              touch, so these stay hover-only at all nesting levels. -->
-                        <div class="absolute right-1 top-1 flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                        <div class="absolute right-1 top-1 flex gap-0.5 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity z-10">
                             {#if docsUrl}
                                 <button
                                     type="button"
@@ -809,6 +853,19 @@
                                 disabled={i === scripts().length - 1}
                                 onclick={() => onMoveDown(i)}
                             >↓</button>
+                            <DropdownMenu items={rowMenuItems(i)}>
+                                {#snippet trigger(toggle, open)}
+                                    <button
+                                        type="button"
+                                        class="btn btn-xs preset-outlined-primary-500 px-0.5 py-0 text-xs leading-none h-full"
+                                        title={t("scriptEditor.moreActions")}
+                                        aria-label={t("scriptEditor.moreActions")}
+                                        aria-haspopup="menu"
+                                        aria-expanded={open}
+                                        onclick={toggle}
+                                    ><Ellipsis size={12} /></button>
+                                {/snippet}
+                            </DropdownMenu>
                             <button
                                 type="button"
                                 class="btn btn-xs preset-tonal-error px-1 py-0 text-xs leading-none"
@@ -847,7 +904,7 @@
                         class="btn btn-xs preset-tonal-error text-xs py-0.5 flex-shrink-0"
                         onclick={onDeleteSelected}
                     >{t("common.delete")}</button>
-                    {#if sel.length === 1}
+                    {#if isContiguous(sel)}
                         <span class="w-px h-4 bg-surface-300-700 mx-0.5 flex-shrink-0"></span>
                         <button
                             type="button"
@@ -858,9 +915,39 @@
                         <button
                             type="button"
                             class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
-                            disabled={sel[0] === scripts().length - 1}
+                            disabled={sel[sel.length - 1] === scripts().length - 1}
                             onclick={onMoveDownSelected}
                         >↓ {t("common.moveDown")}</button>
+                    {/if}
+                    <!-- The row's ⋯ menu is hover-only, so these are the touch path to it. -->
+                    {#if sel.length === 1 || $scriptClipboardHasContent}
+                        <span class="w-px h-4 bg-surface-300-700 mx-0.5 flex-shrink-0"></span>
+                    {/if}
+                    {#if sel.length === 1}
+                        <button
+                            type="button"
+                            class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
+                            onclick={() => openAddModal(sel[0])}
+                        >{t("scriptEditor.addAbove")}</button>
+                        <button
+                            type="button"
+                            class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
+                            onclick={() => openAddModal(sel[0] + 1)}
+                        >{t("scriptEditor.addBelow")}</button>
+                    {/if}
+                    {#if $scriptClipboardHasContent}
+                        <button
+                            type="button"
+                            class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
+                            onclick={() => onPaste(sel[0])}
+                        >{t("scriptEditor.pasteAbove")}</button>
+                        <button
+                            type="button"
+                            class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
+                            onclick={() => onPaste(sel[sel.length - 1] + 1)}
+                        >{t("scriptEditor.pasteBelow")}</button>
+                    {/if}
+                    {#if sel.length === 1}
                         <!-- The row's own "?" is hover-only, so this is the
                              touch path to the same link. -->
                         {@const selDocsUrl = docsUrlFor(scripts()[sel[0]])}
@@ -879,13 +966,16 @@
     {/if}
 
     {#if !(isRoot && isLocked)}
-        <!-- Add script row -->
-        <div class="flex items-center gap-1 mt-1 flex-wrap">
+        <!-- Add script row. Hovering or focusing it highlights the block it adds to (see
+             the style block), and a nested block's button names that block (#2663). -->
+        <div class="add-row flex items-center gap-1 mt-1 flex-wrap">
             {#if !codeViewMode && categories.length > 0}
                 <button
                     type="button"
-                    class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5"
-                    onclick={() => (showAddModal = true)}
+                    class="add-script btn btn-xs preset-outlined-primary-500 text-xs py-0.5"
+                    title={blockLabel ? t("scriptEditor.addScriptTo", { block: blockLabel }) : undefined}
+                    aria-label={blockLabel ? t("scriptEditor.addScriptTo", { block: blockLabel }) : undefined}
+                    onclick={() => openAddModal(null)}
                 >+ {t("scriptEditor.addScript")}</button>
             {:else if !codeViewMode && isRoot}
                 <span class="text-xs text-surface-600-400 italic">{t("scriptEditor.loadingCommands")}</span>
@@ -894,7 +984,7 @@
                 <button
                     type="button"
                     class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5"
-                    onclick={onPaste}
+                    onclick={() => onPaste()}
                 >{t("common.paste")}</button>
             {/if}
             {#if isRoot}
@@ -910,7 +1000,7 @@
             <AddScriptModal
                 {categories}
                 onAdd={onAddScript}
-                onClose={() => (showAddModal = false)}
+                onClose={() => { showAddModal = false; addAtIndex = null; }}
             />
         {/if}
     {/if}
@@ -960,6 +1050,7 @@
                     containerPath={paramPath(scriptIndex, ctrl.attribute)}
                     initialData={ctrl.scripts ?? []}
                     depth={depth + 1}
+                    blockLabel={ctrl.caption || (scripts()[scriptIndex]?.displayString ?? "")}
                 />
             {/if}
         </div>
@@ -1269,6 +1360,7 @@
                             containerPath={casePath(scriptIndex, paramAttribute, item.key)}
                             initialData={scriptsForCase(ctrl, item.key)}
                             depth={depth + 1}
+                            blockLabel={item.key}
                             indent={false}
                         />
                     </div>
@@ -1515,6 +1607,7 @@
                     containerPath={thenPath(i)}
                     initialData={script.thenScripts ?? []}
                     depth={depth + 1}
+                    blockLabel={`${t("scriptEditor.ifKeyword")} ${script.expression ?? ""}`}
                 />
             </div>
         {/if}
@@ -1552,6 +1645,7 @@
                         containerPath={elseIfPath(i, ei)}
                         initialData={elseIf.scripts}
                         depth={depth + 1}
+                        blockLabel={`${t("scriptEditor.elseIfKeyword")} ${elseIf.expression ?? ""}`}
                     />
                 </div>
             {/if}
@@ -1582,6 +1676,7 @@
                         containerPath={elsePath(i)}
                         initialData={script.elseScripts}
                         depth={depth + 1}
+                        blockLabel={t("scriptEditor.elseKeyword")}
                     />
                 </div>
             {/if}
@@ -1619,3 +1714,24 @@
 {#snippet blockCount(scripts: ScriptNodeData[])}
     <span class="text-surface-600-400 italic select-none">({tPlural("scriptEditor.blockCount", scripts.length)})</span>
 {/snippet}
+
+<style>
+    /* #2663: show which block the author is working in. The row holding focus, and the
+       innermost block holding it, get the primary colour (an outer row or block that only
+       holds focus through a nested one doesn't), as does that block's Add script button.
+       Hovering or focusing an Add script row highlights the block it adds to. */
+    .script-row:focus-within:not(:has(.script-row:focus-within)) {
+        border-color: var(--color-primary-500);
+    }
+    .script-block:focus-within:not(:has(.script-block:focus-within)),
+    .script-block:has(> .add-row:hover) {
+        border-left-color: var(--color-primary-500);
+        /* A second pixel outside the 1px rule, so the highlight is visible without the
+           block's contents shifting. */
+        box-shadow: -1px 0 0 var(--color-primary-500);
+    }
+    .script-block:focus-within:not(:has(.script-block:focus-within)) > .add-row .add-script,
+    .add-row:hover .add-script {
+        background-color: color-mix(in oklab, var(--color-primary-500) 15%, transparent);
+    }
+</style>
