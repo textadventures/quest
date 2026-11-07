@@ -51,6 +51,16 @@
     }
 }
 
+/* Tailwind v4's preflight gives buttons the default arrow cursor, and Skeleton 5 no longer puts
+   the hand back (Skeleton's own `*:disabled` not-allowed cursor still applies). Same rule as
+   AppShell's app.css. */
+@layer base {
+    button:not(:disabled),
+    [role='button']:not(:disabled) {
+        cursor: pointer;
+    }
+}
+
 /* Hand-written rules for elements that carry the `.qv-chrome` scope-root
    class itself. Bare selectors inside `@scope (.qv-chrome)` only ever match
    *descendants* of the root (see scripts/scope-css.mjs), so the root can't

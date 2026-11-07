@@ -73,6 +73,8 @@ try {
     const page = await browser.newPage({ viewport: { width: 500, height: 500 } });
     page.on('pageerror', err => console.log('[pageerror]', err.message));
 
+    // The player reports how far the game got (GameProgress); nothing to check here.
+    await page.route('**/api/gameprogress/**', (route) => route.fulfill({ status: 204 }));
     await page.route('**/api/game/**', route => route.fulfill({
         contentType: 'application/json',
         body: JSON.stringify({

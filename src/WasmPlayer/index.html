@@ -60,11 +60,20 @@
 <body>
 <div id="qv-start" class="qv-chrome">
     <div class="card preset-filled-surface-100-900 w-full max-w-md p-8 space-y-6" data-theme="wintry">
-        <div>
+        <div id="qv-brand">
             <h1 class="h2 flex items-center gap-4">
                 <img src="logo.svg" alt="" class="h-7" />
                 Quest Viva
             </h1>
+        </div>
+
+        <!-- The game being loaded, once its name is known: from textadventures.co.uk's
+             api/Game for ?id=, or from the game itself once it has loaded (showGameInfo in
+             wasm-player.js). Replaces the big Quest Viva heading with a small one below. -->
+        <div id="qv-game-info" class="hidden flex-col items-center gap-3 text-center">
+            <img id="qv-game-cover" alt="" class="hidden w-40 max-h-60 object-contain rounded-lg" />
+            <h1 id="qv-game-name" class="h2 break-words"></h1>
+            <p id="qv-game-author" class="hidden text-surface-500"></p>
         </div>
 
         <div id="qv-error" class="hidden card preset-tonal-error p-4 text-sm"></div>
@@ -100,7 +109,12 @@
         </div>
 
         <div id="qv-clicktobegin" class="hidden flex-col items-center gap-3 text-surface-500 text-sm text-center">
-            <button id="qv-clicktobegin-btn" type="button" class="btn preset-filled-primary-500">Begin</button>
+            <button id="qv-clicktobegin-btn" type="button" class="btn btn-lg preset-filled-primary-500 min-w-40 min-h-12">Begin</button>
+        </div>
+
+        <div id="qv-brand-small" class="hidden items-center justify-center gap-2 text-xs text-surface-500">
+            <img src="logo.svg" alt="" class="h-3" />
+            Quest Viva
         </div>
     </div>
 </div>
