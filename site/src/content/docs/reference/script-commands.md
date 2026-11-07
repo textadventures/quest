@@ -57,6 +57,8 @@ Shows "Yes" and "No" as numbered links in the transcript for the user to answer 
 
 The nested script can check the "result" boolean variable to see the user's response - true for "yes", false for "no".
 
+As with [get input](#get-input), the game's turn scripts run as soon as the question is shown, not after the player answers. The [Ask](/reference/functions/user-interface#ask) function, in either form, runs them after the answer.
+
 ```quest
 ask ("Do you want to eat an apple?") {
   if (result) {
@@ -280,11 +282,13 @@ For more on how and why to use `foreach`, see [Using Lists](/howto/scripting/lis
 get input {script}
 ```
 
-**Superseded:** this command is no longer offered when you add a script command - use the [GetInput](/reference/functions/user-interface#getinput) function instead, which waits for the player in the same way but returns what they typed, so the rest of the script can just carry on below it. `get input` still runs, and is still editable in games that already use it.
+**Superseded:** this command is no longer offered when you add a script command - use the [GetInput](/reference/functions/user-interface#getinput) function instead, which waits for the player and returns what they typed, so the rest of the script can just carry on below it. `get input` still runs, and is still editable in games that already use it.
 
 Waits for the user to type some text, then runs the nested script.
 
 The nested script can evaluate the "result" string variable to work with the user's input.
+
+The script that runs `get input` doesn't wait for the answer: it carries straight on, and when it is the script of a command, that command's turn ends there. So the game's [turn scripts](/howto/time/time-turns-and-timers#turn-scripts) run before the player has typed anything, while the prompt is still waiting, and don't run again once they answer. With `GetInput()`, the turn doesn't end until the player has answered, so turn scripts run after it.
 
 Example:
 
@@ -530,6 +534,8 @@ show menu (string caption, stringdictionary or stringlist options, boolean allow
 **Superseded:** this command is no longer offered when you add a script command - use the [ShowMenu](/reference/functions/user-interface#showmenu) function instead, which shows the same menu but returns the chosen option, so the rest of the script can just carry on below it. `show menu` still runs, and is still editable in games that already use it.
 
 Shows the options as a numbered list of links in the transcript and then runs the nested script. The script can access the variable "result" which contains the result of the user selection - if a dictionary of options is passed in, the key is returned. If a list of options is passed in, the list item is returned.
+
+As with [get input](#get-input), the game's turn scripts run as soon as the menu is shown, not after the player chooses. The [ShowMenu](/reference/functions/user-interface#showmenu) function, in either form, runs them after the choice.
 
 If the "allow cancel" parameter is set to **true**, entering any command other than one of the option numbers dismisses the menu, and the variable "result" is [null](/reference/attributes/types#null). If it is set to **false**, anything else the player types is ignored.
 
