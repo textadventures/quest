@@ -10,7 +10,8 @@
 // - fixtures/begin-gate-sound-later.aslx: a sound played only on a command. No Begin, and the
 //   command's sound plays.
 // - fixtures/v2-gamebook-test.aslx: a first page with a sound, loaded as if from
-//   textadventures.co.uk (?id=, API mocked). Begin shows, and the sound plays on the click.
+//   textadventures.co.uk (?id=, API mocked). Begin shows, as a good-sized button with a hand
+//   cursor, and the sound plays on its click - not on a click anywhere else.
 // - fixtures/begin-gate-sync-sound.aslx: a start script that waits for its sound to finish.
 //   Begin shows, and the script carries on once the sound has played.
 // - fixtures/begin-gate-autoplay.aslx: a start script that writes an <audio autoplay>. Begin
@@ -102,6 +103,17 @@ try {
         const { page, outcome, errors } = await open('v2-gamebook-test.aslx', { viaApi: true });
         check(outcome === 'begin', 'a gamebook whose first page has a sound shows Begin');
         check((await played(page)).length === 0, 'the sound waits for the click');
+        const button = await page.evaluate(() => {
+            const el = document.getElementById('qv-clicktobegin-btn');
+            const box = el.getBoundingClientRect();
+            return { cursor: getComputedStyle(el).cursor, width: box.width, height: box.height };
+        });
+        check(button.cursor === 'pointer' && button.width >= 120 && button.height >= 44,
+            `Begin is a good-sized button with a hand cursor (${JSON.stringify(button)})`);
+        await page.mouse.click(5, 5);
+        await page.keyboard.press('Shift');
+        await page.waitForTimeout(300);
+        check((await played(page)).length === 0, 'a click or key anywhere else doesn\'t play the sound behind Begin');
         await page.click('#qv-clicktobegin-btn');
         await page.waitForFunction(() => !document.getElementById('qv-start'), null, { timeout: 10000 });
         check((await played(page)).join() === 'short-beep.wav', 'clicking Begin plays the sound and reveals the game');

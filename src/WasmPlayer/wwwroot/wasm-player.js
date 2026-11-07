@@ -59,6 +59,7 @@ var _audio = null;
 // command's if a timer played it later. Without this a synchronous sound would never end, and
 // the game would never resume.
 const blockedMedia = new Set();
+let beginShowing = false;
 let startupPlays = null; // play() attempts made while the game's start runs, or null after it
 const nativePlay = HTMLMediaElement.prototype.play;
 const nativePause = HTMLMediaElement.prototype.pause;
@@ -67,8 +68,11 @@ HTMLMediaElement.prototype.play = function () {
     const refused = Promise.resolve(result).then(() => false, (err) => {
         if (err?.name !== 'NotAllowedError') return false;
         blockedMedia.add(this);
-        document.addEventListener('pointerdown', playBlockedMedia, { capture: true, once: true });
-        document.addEventListener('keydown', playBlockedMedia, { capture: true, once: true });
+        // While Begin shows, only Begin plays them (see beginBehindStartScreen).
+        if (!beginShowing) {
+            document.addEventListener('pointerdown', playBlockedMedia, { capture: true, once: true });
+            document.addEventListener('keydown', playBlockedMedia, { capture: true, once: true });
+        }
         return true;
     });
     startupPlays?.push(refused);
@@ -512,11 +516,16 @@ async function beginBehindStartScreen() {
     if (!gate || !button) return;
     if (pickers) pickers.style.display = 'none';
     if (msg) msg.style.display = 'none';
+    // A click anywhere else would let the browser play the sound, with the game still hidden.
+    beginShowing = true;
+    document.removeEventListener('pointerdown', playBlockedMedia, { capture: true });
+    document.removeEventListener('keydown', playBlockedMedia, { capture: true });
     gate.style.display = 'flex';
     button.focus();
     reportProgress('begin');
 
     await new Promise(resolve => button.addEventListener('click', resolve, { once: true }));
+    beginShowing = false;
     playBlockedMedia();
     releaseClock();
 }
