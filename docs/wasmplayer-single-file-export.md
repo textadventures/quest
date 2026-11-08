@@ -25,7 +25,7 @@ The CDN-linked single-file export mechanism only (npm publish + embedded-game bo
   - Cross-check `GITHUB_REF_NAME` against the `VERSION` file (`nuget-publish.yml:24-32` is the exact pattern to copy).
   - `dotnet publish src/WasmPlayer/WasmPlayer.csproj -c Release` (same command `deploy-play.yml` already runs). This duplicates ~15s of build time in a second parallel tag-triggered job rather than adding cross-workflow artifact sharing — consistent with how `nuget-publish.yml`/`deploy-play.yml`/`electron-publish.yml` already run as independent parallel jobs off the same tag (see root `CLAUDE.md`'s Releasing section).
   - Generate a `package.json` inside the built `AppBundle` output (none exists there today) stamped with `name`, `private: false`, and `version` from `$VERSION` — analogous to how NuGet packs already inject `-p:Version=${{ env.VERSION }}` at pack time rather than hand-maintaining a version in a checked-in file.
-  - `npm publish --access public` (required for a scoped package to be public) from inside that directory, authenticated via a **new `NPM_TOKEN` repo secret** — needs to be created in GitHub repo settings before this workflow can run; not something automatable from inside the repo.
+  - `npm publish --access public` (required for a scoped package to be public) from inside that directory, authenticated with npm trusted publishing (OIDC): the package's settings on npmjs.com trust `npm-publish.yml` in `textadventures/quest`, with "Allow npm publish" ticked, so no token secret is needed. (It used an `NPM_TOKEN` secret until 2026-11, when the 90-day granular token expired.)
 - Verification: after the first publish, `curl -I https://cdn.jsdelivr.net/npm/@textadventures/quest-viva-wasmplayer@<version>/wasm-player.js` and a `.wasm` file under `_framework/` — confirms correct `content-type`/CORS. (Already spot-checked this general mechanism live against the unrelated `sql.js` npm package — both jsDelivr and unpkg served `.wasm` with `content-type: application/wasm` and `access-control-allow-origin: *` with no extra config needed.)
 
 ## 2. New boot source in wasm-player.js: embedded game bytes
@@ -67,4 +67,3 @@ Add a new subsection to `site/src/content/docs/guides/hosting.md` (under "Host W
 ## Open questions for whoever picks this up
 
 - Confirm `@textadventures/quest-viva-wasmplayer` as the final package name (alternative considered: unscoped `quest-viva-wasmplayer`, or a more generic `@textadventures/quest-viva`).
-- `NPM_TOKEN` repo secret needs to be created before `npm-publish.yml` can run.
