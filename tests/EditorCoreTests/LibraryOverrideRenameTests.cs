@@ -109,7 +109,7 @@ public class LibraryOverrideRenameTests
         controller.ElementsUpdated += (_, _) => { };
         controller.Dirty += (_, _) => { };
 
-        var ok = await controller.Initialise(new GameData(bytes, "test.aslx"));
+        var ok = await controller.Initialise(new ByteArrayGameDataProvider(bytes, "test.aslx"));
         Assert.IsTrue(ok);
 
         controller.UpdateTree();

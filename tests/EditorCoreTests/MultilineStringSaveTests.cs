@@ -14,7 +14,7 @@ public class MultilineStringSaveTests : EditorControllerTestBase
     private static async Task<EditorController> Reload(string xml)
     {
         var controller = new EditorController();
-        Assert.IsTrue(await controller.Initialise(new GameData(System.Text.Encoding.UTF8.GetBytes(xml), "test.aslx")));
+        Assert.IsTrue(await controller.Initialise(new ByteArrayGameDataProvider(System.Text.Encoding.UTF8.GetBytes(xml), "test.aslx")));
         return controller;
     }
 
