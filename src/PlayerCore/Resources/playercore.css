@@ -306,6 +306,11 @@ div#divOutput iframe {
     max-width: 100%;
 }
 
+/* width/height filled in by applyKnownImageSizes() - keep the aspect ratio when max-width narrows it */
+div#divOutput img.qv-sized {
+    height: auto;
+}
+
 /* An iframe has a border by default, which would otherwise take it past the text width */
 div#divOutput video,
 div#divOutput iframe {
