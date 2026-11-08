@@ -1403,7 +1403,8 @@ public partial class V4Game
                 var scp = Strings.InStr(errorInfo, ";");
                 var errorName = Strings.Left(errorInfo, scp - 1);
                 var errorMsg = Strings.Trim(Strings.Mid(errorInfo, scp + 1));
-                var currentError = 0;
+                // -1 until the name is recognised, as an unknown name used to land on slot 0, overwriting badcommand
+                var currentError = -1;
 
                 switch (errorName ?? "")
                 {
@@ -1467,7 +1468,9 @@ public partial class V4Game
                         currentError = (int) PlayerError.BadDrop;
                         break;
                     }
+                    // Quest's own spelling is "defaultake", but QDK writes "defaulttake"
                     case "defaultake":
+                    case "defaulttake":
                     {
                         if (ASLVersion <= 280)
                         {
@@ -1610,6 +1613,11 @@ public partial class V4Game
                         currentError = (int) PlayerError.AlreadyTaken;
                         break;
                     }
+                }
+
+                if (currentError == -1)
+                {
+                    continue;
                 }
 
                 _playerErrorMessageString[currentError] = errorMsg;
