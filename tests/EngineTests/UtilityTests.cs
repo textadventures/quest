@@ -208,6 +208,41 @@ public class UtilityTests
     }
 
     [TestMethod]
+    public void TestIndentScript_IgnoresBracesInComments()
+    {
+        // A commented-out "if (...) {" must not indent the lines after it (#2695)
+        var script = "//if (x) {\nif (y) {\nmsg(\"a\")\n}\nmsg(\"b\")";
+        var result = Engine.Utility.IndentScript(script, 0, "  ");
+        result.ShouldBe(
+            Environment.NewLine +
+            "//if (x) {" + Environment.NewLine +
+            "if (y) {" + Environment.NewLine +
+            "  msg(\"a\")" + Environment.NewLine +
+            "}" + Environment.NewLine +
+            "msg(\"b\")" + Environment.NewLine);
+    }
+
+    [TestMethod]
+    public void TestGetScript_IgnoresBracesInCommentsInsideABlock()
+    {
+        // The Editor keeps whole-line comments when it parses, so a commented-out "if (...) {"
+        // inside a block must not stop the block's closing brace being found (#2695)
+        var script = "if (a) {\n  //if (x) {\n  if (y) {\n    msg(\"a\")\n  }\n}\nmsg(\"b\")";
+        var result = Engine.Utility.GetScript(script, out var afterScript);
+        result.ShouldBe("if (a) {\n  //if (x) {\n  if (y) {\n    msg(\"a\")\n  }\n}");
+        afterScript.ShouldBe("\nmsg(\"b\")");
+    }
+
+    [TestMethod]
+    public void TestGetScript_SlashesInsideStringsInsideABlockAreNotComments()
+    {
+        var script = "if (a) {\n  msg(\"http://x {\")\n}\nmsg(\"b\")";
+        var result = Engine.Utility.GetScript(script, out var afterScript);
+        result.ShouldBe("if (a) {\n  msg(\"http://x {\")\n}");
+        afterScript.ShouldBe("\nmsg(\"b\")");
+    }
+
+    [TestMethod]
     public void TestExpressionResultToString_NonNullValue_ReturnsToString()
     {
         Engine.Utility.ExpressionResultToString(42).ShouldBe("42");
