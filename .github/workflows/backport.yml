@@ -4,10 +4,11 @@ name: Backport
 # "backport release/6.0" (before or after merging it) and this cherry-picks its
 # squash commit onto release/6.0 and opens "chore(release/6.0): backport #N".
 # Any "backport <branch>" label works the same way, for whatever release branch
-# follows release/6.0. If the cherry-pick doesn't apply cleanly, it comments on
-# the PR instead, and the backport is done by hand. Either way the backport PR is
-# merged with a merge commit, not squashed. See "Backporting" in
-# docs/release-channels.md.
+# follows release/6.0. If the cherry-pick doesn't apply cleanly, or the push is
+# refused, it comments on the PR instead, and the backport is done by hand.
+# Either way the backport PR is squash-merged, and its description carries a
+# BEGIN_COMMIT_OVERRIDE block with the original PR's title so release-please
+# still lists the fix. See "Backporting" in docs/release-channels.md.
 #
 # pull_request_target, so it has secrets for PRs from forks too. That's safe
 # here because nothing from the PR is checked out or run: the commit it
@@ -30,7 +31,10 @@ jobs:
     steps:
       # The PR is pushed and opened with RELEASE_PAT rather than GITHUB_TOKEN:
       # a PR opened with GITHUB_TOKEN doesn't trigger workflows, so its required
-      # build_and_test check would never run.
+      # build_and_test check would never run. RELEASE_PAT needs the Workflows
+      # permission as well as Contents and Pull requests: GitHub refuses any
+      # push that changes a file under .github/workflows/ without it, and fixes
+      # that add an e2e script also change e2e.yml.
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
@@ -59,6 +63,18 @@ jobs:
             labels="$(jq -r '.[]' <<< "$LABELS")"
           fi
 
+          # release-please only reads commit messages, and a squash merge leaves
+          # just the backport PR's chore( ) title, which it skips. It reads a
+          # BEGIN_COMMIT_OVERRIDE block in the PR description in place of that
+          # message, so this carries the original fix: or feat: title over.
+          override="$(printf 'BEGIN_COMMIT_OVERRIDE\n%s (#%s)\nEND_COMMIT_OVERRIDE' "$PR_TITLE" "$PR_NUMBER")"
+
+          # Comments on the original PR with the steps to backport it by hand.
+          # $1 is why the bot couldn't do it.
+          comment_manual() {
+            gh pr comment "$PR_NUMBER" --body "$(printf '%s\n\nTo backport it by hand:\n\n```\ngit switch -c %s origin/%s\ngit cherry-pick -x %s\n```\n\nThen open a PR into `%s` titled `chore(%s): backport #%s`, with this in its description, and squash-merge it:\n\n```\n%s\n```\n\nSee "Backporting" in docs/release-channels.md.' "$1" "$branch" "$target" "$COMMIT" "$target" "$target" "$PR_NUMBER" "$override")"
+          }
+
           status=0
           while IFS= read -r label; do
             case "$label" in "backport "*) ;; *) continue ;; esac
@@ -79,15 +95,18 @@ jobs:
             fi
 
             git switch --quiet -C "$branch" "origin/$target"
-            if git cherry-pick -x "$COMMIT"; then
-              git push origin "$branch"
-              body="$(printf 'Backports #%s (%s) to `%s`.\n\nMerge this with a **merge commit**, not a squash, so the changelog lists the original fix. See "Backporting" in docs/release-channels.md.' "$PR_NUMBER" "$PR_TITLE" "$target")"
+            if ! git cherry-pick -x "$COMMIT"; then
+              git cherry-pick --abort
+              comment_manual "The cherry-pick onto \`$target\` has conflicts."
+              status=1
+            elif ! push_error="$(git push origin "$branch" 2>&1)"; then
+              echo "$push_error"
+              comment_manual "$(printf 'The cherry-pick onto `%s` applied cleanly, but pushing it was refused:\n\n```\n%s\n```' "$target" "$(grep -m1 'remote rejected\|error:' <<< "$push_error" || tail -n1 <<< "$push_error")")"
+              status=1
+            else
+              body="$(printf 'Backports #%s (%s) to `%s`.\n\nSquash-merge this. The block below gives release-please the original title, so the changelog lists the fix. See "Backporting" in docs/release-channels.md.\n\n%s' "$PR_NUMBER" "$PR_TITLE" "$target" "$override")"
               url="$(gh pr create --base "$target" --head "$branch" --title "chore($target): backport #$PR_NUMBER" --body "$body")"
               gh pr comment "$PR_NUMBER" --body "Backport to \`$target\` opened: $url"
-            else
-              git cherry-pick --abort
-              gh pr comment "$PR_NUMBER" --body "$(printf 'The cherry-pick onto `%s` has conflicts, so this needs backporting by hand:\n\n```\ngit switch -c %s origin/%s\ngit cherry-pick -x %s\n```\n\nThen open a PR into `%s` titled `chore(%s): backport #%s`, and merge it with a merge commit. See "Backporting" in docs/release-channels.md.' "$target" "$branch" "$target" "$COMMIT" "$target" "$target" "$PR_NUMBER")"
-              status=1
             fi
             echo "::endgroup::"
           done <<< "$labels"
