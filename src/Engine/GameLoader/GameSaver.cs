@@ -271,6 +271,20 @@ internal partial class GameSaver
                 var value = e.Fields.Get(attribute);
                 _fieldSaver?.Save(writer, e, attribute, value);
             }
+
+            // A package flattens "listextend" fields into the merged list each element ends up with
+            // (above). The Editor save keeps them as they were written - an element's own extensions
+            // as "listextend", and nothing for inherited ones - so they survive a save and reload.
+            if (writer.Mode == SaveMode.Editor)
+            {
+                foreach (var extension in e.Fields.OwnFieldExtensions)
+                {
+                    if (CanSaveAttribute(extension.Key, e))
+                    {
+                        _fieldSaver?.SaveListExtension(writer, extension.Key, extension.Value);
+                    }
+                }
+            }
         }
 
         protected virtual void Initialise()
