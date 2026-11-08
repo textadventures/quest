@@ -1,5 +1,29 @@
 # Changelog
 
+## [6.0.4](https://github.com/textadventures/quest/compare/v6.0.3...v6.0.4) (2026-11-08)
+
+
+### Features
+
+* **Player:** report how far a game from textadventures.co.uk got ([#2746](https://github.com/textadventures/quest/issues/2746)) ([15c9a33](https://github.com/textadventures/quest/commit/15c9a331498d2973b7b182afef3e2ff115b2c9c2))
+
+
+### Bug Fixes
+
+* **Editor:** keep edits to a script with a commented-out brace in a block ([#2770](https://github.com/textadventures/quest/issues/2770)) ([be716a0](https://github.com/textadventures/quest/commit/be716a0d17bf6d203e66e6d0900d9206f061f865))
+* **Editor:** keep library original after copy-and-rename ([#2555](https://github.com/textadventures/quest/issues/2555)) ([#2563](https://github.com/textadventures/quest/issues/2563)) ([7bef2de](https://github.com/textadventures/quest/commit/7bef2dea596ec8d43481a350ff96dba265002219))
+* **Editor:** keep listextend fields when copying a type into the game and saving ([#2758](https://github.com/textadventures/quest/issues/2758)) ([9364d63](https://github.com/textadventures/quest/commit/9364d6353fa6a13bb3d1b3dd6208959d3978eda2))
+* **Editor:** leave earlier publish output out of the Publish package ([#2714](https://github.com/textadventures/quest/issues/2714)) ([836a149](https://github.com/textadventures/quest/commit/836a1499af60948d26f0f4972a9bd54fb679bcfb))
+* **Editor:** let library element panels scroll ([#2767](https://github.com/textadventures/quest/issues/2767)) ([0ea799b](https://github.com/textadventures/quest/commit/0ea799bdac34f8ff56ddbd186835d368e2ba16b6))
+* **Editor:** load a nameless &lt;attr&gt; from Quest 5.9 as an attribute named attr ([#2778](https://github.com/textadventures/quest/issues/2778)) ([2a1e819](https://github.com/textadventures/quest/commit/2a1e819dd6cba20c5f086e44cc16b052f671ed8c))
+* **Editor:** stop multi-line text gaining whitespace on every save ([#2623](https://github.com/textadventures/quest/issues/2623)) ([18651f1](https://github.com/textadventures/quest/commit/18651f1a9844fe2857805262adef44fb04474517))
+* **Player:** don't hang when a prompt's answer arrives after it's over ([#2684](https://github.com/textadventures/quest/issues/2684)) ([ed6c117](https://github.com/textadventures/quest/commit/ed6c1172db14e11ef961469ca28e7ebf31648f50))
+* **Player:** don't open the on-screen keyboard by itself on touch devices ([#2773](https://github.com/textadventures/quest/issues/2773)) ([3388569](https://github.com/textadventures/quest/commit/338856912dde52b34222d70b750c63858468f53c))
+* **Player:** keep a published game's borderless or shadow command box on focus ([#2764](https://github.com/textadventures/quest/issues/2764)) ([e3f361e](https://github.com/textadventures/quest/commit/e3f361ec2d7054048e0ea5438716569f1eb4c7f1))
+* **Player:** make the restart command restart the game in place ([#2583](https://github.com/textadventures/quest/issues/2583)) ([0e41321](https://github.com/textadventures/quest/commit/0e41321a63caf7bbc75b026df3dba3a50c7b8d44))
+* **Player:** stop online games' images shifting the page or scrolling short ([#2580](https://github.com/textadventures/quest/issues/2580)) ([dfd3db0](https://github.com/textadventures/quest/commit/dfd3db08024f115c2aac32ffc305af59b9ecbe1f))
+* **Player:** unescape quotes in the echoed ShowMenu response ([#2760](https://github.com/textadventures/quest/issues/2760)) ([7c864e9](https://github.com/textadventures/quest/commit/7c864e9b195a2c58347eb3203064c63a7b2ecf19))
+
 ## [6.0.3](https://github.com/textadventures/quest/compare/v6.0.2...v6.0.3) (2026-10-23)
 
 
