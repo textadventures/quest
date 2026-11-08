@@ -487,7 +487,7 @@
         {@const readOnly = $selectedData.isLibraryElement}
         {#if hasAttributesPanel}
             {@const { main, advanced } = partitionControls(viewControls.filter(c => c.controlType !== "attributes"))}
-            <div class="flex-1 overflow-hidden flex flex-col min-h-0 {readOnly ? "pointer-events-none opacity-60" : ""}">
+            <div class="flex-1 overflow-hidden flex flex-col min-h-0 {readOnly ? "read-only-controls opacity-60" : ""}">
                 <AttributesEditor>
                     {#snippet extraControls()}
                         {#each groupControlRows(main) as row, ri (ri)}
@@ -507,7 +507,7 @@
             </div>
         {:else}
             {@const { main, advanced } = partitionControls(viewControls)}
-            <div class="flex-1 overflow-y-auto {readOnly ? "pointer-events-none opacity-60" : ""}">
+            <div class="flex-1 overflow-y-auto {readOnly ? "read-only-controls opacity-60" : ""}">
                 {#each groupControlRows(main) as row, ri (ri)}
                     {#if row.length === 1}
                         {@render controlRow(row[0])}
@@ -1181,3 +1181,15 @@
         {/if}
     {/if}
 {/snippet}
+
+<style>
+    /* A library element's controls are view-only: nothing in them takes a click, but the panels
+       that scroll still take the mouse wheel, so long library scripts can be read to the end.
+       pointer-events: none (or inert) on the whole panel would stop the wheel too. */
+    .read-only-controls :global(*) {
+        pointer-events: none;
+    }
+    .read-only-controls :global(:is(.overflow-auto, .overflow-y-auto, .overflow-x-auto, .cm-scroller)) {
+        pointer-events: auto;
+    }
+</style>
