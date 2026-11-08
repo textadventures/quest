@@ -35,10 +35,24 @@ Because `releases/latest` skips prereleases, the download buttons (AppShell's `d
 Fixes land on `main` first, then go to `release/6.0` through a PR of their own:
 
 1. Branch from `release/6.0` and `git cherry-pick -x` the squash commit from `main`. Several related fixes can go in one PR.
-2. Title the PR `chore(release/6.0): backport #1234` (listing every PR it brings in). `pr-title-lint.yml` rejects any other title for a PR into a `release/**` branch.
-3. Merge it with a **merge commit**, not a squash.
+2. Title the PR `chore(release/6.0): backport #1234` (listing every PR it brings in).
+3. Put the original PR titles, each followed by its PR number, in a commit override block in the PR description, separated by blank lines:
 
-Why it works this way: release-please builds the changelog from every commit since the last tag, merge commits included. Merging keeps each cherry-picked commit with its original title and PR number, so the 6.0.N changelog lists the actual fixes. The merge commit is titled with the PR title, so with a `fix:` title it would show up in the changelog as a second entry for the same fix. A `chore:` title is left out of the changelog. Changing the repo's merge commit title setting doesn't avoid this: the only alternative GitHub allows puts the PR title in the merge commit's body, and release-please also reads conventional-commit lines from commit bodies.
+   ```
+   BEGIN_COMMIT_OVERRIDE
+   fix(Player): stop online games' images shifting the page or scrolling short (#2580)
+
+   fix(Editor): another backported fix (#1235)
+   END_COMMIT_OVERRIDE
+   ```
+
+4. Squash-merge it, like any other PR.
+
+`pr-title-lint.yml` rejects any other title for a PR into a `release/**` branch, and a `chore(<branch>): backport` PR with no override block.
+
+Why it works this way: release-please only reads commit messages, and the squash commit is titled `chore(release/6.0): backport #1234`, which it leaves out of the changelog. The override block replaces that message with the original titles, so the 6.0.N changelog lists the actual fixes, and a backported fix triggers a release at all. If the block is missing or wrong after merging, editing the merged PR's description and re-running the `release-please` workflow on `release/6.0` fixes it, since release-please reads the description again on every run. That's how 6.0.4 was released after #2756 went in without one.
+
+Don't merge a backport with a merge commit instead. release-please applies the override to every commit that came in with the PR, so the merge commit and each cherry-picked commit would all become the override's messages, and every fix would be listed more than once. (Backports used to be merged that way, without an override, so that release-please read each cherry-picked commit's own title. That stopped working the moment one was squash-merged by mistake.)
 
 ## Keeping 6.0 users safe from betas
 
@@ -75,7 +89,7 @@ The editor links to its own channel's docs. AppShell's help links (`docs-links.t
 
 ### Backporting docs fixes
 
-A docs fix that applies to the stable release lands on `main` first and is backported like a code fix (see "Backporting" above). To have it done for you, add the **`backport release/6.0`** label to the PR, before or after merging it. `backport.yml` then cherry-picks the squash commit onto `release/6.0` and opens `chore(release/6.0): backport #N`, which you merge with a merge commit. If the cherry-pick conflicts, it comments on the PR with the commands to do it by hand. The label works for code fixes too, and any `backport <branch>` label targets that branch.
+A docs fix that applies to the stable release lands on `main` first and is backported like a code fix (see "Backporting" above). To have it done for you, add the **`backport release/6.0`** label to the PR, before or after merging it. `backport.yml` then cherry-picks the squash commit onto `release/6.0` and opens `chore(release/6.0): backport #N` with the override block already in its description, which you squash-merge. If the cherry-pick conflicts, or the push is refused, it comments on the PR with the steps to do it by hand. The label works for code fixes too, and any `backport <branch>` label targets that branch. It pushes with the `RELEASE_PAT` secret, which needs the Workflows permission: many fixes change `.github/workflows/e2e.yml`, and GitHub refuses those pushes without it.
 
 ## 6.0.0 cut runbook
 
