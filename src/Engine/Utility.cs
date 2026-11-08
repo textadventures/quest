@@ -109,10 +109,29 @@ public static partial class Utility
         var braceCount = 1;
         var pos = start;
 
+        // The Editor keeps whole-line "//" comments in the script it parses (the Player strips
+        // them first), so a block can hold a commented-out line such as "//if (x) {". Braces in a
+        // comment don't count (#2695). Strings are already obscured, so any "//" left starts one.
+        var skipComments = open == '{';
+
         while (!finished)
         {
             pos++;
             var curChar = obscuredText[pos];
+            if (skipComments && curChar == '/' && pos + 1 < obscuredText.Length && obscuredText[pos + 1] == '/')
+            {
+                var lineEnd = obscuredText.IndexOf('\n', pos);
+                if (lineEnd == -1)
+                {
+                    // The comment runs to the end of the text, so the block is never closed.
+                    pos = obscuredText.Length - 1;
+                    break;
+                }
+
+                pos = lineEnd;
+                curChar = obscuredText[pos];
+            }
+
             if (curChar == open)
             {
                 braceCount++;
@@ -724,6 +743,7 @@ public static partial class Utility
             else
             {
                 if (c == '"') inString = true;
+                else if (c == '/' && i + 1 < line.Length && line[i + 1] == '/') break; // rest is a comment
                 else if (c == '{') indentLevel++;
                 else if (c == '}') indentLevel--;
             }

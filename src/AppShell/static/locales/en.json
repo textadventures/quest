@@ -283,6 +283,7 @@
     "scriptEditor.addScript": "Add script",
     "scriptEditor.loadingCommands": "Loading commands…",
     "scriptEditor.loadFailed": "This script couldn't be shown in the visual editor, but you can still edit it in Code view. ({error})",
+    "scriptEditor.codeViewNotApplied": "Your change in Code view wasn't applied, so it has been discarded: {error}",
     "scriptEditor.removeParameter": "Remove parameter",
     "scriptEditor.addParam": "param",
     "scriptEditor.removeCase": "Remove case",
