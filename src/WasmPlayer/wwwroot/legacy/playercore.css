@@ -196,12 +196,15 @@ div#txtCommandContainer {
     appearance: none;
     border: 1px solid #999;
     border-radius: 3px;
-    outline: none;
 }
 
-#txtCommand:focus {
-    border-color: #4a90d9;
-    box-shadow: 0 0 0 2px rgba(74, 144, 217, 0.25);
+/* The focus style is only an outline, kept below a game's own #txtCommand rule by :where(). Games
+   published with Core up to 6.0 add <style>#txtCommand { outline:none; ... }</style> for a
+   borderless or shadow command box, and that has to keep winning when the box has focus. The
+   outline sits over the 1px border (offset -1px), so it looks like a blue border. */
+:where(#txtCommand):focus {
+    outline: 2px solid #4a90d9;
+    outline-offset: -1px;
 }
 
 #txtCommandSpacer {
