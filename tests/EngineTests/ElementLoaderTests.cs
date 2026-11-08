@@ -50,6 +50,21 @@ public class ElementLoaderTests
         Assert.IsTrue(ok, "A malformed <javascript> with no src should be skipped, not crash the load");
     }
 
+    // Regression test for issue #2665: Quest 5.9 writes an attribute literally called "attr" as a
+    // bare <attr type="..."> with no name, which used to fail the load with "Invalid attribute".
+    [TestMethod]
+    public async Task TestNamelessAttrLoadsAsAttributeNamedAttr()
+    {
+        var (worldModel, ok) = await LoadGame("""
+            <object name="thing">
+              <attr type="string">hello</attr>
+            </object>
+            """);
+
+        Assert.IsTrue(ok, "Errors: " + string.Join("; ", worldModel.Errors));
+        Assert.AreEqual("hello", worldModel.Objects.First(o => o.Name == "thing").Fields.GetString("attr"));
+    }
+
     private static async Task<(WorldModel worldModel, bool ok)> LoadGame(string extraXml)
     {
         var xml = $"""
