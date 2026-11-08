@@ -42,13 +42,22 @@ async function run() {
     await versionCaption.waitFor({ state: 'visible', timeout: 10000 });
     await versionCodeCaption.waitFor({ state: 'visible', timeout: 10000 });
 
+    // Each control sits in a display: contents wrapper (PropertyEditor's controlRow), so the
+    // row is the nearest ancestor that actually takes part in layout.
     const sharedParent = await versionCaption.evaluate((el) => {
+        const layoutParent = (node) => {
+            let p = node?.parentElement;
+            while (p && getComputedStyle(p).display === 'contents') p = p.parentElement;
+            return p;
+        };
         const versionOuter = el.closest('.flex.flex-col.gap-1');
         const codeOuter = [...document.querySelectorAll('span')]
             .find(s => /^Version Code:$/.test(s.textContent.trim()))
             ?.closest('.flex.flex-col.gap-1');
-        return !!(versionOuter && codeOuter && versionOuter.parentElement === codeOuter.parentElement
-            && [...(versionOuter.parentElement?.classList ?? [])].some(c => c === 'flex'));
+        const row = layoutParent(versionOuter);
+        if (!row || !codeOuter || row !== layoutParent(codeOuter)) return false;
+        const style = getComputedStyle(row);
+        return style.display === 'flex' && style.flexDirection === 'row';
     });
     check('Version and Version Code share a horizontal flex row', sharedParent, true);
 
