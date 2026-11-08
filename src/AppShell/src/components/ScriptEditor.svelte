@@ -9,6 +9,7 @@
     import ExpressionInput from "./ExpressionInput.svelte";
     import { t } from "$lib/i18n";
     import { docsUrlForScriptKeyword } from "$lib/docs-links";
+    import { showToast } from "$lib/toast";
     import {
         scriptVersion,
         scriptClipboardHasContent,
