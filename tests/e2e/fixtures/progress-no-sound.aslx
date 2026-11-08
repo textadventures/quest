@@ -1,0 +1,18 @@
+<asl version="600">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- A game with no sounds, so it starts without a Begin card (verify-wasmplayer-game-progress.mjs). -->
+  <game name="ProgressNoSound">
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="editor_object" />
+      <inherit name="editor_player" />
+    </object>
+  </object>
+
+</asl>

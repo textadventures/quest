@@ -33,6 +33,8 @@ try {
     }
     console.log('PASS: preload.ts populated window.electronApp.platform');
 
+    // The player reports how far the game got (GameProgress); nothing to check here.
+    await app.context().route('**/api/gameprogress/**', (route) => route.fulfill({ status: 204 }));
     // Intercept at the context level so the route is already active before
     // the new player window navigates and fires its api/game/{id} fetch.
     let capturedUrl = null;

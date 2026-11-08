@@ -353,6 +353,33 @@ function activationLikelyGranted() {
     return !('userActivation' in navigator) || navigator.userActivation.hasBeenActive;
 }
 
+// A random ID for this page load, sent with the api/Game/{id} fetch and every progress report, so
+// textadventures.co.uk can join one load's events up.
+const playId = crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
+// For a game from textadventures.co.uk (?id=), tells it how far the game got (its GameProgress
+// API): "begin" when the Begin card shows, "started" when the game appears, "failed" if it
+// couldn't be started. Compared with the api/Game/{id} fetch, these show how many players leave
+// while a game loads or at Begin. Each is sent at most once a page load, with sendBeacon so it
+// still goes if the player is leaving. Nothing is sent for a game from anywhere else.
+let progressUrl = null;
+const reportedStages = new Set();
+function reportProgress(stage, error = null) {
+    if (!progressUrl || reportedStages.has(stage)) return;
+    reportedStages.add(stage);
+    const params = clientInfoParams();
+    params.set('stage', stage);
+    params.set('ms', String(Math.round(performance.now())));
+    // 6.0 has only the legacy UI; 6.1 also sends 'v2'.
+    params.set('ui', 'legacy');
+    if (error) params.set('error', String(error).slice(0, 500));
+    const url = `${progressUrl}?${params}`;
+    try {
+        if (navigator.sendBeacon?.(url)) return;
+    } catch { /* fall back to fetch */ }
+    fetch(url, { method: 'POST', mode: 'no-cors', keepalive: true }).catch(() => {});
+}
+
 // Attached to the api/Game/{id} fetch below as analytics metadata (see
 // ClientInfo on textadventures.co.uk's ApiController) — mirrors AppShell's
 // home-catalog.ts clientInfoParams(), which does the same for the Catalog and
@@ -363,6 +390,7 @@ function activationLikelyGranted() {
 // activationLikelyGranted() above already relies on.
 function clientInfoParams() {
     const params = new URLSearchParams();
+    params.set('playId', playId);
     const isElectron = navigator.userAgent.includes('Electron/');
     params.set('source', isElectron ? 'electron' : 'web');
     if (window.QuestVivaVersion) params.set('version', window.QuestVivaVersion);
@@ -396,6 +424,7 @@ async function maybeGateOnActivation(gameBytes) {
     if (pickers) pickers.style.display = 'none';
     if (msg) msg.style.display = 'none';
     if (gate) gate.style.display = 'flex';
+    reportProgress('begin');
 
     await new Promise(resolve => {
         document.getElementById('qv-clicktobegin-btn')?.addEventListener('click', resolve, { once: true });
@@ -730,6 +759,7 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
         // it owns the file-picking UI, so don't re-offer the start-screen
         // pickers; just show the error, editor-style.
         showGameLoadError(errors, !bc);
+        reportProgress('failed', errors.join(' ') || 'Unknown error');
         return false;
     }
 
@@ -771,6 +801,8 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
     WebPlayer.setCanDebug((isPreview || allowDebug) && Bridge.IsDebugEnabled());
 
     await Bridge.Begin();
+
+    reportProgress('started');
 
     // Both require the game to have already started (Begin() run) — see their
     // own doc comments — so they run after Bridge.Begin(), unlike the rest of
@@ -2303,9 +2335,10 @@ async function fetchGameBytes(url) {
         // and the game file it points at are what used to gate it.
         preloadRuntime();
         let resolvedSourceUrl = null;
+        const apiRoot = window.QuestVivaConfig?.textAdventuresApiRoot
+            ?? 'https://textadventures.co.uk/api/';
+        progressUrl = `${apiRoot}gameprogress/${encodeURIComponent(id)}`;
         const gamePromise = (async () => {
-            const apiRoot = window.QuestVivaConfig?.textAdventuresApiRoot
-                ?? 'https://textadventures.co.uk/api/';
             const apiResponse = await fetch(`${apiRoot}game/${id}?${clientInfoParams()}`);
             if (!apiResponse.ok) {
                 const err = new Error(`API: HTTP ${apiResponse.status}`);
@@ -2326,6 +2359,7 @@ async function fetchGameBytes(url) {
                 await startGame(bytes, filename, null, id);
             } catch (err) {
                 showError(resolvedSourceUrl, false, err);
+                reportProgress('failed', err?.message ?? String(err));
             }
         });
         return;

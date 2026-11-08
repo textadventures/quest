@@ -1,0 +1,22 @@
+<asl version="600">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- A game whose start plays a sound, so a page with no click yet shows the Begin card
+       (verify-wasmplayer-game-progress.mjs). -->
+  <game name="ProgressStartSound">
+    <start type="script">
+      play sound ("intro.wav", false, false)
+    </start>
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="editor_object" />
+      <inherit name="editor_player" />
+    </object>
+  </object>
+
+</asl>
