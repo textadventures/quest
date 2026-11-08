@@ -234,8 +234,12 @@
         error ("Unexpected menu response")
       }
       else {
+        // ShowMenu's links used to send options with their quotes escaped by EscapeQuotes, and a
+        // game with its own copy of that older ShowMenu still does. Unescape once, up front, so the
+        // echoed response and the disambiguation lookup see the same text the callback does.
+        option = UnescapeQuotes(option)
         parameters = NewStringDictionary()
-        dictionary add (parameters, "result", UnescapeQuotes(option))
+        dictionary add (parameters, "result", option)
         script = game.menucallback
         if (GetBoolean (game, "donotclearmenus")) {
           DisableMenu
