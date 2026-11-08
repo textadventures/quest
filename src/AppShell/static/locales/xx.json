@@ -252,6 +252,7 @@
     "scriptEditor.addScript": "[Ádd scrípt]",
     "scriptEditor.loadingCommands": "[Lóádíng cómmánds…]",
     "scriptEditor.loadFailed": "[Thís scrípt cóúldn't bé shówn ín thé vísúál édítór, bút yóú cán stíll édít ít ín Códé víéw. ({error})]",
+    "scriptEditor.codeViewNotApplied": "[Yóúr chángé ín Códé víéw wásn't ápplíéd, só ít hás béén díscárdéd: {error}]",
     "scriptEditor.removeParameter": "[Rémóvé párámétér]",
     "scriptEditor.addParam": "[párám]",
     "scriptEditor.removeCase": "[Rémóvé cásé]",

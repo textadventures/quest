@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { untrack } from "svelte";
     import { SvelteSet } from "svelte/reactivity";
     import ScriptEditor from "./ScriptEditor.svelte";
     import AddScriptModal from "./AddScriptModal.svelte";
@@ -211,9 +212,29 @@
     // command in the tree while code view is already open) - the scriptData effect above only
     // covers the visual editor's data.
     $effect(() => {
-        if (isRoot && codeViewMode) {
-            scriptCode = getScriptCode(elementKey, attribute);
-            codeViewError = null;
+        if (!isRoot) return;
+        const inCodeView = codeViewMode;
+        const key = elementKey;
+        const attr = attribute;
+        // Code view applies an edit when it loses focus, which is usually the click that picks
+        // another element or switches back to the visual view. If that edit didn't parse, the
+        // inline error and the author's text are about to go, so say so where it'll still be
+        // seen (#2695).
+        untrack(() => {
+            if (codeViewError) {
+                showToast(t("scriptEditor.codeViewNotApplied", { error: codeViewError }));
+                codeViewError = null;
+            }
+        });
+        if (inCodeView) {
+            scriptCode = getScriptCode(key, attr);
+        }
+    });
+
+    // The same, when picking another element unmounts this editor instead of reusing it.
+    $effect(() => () => {
+        if (isRoot && codeViewError) {
+            showToast(t("scriptEditor.codeViewNotApplied", { error: codeViewError }));
         }
     });
 
