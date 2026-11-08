@@ -103,7 +103,7 @@ public class ListExtendSaveTests
         controller.ElementsUpdated += (_, _) => { };
         controller.Dirty += (_, _) => { };
 
-        var ok = await controller.Initialise(new GameData(Encoding.UTF8.GetBytes(gameFile), "test.aslx"));
+        var ok = await controller.Initialise(new ByteArrayGameDataProvider(Encoding.UTF8.GetBytes(gameFile), "test.aslx"));
         Assert.IsTrue(ok);
 
         controller.UpdateTree();
