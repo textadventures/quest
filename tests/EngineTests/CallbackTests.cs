@@ -276,17 +276,31 @@ public class CallbackTests
     // player can answer it while that command is still running. Answering it used to replace the
     // turn signal the command's SendCommand was awaiting, so SendCommand never returned and the
     // player's input stayed locked.
+    // Once the wait is on screen, every RunScriptAsync call is held until the wait has been
+    // answered. Without that, the rest of the command's script only has a few yields to get
+    // through, and on a busy machine it can finish before the test answers the wait.
     [TestMethod]
     public async Task Wait_AnsweredWhileCommandStillRunning_BothComplete()
     {
         var driver = await GameDriver.LoadAsync("callbacktest.aslx", yieldInRunScript: true);
         var waitShown = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         driver.PlayerMock.Setup(p => p.DoWait()).Callback(() => waitShown.TrySetResult());
+        driver.PlayerMock
+            .Setup(p => p.RunScriptAsync(It.IsAny<string>(), It.IsAny<object[]>()))
+            .Returns(async () =>
+            {
+                if (waitShown.Task.IsCompleted)
+                    await release.Task;
+                else
+                    await Task.Yield();
+            });
 
         var send = driver.Model.SendCommand("testwait");
         await waitShown.Task.WaitAsync(TimeSpan.FromSeconds(5));
         send.IsCompleted.ShouldBeFalse();
         var finish = driver.Model.FinishWait();
+        release.SetResult();
 
         await Task.WhenAll(send, finish).WaitAsync(TimeSpan.FromSeconds(5));
     }
