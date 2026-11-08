@@ -10,12 +10,20 @@ on:
   push:
     tags: ['v*']
   # Manual escape hatch (matches deploy-play.yml/finalize-release.yml) — e.g. to
-  # retry after NPM_TOKEN expired/rotated, without needing a new tag/version.
+  # retry a failed publish without needing a new tag/version.
   # Dispatch against the existing tag itself (the "Use workflow from" ref
   # picker in the Actions UI, or `gh workflow run npm-publish.yml --ref
   # vX.Y.Z`) so GITHUB_REF_NAME below still resolves to that tag, same as a
   # real tag push.
   workflow_dispatch:
+
+# Authenticates with npm trusted publishing (OIDC), not a stored token: the
+# package's npmjs.com settings trust this workflow file in textadventures/quest,
+# so a publish needs no NPM_TOKEN secret that expires. The trust is tied to this
+# filename, so renaming the file means updating it on npmjs.com too.
+permissions:
+  contents: read
+  id-token: write
 
 jobs:
   publish:
@@ -37,6 +45,10 @@ jobs:
         with:
           node-version: '22'
           registry-url: 'https://registry.npmjs.org'
+
+      # Trusted publishing needs npm 11.5.1 or later; Node 22 bundles npm 10.
+      - name: Update npm
+        run: npm install -g npm@latest
 
       - name: Verify tag matches VERSION file
         run: |
@@ -90,5 +102,3 @@ jobs:
       - name: Publish to npm
         run: npm publish --access public --tag ${{ env.DIST_TAG }}
         working-directory: src/WasmPlayer/bin/Release/net10.0/browser-wasm/AppBundle
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
