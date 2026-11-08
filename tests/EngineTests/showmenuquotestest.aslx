@@ -1,0 +1,21 @@
+<asl version="600">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="showmenuquotestest">
+    <showmenuresponses />
+  </game>
+  <object name="start">
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+  <command name="cmd_menu">
+    <pattern>menu</pattern>
+    <script>
+      ShowMenu ("Pick one", Split("I'm here;Say \"hi\"", ";"), false) {
+        msg ("result: " + result)
+      }
+    </script>
+  </command>
+</asl>

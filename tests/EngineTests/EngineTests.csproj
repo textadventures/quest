@@ -97,6 +97,9 @@
         <None Update="callbacktest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="showmenuquotestest.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="recursiontest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
