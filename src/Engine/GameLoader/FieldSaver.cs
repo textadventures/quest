@@ -81,6 +81,26 @@ internal partial class FieldSaver
         }
     }
 
+    public void SaveListExtension(GameXmlWriter writer, string attribute, IExtendableField value)
+    {
+        // ListExtensionLoader is the only thing that creates an extendable field
+        if (value is not QuestList<string> list)
+        {
+            throw new Exception($"ERROR: Can't save list extension {attribute}, type: {value.GetType()}");
+        }
+
+        // Write it the way Core libraries do ("[SwitchOn];[SwitchOff]"), unless an item contains
+        // the separator - then one item per line, which ListExtensionLoader also reads
+        var saveString = list.Any(item => item.Contains(';') || item.Contains('\n'))
+            ? "\n" + string.Join("\n", list) + "\n"
+            : string.Join(";", list);
+
+        FieldSaverBase.WriteStartElementForAttribute(writer, attribute);
+        writer.WriteAttributeString("type", "listextend");
+        writer.WriteString(saveString);
+        writer.WriteEndElement();
+    }
+
     private void SaveValue(GameXmlWriter writer, string xmlElementName, object? value)
     {
         if (value == null)
