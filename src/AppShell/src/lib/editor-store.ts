@@ -797,7 +797,6 @@ export type PublishFile = { name: string; size: number | null };
 // this, publishing twice from the same folder packs the first game.quest inside the second.
 // Filtered here rather than in the adapters' listAssets(), which also drives the Assets dialog —
 // these are real files in the folder, and that's where a user would go to see or delete them.
-// Matches qv publish's own rule (GamePublisher.Included in src/Cli).
 export function isEarlierPublishOutput(name: string, gameFilename: string): boolean {
     const lower = name.toLowerCase();
     const base = gameFilename.replace(/\.aslx$/i, "").toLowerCase();
