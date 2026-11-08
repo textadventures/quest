@@ -1,0 +1,44 @@
+<asl version="580">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <game name="Quest 5 Core restart">
+    <count type="int">0</count>
+  </game>
+
+  <!-- Quest 5's CoreCommands.aslx restart command, verbatim. Published games
+       saved with Quest 5 carry this inlined, so the player has to provide the
+       RestartGame() it falls back to. -->
+  <command name="restart" pattern="^restart$">
+    <script>
+      Ask (Template("WantRestartGame")){
+        if (result){
+          JS.eval("if(webPlayer){window.location.reload();}else if (typeof(RestartGame) != 'undefined'){RestartGame();}else{addTextAndScroll('Try pressing CTRL+R.')};")
+        }
+        else {
+          game.suppressturnscripts = true
+        }
+      }
+    </script>
+  </command>
+
+  <command name="bump" pattern="^bump$">
+    <script>
+      game.count = game.count + 1
+      msg ("Count: " + game.count)
+    </script>
+  </command>
+
+  <command name="showcount" pattern="^showcount$">
+    <script>
+      msg ("Count: " + game.count)
+    </script>
+  </command>
+
+  <object name="room">
+    <object name="player">
+    </object>
+  </object>
+
+</asl>

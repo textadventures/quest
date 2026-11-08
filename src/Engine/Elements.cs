@@ -27,6 +27,11 @@ public class Elements
     private readonly Dictionary<Element, int> _nextSortIndexByParent = [];
     private int _nextRootSortIndex;
 
+    // Library elements that a same-named element has overridden, by name. An override replaces the
+    // original in the live graph, but renaming the override (the "copy a library function into the
+    // game, then rename it" flow) must leave the original in place, as it would after a reload.
+    private readonly Dictionary<string, Element> _overriddenLibraryElements = [];
+
     internal Elements()
     {
         foreach (ElementType t in Enum.GetValues<ElementType>())
@@ -39,6 +44,11 @@ public class Elements
     public IEnumerable<Element> Objects => GetElements(ElementType.Object);
 
     public event EventHandler<NameChangedEventArgs>? ElementRenamed;
+
+    // Raised when renaming a local override of a library element brings the library original
+    // back into (or, when the rename is undone, takes it out of) the live element graph.
+    public event EventHandler<ElementRefreshEventArgs>? LibraryElementRestored;
+    public event EventHandler<ElementRefreshEventArgs>? LibraryElementDisplaced;
 
     public void Add(ElementType t, string key, Element e)
     {
@@ -63,16 +73,19 @@ public class Elements
 
             // element is being overridden, so detach the event handler
             var oldElement = _allElements[key];
-            oldElement.Fields.NameChanged -= ElementNameChanged;
+            Unregister(oldElement);
 
-            // remove old element from ordered elements list
-            _elementsLists[t].Remove(_elements[t][key]);
-
-            // and from the parent index, since it's being displaced from the live element graph
-            RemoveFromParentIndex(oldElement, oldElement.Parent);
-            _indexedElements.Remove(oldElement);
+            if (oldElement.MetaFields[MetaFieldDefinitions.Library])
+            {
+                _overriddenLibraryElements[key] = oldElement;
+            }
         }
 
+        Register(t, key, e);
+    }
+
+    private void Register(ElementType t, string key, Element e)
+    {
         _allElements[key] = e;
         _elements[t][key] = e;
         _elementsLists[t].Add(e);
@@ -86,6 +99,18 @@ public class Elements
         e.Fields.NameChanged += ElementNameChanged;
     }
 
+    private void Unregister(Element e)
+    {
+        e.Fields.NameChanged -= ElementNameChanged;
+
+        // remove from ordered elements list
+        _elementsLists[e.ElemType].Remove(e);
+
+        // and from the parent index, since it's being displaced from the live element graph
+        RemoveFromParentIndex(e, e.Parent);
+        _indexedElements.Remove(e);
+    }
+
     private void ElementNameChanged(object? sender, NameChangedEventArgs e)
     {
         if (string.IsNullOrEmpty(e.Element.Name))
@@ -93,13 +118,37 @@ public class Elements
             throw new ArgumentException("Invalid object name");
         }
 
+        var t = e.Element.ElemType;
+
         _allElements.Remove(e.OldName);
-        _elements[e.Element.ElemType].Remove(e.OldName);
+        _elements[t].Remove(e.OldName);
+
+        // Renaming (or undoing a rename) back onto the name of a library original that was
+        // restored below means the override now shadows it again.
+        if (_allElements.TryGetValue(e.Element.Name, out var restored) &&
+            _overriddenLibraryElements.TryGetValue(e.Element.Name, out var original) &&
+            ReferenceEquals(restored, original))
+        {
+            _allElements.Remove(e.Element.Name);
+            _elements[t].Remove(e.Element.Name);
+            Unregister(original);
+            LibraryElementDisplaced?.Invoke(this, new ElementRefreshEventArgs(original));
+        }
 
         _allElements.Add(e.Element.Name, e.Element);
-        _elements[e.Element.ElemType].Add(e.Element.Name, e.Element);
+        _elements[t].Add(e.Element.Name, e.Element);
 
         ElementRenamed?.Invoke(this, e);
+
+        // The override no longer occupies the old name, so the library element it replaced
+        // is visible again, exactly as it would be after saving and reloading the game.
+        if (_overriddenLibraryElements.TryGetValue(e.OldName, out var shadowed) &&
+            shadowed.ElemType == t &&
+            !_allElements.ContainsKey(e.OldName))
+        {
+            Register(t, e.OldName, shadowed);
+            LibraryElementRestored?.Invoke(this, new ElementRefreshEventArgs(shadowed));
+        }
     }
 
     internal void Remove(ElementType t, string key)
