@@ -283,6 +283,7 @@
     "scriptEditor.addScript": "Skript hinzufügen",
     "scriptEditor.loadingCommands": "Kommandos laden…",
     "scriptEditor.loadFailed": "Dieses Skript konnte im visuellen Editor nicht angezeigt werden, aber du kannst es weiterhin in der Code-Ansicht bearbeiten. ({error})",
+    "scriptEditor.codeViewNotApplied": "Deine Änderung in der Code-Ansicht wurde nicht übernommen und daher verworfen: {error}",
     "scriptEditor.removeParameter": "Parameter entfernen",
     "scriptEditor.addParam": "Parameter",
     "scriptEditor.removeCase": "Fall entfernen",
