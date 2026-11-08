@@ -1,0 +1,22 @@
+<asl version="600">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <game name="Touch keyboard focus test">
+  </game>
+
+  <command name="wave">
+    <pattern>wave</pattern>
+    <script>
+      msg ("You wave. {command:wave:Wave again}")
+    </script>
+  </command>
+
+  <object name="room">
+    <description>You are in a room. {command:wave:Wave}</description>
+    <object name="player">
+    </object>
+  </object>
+
+</asl>

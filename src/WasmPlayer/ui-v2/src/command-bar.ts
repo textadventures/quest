@@ -8,6 +8,17 @@ import { state } from './state';
 /** input: the command input; continue: the Continue button (a wait); none: neither, briefly. */
 export type CommandBarMode = 'input' | 'continue' | 'none';
 
+// Focusing a text input opens a phone's on-screen keyboard, which covers half the screen. So while
+// the player is using touch, the input is only refocused (at the end of a turn, say) if the last
+// tap was on it: someone typing commands keeps their keyboard, but someone tapping links or just
+// reading has to tap the input to bring it up (#2674). A touch-first device starts that way; a
+// mouse click switches back to always refocusing, for touchscreen laptops.
+let touchedElsewhere = typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches;
+document.addEventListener('pointerdown', (e) => {
+    touchedElsewhere = e.pointerType !== 'mouse'
+        && !(e.target instanceof Element && e.target.closest('.qv-command-input'));
+}, true);
+
 export class QvCommandBar extends HTMLElement {
     #form!: HTMLFormElement;
     #input!: HTMLInputElement;
@@ -69,6 +80,7 @@ export class QvCommandBar extends HTMLElement {
     focusInput(): void {
         if (this.hidden) return;
         const control = this.#mode === 'input' ? this.#input : this.#mode === 'continue' ? this.#continue : null;
+        if (control === this.#input && touchedElsewhere) return;
         if (control && document.activeElement !== control) control.focus({ preventScroll: true });
     }
 
