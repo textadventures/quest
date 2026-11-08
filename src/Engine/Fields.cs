@@ -192,6 +192,11 @@ public class Fields
 
     internal IEnumerable<string> FieldNames => _attributes.Keys;
 
+    /// <summary>
+    /// This element's own "listextend" fields, not including any inherited from its types.
+    /// </summary>
+    internal IEnumerable<KeyValuePair<string, IExtendableField>> OwnFieldExtensions => _extendableFields;
+
     internal IEnumerable<string> FieldExtensionNames
     {
         get
@@ -227,6 +232,14 @@ public class Fields
             {
                 clone.Set(attribute.Key, attribute.Value, false, true);
             }
+        }
+
+        // "listextend" fields live apart from _attributes, so copy them too - otherwise a type
+        // copied into the game (MakeElementLocal) loses e.g. switchable's Switch on/off verbs.
+        // They're never mutated once loaded (merging builds a new list), so sharing them is safe.
+        foreach (var extension in _extendableFields)
+        {
+            clone._extendableFields[extension.Key] = extension.Value;
         }
 
         return clone;
