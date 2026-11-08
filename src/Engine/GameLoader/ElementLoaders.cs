@@ -442,12 +442,9 @@ internal partial class GameLoader
             var attribute = reader.Name;
             if (attribute == "attr")
             {
-                attribute = reader.GetAttribute("name");
-            }
-
-            if (attribute == null)
-            {
-                throw new Exception("Invalid attribute");
+                // Quest 5 writes an attribute that is itself called "attr" as a bare <attr type="...">,
+                // with no name, so a nameless <attr> means an attribute named "attr".
+                attribute = reader.GetAttribute("name") ?? "attr";
             }
 
             var type = reader.GetAttribute("type");
