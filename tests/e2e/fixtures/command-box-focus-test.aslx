@@ -1,0 +1,49 @@
+<asl version="600">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <game name="Command box focus test">
+  </game>
+
+  <!-- The exact styles that Core.aslx up to 6.0 adds for borderlesscursor and shadowbox. Published
+       games carry that Core inlined, so they still add these rather than calling the preset. -->
+  <command name="oldborderless">
+    <pattern>oldborderless</pattern>
+    <script>
+      JS.addScript("&lt;style&gt;#txtCommand { outline:none; border:none; margin:0; padding:0; width:100px; background-color:transparent;}&lt;/style&gt;")
+      msg ("Old borderless style added.")
+    </script>
+  </command>
+
+  <command name="oldshadow">
+    <pattern>oldshadow</pattern>
+    <script>
+      JS.addScript ("&lt;style&gt;#txtCommand { outline:none; border:none; margin:2px; padding:7px; width:100 px;box-shadow: 0px 0px 15px 5px #888;}&lt;/style&gt;")
+      msg ("Old shadow style added.")
+    </script>
+  </command>
+
+  <command name="presetborderless">
+    <pattern>presetborderless</pattern>
+    <script>
+      JS.QuestUI.setCommandBarPreset ("borderless")
+      msg ("Borderless preset set.")
+    </script>
+  </command>
+
+  <command name="presetshadow">
+    <pattern>presetshadow</pattern>
+    <script>
+      JS.QuestUI.setCommandBarPreset ("shadow")
+      msg ("Shadow preset set.")
+    </script>
+  </command>
+
+  <object name="room">
+    <description>You are in a room.</description>
+    <object name="player">
+    </object>
+  </object>
+
+</asl>

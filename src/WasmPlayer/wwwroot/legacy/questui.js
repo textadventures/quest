@@ -208,10 +208,10 @@
     }
 
     var commandBarPresets = {
-        // The :focus selectors matter: playercore.css gives #txtCommand:focus a blue border and
-        // ring, which would otherwise outrank these on a focused box.
-        borderless: "#txtCommand, #txtCommand:focus { outline:none; border:none; margin:0; padding:0; width:100px; background-color:transparent; box-shadow:none; }",
-        shadow: "#txtCommand, #txtCommand:focus { outline:none; border:none; margin:2px; padding:7px; box-shadow: 0px 0px 15px 5px #888; }"
+        // These rely on outline:none and on playercore.css keeping its focus style below a plain
+        // #txtCommand rule, as Core up to 6.0's own inline styles do.
+        borderless: "#txtCommand { outline:none; border:none; margin:0; padding:0; width:100px; background-color:transparent; }",
+        shadow: "#txtCommand { outline:none; border:none; margin:2px; padding:7px; box-shadow: 0px 0px 15px 5px #888; }"
     };
 
     // ── Map ─────────────────────────────────────────────────────────────────
