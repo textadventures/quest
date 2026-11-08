@@ -50,7 +50,7 @@ function initPlayerUI() {
     $("#txtCommand").bind("inview", function (event, visible) {
         // allows spacebar to scroll browser when txtCommand is not visible
         if (visible == true) {
-            $("#txtCommand").focus();
+            if (!_touchedElsewhere) $("#txtCommand").focus();
         } else {
             $("#txtCommand").blur();
         }
@@ -354,7 +354,7 @@ function initPlayerUI() {
 
     if (document.layers) document.captureEvents(Event.MOUSEDOWN);
 
-    $("#txtCommand").focus();
+    if (!_touchedElsewhere) $("#txtCommand").focus();
 }
 
 function loadHtml(html) {
@@ -772,6 +772,19 @@ function scrollToTurnStart(turnStart, allowBackward) {
     focusCommandInput();
 }
 
+// Focusing a text input opens a phone's on-screen keyboard, which covers half
+// the screen. So while the player is using touch, #txtCommand is only
+// refocused (at the end of a turn, or when it scrolls into view) if the last
+// tap was on it: someone typing commands keeps their keyboard, but someone
+// tapping links or just reading has to tap the input to bring it up (#2674).
+// A touch-first device starts that way; a mouse click switches back to always
+// refocusing, for touchscreen laptops.
+var _touchedElsewhere = typeof matchMedia === "function" && matchMedia("(pointer: coarse)").matches;
+document.addEventListener("pointerdown", function (e) {
+    _touchedElsewhere = e.pointerType !== "mouse"
+        && !(e.target instanceof Element && e.target.closest("#txtCommand"));
+}, true);
+
 // Plain jQuery .focus() calls the native HTMLElement.focus(), which — for an
 // element not already focused — asks the browser to scroll it into view.
 // #txtCommand sits right after all of #divOutput, so whenever it isn't
@@ -785,6 +798,7 @@ function scrollToTurnStart(turnStart, allowBackward) {
 // wait()/pause()) — needed by waitEnded()/pauseEnded(), which share this
 // same function to restore focus once the command bar comes back.
 function focusCommandInput() {
+    if (_touchedElsewhere) return;
     if (!isElementVisible("#txtCommandDiv") || !isElementVisible("#txtCommand")) return;
     document.getElementById("txtCommand")?.focus({preventScroll: true});
 }
