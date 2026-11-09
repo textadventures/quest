@@ -136,6 +136,33 @@ select.select {
     box-shadow: none;
 }
 
+/* Chromium pins its native dropdown arrow to the select's right edge whatever
+   padding-inline-end is, so on our compact (px-1/px-1.5) selects the chevron
+   sat almost against the border. Draw our own chevron (Lucide's chevron-down)
+   instead, inset from the edge, with room reserved for it. Unlayered, so the
+   padding-inline-end beats the px-* utilities the call sites set. A data: URI
+   can't use currentColor, hence the fixed per-theme stroke colours (zinc-500 /
+   zinc-400, close to surface-600-400). */
+select.select:not([multiple]):not([size]) {
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.4rem center;
+    background-size: 0.8em;
+    padding-inline-end: calc(0.8em + 0.8rem);
+}
+
+/* Hand cursor, like buttons (see the cursor rule at the top of this file). */
+select.select:not(:disabled) {
+    cursor: pointer;
+}
+
+:root.dark select.select:not([multiple]):not([size]),
+.play-dark select.select:not([multiple]):not([size]) {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
+
 select.select:focus,
 select.select:active {
     border-color: var(--color-primary-500);
