@@ -16,21 +16,19 @@ Now, add a window object to the kitchen and give it a sensible description.
 
 We want the player to be able to open the window. That's a job for the _Container_ tab, as in [Containers, locks and doors](/tutorial/containers-locks-and-doors) - but a window isn't really a container, because you can't put anything in it. That's what the **Openable/Closable** container type is for: an object that opens and closes and holds nothing. Tick "Container" on the window's _Features_ tab, then choose "Openable/Closable" on its _Container_ tab.
 
-Now add script commands to "Script to run when opening object". This script *replaces* Quest Viva's own handling of `OPEN WINDOW` rather than running alongside it, so the first thing it has to do is open the window itself, and then say so:
+Opening the window will now work, with Quest Viva's usual "You open it." Let's say something more fitting: set "Message to print when opening" to "You open the window."
 
--   Open object: window
--   Print a message: "You open the window, and a bee flies into the kitchen."
+Now for the bee. Further down the tab, add script commands to "After opening the object". This script runs once Quest Viva has opened the window and printed its message:
+
+-   Print a message: "A bee flies in and starts buzzing around the kitchen."
 -   Move object "bee" to "kitchen"
-
-"Open object" is in the Objects category, below the "Advanced" divider. It only sets the object's state - it doesn't print anything - which is why we print our own message on the next line.
-
-There's a matching "Script to run when closing object", but we don't need one: leave it empty and Quest Viva closes the window for us, with its usual message.
 
 Launch the game and go to the kitchen. Open the window and verify that you can now look at the bee.
 
 ```
 > open window
-You open the window, and a bee flies into the kitchen.
+You open the window.
+A bee flies in and starts buzzing around the kitchen.
 
 > close window
 You close it.
@@ -42,9 +40,9 @@ What if the player closes the window and then opens it again? They'll be told th
 
 One way to get around this might be to use an object flag, as we've done before. However it's even simpler just to check if the bee is in the kitchen. Add an "if" command and choose "object contains". Now you can select "kitchen" as the parent and "bee" as the child.
 
-For the "then" script, print a message such as "You open the window. Nothing much happens this time."
+For the "then" script, print a message such as "The bee is still buzzing around."
 
-Now cut and paste the existing "print a message" ("You open the window, and a bee flies in...") and "move object" to the "Else". Leave "Open object" where it is, above the "if" - the window should open either way.
+Now cut and paste the existing "print a message" ("A bee flies in...") and "move object" to the "Else".
 
 ![](/images/Bee.png)
 

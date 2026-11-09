@@ -2,11 +2,8 @@
 // site/src/content/docs/tutorial/moving-objects-during-the-game.md. See
 // .claude/skills/docs-screenshots/SKILL.md.
 //
-// The window is an Openable/Closable object, which inherits "openable" but not
-// "container_base" — so the Container tab's "After opening the object" (onopen) field
-// isn't offered for it at all, and the chapter uses "Script to run when opening object"
-// (openscript) instead. That script replaces the normal opening, hence the leading
-// "Open object" command (HelperOpenObject, which only sets the state and prints nothing).
+// The window is an Openable/Closable object, with an opening message and an "After opening
+// the object" (onopen) script, which runs once Quest Viva has opened it.
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
@@ -16,6 +13,12 @@ import {
 
 const imagesDir = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'site', 'public', 'images');
 const out = name => join(imagesDir, name);
+
+async function pickObject(page, combobox, name) {
+    await combobox.click();
+    await combobox.fill(name);
+    await page.locator('[role="option"]', { hasText: name }).first().click();
+}
 
 await runCapture(async ({ page, baseUrl }) => {
     await createLocalDraft(page, baseUrl, 'Tutorial Game');
@@ -35,42 +38,41 @@ await runCapture(async ({ page, baseUrl }) => {
     await page.waitForSelector('text=Container type:', { timeout: 10000 });
     await page.locator('text=Container type:').locator('xpath=following::select[1]')
         .selectOption({ label: 'Openable/Closable' });
-    await page.waitForSelector('text=Script to run when opening object:', { timeout: 10000 });
+    await page.waitForSelector('text=After opening the object:', { timeout: 10000 });
+    await setLabeledField(page, 'Message to print when opening', 'You open the window.');
 
-    // Every "+ Add script" button below the "Script to run when opening object:" label, in
+    // Every "+ Add script" button below the "After opening the object:" label, in
     // document order. The script's own root button is *last*, after the rows it holds, so the
     // indices shift as nested blocks appear: [1] is the root until the "if" is added, then the
     // "then" block, and [2] becomes the "else" block once "+ else" has been clicked.
-    const openLabel = page.getByText('Script to run when opening object:', { exact: true });
+    const openLabel = page.getByText('After opening the object:', { exact: true });
     const addScriptButton = n => openLabel.locator(`xpath=following::button[text()="+ Add script"][${n}]`);
 
-    // --- Bee.png: open the window, then move the bee in only if it isn't already here ---
-    await addScriptCommand(page, addScriptButton(1), { category: 'Objects', item: 'Open object' });
-    await page.locator('xpath=//span[text()="Open object"]/following-sibling::select[2]')
-        .selectOption({ label: 'window' });
-
+    // --- Bee.png: move the bee in only if it isn't already here ---
     await addScriptCommand(page, addScriptButton(1), { category: 'Scripts', item: 'If...' });
     await page.waitForSelector('text=then');
     await ifExpressionSelect(page).selectOption('object contains');
-    // Both object arguments ("Parent:"/"Contains child:") carry their own object/expression
-    // toggle select, so the value selects are the 3rd and 5th following <select>.
-    const objectSelects = page.locator('xpath=//span[text()="if"]/following-sibling::select');
-    await objectSelects.nth(2).selectOption('kitchen');
-    await objectSelects.nth(4).selectOption('bee');
+    // Both object arguments ("Parent:"/"Contains child:") are object comboboxes.
+    const ifObjects = page.locator('xpath=//span[text()="if"]/following::input[@role="combobox"]');
+    await pickObject(page, ifObjects.nth(0), 'kitchen');
+    await pickObject(page, ifObjects.nth(1), 'bee');
 
     await addScriptCommand(page, addScriptButton(1));
     const thenInput = page.locator('xpath=//span[text()="then"]/following::*[self::input[@type="text"] or self::textarea][1]');
-    await thenInput.fill('You open the window. Nothing much happens this time.');
+    await thenInput.fill('The bee is still buzzing around.');
 
     await page.getByRole('button', { name: '+ else', exact: true }).click();
     await addScriptCommand(page, addScriptButton(2));
     const elseInput = page.locator('xpath=//span[text()="else"]/following::*[self::input[@type="text"] or self::textarea][1]');
-    await elseInput.fill('You open the window, and a bee flies into the kitchen.');
+    await elseInput.fill('A bee flies in and starts buzzing around the kitchen.');
     await addScriptCommand(page, addScriptButton(2), { category: 'Objects', item: 'Move object' });
-    const moveSelects = page.locator('xpath=//span[text()="Move object"]/following-sibling::select');
-    await moveSelects.nth(1).selectOption({ label: 'bee' });
-    await moveSelects.nth(3).selectOption({ label: 'kitchen' });
+    const moveObjects = page.locator('xpath=//span[text()="Move object"]/following::input[@role="combobox"]');
+    await pickObject(page, moveObjects.nth(0), 'bee');
+    await pickObject(page, moveObjects.nth(1), 'kitchen');
 
+    // Start the shot at the opening message rather than part-way through the note above it.
+    await page.getByText('Message to print when opening', { exact: false }).first()
+        .evaluate(el => el.scrollIntoView({ block: 'start' }));
     await capture(page, out('Bee.png'), {
         untilLocator: page.locator('button:has-text("+ else if")').first(),
         padding: 8,
