@@ -357,7 +357,8 @@
   <template name="EditorObjectContainerListchildren">Listar contenido cuando se mira o se abre el objeto</template>
   <template name="EditorObjectContainerListprefix">Prefijo de listado (P.Ej.: "Contiene...")</template>
   <template name="EditorObjectContainerMaximumnumber">Máximo número de objetos</template>
-  <template name="EditorObjectContainerFullcontainer">Mensaje recipiente lleno (dejar en blanco por defecto)</template>
+  <template name="EditorObjectContainerFullcontainer">Mensaje demasiados objetos (dejar en blanco por defecto)</template>
+  <template name="EditorObjectContainerFullvolume">Mensaje demasiado volumen (dejar en blanco por defecto)</template>
   <template name="EditorObjectContainerMaximumvolume">Máximo volumen de objetos</template>
   <template name="EditorObjectContainerMessagetoprint">Mensaje a imprimir cuando se abre (dejar en blanco por defecto)</template>
   <template name="EditorObjectContainerMessagetoprint2">Mensaje a imprimir cuando se cierra (dejar en blanco por defecto</template>
@@ -408,7 +409,8 @@
   <template name="EditorObjectInventoryInventorylimitation">Limite de inventario</template>
   <template name="EditorObjectInventorySetmaximum">Establezca los "objetos máximos" o 0 para permitir un inventario ilimitado de elementos.</template>
   <template name="EditorObjectInventoryMaximumobjects">Máximo número de objetos</template>
-  <template name="EditorObjectInventoryFullcontainer">Mensaje recipiente lleno (dejar en blanco por defecto)</template>
+  <template name="EditorObjectInventoryFullcontainer">Mensaje demasiados objetos (dejar en blanco por defecto)</template>
+  <template name="EditorObjectInventoryFullvolume">Mensaje demasiado volumen (dejar en blanco por defecto)</template>
   <template name="EditorObjectInventoryVolume">Volumen</template>
   <template name="EditorObjectInventoryVolume2">Volumen</template>
   <template name="EditorObjectInventoryMaximumvolume">Máximo volumen de inventario</template>
