@@ -53,14 +53,14 @@ internal partial class GameLoader
 
     public async Task<bool> Load(GameData gameData, Stream? saveData)
     {
-        WorldModel.Elements.RecordDisplacedLocalElements = true;
+        WorldModel.Elements.IsLoading = true;
         try
         {
             return await LoadInternal(gameData, saveData);
         }
         finally
         {
-            WorldModel.Elements.RecordDisplacedLocalElements = false;
+            WorldModel.Elements.IsLoading = false;
         }
     }
 

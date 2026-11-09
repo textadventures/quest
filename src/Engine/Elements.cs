@@ -79,7 +79,7 @@ public class Elements
             {
                 _overriddenLibraryElements[key] = oldElement;
             }
-            else if (RecordDisplacedLocalElements)
+            else if (IsLoading)
             {
                 _displacedLocalElements.Add(oldElement);
             }
@@ -103,7 +103,9 @@ public class Elements
     // element by displacing it too.
     private readonly List<Element> _displacedLocalElements = [];
     internal IReadOnlyList<Element> DisplacedLocalElements => _displacedLocalElements;
-    internal bool RecordDisplacedLocalElements { get; set; }
+
+    // Set by GameLoader while the game file and its libraries load.
+    internal bool IsLoading { get; set; }
 
     private void Register(ElementType t, string key, Element e)
     {

@@ -434,7 +434,9 @@ public class Fields
 
         if (name == "name" && changed && value != null && !added && NameChanged != null)
         {
-            if (!_worldModel.EditMode)
+            // While loading, the engine may move an unnamed element to a fresh name (see
+            // ElementFactoryBase.MakeRoomForNamedElement).
+            if (!_worldModel.EditMode && !_worldModel.Elements.IsLoading)
             {
                 // Actually we could allow this I suppose but I don't think it's sensible.
                 throw new InvalidOperationException("Cannot change name of element when not in Edit mode");
