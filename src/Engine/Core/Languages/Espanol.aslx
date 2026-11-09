@@ -391,6 +391,15 @@
   <verbtemplate name="read">lee</verbtemplate>
   <verbtemplate name="read">lea</verbtemplate>
   <dynamictemplate name="DefaultRead">"No puedes leer" + object.gender + "."</dynamictemplate>
+  <verbtemplate name="lookin">mirar dentro de</verbtemplate>
+  <verbtemplate name="lookin">mira dentro de</verbtemplate>
+  <verbtemplate name="lookin">mire dentro de</verbtemplate>
+  <verbtemplate name="lookin">mirar en</verbtemplate>
+  <verbtemplate name="lookin">mira en</verbtemplate>
+  <verbtemplate name="lookin">mire en</verbtemplate>
+  <dynamictemplate name="DefaultLookIn">"No puedes ver nada dentro."</dynamictemplate>
+  <dynamictemplate name="LookInClosed">CapFirst(object.article)+ " " + object.name + " " + WriteVerb(object, "estar") + " cerrad" + GetSuffix(object) + "."</dynamictemplate>
+  <dynamictemplate name="LookInEmpty">CapFirst(object.article)+ " " + object.name + " " + WriteVerb(object, "estar") + " vací" + GetSuffix(object) + "."</dynamictemplate>
   <verbtemplate name="search">buscar a</verbtemplate>
   <verbtemplate name="search">buscar</verbtemplate>
   <verbtemplate name="search">busca a</verbtemplate>

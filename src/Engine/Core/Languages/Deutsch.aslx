@@ -281,6 +281,12 @@
   <dynamictemplate name="DefaultPush">"Alle deine Versuche bleiben erfolglos."</dynamictemplate>
   <verbtemplate name="read">lese</verbtemplate>
   <dynamictemplate name="DefaultRead">"Du kannst " + object.article + " nicht lesen."</dynamictemplate>
+  <verbtemplate name="lookin">schau in</verbtemplate>
+  <verbtemplate name="lookin">schaue in</verbtemplate>
+  <verbtemplate name="lookin">sieh in</verbtemplate>
+  <dynamictemplate name="DefaultLookIn">"Da kannst du nicht hineinsehen."</dynamictemplate>
+  <dynamictemplate name="LookInClosed">CapFirst(object.gender) + " " + GetPrefix (object,"sein") + " geschlossen."</dynamictemplate>
+  <dynamictemplate name="LookInEmpty">CapFirst(object.gender) + " " + GetPrefix (object,"sein") + " leer."</dynamictemplate>
   <verbtemplate name="search">suche</verbtemplate>
   <dynamictemplate name="DefaultSearch">"Deine Suche ist vergebens."</dynamictemplate>
   <verbtemplate name="show">zeige</verbtemplate>

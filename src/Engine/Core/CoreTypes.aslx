@@ -562,8 +562,46 @@
     <close/>
   </type>
 
+  <!--
+    LOOK IN lists what's inside, whether or not listchildren is set, because the player asked.
+    An object's own lookin attribute (set on the Verbs tab) overrides this, as with any verb.
+  -->
   <type name="container_base">
     <container/>
+    <lookin type="script">
+      <![CDATA[
+        if (CheckDarkness() and not GetBoolean(this, "lightsource")) {
+          msg (DynamicTemplate("LookAtDarkness", this))
+        }
+        else if (not GetBoolean(this, "isopen") and not GetBoolean(this, "transparent")) {
+          msg (DynamicTemplate("LookInClosed", this))
+        }
+        else {
+          if (GetBoolean(this, "hidechildren")) {
+            this.hidechildren = false
+          }
+          if (HasString(this, "listchildrenprefix")) {
+            listprefix = this.listchildrenprefix
+          }
+          else {
+            listprefix = DynamicTemplate("ObjectContains", this)
+          }
+          list = FormatObjectList(listprefix, this, Template("And"), ".")
+          if (list = "") {
+            // In the dark, unlit contents aren't listed, so the container may not really be empty
+            if (CheckDarkness()) {
+              msg (DynamicTemplate("LookAtDarkness", this))
+            }
+            else {
+              msg (DynamicTemplate("LookInEmpty", this))
+            }
+          }
+          else {
+            msg (list)
+          }
+        }
+      ]]>
+    </lookin>
   </type>
 
   <type name="container_closed">
