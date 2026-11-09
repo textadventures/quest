@@ -93,7 +93,7 @@ switch (choice) {
 }
 ```
 
-The third parameter says whether the player can ignore the menu. With `true`, the player can type something else instead of choosing. The menu goes away and `ShowMenu` returns an empty string, which our `switch` doesn't match, so nothing happens. With `false`, the player has to pick one of the options before they can do anything else.
+The third parameter says whether the player can ignore the menu. With `true`, the player can type something else instead of choosing. The menu goes away and `ShowMenu` returns an empty string, which our `switch` doesn't match. Once the rest of the script has run, what they typed runs as an ordinary command. With `false`, the player has to pick one of the options before they can do anything else.
 
 ### Showing different text from what you check
 

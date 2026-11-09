@@ -81,12 +81,44 @@ public class InlinePromptTests
         var output = await driver.SendCommandAsync("ping");
         // ShowMenu returned "" - the script's "menu: " line, trimmed by the test driver.
         output.ShouldContain("menu:");
-        // The cancelling command itself is discarded rather than run as an ordinary turn.
-        output.ShouldNotContain("pong");
+        // The cancelling command then runs as an ordinary turn, after the rest of the script
+        // the menu was suspended in (#2342).
+        output.ShouldContain("pong");
+        LineIndex(output, "menu:").ShouldBeLessThan(LineIndex(output, "pong"));
 
         // ...and having been cancelled, the prompt no longer intercepts anything.
         var afterwards = await driver.SendCommandAsync("ping");
         afterwards.ShouldContain("pong");
+    }
+
+    [TestMethod]
+    public async Task ShowMenuScriptCommand_V600_Cancellable_OtherInputRunsAsCommandAfterCallback()
+    {
+        var driver = await GameDriver.LoadAsync("inlineprompttest.aslx");
+        await driver.SendCommandAsync("menucmdcancel");
+
+        var output = await driver.SendCommandAsync("ping");
+        output.ShouldContain("menu:");
+        output.ShouldContain("pong");
+        LineIndex(output, "menu:").ShouldBeLessThan(LineIndex(output, "pong"));
+    }
+
+    [TestMethod]
+    public async Task ShowMenuFunction_V600_Cancellable_CommandDroppedWhenScriptShowsAnotherMenu()
+    {
+        // The resumed script is waiting on the player again, so the cancelling command has
+        // nowhere to run - and must not be taken as an answer to the second menu either.
+        var driver = await GameDriver.LoadAsync("inlineprompttest.aslx");
+        await driver.SendCommandAsync("menufnchain");
+
+        var output = await driver.SendCommandAsync("ping");
+        output.ShouldContain("first:");
+        output.ShouldContain("Pick another");
+        output.ShouldNotContain("pong");
+
+        var chosen = await driver.SendCommandAsync("2");
+        chosen.ShouldContain("second: Down");
+        chosen.ShouldNotContain("pong");
     }
 
     [TestMethod]
@@ -192,4 +224,7 @@ public class InlinePromptTests
         (await driver.SendCommandAsync("ping")).ShouldContain("pong");
         (await driver.SendCommandAsync("elsewhere")).ShouldNotContain("here");
     }
+
+    private static int LineIndex(IReadOnlyList<string> output, string text) =>
+        output.ToList().FindIndex(line => line.Contains(text));
 }

@@ -64,7 +64,7 @@ How the script works:
 - **Where can the bus go?** `FilterByAttribute(AllObjects(), "busstop", true)` finds every room with the flag ticked. The loop skips the room the player is already in, so they're never offered a trip to where they're standing.
 - **What does the player see?** Each destination goes into a string dictionary, with the room's name as the key and its display alias as the text the player sees. `ShowMenu` returns the key of the option the player picks, and `GetObject` turns that name back into the room. Using a dictionary like this means you can change a room's alias without breaking the menu. See [Showing different text from what you check](/howto/scripting/asking-the-player#showing-different-text-from-what-you-check).
 - **Nowhere to go.** `ShowMenu` needs at least one option, so if the player is at the only stop, the script says so instead of showing an empty menu.
-- **Changing their mind.** The third parameter of `ShowMenu` is `true`, so the player doesn't have to choose. If they type something else instead, the menu goes away, `ShowMenu` returns an empty string, and they stay where they are. The command they typed isn't run, so they'll need to type it again.
+- **Changing their mind.** The third parameter of `ShowMenu` is `true`, so the player doesn't have to choose. If they type something else instead, the menu goes away, `ShowMenu` returns an empty string, and they stay where they are. Then the command they typed runs as normal.
 
 In the editor, the menu step is "Set a variable or attribute", then "player's choice from a menu", and the move is "Move object" from the Objects category. We use `game.pov` rather than `player`, so the bus still works if the player changes to a different character.
 
