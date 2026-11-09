@@ -144,7 +144,7 @@
       <attribute>openmsg</attribute>
       <caption>[EditorObjectContainerMessagetoprint]</caption>
       <nullable/>
-      <onlydisplayif>DoesInherit(this, "container_base") and not DoesInherit(this, "surface")</onlydisplayif>
+      <onlydisplayif>(DoesInherit(this, "container_base") or DoesInherit(this, "openable")) and not DoesInherit(this, "surface")</onlydisplayif>
     </control>
 
     <control>
@@ -152,27 +152,27 @@
       <attribute>closemsg</attribute>
       <caption>[EditorObjectContainerMessagetoprint2]</caption>
       <nullable/>
-      <onlydisplayif>DoesInherit(this, "container_base") and not DoesInherit(this, "surface")</onlydisplayif>
+      <onlydisplayif>(DoesInherit(this, "container_base") or DoesInherit(this, "openable")) and not DoesInherit(this, "surface")</onlydisplayif>
     </control>
 
     <control>
       <controltype>script</controltype>
       <caption>[EditorObjectContainerAfteropening]</caption>
       <attribute>onopen</attribute>
-      <onlydisplayif>DoesInherit(this, "container_base") and not DoesInherit(this, "surface")</onlydisplayif>
+      <onlydisplayif>(DoesInherit(this, "container_base") or DoesInherit(this, "openable")) and not DoesInherit(this, "surface")</onlydisplayif>
     </control>
 
     <control>
       <controltype>script</controltype>
       <caption>[EditorObjectContainerAfterclosing]</caption>
       <attribute>onclose</attribute>
-      <onlydisplayif>DoesInherit(this, "container_base") and not DoesInherit(this, "surface")</onlydisplayif>
+      <onlydisplayif>(DoesInherit(this, "container_base") or DoesInherit(this, "openable")) and not DoesInherit(this, "surface")</onlydisplayif>
     </control>
 
     <control>
       <controltype>label</controltype>
       <caption>[EditorObjectContainerContainerNote]</caption>
-      <onlydisplayif>DoesInherit(this, "container_base") and not DoesInherit(this, "surface")</onlydisplayif>
+      <onlydisplayif>(DoesInherit(this, "container_base") or DoesInherit(this, "openable")) and not DoesInherit(this, "surface")</onlydisplayif>
     </control>
 
     <control>
