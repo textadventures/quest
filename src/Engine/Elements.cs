@@ -259,6 +259,13 @@ public class Elements
     // them in. For <include>s that order is the order libraries load in, so it changes behaviour.
     internal int GetSaveOrderIndex(Element e) => _elementsLists[e.ElemType].IndexOf(e);
 
+    internal void MoveToSaveOrderIndex(Element e, int index)
+    {
+        var list = _elementsLists[e.ElemType];
+        list.Remove(e);
+        list.Insert(Math.Min(index, list.Count), e);
+    }
+
     public IEnumerable<Element> GetElements(ElementType t)
     {
         foreach (var e in _elementsLists[t])

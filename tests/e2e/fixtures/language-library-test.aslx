@@ -1,0 +1,5 @@
+<library>
+  <include ref="English.aslx"/>
+  <template name="LanguageId">xx</template>
+  <verbtemplate name="take">grabbo</verbtemplate>
+</library>

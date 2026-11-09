@@ -3014,8 +3014,11 @@ public partial class WasmEditorBridge
         }
     }
 
+    // content is the library file the author uploaded, or empty if the host doesn't have it: the
+    // engine can't read an upload itself until the next reload stages it (AddAdjacentFile), and the
+    // controller needs it now to tell whether this is a language library.
     [JSExport]
-    public static string CreateIncludedLibrary(string filename)
+    public static string CreateIncludedLibrary(string filename, byte[] content)
     {
         if (_controller == null)
         {
@@ -3024,7 +3027,7 @@ public partial class WasmEditorBridge
 
         try
         {
-            return _controller.CreateNewIncludedLibrary(filename);
+            return _controller.CreateNewIncludedLibrary(filename, content.Length > 0 ? content : null);
         }
         catch (Exception ex)
         {
