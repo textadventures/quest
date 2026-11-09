@@ -47,6 +47,25 @@
     </script>
   </command>
 
+  <!-- 'show menu' script command, cancellable -->
+  <command name="cmd_menucmdcancel">
+    <pattern>menucmdcancel</pattern>
+    <script>
+      show menu ("Pick one", Split("Red;Green;Blue", ";"), true) {
+        msg ("menu: " + result)
+      }
+    </script>
+  </command>
+
+  <!-- A cancellable ShowMenu() whose script goes on to show another menu -->
+  <command name="cmd_menufnchain">
+    <pattern>menufnchain</pattern>
+    <script>
+      msg ("first: " + ShowMenu("Pick one", Split("Red;Green;Blue", ";"), true))
+      msg ("second: " + ShowMenu("Pick another", Split("Up;Down", ";"), false))
+    </script>
+  </command>
+
   <!-- 'ask' script command -->
   <command name="cmd_askcmd">
     <pattern>askcmd</pattern>

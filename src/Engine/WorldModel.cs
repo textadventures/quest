@@ -75,6 +75,10 @@ public partial class WorldModel : IGame, IGameDebug
     // PlayerUi.ShowMenu/ShowQuestion's dialog, where the player has no way to type at all.
     private InlinePrompt? _inlinePrompt;
 
+    // The command the player typed to dismiss a cancellable inline prompt, held back until the
+    // script the prompt resumes has finished the turn - see SendCommand.
+    private (string Command, IDictionary<string, string> Metadata)? _cancellingCommand;
+
     // Every prompt (wait/menu/ask/get input) reuses a single TCS field, replacing it each time
     // it's shown. If a new prompt is triggered before a previous one resolves (e.g. via 'on ready'
     // reentrancy), the old field gets silently overwritten and whatever was awaiting it - along
@@ -517,6 +521,24 @@ public partial class WorldModel : IGame, IGameDebug
         _ = HandleCommandAsyncInternal(command, metadata);
 
         await _turnSuspendedTcs.Task;
+
+        // A command that dismissed a cancellable inline prompt runs as an ordinary turn of its
+        // own, like CoreParser.aslx's HandleCommand does once ClearMenu has dismissed a
+        // game.menucallback menu. It can't run from the intercept itself: resolving the prompt
+        // resumes a suspended script that goes on to finish the original turn, so this is the
+        // first safe point, once that turn is over. If the resumed script suspended again
+        // instead (another menu, a wait), the game is waiting on the player once more, and the
+        // command is dropped, as an option-less answer to that new prompt would be.
+        if (_cancellingCommand is { } cancelling)
+        {
+            _cancellingCommand = null;
+            if (_pendingCallbackCount == 0 && _inlinePrompt == null && !_commandOverride &&
+                State != GameState.Finished)
+            {
+                _ = HandleCommandAsyncInternal(cancelling.Command, cancelling.Metadata);
+                await _turnSuspendedTcs.Task;
+            }
+        }
     }
 
     private async Task HandleCommandAsyncInternal(string command, IDictionary<string, string> metadata)
@@ -529,19 +551,16 @@ public partial class WorldModel : IGame, IGameDebug
             {
                 // The same intercept CoreParser.aslx's HandleCommand does for game.menucallback,
                 // for the C#-side equivalent: a valid option number picks that option, and
-                // anything else either dismisses a cancellable prompt or is swallowed.
-                //
-                // Unlike the ASLX one, a cancelled prompt does not then run the typed command as
-                // an ordinary turn. It can't: resolving the prompt resumes a suspended script
-                // that may run for the rest of the turn (or suspend again on another prompt),
-                // and there is no safe point to start a second command in the middle of that.
-                // The prompt is dismissed and the command discarded - retyping it works.
+                // anything else either dismisses a cancellable prompt or is swallowed. A command
+                // that dismisses one is kept, and SendCommand runs it once the resumed script
+                // has finished the turn.
                 var prompt = _inlinePrompt;
                 var index = int.TryParse(command, out var number) ? number : 0;
                 var chosen = index >= 1 && index <= prompt.Keys.Count ? prompt.Keys[index - 1] : null;
                 if (chosen != null || prompt.AllowCancel)
                 {
                     commandWasOverridden = true;
+                    if (chosen == null) _cancellingCommand = (command, metadata);
                     // Take the links away before resolving, not after: resolving resumes the
                     // suspended script synchronously, and anything it goes on to print should
                     // appear below the menu it replaces, not above it. ClearMenu-before-invoke in
