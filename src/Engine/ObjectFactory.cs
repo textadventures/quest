@@ -226,6 +226,13 @@ public abstract class ElementFactoryBase : IElementFactory
         private readonly Action<string> _notifyRemoved;
         private readonly ElementType _type;
 
+        // Where the element sits among the elements of its type, and so where the game file lists it,
+        // recorded each time this entry takes the element out so that putting it back restores its
+        // place rather than adding it at the end. Undo and redo replay a transaction's entries in
+        // order, so the list is in the same state each time an element goes back as when it came out.
+        // A newly created element has none until its creation is first undone; it was added at the end.
+        private int? _saveOrderIndex;
+
         public CreateDestroyLogEntry(string name, ElementType type, Element element, bool create,
             Action<string> notifyAdded, Action<string> notifyRemoved)
         {
@@ -235,6 +242,11 @@ public abstract class ElementFactoryBase : IElementFactory
             _element = element;
             _notifyAdded = notifyAdded;
             _notifyRemoved = notifyRemoved;
+            if (!create)
+            {
+                // Logged just before the element is removed, so this is the place it's taken out of
+                _saveOrderIndex = SaveOrderIndex(element.WorldModel, element);
+            }
         }
 
         public void DoUndo(WorldModel worldModel)
@@ -261,14 +273,18 @@ public abstract class ElementFactoryBase : IElementFactory
             }
         }
 
+        private static int? SaveOrderIndex(WorldModel worldModel, Element element) =>
+            worldModel.Elements.GetSaveOrderIndex(element) is var index and >= 0 ? index : null;
+
         private void CreateElement(WorldModel worldModel)
         {
-            worldModel.Elements.Add(_type, _name, _element);
+            worldModel.Elements.Add(_type, _name, _element, _saveOrderIndex);
             _notifyAdded(_name);
         }
 
         private void DestroyElement(WorldModel worldModel)
         {
+            _saveOrderIndex = SaveOrderIndex(worldModel, _element);
             worldModel.Elements.Remove(_type, _name);
             _notifyRemoved(_name);
         }

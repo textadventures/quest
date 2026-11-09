@@ -50,7 +50,11 @@ public class Elements
     public event EventHandler<ElementRefreshEventArgs>? LibraryElementRestored;
     public event EventHandler<ElementRefreshEventArgs>? LibraryElementDisplaced;
 
-    public void Add(ElementType t, string key, Element e)
+    public void Add(ElementType t, string key, Element e) => Add(t, key, e, null);
+
+    // saveOrderIndex puts the element at that position among the elements of its type (see
+    // GetSaveOrderIndex), rather than at the end. Undo uses it to put a deleted element back where it was.
+    internal void Add(ElementType t, string key, Element e, int? saveOrderIndex)
     {
         if (string.IsNullOrEmpty(key))
         {
@@ -85,7 +89,7 @@ public class Elements
             }
         }
 
-        Register(t, key, e);
+        Register(t, key, e, saveOrderIndex);
     }
 
     // The library element that the game's element called name replaces, if it replaces one: a
@@ -107,11 +111,12 @@ public class Elements
     // Set by GameLoader while the game file and its libraries load.
     internal bool IsLoading { get; set; }
 
-    private void Register(ElementType t, string key, Element e)
+    private void Register(ElementType t, string key, Element e, int? saveOrderIndex = null)
     {
         _allElements[key] = e;
         _elements[t][key] = e;
-        _elementsLists[t].Add(e);
+        var list = _elementsLists[t];
+        list.Insert(saveOrderIndex is { } index ? Math.Clamp(index, 0, list.Count) : list.Count, e);
 
         // Baseline parent-index registration. Covers both fresh elements (Parent is still null
         // at this point) and clones (Parent may already be set, copied from the clone source by
@@ -249,6 +254,10 @@ public class Elements
     {
         return GetElements(ElementType.Object).Where(filter);
     }
+
+    // An element's position among the elements of its type, which is the order GameSaver writes
+    // them in. For <include>s that order is the order libraries load in, so it changes behaviour.
+    internal int GetSaveOrderIndex(Element e) => _elementsLists[e.ElemType].IndexOf(e);
 
     public IEnumerable<Element> GetElements(ElementType t)
     {
