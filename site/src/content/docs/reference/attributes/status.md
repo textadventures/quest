@@ -60,6 +60,15 @@ Total score: <b>!/10</b>
 ```
 
 
+## Bars, and keeping them in view on a phone
+
+A status attribute that's a number can be drawn as a bar, such as health out of 100, and kept in view on a phone, where the Status pane is tucked away in a drawer. Both are set on the game's _Attributes_ tab, by the attribute's name:
+
+- **Status attribute maximums (shown as bars)** - the attribute's maximum: a number, or the name of another attribute on the same object, such as `maxhealth`. The Status pane shows a bar under the attribute's text.
+- **Status attributes to keep in view on small screens** - shown in a bar under the location bar whenever the panes are in their drawer or sheet.
+
+In code, these are `game.statusattributemaximums`, a string dictionary, and `game.pinnedstatusattributes`, a string list. The classic interface shows the text only. See [Panes](/customise/panes#status-attributes-as-bars) for an example.
+
 ## Advanced options
 
 Occasionally you want to do something more complicated for a status attribute - for example, you might want to show both the current and the maximum ammo in a gun. The trick is to create a new string attribute that holds both, and to update that whenever either value changes. The code might looking like this, where `player.ammonote` is a string to display the values (this needs to be run whenever the values change):
@@ -80,4 +89,4 @@ So how do we ensure `player.ammonote` always gets updated? With [change scripts]
 
 ## Behind the scenes
 
-Core.aslx updates the status attributes in [UpdateStatusAttributes](/reference/functions/user-interface#updatestatusattributes). It builds a string list from each of the status attribute dictionaries in turn and sends the joined result to the UI with `JS.updateStatus`. (Quest 5 used a `SetStatus` [request](/reference/script-commands#request) for this; that route still exists but is no longer what Core uses.)
+Core.aslx updates the status attributes in [UpdateStatusAttributes](/reference/functions/user-interface#updatestatusattributes), at the end of every turn. It builds one item for each status attribute - its name, its formatted text, and its value, maximum and whether it's kept in view - and sends the list to the interface with `JS.QuestUI.setStatusAttributes`. (Quest 5 used a `SetStatus` [request](/reference/script-commands#request) for this; that route still exists but is no longer what Core uses.)

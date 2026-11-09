@@ -1,188 +1,173 @@
 ---
 title: Styling the player with CSS
-description: Add your own CSS to change how the player looks, which parts of the page are safe to target, and how to test the result on a phone and after loading a saved game
+description: Add your own CSS to the game's stylesheet, change the player's colours, fonts and spacing with its --qv- properties, and target its parts by name, on a phone and in light and dark mode
 ---
 
-The Display and Interface tabs of the `game` object cover most of what you'll want to change about how your game looks - see [Look and feel](/customise/look-and-feel). When they don't go far enough, you can add your own CSS, because the player is a web page. This page shows where to put your CSS, which parts of the page you can target, and some recipes that work on a phone as well as on a wide screen.
+The Appearance and Interface tabs of the `game` object cover most of what you'll want to change about how your game looks - see [Look and feel](/customise/look-and-feel). When they don't go far enough, you can add your own CSS, because the player is a web page. This page shows where your CSS goes, the two things it can rely on - the player's **custom properties** and its **part names** - and some recipes that work on a phone and in light and dark mode.
 
-| You want to | Use |
-|---|---|
-| Change the theme, fonts, text colours, links or location bar colours | The Display and Interface tabs - see [Look and feel](/customise/look-and-feel) |
-| Change a few properties of one element | `JS.setCss` |
-| Add a handful of CSS rules | `JS.addScript` with a `<style>` block |
-| Add a longer stylesheet | A Javascript element |
-
-All three code approaches go in the same place: the user interface initialisation script.
+This page is about the new interface. For a game that uses the classic interface, see [Styling the classic interface](/customise/classic/css).
 
 ## Where your CSS goes
 
-Select the `game` object, go to the _Features_ tab and tick "Show advanced scripts for the game object". Then, on the _Advanced Scripts_ tab, use the "User interface initialisation script (run at start and also when loading a saved game)".
+Select the `game` object, go to the _Appearance_ tab, and type your CSS into **Stylesheet**, under Advanced at the bottom of the tab:
 
-That script runs after Quest Viva has set up the interface from your Display and Interface tab options, so your changes are applied on top of them. More importantly, it runs again whenever the player loads a saved game. The page is rebuilt from scratch when a game is loaded, so anything you change from any other script - the start script, a command, a room's script - is lost after a load. Keep all your styling in this one script.
+```css
+qv-player {
+    --qv-accent: darkorange;
+    --qv-radius: 0;
+}
 
-Don't print anything from this script. At the start of the game it runs before the title is shown, so any text appears above the title.
-
-### A few properties: JS.setCss
-
-`JS.setCss` takes a CSS selector and a list of properties, each written `name:value` and separated by semicolons:
-
-```quest
-JS.setCss ("#qv-status", "background:#3b2f2f;color:wheat;border:none")
-```
-
-It can't handle a value that contains a colon, such as a full `https://` address in `url(...)`. Use a `<style>` block for those.
-
-### A handful of rules: JS.addScript
-
-`JS.addScript` adds HTML to the page. Give it a `<style>` block to add ordinary CSS rules, including ones `JS.setCss` can't express, like `:hover` or rules for elements that don't exist yet:
-
-```quest
-JS.addScript ("<style>#lstInventory li:hover { background: gold; } #commandPane a:hover { text-decoration: underline; }</style>")
-```
-
-### A longer stylesheet: a Javascript element
-
-A stylesheet written inside a Quest string soon gets hard to read. For more than a few rules, add a Javascript element (select **Advanced** in the tree, then **Add JavaScript** - see [Calling the game from JavaScript](/customise/javascript#adding-your-own-javascript)) and put the CSS in its file:
-
-```js
-if (!document.getElementById("game-css")) {
-  document.head.insertAdjacentHTML("beforeend", `<style id="game-css">
-    #lstInventory li:hover { background: gold; }
-    #commandPane a:hover { text-decoration: underline; }
-    .qv-narrow #sidebar { background: black !important; }
-  </style>`);
+[data-qv-part="location"] {
+    font-variant: small-caps;
 }
 ```
 
-The file is loaded every time the game starts or a saved game is loaded, before the interface is set up, so you don't need to call anything from the initialisation script. The `if` stops the rules being added twice when the player loads a game without leaving the page.
+The stylesheet is applied whenever the game starts, and again whenever the player loads a saved game, so you don't need a script for it. Changes show in Preview straight away, without restarting the game.
 
-You can also keep the CSS in a separate `.css` file in your game folder, and load it from the initialisation script with `AddExternalStylesheet (GetFileURL("style.css"))`. Every file in the game folder goes into the published `.quest` file, so this works in a published game too.
+Your rules always win over the player's own styles, whatever their specificity, so you never need `!important` to beat them. (The player keeps all its own CSS in cascade layers, and the stylesheet isn't in one.) The one exception is an option you've set on the Appearance or Interface tab, which the player applies to the element itself: change the option instead of overriding it.
 
-### When a rule has no effect
+A `url(...)` in the stylesheet can't name a file in your game folder. For a picture in the margins or the location bar, use **Margin image** or the location bar's **Background image** on the Appearance tab. Anything else needs a full `https://` address.
 
-Quest Viva sets some styles directly on elements, and these beat an ordinary rule in a stylesheet:
+## Custom properties
 
-- The game text carries its font and colour on every line, so change those on the Appearance tab, or during play with functions like `SetFontName` and `SetForegroundColour`.
-- Links in the text carry the link colour from the Appearance tab.
-- The page font and colour, the location bar colours from the Interface tab, and the colours from "Colour scheme for panes" are set on their elements.
+Most of the player's look comes from CSS custom properties, all starting `--qv-`. Change one, and everything that uses it changes with it, on a wide screen and on a phone. Set them on `qv-player`, the element that holds the whole player:
 
-`JS.setCss` sets styles the same way, and because the initialisation script runs last, it wins. In a stylesheet, add `!important` to a rule that needs to override one of these.
+```css
+qv-player {
+    --qv-font-ui: "Trebuchet MS", sans-serif;
+    --qv-output-width: 36rem;
+}
+```
 
-## Elements
+Most of them are also set by an option on the Appearance or Interface tab, so you'll only need these for what the options don't cover.
 
-These are the parts of the player page you can target. Quest Viva's own libraries use them too, and they are unlikely to change. Avoid classes beginning `ui-` other than `.ui-selected`: they come from the jQuery UI library the player uses for its buttons and panes, and restyling them tends to break more than you intended - `.ui-icon`, for example, is both the pane arrows and the compass arrows.
+| Property | What it is | Option |
+|---|---|---|
+| `--qv-font-body`, `--qv-font-size` | The game text's font and size | **Base font**, **Web font**, **Font size** |
+| `--qv-font-ui` | The font of the location bar, panes, menus and buttons | **Interface font** |
+| `--qv-text`, `--qv-bg`, `--qv-link` | Text, page and link colours | **Text colour**, **Page colour**, **Link colour** |
+| `--qv-accent` | The highlight colour: links, the compass, the command prompt, the menu's hover, the player on the map | **Accent colour** |
+| `--qv-link-decoration` | `underline` or `none` | **Underline links** |
+| `--qv-page-bg` | The margins either side of the page, and the background of the panes | **Margin colour** |
+| `--qv-surface` | A lightly shaded background, for the map's zoom buttons and a gamebook's choices | |
+| `--qv-border-colour` | The border either side of the page, and the outlines of menus, dialogs and the command bar | **Border colour** |
+| `--qv-radius` | How rounded the corners of buttons, dialogs and the command bar are | |
+| `--qv-space` | The space around the text, unless you set the padding, and inside dialogs | |
+| `--qv-output-width` | The width of the column of text | **Set a custom display width** |
+| `--qv-padding-top`, `-bottom`, `-left`, `-right` | The space around the text | **Set custom padding** |
+| `--qv-status-fg`, `--qv-status-bg`, `--qv-status-border` | The location bar's text, background and border | The location bar's colours |
+| `--qv-pane-fg`, `--qv-pane-bg`, `--qv-pane-heading-fg`, `--qv-pane-heading-bg` | The panes' text and background, and their headings' | |
+| `--qv-pane-highlight` | The fill of a status attribute's bar | |
+| `--qv-menu-fg`, `--qv-menu-bg`, `--qv-menu-hover-fg`, `--qv-menu-hover-bg` | A verb menu's colours, and the colours of the verb under the pointer | |
+| `--qv-menu-font`, `--qv-menu-font-size` | A verb menu's font and size | The verb menu's **Font** and **Font size** |
+| `--qv-command-fg`, `--qv-command-bg` | The command bar's text and background | |
+| `--qv-focus-ring` | The outline around whatever has keyboard focus | |
 
-| Selector | What it is |
+Colours can be any CSS colour, and lengths need units, such as `12pt`, `700px` or `2rem`.
+
+`--qv-surface`, `--qv-page-bg` and `--qv-border-colour` are mixed from the text and page colours unless you set them, so they suit whatever colours the game has, in light and dark mode. The panes and the menu follow the text and page colours the same way.
+
+## Part names
+
+Each part of the player carries a `data-qv-part` attribute, which you can select on. These are the only names in the player's markup that are sure to stay the same: its classes, IDs and element names may change in any version.
+
+| Part | What it is |
 |---|---|
-| `body` | The whole page. Its background is the margin colour. |
-| `.qv-narrow` | A class on `body` whenever the window is narrower than the game's width - on a phone, for instance - and the panes have moved into the ☰ drawer. Start a rule with `.qv-narrow` to apply it only then. |
-| `#gameBorder` | The column holding the game, centred on a wide screen. |
-| `#qv-status` | The location bar across the top. It also holds the Save/Load and ☰ buttons, and grows taller on a phone. |
-| `#location` | The room name, inside the location bar. Quest Viva replaces its contents whenever the player moves. |
-| `#controlButtons` | The buttons at the right of the location bar. |
-| `#divOutput` | The game text. |
-| `#txtCommandDiv`, `#txtCommand` | The command bar, and the box the player types in. |
-| `#endWaitLink` | The "Continue..." link shown while the game waits for a key press. |
-| `#sidebar` | The container for the panes. On a phone, it is the drawer. |
-| `#gamePanes` | The panes. |
-| `#inventoryLabel`, `#inventoryAccordion` | The Inventory pane's heading and body. The list inside is `#lstInventory`. |
-| `#statusVarsLabel`, `#statusVarsAccordion` | The Status pane's heading and body. The text inside is `#statusVars`. |
-| `#placesObjectsLabel`, `#placesObjectsAccordion` | The Places and Objects pane's heading and body. The list inside is `#lstPlacesObjects`. |
-| `#compassLabel`, `#compassAccordion` | The Compass pane's heading and body. |
-| `#commandPane`, `#customStatusPane` | The command pane and custom status pane - see [Panes](/customise/panes). |
-| `#gamePanesFinished` | The "Game Over" message that replaces the panes when the game finishes. |
-| `.accordion-header-text` | The text of each pane heading. |
-| `.elementList li`, `.ui-selected` | An entry in the Inventory or Places and Objects list, and the selected entry. |
-| `a.cmdlink` | A link in the game text. Object links also have the class `elementmenu`, exit links `exitlink` and command links `commandlink`. |
-| `#gamePanel`, `#gridPanel` | The picture frame and the map. |
+| `output` | The game text |
+| `command-bar` | The command bar, with its prompt |
+| `location` | The location bar across the top |
+| `border` | The column holding the game |
+| `picture-frame` | The picture frame above the text |
+| `map` | The map, above the game or in the panes |
+| `panes` | All the panes together: beside the game, or in the drawer or sheet on a phone |
+| `pane` | One pane. Its `data-qv-pane` says which: `inventory`, `objects` (Places and Objects), `status`, `compass`, `commands` (the command pane), `customstatus`, `map`, or the ID of a pane you've [added yourself](/customise/panes#adding-your-own-panes) |
+| `exits` | The strip of exits under the text, shown on a phone instead of the compass |
+| `status-bar` | The status attributes kept in view on a phone (see [Status attributes as bars](/customise/panes#status-attributes-as-bars)) |
+| `menu` | A verb menu, or a menu of choices |
 
-The player sizes and positions the location bar, panes, drawer and text column itself, differently on a wide screen and on a phone. Never set a `width`, `height`, `position`, `left` or `top` on `#gameBorder`, `#qv-status`, `#sidebar`, `#gamePanes` or `#gameContent`, or fix the command bar in place: it looks fine on your screen and breaks the phone layout. To change the width of the game, use "Set a custom display width" on the Interface tab, which the player takes into account.
+So `[data-qv-part="output"]` is the game text, and `[data-qv-pane="inventory"]` is the Inventory pane:
+
+```css
+[data-qv-pane="inventory"] {
+    font-style: italic;
+}
+```
+
+Links in the text are `a` elements with the class `cmdlink`. Object links also have the class `elementmenu`, exit links `exitlink`, and links you write with `{command:...}` `commandlink`.
+
+The player sizes and positions its parts itself, differently on a wide screen and on a phone. Don't set a `width`, `height` or `position` on the `border`, `panes` or `command-bar` parts: it might look right on your screen and break the phone layout. Change the width with `--qv-output-width`, or **Set a custom display width** on the Appearance tab.
+
+## Phones and narrow windows
+
+When the player is narrower than 900 pixels - on a phone, say - `qv-player` has a `data-qv-narrow` attribute, and the panes move to where **On a phone** puts them. Start a rule with `[data-qv-narrow]` to apply it only then:
+
+```css
+[data-qv-narrow] [data-qv-part="location"] {
+    font-size: 0.9rem;
+}
+```
+
+## Light and dark
+
+Unless the game has colours of its own, it follows the player's light or dark mode (see [Light and dark](/customise/look-and-feel#light-and-dark)). `qv-player` has `data-qv-scheme="light"` or `data-qv-scheme="dark"`, whichever it's showing, so you can give any rule a dark version:
+
+```css
+[data-qv-pane="customstatus"] {
+    background: #fdf6e3;
+}
+
+qv-player[data-qv-scheme="dark"] [data-qv-pane="customstatus"] {
+    background: #3b3226;
+}
+```
+
+A rule that uses the player's own properties, such as `var(--qv-text)` and `var(--qv-surface)`, suits both without a dark version.
 
 ## Recipes
 
-Each of these goes in the user interface initialisation script unless it says otherwise.
+### A different look for the location bar
 
-### Colouring the location bar
+For plain colours, use the location bar's **Background colour**, **Text colour** and **Border colour** on the Appearance tab. For anything more:
 
-For plain colours, set the location bar's "Background colour", "Text colour" and "Border colour" on the Appearance tab. With the classic interface, untick "Classic location style" first. For anything more, use CSS:
-
-```quest
-JS.setCss ("#qv-status", "background:#3b2f2f;color:wheat;border:none")
-```
-
-Setting `background` rather than `background-color` also removes the classic style's background image.
-
-### Adding the score and turns to the location bar
-
-This shows "Score: 5 | Turns: 12" at the right of the location bar, next to the Save/Load button. On a phone it moves onto a second line of the bar.
-
-Tick "Score" on the game's _Features_ tab, and on the game's _Attributes_ tab add an attribute `turns`, of type integer, set to 0. Add a Javascript element with this function, which adds a `status-extra` element to the location bar the first time it's called and then updates it:
-
-```js
-function setStatusExtra(html) {
-  var el = document.getElementById("status-extra");
-  if (!el) {
-    el = document.createElement("span");
-    el.id = "status-extra";
-    document.getElementById("controlButtons").after(el);
-  }
-  el.innerHTML = html;
+```css
+[data-qv-part="location"] {
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
 }
 ```
 
-Add a function called `UpdateStatusExtra`, with this script:
+### Square corners and a tighter layout
 
-```quest
-JS.setStatusExtra ("Score: " + GetInt(game, "score") + " | Turns: " + game.turns)
+```css
+qv-player {
+    --qv-radius: 0;
+    --qv-space: 0.75rem;
+}
 ```
 
-`GetInt` gives 0 if the score hasn't been set up yet, which is the case when the initialisation script first runs. Add a turn script, tick "Enabled when the game begins", and give it this script:
+### A pane of your own, styled
 
-```quest
-game.turns = game.turns + 1
-UpdateStatusExtra
+A pane added with "Add a pane" (see [Panes](/customise/panes#adding-your-own-panes)) is a `pane` part with its ID in `data-qv-pane`. For a pane with the ID `notes`:
+
+```css
+[data-qv-pane="notes"] {
+    font-family: var(--qv-font-body);
+    font-size: 0.9rem;
+}
 ```
-
-Finally, add this to the user interface initialisation script, so the bar is filled in at the start and after a load:
-
-```quest
-JS.addScript ("<style>#status-extra { float: right; padding: 4px 8px; } .qv-narrow #status-extra { padding-top: 12px; }</style>")
-UpdateStatusExtra
-```
-
-### Hiding a pane during the game
-
-To hide a pane for the whole game, use the "Turn off" options on the Interface tab. To hide one partway through, set the same attribute and hide the pane's heading and body - here, from a script such as a command or a room's "After entering the room":
-
-```quest
-game.turnoffcompass = true
-JS.uiHide ("#compassLabel, #compassAccordion")
-```
-
-Setting `game.turnoffcompass` is what keeps the compass hidden after the player loads a saved game, because Quest Viva reads it when it sets up the interface. To bring it back, set it to `false` and call `JS.uiShow` with the same selectors. The inventory and the places and objects pane work the same way, with `game.turnoffinventory` and `game.turnoffplacesandobjects`.
-
-### Dark panes on a phone
-
-With a dark "Colour scheme for panes", such as Black or Midnight, the panes are dark but the ☰ drawer they sit in on a phone stays white. Colour the drawer to match:
-
-```quest
-JS.addScript ("<style>.qv-narrow #sidebar { background: black !important; }</style>")
-```
-
-The `.qv-narrow` means the rule only applies when the panes are in the drawer; on a wide screen the panes sit on the page as usual. The `!important` is needed because the player sets the drawer's background itself.
 
 ## Testing
 
 Before you publish, check each change:
 
-- **At phone width.** Make your browser window narrow, or use your browser's developer tools to emulate a phone about 375 pixels wide. Check the location bar, the text, and the panes in the ☰ drawer.
-- **After loading a saved game.** Play a few turns, save, then load the game again. Anything that only appears at the start of the game belongs in the user interface initialisation script.
-- **In light and dark mode.** A game that leaves its text, link and page colours empty follows the player's light or dark mode (see [Light and dark](/customise/look-and-feel#light-and-dark)), so check anything you've styled both ways - switch your device or browser to dark mode, or emulate it in the developer tools. A game with its own colours, such as one using the Terminal theme, always uses them, so check your styles against those. Set a text colour whenever you set a background colour, and vice versa.
+- **At phone width.** Make your browser window narrow, or use your browser's developer tools to emulate a phone about 375 pixels wide. Check the location bar, the text, and the panes wherever **On a phone** puts them.
+- **In light and dark mode.** If the game follows the player's light or dark mode, use the light or dark button at the top of the game to see both.
+- **After loading a saved game.** The stylesheet is applied again for you, but check anything a script changes.
 
-To see what's on the page and which styles apply, right-click while playing and choose "Inspect" (or similar) to open your browser's developer tools.
+To see what's on the page and which styles apply, right-click while playing and choose "Inspect" (or similar) to open your browser's developer tools. You'll see the player's classes there too, but only the part names and custom properties are sure to stay the same.
 
 ## See also
 
-- [JS functions](/reference/js/) - all the `JS.` functions, including `setPanes` and `setInterfaceString`
-- [Panes](/customise/panes) - the command pane and custom status pane
-- [Calling the game from JavaScript](/customise/javascript)
+- [Look and feel](/customise/look-and-feel) - the options on the Appearance and Interface tabs
+- [Panes](/customise/panes) - choosing panes, and adding your own
+- [Moving to the new interface](/customise/moving-from-classic) - instead of the classic interface's element IDs

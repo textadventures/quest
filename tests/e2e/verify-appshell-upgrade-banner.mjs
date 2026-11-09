@@ -93,7 +93,9 @@ try {
     if (await banner.isVisible()) throw new Error('Upgrade banner shown for a version 610 game');
     const hack = await page.locator('li:has(code)').first().textContent();
     if (!hack.includes('JS.setCss') || !hack.includes('#gamePanes')) throw new Error(`Banner names "${hack}"`);
-    console.log('PASS: a version 610 game that hacks the legacy UI is told so, with the code it found');
+    const guide = await page.locator('div:has(> div > p:has-text("This game changes its own interface")) > a:has-text("Learn more")').getAttribute('href');
+    if (guide !== 'https://questviva.com/customise/moving-from-classic/') throw new Error(`Legacy UI "Learn more" links to ${guide}`);
+    console.log('PASS: a version 610 game that hacks the legacy UI is told so, with the code it found and a link to the migration guide');
 
     await page.click('button:has-text("Keep the classic interface")');
     await legacyUiBanner.waitFor({ state: 'hidden', timeout: 5000 });
