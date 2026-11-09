@@ -21,7 +21,7 @@
 
     <control>
       <controltype>expression</controltype>
-      <simple>flag name</simple>
+      <simple>[EditorFieldFlagName]</simple>
       <attribute>1</attribute>
     </control>
   </editor>
@@ -48,7 +48,7 @@
 
     <control>
       <controltype>expression</controltype>
-      <simple>flag name</simple>
+      <simple>[EditorFieldFlagName]</simple>
       <attribute>1</attribute>
     </control>
   </editor>
@@ -115,7 +115,7 @@
 
     <control>
       <controltype>expression</controltype>
-      <simple>counter name</simple>
+      <simple>[EditorFieldCounterName]</simple>
       <attribute>1</attribute>
     </control>
   </editor>
@@ -142,7 +142,7 @@
 
     <control>
       <controltype>expression</controltype>
-      <simple>counter name</simple>
+      <simple>[EditorFieldCounterName]</simple>
       <attribute>1</attribute>
     </control>
   </editor>

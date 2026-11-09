@@ -189,12 +189,15 @@
 </script>
 
 <div class="flex flex-col gap-0.5 min-w-0">
-    <div class="flex items-center gap-1 min-w-0">
+    <!-- The insert button is joined to the box's right-hand end, sharing its border, so it
+         reads as part of the input rather than a separate control next to it (e.g. the
+         script editor's fx toggle on the box's other side). -->
+    <div class="flex items-stretch min-w-0">
         <input
             bind:this={inputEl}
             type="text"
             autocapitalize="off"
-            class={(className || "input text-xs py-0.5 px-1.5 w-full") + (error ? " !border-error-500" : "")}
+            class={(className || "input text-xs py-0.5 px-1.5 w-full") + " rounded-r-none" + (error ? " !border-error-500" : "")}
             style={widthStyle}
             value={liveText}
             aria-label={ariaLabel}
@@ -212,7 +215,7 @@
         <button
             bind:this={buttonEl}
             type="button"
-            class="btn btn-xs preset-outlined-primary-500 px-1 py-0.5 flex-shrink-0"
+            class="flex-shrink-0 -ml-px flex items-center px-1 rounded-r-base border border-surface-300-700 bg-surface-50-950 text-surface-600-400 hover:preset-tonal-surface hover:text-primary-600-400 focus-visible:z-10"
             title={t("expressionInput.insertTitle")}
             onclick={toggle}
         ><Wand2 size={13} aria-hidden="true" /></button>

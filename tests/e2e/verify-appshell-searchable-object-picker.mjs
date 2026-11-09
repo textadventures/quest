@@ -46,7 +46,8 @@ async function run() {
     await addScriptDialog.getByRole('button', { name: 'Show', exact: true }).click();
     const picker = page.locator('input[role="combobox"]').last();
     await picker.waitFor({ timeout: 10000 });
-    const modeSelect = page.locator('select:has(option[value="expression"])').last();
+    const modeToggle = page.locator('button[data-mode-toggle]').last();
+    const modeOf = async () => (await modeToggle.getAttribute('aria-pressed')) === 'true' ? 'expression' : 'object';
     console.log('PASS: added a "Make object visible" script with a searchable picker');
 
     await picker.click();
@@ -67,8 +68,8 @@ async function run() {
     }
     await picker.press('Enter');
     await page.waitForTimeout(300);
-    if (await picker.inputValue() !== 'mango' || await modeSelect.inputValue() === 'expression') {
-        throw new Error(`Expected "mango" selected in object mode, got value=${JSON.stringify(await picker.inputValue())} mode=${JSON.stringify(await modeSelect.inputValue())}`);
+    if (await picker.inputValue() !== 'mango' || await modeOf() === 'expression') {
+        throw new Error(`Expected "mango" selected in object mode, got value=${JSON.stringify(await picker.inputValue())} mode=${JSON.stringify(await modeOf())}`);
     }
     console.log('PASS: typing part of a name filters the list and Enter picks the match');
 
@@ -76,8 +77,8 @@ async function run() {
     await picker.fill('nosuchthing');
     await picker.press('Tab');
     await page.waitForTimeout(300);
-    if (await picker.inputValue() !== 'mango' || await modeSelect.inputValue() === 'expression') {
-        throw new Error(`Expected an unknown name to revert to "mango" in object mode, got value=${JSON.stringify(await picker.inputValue())} mode=${JSON.stringify(await modeSelect.inputValue())}`);
+    if (await picker.inputValue() !== 'mango' || await modeOf() === 'expression') {
+        throw new Error(`Expected an unknown name to revert to "mango" in object mode, got value=${JSON.stringify(await picker.inputValue())} mode=${JSON.stringify(await modeOf())}`);
     }
     console.log('PASS: typing a name that matches no object reverts instead of committing it');
 

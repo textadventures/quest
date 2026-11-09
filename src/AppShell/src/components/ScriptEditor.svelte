@@ -342,6 +342,10 @@
         }
     }
 
+    function templateOptionValue(index: number): string {
+        return `template:${index}`;
+    }
+
     function templateParamKey(overrideKey: string, ctrlName: string): string {
         return `${overrideKey}::${ctrlName}`;
     }
@@ -350,6 +354,24 @@
         if (!ctrl.simpleEditor) return false;
         if (templateParamOverrides.has(templateParamKey(overrideKey, ctrl.name))) return false;
         return isSimpleValue(ctrl, objectNames);
+    }
+
+    // A field with a simple and an expression mode is drawn as "name [fx] [value]": a plain
+    // label names it, and the fx button only switches between the simple widget and an
+    // expression, so the name stays put in both modes. A field right after a label control
+    // (e.g. "Draw line from X1 [...]") is already named by it, so it gets no label of its own,
+    // but that label's text still gives the toggle its accessible name.
+    type NamedControl = { controlType: string; caption: string | null; simpleLabel: string | null };
+
+    function fieldNames(controls: readonly NamedControl[], index: number): { visible: string | null; accessible: string | null } {
+        const ctrl = controls[index];
+        const prev = index > 0 ? controls[index - 1] : undefined;
+        if (prev?.controlType === "label") {
+            const text = (prev.caption ?? "").replace(/^[\s,;:]+|[\s,;:]+$/g, "");
+            return { visible: null, accessible: text || ctrl.simpleLabel || ctrl.caption };
+        }
+        const name = ctrl.simpleLabel ?? ctrl.caption;
+        return { visible: name, accessible: name };
     }
 
     // Svelte action: sizes a <select> (the condition/template picker, or a template control's
@@ -1129,16 +1151,41 @@
             {/if}
         </div>
     {:else if ctrl.attribute !== null}
-        {@render valueControl(ctrl, scriptIndex, siblingControls)}
+        {@render valueControl(ctrl, scriptIndex, siblingControls, controlIndex)}
     {/if}
 {/snippet}
 
-{#snippet valueControl(ctrl: ScriptControlData, scriptIndex: number, siblingControls: ScriptControlData[])}
+{#snippet fieldNameLabel(name: string | null)}
+    {#if name}
+        <span class="text-surface-600-400 select-none">{name}</span>
+    {/if}
+{/snippet}
+
+{#snippet modeToggle(expression: boolean, accessibleName: string | null, onToggle: () => void)}
+    {@const label = accessibleName ? t("scriptEditor.useExpressionFor", { field: accessibleName }) : t("scriptEditor.useExpression")}
+    <button
+        type="button"
+        class="shrink-0 rounded-sm border px-1 text-xs leading-4 italic font-serif {expression
+            ? "border-primary-500 preset-filled-primary-500"
+            : "border-surface-400-600 text-surface-600-400 hover:preset-tonal-surface"}"
+        aria-pressed={expression}
+        aria-label={label}
+        title={label}
+        data-mode-toggle
+        onclick={onToggle}
+    >fx</button>
+{/snippet}
+
+{#snippet valueControl(ctrl: ScriptControlData, scriptIndex: number, siblingControls: ScriptControlData[], controlIndex: number)}
     {#if ctrl.controlType === "expression" && ctrl.simpleEditor !== null}
         {@const simple = inSimpleMode(ctrl, scriptIndex)}
+        {@const names = fieldNames(siblingControls, controlIndex)}
         {#if ctrl.simpleEditor === "boolean"}
-            <!-- Boolean: yes / no / expression dropdown (no separate widget) -->
+            <!-- Boolean: yes / no / expression dropdown (no separate widget). Its options are
+                 the values themselves, so it never named the field: the label does. -->
+            {@render fieldNameLabel(names.visible)}
             <select
+                aria-label={names.accessible ?? undefined}
                 class="select text-xs py-0 px-1 max-w-32"
                 value={simple ? ctrl.value : "expression"}
                 onchange={(e) => {
@@ -1147,7 +1194,7 @@
                         onSwitchToExpression(scriptIndex, ctrl);
                     } else {
                         clearExpressionOverride(scriptIndex, ctrl.attribute!);
-                        onSetParam(scriptIndex, ctrl.attribute!, v === "yes" ? "true" : "false");
+                        onSetParam(scriptIndex, ctrl.attribute!, v);
                     }
                 }}
             >
@@ -1165,22 +1212,15 @@
                 />
             {/if}
         {:else}
-            <!-- Textbox / dropdown / number: labelled mode toggle + widget -->
-            <select
-                class="select text-xs py-0 px-1 max-w-28"
-                value={simple ? (ctrl.simpleLabel ?? "simple") : "expression"}
-                onchange={(e) => {
-                    const v = (e.target as HTMLSelectElement).value;
-                    if (v === "expression") {
-                        onSwitchToExpression(scriptIndex, ctrl);
-                    } else {
-                        onSwitchToSimple(scriptIndex, ctrl);
-                    }
-                }}
-            >
-                <option value={ctrl.simpleLabel ?? t("scriptEditor.simpleOption")}>{ctrl.simpleLabel ?? t("scriptEditor.simpleOption")}</option>
-                <option value="expression">{t("scriptEditor.expressionOption")}</option>
-            </select>
+            <!-- Textbox / dropdown / number: name, fx toggle, widget -->
+            {@render fieldNameLabel(names.visible)}
+            {@render modeToggle(!simple, names.accessible, () => {
+                if (simple) {
+                    onSwitchToExpression(scriptIndex, ctrl);
+                } else {
+                    onSwitchToSimple(scriptIndex, ctrl);
+                }
+            })}
             {#if simple}
                 {#if ctrl.simpleEditor === "objects"}
                     <Combobox
@@ -1484,27 +1524,30 @@
                 minCh: 8,
                 maxCh: 36,
             }}
-            value={inTemplateMode ? tmplData!.templateName : "expression"}
+            value={inTemplateMode ? templateOptionValue(templates.findIndex(tpl => tpl.name === tmplData!.templateName)) : "expression"}
             onchange={(e) => {
                 const v = (e.target as HTMLSelectElement).value;
                 if (v === "expression") {
                     expressionOverrides.add(overrideKey);
                 } else {
                     expressionOverrides.delete(overrideKey);
-                    const tpl = templates.find(t => t.name === v);
+                    const tpl = templates.find((_, i) => templateOptionValue(i) === v);
                     if (tpl) onchange(tpl.createExpression);
                 }
             }}
         >
+            <!-- Option values are fixed keys, not the (translated) template names, so no name
+                 can ever collide with the "expression" option. -->
             <option value="expression">{t("scriptEditor.expressionOption")}</option>
-            {#each templates as tpl (tpl.name)}
-                <option value={tpl.name}>{tpl.name}</option>
+            {#each templates as tpl, i (tpl.name)}
+                <option value={templateOptionValue(i)}>{tpl.name}</option>
             {/each}
         </select>
     {/if}
     {#if inTemplateMode && tmplData}
         <!-- Template controls (e.g. object picker for Got(#object#)) -->
-        {#each tmplData.controls as ctrl (ctrl.name)}
+        {#each tmplData.controls as ctrl, ci (ctrl.name)}
+            {@const names = fieldNames(tmplData.controls, ci)}
             {#if ctrl.breakBefore}
                 <!-- <breakbefore/> - see the matching break in the script controls loop above. -->
                 <span class="basis-full h-0"></span>
@@ -1514,17 +1557,11 @@
                 <span class="text-surface-600-400 select-none">{ctrl.caption ?? ""}</span>
             {:else if ctrl.simpleEditor === "boolean"}
                 {@const boolSimple = inTemplateParamSimpleMode(overrideKey, ctrl)}
-                {@const boolLabel = ctrl.simpleLabel ?? ctrl.caption}
                 <!-- Boolean: yes / no / expression dropdown, no separate widget - mirrors
-                     valueControl's non-template boolean handling. Other simple editors name
-                     their parameter in their mode toggle (e.g. "caption"), but this dropdown's
-                     options are the values themselves, so it needs its own label (e.g.
-                     ShowMenu's "allow cancel"). -->
-                {#if boolLabel}
-                    <span class="text-surface-600-400 select-none">{boolLabel}</span>
-                {/if}
+                     valueControl's non-template boolean handling. -->
+                {@render fieldNameLabel(names.visible)}
                 <select
-                    aria-label={boolLabel ?? undefined}
+                    aria-label={names.accessible ?? undefined}
                     class="select text-xs py-0 px-1 max-w-32"
                     value={boolSimple ? ctrl.value : "expression"}
                     onchange={(e) => {
@@ -1555,36 +1592,29 @@
             {:else if ctrl.simpleEditor}
                 {@const paramKey = templateParamKey(overrideKey, ctrl.name)}
                 {@const paramSimple = inTemplateParamSimpleMode(overrideKey, ctrl)}
-                <!-- Labelled mode toggle (e.g. "object"/"flag name" vs "expression") - every
-                     simple editor gets one, since even a plain quoted-string field (e.g.
-                     GetBoolean's "flag name") needs an escape hatch to an arbitrary expression,
-                     not just object/number pickers whose own widget can't hold one at all. -->
-                <select
-                    class="select text-xs py-0 px-1 max-w-28"
-                    value={paramSimple ? (ctrl.simpleLabel ?? "simple") : "expression"}
-                    onchange={(e) => {
-                        const v = (e.target as HTMLSelectElement).value;
-                        if (v === "expression") {
-                            templateParamOverrides.add(paramKey);
-                        } else {
-                            templateParamOverrides.delete(paramKey);
-                            // Switching back to the simple widget only takes effect visually if
-                            // the stored value is already simple-shaped (see
-                            // inTemplateParamSimpleMode) - an arbitrary leftover expression (e.g.
-                            // a function call) would otherwise leave the toggle showing
-                            // "object"/"flag name" while the expression box stays put, since
-                            // paramSimple is re-derived from the value's shape on every render.
-                            // Reset to a blank/zero default so the switch is visible immediately,
-                            // mirroring onSwitchToSimple's non-template twin.
-                            if (!isSimpleValue(ctrl, objectNames)) {
-                                onchange(buildTemplateExpression(tmplData!, ctrl.name, defaultSimpleValue(ctrl.simpleEditor!)));
-                            }
+                <!-- Name + fx toggle - every simple editor gets one, since even a plain
+                     quoted-string field (e.g. GetBoolean's "flag name") needs an escape hatch to
+                     an arbitrary expression, not just object/number pickers whose own widget
+                     can't hold one at all. -->
+                {@render fieldNameLabel(names.visible)}
+                {@render modeToggle(!paramSimple, names.accessible, () => {
+                    if (paramSimple) {
+                        templateParamOverrides.add(paramKey);
+                    } else {
+                        templateParamOverrides.delete(paramKey);
+                        // Switching back to the simple widget only takes effect visually if
+                        // the stored value is already simple-shaped (see
+                        // inTemplateParamSimpleMode) - an arbitrary leftover expression (e.g. a
+                        // function call) would otherwise leave the toggle off while the
+                        // expression box stays put, since paramSimple is re-derived from the
+                        // value's shape on every render. Reset to a blank/zero default so the
+                        // switch is visible immediately, mirroring onSwitchToSimple's
+                        // non-template twin.
+                        if (!isSimpleValue(ctrl, objectNames)) {
+                            onchange(buildTemplateExpression(tmplData!, ctrl.name, defaultSimpleValue(ctrl.simpleEditor!)));
                         }
-                    }}
-                >
-                    <option value={ctrl.simpleLabel ?? t("scriptEditor.simpleOption")}>{ctrl.simpleLabel ?? t("scriptEditor.simpleOption")}</option>
-                    <option value="expression">{t("scriptEditor.expressionOption")}</option>
-                </select>
+                    }
+                })}
                 {#if paramSimple && ctrl.simpleEditor === "objects"}
                     <Combobox
                         value={ctrl.value ?? ""}
@@ -1636,6 +1666,7 @@
                      #object#.#property# = #value#'s "value") - there's no simple mode to toggle
                      to, so always show the full expression editor, same as this snippet's own
                      top-level fallback below. -->
+                {@render fieldNameLabel(names.visible)}
                 <ExpressionInput
                     value={ctrl.value ?? ""}
                     onchange={(v) => onchange(buildTemplateExpression(tmplData!, ctrl.name, v))}

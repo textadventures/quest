@@ -886,6 +886,13 @@
   <template name="EditorExpressionsmenucaption">Überschrift</template>
   <template name="EditorExpressionsmenuoptions">Optionen</template>
   <template name="EditorExpressionsmenuallowcancel">Abbrechen erlauben</template>
+  <template name="EditorFieldObject">Objekt</template>
+  <template name="EditorFieldFlagName">Name des Zustands</template>
+  <template name="EditorFieldCounterName">Name des Zählers</template>
+  <template name="EditorFieldValue">Wert</template>
+  <template name="EditorFieldPercentage">Prozentsatz</template>
+  <template name="EditorFieldQuestion">Frage</template>
+  <template name="EditorFieldPage">Seite</template>
   <template name="EditorExpressionsallobjects">Alle Objekte</template>
   <template name="EditorExpressionsallvisible">Alle sichtbaren Objekte</template>
   <template name="EditorExpressionstheinventory">Das Inventar</template>

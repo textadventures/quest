@@ -66,9 +66,10 @@ async function run() {
     await addScriptDialog.getByRole('button', { name: 'OK', exact: true }).click();
     console.log('PASS: added a "Make exit invisible" script command');
 
-    // The mode toggle is the only <select> offering "expression"; the exit picker is the
-    // searchable Combobox (it disappears entirely once the row is in expression mode).
-    const modeSelect = page.locator('select:has(option[value="expression"])').last();
+    // The fx toggle switches the field between the exit picker (a searchable Combobox) and an
+    // expression box; the picker disappears entirely once the row is in expression mode.
+    const modeToggle = page.locator('button[data-mode-toggle]').last();
+    const modeOf = async () => (await modeToggle.getAttribute('aria-pressed')) === 'true' ? 'expression' : 'exit';
     const exitPicker = page.locator('input[role="combobox"]').last();
     await exitPicker.click();
     await exitPicker.fill('trap');
@@ -77,7 +78,7 @@ async function run() {
     // Selecting commits the value and re-renders the row from the stored script, which is where
     // a name with a space used to be reclassified as an expression.
     await page.waitForTimeout(500);
-    const mode = await modeSelect.inputValue();
+    const mode = await modeOf();
     if (mode === 'expression') {
         throw new Error('Expected the parameter to stay in exit mode after picking "trap door", but it switched to expression mode');
     }
@@ -97,7 +98,7 @@ async function run() {
     }
     await page.getByRole('button', { name: /^Visual (view|editor)$/ }).first().click();
     await page.waitForTimeout(500);
-    const afterMode = await modeSelect.inputValue();
+    const afterMode = await modeOf();
     const afterPick = await exitPicker.inputValue();
     if (afterMode === 'expression' || afterPick !== 'trap door') {
         throw new Error(`Expected exit mode with "trap door" after a code view round trip, got mode=${JSON.stringify(afterMode)} value=${JSON.stringify(afterPick)}`);

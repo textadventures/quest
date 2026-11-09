@@ -885,6 +885,13 @@
   <template name="EditorExpressionsmenucaption">caption</template>
   <template name="EditorExpressionsmenuoptions">options</template>
   <template name="EditorExpressionsmenuallowcancel">allow cancel</template>
+  <template name="EditorFieldObject">object</template>
+  <template name="EditorFieldFlagName">flag name</template>
+  <template name="EditorFieldCounterName">counter name</template>
+  <template name="EditorFieldValue">value</template>
+  <template name="EditorFieldPercentage">percentage</template>
+  <template name="EditorFieldQuestion">question</template>
+  <template name="EditorFieldPage">page</template>
   <template name="EditorExpressionsallobjects">all objects</template>
   <template name="EditorExpressionsallvisible">all visible objects</template>
   <template name="EditorExpressionstheinventory">the inventory</template>

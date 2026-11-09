@@ -126,7 +126,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await page.locator('select').first().selectOption('script');
     await addScriptCommand(page, page.locator('button:has-text("+ Add script")').first(), { category: 'Scripts', item: 'If...' });
     await ifExpressionSelect(page).selectOption('object has flag');
-    await ifObjectSelect(page, { selectIndex: 3 }).selectOption({ label: 'Bob' });
+    await ifObjectSelect(page).selectOption({ label: 'Bob' });
     const flagNameInput = page.locator('xpath=(//span[text()="if"]/following::input)[1]');
     await flagNameInput.fill('alive');
     await addScriptCommand(page, page.locator('button:has-text("+ Add script")').first());

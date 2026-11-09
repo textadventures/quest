@@ -139,6 +139,24 @@ public class ExpressionTemplateTests
         Assert.AreEqual(allowCancel, controls.Single(c => c.Attribute == "allowcancel").GetString("simple"));
     }
 
+    // The Visual editor shows a template field's <simple> name as a label in front of it, so the
+    // shared field names (object, counter name, value, ...) are translation keys too.
+    [DataTestMethod]
+    [DataRow("English", "object", "counter name", "value")]
+    [DataRow("Deutsch", "Objekt", "Name des Zählers", "Wert")]
+    public async Task TemplateFieldNamesAreTranslated(string templateName, string objectName, string counterName,
+        string valueName)
+    {
+        using var controller = await LoadController(templateName);
+        var definition = controller.GetExpressionEditorDefinition("""GetInt(player, "score") = 0""", "if");
+        Assert.IsNotNull(definition);
+
+        var controls = definition.Controls.ToList();
+        Assert.AreEqual(objectName, controls.Single(c => c.Attribute == "object").GetString("simple"));
+        Assert.AreEqual(counterName, controls.Single(c => c.Attribute == "counter").GetString("simple"));
+        Assert.AreEqual(valueName, controls.Single(c => c.Attribute == "value").GetString("simple"));
+    }
+
     [TestMethod]
     public void TemplateDoesNotMatchAcrossUnbalancedBrackets()
     {

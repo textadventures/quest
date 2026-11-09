@@ -36,7 +36,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await page.getByRole('button', { name: 'OK', exact: true }).click();
     await page.waitForSelector('text=then');
     await ifExpressionSelect(page).selectOption('player is in room');
-    await ifObjectSelect(page, { selectIndex: 3 }).selectOption('room');
+    await ifObjectSelect(page).selectOption('room');
     await page.locator('button:has-text("+ Add script")').first().click();
     await page.waitForSelector('text=Add Script Command');
     await page.getByRole('button', { name: 'OK', exact: true }).click();
