@@ -46,7 +46,7 @@ You are carrying a machine (with a button).
 
 **Transparent** lets the player see the contents of a closed container. They're listed as usual, but the player can't take them or put anything in until it's opened.
 
-**Hide children until object is looked at** keeps the contents completely hidden - not listed, not reachable - until the player examines the object. Looking at it clears the flag for good. It's useful for a drawer full of clutter that shouldn't be advertised in the room description.
+**Hide children until object is looked at** keeps the contents completely hidden - not listed, not reachable - until the player examines the object or looks inside it. Either one clears the flag for good. It's useful for a drawer full of clutter that shouldn't be advertised in the room description.
 
 **List children when object is looked at or opened** prints the contents as a sentence of their own when the player opens or examines the object, rather than only in parentheses after the object's name. **List prefix** sets the wording - the default is "It contains":
 
@@ -110,6 +110,30 @@ To make the fridge's own description change with its state, use the [text proces
 ```
 The fridge is {either fridge.isopen:open, casting its light out into the gloomy kitchen|humming quietly in the corner}.
 ```
+
+## Looking inside
+
+`LOOK IN` and `LOOK INSIDE` list what's in a container, whether or not "List children when object is looked at or opened" is ticked, because the player has asked:
+
+```
+> look in chest
+It is closed.
+
+> open chest
+You open it.
+
+> look in chest
+It contains a sword and a shield.
+
+> look in bucket
+It is empty.
+```
+
+A closed transparent container lists its contents too. Anything that isn't a container gets "You can't see inside it.", and in the dark the player gets "It is too dark to make anything out." "List prefix" changes the "It contains" wording here as well.
+
+To give an object its own response - a mirror the player can look into, or a container that should say something different - add a "look in" verb on its _Verbs_ tab. That replaces the standard listing for that object. A "look in" command of your own still takes precedence over the standard one.
+
+Plain `LOOK IN`, with no object, is a direction: it looks through an "in" exit, if the room has one.
 
 ## Limited containers
 

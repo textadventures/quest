@@ -1,0 +1,74 @@
+<asl version="600">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="lookintest"/>
+  <object name="room">
+    <object name="player">
+      <inherit name="defaultplayer" />
+      <object name="pouch">
+        <inherit name="container_open" />
+        <object name="coin" />
+      </object>
+    </object>
+    <exit alias="in" to="cellar">
+      <inherit name="indirection" />
+      <look type="script">
+        msg ("Steps lead down.")
+      </look>
+    </exit>
+    <object name="box">
+      <inherit name="container_open" />
+      <hidechildren />
+      <object name="apple" />
+      <object name="pear" />
+    </object>
+    <object name="chest">
+      <inherit name="container_closed" />
+      <object name="gold" />
+    </object>
+    <object name="jar">
+      <inherit name="container_closed" />
+      <transparent />
+      <object name="marble" />
+    </object>
+    <object name="bucket">
+      <inherit name="container_open" />
+    </object>
+    <object name="rock" />
+    <object name="mirror">
+      <lookin>You see your own reflection.</lookin>
+    </object>
+    <object name="cupboard">
+      <inherit name="container_open" />
+      <lookin type="script">
+        msg ("A moth flies out.")
+      </lookin>
+      <object name="cup" />
+    </object>
+  </object>
+  <object name="cellar">
+    <dark />
+    <exit alias="out" to="room">
+      <inherit name="outdirection" />
+    </exit>
+    <object name="crate">
+      <inherit name="container_open" />
+      <object name="bottle" />
+    </object>
+    <object name="lantern">
+      <inherit name="container_open" />
+      <lightsource />
+      <lightstrength>weak</lightstrength>
+      <object name="candle">
+        <lightsource />
+        <lightstrength>weak</lightstrength>
+      </object>
+    </object>
+    <object name="tin">
+      <inherit name="container_open" />
+      <lightsource />
+      <lightstrength>weak</lightstrength>
+      <object name="button" />
+    </object>
+  </object>
+</asl>

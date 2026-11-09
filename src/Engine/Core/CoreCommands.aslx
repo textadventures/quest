@@ -898,6 +898,7 @@
   <verb template="pull" property="pull" response="DefaultPull"/>
   <verb template="push" property="push" response="DefaultPush"/>
   <verb template="read" property="read" response="DefaultRead"/>
+  <verb template="lookin" property="lookin" response="DefaultLookIn"/>
   <verb template="search" property="search" response="DefaultSearch"/>
   <verb template="show" property="show" response="DefaultShow"/>
   <verb name="siton" template="sit" property="sit" response="DefaultSit"/>

@@ -267,6 +267,11 @@
   <dynamictemplate name="DefaultPush">WriteVerb(game.pov, "can't") + " push " + object.article + "."</dynamictemplate>
   <verbtemplate name="read">read</verbtemplate>
   <dynamictemplate name="DefaultRead">WriteVerb(game.pov, "can't") + " read " + object.article + "."</dynamictemplate>
+  <verbtemplate name="lookin">look in</verbtemplate>
+  <verbtemplate name="lookin">look inside</verbtemplate>
+  <dynamictemplate name="DefaultLookIn">WriteVerb(game.pov, "can't") + " see inside " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="LookInClosed">WriteVerb(object, "be") + " closed."</dynamictemplate>
+  <dynamictemplate name="LookInEmpty">WriteVerb(object, "be") + " empty."</dynamictemplate>
   <verbtemplate name="search">search</verbtemplate>
   <dynamictemplate name="DefaultSearch">WriteVerb(game.pov, "can't") + " search " + object.article + "."</dynamictemplate>
   <verbtemplate name="show">show</verbtemplate>

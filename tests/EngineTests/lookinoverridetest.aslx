@@ -1,0 +1,27 @@
+<asl version="600">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="lookinoverridetest"/>
+  <command name="mylookin">
+    <pattern>look in #object#</pattern>
+    <script>
+      msg ("Game command looks in " + object.name + ".")
+    </script>
+  </command>
+  <!-- The shape the editor saves: no name -->
+  <verb>
+    <property>lookin</property>
+    <pattern>look inside</pattern>
+    <defaultexpression>"Game verb: nothing inside " + object.name + "."</defaultexpression>
+  </verb>
+  <object name="room">
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <object name="box">
+      <inherit name="container_open" />
+      <object name="apple" />
+    </object>
+    <object name="rock" />
+  </object>
+</asl>
