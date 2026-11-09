@@ -6,6 +6,8 @@ import type { QuestUIListener } from './contract';
 export const state = {
     /** QuestUI.setAutoScroll. */
     autoScroll: true,
+    /** Whether this game has been warned about a <script> in its output (warnIfScript). */
+    warnedAboutScript: false,
     /** False while a walkthrough fast-forwards (the host's setAnimateScroll). */
     animateScroll: true,
     /** QuestUI.fadePreviousOutput. */
@@ -59,6 +61,7 @@ export function emit(event: string, detail?: unknown): void {
 
 export function resetState(): void {
     state.autoScroll = true;
+    state.warnedAboutScript = false;
     state.fadePreviousOutput = false;
     state.continueOnClick = false;
     state.commandPlaceholder = null;

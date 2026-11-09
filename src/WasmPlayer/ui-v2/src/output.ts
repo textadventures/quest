@@ -22,6 +22,18 @@ export function rememberImageSize(url: string, width: number, height: number): v
 // The gap left above the start of a turn's output when it's scrolled into view.
 const TURN_START_GAP = 8;
 
+/**
+ * A <script> in output doesn't run on v2, though legacy runs it, so an author copying an old
+ * snippet would see nothing happen. Say so in the console, once per game (#2608).
+ */
+function warnIfScript(html: string): void {
+    if (state.warnedAboutScript || !/<script[\s>\/]/i.test(html)) return;
+    state.warnedAboutScript = true;
+    console.warn('[Quest] This game printed a <script> element, which doesn\'t run in the new player interface. '
+        + 'Call your own JavaScript with JS.yourFunction () or JS.eval instead, or tick "Use the classic interface" '
+        + 'on the game\'s Interface tab.');
+}
+
 export class QvOutput extends HTMLElement {
     #current: HTMLDivElement | null = null;
     #sections: string[] = [];
@@ -51,6 +63,7 @@ export class QvOutput extends HTMLElement {
     };
 
     addText(html: string): void {
+        warnIfScript(html);
         const block = this.#current ?? this.setAlignment('left');
         block.insertAdjacentHTML('beforeend', html);
         markUndescribedImages(block);
