@@ -1445,6 +1445,14 @@ export function updateDictItem(elementKey: string, attribute: string, key: strin
     return result;
 }
 
+export function moveDictItem(elementKey: string, attribute: string, key: string, newIndex: number): string {
+    if (!_bridge) return "error";
+    const result = _bridge.MoveDictionaryItem(elementKey, attribute, key, newIndex);
+    if (result === "ok") refreshSelectedData();
+    refreshUndoRedo();
+    return result;
+}
+
 export function makeScriptEditable(elementKey: string, attribute: string): string {
     if (!_bridge) return "error";
     const result = _bridge.MakeScriptEditable(elementKey, attribute);

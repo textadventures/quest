@@ -184,6 +184,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-appshell-gamebook-mode.mjs http://localhost:5174
         working-directory: tests/e2e
+      - run: node verify-appshell-gamebook-option-order.mjs http://localhost:5174
+        working-directory: tests/e2e
       - run: node verify-appshell-home-button.mjs http://localhost:5174
         working-directory: tests/e2e
       - run: node verify-appshell-home-header-links.mjs http://localhost:5174

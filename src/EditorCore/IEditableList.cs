@@ -39,5 +39,6 @@ public interface IEditableDictionary<T>
     void Remove(params string[] keys);
     void Update(string key, T value);
     void ChangeKey(string oldKey, string newKey);
+    void Move(string key, int newIndex);
     ValidationResult CanAdd(string key);
 }
