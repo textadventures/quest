@@ -272,6 +272,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-appshell-library-xml-extension.mjs http://localhost:5174
         working-directory: tests/e2e
+      - run: node verify-appshell-add-language-library.mjs http://localhost:5174
+        working-directory: tests/e2e
       - run: node verify-appshell-make-script-editable-undo.mjs http://localhost:5174
         working-directory: tests/e2e
       - run: node verify-appshell-multi-control-editors.mjs http://localhost:5174

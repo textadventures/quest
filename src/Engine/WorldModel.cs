@@ -2013,6 +2013,35 @@ public partial class WorldModel : IGame, IGameDebug
             .OrderBy(f => f.Name, StringComparer.Ordinal);
     }
 
+    // Moves element so the game file lists it just before another element of the same type. Undoable,
+    // as part of whatever transaction is open.
+    internal void MoveElementBefore(Element element, Element before)
+    {
+        if (element.ElemType != before.ElemType)
+        {
+            throw new ArgumentException("Both elements must be of the same type");
+        }
+
+        var oldIndex = Elements.GetSaveOrderIndex(element);
+        MoveBefore(element, before);
+        UndoLogger.AddUndoAction(() => new UndoMoveElementBefore(element, before, oldIndex));
+    }
+
+    private void MoveBefore(Element element, Element before)
+    {
+        var beforeIndex = Elements.GetSaveOrderIndex(before);
+        var index = Elements.GetSaveOrderIndex(element);
+        // Taking element out first shifts everything after it down one
+        Elements.MoveToSaveOrderIndex(element, index < beforeIndex ? beforeIndex - 1 : beforeIndex);
+    }
+
+    private class UndoMoveElementBefore(Element element, Element before, int oldIndex) : UndoLogger.IUndoAction
+    {
+        public void DoUndo(WorldModel worldModel) => worldModel.Elements.MoveToSaveOrderIndex(element, oldIndex);
+
+        public void DoRedo(WorldModel worldModel) => worldModel.MoveBefore(element, before);
+    }
+
     internal void UpdateElementSortOrder(Element movedElement)
     {
         // There's no need to worry about element sort order when playing the game, unless this is an element that can be seen by the
