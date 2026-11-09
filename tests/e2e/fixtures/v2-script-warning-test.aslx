@@ -1,0 +1,33 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- A <script> in output doesn't run on v2, which says so once in the console
+       (verify-wasmplayer-v2-script-warning.mjs, #2608). -->
+  <game name="V2ScriptWarningTest">
+  </game>
+
+  <object name="hall">
+    <inherit name="editor_room" />
+    <description>A plain hall.</description>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+  <command name="plain">
+    <pattern>plain</pattern>
+    <script>
+      msg ("Some &lt;b&gt;plain&lt;/b&gt; text.")
+    </script>
+  </command>
+
+  <command name="snippet">
+    <pattern>snippet</pattern>
+    <script>
+      msg ("Before.&lt;script&gt;window.qvScriptRan = true;&lt;/script&gt; After.")
+    </script>
+  </command>
+
+</asl>
