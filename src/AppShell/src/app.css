@@ -153,6 +153,11 @@ select.select:not([multiple]):not([size]) {
     padding-inline-end: calc(0.8em + 0.8rem);
 }
 
+/* Hand cursor, like buttons (see the cursor rule at the top of this file). */
+select.select:not(:disabled) {
+    cursor: pointer;
+}
+
 :root.dark select.select:not([multiple]):not([size]),
 .play-dark select.select:not([multiple]):not([size]) {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
