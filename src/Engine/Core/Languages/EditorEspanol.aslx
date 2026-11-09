@@ -889,6 +889,13 @@
   <template name="EditorExpressionsmenucaption">título</template>
   <template name="EditorExpressionsmenuoptions">opciones</template>
   <template name="EditorExpressionsmenuallowcancel">permitir cancelar</template>
+  <template name="EditorFieldObject">objeto</template>
+  <template name="EditorFieldFlagName">nombre de la señal</template>
+  <template name="EditorFieldCounterName">nombre del contador</template>
+  <template name="EditorFieldValue">valor</template>
+  <template name="EditorFieldPercentage">porcentaje</template>
+  <template name="EditorFieldQuestion">pregunta</template>
+  <template name="EditorFieldPage">página</template>
   <template name="EditorExpressionsallobjects">todos los objetos</template>
   <template name="EditorExpressionsallvisible">todos los objetos visibles</template>
   <template name="EditorExpressionstheinventory">el inventario</template>

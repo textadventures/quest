@@ -10,7 +10,7 @@
 
     <control>
       <controltype>expression</controltype>
-      <simple>page</simple>
+      <simple>[EditorFieldPage]</simple>
       <simpleeditor>objects</simpleeditor>
       <attribute>page</attribute>
     </control>
@@ -24,7 +24,7 @@
 
     <control>
       <controltype>expression</controltype>
-      <simple>flag name</simple>
+      <simple>[EditorFieldFlagName]</simple>
       <attribute>flag</attribute>
     </control>
   </editor>
@@ -37,7 +37,7 @@
 
     <control>
       <controltype>expression</controltype>
-      <simple>flag name</simple>
+      <simple>[EditorFieldFlagName]</simple>
       <attribute>flag</attribute>
     </control>
   </editor>
@@ -50,7 +50,7 @@
 
     <control>
       <controltype>expression</controltype>
-      <simple>counter name</simple>
+      <simple>[EditorFieldCounterName]</simple>
       <attribute>counter</attribute>
     </control>
 
@@ -69,7 +69,7 @@
 
     <control>
       <controltype>expression</controltype>
-      <simple>number</simple>
+      <simple>[EditorFieldValue]</simple>
       <simpleeditor>number</simpleeditor>
       <attribute>value</attribute>
     </control>
@@ -83,7 +83,7 @@
 
     <control>
       <controltype>expression</controltype>
-      <simple>percentage</simple>
+      <simple>[EditorFieldPercentage]</simple>
       <simpleeditor>number</simpleeditor>
       <attribute>percentile</attribute>
       <minimum>0</minimum>
