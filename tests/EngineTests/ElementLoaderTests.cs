@@ -65,12 +65,72 @@ public class ElementLoaderTests
         Assert.AreEqual("hello", worldModel.Objects.First(o => o.Name == "thing").Fields.GetString("attr"));
     }
 
-    private static async Task<(WorldModel worldModel, bool ok)> LoadGame(string extraXml)
+    // Regression tests for issue #2352: an unnamed element gets a name like exit1 when it loads. An
+    // element the author named exit1 later in the file used to replace it, silently losing it.
+    [TestMethod]
+    public async Task TestUnnamedExitIsKeptWhenALaterObjectHasItsAutomaticName()
+    {
+        var (worldModel, ok) = await LoadGame("""
+            <object name="hall">
+              <exit alias="north" to="room2" />
+            </object>
+            <object name="exit1" />
+            """);
+
+        Assert.IsTrue(ok, "Errors: " + string.Join("; ", worldModel.Errors));
+        Assert.IsNull(worldModel.Object("exit1").Parent, "exit1 should be the author's object, not the exit");
+        var exit = worldModel.Objects.SingleOrDefault(o =>
+            o.Type == ObjectType.Exit && o.Parent?.Name == "hall" && o.Fields[FieldDefinitions.Alias] == "north");
+        Assert.IsNotNull(exit, "The unnamed exit should still be there");
+        Assert.IsTrue(exit.Fields[FieldDefinitions.Anonymous]);
+    }
+
+    [TestMethod]
+    public async Task TestUnnamedTurnScriptIsKeptWhenALaterFunctionHasItsAutomaticName()
+    {
+        var (worldModel, ok) = await LoadGame("""
+            <turnscript>
+              <script>msg ("tick")</script>
+            </turnscript>
+            <function name="k1" />
+            """);
+
+        Assert.IsTrue(ok, "Errors: " + string.Join("; ", worldModel.Errors));
+        Assert.IsTrue(worldModel.Elements.ContainsKey(ElementType.Function, "k1"));
+        Assert.AreEqual(1, worldModel.Objects.Count(o => o.Type == ObjectType.TurnScript && o.Name != "k1"));
+    }
+
+    // A game can still override a library's unnamed command by naming its own after the pattern.
+    [TestMethod]
+    public async Task TestGameCanStillOverrideALibrarysUnnamedCommand()
+    {
+        var library = """
+            <library>
+              <command pattern="frobnicate">
+                <script>msg ("library")</script>
+              </command>
+            </library>
+            """;
+        var (worldModel, ok) = await LoadGame("""
+            <command name="frobnicate" pattern="frobnicate">
+              <script>msg ("game")</script>
+            </command>
+            """, includeXml: """<include ref="lib.aslx" />""",
+            adjacentFiles: new Dictionary<string, byte[]> { ["lib.aslx"] = Encoding.UTF8.GetBytes(library) });
+
+        Assert.IsTrue(ok, "Errors: " + string.Join("; ", worldModel.Errors));
+        Assert.AreEqual(1, worldModel.Objects.Count(o => o.Fields.GetString("pattern") == "frobnicate"));
+        Assert.IsFalse(worldModel.Object("frobnicate").MetaFields[MetaFieldDefinitions.Library]);
+    }
+
+    private static async Task<(WorldModel worldModel, bool ok)> LoadGame(string extraXml,
+        string includeXml = "", IReadOnlyDictionary<string, byte[]>? adjacentFiles = null)
     {
         var xml = $"""
                    <asl version="580">
                      <include ref="English.aslx" />
                      <include ref="Core.aslx" />
+                     {includeXml}
                      <game name="test"/>
                      <object name="room2">
                        <object name="player">
@@ -81,7 +141,7 @@ public class ElementLoaderTests
                    </asl>
                    """;
 
-        var gameData = new GameData(Encoding.UTF8.GetBytes(xml), "test.aslx");
+        var gameData = new GameData(Encoding.UTF8.GetBytes(xml), "test.aslx", adjacentFiles);
         var worldModel = Helpers.CreateWorldModel(gameData);
 
         var player = new Mock<IPlayer>();

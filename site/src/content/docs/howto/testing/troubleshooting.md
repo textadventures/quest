@@ -176,4 +176,3 @@ Most bad names are caught by the editor, but a few aren't:
 
 - Don't give attributes the names `object`, `command`, `exit`, `turnscript`, `game`, `type` or `elementtype`. These mean something special in the game file, and a game with an attribute called `object` won't load again after you save it. Attributes such as `name`, `parent` and `alias` already have jobs, so only use them for those.
 - Don't call local variables `e` or `pi`. They're maths constants, and assigning to them is silently ignored: after `e = game.pov`, `e` is still 2.718... You can use them as attribute names.
-- Don't name objects `exit1`, `exit2` and so on. Exits you don't name yourself get those names when the game loads, and a clash can make an exit disappear.

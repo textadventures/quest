@@ -91,6 +91,8 @@ public abstract class ElementFactoryBase : IElementFactory
                 true, NotifyAddedElement, NotifyRemovedElement));
         }
 
+        MakeRoomForNamedElement(name);
+
         try
         {
             WorldModel.Elements.Add(CreateElementType, name, newElement);
@@ -134,6 +136,28 @@ public abstract class ElementFactoryBase : IElementFactory
         NotifyAddedElement(name);
 
         return newElement;
+    }
+
+    // An element the game file doesn't name, such as an exit, gets a name like exit1 when it loads.
+    // If an element the author did name exit1 comes later in the file, both are meant to exist, so
+    // the unnamed one moves to a fresh name rather than being replaced (issue #2352). A library's
+    // unnamed command is left to be replaced, as before: it's named after its pattern, and a game
+    // can override it by giving its own command that name.
+    private void MakeRoomForNamedElement(string name)
+    {
+        if (!WorldModel.Elements.IsLoading || !WorldModel.Elements.ContainsKey(name))
+        {
+            return;
+        }
+
+        var existing = WorldModel.Elements.Get(name);
+        if (!existing.Fields[FieldDefinitions.Anonymous] ||
+            (existing.MetaFields[MetaFieldDefinitions.Library] && existing.Type == ObjectType.Command))
+        {
+            return;
+        }
+
+        existing.Name = WorldModel.GetUniqueId(name.TrimEnd('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'));
     }
 
     protected void NotifyAddedElement(string elementName)
