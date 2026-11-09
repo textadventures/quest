@@ -48,13 +48,16 @@ The default - command bar, links and panes all on - suits most games. Before cha
 
 ## On a phone
 
-The player adapts to narrow screens:
+The player adapts to narrow screens, under 900 pixels wide:
 
 - The text fills the width of the screen, with no margins.
-- The panes move into a drawer. The player opens it with the ☰ button at the top right, next to Save / Load, and closes it with the same button. If you set a custom display width, this happens whenever the window is narrower than that width.
+- The panes move to where **On a phone** puts them, on the Interface tab: by default, a drawer the player opens with the ☰ button at the top, next to Save / Load, and closes with the same button. See [Panes](/customise/panes#panes-on-a-phone).
+- A strip of the exits under the text stands in for the compass, and the status attributes you choose stay in view under the location bar.
 - Verb menus, the pane lists and the buttons get larger, so they're easy to tap. Links in the text stay the size of the text around them.
 
-A phone player won't see the status pane or command pane unless they open the drawer, so keep anything important in the text too. Typing on a phone is slow, so links in the text are especially welcome - and link text such as "the rusty key" is easier to tap than "key".
+The [classic interface](/customise/classic/) always uses a drawer, and moves the panes into it whenever the window is narrower than the game's display width.
+
+A phone player won't see the panes unless they open the drawer, so keep anything important in the text too. Typing on a phone is slow, so links in the text are especially welcome - and link text such as "the rusty key" is easier to tap than "key".
 
 ## Accessibility
 
@@ -70,6 +73,8 @@ A phone player won't see the status pane or command pane unless they open the dr
 |---|---|
 | The theme, fonts, colours, panes, command bar and room descriptions | [Look and feel](/customise/look-and-feel) |
 | Which verbs appear for an object, in menus and panes | [Object verbs](/customise/object-verbs) |
-| The command pane and custom status pane | [Panes](/customise/panes) |
+| Where the panes go, the command pane, and panes of your own | [Panes](/customise/panes) |
+| What's on screen, partway through the game | [Changing the interface during play](/customise/interface-scripts) |
 | Anything the options don't cover, with your own CSS | [Styling the player](/customise/css) |
 | The interface's behaviour, with JavaScript | [Calling the game from JavaScript](/customise/javascript) |
+| A game that uses the interface from older versions of Quest | [The classic interface](/customise/classic/) |

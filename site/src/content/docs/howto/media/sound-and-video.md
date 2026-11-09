@@ -141,5 +141,4 @@ Video files are big, and everything you upload counts towards the game's size - 
 ## See also
 
 - [Pictures](/howto/media/pictures)
-- [Customising the interface](/customise/css) - what else `JS.eval` can reach
-- [JS functions](/reference/js) - the full list, including `AddYouTube`
+- [Calling the game from JavaScript](/customise/javascript) - what else JavaScript can do

@@ -85,7 +85,7 @@ While a game follows light and dark mode, either with the player's colours or wi
 
 A **Margin colour**, or the location bar's **Background colour** or **Text colour**, keeps the game in its light colours, without the button, until you give it a dark version in the **Dark** column too, since your light colour might not suit the player's dark text. A border colour without a dark version is the same in both modes. A colour blend, which has no dark version, keeps the game light, and so does changing the page colour from a script, with `SetBackgroundColour`. The preview at the top of **Colours** says which colour is keeping the game light.
 
-With the [classic interface](#advanced), **Colour scheme for panes** picks the panes' colours: Classic (light blue, the default), Midnight, Nature, Vanilla, Black, Blood, Tranquil or Parchment. Otherwise the panes follow the game's own colours.
+With the [classic interface](/customise/classic/), **Colour scheme for panes** picks the panes' colours: Classic (light blue, the default), Midnight, Nature, Vanilla, Black, Blood, Tranquil or Parchment. Otherwise the panes follow the game's own colours.
 
 ### Location bar
 
@@ -105,7 +105,7 @@ When objects are links, **Font** and **Font size** style the pop-up menu of verb
 
 These are under **Advanced** at the bottom of the tab.
 
-- **Set a custom display width** - the width of the game in pixels. The panes move into the ☰ drawer whenever the window is narrower than this, so a very wide setting puts laptops into the phone layout too.
+- **Set a custom display width** - the width of the column of text, in pixels. On a phone, the text fills the screen whatever this is. (With the classic interface, it's the width of the whole game, and the panes move into the ☰ drawer whenever the window is narrower than this, so a very wide setting puts laptops into the phone layout too.)
 - **Set custom padding** - the space around the text, in pixels: **Top**, **Bottom**, **Left** and **Right**.
 - **Stylesheet** - your own CSS, for anything these options can't do. See [Styling the player](/customise/css).
 
@@ -152,7 +152,7 @@ With panes on, you can also:
 
 ### Advanced
 
-**Use the classic interface** keeps the interface from older versions of Quest, for a game whose own JavaScript changes it. The options on these two tabs that only one interface uses are shown only for that one.
+**Use the classic interface** keeps the interface from older versions of Quest, for a game whose own JavaScript changes it. The options on these two tabs that only one interface uses are shown only for that one. See [The classic interface](/customise/classic/) for what it does differently, and [Moving to the new interface](/customise/moving-from-classic) for a game that changes it.
 
 ## The Room Descriptions tab
 
@@ -175,7 +175,7 @@ With automatic descriptions on, you choose the order of the four lines by number
 
 ## Changing the look during the game
 
-Most of these options are read when the game starts. A few functions change the look during play:
+Most of these options are read when the game starts. To change what's on screen and how it behaves during play - hiding the panes, turning off scrolling, adding a pane - use the script commands in the Interface category: see [Changing the interface during play](/customise/interface-scripts). A few functions change the look:
 
 | To change | Use |
 |---|---|

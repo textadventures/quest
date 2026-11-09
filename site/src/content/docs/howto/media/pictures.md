@@ -103,13 +103,6 @@ To keep a big picture out of the way until it's wanted, put it in a popup. The `
 The map is pinned above the desk. {popup:Study the map:{img:map.png}}
 ```
 
-`JS.showPopup` does the same from a script, in a proper dialogue box with a title and an OK button:
-
-```quest
-JS.showPopup ("The map", "<img src='" + GetFileURL("map.png") + "' style='max-width:100%' />")
-```
-
-That box is a fixed width, so scale the picture down with `max-width:100%` as above, or use [`JS.showPopupCustomSize`](/reference/js#showpopupcustomsize) to choose your own.
 
 ## Changing a picture during the game
 
@@ -123,7 +116,7 @@ msg ("<img id='portrait' src='" + GetFileURL("knight-well.png") + "' />")
 JS.eval ("document.getElementById('portrait').src = '" + GetFileURL("knight-wounded.png") + "';")
 ```
 
-This is how you show a character's changing mood, a door opening, or a dial moving, without filling the screen with pictures. See [Customising the interface](/customise/css) for more of what `JS.eval` can do.
+This is how you show a character's changing mood, a door opening, or a dial moving, without filling the screen with pictures. See [Calling the game from JavaScript](/customise/javascript) for more of what JavaScript can do.
 
 ### Drawing a picture in code
 

@@ -268,6 +268,15 @@ Values are CSS values, as a stylesheet would write them: colours as any CSS colo
 
 v2 also defines tokens with no game attribute behind them yet (`--qv-surface`, `--qv-radius`, `--qv-space`, focus-ring colours). Those are in the contract too, and the editor gains options for them later.
 
+### The root element and its state
+
+The tokens live on v2's root element, `qv-player`, so that's where a game stylesheet sets them (`qv-player { --qv-accent: … }`). Its name is part of the contract, as are two attributes on it that a stylesheet may select on (#2650, part 7, which documents them for authors):
+
+- `data-qv-narrow`, present while the player is narrower than 900px, when the narrow layout preset applies
+- `data-qv-scheme`, `light` or `dark`, the colour scheme being drawn (see "The player's choice")
+
+Its other attributes (`data-qv-layout`, `data-qv-gamebook`, `data-qv-fixed-scheme`, …) are internal. Legacy has no `qv-player`, so a stylesheet written against these applies only to v2.
+
 ### Light and dark
 
 A new 610 game leaves `defaultforeground`, `defaultlinkforeground` and `defaultbackground` unset, and gets v2's own colours, which follow the player's `prefers-color-scheme`. A game that stores Quest 5's defaults (black text, blue links, a white background), as games saved by Quest 5 or an earlier Viva do, counts as unset too. So 610 Core sends colour tokens only once a game has colours of its own (`HasOwnColours`; #2613 decision 5, #2725):

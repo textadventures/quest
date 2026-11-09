@@ -454,23 +454,23 @@ Valid request names, what they do, and their modern alternative:
 | `Background` | Sets the background to the specified HTML colour. | [SetBackgroundColour](/reference/functions/user-interface#setbackgroundcolour) |
 | `ClearScreen` | Clears the screen. Parameter is ignored. | [ClearScreen](/reference/functions/user-interface#clearscreen) |
 | `Foreground` | Sets the foreground to the specified HTML colour. | [SetForegroundColour](/reference/functions/user-interface#setforegroundcolour) |
-| `GameName` | Sets the name of the game. | [JS.setGameName(name)](/reference/js/#setgamename) |
-| `Hide` | Turns off an interface element. | [JS.uiHide(...)](/reference/js/#uihide) |
+| `GameName` | Sets the name of the game. | — |
+| `Hide` | Turns off an interface element ("Panes", "Location" or "Command"). | [SetPaneVisible](/reference/functions/user-interface#setpanevisible) |
 | `LinkForeground` | Sets the link foreground to the specified HTML colour. | [SetLinkForegroundColour](/reference/functions/internal-core#setlinkforegroundcolour) |
 | `Log` | Logs the specified text. | [Log](/reference/functions/general#log) |
-| `PanesVisible` | Shows/hides the side panes. "on"/"off" toggle them; "disabled" turns them off and removes the button to turn them back on (that button appears to no longer be available). | [JS.panesVisible(true / false)](/reference/js/#panesvisible) |
+| `PanesVisible` | Shows/hides the side panes. "on"/"off" toggle them; "disabled" turns them off and removes the button to turn them back on (that button appears to no longer be available). | [SetPaneVisible](/reference/functions/user-interface#setpanevisible) ("panes", true / false) |
 | `Pause` | Pauses the game for the specified number of milliseconds. | [Pause](/reference/functions/timers-turnscripts#pause) (which is just this request, in seconds) |
 | `Quit` | Quits the game. Parameter is ignored. | [finish](#finish) |
 | `RequestSave` | Requests the UI to save the game (may prompt a "Save As" dialog). Parameter is ignored. | [requestsave](#requestsave) |
-| `RunScript` | Runs the specified JavaScript function. | the [JS](/reference/js/) object, e.g. `JS.myCustomFunction(15, "some string")` |
-| `SetCompassDirections` | Assigns compass direction names from a semicolon-separated list. | [JS.setCompassDirections(...)](/reference/js/#setcompassdirections) |
-| `SetInterfaceString` | Sets UI text via an `"ElementName=Value"` parameter. | [JS.setInterfaceString(...)](/reference/js/#setinterfacestring) |
+| `RunScript` | Runs the specified JavaScript function. | the `JS` object, e.g. `JS.myCustomFunction(15, "some string")` - see [Calling the game from JavaScript](/customise/javascript) |
+| `SetCompassDirections` | Assigns compass direction names from a semicolon-separated list. | [JS.QuestUI.setCompassDirections(...)](/reference/js/#layout-and-panes) |
+| `SetInterfaceString` | Sets UI text via an `"ElementName=Value"` parameter. | [JS.QuestUI.setInterfaceString(...)](/reference/js/#layout-and-panes) |
 | `SetPanelContents` | Sets the static panel HTML contents. | [SetFramePicture](/reference/functions/user-interface#setframepicture) and [ClearFramePicture](/reference/functions/user-interface#clearframepicture) |
 | `SetStatus` | Sets the status area text (right of screen, under "Inventory"); blank removes it. | [status attributes](/reference/attributes/status) |
-| `Show` | Turns on an interface element ("Panes", "Location" or "Command"). | [JS.uiShow(...)](/reference/js/#uishow) |
+| `Show` | Turns on an interface element ("Panes", "Location" or "Command"). | [SetPaneVisible](/reference/functions/user-interface#setpanevisible) |
 | `ShowPicture` | Shows the specified picture file from the game directory. | [picture](#picture) |
 | `Speak` | Was intended to read the parameter aloud. Does nothing in Quest Viva - no player implements it. | — |
-| `UpdateLocation` | Updates the location bar with the parameter text. | [JS.updateLocation(location)](/reference/js/#updatelocation) |
+| `UpdateLocation` | Updates the location bar with the parameter text. | [JS.QuestUI.setLocation(location)](/reference/js/#layout-and-panes) |
 | `Wait` | Waits for the player to press a key. Parameter is ignored. | [WaitForKeyPress](/reference/functions/user-interface#waitforkeypress) (which is just this request) |
 
 `FontName` and `FontSize` aren't listed above: they now raise an error rather than do anything, so use [SetFontName](/reference/functions/user-interface#setfontname) and [SetFontSize](/reference/functions/user-interface#setfontsize) instead.

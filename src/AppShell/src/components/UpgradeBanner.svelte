@@ -1,6 +1,6 @@
 <script lang="ts">
     import { upgradeNotice, dismissUpgradeNotice, downloadOriginalGame, legacyUiHacks, dismissLegacyUiNotice, keepClassicInterface, treeNodes } from "#lib/editor-store.js";
-    import { DOCS_ASL_VERSIONS_URL } from "#lib/docs-links.js";
+    import { DOCS_ASL_VERSIONS_URL, DOCS_MOVING_FROM_CLASSIC_URL } from "#lib/docs-links.js";
     import { t } from "#lib/i18n/index.js";
 
     const MAX_HACKS_SHOWN = 3;
@@ -28,6 +28,7 @@
                 <p class="mt-1">{t("upgradeBanner.legacyUiMore", { count: $legacyUiHacks.length - MAX_HACKS_SHOWN })}</p>
             {/if}
         </div>
+        <a class="anchor" href={DOCS_MOVING_FROM_CLASSIC_URL} target="_blank" rel="noopener noreferrer">{t("upgradeBanner.learnMore")}</a>
         {#if gameKey}
             <button type="button" class="btn btn-xs preset-filled-warning-500" onclick={() => keepClassicInterface(gameKey)}>{t("upgradeBanner.keepClassicInterface")}</button>
         {/if}

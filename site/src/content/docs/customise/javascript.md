@@ -10,6 +10,8 @@ Quest Viva games run in a web page, so you can add your own JavaScript to build 
 | Add your own JavaScript functions | A Javascript element, with the code in a `.js` file |
 | Run JavaScript from a script | `JS.functionName (...)` - "Run Javascript" in the Output category |
 | Tell the game something from JavaScript | `ASLEvent ("FunctionName", value)` |
+| Print text, or change the interface, from JavaScript | The [`QuestUI` object](#the-questui-object) |
+| Do something whenever the player takes a turn, or new text appears | [`QuestUI.on`](#reacting-to-the-players-turns) |
 | Ask the player a question and wait for the answer | `GetInput()`, `Ask()` or `ShowMenu()` - see [Asking the player](/howto/scripting/asking-the-player) |
 
 Before writing any JavaScript, check whether the last row covers what you need. A question asked with `GetInput()` or `ShowMenu()` needs no JavaScript at all, works the same everywhere, and is easier to read: the script simply carries on with the answer. JavaScript is for things those can't do.
@@ -28,7 +30,7 @@ The file is loaded into the page before the game starts, so its functions are re
 <javascript src="game.js"/>
 ```
 
-You may see older games and guides build JavaScript up as a string, wrapped in `<script>` tags, and add it with `JS.addScript`. That still works, but a `.js` file is far easier to read and edit, as you don't need to escape every quote.
+You may see older games and guides build JavaScript up as a string, wrapped in `<script>` tags, and add it with `JS.addScript`. That only works in the [classic interface](/customise/classic/), and a `.js` file is far easier to read and edit anyway, as you don't need to escape every quote.
 
 ## Calling JavaScript from the game
 
@@ -40,7 +42,7 @@ JS.startCountdown (120)
 
 In the editor, add "Run Javascript" from the Output category and type the call after `JS.` - here, `startCountdown (120)`.
 
-This works for your own functions and for the ones built into the player - see [JS functions](/reference/js/) for the full list. Strings, numbers and booleans arrive in JavaScript as the same types, and a string list arrives as an array. Any line breaks in a string are removed on the way.
+This works for your own functions, and for the player's own `QuestUI` object, below - `JS.QuestUI.setInterfaceString ("InventoryLabel", "Carrying")`, for example. Strings, numbers and booleans arrive in JavaScript as the same types, and a string list arrives as an array. Any line breaks in a string are removed on the way.
 
 The call only goes one way: whatever the JavaScript function returns is ignored, so it can't hand a value back to your script. To get information back, use `ASLEvent`, below.
 
@@ -49,6 +51,8 @@ For a single line of JavaScript that isn't worth a function, `JS.eval` runs a st
 ```quest
 JS.eval ("document.title = 'The Cave'")
 ```
+
+A `<script>` element in text you print doesn't run, so `msg ("<script>doThing()</script>")` does nothing. Call the function with `JS.doThing ()` instead. (In the [classic interface](/customise/classic/) it does run, as it did in Quest 5.)
 
 ## Calling the game from JavaScript
 
@@ -64,7 +68,7 @@ The game function it calls needs exactly one parameter. Add a function (select *
 msg ("You ring the bell, " + how + ".")
 ```
 
-The function name must match exactly, including capitals. If there's no function with that name, the game prints "Error - no handler for event" instead. A function with no parameters doesn't run at all.
+`QuestUI.sendEvent` does the same as `ASLEvent`. The function name must match exactly, including capitals. If there's no function with that name, the game prints "Error - no handler for event" instead. A function with no parameters doesn't run at all.
 
 `ASLEvent` doesn't need a `.js` file. Any HTML you print can call it - this prints a button that rings the bell:
 
@@ -83,6 +87,12 @@ An `ASLEvent` call runs your function and nothing else. It isn't a turn:
 
 If you need turn scripts to run, call `RunTurnScripts` at the end of your function.
 
+To run a command as if the player had typed it, use `sendCommand`, or `QuestUI.sendCommand`:
+
+```js
+sendCommand("look");
+```
+
 ### Sending several values
 
 `ASLEvent` only passes one string, so to send several values, join them together in JavaScript and split them apart in the game. For example, JavaScript could send `"Strength=4;Agility=5;Wits=1"`, and the game can split that into pairs:
@@ -95,6 +105,47 @@ foreach (pair, Split(data, ";")) {
 ```
 
 Everything arrives as a string - even if the JavaScript passes a number - so use `ToInt` for numbers, as here.
+
+## The QuestUI object
+
+`QuestUI` is the player's own JavaScript interface: everything your JavaScript can ask the player to do. It's the same in the new interface and the classic one, and it will stay the same in future versions of Quest Viva, so a game that uses it keeps working. Apart from `QuestUI`, the new interface has only two other functions of its own that a game can call, `ASLEvent` and `sendCommand`.
+
+These are the members you're most likely to need. All of them are listed in [QuestUI](/reference/js/).
+
+| Member | What it does |
+|---|---|
+| `QuestUI.addText(html)` | Prints HTML at the end of the game text, as `msg` would |
+| `QuestUI.sendCommand(text)` | Runs a command as if the player had typed it |
+| `QuestUI.sendEvent(name, value)` | Calls a function in the game - the same as `ASLEvent` |
+| `QuestUI.setInterfaceString(name, text)` | Changes a piece of the interface's own text, such as a pane heading |
+| `QuestUI.setPaneContent(id, html)` | Fills a pane of your own, or the custom status pane |
+| `QuestUI.setVisible(part, visible)` | Shows or hides part of the interface |
+| `QuestUI.on(event, fn)`, `QuestUI.off(event, fn)` | Calls your function when something happens - see below |
+
+Most of these have a script command that does the same, such as "Set the content of a pane" for `setPaneContent`, and the script command is usually better: what it changes is kept when the player loads a saved game, and a change made from JavaScript isn't. See [Changing the interface during play](/customise/interface-scripts).
+
+Leave the rest of the player's page alone. The new interface's element IDs, classes and functions aren't part of `QuestUI`, and may change in any version, so code that reaches for them can stop working. To change how the player looks, use a [stylesheet](/customise/css) instead.
+
+### Reacting to the player's turns
+
+`QuestUI.on` calls a function of yours whenever something happens in the player:
+
+| Event | When | Your function gets |
+|---|---|---|
+| `turnStarted` | The player starts a turn: a command, a click on a link, or an answer to a menu or question, before the game sees it | nothing |
+| `turnEnded` | The game has finished that turn, and its text is on screen | nothing |
+| `outputAdded` | Text is added to the game text | `{ html }`, the HTML added |
+| `locationChanged` | The location bar changes | `{ location }`, the new location |
+
+Timers don't start turns. For example, this puts the player's location in the browser tab's title. Add it to your `.js` file:
+
+```js
+QuestUI.on("locationChanged", function (detail) {
+  document.title = "The Cave - " + detail.location;
+});
+```
+
+The file runs again whenever the player loads a saved game, and the player forgets your functions each time, so this is the right place for `QuestUI.on`: your function is never added twice. Call `QuestUI.off` with the same function to stop it.
 
 ## Example: a points form for character creation
 
@@ -123,7 +174,7 @@ function showStatsForm(points, names) {
       '</div>';
   });
   html += '<button type="button" onclick="statsDone(this)">Done</button></div>';
-  addText(html);
+  QuestUI.addText(html);
 }
 
 function statsAdjust(button, change) {
@@ -150,7 +201,7 @@ function statsDone(button) {
 }
 ```
 
-`showStatsForm` adds the form to the game text with the player's `addText` function. The buttons keep their values in the page itself, and call their functions with `onclick` attributes, so a form that's still on screen when the player saves carries on working after they load that save. When the player clicks Done, `statsDone` removes the form and sends something like `Strength=4;Agility=5;Wits=1` to the game.
+`showStatsForm` adds the form to the game text with `QuestUI.addText`. The buttons keep their values in the page itself, and call their functions with `onclick` attributes, so a form that's still on screen when the player saves carries on working after they load that save. When the player clicks Done, `statsDone` removes the form and sends something like `Strength=4;Agility=5;Wits=1` to the game.
 
 Show the form from the game's start script (on the game's **Scripts** tab):
 
@@ -186,7 +237,7 @@ var countdownTimer;
 
 function startCountdown(seconds) {
   var deadline = Date.now() + seconds * 1000;
-  addText('<p class="countdown"></p>');
+  QuestUI.addText('<p class="countdown"></p>');
   var displays = document.querySelectorAll(".countdown");
   var display = displays[displays.length - 1];
   clearInterval(countdownTimer);
@@ -210,6 +261,7 @@ finish
 
 ## See also
 
-- [JS functions](/reference/js/) - the JavaScript functions built into the player
+- [QuestUI](/reference/js/) - everything in the `QuestUI` object
+- [Changing the interface during play](/customise/interface-scripts) - script commands that do the same, and last after loading a saved game
 - [Asking the player](/howto/scripting/asking-the-player) - questions and menus that need no JavaScript
-- [Panes](/customise/panes#custom-status-pane) - showing your own HTML beside the game text
+- [Panes](/customise/panes#the-custom-status-pane) - showing your own HTML beside the game text

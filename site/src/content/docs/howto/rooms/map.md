@@ -76,27 +76,31 @@ The map works by keeping a dictionary attribute, `grid_coordinates`, on the play
 
 ### Changing the colour of the map
 
-This makes the map's background red:
+This, in the game's **Stylesheet** (under Advanced on its _Appearance_ tab), makes the map's background red:
 
-```quest
-JS.setCss ("#gridPanel", "background-color:red")
+```css
+[data-qv-part="map"] {
+    background-color: red;
+}
 ```
 
-Put it in the "User interface initialisation script" on the game's _Advanced Scripts_ tab, so it runs both at the start and when the player loads a saved game. If you can't see that tab, tick "Show advanced scripts for the game object" on the game's _Features_ tab.
+See [Styling the player with CSS](/customise/css). With the [classic interface](/customise/classic/), the map is `#gridPanel` instead.
 
 ### Turning the grid on and off
 
-To show and hide the map during the game, turn it on in the editor as above, so it's set up at the start, and then use `JS.ShowGrid`. It takes the height of the map in pixels; 0 hides it. This hides the map:
+To show and hide the map during the game, turn it on in the editor as above, so it's set up at the start, and then use the "Show/hide part of the interface" script command, in the Interface category, with the part `map`. In code, this hides the map:
 
 ```quest
-JS.ShowGrid (0)
+SetPaneVisible ("map", false)
 ```
 
-And this shows it again at the default height:
+And this shows it again:
 
 ```quest
-JS.ShowGrid (300)
+SetPaneVisible ("map", true)
 ```
+
+The game remembers, so the map stays hidden after the player loads a saved game. See [Changing the interface during play](/customise/interface-scripts).
 
 ### Vertical movement
 
@@ -164,7 +168,7 @@ Another approach is to throw the map away and start again from the new room. Thi
 ```quest
 game.pov.grid_coordinates = null
 MoveObject (game.pov, room)
-JS.Grid_ClearAllLayers ()
+JS.QuestUI.map.clearAllLayers ()
 Grid_Redraw
 Grid_DrawPlayerInRoom (game.pov.parent)
 ```
@@ -193,7 +197,7 @@ else {
   game.pov.grid_coordinates = null
 }
 MoveObject (game.pov, to)
-JS.Grid_ClearAllLayers ()
+JS.QuestUI.map.clearAllLayers ()
 Grid_Redraw
 Grid_DrawPlayerInRoom (game.pov.parent)
 ```

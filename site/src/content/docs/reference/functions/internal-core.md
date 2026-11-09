@@ -356,7 +356,7 @@ Grid_CalculateMapCoordinates (room, playerobject)
 Grid_ClearCustomLayer ()
 ```
 
-Clears the custom grid drawing layer. This currently has no effect, because nothing can be drawn onto the custom layer ([#2435](https://github.com/textadventures/quest/issues/2435)): [Grid_DrawLine](#grid_drawline), [Grid_DrawArrow](#grid_drawarrow), [Grid_DrawSquare](#grid_drawsquare) and similar draw onto the map itself. To remove everything, rooms included, use [JS.Grid_ClearAllLayers](/reference/js#grid_clearalllayers).
+Clears the custom grid drawing layer. This currently has no effect, because nothing can be drawn onto the custom layer ([#2435](https://github.com/textadventures/quest/issues/2435)): [Grid_DrawLine](#grid_drawline), [Grid_DrawArrow](#grid_drawarrow), [Grid_DrawSquare](#grid_drawsquare) and similar draw onto the map itself. To remove everything, rooms included, use `JS.QuestUI.map.clearAllLayers ()`.
 
 ## Grid_DrawArrow
 ```quest

@@ -19,14 +19,14 @@ The tab is hidden until you ask for it: on the game object's _Features_ tab, tic
 
 `inituserinterface` is the earliest place your own code can run. It happens before the title, before the start script, and before the first room description - so anything that changes how the game looks should go here rather than in the start script, or the player sees the default appearance flash past first.
 
-More importantly, it runs *again* every time the player loads a saved game. The start script does not: it belongs to the beginning of the story, and a loaded game is already part-way through. Anything that has to be re-applied to a fresh browser window - a background colour, a custom stylesheet, a panel you added with JavaScript - belongs in `inituserinterface`.
+More importantly, it runs *again* every time the player loads a saved game. The start script does not: it belongs to the beginning of the story, and a loaded game is already part-way through. Anything your own JavaScript does to the page has to be done again in a fresh browser window, so it belongs in `inituserinterface`:
 
 ```quest
-JS.setCss ("#qv-status", "background:#3b2f2f;color:wheat;border:none")
-JS.addScript ("<style>#lstInventory li:hover { background: gold; }</style>")
+JS.QuestUI.setInterfaceString ("InventoryLabel", "You are holding")
+JS.setUpMyControls ()
 ```
 
-See [Styling the player with CSS](/customise/css) for what you can do from here. Don't print anything from this script - at the start of the game it runs before the title, so your text would appear above it.
+You need it less than you might think. The game's **Stylesheet** is applied again by itself, and so is anything set with the script commands in the Interface category, such as a pane you've added - see [Changing the interface during play](/customise/interface-scripts). Don't print anything from this script - at the start of the game it runs before the title, so your text would appear above it.
 
 There is also a function called `InitUserInterface`, which is empty in Core and which you can [override](/howto/scripting/functions#overriding-a-built-in-function) with your own. It runs at exactly the same points, immediately before the `inituserinterface` script. Use the script on this tab unless you are writing a library, in which case overriding the function leaves the tab free for the game that includes your library.
 

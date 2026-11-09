@@ -479,12 +479,34 @@ export const sidebar = [
                         "slug": "customise/panes"
                     },
                     {
+                        "label": "Changing the interface during play",
+                        "slug": "customise/interface-scripts"
+                    },
+                    {
                         "label": "Styling the player with CSS",
                         "slug": "customise/css"
                     },
                     {
                         "label": "Calling the game from JavaScript",
                         "slug": "customise/javascript"
+                    },
+                    {
+                        "label": "Moving to the new interface",
+                        "slug": "customise/moving-from-classic"
+                    }
+                ]
+            },
+            {
+                "label": "The classic interface",
+                "collapsed": true,
+                "items": [
+                    {
+                        "label": "The classic interface",
+                        "slug": "customise/classic"
+                    },
+                    {
+                        "label": "Styling the classic interface with CSS",
+                        "slug": "customise/classic/css"
                     }
                 ]
             },
@@ -667,8 +689,12 @@ export const sidebar = [
                 "slug": "reference/elements"
             },
             {
-                "label": "JS functions",
+                "label": "QuestUI",
                 "slug": "reference/js"
+            },
+            {
+                "label": "JS functions (classic interface)",
+                "slug": "reference/js-classic"
             },
             {
                 "label": "Hard-coded functions and library functions",

@@ -39,6 +39,9 @@ export const DOCS_TUTORIAL_URL = docsUrl("/tutorial/tutorial-introduction");
 /** What changes when the editor saves a game made with an older Quest version. */
 export const DOCS_ASL_VERSIONS_URL = docsUrl("/reference/asl-versions");
 
+/** What to use instead of code that changes the classic interface, for the legacy-UI banner. */
+export const DOCS_MOVING_FROM_CLASSIC_URL = docsUrl("/customise/moving-from-classic");
+
 /**
  * Absolute URL for a site-relative documentation path, as stored in a
  * <helpurl> in the editor definitions (e.g. "/howto/rooms/exits/"). Paths are
