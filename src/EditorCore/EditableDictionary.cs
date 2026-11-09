@@ -8,7 +8,9 @@ public class EditableDictionary<T> : IEditableDictionary<T>, IDataWrapper
     private readonly EditorController _controller;
 
     private readonly QuestDictionary<T> _source;
-    private readonly Dictionary<string, IEditableListItem<T>> _wrappedItems = [];
+    // Ordered to match _source, so the editor shows items in the order the game stores (and the player
+    // shows) them. A plain Dictionary reuses freed slots, so its order drifts once anything is removed.
+    private readonly System.Collections.Generic.OrderedDictionary<string, IEditableListItem<T>> _wrappedItems = [];
 
     public EditableDictionary(EditorController controller, QuestDictionary<T> source)
     {
@@ -51,6 +53,31 @@ public class EditableDictionary<T> : IEditableDictionary<T>, IDataWrapper
     }
 
     public IDictionary<string, IEditableListItem<T>> Items => _wrappedItems;
+
+    public void Move(string key, int newIndex)
+    {
+        var oldIndex = _source.IndexOfKey(key);
+        if (oldIndex < 0)
+        {
+            throw new ArgumentException($"Key '{key}' not found", nameof(key));
+        }
+
+        if (newIndex < 0 || newIndex >= _source.Count)
+        {
+            throw new ArgumentOutOfRangeException(nameof(newIndex));
+        }
+
+        if (newIndex == oldIndex)
+        {
+            return;
+        }
+
+        var value = _source[key];
+        _controller.WorldModel.UndoLogger.StartTransaction(string.Format("Move '{0}'", key));
+        _source.Remove(key, UpdateSource.User);
+        _source.Add(key, value, UpdateSource.User, newIndex);
+        _controller.WorldModel.UndoLogger.EndTransaction();
+    }
 
     public void Add(string key, T value)
     {
@@ -134,10 +161,17 @@ public class EditableDictionary<T> : IEditableDictionary<T>, IDataWrapper
     private void AddWrappedItem(string key, T value, EditorUpdateSource source, int index)
     {
         IEditableListItem<T> wrappedValue = new EditableListItem<T>(key, value);
-        _wrappedItems.Add(key, wrappedValue);
+        _wrappedItems.Insert(WrappedInsertIndex(index), key, wrappedValue);
 
         Added?.Invoke(this,
     new EditableListUpdatedEventArgs<T> { UpdatedItem = wrappedValue, Index = index, Source = source });
+    }
+
+    // index is the item's position in _source. It can be -1 (the indexer setter raises Added before
+    // the key is stored), in which case the item goes at the end, as it will in _source.
+    private int WrappedInsertIndex(int index)
+    {
+        return index < 0 || index > _wrappedItems.Count ? _wrappedItems.Count : index;
     }
 
     private void RemoveWrappedItem(IEditableListItem<T> item, EditorUpdateSource source, int index)

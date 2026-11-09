@@ -14,7 +14,8 @@ public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDiction
     private readonly EditorController _controller;
 
     private readonly QuestDictionary<TSource> _source;
-    private readonly Dictionary<string, IEditableListItem<TWrapped>> _wrappedItems = [];
+    // Ordered to match _source - see EditableDictionary.
+    private readonly System.Collections.Generic.OrderedDictionary<string, IEditableListItem<TWrapped>> _wrappedItems = [];
     private readonly Dictionary<TWrapped, IEditableListItem<TWrapped>> _wrappedItemsLookup = [];
 
     public EditableWrappedItemDictionary(EditorController controller, QuestDictionary<TSource> source)
@@ -52,6 +53,31 @@ public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDiction
     public event EventHandler<EditableListUpdatedEventArgs<TWrapped>>? Updated;
 
     public IDictionary<string, IEditableListItem<TWrapped>> Items => _wrappedItems;
+
+    public void Move(string key, int newIndex)
+    {
+        var oldIndex = _source.IndexOfKey(key);
+        if (oldIndex < 0)
+        {
+            throw new ArgumentException($"Key '{key}' not found", nameof(key));
+        }
+
+        if (newIndex < 0 || newIndex >= _source.Count)
+        {
+            throw new ArgumentOutOfRangeException(nameof(newIndex));
+        }
+
+        if (newIndex == oldIndex)
+        {
+            return;
+        }
+
+        var value = _source[key];
+        _controller.WorldModel.UndoLogger.StartTransaction(string.Format("Move '{0}'", key));
+        _source.Remove(key, UpdateSource.User);
+        _source.Add(key, value, UpdateSource.User, newIndex);
+        _controller.WorldModel.UndoLogger.EndTransaction();
+    }
 
     // TO DO: Public methods shouldn't be starting/ending transactions here - that should be up to the caller
 
@@ -140,7 +166,9 @@ public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDiction
     private void AddWrappedItem(string key, TWrapped value, EditorUpdateSource source, int index)
     {
         IEditableListItem<TWrapped> wrappedValue = new EditableListItem<TWrapped>(key, value);
-        _wrappedItems.Add(key, wrappedValue);
+        // index is the position in _source; -1 when the indexer setter raises Added before storing the key
+        var insertAt = index < 0 || index > _wrappedItems.Count ? _wrappedItems.Count : index;
+        _wrappedItems.Insert(insertAt, key, wrappedValue);
         _wrappedItemsLookup.Add(value, wrappedValue);
         value.UnderlyingValueUpdated += WrappedUnderlyingValueUpdated;
 

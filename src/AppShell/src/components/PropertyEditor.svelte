@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, removeAttribute, setDropdownType, setMultiType, setObjectReference, setSelectedFilter, addDictItem, removeDictItem, updateDictItem, getObjectNames, getExitNames, getPageNames, selectNode, createPageSilent, openAddModal, openAddLibraryModal, openAddJavascriptModal, getAssetText, putAssetText, putLibraryAssetText, isBuiltInLibrary, getLibraryXml, setPatternAttribute, getFeatureLeftovers, turnOffFeature, removeFeatureLeftovers } from "#lib/editor-store.js";
+    import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, removeAttribute, setDropdownType, setMultiType, setObjectReference, setSelectedFilter, addDictItem, removeDictItem, updateDictItem, moveDictItem, getObjectNames, getExitNames, getPageNames, selectNode, createPageSilent, openAddModal, openAddLibraryModal, openAddJavascriptModal, getAssetText, putAssetText, putLibraryAssetText, isBuiltInLibrary, getLibraryXml, setPatternAttribute, getFeatureLeftovers, turnOffFeature, removeFeatureLeftovers } from "#lib/editor-store.js";
     import { chooseDialog } from "#lib/confirm.js";
     import { showToast } from "#lib/toast.js";
     import { isLibraryFilename } from "#lib/filesystem/types.js";
@@ -838,8 +838,10 @@
         {@const sourcePool = ctrl.sourceType === "dialoguepage" ? dictSourcePageNames : dictSourceObjectNames}
         {@const excludedNames = new Set((ctrl.sourceExclude ?? "").split(/[;,]/).map(s => s.trim()).filter(Boolean))}
         {@const availableObjectNames = isObjectSource ? sourcePool.filter(n => !excludedNames.has(n) && !items.some(i => i.key === n)) : []}
+        <!-- A page's options are shown to the player in stored order, so the author can reorder them. -->
+        {@const orderable = ctrl.controlType === "gamebookoptions" || ctrl.sourceType === "dialoguepage"}
         <div class="flex flex-col gap-1 w-full">
-            {#each items as item (item.key)}
+            {#each items as item, i (item.key)}
                 {@const isEditing = editingItem?.attribute === dk && editingItem?.key === item.key}
                 <div class="flex items-center gap-1">
                     <span class="text-xs text-surface-600-400 w-24 flex-shrink-0 truncate" title={item.key}>{item.key}</span>
@@ -876,14 +878,32 @@
                     {#if isObjectSource}
                         <button
                             type="button"
-                            class="btn btn-xs preset-outlined-primary-500 text-xs px-1.5 py-0.5 flex-shrink-0"
+                            class="btn btn-xs preset-outlined-primary-500 text-xs w-6 h-6 p-0 flex items-center justify-center flex-shrink-0"
                             title={t("propertyEditor.goTo", { name: item.key })}
                             onclick={() => selectNode(item.key)}
                         ><ArrowRight size={11} /></button>
                     {/if}
+                    {#if orderable}
+                        <button
+                            type="button"
+                            class="btn btn-xs preset-outlined-primary-500 text-xs w-6 h-6 p-0 flex items-center justify-center flex-shrink-0"
+                            title={t("common.moveUp")}
+                            aria-label={t("common.moveUp")}
+                            disabled={i === 0}
+                            onclick={() => $selectedKey && moveDictItem($selectedKey, dk, item.key, i - 1)}
+                        >↑</button>
+                        <button
+                            type="button"
+                            class="btn btn-xs preset-outlined-primary-500 text-xs w-6 h-6 p-0 flex items-center justify-center flex-shrink-0"
+                            title={t("common.moveDown")}
+                            aria-label={t("common.moveDown")}
+                            disabled={i === items.length - 1}
+                            onclick={() => $selectedKey && moveDictItem($selectedKey, dk, item.key, i + 1)}
+                        >↓</button>
+                    {/if}
                     <button
                         type="button"
-                        class="btn btn-xs preset-outlined-error-500 text-xs px-1.5 py-0.5 flex-shrink-0"
+                        class="btn btn-xs preset-outlined-error-500 text-xs w-6 h-6 p-0 flex items-center justify-center flex-shrink-0"
                         onclick={() => $selectedKey && removeDictItem($selectedKey, dk, item.key)}
                     >✕</button>
                 </div>

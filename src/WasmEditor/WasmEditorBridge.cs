@@ -3860,6 +3860,39 @@ public partial class WasmEditorBridge
         }
     }
 
+    // Moves a string dictionary item to newIndex. Order matters for a gamebook page's options,
+    // which the player lists in the order they're stored.
+    [JSExport]
+    public static string MoveDictionaryItem(string elementKey, string attribute, string key, int newIndex)
+    {
+        if (_controller == null)
+        {
+            return "error";
+        }
+
+        var data = _controller.GetEditorData(elementKey);
+        if (data == null)
+        {
+            return "error";
+        }
+
+        if (data.GetAttribute(attribute) is not IEditableDictionary<string> dict)
+        {
+            return "error";
+        }
+
+        try
+        {
+            dict = EnsureLocalDict(data, attribute, dict);
+            dict.Move(key, newIndex);
+            return "ok";
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;
+        }
+    }
+
     [JSExport]
     public static string MakeScriptEditable(string elementKey, string attribute)
     {
