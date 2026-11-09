@@ -35,7 +35,33 @@ const mimeTypes = {
   '.asl': 'text/plain',
   '.svg': 'image/svg+xml',
   '.wav': 'audio/wav',
+  '.mp3': 'audio/mpeg',
+  '.ogg': 'audio/ogg',
+  '.mp4': 'video/mp4',
+  '.webm': 'video/webm',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.gif': 'image/gif',
 };
+
+// Decodes a request path for looking up a file on disk, so an asset whose
+// name has a space (requested as `door%20creak.mp3`) is found. Returns null
+// for a malformed escape or a decoded NUL, which no file name can contain.
+// The proxy routes below use the raw path instead: /api/ forwards it as it
+// arrived, and /game-resource/ decodes its own embedded URL.
+function decodePath(urlPath) {
+  try {
+    const decoded = decodeURIComponent(urlPath);
+    return decoded.includes('\0') ? null : decoded;
+  } catch {
+    return null;
+  }
+}
+
+function badRequest(res) {
+  res.writeHead(400);
+  res.end('Bad request path');
+}
 
 function serveFile(res, filePath) {
   fs.readFile(filePath, (err, data) => {
@@ -58,7 +84,9 @@ const server = http.createServer(async (req, res) => {
   if (urlPath === '/') urlPath = '/index.html';
 
   if (urlPath.startsWith('/examples/')) {
-    const filePath = path.join(examplesDir, urlPath.slice('/examples/'.length));
+    const relPath = decodePath(urlPath.slice('/examples/'.length));
+    if (relPath === null) { badRequest(res); return; }
+    const filePath = path.join(examplesDir, relPath);
     if (!filePath.startsWith(examplesDir)) { res.writeHead(403); res.end(); return; }
     serveFile(res, filePath);
     return;
@@ -70,7 +98,9 @@ const server = http.createServer(async (req, res) => {
   // ?url= boot path never sets a resourceRoot, so those resolve relative to
   // this server's own origin rather than alongside the .aslx file.
   if (urlPath.startsWith('/e2e-fixtures/')) {
-    const filePath = path.join(e2eFixturesDir, urlPath.slice('/e2e-fixtures/'.length));
+    const relPath = decodePath(urlPath.slice('/e2e-fixtures/'.length));
+    if (relPath === null) { badRequest(res); return; }
+    const filePath = path.join(e2eFixturesDir, relPath);
     if (!filePath.startsWith(e2eFixturesDir)) { res.writeHead(403); res.end(); return; }
     serveFile(res, filePath);
     return;
@@ -135,13 +165,15 @@ const server = http.createServer(async (req, res) => {
   // A fixture's own external resources (e.g. restart-test.js) are requested
   // bare, relative to this server's origin — see the /e2e-fixtures/ comment
   // above. Check there before falling back to the AppBundle.
-  const fixtureFilePath = path.join(e2eFixturesDir, urlPath);
+  const filePathPart = decodePath(urlPath);
+  if (filePathPart === null) { badRequest(res); return; }
+  const fixtureFilePath = path.join(e2eFixturesDir, filePathPart);
   if (fixtureFilePath.startsWith(e2eFixturesDir) && fs.existsSync(fixtureFilePath)) {
     serveFile(res, fixtureFilePath);
     return;
   }
 
-  const filePath = path.join(appBundleDir, urlPath);
+  const filePath = path.join(appBundleDir, filePathPart);
   if (!filePath.startsWith(appBundleDir)) { res.writeHead(403); res.end(); return; }
   serveFile(res, filePath);
 });
