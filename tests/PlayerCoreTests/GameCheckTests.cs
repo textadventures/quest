@@ -110,6 +110,37 @@ public class GameCheckTests
     }
 
     [TestMethod]
+    public async Task AFunctionReturningAValueNamedAfterAnEngineFunction()
+    {
+        // The engine's names match whatever the case, as the expression evaluator's do.
+        var problem = Single(await ProblemsAsync(), "'capfirst' is also the name of a function built into the engine");
+        Assert.AreEqual("function", problem.Kind);
+        Assert.AreEqual("capfirst", problem.Element);
+        Assert.IsNull(problem.Filename);
+    }
+
+    [TestMethod]
+    public async Task AFunctionWithNoReturnTypeNamedAfterAnEngineFunctionIsFine()
+    {
+        // A statement calls the game's function, so one that returns nothing still runs.
+        Assert.IsFalse((await ProblemsAsync()).Any(p => p.Element == "ToString"));
+    }
+
+    [TestMethod]
+    public async Task NoCoreFunctionIsHiddenByAnEngineFunction()
+    {
+        // A published game has Core inlined, where it's checked like the game's own functions, so a
+        // Core function that returned a value under an engine function's name would be reported in
+        // every published game.
+        var world = new WorldModel(new GameData(File.ReadAllBytes("headless.aslx"), "headless.aslx"), null);
+        Assert.IsTrue(await world.InitialiseEdit());
+        var hidden = world.Elements.GetElements(ElementType.Function)
+            .Where(GameChecker.IsHiddenByEngineFunction)
+            .Select(f => f.Name);
+        Assert.IsEmpty(hidden);
+    }
+
+    [TestMethod]
     public async Task BuiltInLibrariesAreNotChecked()
     {
         Assert.IsTrue((await ProblemsAsync()).All(p => p.Filename is null or "checklib.aslx"));
@@ -118,7 +149,7 @@ public class GameCheckTests
     [TestMethod]
     public async Task ExactlyTheExpectedProblems()
     {
-        Assert.HasCount(11, await ProblemsAsync());
+        Assert.HasCount(12, await ProblemsAsync());
     }
 
     [TestMethod]

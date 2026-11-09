@@ -54,6 +54,15 @@ public static class GameChecker
     public static bool IsEngineFunction(string name) =>
         EvaluatorFunctions.Contains(name, StringComparer.InvariantCultureIgnoreCase) || BuiltInFunctions.Contains(name);
 
+    // Whether function returns a value but can never give it to anything: one that returns a value
+    // is there to be called in an expression, and there the engine's function of the same name runs
+    // instead. One with no return type, such as Core's Ask and ShowMenu, is called as a statement,
+    // which reaches it.
+    public static bool IsHiddenByEngineFunction(Element function) =>
+        function.ElemType == ElementType.Function &&
+        !string.IsNullOrEmpty(function.Fields[FieldDefinitions.ReturnType]) &&
+        IsEngineFunction(function.Name);
+
     // The world is best loaded in edit mode (InitialiseEdit), which doesn't stop at the first
     // script it can't create. Its scripts are still parsed as playing the game would parse them:
     // edit mode keeps some things as the Editor shows them, such as a switch case's comma-separated
@@ -72,6 +81,18 @@ public static class GameChecker
         }
 
         CheckVerbs(world, problems);
+
+        foreach (var function in world.Elements.GetElements(ElementType.Function))
+        {
+            if (!IsBuiltIn(function) && IsHiddenByEngineFunction(function))
+            {
+                problems.Add(new CheckProblem(
+                    $"'{function.Name}' is also the name of a function built into the engine. An expression such as " +
+                    $"x = {function.Name}(...) calls the built-in one, so this function's return value is never used. " +
+                    "Give it a different name.",
+                    Kind(function), function.Name, null, LibraryFilename(function)));
+            }
+        }
 
         // Every script's text first, in the mode the game was loaded in: getting the text of a
         // script that's partly parsed parses the rest, which must not happen in play mode, where

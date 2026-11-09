@@ -40,6 +40,7 @@ Finds problems in a game without playing it, and prints each with where it is, s
 - functions given more arguments than they take, or, as a statement from ASL 520 on, fewer
 - two of the game's own elements with the same name, where the second silently replaces the first
 - two verbs that run the same attribute, often a game verb that repeats a built-in one such as `buy`. The game shows an error as it starts and leaves some verbs out of objects' verb lists
+- a function that returns a value but has the name of one built into the engine, such as `CapFirst`, whatever the case. An expression calls the engine's function instead, so this one's return value is never used
 - anything that stops the game loading, such as an exit to a room that doesn't exist. Then nothing else is checked until that's fixed
 
 It checks the game file and any library included alongside it, not the libraries built into Quest. Object and variable names aren't checked: whether a name is an object or a variable can depend on what has run before.

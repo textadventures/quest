@@ -215,7 +215,7 @@ public class McpGameTests
         var result = await new McpGame(new FileInfo("check.aslx"), 1234).CheckAsync();
         StringAssert.Contains(result, "game, attribute 'start': Unknown script command or function 'Prnt'\n");
         StringAssert.Contains(result, "checklib.aslx, function 'LibraryFunction', attribute 'script': Unknown function 'AlsoNoSuchFunction'");
-        StringAssert.EndsWith(result, "11 problems found.\n");
+        StringAssert.EndsWith(result, "12 problems found.\n");
     }
 
     [TestMethod]

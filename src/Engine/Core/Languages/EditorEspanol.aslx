@@ -122,6 +122,7 @@
   <template name="EditorFunctionFunction">Función</template>
   <template name="EditorFunctionName">Nombre</template>
   <template name="EditorFunctionReturntype">Tipo de resultado</template>
+  <template name="EditorFunctionHiddenByEngine">Quest Viva tiene una función integrada con este nombre, y una expresión como x = Nombre(...) llama a esa en lugar de a esta, así que el valor que devuelve esta función nunca se usa. Ponle otro nombre.</template>
   <template name="EditorFunctionParameters">Parámetros</template>
   <template name="EditorFunctionScript">Programa</template>
   <template name="EditorGameSetup">Configuración</template>

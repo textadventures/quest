@@ -7,6 +7,7 @@ namespace QuestViva.EditorCore;
 internal class EditorVisibilityHelper
 {
     private readonly bool _alwaysVisible = true;
+    private readonly bool _onlyIfHiddenByEngineFunction;
     private readonly IList<string>? _alsoVisibleIfSet;
     private readonly string? _filter;
     private readonly string? _filterGroup;
@@ -52,6 +53,14 @@ internal class EditorVisibilityHelper
         // decide whether the editor shows a control; they don't stop its attribute taking effect
         // in the game, so hiding one that's set would leave a live value the author can't see.
         _alsoVisibleIfSet = source.Fields.GetAsType<QuestList<string>>("alsodisplayifset");
+
+        // <onlydisplayifhiddenbyengine/> - for a function editor's warning that the engine has a
+        // function of the same name, which an expression calls instead.
+        _onlyIfHiddenByEngineFunction = source.Fields.GetAsType<bool>("onlydisplayifhiddenbyengine");
+        if (_onlyIfHiddenByEngineFunction)
+        {
+            _alwaysVisible = false;
+        }
 
         var expression = source.Fields.GetString("onlydisplayif");
         if (expression != null)
@@ -145,6 +154,12 @@ internal class EditorVisibilityHelper
 
     private bool IsVisibleSyncCore(IEditorData data)
     {
+        if (_onlyIfHiddenByEngineFunction &&
+            !GameChecker.IsHiddenByEngineFunction(_worldModel.Elements.Get(data.Name!)))
+        {
+            return false;
+        }
+
         if (_notVisibleIfElementInheritsType != null)
         {
             if (_notVisibleIfElementInheritsTypeElement == null)
