@@ -24,7 +24,7 @@
     import Dices from "@lucide/svelte/icons/dices";
     import ImageIcon from "@lucide/svelte/icons/image";
     import BookOpen from "@lucide/svelte/icons/book-open";
-    import LifeBuoy from "@lucide/svelte/icons/life-buoy";
+    import CircleQuestionMark from "@lucide/svelte/icons/circle-question-mark";
     import ChevronDown from "@lucide/svelte/icons/chevron-down";
     import ListPlus from "@lucide/svelte/icons/list-plus";
     import ScriptEditor from "./ScriptEditor.svelte";
@@ -568,7 +568,7 @@
                 rel="noopener noreferrer"
                 class="flex items-center gap-1.5 px-3 py-1.5 text-xs text-surface-600-400 hover:text-primary-600-400 transition-colors border-b border-surface-200-800 flex-shrink-0"
             >
-                <BookOpen size={14} class="shrink-0" />
+                <CircleQuestionMark size={14} class="shrink-0" aria-hidden="true" />
                 <span class="truncate">{t("propertyEditor.helpGuide", { title: activeHelpTitle })}</span>
             </a>
         {/if}
@@ -661,7 +661,7 @@
             class="btn btn-xs text-xs px-2 py-0.5 text-surface-600-400 ml-auto"
             title={t("propertyEditor.textProcessorHelp")}
             aria-label={t("propertyEditor.textProcessorHelp")}
-        ><LifeBuoy size={14} aria-hidden="true" /></a>
+        ><CircleQuestionMark size={14} aria-hidden="true" /></a>
     </div>
 {/snippet}
 
