@@ -89,7 +89,7 @@ For the timer's script, add "Print a message" with something like "The bee buzze
 
 ![](/images/TimerBee1.png)
 
-Now go back to the window in the kitchen and find the "Script to run when opening object" we wrote. In the branch that moves the bee into the kitchen, add "Enable timer" from the "Timers" category, and choose "bee timer".
+Now go back to the window in the kitchen and find the "After opening the object" script we wrote. In the branch that moves the bee into the kitchen, add "Enable timer" from the "Timers" category, and choose "bee timer".
 
 Play the game, go to the kitchen, open the window, and wait. Every 20 seconds, the message appears.
 
