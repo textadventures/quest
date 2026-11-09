@@ -64,6 +64,19 @@ try {
     }
     console.log('PASS: template fields have a name label and an fx toggle, starting in simple mode');
 
+    // #2442: the template pickers' option values are fixed keys rather than the (translated)
+    // template names, so only the expression option itself has the value "expression".
+    const pickerValues = await page.locator('select:has(option[value="expression"])').evaluateAll(
+        els => els.map(e => [...e.options].map(o => o.value)));
+    const templatePickers = pickerValues.filter(values => values.some(v => v.startsWith('template:')));
+    if (templatePickers.length !== 2) throw new Error(`Expected 2 template pickers, found ${templatePickers.length}`);
+    for (const values of templatePickers) {
+        if (values.filter(v => v === 'expression').length !== 1 || !values.slice(1).every(v => v.startsWith('template:'))) {
+            throw new Error(`Expected one "expression" option and template:N keys, got ${JSON.stringify(values)}`);
+        }
+    }
+    console.log('PASS: template pickers use fixed option values');
+
     if (screenshotDir) await page.screenshot({ path: `${screenshotDir}/field-mode-toggle-simple.png` });
 
     const flagBox = await toggle('flag name').boundingBox();

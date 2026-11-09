@@ -342,6 +342,10 @@
         }
     }
 
+    function templateOptionValue(index: number): string {
+        return `template:${index}`;
+    }
+
     function templateParamKey(overrideKey: string, ctrlName: string): string {
         return `${overrideKey}::${ctrlName}`;
     }
@@ -1520,21 +1524,23 @@
                 minCh: 8,
                 maxCh: 36,
             }}
-            value={inTemplateMode ? tmplData!.templateName : "expression"}
+            value={inTemplateMode ? templateOptionValue(templates.findIndex(tpl => tpl.name === tmplData!.templateName)) : "expression"}
             onchange={(e) => {
                 const v = (e.target as HTMLSelectElement).value;
                 if (v === "expression") {
                     expressionOverrides.add(overrideKey);
                 } else {
                     expressionOverrides.delete(overrideKey);
-                    const tpl = templates.find(t => t.name === v);
+                    const tpl = templates.find((_, i) => templateOptionValue(i) === v);
                     if (tpl) onchange(tpl.createExpression);
                 }
             }}
         >
+            <!-- Option values are fixed keys, not the (translated) template names, so no name
+                 can ever collide with the "expression" option. -->
             <option value="expression">{t("scriptEditor.expressionOption")}</option>
-            {#each templates as tpl (tpl.name)}
-                <option value={tpl.name}>{tpl.name}</option>
+            {#each templates as tpl, i (tpl.name)}
+                <option value={templateOptionValue(i)}>{tpl.name}</option>
             {/each}
         </select>
     {/if}
