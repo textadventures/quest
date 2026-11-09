@@ -34,7 +34,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await selectLabeledField(page, 'object description:', 'script');
     await addScriptCommand(page, addScriptButtons(page).first(), { category: 'Scripts', item: 'If...' });
     await ifExpressionSelect(page).selectOption('object has flag');
-    await ifObjectSelect(page, { selectIndex: 3 }).selectOption({ label: 'Bob' });
+    await ifObjectSelect(page).selectOption({ label: 'Bob' });
     await ifFlagNameInput(page).fill('alive');
 
     await addScriptCommand(page, addScriptButtons(page).first());
@@ -69,7 +69,7 @@ await runCapture(async ({ page, baseUrl }) => {
     const use3Msg = page.locator('xpath=//span[text()="Print"]/following-sibling::textarea[1]');
     await use3Msg.fill('Miraculously, the defibrillator lived up to its promise, and Bob is now alive again. He says his head feels kind of fuzzy.');
     await addScriptCommand(page, useonSection.locator('button:has-text("+ Add script")').last(), { category: 'Variables', item: 'Set object flag' });
-    const use3FlagObject = page.locator('xpath=//span[text()="Set flag"]/following-sibling::select[2]');
+    const use3FlagObject = page.locator('xpath=//span[text()="Set flag"]/following-sibling::select[1]');
     await use3FlagObject.selectOption({ label: 'Bob' });
     const use3FlagName = page.locator('xpath=//span[text()="Set flag"]/following-sibling::input[1]');
     await use3FlagName.fill('alive');
@@ -81,7 +81,7 @@ await runCapture(async ({ page, baseUrl }) => {
     const funcMsg = page.locator('xpath=//span[text()="Print"]/following-sibling::textarea[1]');
     await funcMsg.fill('Miraculously, the defibrillator lived up to its promise, and Bob is now alive again. He says his head feels kind of fuzzy.');
     await addScriptCommand(page, addScriptButtons(page).last(), { category: 'Variables', item: 'Set object flag' });
-    const funcFlagObject = page.locator('xpath=//span[text()="Set flag"]/following-sibling::select[2]');
+    const funcFlagObject = page.locator('xpath=//span[text()="Set flag"]/following-sibling::select[1]');
     await funcFlagObject.selectOption({ label: 'Bob' });
     const funcFlagName = page.locator('xpath=//span[text()="Set flag"]/following-sibling::input[1]');
     await funcFlagName.fill('alive');
@@ -117,7 +117,7 @@ await runCapture(async ({ page, baseUrl }) => {
 
     await addScriptCommand(page, addScriptButtons(page).first(), { category: 'Scripts', item: 'If...' });
     await ifExpressionSelect(page).selectOption('object has flag');
-    await ifObjectSelect(page, { selectIndex: 3 }).selectOption({ label: 'Bob' });
+    await ifObjectSelect(page).selectOption({ label: 'Bob' });
     await ifFlagNameInput(page).fill('alive');
     await addScriptCommand(page, addScriptButtons(page).first());
     const askMsg = page.locator('xpath=//span[text()="Print"]/following-sibling::textarea[1]');

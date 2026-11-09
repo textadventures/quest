@@ -41,8 +41,8 @@ await runCapture(async ({ page, baseUrl }) => {
     await addCommand(page);
     await patternInput(page).fill('say #text#');
     await addScriptCommand(page, addScriptButtons(page).first());
-    const sayPrintType = page.locator('xpath=//span[text()="Print"]/following-sibling::select[1]');
-    await sayPrintType.selectOption('expression');
+    const sayPrintType = page.locator('xpath=//span[text()="Print"]/following-sibling::button[@data-mode-toggle][1]');
+    await sayPrintType.click();
     const sayExprInput = page.locator('xpath=//span[text()="Print"]/following::*[self::input or self::textarea][1]');
     await sayExprInput.fill('"You say \\"" + text + "\\", but nobody replies."');
     await sayExprInput.evaluate(el => { el.scrollLeft = 0; });
@@ -53,8 +53,8 @@ await runCapture(async ({ page, baseUrl }) => {
     await addCommand(page);
     await patternInput(page).fill('weigh #object#');
     await addScriptCommand(page, addScriptButtons(page).first());
-    const weighPrintType = page.locator('xpath=//span[text()="Print"]/following-sibling::select[1]');
-    await weighPrintType.selectOption('expression');
+    const weighPrintType = page.locator('xpath=//span[text()="Print"]/following-sibling::button[@data-mode-toggle][1]');
+    await weighPrintType.click();
     const weighExprInput = page.locator('xpath=//span[text()="Print"]/following::*[self::input or self::textarea][1]');
     await weighExprInput.fill('"It weighs " + object.weight + " grams."');
     await weighExprInput.evaluate(el => { el.scrollLeft = 0; });
@@ -78,8 +78,8 @@ await runCapture(async ({ page, baseUrl }) => {
     // The "Then" block's own "+ Add script" is the first on screen at this point (the if's
     // else-branch doesn't exist yet, so the only other one is the outer command-level button).
     await addScriptCommand(page, addScriptButtons(page).first());
-    const thenPrintType = page.locator('xpath=//span[text()="Print"]/following-sibling::select[1]');
-    await thenPrintType.selectOption('expression');
+    const thenPrintType = page.locator('xpath=//span[text()="Print"]/following-sibling::button[@data-mode-toggle][1]');
+    await thenPrintType.click();
     const thenExprInput = page.locator('xpath=//span[text()="Print"]/following::*[self::input or self::textarea][1]');
     await thenExprInput.fill('"It weighs " + object.weight + " grams."');
     await thenExprInput.evaluate(el => { el.scrollLeft = 0; });

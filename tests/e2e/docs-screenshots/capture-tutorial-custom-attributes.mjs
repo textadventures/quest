@@ -37,8 +37,8 @@ await runCapture(async ({ page, baseUrl }) => {
     await page.click('button:has-text("+ Add script")');
     await page.waitForSelector('text=Add Script Command');
     await page.getByRole('button', { name: 'OK', exact: true }).click();
-    const printTypeSelect = page.locator('xpath=//span[text()="Print"]/following-sibling::select[1]');
-    await printTypeSelect.selectOption('expression');
+    const printTypeSelect = page.locator('xpath=//span[text()="Print"]/following-sibling::button[@data-mode-toggle][1]');
+    await printTypeSelect.click();
     const exprInput = page.locator('xpath=//span[text()="Print"]/following::*[self::input or self::textarea][1]');
     await exprInput.fill('"A box of eggs, weighing " + eggs.weight + " grams."');
     await exprInput.evaluate(el => { el.scrollLeft = 0; });

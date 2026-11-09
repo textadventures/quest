@@ -46,8 +46,8 @@ await runCapture(async ({ page, baseUrl }) => {
 
     // --- Addif3.png: condition set to "object is switched on", object "TV" ---
     await ifExpressionSelect(page).selectOption('object is switched on');
-    await ifObjectSelect(page, { selectIndex: 3 }).selectOption('TV');
-    await capture(page, out('Addif3.png'), { untilLocator: elseIfButton, cursorAt: ifObjectSelect(page, { selectIndex: 3 }) });
+    await ifObjectSelect(page).selectOption('TV');
+    await capture(page, out('Addif3.png'), { untilLocator: elseIfButton, cursorAt: ifObjectSelect(page) });
 
     // --- Addif4.png: Then/Else print-message scripts filled in ---
     await page.locator('button:has-text("+ Add script")').first().click();

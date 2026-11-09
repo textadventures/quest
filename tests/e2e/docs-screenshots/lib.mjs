@@ -181,14 +181,9 @@ export async function addScriptCommand(page, addButtonLocator, { category, item 
 export function ifExpressionSelect(page, { label = 'if', nth = 0 } = {}) {
     return page.locator(`xpath=(//span[text()="${label}"]/following-sibling::select[1])[${nth + 1}]`);
 }
-// The object picker's own position varies by condition type: a condition whose object
-// argument can also be an expression (e.g. "object has flag") now renders an extra
-// object/expression toggle select immediately before the value select (added for
-// script-parameter editors generally, not just Print's message/expression toggle — see
-// PR #2164), making the value select the *third* following <select>, not the second. A
-// condition with a fixed-choice argument only (e.g. "player is in room", which just picks
-// a room) has no such toggle, so its value select stays the second. Pass
-// `selectIndex: 3` for the former.
+// The object picker is the second following <select> (after the condition type). A field's
+// simple/expression switch is an fx <button>, not a <select>, so it doesn't count. Pass
+// `selectIndex` if a condition ever puts another <select> before the object picker.
 export function ifObjectSelect(page, { label = 'if', nth = 0, selectIndex = 2 } = {}) {
     return page.locator(`xpath=(//span[text()="${label}"]/following-sibling::select[${selectIndex}])[${nth + 1}]`);
 }

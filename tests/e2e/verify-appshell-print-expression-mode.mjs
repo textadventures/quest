@@ -77,11 +77,12 @@ try {
     console.log('PASS: Print added inside the then-branch');
 
     const printRow = page.getByText('Print', { exact: true }).locator('xpath=..');
-    const printModeSelect = printRow.locator('select').last();
+    const printModeToggle = printRow.locator('button[data-mode-toggle]');
+    const printMode = async () => (await printModeToggle.getAttribute('aria-pressed')) === 'true' ? 'expression' : 'message';
 
     // Switch to expression mode and type a concatenation expression whose *value* happens to
     // both start and end with `"` — exactly the shape that fooled the old isSimpleValue() check.
-    await printModeSelect.selectOption('expression');
+    await printModeToggle.click();
     await page.waitForTimeout(200);
     const exprText = '"It weighs " + object.weight + " grams."';
     const exprInput = printRow.locator('input[type=text]').last();
@@ -89,7 +90,7 @@ try {
     await exprInput.blur();
     await page.waitForTimeout(300);
 
-    const modeAfterTyping = await printRow.locator('select').last().inputValue();
+    const modeAfterTyping = await printMode();
     if (modeAfterTyping !== 'expression') {
         throw new Error(`Typing a "a" + b + "c"-shaped expression into Print's message field must not flip its mode back to "message" — got "${modeAfterTyping}"`);
     }
@@ -104,7 +105,7 @@ try {
     await page.getByRole('button', { name: '+ else', exact: true }).click();
     await page.waitForTimeout(500);
 
-    const modeAfterElse = await printRow.locator('select').last().inputValue();
+    const modeAfterElse = await printMode();
     if (modeAfterElse !== 'expression') {
         throw new Error(`Adding an "else" branch elsewhere in the script must not revert Print's field to "message" mode — got "${modeAfterElse}"`);
     }
