@@ -1729,7 +1729,7 @@ public sealed class EditorController : IDisposable
     }
 
     private string CreateNewElement(ElementType type, string typeName, string? elementName, string? parent = null,
-        IDictionary<string, object>? initialFields = null)
+        IDictionary<string, object>? initialFields = null, Action<Element>? afterCreate = null)
     {
         WorldModel.UndoLogger.StartTransaction(string.Format("Create {0} '{1}'", typeName, elementName));
         Element newElement;
@@ -1757,6 +1757,8 @@ public sealed class EditorController : IDisposable
             }
         }
 
+        afterCreate?.Invoke(newElement);
+
         WorldModel.UndoLogger.EndTransaction();
 
         return newElement.Name;
@@ -1778,10 +1780,65 @@ public sealed class EditorController : IDisposable
         CreateNewElement(ElementType.Walkthrough, "walkthrough", name, parent);
     }
 
-    public string CreateNewIncludedLibrary(string filename)
+    // content is the library's file, when the caller has it: a library the author has just
+    // uploaded isn't available to the engine until the game reloads.
+    public string CreateNewIncludedLibrary(string filename, byte[]? content = null)
     {
         return CreateNewElement(ElementType.IncludedLibrary, "included library", null,
-            initialFields: new Dictionary<string, object> {{"filename", filename}});
+            initialFields: new Dictionary<string, object> {{"filename", filename}},
+            afterCreate: newElement =>
+            {
+                // A language library has to load before Core.aslx: Core's commands take their
+                // patterns from the language templates as Core loads, so a language library
+                // included after it only translates some of the game.
+                if (!IsLanguageLibrary(filename, content))
+                {
+                    return;
+                }
+
+                var core = WorldModel.Elements.GetElements(ElementType.IncludedLibrary)
+                    .FirstOrDefault(e => e != newElement && IsCoreLibrary(e.Fields[FieldDefinitions.Filename]));
+                if (core != null)
+                {
+                    WorldModel.MoveElementBefore(newElement, core);
+                }
+            });
+    }
+
+    private static bool IsCoreLibrary(string? filename) =>
+        string.Equals(filename, "Core.aslx", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(filename, "GamebookCore.aslx", StringComparison.OrdinalIgnoreCase);
+
+    // Whether a library defines the LanguageId template, as every language library does.
+    private bool IsLanguageLibrary(string filename, byte[]? content)
+    {
+        try
+        {
+            using var stream = content != null ? new MemoryStream(content) : WorldModel.GetLibraryStream(filename);
+            using var reader = XmlReader.Create(stream, new XmlReaderSettings {DtdProcessing = DtdProcessing.Prohibit});
+            reader.MoveToContent();
+            if (reader.Name != "library")
+            {
+                return false;
+            }
+
+            var depth = reader.Depth;
+            while (reader.Read())
+            {
+                if (reader.NodeType == XmlNodeType.Element && reader.Depth == depth + 1 &&
+                    reader.Name == "template" && reader.GetAttribute("name") == "LanguageId")
+                {
+                    return true;
+                }
+            }
+        }
+        catch (Exception)
+        {
+            // A library that can't be read or parsed fails when the game reloads, which reports
+            // the problem properly; here it's just not a language library.
+        }
+
+        return false;
     }
 
     public string CreateNewTemplate(string name)

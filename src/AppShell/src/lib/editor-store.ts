@@ -1880,9 +1880,14 @@ export function createObjectType(name: string): string {
     return afterCreate(_bridge.CreateObjectType(name));
 }
 
-export function createIncludedLibrary(filename: string): string {
+export async function createIncludedLibrary(filename: string): Promise<string> {
     if (!_bridge) return "error:not loaded";
-    const result = afterCreate(_bridge.CreateIncludedLibrary(filename));
+    // The library's own bytes, so the editor can tell a language library (which has to be
+    // included before Core.aslx) from any other. AddLibraryModal has just uploaded it.
+    const blob = await _adapter?.getAsset(filename);
+    const content = blob ? new Uint8Array(await blob.arrayBuffer()) : new Uint8Array();
+    if (!_bridge) return "error:not loaded";
+    const result = afterCreate(_bridge.CreateIncludedLibrary(filename, content));
     if (!result.startsWith("error:")) showLibraryReloadBanner.set(true);
     return result;
 }

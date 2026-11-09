@@ -237,7 +237,7 @@
 
     {#if $addLibraryModalOpen}
         <AddLibraryModal
-            onconfirm={(filename) => { addLibraryModalOpen.set(false); createIncludedLibrary(filename); }}
+            onconfirm={(filename) => { addLibraryModalOpen.set(false); void createIncludedLibrary(filename); }}
             oncancel={() => addLibraryModalOpen.set(false)}
         />
     {/if}

@@ -79,6 +79,84 @@ public class IncludedLibraryTests
         reloadController.Uninitialise();
     }
 
+    // Issue #2383: Core.aslx takes its command patterns from the language templates as it loads,
+    // so a language library added after Core only half-translates the game.
+    private const string LanguageLibrary =
+        """<library><template name="LanguageId">xx</template><template name="Me">moi</template></library>""";
+
+    [TestMethod]
+    public async Task TestLanguageLibraryIsIncludedBeforeCore()
+    {
+        var controller = await LoadTemplateController("English");
+        controller.CreateNewIncludedLibrary("MyLanguage.aslx", Encoding.UTF8.GetBytes(LanguageLibrary));
+
+        CollectionAssert.AreEqual(new[] {"English.aslx", "MyLanguage.aslx", "Core.aslx"},
+            SavedIncludes(controller));
+        controller.Uninitialise();
+    }
+
+    [TestMethod]
+    public async Task TestBuiltInLanguageLibraryIsIncludedBeforeCore()
+    {
+        // No content passed: the controller reads the library itself, as it can for one the engine ships.
+        var controller = await LoadTemplateController("English");
+        controller.CreateNewIncludedLibrary("Francais.aslx");
+
+        CollectionAssert.AreEqual(new[] {"English.aslx", "Francais.aslx", "Core.aslx"},
+            SavedIncludes(controller));
+        controller.Uninitialise();
+    }
+
+    [TestMethod]
+    public async Task TestLanguageLibraryIsIncludedBeforeGamebookCore()
+    {
+        var controller = await LoadTemplateController("Gamebook");
+        controller.CreateNewIncludedLibrary("MyLanguage.aslx", Encoding.UTF8.GetBytes(LanguageLibrary));
+
+        var includes = SavedIncludes(controller);
+        Assert.IsTrue(includes.IndexOf("MyLanguage.aslx") < includes.IndexOf("GamebookCore.aslx"),
+            $"Expected MyLanguage.aslx before GamebookCore.aslx, got {string.Join(", ", includes)}");
+        controller.Uninitialise();
+    }
+
+    [TestMethod]
+    public async Task TestOtherLibrariesAreIncludedAfterCore()
+    {
+        var controller = await LoadTemplateController("English");
+        controller.CreateNewIncludedLibrary("custom.aslx",
+            Encoding.UTF8.GetBytes("""<library><template name="Me">me</template></library>"""));
+        // A LanguageId deeper down isn't the library's own
+        controller.CreateNewIncludedLibrary("nested.aslx",
+            Encoding.UTF8.GetBytes("""<library><object name="x"><template name="LanguageId">xx</template></object></library>"""));
+        controller.CreateNewIncludedLibrary("broken.aslx", Encoding.UTF8.GetBytes("<library>"));
+        controller.CreateNewIncludedLibrary("missing.aslx");
+
+        CollectionAssert.AreEqual(
+            new[] {"English.aslx", "Core.aslx", "custom.aslx", "nested.aslx", "broken.aslx", "missing.aslx"},
+            SavedIncludes(controller));
+        controller.Uninitialise();
+    }
+
+    [TestMethod]
+    public async Task TestUndoAndRedoKeepLanguageLibraryBeforeCore()
+    {
+        var controller = await LoadTemplateController("English");
+        controller.CreateNewIncludedLibrary("custom.aslx");
+        controller.CreateNewIncludedLibrary("MyLanguage.aslx", Encoding.UTF8.GetBytes(LanguageLibrary));
+
+        await controller.Undo();
+        CollectionAssert.AreEqual(new[] {"English.aslx", "Core.aslx", "custom.aslx"}, SavedIncludes(controller));
+
+        controller.Redo();
+        CollectionAssert.AreEqual(new[] {"English.aslx", "MyLanguage.aslx", "Core.aslx", "custom.aslx"},
+            SavedIncludes(controller));
+        controller.Uninitialise();
+    }
+
+    private static List<string> SavedIncludes(EditorController controller) =>
+        System.Xml.Linq.XDocument.Parse(controller.Save()).Root!.Elements("include")
+            .Select(e => (string) e.Attribute("ref")!).ToList();
+
     private static async Task<string> CreateGameWithCustomLibraryAndSave()
     {
         var controller = await LoadTemplateController("English");

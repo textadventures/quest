@@ -58,12 +58,16 @@ The only difference in the resulting game file is the first `include` line:
 
 ## Switching an existing game
 
-The language library has to be loaded **before** `Core.aslx`, because Core's commands and verbs are built out of the templates as it loads. Adding it with "Add Library" puts it at the end of the list, after Core, which leaves you with a half-translated game - the room descriptions and commands stay in English. Change the include line instead:
+The language library has to be loaded **before** `Core.aslx`, because Core's commands and verbs are built out of the templates as it loads. A language library loaded after Core leaves you with a half-translated game - the room descriptions and commands stay in English.
+
+The languages that ship with Quest Viva are built in rather than files you can upload, so switch to one by changing the include line:
 
 1. Click "Raw XML code view" on the toolbar (on a narrow screen it's in the "More" menu).
 2. In the "File:" list, choose your own game file.
 3. Change `<include ref="English.aslx" />` to the library you want, such as `<include ref="Francais.aslx" />`.
 4. Click "Apply", and confirm.
+
+For a language library of your own (see [Writing a language library](#writing-a-language-library)), use "Add Library" and upload the file. The editor recognises it as a language library from its `LanguageId` template and puts it before `Core.aslx` for you.
 
 Text you have already written stays as you wrote it. Exits you created before the change keep their old direction names, because each exit stores its own name as its alias - the same problem as [renaming the compass directions](/howto/text/messages#custom-directions).
 
@@ -130,6 +134,8 @@ In your copy, include `English.aslx` instead of `EditorEnglish.aslx`, and change
   <include ref="English.aslx"/>
   <template name="LanguageId">is</template>
 ```
+
+The `LanguageId` template is also how the editor's "Add Library" knows your file is a language library, and so includes it before `Core.aslx`.
 
 Including `English.aslx` means every template you haven't translated yet still has a value, so a half-finished library never causes a "No template named…" error - the player just sees some English. `LanguageId` also becomes `game.languageid`, which is how a published game tells a catalogue what language it's in.
 
