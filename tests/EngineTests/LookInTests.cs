@@ -1,3 +1,5 @@
+using System.Text;
+using QuestViva.Common;
 using Shouldly;
 
 namespace QuestViva.EngineTests;
@@ -112,5 +114,49 @@ public class LookInTests
     {
         var driver = await GameDriver.LoadAsync("lookinoverridetest.aslx");
         (await Run(driver, "look inside rock")).ShouldContain("Game verb: nothing inside rock.");
+    }
+
+    // German and Spanish are held at full coverage, so they have their own wordings and messages.
+    [TestMethod]
+    [DataRow("Deutsch.aslx", "schau in kiste", "Sie ist geschlossen.", "sieh in eimer", "Er ist leer.", "schaue in stein", "Da kannst du nicht hineinsehen.")]
+    [DataRow("Espanol.aslx", "mira en cofre", "El cofre está cerrado.", "mirar dentro de cubo", "El cubo está vacío.", "mira en roca", "No puedes ver nada dentro.")]
+    public async Task OtherLanguages(string library, string closedCommand, string closed, string emptyCommand, string empty,
+        string nonContainerCommand, string nonContainer)
+    {
+        var driver = await GameDriver.LoadAsync(LocalisedGame(library));
+        (await Run(driver, closedCommand)).ShouldContain(closed);
+        (await Run(driver, emptyCommand)).ShouldContain(empty);
+        (await Run(driver, nonContainerCommand)).ShouldContain(nonContainer);
+    }
+
+    private static GameData LocalisedGame(string library)
+    {
+        var (closed, closedGender, closedArticle, empty, emptyGender, emptyArticle, rock) = library == "Deutsch.aslx"
+            ? ("kiste", "sie", "die", "eimer", "er", "der", "stein")
+            : ("cofre", "él", "el", "cubo", "él", "el", "roca");
+        var xml = $"""
+            <asl version="600">
+              <include ref="{library}" />
+              <include ref="Core.aslx" />
+              <game name="lookinlanguagetest"/>
+              <object name="room">
+                <object name="player">
+                  <inherit name="defaultplayer" />
+                </object>
+                <object name="{closed}">
+                  <inherit name="container_closed" />
+                  <gender>{closedGender}</gender>
+                  <article>{closedArticle}</article>
+                </object>
+                <object name="{empty}">
+                  <inherit name="container_open" />
+                  <gender>{emptyGender}</gender>
+                  <article>{emptyArticle}</article>
+                </object>
+                <object name="{rock}" />
+              </object>
+            </asl>
+            """;
+        return new GameData(Encoding.UTF8.GetBytes(xml), "lookinlanguagetest.aslx");
     }
 }
