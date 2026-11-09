@@ -355,7 +355,8 @@
   <template name="EditorObjectContainerListchildren">List children when object is looked at or opened</template>
   <template name="EditorObjectContainerListprefix">List prefix (e.g. "It contains")</template>
   <template name="EditorObjectContainerMaximumnumber">Maximum number of objects</template>
-  <template name="EditorObjectContainerFullcontainer">Full container message (leave blank for default)</template>
+  <template name="EditorObjectContainerFullcontainer">Too many objects message (leave blank for default)</template>
+  <template name="EditorObjectContainerFullvolume">Too much volume message (leave blank for default)</template>
   <template name="EditorObjectContainerMaximumvolume">Maximum volume of objects</template>
   <template name="EditorObjectContainerMessagetoprint">Message to print when opening (leave blank for default)</template>
   <template name="EditorObjectContainerMessagetoprint2">Message to print when closing (leave blank for default)</template>
@@ -405,7 +406,8 @@
   <template name="EditorObjectInventoryInventorylimitation">Inventory limitation</template>
   <template name="EditorObjectInventorySetmaximum">Set "maximum objects" to 0 to allow unlimited inventory items.</template>
   <template name="EditorObjectInventoryMaximumobjects">Maximum objects</template>
-  <template name="EditorObjectInventoryFullcontainer">Full container message (leave blank for default)</template>
+  <template name="EditorObjectInventoryFullcontainer">Too many objects message (leave blank for default)</template>
+  <template name="EditorObjectInventoryFullvolume">Too much volume message (leave blank for default)</template>
   <template name="EditorObjectInventoryVolume">Volume</template>
   <template name="EditorObjectInventoryVolume2">Volume</template>
   <template name="EditorObjectInventoryMaximumvolume">Maximum volume of inventory</template>

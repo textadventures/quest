@@ -355,7 +355,8 @@
   <template name="EditorObjectContainerListchildren">Eine Liste der Unterobjekte erscheint, wenn Objekt betrachtet oder geöffnet wird</template>
   <template name="EditorObjectContainerListprefix">Den Unterobjekten vorangestellt (z .B. "Es beinhaltet")</template>
   <template name="EditorObjectContainerMaximumnumber">Maximale Anzahl an Unterobjekten im Objekt</template>
-  <template name="EditorObjectContainerFullcontainer">Bei Erreichen des Maximums (Ohne Eingabe = Standardaussage)</template>
+  <template name="EditorObjectContainerFullcontainer">Bei zu vielen Objekten (Ohne Eingabe = Standardaussage)</template>
+  <template name="EditorObjectContainerFullvolume">Bei zu viel Volumen (Ohne Eingabe = Standardaussage)</template>
   <template name="EditorObjectContainerMaximumvolume">Maximales Volumen des Objektes</template>
   <template name="EditorObjectContainerMessagetoprint">Beim Öffnen des Objektes (Ohne Eingabe = Standardverhalten)</template>
   <template name="EditorObjectContainerMessagetoprint2">Beim Schließen des Objektes (Ohne Eingabe = Standardverhalten)</template>
@@ -405,7 +406,8 @@
   <template name="EditorObjectInventoryInventorylimitation">Inventarbegrenzung</template>
   <template name="EditorObjectInventorySetmaximum">Steht "maximale Objekte" auf 0, kann der Spieler/Container unbegrenzt Objekte aufnehmen/enthalten.</template>
   <template name="EditorObjectInventoryMaximumobjects">Maximale Objekte</template>
-  <template name="EditorObjectInventoryFullcontainer">Nachdem Maximum erreicht wurde (Ohne Eingabe = Standardverhalten)</template>
+  <template name="EditorObjectInventoryFullcontainer">Bei zu vielen Objekten (Ohne Eingabe = Standardverhalten)</template>
+  <template name="EditorObjectInventoryFullvolume">Bei zu viel Volumen (Ohne Eingabe = Standardverhalten)</template>
   <template name="EditorObjectInventoryVolume">Volumen</template>
   <template name="EditorObjectInventoryVolume2">Volumen</template>
   <template name="EditorObjectInventoryMaximumvolume">Maximales Inventarvolumen</template>

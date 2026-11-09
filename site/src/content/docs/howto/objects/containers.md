@@ -120,7 +120,7 @@ Quest Viva can limit a container two ways, and applies both:
 - **Maximum number of objects** - a simple count.
 - **Maximum volume of objects** - each object's `volume` attribute is added up, and the new object has to fit in what's left.
 
-Each has its own "Full container message (leave blank for default)" field, directly under it - the first is used when the count is reached, the second when the volume is.
+Each has its own message box directly under it: "Too many objects message" is used when the count is reached, and "Too much volume message" when the volume is. Leave either blank for the default wording.
 
 For a backpack that just holds five things, set "Maximum number of objects" to 5 and ignore volumes. For a volume limit, set "Maximum number of objects" to some large number so the count never bites, set "Maximum volume of objects", and give every object the player can carry a volume. With "Inventory limits" on, every object's _Inventory_ tab gains a "Volume" box; objects default to no volume, so anything you forget is weightless.
 

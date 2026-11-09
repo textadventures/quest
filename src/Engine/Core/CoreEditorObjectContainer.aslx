@@ -132,7 +132,7 @@
 
     <control>
       <controltype>textbox</controltype>
-      <caption>[EditorObjectContainerFullcontainer]</caption>
+      <caption>[EditorObjectContainerFullvolume]</caption>
       <attribute>containerfullmessage</attribute>
       <mustinherit>container_limited</mustinherit>
       <nullable/>

@@ -1,0 +1,29 @@
+<asl version="600">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="lookdirintest"/>
+  <object name="room">
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <exit alias="in">
+      <inherit name="indirection" />
+      <lookonly />
+      <look type="script">
+        game.lookedin = true
+      </look>
+    </exit>
+    <object name="box" />
+  </object>
+
+  <walkthrough name="verify">
+    <steps>
+      <![CDATA[
+      look in box
+      assert:not GetBoolean(game, "lookedin")
+      look in
+      assert:GetBoolean(game, "lookedin")
+      ]]>
+    </steps>
+  </walkthrough>
+</asl>

@@ -154,7 +154,7 @@
 
     <control>
       <controltype>textbox</controltype>
-      <caption>[EditorObjectInventoryFullcontainer]</caption>
+      <caption>[EditorObjectInventoryFullvolume]</caption>
       <attribute>containerfullmessage</attribute>
       <mustinherit>editor_player</mustinherit>
       <nullable/>

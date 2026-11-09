@@ -92,6 +92,6 @@ There are two independent limits, and either can be left unset:
 
 Both limits count everything the player is carrying, including the contents of containers they are carrying — filling a rucksack does not get around a volume limit.
 
-When a take would breach either limit, the player is told the inventory is full. You can replace the standard wording with the "Full container message" boxes beneath each limit.
+When a take would breach either limit, the player is told the inventory is full. You can replace the standard wording with the "Too many objects message" and "Too much volume message" boxes beneath each limit.
 
 Limits are checked before the take happens, so an object that would not fit is never picked up, and the "after taking" script does not run.
