@@ -878,7 +878,7 @@
                     {#if isObjectSource}
                         <button
                             type="button"
-                            class="btn btn-xs preset-outlined-primary-500 text-xs px-1.5 py-0.5 flex-shrink-0"
+                            class="btn btn-xs preset-outlined-primary-500 text-xs w-6 h-6 p-0 flex items-center justify-center flex-shrink-0"
                             title={t("propertyEditor.goTo", { name: item.key })}
                             onclick={() => selectNode(item.key)}
                         ><ArrowRight size={11} /></button>
@@ -886,7 +886,7 @@
                     {#if orderable}
                         <button
                             type="button"
-                            class="btn btn-xs preset-outlined-primary-500 text-xs px-1.5 py-0.5 flex-shrink-0"
+                            class="btn btn-xs preset-outlined-primary-500 text-xs w-6 h-6 p-0 flex items-center justify-center flex-shrink-0"
                             title={t("common.moveUp")}
                             aria-label={t("common.moveUp")}
                             disabled={i === 0}
@@ -894,7 +894,7 @@
                         >↑</button>
                         <button
                             type="button"
-                            class="btn btn-xs preset-outlined-primary-500 text-xs px-1.5 py-0.5 flex-shrink-0"
+                            class="btn btn-xs preset-outlined-primary-500 text-xs w-6 h-6 p-0 flex items-center justify-center flex-shrink-0"
                             title={t("common.moveDown")}
                             aria-label={t("common.moveDown")}
                             disabled={i === items.length - 1}
@@ -903,7 +903,7 @@
                     {/if}
                     <button
                         type="button"
-                        class="btn btn-xs preset-outlined-error-500 text-xs px-1.5 py-0.5 flex-shrink-0"
+                        class="btn btn-xs preset-outlined-error-500 text-xs w-6 h-6 p-0 flex items-center justify-center flex-shrink-0"
                         onclick={() => $selectedKey && removeDictItem($selectedKey, dk, item.key)}
                     >✕</button>
                 </div>
