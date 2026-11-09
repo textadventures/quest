@@ -56,7 +56,7 @@ Not everything Quest Viva does is written in Quest script. Some functions are pa
 
 These cannot be overridden. The rule is simple: **if it isn't in the tree with library elements showing, it isn't an element, and you can't replace it.**
 
-Nothing stops you creating a function of your own called `CapFirst`. It will just never run - the engine checks its own built-in functions before it looks at the ones defined in Quest script, so yours is silently ignored, with no error and no warning. If a function you've written seems to have no effect at all, check that its name isn't already taken by the engine.
+Nothing stops you creating a function of your own called `CapFirst`, but an expression such as `x = CapFirst(name)` won't call it: the engine checks its own built-in functions before it looks at the ones defined in Quest script, whatever the case of the name, so `capfirst` is taken too. Only a statement, `CapFirst (name)` on a line of its own, reaches yours, and a statement can't use the value a function returns. So when a function that returns a value has a name the engine already uses, the editor shows a warning under its return type, and `qv check` reports it. Give it a different name.
 
 ## What overriding costs you
 

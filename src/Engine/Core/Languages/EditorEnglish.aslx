@@ -121,6 +121,7 @@
   <template name="EditorFunctionFunction">Function</template>
   <template name="EditorFunctionName">Name</template>
   <template name="EditorFunctionReturntype">Return type</template>
+  <template name="EditorFunctionHiddenByEngine">Quest Viva has a built-in function with this name, which an expression such as x = Name(...) calls instead of this one, so this function's return value is never used. Give it a different name.</template>
   <template name="EditorFunctionParameters">Parameters</template>
   <template name="EditorFunctionScript">Script</template>
   <template name="EditorGameAttributesPleaseenter">Attribute</template>

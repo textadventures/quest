@@ -230,6 +230,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-appshell-tree-copy-paste.mjs http://localhost:5174
         working-directory: tests/e2e
+      - run: node verify-appshell-function-engine-name-warning.mjs http://localhost:5174
+        working-directory: tests/e2e
       - run: node verify-appshell-scripteditor-selection-toolbar.mjs http://localhost:5174
         working-directory: tests/e2e
       - run: node verify-appshell-surface-shade-fix.mjs http://localhost:5174

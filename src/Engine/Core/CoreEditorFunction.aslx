@@ -18,6 +18,13 @@
       </control>
 
       <control>
+        <controltype>label</controltype>
+        <caption>[EditorFunctionHiddenByEngine]</caption>
+        <href>/customise/overriding/#what-cant-be-overridden</href>
+        <onlydisplayifhiddenbyengine/>
+      </control>
+
+      <control>
         <caption>[EditorFunctionParameters]</caption>
         <controltype>list</controltype>
         <attribute>paramnames</attribute>
