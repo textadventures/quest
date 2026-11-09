@@ -1,0 +1,54 @@
+<asl version="600">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <game name="Legacy panes keyboard test">
+  </game>
+
+  <!-- Black, from the Interface tab's "Colour scheme for panes", as Core up to 6.0 sets it. -->
+  <command name="darkpanes">
+    <pattern>darkpanes</pattern>
+    <script>
+      JS.setPanes ("orange", "black", "black", "orange")
+      msg ("Dark panes set.")
+    </script>
+  </command>
+
+  <!-- A command bar format carrying the game's background, as Core's ResetCommandBarFormat sends
+       it, before the borderless style is added. -->
+  <command name="barformat">
+    <pattern>barformat</pattern>
+    <script>
+      JS.setCommandBarStyle ("font-family:Georgia, serif;color:Black;font-size:12pt;background:rgb(18, 52, 86)")
+      msg ("Command bar format set.")
+    </script>
+  </command>
+
+  <!-- The exact style that Core.aslx up to 6.0 adds for borderlesscursor. -->
+  <command name="oldborderless">
+    <pattern>oldborderless</pattern>
+    <script>
+      JS.addScript("&lt;style&gt;#txtCommand { outline:none; border:none; margin:0; padding:0; width:100px; background-color:transparent;}&lt;/style&gt;")
+      msg ("Old borderless style added.")
+    </script>
+  </command>
+
+  <object name="room">
+    <description>You are in a room.</description>
+    <object name="player">
+      <object name="lamp">
+        <take />
+        <look>A brass lamp.</look>
+      </object>
+      <object name="coin">
+        <take />
+        <look>A gold coin.</look>
+      </object>
+    </object>
+    <object name="box">
+      <look>A wooden box.</look>
+    </object>
+  </object>
+
+</asl>

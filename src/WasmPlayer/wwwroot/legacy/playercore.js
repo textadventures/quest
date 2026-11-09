@@ -80,19 +80,8 @@ function initPlayerUI() {
         await GameSaver.save();
     }));
 
-    $("#lstInventory").selectable({
-        selected: function (event, ui) {
-            $(ui.selected).siblings().removeClass("ui-selected");
-            updateVerbButtons($(ui.selected), inventoryVerbs, "cmdInventory");
-        }
-    });
-
-    $("#lstPlacesObjects").selectable({
-        selected: function (event, ui) {
-            $(ui.selected).siblings().removeClass("ui-selected");
-            updateVerbButtons($(ui.selected), placesObjectsVerbs, "cmdPlacesObjects");
-        }
-    });
+    initElementList("#lstInventory", "inventoryLabel", function () { return inventoryVerbs; }, "cmdInventory");
+    initElementList("#lstPlacesObjects", "placesObjectsLabel", function () { return placesObjectsVerbs; }, "cmdPlacesObjects");
 
     $("#cmdCompassNW").button({
         icons: {primary: "ui-icon-arrowthick-1-nw"}
@@ -253,7 +242,9 @@ function initPlayerUI() {
             if (wasWide) {
                 sidebar.style.display = "none";
             }
-            sidebar.style.background = "#fff";
+            // The drawer takes a pane colour scheme's background (setPanes), so a dark one
+            // isn't a white panel with dark panes inside it (#2359).
+            sidebar.style.background = _sidebarBackground || "#fff";
             sidebar.style.boxShadow = "-2px 0 5px rgba(0,0,0,0.5)";
             cmdShowPanes.style.display = arePanesVisible ? "inline" : "none";
             gamePanes.style.left = "initial";
@@ -1050,6 +1041,51 @@ function respondToGridClicks(flag) {
     _respondToGridClicks = flag;
 }
 
+// The Inventory and Places and Objects lists, as listboxes the keyboard can reach (#2358). The
+// list is one Tab stop; the arrow keys, Home and End move through it and select as they go, which
+// shows that item's verb buttons. Enter or Space selects the item and moves on to its first verb
+// button. The mouse still selects with jQuery UI's selectable.
+function initElementList(listSelector, labelId, getVerbs, buttonPrefix) {
+    var $list = $(listSelector);
+    $list.attr({ role: "listbox", "aria-labelledby": labelId });
+
+    $list.selectable({
+        selected: function (event, ui) {
+            selectListItem($(ui.selected), getVerbs(), buttonPrefix);
+        }
+    });
+
+    $list.on("keydown", "li", function (e) {
+        var $items = $list.children("li");
+        var index = $items.index(this);
+        var next = -1;
+        switch (e.key) {
+            case "ArrowDown": next = Math.min(index + 1, $items.length - 1); break;
+            case "ArrowUp": next = Math.max(index - 1, 0); break;
+            case "Home": next = 0; break;
+            case "End": next = $items.length - 1; break;
+            case "Enter":
+            case " ":
+                e.preventDefault();
+                selectListItem($(this), getVerbs(), buttonPrefix);
+                $("[id^=" + buttonPrefix + "]:visible").first().trigger("focus");
+                return;
+            default:
+                return;
+        }
+        e.preventDefault();
+        var $next = $items.eq(next);
+        selectListItem($next, getVerbs(), buttonPrefix);
+        $next.trigger("focus");
+    });
+}
+
+function selectListItem($item, verbsArray, buttonPrefix) {
+    $item.siblings().removeClass("ui-selected").attr({ "aria-selected": "false", tabindex: "-1" });
+    $item.addClass("ui-selected").attr({ "aria-selected": "true", tabindex: "0" });
+    updateVerbButtons($item, verbsArray, buttonPrefix);
+}
+
 function updateList(listName, listData) {
     var listElement = "";
     var buttonPrefix = "";
@@ -1076,6 +1112,7 @@ function updateList(listName, listData) {
         previousSelectionKey = $selected.first().data("key");
     }
 
+    var listHadFocus = $.contains($(listElement)[0], document.activeElement);
     $(listElement).empty();
     var count = 0;
     $.each(listData, function (key, value) {
@@ -1094,9 +1131,10 @@ function updateList(listName, listData) {
         verbsArray.push(data);
 
         if (listName == "inventory" || $.inArray(objectDisplayName, _compassDirs) == -1) {
-            var $newItem = $("<li/>").data("key", key).data("elementid", data["ElementId"]).data("elementname", data["ElementName"]).data("index", count).html(objectDisplayName);
+            var $newItem = $("<li/>").data("key", key).data("elementid", data["ElementId"]).data("elementname", data["ElementName"]).data("index", count).html(objectDisplayName)
+                .attr({ role: "option", tabindex: "-1", "aria-selected": "false" });
             if (objectDisplayName == previousSelectionText && key == previousSelectionKey) {
-                $newItem.addClass("ui-selected");
+                $newItem.addClass("ui-selected").attr("aria-selected", "true");
                 foundPreviousSelection = true;
                 updateVerbButtons($newItem, verbsArray, idPrefix);
             }
@@ -1104,6 +1142,14 @@ function updateList(listName, listData) {
             count++;
         }
     });
+
+    // The list is one Tab stop: the selected item, or the first. If the list had focus, it stays
+    // in the list rather than dropping to the page when the old items go.
+    var $items = $(listElement).children("li");
+    var $current = $items.filter(".ui-selected").first();
+    if (!$current.length) $current = $items.first();
+    $current.attr("tabindex", "0");
+    if (listHadFocus && $current.length) $current.trigger("focus");
 
     var selectSize = count;
     if (selectSize < 3) selectSize = 3;
@@ -1185,11 +1231,33 @@ function disableInterface() {
 function setCommandBarStyle(style) {
     var hidden = $("#txtCommand").is(":hidden") && $("#txtCommand").parent().is(":visible");
     $("#txtCommand").attr("style", style);
+    // Core's command bar format carries the game's background. As an inline style it would beat
+    // the borderless command box's "#txtCommand { background-color:transparent }" rule, which
+    // Core adds after it, so "Use a cursor instead of a box" showed a box in the page colour over
+    // a colour blend or background image (#2359). As a :where() rule it loses to any #txtCommand
+    // rule, from Core or the game's own CSS, and still beats the browser's white.
+    var command = document.getElementById("txtCommand");
+    if (command) {
+        var background = command.style.backgroundColor;
+        command.style.removeProperty("background");
+        command.style.removeProperty("background-color");
+        setCommandBarBackground(background);
+    }
     if (hidden) {
         $("#txtCommand").hide();
     } else {
         $("#txtCommand").show();
     }
+}
+
+function setCommandBarBackground(colour) {
+    var rule = document.getElementById("qv-command-bar-background");
+    if (!rule) {
+        rule = document.createElement("style");
+        rule.id = "qv-command-bar-background";
+        document.head.appendChild(rule);
+    }
+    rule.textContent = colour ? ":where(#txtCommand) { background-color: " + colour + "; }" : "";
 }
 
 function addTextAndScroll(text) {
@@ -1926,6 +1994,8 @@ function setCompass(name, fore, back) {
     el.css('border', '2px solid ' + fore);
 }
 
+var _sidebarBackground = "";
+
 function setPanes(fore, back, secFore, secBack, highlight) {
     if (arguments.length == 2) {
         secFore = back;
@@ -1935,6 +2005,10 @@ function setPanes(fore, back, secFore, secBack, highlight) {
         highlight = 'orange'
     }
     commandColour = fore;
+    _sidebarBackground = back;
+    if (document.body.classList.contains("qv-narrow")) {
+        document.getElementById("sidebar").style.background = back;
+    }
     for (i = 0; i < elements.length; i++) {
         setElement(elements[i], fore, back);
     }

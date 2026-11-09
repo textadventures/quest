@@ -62,7 +62,7 @@ A phone player won't see the panes unless they open the drawer, so keep anything
 ## Accessibility
 
 - **The command bar suits screen reader users.** New text is announced as it appears, and typing commands is often quicker than moving between links. Avoid turning it off.
-- **Links work from the keyboard.** Links in the text and the compass buttons can be reached with Tab and activated with Enter, and verb menus can be used with the arrow keys. Menu options can also be chosen by typing their number. The object lists in the Inventory and Places and Objects panes can't be reached from the keyboard, so don't make them the only way to do something.
+- **Links work from the keyboard.** Links in the text, the compass buttons and the objects in the Inventory and Places and Objects panes can be reached with Tab and activated with Enter, and verb menus can be used with the arrow keys. Menu options can also be chosen by typing their number.
 - **Check your colours.** Choose text, link and background colours with strong contrast, and don't rely on colour alone to convey meaning - some players can't tell red from green.
 - **Choose readable fonts.** Keep decorative web fonts for headings or the odd message.
 - **Describe your pictures.** A player who can't see an image misses anything that is only in the image, so put the important details in the text too.

@@ -55,7 +55,6 @@ if (!document.getElementById("game-css")) {
   document.head.insertAdjacentHTML("beforeend", `<style id="game-css">
     #lstInventory li:hover { background: gold; }
     #commandPane a:hover { text-decoration: underline; }
-    .qv-narrow #sidebar { background: black !important; }
   </style>`);
 }
 ```
@@ -159,16 +158,6 @@ UpdateStatusExtra
 ### Hiding a pane during the game
 
 To hide a pane partway through, use the "Show/hide part of the interface" script command, in the Interface category, or the `SetPaneVisible` function. It works the same in both interfaces, and the pane stays hidden after the player loads a saved game. See [Changing the interface during play](/customise/interface-scripts).
-
-### Dark panes on a phone
-
-With a dark "Colour scheme for panes", such as Black or Midnight, the panes are dark but the ☰ drawer they sit in on a phone stays white. Colour the drawer to match:
-
-```quest
-JS.addScript ("<style>.qv-narrow #sidebar { background: black !important; }</style>")
-```
-
-The `.qv-narrow` means the rule only applies when the panes are in the drawer; on a wide screen the panes sit on the page as usual. The `!important` is needed because the player sets the drawer's background itself.
 
 ## Testing
 
