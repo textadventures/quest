@@ -7,6 +7,6 @@
   "devDependencies": {
     "axe-core": "4.14.0",
     "fflate": "^0.8.3",
-    "playwright": "^1.64.1"
+    "playwright": "^1.65.0"
   }
 }
