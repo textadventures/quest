@@ -48,4 +48,17 @@
     </script>
   </command>
 
+  <!-- Answering the first question opens the second during the answer's own turn. -->
+  <command name="twoquestions">
+    <pattern>twoquestions</pattern>
+    <script>
+      ask ("First question?") {
+        msg ("First: " + result + ".")
+        ask ("Second question?") {
+          msg ("Second: " + result + ".")
+        }
+      }
+    </script>
+  </command>
+
 </asl>

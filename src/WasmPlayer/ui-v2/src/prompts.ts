@@ -97,6 +97,10 @@ interface DialogChoice {
     choose(): Promise<void>;
 }
 
+// Counts the dialogs opened. An answer's turn can open the next dialog (an ask inside an ask's
+// callback), and that turn finishing mustn't bring the command bar back while the next is open.
+let dialogsOpened = 0;
+
 // A modal <dialog> with the caption and one button per choice. Without a cancel, Escape is
 // refused (and if the browser closes it anyway, it's opened again): the engine is waiting for
 // an answer and has no other way to get one.
@@ -107,6 +111,7 @@ interface DialogChoice {
 function openDialog(caption: string, choices: DialogChoice[], cancel: (() => Promise<void>) | null): void {
     const root = player();
     if (!root) return;
+    const thisDialog = ++dialogsOpened;
     root.querySelector('dialog.qv-dialog')?.remove();
 
     const dialog = document.createElement('dialog');
@@ -133,9 +138,11 @@ function openDialog(caption: string, choices: DialogChoice[], cancel: (() => Pro
             try {
                 await choose();
             } finally {
-                state.inDialog = false;
-                updateExitStrip();
-                showInput();
+                if (dialogsOpened === thisDialog) {
+                    state.inDialog = false;
+                    updateExitStrip();
+                    showInput();
+                }
             }
         }, 100);
     };
