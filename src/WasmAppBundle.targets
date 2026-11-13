@@ -19,6 +19,11 @@
         <!-- Nothing here runs the dotnet-watch hot reload agent, and the package it adds would
              otherwise ship in every Debug _framework/. -->
         <WasmEnableHotReload>false</WasmEnableHotReload>
+        <!-- Nor its browser tools, which every Debug build gets otherwise. Their library
+             initializer asks the server for /_framework/dotnet-browser-tools/hot-reload-settings.json
+             on every load, and only dotnet-watch answers, so the browser logged a 404 console error
+             that failed every e2e script that checks for them. -->
+        <EnableHotReloadInRuntimeConfigDevFile>false</EnableHotReloadInRuntimeConfigDevFile>
     </PropertyGroup>
 
     <!-- `dotnet build`: untrimmed framework, for the dev servers. Skipped during `dotnet publish`'s
