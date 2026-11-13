@@ -406,7 +406,8 @@ var _pauseMode = false;
 // pause's pending restore is swallowed and the command bar never comes back.
 var _pauseRestorePending = false;
 
-// Mirrors the engine's WorldModel._pendingCallbackCount > 0: true whenever
+// Mirrors the v5+ engine's WorldModel._pendingCallbackCount > 0 (or a legacy
+// game's outstanding wait/enter in V4Game): true whenever
 // anything is suspended inside a TaskCompletionSource continuation (wait(),
 // get input(), ask, show menu, pause) that a save/reload can't reconstruct -
 // only world-model data is serialized, not "what the interpreter was doing".
@@ -415,10 +416,6 @@ var _pauseRestorePending = false;
 // chained/nested wait()s at game start - previously Save flickered briefly
 // enabled between each one, since it was only gated on the narrower _waitMode.
 var _turnPending = true;
-// Whether the engine has ever called setTurnPending() - only the v5+ engine
-// does; a legacy (.asl/.cas) game never reports, so its _turnPending is just
-// the initial guess and never settles.
-var _turnPendingReported = false;
 var _gameFinished = false;
 
 // _gameFinished deliberately does NOT gate this button (only _turnPending
@@ -432,7 +429,6 @@ function updateSaveButtonEnabled() {
 
 function setTurnPending(pending) {
     _turnPending = pending;
-    _turnPendingReported = true;
     updateSaveButtonEnabled();
     updateExitStrip();
 }
@@ -951,7 +947,7 @@ function updateExitStrip() {
     strip.replaceChildren();
     var compassShowing = isElementVisible("#gamePanes") && isElementVisible("#gamePanesRunning")
         && isElementVisible("#compassLabel");
-    var betweenTurns = !(_turnPending && _turnPendingReported) && !_waitMode && !_pauseMode && !_gameFinished;
+    var betweenTurns = !_turnPending && !_waitMode && !_pauseMode && !_gameFinished;
     if (compassShowing && betweenTurns) {
         _compassDirs.forEach(function (dir, i) {
             if ($.inArray(dir, _exitStripDirections) == -1) return;

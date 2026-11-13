@@ -159,8 +159,11 @@ internal class TestPlayer : IPlayer
     {
     }
 
+    public bool? TurnPending { get; private set; }
+
     public void SetTurnPending(bool pending)
     {
+        TurnPending = pending;
     }
 
     public void ClearBuffer()

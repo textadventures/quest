@@ -75,4 +75,69 @@ public class LegacyBlockingTests
         Assert.AreEqual("You said yes", _player.Buffer(1));
         Assert.AreEqual("This is run after asking the question", _player.Buffer(2));
     }
+
+    // A save taken while a script is suspended would lose the rest of it, so the player's Save
+    // button relies on SetTurnPending(true) at every mid-turn prompt and false once the turn ends.
+    [TestMethod]
+    public void TurnPending_FalseAfterBegin()
+    {
+        Assert.IsFalse(_player.TurnPending);
+    }
+
+    [TestMethod]
+    public async Task TurnPending_Wait()
+    {
+        await _game.SendCommand("wait");
+        Assert.IsTrue(_player.TurnPending);
+
+        await _game.FinishWait();
+        Assert.IsFalse(_player.TurnPending);
+    }
+
+    [TestMethod]
+    public async Task TurnPending_Pause()
+    {
+        await _game.SendCommand("pause");
+        Assert.IsTrue(_player.TurnPending);
+
+        await _game.FinishPause();
+        Assert.IsFalse(_player.TurnPending);
+    }
+
+    [TestMethod]
+    public async Task TurnPending_Ask()
+    {
+        await _game.SendCommand("ask");
+        Assert.IsTrue(_player.TurnPending);
+
+        await _game.SetQuestionResponse(false);
+        Assert.IsFalse(_player.TurnPending);
+    }
+
+    [TestMethod]
+    public async Task TurnPending_Menu()
+    {
+        await _game.SendCommand("menu");
+        Assert.IsTrue(_player.TurnPending);
+
+        await _game.SetMenuResponse(_player.LatestMenu!.Options.First().Key);
+        Assert.IsFalse(_player.TurnPending);
+    }
+
+    // The answer to the first enter resumes the script straight into the second one, so the
+    // turn is still pending after it even though the answering command itself has finished.
+    [TestMethod]
+    public async Task TurnPending_ConsecutiveEnters()
+    {
+        await _game.SendCommand("input2");
+        Assert.IsTrue(_player.TurnPending);
+
+        await _game.SendCommand("red");
+        Assert.IsTrue(_player.TurnPending, "Still pending at the second enter");
+
+        _player.ClearBuffer();
+        await _game.SendCommand("blue");
+        Assert.IsFalse(_player.TurnPending);
+        CollectionAssert.Contains(Enumerable.Range(0, _player.BufferLength).Select(_player.Buffer).ToList(), "red and blue");
+    }
 }
