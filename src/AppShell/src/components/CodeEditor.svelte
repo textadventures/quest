@@ -7,6 +7,7 @@
     import { closeBrackets, closeBracketsKeymap, autocompletion, completionKeymap, acceptCompletion } from "@codemirror/autocomplete";
     import { searchKeymap } from "@codemirror/search";
     import { javascript } from "@codemirror/lang-javascript";
+    import { css } from "@codemirror/lang-css";
     import { questScript } from "#lib/quest-script-lang.js";
     import { xmlWithScript } from "#lib/xml-with-script-lang.js";
     import { questEditorExtensions } from "#lib/codemirror-theme.js";
@@ -14,7 +15,6 @@
 
     interface Props {
         value: string;
-        // css has no syntax highlighting of its own yet: the editor's other features still apply.
         language: "xml" | "quest-script" | "javascript" | "css";
         readonly?: boolean;
         // Whether the toolbar's Undo and Redo act on this editor's text (code-editor-registry).
@@ -39,7 +39,7 @@
     function languageExtension(lang: "xml" | "quest-script" | "javascript" | "css") {
         if (lang === "xml") return xmlWithScript();
         if (lang === "javascript") return javascript();
-        if (lang === "css") return [];
+        if (lang === "css") return css();
         return questScript();
     }
 
