@@ -156,6 +156,12 @@ public partial class V4Game : IGame, IGameDebug
     private void SignalTurnSuspended()
     {
         _readyForCommand = true;
+        // Mid-turn while a wait/pause/ask/menu/sync sound (_waitTcs) or an enter (_commandTcs) is
+        // outstanding: a save holds only world state, not the suspended script, so the player
+        // disables Save until the turn finishes. Derived from the TCSs rather than passed in by
+        // each caller because an enter's answer is its own HandleCommandAsync, whose finally runs
+        // after the resumed script may already have suspended again at the next prompt.
+        _player.SetTurnPending(_waitTcs is { Task.IsCompleted: false } || _commandTcs is { Task.IsCompleted: false });
         // Fires on every suspension, including one inside Begin() (an "enter" in the start script
         // never lets Begin() return), so a buffering IPlayer flushes the prompt that led to it.
         TurnSuspended?.Invoke();

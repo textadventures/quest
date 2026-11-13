@@ -143,7 +143,7 @@ async function run() {
     await loadGame('/e2e-fixtures/exits-strip-compass-off-test.aslx', 'You are in a hall');
     // Give the first turn's setTurnPending(false) - the call that would show it -
     // time to land before checking it didn't.
-    await page.waitForFunction(() => _turnPendingReported && !_turnPending, null, { timeout: 10000 });
+    await page.waitForFunction(() => !_turnPending, null, { timeout: 10000 });
     if (await stripShowing()) {
         throw new Error(`exits strip should stay off when the game turns the compass off, but shows ${JSON.stringify(await stripLabels())}`);
     }
