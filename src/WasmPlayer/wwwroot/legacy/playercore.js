@@ -147,7 +147,7 @@ function initPlayerUI() {
 
     $(document).on("click", ".commandlink", function () {
         var $this = $(this);
-        if (!$this.hasClass("disabled") && canSendCommand) {
+        if (!$this.hasClass("disabled") && canSendCommand && !_dialogPending) {
             if ($this.data("deactivateonclick")) {
                 $this.addClass("disabled");
                 $this.data("deactivated", true);
@@ -493,7 +493,7 @@ function commandKey(e) {
 
 function runCommand() {
     var command = $("#txtCommand").val();
-    if (command.length > 0 && canSendCommand) {
+    if (command.length > 0 && canSendCommand && !_dialogPending) {
         numCommands++;
         commandsList[numCommands] = command;
         thisCommand = numCommands + 1;
@@ -535,6 +535,7 @@ function openMsgbox(options) {
 }
 
 function showQuestion(title) {
+    dialogOpened();
     $("#msgboxCaption").html(title);
 
     var msgboxOptions = {
