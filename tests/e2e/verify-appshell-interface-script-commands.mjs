@@ -65,18 +65,17 @@ try {
     if (!labels.includes(mapCommand)) throw new Error(`"${mapCommand}" is missing once the game has a map`);
     console.log('PASS: the map command shows once the game has a map');
 
-    const selectsBefore = await page.locator('select').count();
     await list.locator('button', { hasText: 'Show/hide part of the interface' }).click();
     await page.getByRole('button', { name: 'OK', exact: true }).click();
     await page.getByRole('dialog').waitFor({ state: 'hidden', timeout: 3000 });
-    await page.waitForFunction((before) => document.querySelectorAll('select').length >= before + 2, selectsBefore, { timeout: 5000 })
-        .catch(() => { throw new Error('adding Show/hide gave no part dropdown and yes/no choice'); });
     // The part is a text box with the parts as suggestions (<freetext/>), so an author pane's
-    // ID can be typed too; the yes/no choice is a select.
-    const part = await page.evaluate(() => [...document.querySelectorAll('input')].some((i) => i.value === 'panes'));
-    if (!part) throw new Error("the part box doesn't hold \"panes\"");
-    const choice = await page.evaluate(() => [...document.querySelectorAll('select')].some((s) => s.selectedOptions[0]?.textContent.trim() === 'no'));
-    if (!choice) throw new Error('there is no yes/no choice set to "no"');
+    // ID can be typed too; the yes/no choice is a select. Wait for both rather than counting
+    // new <select>s: each field's expression-mode switch is a button, not a select, since #2801.
+    const hasPart = () => [...document.querySelectorAll('input')].some((i) => i.value === 'panes');
+    const hasChoice = () => [...document.querySelectorAll('select')].some((s) => s.selectedOptions[0]?.textContent.trim() === 'no');
+    await page.waitForFunction(`(${hasPart})() && (${hasChoice})()`, null, { timeout: 5000 }).catch(() => {});
+    if (!await page.evaluate(hasPart)) throw new Error("adding Show/hide gave no part box holding \"panes\"");
+    if (!await page.evaluate(hasChoice)) throw new Error('adding Show/hide gave no yes/no choice set to "no"');
     console.log('PASS: Show/hide is added with its own editor: a part box holding "panes" and a yes/no choice');
 
     if (errors.length) throw new Error(`page errors:\n  ${errors.join('\n  ')}`);
