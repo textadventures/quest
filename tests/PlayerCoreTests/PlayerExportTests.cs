@@ -116,7 +116,7 @@ public class PlayerExportTests
     {
         const string manifest = """["index.html", "quest-config.js", "wasm-player.js", "legacy/player.js"]""";
         const string boot = """
-            export const config = /*json-start*/{"resources":{"hash":"sha256-x",
+            const config = /*json-start*/{"resources":{"hash":"sha256-x",
               "jsModuleNative":[{"name":"dotnet.native.js"}],
               "assembly":[{"name":"QuestViva.Engine.wasm","hash":"y"},{"name":"System.Private.CoreLib.wasm"}],
               "icu":[{"name":"icudt.dat"}]}}/*json-end*/;
@@ -124,7 +124,7 @@ public class PlayerExportTests
         CollectionAssert.AreEqual(new[]
         {
             "index.html", "wasm-player.js", "legacy/player.js",
-            "_framework/dotnet.boot.js", "_framework/dotnet.js", "_framework/dotnet.native.js",
+            "_framework/dotnet.js", "_framework/dotnet.native.js",
             "_framework/QuestViva.Engine.wasm", "_framework/System.Private.CoreLib.wasm", "_framework/icudt.dat"
         }, PlayerExport.PlayerFiles(manifest, boot).ToList());
     }

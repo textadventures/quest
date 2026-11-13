@@ -118,8 +118,9 @@ public static class PlayerExport
 
     // The player files a zip export needs beside its page: the shell files that
     // scripts/write-export-manifest.mjs lists in export-manifest.json, without quest-config.js,
-    // which the page doesn't load, and the runtime files that _framework/dotnet.boot.js names.
-    public static IReadOnlyList<string> PlayerFiles(string exportManifestJson, string bootJs)
+    // which the page doesn't load, and the runtime files named by the boot manifest that the
+    // WebAssembly SDK inlines into _framework/dotnet.js.
+    public static IReadOnlyList<string> PlayerFiles(string exportManifestJson, string dotnetJs)
     {
         List<string> shell;
         using (var manifest = JsonDocument.Parse(exportManifestJson))
@@ -129,15 +130,15 @@ public static class PlayerExport
 
         const string startMarker = "/*json-start*/";
         const string endMarker = "/*json-end*/";
-        var start = bootJs.IndexOf(startMarker, StringComparison.Ordinal);
-        var end = bootJs.IndexOf(endMarker, StringComparison.Ordinal);
+        var start = dotnetJs.IndexOf(startMarker, StringComparison.Ordinal);
+        var end = dotnetJs.IndexOf(endMarker, StringComparison.Ordinal);
         if (start < 0 || end < 0)
         {
-            throw new InvalidOperationException("Couldn't read the player's boot manifest (dotnet.boot.js).");
+            throw new InvalidOperationException("Couldn't read the player's boot manifest (in dotnet.js).");
         }
 
-        var framework = new List<string> { "dotnet.boot.js", "dotnet.js" };
-        using (var boot = JsonDocument.Parse(bootJs[(start + startMarker.Length)..end]))
+        var framework = new List<string> { "dotnet.js" };
+        using (var boot = JsonDocument.Parse(dotnetJs[(start + startMarker.Length)..end]))
         {
             foreach (var group in boot.RootElement.GetProperty("resources").EnumerateObject())
             {

@@ -14,7 +14,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 
 const repoRoot = path.resolve(import.meta.dirname, '..', '..');
-const qv = process.env.QV?.split(' ') ?? ['dotnet', path.join(repoRoot, 'src/Cli/bin/Debug/net10.0/qv.dll')];
+const qv = process.env.QV?.split(' ') ?? ['dotnet', path.join(repoRoot, 'src/Cli/bin/Debug/net11.0/qv.dll')];
 const cdnVersion = '6.0.0-beta.59';
 
 const IFID_LOWER = '448e73df-2d2f-47e7-a494-a46b40d4cfb3';

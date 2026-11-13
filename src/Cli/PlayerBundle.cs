@@ -29,7 +29,7 @@ internal abstract class PlayerBundle
     public static PlayerBundle FromFolder(DirectoryInfo folder) => new FolderBundle(folder);
 
     // The checkout's WasmPlayer AppBundle, when qv runs from its own build output
-    // (src/Cli/bin/<config>/net10.0/qv.dll): the more recently built of Debug and Release.
+    // (src/Cli/bin/<config>/net11.0/qv.dll): the more recently built of Debug and Release.
     public static PlayerBundle? FromCheckout()
     {
         for (var dir = new DirectoryInfo(AppContext.BaseDirectory); dir != null; dir = dir.Parent)
@@ -41,7 +41,7 @@ internal abstract class PlayerBundle
             }
 
             var newest = new[] { "Debug", "Release" }
-                .Select(config => new FileInfo(Path.Combine(wasmPlayer, config, "net10.0", "browser-wasm", "AppBundle",
+                .Select(config => new FileInfo(Path.Combine(wasmPlayer, config, "net11.0", "browser-wasm", "AppBundle",
                     "_framework", "dotnet.js")))
                 .Where(f => f.Exists)
                 .MaxBy(f => f.LastWriteTimeUtc);

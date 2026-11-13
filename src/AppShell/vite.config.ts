@@ -13,7 +13,7 @@ import { readFileSync } from 'node:fs'
 // per-method native frames instead of one opaque interpreter loop, add -p:RunAOTCompilation=true.
 const wasmConfig = process.env.WASM_CONFIG === 'Release' ? 'Release' : 'Debug'
 const appBundleDir = fileURLToPath(
-  new URL(`../WasmEditor/bin/${wasmConfig}/net10.0/browser-wasm/AppBundle`, import.meta.url)
+  new URL(`../WasmEditor/bin/${wasmConfig}/net11.0/browser-wasm/AppBundle`, import.meta.url)
 )
 
 const mimeTypes: Record<string, string> = {

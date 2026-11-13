@@ -16,7 +16,7 @@ jobs:
       - name: Set up .NET
         uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: '11.0.x'
 
       - name: Install wasm-tools workload
         run: dotnet workload install wasm-tools
@@ -39,7 +39,7 @@ jobs:
       - name: Publish WasmPlayer for qv
         run: |
           dotnet publish src/WasmPlayer/WasmPlayer.csproj --configuration Release
-          cp -r src/WasmPlayer/bin/Release/net10.0/browser-wasm/AppBundle "$RUNNER_TEMP/qv-player"
+          cp -r src/WasmPlayer/bin/Release/net11.0/browser-wasm/AppBundle "$RUNNER_TEMP/qv-player"
 
       - name: Build
         run: dotnet build --no-restore --configuration Release -p:QvPlayerBundle="$RUNNER_TEMP/qv-player"

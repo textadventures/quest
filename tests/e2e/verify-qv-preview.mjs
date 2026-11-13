@@ -17,9 +17,9 @@ import { join, resolve } from 'node:path';
 
 const repo = resolve(import.meta.dirname, '..', '..');
 const playerDir = resolve(process.argv[2]
-    || join(repo, 'src/WasmPlayer/bin/Release/net10.0/browser-wasm/AppBundle'));
+    || join(repo, 'src/WasmPlayer/bin/Release/net11.0/browser-wasm/AppBundle'));
 const qv = process.env.QV?.split(' ')
-    ?? ['dotnet', join(repo, 'src/Cli/bin/Debug/net10.0/qv.dll')];
+    ?? ['dotnet', join(repo, 'src/Cli/bin/Debug/net11.0/qv.dll')];
 
 const game = (message) => `<asl version="580">
   <include ref="English.aslx" />

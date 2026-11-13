@@ -13,7 +13,7 @@ Clone the repository from GitHub:
 
 [https://github.com/textadventures/quest](https://github.com/textadventures/quest)
 
-You'll need the [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download), plus the WebAssembly build tools, which the two browser projects need:
+You'll need the [.NET 11 SDK](https://dotnet.microsoft.com/en-us/download), plus the WebAssembly build tools, which the two browser projects need:
 
 ```bash
 dotnet workload install wasm-tools
