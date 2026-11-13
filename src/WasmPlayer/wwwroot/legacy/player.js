@@ -30,12 +30,37 @@ function setUpSessionLog() {
 
 var _waitingForSoundToFinish = false;
 
+// Whether a menu or question is waiting for the player, from when its dialog opens until the
+// turn its answer resumes has finished. The answer reaches the engine 100ms after the dialog
+// closes, so its closing can paint first. A command sent in that gap would reach the engine
+// first, and if it asked something of its own, the delayed answer would be taken as the reply
+// to that instead. canSendCommand can't do this job: the engine finishes the command that opened
+// the dialog while the dialog is still waiting, and that sets canSendCommand back to true.
+var _dialogPending = false;
+// Counts the dialogs opened, so an answer whose turn opens the next dialog (two Asks in a row)
+// doesn't clear the flag for that one when it finishes.
+var _dialogCount = 0;
+
+function dialogOpened() {
+    _dialogCount++;
+    _dialogPending = true;
+}
+
+function sendDialogAnswer(send) {
+    var answering = _dialogCount;
+    window.setTimeout(async function () {
+        try {
+            await send();
+        } finally {
+            if (_dialogCount === answering) _dialogPending = false;
+        }
+    }, 100);
+}
+
 function msgboxSubmit(response) {
     markUnsavedProgress();
     $("#msgbox").dialog("close");
-    window.setTimeout(async function () {
-        await WebPlayer.uiSetQuestionResponse(response);
-    }, 100);
+    sendDialogAnswer(function () { return WebPlayer.uiSetQuestionResponse(response); });
 }
 
 var _menuSelection = "";
@@ -97,6 +122,7 @@ function showMenu(title, options, allowCancel) {
     }
 
     _menuSelection = "";
+    dialogOpened();
     $("#dialog").dialog(dialogOptions);
 
     $("#dialog").dialog("open");
@@ -107,9 +133,8 @@ function dialogSelect() {
     if (_menuSelection.length > 0) {
         markUnsavedProgress();
         $("#dialog").dialog("close");
-        window.setTimeout(function () {
-            WebPlayer.uiChoice(_menuSelection);
-        }, 100);
+        var selection = _menuSelection;
+        sendDialogAnswer(function () { return WebPlayer.uiChoice(selection); });
     }
 }
 
@@ -124,13 +149,11 @@ function dialogClose() {
 }
 
 function dialogSendCancel() {
-    window.setTimeout(async function () {
-        await WebPlayer.uiChoiceCancel();
-    }, 100);
+    sendDialogAnswer(function () { return WebPlayer.uiChoiceCancel(); });
 }
 
 function sendCommand(text, metadata) {
-    if (_pauseMode || _waitingForSoundToFinish || _waitMode || !canSendCommand) return;
+    if (_pauseMode || _waitingForSoundToFinish || _waitMode || _dialogPending || !canSendCommand) return;
     canSendCommand = false;
     markScrollPosition();
     markUnsavedProgress();
