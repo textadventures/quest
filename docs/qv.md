@@ -89,7 +89,7 @@ The player is built into `qv` (the published WasmPlayer, about 5.6 MB), so it's 
 
 Every release from 6.1 publishes `qv` two ways. Until 6.1.0 itself ships, only beta releases include it.
 
-**As a dotnet tool**, for anyone with the .NET 10 SDK:
+**As a dotnet tool**, for anyone with the .NET 11 SDK:
 
 ```bash
 dotnet tool install -g QuestViva.Cli --prerelease
@@ -120,14 +120,14 @@ curl -L https://github.com/textadventures/quest/releases/download/v6.1.0-beta.2/
 
 ```bash
 dotnet build src/Cli
-dotnet src/Cli/bin/Debug/net10.0/qv.dll play examples/simple.aslx
+dotnet src/Cli/bin/Debug/net11.0/qv.dll play examples/simple.aslx
 ```
 
 `qv preview` needs a WasmPlayer build too: build `src/WasmPlayer` once, and a checkout's `qv` serves it. To embed the player as a release does, publish WasmPlayer and pass its `AppBundle` as `QvPlayerBundle`:
 
 ```bash
 dotnet publish src/WasmPlayer/WasmPlayer.csproj -c Release
-cp -r src/WasmPlayer/bin/Release/net10.0/browser-wasm/AppBundle /tmp/qv-player
+cp -r src/WasmPlayer/bin/Release/net11.0/browser-wasm/AppBundle /tmp/qv-player
 dotnet build src/Cli -c Release -p:QvPlayerBundle=/tmp/qv-player
 ```
 

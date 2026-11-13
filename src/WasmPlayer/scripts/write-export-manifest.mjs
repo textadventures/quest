@@ -3,8 +3,8 @@
 // file the zip HTML export needs to pack. Generated at build time so AppShell's
 // exportHtmlZip doesn't hard-code a shell file list that can drift from the
 // layout CopyPlayerAssetsToAppBundle produces (plus SDK-added package.json /
-// runtimeconfig). _framework/* is listed separately from dotnet.boot.js at
-// export time — those filenames are content-hashed and already enumerated there.
+// runtimeconfig). _framework/* is listed separately at export time, from the
+// boot manifest inlined into dotnet.js, which already enumerates it.
 import fs from 'node:fs';
 import path from 'node:path';
 

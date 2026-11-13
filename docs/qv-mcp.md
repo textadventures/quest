@@ -58,7 +58,7 @@ Register it once, then ask Claude to play a game by its path:
 claude mcp add qv -- qv mcp
 ```
 
-From a quest checkout without the tool installed, build it with `dotnet build src/Cli` and register `dotnet /path/to/quest/src/Cli/bin/Debug/net10.0/qv.dll mcp` instead. Add `--debug-tools` to let Claude inspect the game's state, for example while debugging a game rather than playtesting it.
+From a quest checkout without the tool installed, build it with `dotnet build src/Cli` and register `dotnet /path/to/quest/src/Cli/bin/Debug/net11.0/qv.dll mcp` instead. Add `--debug-tools` to let Claude inspect the game's state, for example while debugging a game rather than playtesting it.
 
 For a programmatic harness rather than an agent, `qv serve` ([qv-serve.md](qv-serve.md)) exposes the same operations over plain JSON lines.
 

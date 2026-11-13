@@ -33,7 +33,7 @@ Two things follow from this if you're editing `src/Engine/Core/*.aslx`:
 
 ![Diagram of the Quest Viva projects: ElectronApp, WasmPlayer and AppShell on top; WasmEditor, PlayerCore, EditorCore, Engine and Legacy beneath them; Common at the bottom](/images/architecture.svg)
 
-Everything below the players and the editor is C# on .NET 10. **Engine** is the interpreter - script execution, expression evaluation, game loading, the built-in functions and the Core library. **Legacy** handles games written for Quest 1.x to 4.x. **PlayerCore** and **EditorCore** wrap the engine for playing and for editing.
+Everything below the players and the editor is C# on .NET 11. **Engine** is the interpreter - script execution, expression evaluation, game loading, the built-in functions and the Core library. **Legacy** handles games written for Quest 1.x to 4.x. **PlayerCore** and **EditorCore** wrap the engine for playing and for editing.
 
 On top of those:
 

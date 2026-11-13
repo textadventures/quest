@@ -84,7 +84,7 @@ jobs:
 
       - uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: '11.0.x'
       - run: dotnet workload install wasm-tools
 
       - run: dotnet build src/WasmEditor/WasmEditor.csproj -c Debug
@@ -336,7 +336,7 @@ jobs:
 
       - uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: '11.0.x'
       - run: dotnet workload install wasm-tools
 
       - run: dotnet publish src/WasmEditor/WasmEditor.csproj -c Release
@@ -429,7 +429,7 @@ jobs:
 
       - uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: '11.0.x'
       - run: dotnet workload install wasm-tools
       # The trimmed Release publish that actually ships, not Debug: Debug is
       # untrimmed, so a game script reaching a .NET method the trimmer removed
@@ -634,7 +634,7 @@ jobs:
 
       - uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: '11.0.x'
       - run: dotnet workload install wasm-tools
 
       - run: dotnet build src/WasmEditor/WasmEditor.csproj -c Debug

@@ -168,9 +168,8 @@ public class PublishTests
         File.WriteAllText(Path.Combine(player.FullName, "quest-config.js"), "// config");
         File.WriteAllText(Path.Combine(player.FullName, "wasm-player.js"), "// player");
         var framework = player.CreateSubdirectory("_framework");
-        File.WriteAllText(Path.Combine(framework.FullName, "dotnet.boot.js"),
-            """export const config = /*json-start*/{"resources":{"assembly":[{"name":"a.wasm"},{"name":"missing.wasm"}]}}/*json-end*/;""");
-        File.WriteAllText(Path.Combine(framework.FullName, "dotnet.js"), "// runtime");
+        File.WriteAllText(Path.Combine(framework.FullName, "dotnet.js"),
+            """const config = /*json-start*/{"resources":{"assembly":[{"name":"a.wasm"},{"name":"missing.wasm"}]}}/*json-end*/;""");
         File.WriteAllText(Path.Combine(framework.FullName, "a.wasm"), "wasm");
         return player;
     }
@@ -188,7 +187,7 @@ public class PublishTests
         Assert.AreEqual(Path.Combine(_folder.FullName, "game-html.zip"), result.Output);
         CollectionAssert.AreEqual(new[]
         {
-            "_framework/a.wasm", "_framework/dotnet.boot.js", "_framework/dotnet.js", "cover.png", "index.html",
+            "_framework/a.wasm", "_framework/dotnet.js", "cover.png", "index.html",
             "wasm-player.js"
         }, Entries(result.Output!));
         using var zip = ZipFile.OpenRead(result.Output!);
