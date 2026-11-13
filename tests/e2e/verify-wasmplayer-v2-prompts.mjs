@@ -179,7 +179,7 @@ try {
 
     {
         const { page, errors } = await open('v2-dialogs-test.aslx', 'You are in');
-        const { waitForText, type, inputBack } = helpers(page);
+        const { outputText, waitForText, type, bar, inputBack } = helpers(page);
         const dialog = () => page.evaluate(() => {
             const d = document.querySelector('dialog.qv-dialog');
             return d && {
@@ -243,6 +243,28 @@ try {
         await dialogGone();
         await waitForText('You said no.', 'answering the question');
         console.log('PASS: answering the question dialog sends the answer');
+
+        // Answering the first question opens the second during the answer's own turn. That turn
+        // finishing mustn't bring the command bar back while the second is open, or a command
+        // sent with its answer reaches the engine first and takes the answer for itself.
+        await inputBack();
+        await type('twoquestions');
+        await dialogOpen();
+        await page.click('dialog.qv-dialog button:text-is("Yes")');
+        await waitForText('First: True.', 'answering the first question');
+        await dialogOpen();
+        await page.waitForTimeout(300);
+        check((await dialog()).caption === 'Second question?', 'the second question opens');
+        check(!(await bar()).input, 'the command bar stays hidden while the second question is open');
+        const sent = await page.evaluate(() => {
+            document.querySelector('dialog.qv-dialog button:nth-child(2)').click();
+            return QuestUI.sendCommand('twoquestions');
+        });
+        check(sent === false, 'a command sent with the second answer is refused');
+        await dialogGone();
+        await waitForText('Second: False.', 'answering the second question');
+        await inputBack();
+        check(!(await outputText()).includes('First: False.'), 'the second answer went to the second question');
 
         if (errors.length) throw new Error(`v2-dialogs-test.aslx: page errors:\n  ${errors.join('\n  ')}`);
         await page.close();
