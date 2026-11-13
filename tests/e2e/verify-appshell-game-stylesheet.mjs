@@ -1,8 +1,8 @@
 // Verifies the game stylesheet editor (#2613 PR 7): a CSS code editor under the game's Appearance
 // tab, in its Advanced section, that edits game.stylesheet. The CSS is pasted in (a single
 // CodeMirror transaction, as verify-appshell-code-view.mjs explains), committed on blur, still
-// there after switching tabs, saved into the game's XML with its line breaks, and removed again
-// when the editor is emptied.
+// there after switching tabs, syntax-highlighted, saved into the game's XML with its line breaks,
+// and removed again when the editor is emptied.
 //
 // Run: build WasmEditor (Debug) first, then
 //   node tests/e2e/verify-appshell-game-stylesheet.mjs [baseUrl]
@@ -64,6 +64,15 @@ try {
     const shown = await cm.innerText();
     if (shown.replace(/\n+/g, '\n').trim() !== css) throw new Error(`The stylesheet didn't persist: ${JSON.stringify(shown)}`);
     console.log('PASS: the CSS is kept after switching tabs');
+
+    // HighlightStyle.define() generates obfuscated per-rule class names, so check that the
+    // selector and the custom property land in classed token spans rather than naming a class.
+    // With no CSS language they're bare text in .cm-line (#2626).
+    for (const token of ['qv-player', '--qv-link']) {
+        const cls = await editorGroup.locator('.cm-line span[class]', { hasText: token }).count();
+        if (cls === 0) throw new Error(`"${token}" isn't syntax-highlighted in the stylesheet editor`);
+    }
+    console.log('PASS: the CSS is syntax-highlighted');
 
     const rawXml = async () => {
         await page.click('button[title="Raw XML code view"]');

@@ -1,6 +1,7 @@
 import { EditorView } from "@codemirror/view";
 import { HighlightStyle, syntaxHighlighting } from "@codemirror/language";
 import { tags as t } from "@lezer/highlight";
+import { cssLanguage } from "@codemirror/lang-css";
 
 // Built entirely from Skeleton's paired light/dark CSS custom properties (e.g.
 // --color-surface-200-800, which resolves via light-dark() in
@@ -58,4 +59,22 @@ export const questHighlightStyle = HighlightStyle.define([
     { tag: [t.bracket, t.paren, t.squareBracket, t.brace], color: "var(--color-surface-600-400)" },
 ]);
 
-export const questEditorExtensions = [questEditorTheme, syntaxHighlighting(questHighlightStyle)];
+// CSS's own tokens, which the style above leaves plain: property names (custom properties
+// included), class/id/pseudo-class selectors and values. Scoped to CSS so the same tags in
+// JavaScript (where every identifier is a variableName) keep their current look. Value
+// keywords (atom), units, url() and !important all derive from t.keyword in @lezer/highlight,
+// so the base style's bold keyword rule would reach them too: this one is listed first in
+// questEditorExtensions so its rules win, and they reset the weight explicitly.
+export const cssHighlightStyle = HighlightStyle.define([
+    { tag: [t.propertyName, t.variableName], color: "var(--color-primary-500)" },
+    { tag: [t.className, t.labelName], color: "var(--color-secondary-500)" },
+    { tag: [t.atom, t.color], color: "var(--color-success-600-400)", fontWeight: "normal" },
+    { tag: t.unit, color: "var(--color-tertiary-500)", fontWeight: "normal" },
+    { tag: [t.operatorKeyword, t.modifier], color: "var(--color-primary-500)", fontWeight: "normal" },
+], { scope: cssLanguage });
+
+export const questEditorExtensions = [
+    questEditorTheme,
+    syntaxHighlighting(cssHighlightStyle),
+    syntaxHighlighting(questHighlightStyle),
+];
