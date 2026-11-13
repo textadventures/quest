@@ -136,6 +136,7 @@ Same tag also drives the AppShell deploy on textadventures.co.uk: `deploy-play` 
 ## Key Technical Details
 
 - Target framework: .NET 11.0 with nullable reference types enabled
+- `global.json` pins the SDK to the 11.0 band (`rollForward: latestFeature`, so any 11.0.x SDK but never 12). Without it the newest installed SDK wins, and GitHub's runners add each new major SDK soon after it ships, whose analyzers flag code the pinned one accepts. Moving to a new .NET major means updating `global.json` alongside the `TargetFramework`s and the workflows' `setup-dotnet` versions
 - Expression evaluation uses `NCalcAsync`
 - Game files use `.aslx` (XML-based) format; legacy `.asl` format also supported
 - Version is stored in the `VERSION` file and embedded as a resource via Common.csproj
