@@ -112,16 +112,29 @@ Three things to know:
 
 - **Add to the list you were given.** `items = ListCombine(items, ...)` builds a new list and throws it away, so nothing happens and there is no error to tell you.
 - **Backdrops are never listed in a room description**, because that listing only looks at the room's own children. They do show up in the Places and Objects pane, though, so mark them as scenery unless you want "sky" in the pane in every room.
-- **This script runs several times a turn**, so keep it short, and never call a scope function such as `ScopeVisibleForRoom` from inside it. That function runs this script, which runs that function, and the game hangs on the loading screen with no error at all.
+- **This script runs several times a turn**, so keep it short.
 
-To vary the backdrops by place, test the room the player is in:
+To vary the backdrops by place, test `room`, which holds the room whose objects are being worked out:
 
 ```quest
 list add (items, walls)
-if (GetBoolean(game.pov.parent, "outdoors")) {
+if (GetBoolean(room, "outdoors")) {
   list add (items, sky)
 }
 ```
+
+Use `room` rather than `game.pov.parent`. Usually they are the same, but when a script asks what is in some other room, with `ScopeVisibleForRoom` for example, `room` is that other room.
+
+To add something only when another object is present, test `items` itself. It already holds every object in the room that the player can reach, apart from what they are carrying:
+
+```quest
+if (ListContains (items, car)) {
+  list add (items, car_door)
+  list add (items, car_window)
+}
+```
+
+Calling a scope function such as `ScopeReachable` from inside this script does not work. Working out the scope is what runs this script in the first place, so the inner call gets the objects without any of your backdrops.
 
 ## Scope that changes as the game goes on
 
