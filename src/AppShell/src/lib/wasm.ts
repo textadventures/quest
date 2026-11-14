@@ -130,6 +130,8 @@ export interface WasmBridge {
   CreateVerb(parent: string): string
   CreateWalkthrough(name: string, parent: string): string
   RecordWalkthroughSteps(name: string, stepsJson: string): string
+  // The walkthrough's own seed or its parent's, or -1 when neither sets one
+  GetWalkthroughSeed(elementKey: string): number
   CreateTemplate(name: string): string
   CreateDynamicTemplate(name: string): string
   CreateObjectType(name: string): string

@@ -1,3 +1,4 @@
+using System.Globalization;
 
 // ReSharper disable UnusedType.Local
 
@@ -279,6 +280,15 @@ internal partial class GameSaver
         {
             writer.WriteStartElement("walkthrough");
             writer.WriteAttributeString("name", e.Name);
+
+            // The only other attribute a walkthrough has: the seed its runs use (Walkthrough.GetSeed).
+            if (e.Fields.Get(Walkthrough.SeedAttribute) is int seed)
+            {
+                writer.WriteStartElement(Walkthrough.SeedAttribute);
+                writer.WriteAttributeString("type", "int");
+                writer.WriteString(seed.ToString(CultureInfo.InvariantCulture));
+                writer.WriteEndElement();
+            }
 
             var steps = e.Fields[FieldDefinitions.Steps];
             if (steps is not {Count: > 0})

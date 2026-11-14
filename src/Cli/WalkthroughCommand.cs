@@ -14,12 +14,13 @@ internal static class WalkthroughCommand
             return 1;
         }
 
-        // A fixed seed by default, so a walkthrough that passes once passes every time, and in CI.
-        var seedValue = seed ?? HeadlessSession.DefaultSeed;
+        // A fixed seed by default, so a walkthrough that passes once passes every time, and in CI. A
+        // walkthrough can choose its own, and --seed overrides both.
         HeadlessSession session;
+        var sessionSeed = seed ?? HeadlessSession.DefaultSeed;
         try
         {
-            session = await HeadlessSession.StartAsync(GameFiles.Load(game), seedValue);
+            session = await HeadlessSession.StartAsync(GameFiles.Load(game), sessionSeed);
         }
         catch (InvalidOperationException ex)
         {
@@ -46,9 +47,11 @@ internal static class WalkthroughCommand
         var first = true;
         foreach (var walkthrough in name != null ? [name] : names)
         {
-            if (!first)
+            var walkthroughSeed = seed ?? session.Game.Walkthroughs.Walkthroughs[walkthrough].Seed ?? HeadlessSession.DefaultSeed;
+            if (!first || walkthroughSeed != sessionSeed)
             {
-                session = await HeadlessSession.StartAsync(GameFiles.Load(game), seedValue);
+                sessionSeed = walkthroughSeed;
+                session = await HeadlessSession.StartAsync(GameFiles.Load(game), sessionSeed);
             }
 
             if (!quiet)

@@ -11,6 +11,13 @@
       </control>
 
       <control>
+        <controltype>number</controltype>
+        <attribute>seed</attribute>
+        <caption>[EditorWalkthroughSeed]</caption>
+        <nullable/>
+      </control>
+
+      <control>
         <controltype>list</controltype>
         <attribute>steps</attribute>
         <editprompt>[EditorWalkthroughPleaseenter]</editprompt>

@@ -89,4 +89,10 @@ public interface IWalkthroughs
 public interface IWalkthrough
 {
     string[] Steps { get; }
+
+    /// <summary>
+    /// The random seed the walkthrough's author chose for it, so it plays the game with the same random
+    /// numbers a player had (for a bug report, say), or null to use the runner's own default.
+    /// </summary>
+    int? Seed => null;
 }

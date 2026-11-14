@@ -44,6 +44,25 @@ public class Walkthrough : IWalkthrough
         }
     }
 
+    public int? Seed => GetSeed(_element);
+
+    // A sub-walkthrough runs its parent's steps first, so it uses its parent's seed unless it has
+    // one of its own.
+    internal static int? GetSeed(Element element)
+    {
+        for (var e = element; e != null; e = e.Parent)
+        {
+            if (e.Fields.Get(SeedAttribute) is int seed)
+            {
+                return seed;
+            }
+        }
+
+        return null;
+    }
+
+    internal const string SeedAttribute = "seed";
+
     private string[] ThisSteps()
     {
         var result = new List<string>();

@@ -1,6 +1,7 @@
 // The editor's walkthrough Play and Record buttons start the game with a fixed random seed (#2673),
 // so a walkthrough through something random replays the same way every time, and the same way
-// `qv walkthrough` runs it. Plain Preview keeps a random seed.
+// `qv walkthrough` runs it: the walkthrough's own Random seed if it has one, or else the default.
+// Plain Preview keeps a random seed.
 //
 // Each run asks the game for a random number once the walkthrough's steps have run: two Plays and a
 // Record must agree, and two Previews must not (the chance of a clash is one in a million).
@@ -71,6 +72,28 @@ try {
     const recorded = await sampleRun(ctx, page, record, recording);
     if (recorded.value !== play1.value) throw new Error(`Record gave a different random number from Play: ${recorded.value} vs ${play1.value}`);
     console.log('PASS: Record gives the same random number as Play');
+
+    // The walkthrough's own Random seed setting: Play and Record use it, and clearing it goes back
+    // to the default seed.
+    const seedField = page.locator('input[type="number"]').first();
+    await seedField.fill('99');
+    await seedField.press('Enter');
+    await seedField.blur();
+    const seeded1 = await sampleRun(ctx, page, play, bannerHidden);
+    const seeded2 = await sampleRun(ctx, page, play, bannerHidden);
+    if (!/[?&]seed=99(&|$)/.test(seeded1.url)) throw new Error(`Play didn't use the walkthrough's seed: ${seeded1.url}`);
+    if (seeded1.value === play1.value) throw new Error(`Seed 99 gave the same random number as the default seed (${play1.value})`);
+    if (seeded1.value !== seeded2.value) throw new Error(`Two Plays with seed 99 differed: ${seeded1.value} vs ${seeded2.value}`);
+    const seededRecord = await sampleRun(ctx, page, record, recording);
+    if (seededRecord.value !== seeded1.value) throw new Error(`Record with seed 99 differed from Play: ${seededRecord.value} vs ${seeded1.value}`);
+    console.log(`PASS: Play and Record use the walkthrough's own seed (${seeded1.value})`);
+
+    await seedField.fill('');
+    await seedField.press('Enter');
+    await seedField.blur();
+    const cleared = await sampleRun(ctx, page, play, bannerHidden);
+    if (cleared.value !== play1.value) throw new Error(`Clearing the seed didn't go back to the default: ${cleared.value} vs ${play1.value}`);
+    console.log('PASS: clearing the seed goes back to the default seed');
 
     const preview = page.locator('button[title="Preview game"]');
     const preview1 = await sampleRun(ctx, page, preview, () => true);

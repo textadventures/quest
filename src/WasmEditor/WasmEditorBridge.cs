@@ -815,6 +815,11 @@ public partial class WasmEditorBridge
     [JSExport]
     public static bool IsDirty() => _isDirty;
 
+    // The walkthrough's own seed or its parent's, or -1 when neither sets one (JSExport can't return
+    // int?), for editor-store.ts's walkthrough Play and Record.
+    [JSExport]
+    public static int GetWalkthroughSeed(string elementKey) => _controller?.GetWalkthroughSeed(elementKey) ?? -1;
+
     [JSExport]
     public static string GetGameId() => _controller?.GameId ?? string.Empty;
 
