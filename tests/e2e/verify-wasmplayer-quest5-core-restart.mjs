@@ -24,10 +24,33 @@ page.on('pageerror', err => pageErrors.push(err.message));
 
 const outputText = () => page.$eval('#divOutput', el => el.innerText);
 
+// A command's turn finishes asynchronously (single-threaded WASM), so a fixed
+// wait races it under load. canSendCommand alone can't tell a finished turn
+// from one not sent yet: a quick turn can clear and set it again before the
+// next page.evaluate() gets to look. So count the turns WebPlayer.sendCommand
+// (which a typed command goes through, and which sets canSendCommand again at
+// its end) has finished, and wait for this one to be among them.
+async function countTurns() {
+    await page.evaluate(() => {
+        window.__turnsDone = 0;
+        const sendCommand = window.WebPlayer.sendCommand;
+        window.WebPlayer.sendCommand = async function (...args) {
+            try {
+                return await sendCommand.apply(this, args);
+            } finally {
+                window.__turnsDone++;
+            }
+        };
+    });
+}
+
 async function send(command) {
+    await page.waitForFunction(() => window.canSendCommand === true, null, { timeout: 30000 });
+    const before = await page.evaluate(() => window.__turnsDone);
     await page.fill('#txtCommand', command);
     await page.press('#txtCommand', 'Enter');
-    await page.waitForTimeout(300);
+    await page.waitForFunction(
+        n => window.__turnsDone > n && window.canSendCommand === true, before, { timeout: 30000 });
 }
 
 async function expectCount(n, label) {
@@ -50,7 +73,7 @@ async function checkRestart(label, fixture) {
     console.log(`── ${label}`);
     await page.goto(`${baseUrl}/?url=/e2e-fixtures/${fixture}`);
     await page.waitForSelector('#txtCommand', { state: 'visible', timeout: 30000 });
-    await page.waitForTimeout(500);
+    await countTurns();
 
     await send('bump');
     await send('bump');
@@ -58,19 +81,25 @@ async function checkRestart(label, fixture) {
 
     // Answering no leaves the game as it was.
     await answerRestart('No');
-    await page.waitForTimeout(500);
     await expectCount(2, 'after declining restart');
     console.log('PASS: answering no kept the game going');
 
     // Survives an in-app restart, but not a page reload.
-    await page.evaluate(() => { window.__notReloaded = true; });
-
+    await page.evaluate(() => {
+        window.__notReloaded = true;
+        document.getElementById('divOutput').dataset.beforeRestart = 'true';
+    });
     await answerRestart('Yes');
-    // #qv-restarting brackets restartGameCore's actual work (see
-    // verify-wasmplayer-restart-sidebar-dup.mjs) — #txtCommand is back long
-    // before the game has really restarted.
-    await page.waitForSelector('#qv-restarting', { state: 'visible', timeout: 10000 });
-    await page.waitForSelector('#qv-restarting', { state: 'hidden', timeout: 30000 });
+    // The in-app restart swaps in a fresh copy of the UI (so a new #divOutput)
+    // and hides #qv-restarting once the game has really begun again;
+    // #txtCommand is back long before that. Waiting for #qv-restarting to
+    // appear first could miss it under load, so wait for the end state.
+    await page.waitForFunction(() => {
+        const output = document.getElementById('divOutput');
+        return output && output.dataset.beforeRestart === undefined
+            && document.getElementById('qv-restarting')?.classList.contains('hidden')
+            && window.canSendCommand === true;
+    }, null, { timeout: 30000 });
     await page.waitForSelector('#txtCommand', { state: 'visible', timeout: 10000 });
 
     const text = await outputText();
