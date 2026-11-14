@@ -308,7 +308,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         if (methodNoParams == null)
         {
             throw new Exception(
-                $"{name} function does not handle parameters of types {string.Join(", ", types.Select(t => t.Name))}");
+                $"{name} function does not handle parameters of types {string.Join(", ", evaluatedArgs.Select(QuestTypeName))}");
         }
 
         return (true, methodNoParams.Invoke(instance, evaluatedArgs));
@@ -489,6 +489,25 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
 
     private static bool IsStandardNCalcType(object? value) =>
         value is null or int or long or double or float or decimal or byte or short or uint or ulong or ushort or sbyte or bool or string;
+
+    // The type name an author knows a value by, as TypeOf gives it ("int" rather than "Int32"),
+    // falling back to the .NET name for anything that isn't a Quest type.
+    private static string QuestTypeName(object? value)
+    {
+        if (value == null)
+        {
+            return "null";
+        }
+
+        try
+        {
+            return WorldModel.ConvertTypeToTypeName(value.GetType());
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            return value.GetType().Name;
+        }
+    }
 
     private static bool IsIntegerType(object? value) =>
         value is int or long or byte or short or uint or ulong or ushort or sbyte;

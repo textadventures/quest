@@ -569,11 +569,18 @@ internal class ExpressionOwner(WorldModel worldModel)
         return int.Parse(number, CultureInfo.InvariantCulture);
     }
 
+    // So that ToInt works on anything IsInt says it will. A double is still an error, since
+    // dropping its fraction is a decision for the author to make with cast.
+    public int ToInt(int number) => number;
+
     public double ToDouble(string? number)
     {
         ArgumentNullException.ThrowIfNull(number);
         return double.Parse(number, CultureInfo.InvariantCulture);
     }
+
+    // So that ToDouble works on anything IsDouble says it will. An int widens to this overload.
+    public double ToDouble(double number) => number;
 
     public string ToString(int number)
     {
@@ -591,20 +598,25 @@ internal class ExpressionOwner(WorldModel worldModel)
         return Convert.ToString(obj, CultureInfo.InvariantCulture);
     }
 
-    public bool IsInt(string? number)
+    // Whether ToInt will accept value: an int, or a string that converts to one. Takes any value
+    // so that it can check a variable that might hold either.
+    public bool IsInt(object? value) => value switch
     {
-        ArgumentNullException.ThrowIfNull(number);
-        return int.TryParse(number, out _);
-    }
+        int => true,
+        string number => int.TryParse(number, out _),
+        _ => false
+    };
 
-    public bool IsDouble(string? number)
+    // Whether ToDouble will accept value: an int, a double, or a string that converts to one.
+    public bool IsDouble(object? value) => value switch
     {
-        ArgumentNullException.ThrowIfNull(number);
-        return double.TryParse(number,
+        int or double => true,
+        string number => double.TryParse(number,
             NumberStyles.AllowDecimalPoint |
             NumberStyles.AllowLeadingSign,
-            CultureInfo.InvariantCulture, out _);
-    }
+            CultureInfo.InvariantCulture, out _),
+        _ => false
+    };
 
     public async Task<string> GetInput()
     {
