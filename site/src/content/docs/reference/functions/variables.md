@@ -90,47 +90,57 @@ Returns a [boolean](/reference/attributes/types#boolean) indicating whether the 
 
 ## IsDouble
 ```quest
-IsDouble (string number)
+IsDouble (value)
 ```
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [boolean](/reference/attributes/types#boolean) indicating whether the specified string represents a double.
+Returns a [boolean](/reference/attributes/types#boolean) indicating whether [ToDouble](#todouble) will accept **value**: true for an int, a double, or a string that represents a number, and false for anything else.
 
 ## IsInt
 ```quest
-IsInt (string number)
+IsInt (value)
 ```
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [boolean](/reference/attributes/types#boolean) indicating whether the specified string represents an integer.
+Returns a [boolean](/reference/attributes/types#boolean) indicating whether [ToInt](#toint) will accept **value**: true for an int or a string that represents an integer, and false for anything else - including a double, even a whole one like `5.0`.
+
+Because it takes any value, it can check a variable that might hold either a number or a string, such as one set from what the player typed:
+
+```quest
+if (IsInt(count)) {
+  game.count = ToInt(count)
+}
+```
+
+To ask what type a value is, rather than whether it will convert, use [TypeOf](#typeof): `TypeOf(count) = "int"`.
 
 ## ToDouble
 ```quest
-ToDouble (string number)
+ToDouble (value)
 ```
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [double](/reference/attributes/types#double) - converts a valid string to a double.
+Returns a [double](/reference/attributes/types#double) - converts a string, int or double to a double.
 
-Note: An error occurs if the string does not represent a number. As with [ToInt](#toint), this only takes a string - passing an int stops with an error, so use [cast](#cast) to convert one.
+Note: An error occurs if a string does not represent a number. Use [IsDouble](#isdouble) to check first.
 
 See also [HasDouble](/reference/functions/attributes#hasdouble) and [GetDouble](/reference/functions/attributes#getdouble)
 
 ## ToInt
 ```quest
-ToInt (string number)
+ToInt (value)
 ```
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns an [int](/reference/attributes/types#int) - converts a valid string to an integer.
+Returns an [int](/reference/attributes/types#int) - converts a string to an integer. Given an int, it returns it unchanged.
 
-Note: An error occurs if the string does not represent a number. Use [IsInt](#isint) to test if a string represents a number first.
+Note: An error occurs if a string does not represent an integer. Use [IsInt](#isint) to check first.
 
-`ToInt` only takes a string. Passing a double stops with "ToInt function does not handle parameters of types Double" - use [cast](#cast) for that.
+`ToInt` doesn't take a double, since that would mean throwing away anything after the point. Passing one stops with "ToInt function can't take a double" - use [cast](#cast) for that.
 
 See also [GetInt](/reference/functions/attributes#getint) and [HasInt](/reference/functions/attributes#hasint)
 

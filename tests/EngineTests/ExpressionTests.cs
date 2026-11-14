@@ -442,6 +442,76 @@ public class ExpressionTests
         result.ShouldBe(expectedResult);
     }
 
+    // IsInt and IsDouble take any value, so a variable that might hold a number or a string can be
+    // checked, and whenever one says yes, ToInt or ToDouble accepts the same value.
+    [DataTestMethod]
+    [DataRow("IsInt(5)", true)]
+    [DataRow("IsInt(\"5\")", true)]
+    [DataRow("IsInt(\"abc\")", false)]
+    [DataRow("IsInt(4.9)", false)]
+    [DataRow("IsInt(null)", false)]
+    [DataRow("IsInt(true)", false)]
+    [DataRow($"IsInt({ObjectName})", false)]
+    [DataRow($"IsInt({ObjectName}.{IntAttributeName})", true)]
+    [DataRow("IsDouble(5)", true)]
+    [DataRow("IsDouble(4.9)", true)]
+    [DataRow("IsDouble(\"4.9\")", true)]
+    [DataRow("IsDouble(\"abc\")", false)]
+    [DataRow("IsDouble(null)", false)]
+    [DataRow($"IsDouble({ObjectName})", false)]
+    public async Task TestIsIntAndIsDoubleTakeAnyValue(string expression, bool expectedResult)
+    {
+        (await RunExpression<bool>(expression)).ShouldBe(expectedResult);
+    }
+
+    [DataTestMethod]
+    [DataRow("ToInt(5)", 5)]
+    [DataRow($"ToInt({ObjectName}.{IntAttributeName})", IntAttributeValue)]
+    [DataRow("ToDouble(5)", 5.0)]
+    [DataRow("ToDouble(4.9)", 4.9)]
+    public async Task TestToIntAndToDoubleAcceptNumbers(string expression, object expectedResult)
+    {
+        var result = await RunExpressionGeneric(expression);
+        result.ShouldBe(expectedResult);
+    }
+
+    // Dropping a double's fraction stays an explicit choice, made with cast.
+    [TestMethod]
+    public async Task TestToIntRejectsDoubleWithQuestTypeName()
+    {
+        var ex = await Should.ThrowAsync<Exception>(() => RunExpressionGeneric("ToInt(4.9)"));
+        GetExceptionMessages(ex).ShouldContain(m => m.Contains("ToInt function can't take a double"));
+    }
+
+    [TestMethod]
+    public async Task TestParameterTypeErrorUsesQuestTypeNames()
+    {
+        var ex = await Should.ThrowAsync<Exception>(() => RunExpressionGeneric($"LCase({ObjectName})"));
+        GetExceptionMessages(ex).ShouldContain(m => m.Contains("LCase function can't take an object"));
+    }
+
+    [DataTestMethod]
+    [DataRow("Left(\"abc\", 1.5)", "Left function can't take a string and a double")]
+    [DataRow("Left(null, 1.5)", "Left function can't take null and a double")]
+    [DataRow("Left(\"abc\", 1, 2)", "Left function can't take a string, an int and an int")]
+    [DataRow("LCase()", "LCase function can't be called with no parameters")]
+    public async Task TestParameterErrorListsEveryParameter(string expression, string expectedMessage)
+    {
+        var ex = await Should.ThrowAsync<Exception>(() => RunExpressionGeneric(expression));
+        GetExceptionMessages(ex).ShouldContain(m => m.Contains(expectedMessage));
+    }
+
+    private static List<string> GetExceptionMessages(Exception ex)
+    {
+        var messages = new List<string>();
+        for (var e = ex; e != null; e = e.InnerException)
+        {
+            messages.Add(e.Message);
+        }
+
+        return messages;
+    }
+
     [TestMethod]
     public async Task TestCallingNewStringListFunction()
     {

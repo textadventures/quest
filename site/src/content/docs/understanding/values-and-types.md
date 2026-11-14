@@ -163,13 +163,14 @@ gives `Value cannot be null. (Parameter 'obj')`.
 | Function | Does |
 |---|---|
 | `ToString(value)` | Anything to a string |
-| `ToInt(string)` | A string to an integer |
-| `ToDouble(string)` | A string to a double |
+| `ToInt(value)` | A string to an integer (an integer comes back unchanged) |
+| `ToDouble(value)` | A string or integer to a double |
 | `cast(value, "int")` | A double or string to an integer, discarding anything after the point |
 | `cast(value, "double")` | An integer or string to a double |
-| `IsInt(string)`, `IsDouble(string)`, `IsNumeric(string)` | Whether a string will convert |
+| `IsInt(value)`, `IsDouble(value)` | Whether `ToInt` or `ToDouble` will accept a value |
+| `IsNumeric(string)` | Whether a string is a number |
 
-`ToInt` only accepts strings: `ToInt(4.9)` stops with `ToInt function does not handle parameters of types Double`. To turn a double into an integer, use `cast(4.9, "int")`, which gives `4`.
+`ToInt` doesn't accept doubles: `ToInt(4.9)` stops with `ToInt function can't take a double`. To turn a double into an integer, use `cast(4.9, "int")`, which gives `4`.
 
 Always check before converting anything the player typed:
 
