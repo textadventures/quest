@@ -102,7 +102,9 @@ internal sealed class GameDriver
     // FinishWait can find nothing to resume, or have its own turn signal resolved by the
     // prompt's late one and return before the rest of the script has run. Tick and SendEvent
     // start no turn of their own, so FinishWait has no unresolved signal to wait on here.
-    // The trailing yield lets the engine finish resolving the signal it is in the middle of.
+    // This completes on a thread-pool thread, so the answer can run while the engine is still
+    // inside the signal; the engine resolves the turn it was signalling rather than the
+    // answer's, so that's safe (BlockingWait_AnsweredDuringItsOwnSignal_... pins it down).
     public Task NextTurnSuspension()
     {
         var suspended = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -112,13 +114,7 @@ internal sealed class GameDriver
             suspended.TrySetResult();
         }
         _worldModel.TurnSuspended += OnSuspended;
-        return AwaitAndYieldAsync(suspended.Task);
-    }
-
-    private static async Task AwaitAndYieldAsync(Task suspended)
-    {
-        await suspended;
-        await Task.Yield();
+        return suspended.Task;
     }
 
     public async Task<IReadOnlyList<string>> SendCommandAsync(string command)
@@ -371,6 +367,32 @@ public class CallbackTests
         await waitShown.WaitAsync(TimeSpan.FromSeconds(5));
 
         var afterAnswer = await driver.FinishWaitAsync().WaitAsync(TimeSpan.FromSeconds(5));
+        afterAnswer.ShouldContain("timer after wait");
+        await tick.WaitAsync(TimeSpan.FromSeconds(5));
+    }
+
+    // An answer can arrive while the engine is still inside the signal that showed the prompt,
+    // between telling TurnSuspended's handlers and resolving the turn - as it can from another
+    // thread, or from a handler itself. The engine must resolve the turn it was signalling, not
+    // the one the answer has just started, or the answer returns before the rest of the script
+    // has run. Answering from inside the handler makes that interleaving certain.
+    [TestMethod]
+    public async Task BlockingWait_AnsweredDuringItsOwnSignal_FinishWaitWaitsForRestOfScript()
+    {
+        var driver = await GameDriver.LoadAsync("callbacktest.aslx");
+        await driver.SendCommandAsync("enableblockwaittimer");
+        Task<IReadOnlyList<string>>? answered = null;
+        void AnswerNow()
+        {
+            driver.Model.TurnSuspended -= AnswerNow;
+            answered = driver.FinishWaitAsync();
+        }
+        driver.Model.TurnSuspended += AnswerNow;
+
+        var tick = driver.Model.Tick(1);
+
+        Assert.IsNotNull(answered, "Answering inside the handler should have started FinishWait");
+        var afterAnswer = await answered.WaitAsync(TimeSpan.FromSeconds(5));
         afterAnswer.ShouldContain("timer after wait");
         await tick.WaitAsync(TimeSpan.FromSeconds(5));
     }

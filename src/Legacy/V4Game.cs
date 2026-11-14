@@ -164,8 +164,11 @@ public partial class V4Game : IGame, IGameDebug
         _player.SetTurnPending(_waitTcs is { Task.IsCompleted: false } || _commandTcs is { Task.IsCompleted: false });
         // Fires on every suspension, including one inside Begin() (an "enter" in the start script
         // never lets Begin() return), so a buffering IPlayer flushes the prompt that led to it.
+        // The turn is taken first because a handler can answer the prompt, starting a turn of its
+        // own that this signal mustn't resolve.
+        var turn = _turnSuspendedTcs;
         TurnSuspended?.Invoke();
-        _turnSuspendedTcs?.TrySetResult();
+        turn?.TrySetResult();
     }
 
     private async Task DoWaitAsync()
