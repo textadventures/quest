@@ -854,6 +854,7 @@
   <template name="EditorVerbAttributes">Attribute</template>
   <template name="EditorWalkthroughWalkthrough">Walkthrough</template>
   <template name="EditorWalkthroughName">Name</template>
+  <template name="EditorWalkthroughSeed">Zufallsstartwert</template>
   <template name="EditorExpressionsplayeriscarrying">Spieler trägt Objekt</template>
   <template name="EditorExpressionsplayerisnotcarrying">Spieler trägt Objekt nicht</template>
   <template name="EditorExpressionsobjecthasflag">Objekt besitzt Zustand</template>

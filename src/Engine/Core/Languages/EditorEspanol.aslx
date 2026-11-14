@@ -857,6 +857,7 @@
   <template name="EditorVerbAttributes">Atributos</template>
   <template name="EditorWalkthroughWalkthrough">Solución</template>
   <template name="EditorWalkthroughName">Nombre</template>
+  <template name="EditorWalkthroughSeed">Semilla aleatoria</template>
   <template name="EditorExpressionsplayeriscarrying">el jugador lleva el objeto</template>
   <template name="EditorExpressionsplayerisnotcarrying">el jugador no lleva el objeto</template>
   <template name="EditorExpressionsobjecthasflag">el objeto tiene una señal</template>

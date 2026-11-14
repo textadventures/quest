@@ -25,7 +25,7 @@ The steps are the ones the player's walkthrough runner understands: a command, `
 - **Anything that means the walkthrough no longer does what its author wrote fails it**: a failed assert, one that can't be evaluated, a script error, a menu answer that isn't an option, a step that doesn't match what the game is waiting for, or the game ending before the last step. The player's runner only stops at a failed assert.
 - **`delay:` advances the game clock instead of waiting.** In the player a delay is real time between steps, during which timers keep running. Here, after every step from then on, the clock moves on by the delay, a whole second at a time.
 
-The seed is fixed (1234) unless `--seed` gives another, so a walkthrough that passes once passes every time.
+The seed is fixed, so a walkthrough that passes once passes every time: the walkthrough's own `seed` attribute (or its parent's, for a sub-walkthrough), or else 1234, as the editor's Play and Record use. `--seed` overrides both.
 
 ## `qv check`
 

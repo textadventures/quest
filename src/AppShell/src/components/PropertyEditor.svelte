@@ -208,8 +208,13 @@
         return lines.join("\n");
     }
 
-    function onNumberChange(attribute: string, controlType: string, value: string) {
-        if ($selectedKey) recordResult(attribute, setAttribute($selectedKey, attribute, controlType, value));
+    function onNumberChange(attribute: string, controlType: string, value: string, nullable = false) {
+        if (!$selectedKey) return;
+        if (nullable && value === "") {
+            recordResult(attribute, removeAttribute($selectedKey, attribute));
+            return;
+        }
+        recordResult(attribute, setAttribute($selectedKey, attribute, controlType, value));
     }
 
     function onDropdownChange(attribute: string, value: string, nullable = false) {
@@ -692,7 +697,7 @@
             class="input text-xs py-0.5 px-1.5 w-auto"
             style={widthStyle(ctrl)}
             value={attrValue(ctrl.attribute!) ?? ""}
-            onchange={(e) => onNumberChange(ctrl.attribute!, "number", (e.target as HTMLInputElement).value)}
+            onchange={(e) => onNumberChange(ctrl.attribute!, "number", (e.target as HTMLInputElement).value, ctrl.nullable)}
         />
     {:else if ctrl.controlType === "numberdouble"}
         <input
@@ -703,7 +708,7 @@
             class="input text-xs py-0.5 px-1.5 w-auto"
             style={widthStyle(ctrl)}
             value={attrValue(ctrl.attribute!) ?? ""}
-            onchange={(e) => onNumberChange(ctrl.attribute!, "numberdouble", (e.target as HTMLInputElement).value)}
+            onchange={(e) => onNumberChange(ctrl.attribute!, "numberdouble", (e.target as HTMLInputElement).value, ctrl.nullable)}
         />
     {:else if ctrl.controlType === "dropdown" && ctrl.options}
         {#if ctrl.freetext}

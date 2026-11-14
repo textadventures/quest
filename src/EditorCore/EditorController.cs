@@ -780,6 +780,13 @@ public sealed class EditorController : IDisposable
         UpdateTree();
     }
 
+    // The seed a walkthrough's Play and Record use: its own, or its parent's (see Walkthrough.GetSeed),
+    // or null when neither sets one.
+    public int? GetWalkthroughSeed(string elementKey) =>
+        WorldModel.Elements.ContainsKey(elementKey) && WorldModel.Elements.Get(elementKey) is { ElemType: ElementType.Walkthrough } e
+            ? Walkthrough.GetSeed(e)
+            : null;
+
     public string? GetElementEditorName(string elementKey)
     {
         // elementKey is "game", "k1" (a command), "someobject", "myexit" etc.

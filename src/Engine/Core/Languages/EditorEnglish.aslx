@@ -853,6 +853,7 @@
   <template name="EditorVerbAttributes">Attributes</template>
   <template name="EditorWalkthroughWalkthrough">Walkthrough</template>
   <template name="EditorWalkthroughName">Name</template>
+  <template name="EditorWalkthroughSeed">Random seed</template>
   <template name="EditorExpressionsplayeriscarrying">player is carrying object</template>
   <template name="EditorExpressionsplayerisnotcarrying">player is not carrying object</template>
   <template name="EditorExpressionsobjecthasflag">object has flag</template>
