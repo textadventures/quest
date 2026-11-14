@@ -407,6 +407,7 @@
     "codeViewPanel.applyingChanges": "Applying changes…",
     "codeViewPanel.applyConfirmMessage": "Applying reloads the whole game from this text and discards undo history. Continue?",
     "codeViewPanel.applyLabel": "Apply",
+    "codeViewPanel.notApplied": "Changes not applied yet",
     "codeViewPanel.unsavedChangesMessage": "You have unsaved raw XML changes. Applying reloads the game and discards undo history.",
     "codeViewPanel.keepEditing": "Keep editing",
     "codeViewPanel.discardChanges": "Discard changes",

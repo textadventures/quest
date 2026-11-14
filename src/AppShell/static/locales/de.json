@@ -407,6 +407,7 @@
     "codeViewPanel.applyingChanges": "Änderungen übernehmen…",
     "codeViewPanel.applyConfirmMessage": "Beim Übernehmen wird das gesamte Spiel aus diesem Text neu geladen und der Rückgängig-Verlauf verworfen. Fortfahren?",
     "codeViewPanel.applyLabel": "Übernehmen",
+    "codeViewPanel.notApplied": "Änderungen noch nicht übernommen",
     "codeViewPanel.unsavedChangesMessage": "Du hast ungespeicherte Änderungen im XML-Quellcode. Beim Übernehmen wird das Spiel neu geladen und der Rückgängig-Verlauf verworfen.",
     "codeViewPanel.keepEditing": "Weiter bearbeiten",
     "codeViewPanel.discardChanges": "Änderungen verwerfen",

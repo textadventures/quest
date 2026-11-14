@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount, untrack } from "svelte";
-    import { getGameXml, setGameXml, setLibraryXml, getLibraryXml, isBuiltInLibrary, codeViewCloseRequested, treeNodes, gameFilename, getAssetText } from "#lib/editor-store.js";
+    import { getGameXml, setGameXml, setLibraryXml, getLibraryXml, isBuiltInLibrary, codeViewCloseRequested, registerCodeViewApply, treeNodes, gameFilename, getAssetText } from "#lib/editor-store.js";
     import { chooseDialog, confirmDialog } from "#lib/confirm.js";
     import CodeEditor from "./CodeEditor.svelte";
     import { t } from "#lib/i18n/index.js";
@@ -23,8 +23,8 @@
     // Files the panel can show: the game's own file first, then every Included Library in tree
     // order. Built-in (engine-shipped) libraries are read-only — they don't belong to the game,
     // so they can't be edited here (see isBuiltInLibrary / WorldModel.IsBuiltInLibrary).
-    // treeNodes/gameFilename don't change while the panel is open (applying a change closes it,
-    // and the panel replaces the tree), so this is effectively constant for the panel's lifetime.
+    // treeNodes/gameFilename only change when an apply reloads the game, and the panel replaces
+    // the tree, so this is effectively constant for the panel's lifetime.
     const files: PanelFile[] = $derived([
         { filename: $gameFilename ?? "game.aslx", isMain: true, isBuiltIn: false },
         ...$treeNodes
@@ -124,7 +124,12 @@
             const result = file.isMain
                 ? await setGameXml(xml)
                 : await setLibraryXml(file.filename, xml);
-            if (result === "ok") return true;
+            if (result === "ok") {
+                // What's on screen is now what the game holds, so it's the new baseline — matters
+                // when the panel stays open after an apply that Preview/Save triggered.
+                originalXml = xml;
+                return true;
+            }
             // Keep the panel open with the user's text intact so they can fix and retry —
             // SetGameXml()/SetLibraryXml() never touched the live game on a failure like this.
             error = result.startsWith("error:") ? result.slice("error:".length) : result;
@@ -179,9 +184,22 @@
         }
     });
 
+    // Preview, Save, Save As, Backup and Publish apply pending edits first, without the Apply
+    // button's confirmation: clicking one of them is the author asking to use what they just
+    // typed, and having to remember Apply first is a trap people kept falling into. The panel
+    // stays open so they can keep editing and previewing.
+    async function applyForAction(): Promise<boolean> {
+        if (applying) return false;
+        // CodeEditor reports its text on blur, so a keyboard/menu Save while the cursor is still
+        // in it would otherwise apply whatever was there before the latest keystrokes.
+        (document.activeElement as HTMLElement | null)?.blur();
+        return applyChanges();
+    }
+
     // Initial load: the game's own file.
     onMount(() => {
         void loadFile(0);
+        return registerCodeViewApply(applyForAction);
     });
 </script>
 
@@ -242,6 +260,9 @@
         {/if}
 
         <div class="flex items-center justify-end gap-2 px-4 py-2 border-t border-surface-200-800">
+            {#if hasChanges && !isReadOnly}
+                <span class="mr-auto text-xs text-warning-600-400" role="status" data-testid="code-view-not-applied">{t("codeViewPanel.notApplied")}</span>
+            {/if}
             <button type="button" class="btn btn-xs preset-tonal" onclick={attemptClose}>{t("common.cancel")}</button>
             <button type="button" class="btn btn-xs preset-filled-primary-500" onclick={handleApplyButton} disabled={applying || loading || isReadOnly}>{t("codeViewPanel.applyLabel")}</button>
         </div>

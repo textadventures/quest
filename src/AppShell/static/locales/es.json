@@ -407,6 +407,7 @@
     "codeViewPanel.applyingChanges": "Aplicando cambios…",
     "codeViewPanel.applyConfirmMessage": "Al aplicar se recarga todo el juego desde este texto y se descarta el historial de deshacer. ¿Continuar?",
     "codeViewPanel.applyLabel": "Aplicar",
+    "codeViewPanel.notApplied": "Cambios aún no aplicados",
     "codeViewPanel.unsavedChangesMessage": "Tienes cambios sin guardar en el código XML. Al aplicar se recargará el juego y se descartará el historial de deshacer.",
     "codeViewPanel.keepEditing": "Seguir editando",
     "codeViewPanel.discardChanges": "Descartar cambios",

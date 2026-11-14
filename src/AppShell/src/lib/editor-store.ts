@@ -218,6 +218,24 @@ export const codeViewPanelOpen = writable(false);
 // would silently discard any not-yet-applied raw XML edits.
 export const codeViewCloseRequested = writable(0);
 
+// Set by CodeViewPanel while it's open: applies its not-yet-applied raw XML edits, resolving false
+// when they couldn't be (invalid XML — the panel shows why). Preview, Save, Save As, Backup and
+// Publish call applyPendingCodeViewEdits() first, so they never silently act on the game as it was
+// before what the author just typed. saveGame() itself deliberately doesn't: it also runs on tab
+// hide and before navigating away, where reloading the whole game unasked would be a surprise.
+let _codeViewApply: (() => Promise<boolean>) | null = null;
+
+export function registerCodeViewApply(apply: () => Promise<boolean>): () => void {
+    _codeViewApply = apply;
+    return () => {
+        if (_codeViewApply === apply) _codeViewApply = null;
+    };
+}
+
+export function applyPendingCodeViewEdits(): Promise<boolean> {
+    return _codeViewApply ? _codeViewApply() : Promise.resolve(true);
+}
+
 function refreshUndoRedo() {
     canUndo.set(_bridge?.CanUndo() ?? false);
     canRedo.set(_bridge?.CanRedo() ?? false);
