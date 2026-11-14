@@ -395,14 +395,17 @@ async function run() {
     await ifBlock.locator('input[type="checkbox"]').click();
     const scriptToolbar = ifBlock.locator('xpath=following-sibling::div[1]');
     await scriptToolbar.waitFor({ timeout: 10000 });
-    const scriptToolbarButtons = await scriptToolbar.locator('button').allTextContents();
-    if (scriptToolbarButtons.length === 0) throw new Error('ScriptEditor: selection toolbar not found');
-    for (const text of scriptToolbarButtons) {
-        // "↑ Move up" / "↓ Move down" keep their arrow as a literal prefix outside t(),
-        // same convention as the "+ Add script" buttons throughout this app.
-        const arrowPrefix = text.trim().startsWith('↑') ? '↑ ' : text.trim().startsWith('↓') ? '↓ ' : null;
-        if (arrowPrefix) assertPseudoWithPrefix('ScriptEditor selection-toolbar button', text, arrowPrefix);
-        else assertPseudo('ScriptEditor selection-toolbar button', text);
+    const scriptToolbarButtons = scriptToolbar.locator('button');
+    if (await scriptToolbarButtons.count() === 0) throw new Error('ScriptEditor: selection toolbar not found');
+    for (const button of await scriptToolbarButtons.all()) {
+        const text = (await button.textContent()) ?? '';
+        // Move up/down and Deselect all are glyph-only (↑/↓/×, not translated, like
+        // every other glyph button): their translated label is the aria-label.
+        if (['↑', '↓', '×'].includes(text.trim())) {
+            assertPseudo('ScriptEditor selection-toolbar glyph button label', (await button.getAttribute('aria-label')) ?? '');
+        } else {
+            assertPseudo('ScriptEditor selection-toolbar button', text);
+        }
     }
     assertPseudo('ScriptEditor "N selected" copy', await scriptToolbar.locator('span').last().textContent());
 
