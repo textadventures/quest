@@ -215,6 +215,8 @@ try {
         await page.waitForFunction(() => document.querySelector('#qv-saves-list [data-slot]'), null, { timeout: 5000 })
             .catch(() => { throw new Error('the save never appeared in the Save/Load list'); });
         await page.click('#qv-saves-list [data-slot]');
+        // The game has moved on since the save, so the dialog checks before loading.
+        await page.click('#qv-saves-confirm-yes');
         await page.waitForFunction(() => !document.querySelector('qv-output').textContent.includes('Panel set.') && window.canSendCommand,
             null, { timeout: 30000 })
             .catch(() => { throw new Error("loading didn't restore the saved game"); });

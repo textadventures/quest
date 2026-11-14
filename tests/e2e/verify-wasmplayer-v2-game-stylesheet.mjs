@@ -85,6 +85,8 @@ try {
         await page.click('#cmdSave');
         await page.waitForFunction(() => document.querySelector('#qv-saves-list [data-slot]'), null, { timeout: 5000 });
         await page.click('#qv-saves-list [data-slot]');
+        // A command since the save, so the dialog checks before loading.
+        await page.click('#qv-saves-confirm-yes');
         await page.waitForFunction(() => window.canSendCommand && document.querySelector('qv-output')
             && !document.querySelector('qv-output').textContent.includes('All fine.'), null, { timeout: 30000 })
             .catch(() => { throw new Error("loading didn't restore the saved game"); });

@@ -1,5 +1,5 @@
 import { ipcMain } from "electron";
-import { listSaves, saveGame, loadGame, deleteSaveSlot } from "../save-store";
+import { listSaves, saveGame, loadGame, deleteSaveSlot, renameSaveSlot } from "../save-store";
 
 // Backs player-preload.ts's window.electronGameSaves — the player window's
 // own bridge (like window.electronTranscripts, registering here doesn't by
@@ -17,7 +17,12 @@ export function registerGameSaveHandlers(): void {
             data: Uint8Array,
             name: string | null,
             chromeStrings?: Record<string, string> | null,
-        ) => saveGame(gameId, slotIndex, data, name, chromeStrings),
+            location?: string | null,
+        ) => saveGame(gameId, slotIndex, data, name, chromeStrings, location),
+    );
+
+    ipcMain.handle("gamesave:rename", async (_event, gameId: string, slotIndex: number, name: string | null) =>
+        renameSaveSlot(gameId, slotIndex, name),
     );
 
     ipcMain.handle("gamesave:load", async (_event, gameId: string, slotIndex: number) => loadGame(gameId, slotIndex));

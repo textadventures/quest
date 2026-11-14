@@ -54,6 +54,34 @@ public class ChromeStringsTests
         Assert.AreEqual("Gib deinen Befehl ein", resolved["CommandInputLabel"]);
     }
 
+    // A game published before SaveNameOptional and SaveButton existed carries the Core templates of
+    // the time, inlined, so it has only the keys they replaced.
+    private static Dictionary<string, string> ResolveOldGame(string saveNamePlaceholder, string saveNew)
+    {
+        var templates = new Dictionary<string, string>
+        {
+            ["SaveNamePlaceholder"] = saveNamePlaceholder,
+            ["SaveNew"] = saveNew,
+        };
+        return ChromeStrings.ResolveTemplates(key => templates.GetValueOrDefault(key));
+    }
+
+    [TestMethod]
+    public void TestAnOldEnglishGameGetsTheNewWording()
+    {
+        var resolved = ResolveOldGame("Save name", "Save new");
+        Assert.AreEqual("Name (optional)", resolved["SaveNameOptional"]);
+        Assert.AreEqual("Save", resolved["SaveButton"]);
+    }
+
+    [TestMethod]
+    public void TestAnOldTranslatedGameKeepsItsTranslation()
+    {
+        var resolved = ResolveOldGame("Name des Spielstands", "Neu speichern");
+        Assert.AreEqual("Name des Spielstands", resolved["SaveNameOptional"]);
+        Assert.AreEqual("Neu speichern", resolved["SaveButton"]);
+    }
+
     [TestMethod]
     public async Task TestLanguageWithoutChromeTemplatesFallsBackToEnglish()
     {

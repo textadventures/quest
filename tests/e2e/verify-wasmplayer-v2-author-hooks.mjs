@@ -99,6 +99,8 @@ async function playOn(browser, ui) {
     await page.waitForFunction(() => document.querySelector('#qv-saves-list [data-slot]'), null, { timeout: 5000 })
         .catch(() => { throw new Error(`[${ui}] the save never appeared in the Save/Load list`); });
     await page.click('#qv-saves-list [data-slot]');
+    // The game has moved on since the save, so the dialog checks before loading.
+    await page.click('#qv-saves-confirm-yes');
     await page.waitForFunction((sel) => {
         const text = document.querySelector(sel)?.textContent ?? '';
         return text.includes('Hooks set.') && !text.includes('Later on.') && window.canSendCommand;

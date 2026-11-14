@@ -129,7 +129,10 @@ async function restart() {
     for (const time of [1, 2]) {
         await page.click('#cmdSave');
         await page.waitForSelector('#qv-saves[open]', { timeout: 10000 });
-        await page.click('#qv-saves-start-new');
+        await page.click('#qv-saves-restart');
+        // The dialog asks first when anything has happened since the last save.
+        await page.locator('#qv-saves-confirm-yes, #qv-restarting:not(.hidden)').first().waitFor({ timeout: 5000 });
+        if (await page.locator('#qv-saves-confirm-yes').count()) await page.click('#qv-saves-confirm-yes');
         await page.waitForSelector('#qv-restarting', { state: 'visible', timeout: 5000 });
         await page.waitForSelector('#qv-restarting', { state: 'hidden', timeout: 30000 });
         const after = await state();

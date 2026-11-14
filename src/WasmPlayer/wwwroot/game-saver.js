@@ -47,10 +47,12 @@ const GameSaver = (() => {
         }
     }
 
-    async function saveGame(gameId, slotIndex, dataUint8Array, name) {
+    // location: where the player was (the game's location bar text), shown beside the save so a
+    // player can tell their saves apart without naming them.
+    async function saveGame(gameId, slotIndex, dataUint8Array, name, location) {
         const chromeStrings = window.WebPlayer?.chromeStrings ?? null;
         if (useElectronGameSaves()) {
-            await window.electronGameSaves.save(gameId, slotIndex, dataUint8Array, name || null, chromeStrings);
+            await window.electronGameSaves.save(gameId, slotIndex, dataUint8Array, name || null, chromeStrings, location || null);
             return;
         }
         const db = await openDatabase();
@@ -61,7 +63,8 @@ const GameSaver = (() => {
             gameId,
             slotIndex,
             data: dataUint8Array,
-            name,
+            name: name || null,
+            location: location || null,
             timestamp: new Date(),
             // Snapshot of the game's own chrome-string translations at the moment
             // it was saved - lets the boot-time "Continue your game?" prompt show
@@ -96,6 +99,7 @@ const GameSaver = (() => {
                         slotIndex: entry.slotIndex,
                         name: entry.name || null,
                         timestamp: entry.timestamp || null,
+                        location: entry.location || null,
                         chromeStrings: entry.chromeStrings || null,
                     }));
 
@@ -117,6 +121,25 @@ const GameSaver = (() => {
         return new Promise((resolve, reject) => {
             request.onsuccess = () => resolve(request.result?.data || null);
             request.onerror = () => reject(request.error);
+        });
+    }
+
+    async function renameSaveSlot(gameId, slotIndex, name) {
+        if (useElectronGameSaves()) {
+            await window.electronGameSaves.rename(gameId, slotIndex, name || null);
+            return;
+        }
+        const db = await openDatabase();
+        const tx = db.transaction('saves', 'readwrite');
+        const store = tx.objectStore('saves');
+        const request = store.get([gameId, slotIndex]);
+        request.onsuccess = () => {
+            if (request.result) store.put({...request.result, name: name || null});
+        };
+
+        return new Promise((res, rej) => {
+            tx.oncomplete = res;
+            tx.onerror = rej;
         });
     }
 
@@ -143,26 +166,40 @@ const GameSaver = (() => {
 
     let persistenceRequested = false;
 
+    // Saves the game as it is now into slotIndex, or a new slot. A save with no name is shown by
+    // where the player was and when (see renderSavesList in wasm-player.js), so none is made up.
+    async function saveCurrentGame(slotIndex, name) {
+        const gameId = WebPlayer.gameId;
+        const saveData = playerUi.getOutputHtml();
+        const result = await WebPlayer.uiSaveGame(saveData);
+        slotIndex ??= await nextSlotIndex(gameId);
+        await saveGame(gameId, slotIndex, result, name, playerUi.getLocation?.() || null);
+        playerUi.gameSaved();
+        WebPlayer.onGameSaved?.();
+        if (!persistenceRequested) {
+            await ensurePersistentStorage();
+            persistenceRequested = true;
+        }
+        return {slotIndex, name: name || null};
+    }
+
+    function timeOf(save) {
+        return save.timestamp ? new Date(save.timestamp).getTime() : 0;
+    }
+
     return {
-        save: async (name) => {
-            const gameId = WebPlayer.gameId;
-            const saveData = playerUi.getOutputHtml();
-            const result = await WebPlayer.uiSaveGame(saveData);
-            const slotIndex = await nextSlotIndex(gameId);
-            // Locale-formatted (not ISO) so it reads naturally wherever it's shown —
-            // WebPlayer's Slots list shows only the name, with no separate timestamp.
-            const labelTemplate = window.WebPlayer?.chromeStrings?.SavedGameDefaultLabel || "Saved game — [timestamp]";
-            const label = name || labelTemplate.replace('[timestamp]', new Date().toLocaleString());
-            await saveGame(gameId, slotIndex, result, label);
-            playerUi.gameSaved();
-            if (!persistenceRequested) {
-                await ensurePersistentStorage();
-                persistenceRequested = true;
-            }
-            return {slotIndex, name: label};
+        save: async (name) => saveCurrentGame(null, name),
+        // Replaces a save with the game as it is now, keeping its name.
+        overwrite: async (slotIndex) => {
+            const existing = (await listSaves(WebPlayer.gameId)).find(s => s.slotIndex === slotIndex);
+            return saveCurrentGame(slotIndex, existing?.name);
         },
+        rename: async (slotIndex, name, gameId = WebPlayer.gameId) => {
+            return await renameSaveSlot(gameId, slotIndex, name);
+        },
+        // Newest first.
         listSaves: async (gameId = WebPlayer.gameId) => {
-            return await listSaves(gameId);
+            return (await listSaves(gameId)).sort((a, b) => timeOf(b) - timeOf(a) || b.slotIndex - a.slotIndex);
         },
         load: async (slotIndex, gameId = WebPlayer.gameId) => {
             return await loadGame(gameId, slotIndex);

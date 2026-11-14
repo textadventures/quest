@@ -171,6 +171,7 @@ const adapter: PlayerUiAdapter = {
 
     // Saving
     getOutputHtml: () => output()?.getHtml() ?? '',
+    getLocation: () => player()?.location?.textContent?.trim() ?? '',
     gameSaved() {
         output()?.addText(`${WebPlayer.chromeStrings?.GameSaved ?? 'Game saved.'}<br>`);
         state.hasUnsavedProgress = false;

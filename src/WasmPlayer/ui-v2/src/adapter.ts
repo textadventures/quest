@@ -58,6 +58,8 @@ export interface PlayerUiAdapter {
     // ── Saving ──
 
     getOutputHtml(): string;
+    /** The location bar's text, for the Save/Load dialog to show beside a save. Empty when there's none. */
+    getLocation(): string;
     gameSaved(): void;
     clearUnsavedProgress(): void;
     setCanSave(value: boolean): void;

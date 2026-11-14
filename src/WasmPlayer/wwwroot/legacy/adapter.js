@@ -54,6 +54,7 @@ window.QuestPlayerUis.legacy = {
 
     // Saving.
     getOutputHtml: () => $("#divOutput").html(),
+    getLocation: () => $("#location").text().trim(),
     gameSaved() {
         addText(`${window.WebPlayer?.chromeStrings?.GameSaved ?? "Game saved."}<br>`);
         clearUnsavedProgress();
