@@ -85,6 +85,9 @@ export default defineConfig({
   ],
   server: {
     port: appShellPort,
+    // Fail rather than move to the next free port: dev.sh prints this port, and
+    // the WasmPlayer on the port after it belongs to this checkout.
+    strictPort: true,
     proxy: {
       // Proxy WasmPlayer through the same origin so BroadcastChannel works between editor and player tabs.
       '/player': {
