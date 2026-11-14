@@ -173,12 +173,17 @@ test('v2-picture-frame', async ({ baseURL }) => {
             check(during === before, `the turn doesn't scroll while the frame's picture is loading (${before} → ${during})`);
 
             await frameLoaded(page, 'cellar.png');
-            // Let the smooth scroll that follows the picture start, then settle.
-            await page.waitForTimeout(300);
-            await page.waitForFunction(() => {
+            // Wait for the smooth scroll that follows the picture to get there and stop. (Waiting a
+            // fixed time for it to start wasn't enough on a busy machine: the page hadn't moved yet,
+            // so it already looked settled.) The check below says where it ended up if it never does.
+            await page.waitForFunction((offset) => {
+                const header = document.querySelector('[data-qv-part="picture-frame"]')?.closest('.qv-header');
+                const headerBottom = header?.getBoundingClientRect().bottom ?? 0;
+                const start = document.querySelector('qv-output').getBoundingClientRect().top + offset;
+                if (start < headerBottom || start >= headerBottom + 30) return false;
                 const y = window.scrollY;
                 return new Promise((r) => setTimeout(() => r(window.scrollY === y), 300));
-            }, null, { timeout: 5000 });
+            }, turnStart, { timeout: 5000 }).catch(() => {});
             f = await frame(page);
             const start = await page.evaluate((offset) => document.querySelector('qv-output').getBoundingClientRect().top + offset, turnStart);
             check(f.imgHeight > 200 && start >= f.headerBottom && start < f.headerBottom + 30,

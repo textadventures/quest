@@ -24,9 +24,40 @@ test('legacy-panes-keyboard', async ({ baseURL }) => {
     const browser = await chromium.launch();
     const page = await browser.newPage({ viewport: { width: 1200, height: 900 } });
 
+    // The legacy UI puts focus back in #txtCommand a little after a turn's output appears: from
+    // setPanelHeight()'s 100ms timer, from the end of the scroll it starts, and when the inview
+    // poll (every 250ms) first sees the command box. A keyboard check made before those have run
+    // can have its focus taken away, which happened on a busy machine. This counts the
+    // setPanelHeight() calls whose timer hasn't fired yet: the counter's own 100ms timer is
+    // set after the player's, so it runs after it.
+    await page.addInitScript(() => {
+        let setPanelHeight;
+        window.__pendingPanelHeights = 0;
+        Object.defineProperty(window, 'setPanelHeight', {
+            configurable: true,
+            get: () => setPanelHeight,
+            set: fn => {
+                setPanelHeight = function (...args) {
+                    window.__pendingPanelHeights++;
+                    const result = fn.apply(this, args);
+                    setTimeout(() => window.__pendingPanelHeights--, 100);
+                    return result;
+                };
+            },
+        });
+    });
+
     async function load() {
         await page.goto(`${BASE}/?url=${encodeURIComponent(GAME)}`);
         await page.locator('#divOutput').getByText('You are in a room.').first().waitFor({ timeout: 60000 });
+    }
+
+    // Waits until nothing from the last turn is still going to refocus the command box.
+    async function settle() {
+        await page.waitForFunction(() => window.canSendCommand === true
+            && window.__pendingPanelHeights === 0
+            && !!window.$('#txtCommand').data('inview')
+            && !window.$('html,body').is(':animated'), null, { timeout: 15000 });
     }
 
     // Waits for one more copy of the reply than was there before, as a command can be sent twice.
@@ -67,6 +98,7 @@ test('legacy-panes-keyboard', async ({ baseURL }) => {
         console.log('PASS: the pane lists are labelled listboxes, one Tab stop each');
 
         // Tab from the accordion header's button into the list.
+        await settle();
         await page.locator('#inventoryLabel button').focus();
         await page.keyboard.press('Tab');
         let f = await focused();
@@ -97,6 +129,7 @@ test('legacy-panes-keyboard', async ({ baseURL }) => {
         console.log(`PASS: Enter on an item moves to its first verb button ("${verb}"), which runs the command`);
 
         // Places and Objects too, and the list keeps focus when the game refreshes it.
+        await settle();
         await page.locator('#placesObjectsLabel button').focus();
         await page.keyboard.press('Tab');
         f = await focused();

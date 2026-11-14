@@ -37,6 +37,18 @@ test('v2-game-features', async ({ baseURL }) => {
     async function open(url, context = browser) {
         const page = await context.newPage();
         page.on('pageerror', err => console.log('[pageerror]', err.message));
+        // Counts the characters taken out of the output, so positions in it (see position())
+        // stay put. A dialogue's old options fade out and go 250ms after the player moves on,
+        // and on a busy machine that can fall between measuring a position and reading from it.
+        await page.addInitScript(() => {
+            window.__qvRemovedChars = 0;
+            new MutationObserver(records => {
+                for (const record of records) {
+                    if (!record.target.closest?.('qv-output')) continue;
+                    for (const node of record.removedNodes) window.__qvRemovedChars += node.textContent.length;
+                }
+            }).observe(document, { childList: true, subtree: true });
+        });
         await page.goto(`${baseUrl}/?url=${url}&ui=v2`);
         await page.waitForSelector(input, { state: 'visible', timeout: 60000 });
         return page;
@@ -49,9 +61,14 @@ test('v2-game-features', async ({ baseURL }) => {
         if (await page.inputValue(input) !== '') throw new Error(`"${command}" wasn't accepted`);
     }
 
+    // Positions count everything ever printed, including output since removed, so a position
+    // taken before a turn still marks the same place after it.
     const output = page => page.$eval('qv-output', el => el.textContent);
+    const position = page => page.$eval('qv-output', el => el.textContent.length + window.__qvRemovedChars);
+    const positionOf = (page, text) => page.$eval('qv-output', (el, t) => el.textContent.lastIndexOf(t) + window.__qvRemovedChars, text);
+    const outputSince = (page, since) => page.$eval('qv-output', (el, start) => el.textContent.slice(Math.max(0, start - window.__qvRemovedChars)), since);
     const hasOutput = (page, text, since = 0) => page.waitForFunction(
-        ([t, start]) => document.querySelector('qv-output').textContent.slice(start).includes(t),
+        ([t, start]) => document.querySelector('qv-output').textContent.slice(Math.max(0, start - window.__qvRemovedChars)).includes(t),
         [text, since], { timeout: 15000 });
 
     async function prompts() {
@@ -69,17 +86,17 @@ test('v2-game-features', async ({ baseURL }) => {
         console.log('PASS: clicking one chooses it, and the links go');
 
         await send(page, 'menufn');
-        await hasOutput(page, '4: Yellow', (await output(page)).lastIndexOf('You chose Blue'));
+        await hasOutput(page, '4: Yellow', await positionOf(page, 'You chose Blue'));
         await send(page, '2');
         await hasOutput(page, 'You chose Green');
         console.log('PASS: typing an option number chooses it');
 
         await send(page, 'menufn');
         await page.waitForTimeout(300);
-        let before = (await output(page)).length;
+        let before = await position(page);
         await send(page, 'xyzzy');
         await page.waitForTimeout(800);
-        check(!(await output(page)).slice(before).includes("I don't understand"), 'other input is ignored while an uncancellable menu is open');
+        check(!(await outputSince(page, before)).includes("I don't understand"), 'other input is ignored while an uncancellable menu is open');
         await send(page, '1');
         await hasOutput(page, 'You chose Red');
 
@@ -96,7 +113,7 @@ test('v2-game-features', async ({ baseURL }) => {
         await hasOutput(page, 'You hand over $50.');
 
         await send(page, 'menucmd');
-        before = (await output(page)).length;
+        before = await position(page);
         await page.waitForTimeout(300);
         check(await noDialog(), 'so does the show menu script command');
         await send(page, '4');
@@ -114,17 +131,17 @@ test('v2-game-features', async ({ baseURL }) => {
 
         await send(page, 'look at signpost');
         await hasOutput(page, 'talk to the guard');
-        let before = (await output(page)).length;
+        let before = await position(page);
         await link('guard_intro').first().click();
         await hasOutput(page, 'The guard eyes you suspiciously.', before);
-        const opened = (await output(page)).slice(before);
+        const opened = await outputSince(page, before);
         check(!opened.includes("don't understand") && !opened.includes('guard_intro'), 'a {page:} link starts the dialogue, without echoing the internal name');
         await page.waitForFunction(() => window.canSendCommand === true);
         await send(page, '2');
         await hasOutput(page, 'The castle is closed.');
 
         await send(page, 'talk');
-        await hasOutput(page, '1: Ask about the weather', (await output(page)).lastIndexOf('The castle is closed.'));
+        await hasOutput(page, '1: Ask about the weather', await positionOf(page, 'The castle is closed.'));
         check(await link('guard_weather').count() > 0, 'options are links');
         check(!await page.$eval('#cmdSave', el => el.disabled), 'Save stays enabled mid-dialogue');
 
@@ -137,15 +154,15 @@ test('v2-game-features', async ({ baseURL }) => {
         }, null, { timeout: 5000 });
         console.log('PASS: choosing an option moves on, and hides the old options');
 
-        before = (await output(page)).length;
+        before = await position(page);
         await send(page, '1');
         await hasOutput(page, '2: Ask about the castle', before);
         console.log('PASS: a typed option number works');
 
-        before = (await output(page)).length;
+        before = await position(page);
         await send(page, 'marker');
         await hasOutput(page, 'Please choose one of the options above.', before);
-        check(!(await output(page)).slice(before).includes('marker ran'), 'other commands are refused during the dialogue');
+        check(!(await outputSince(page, before)).includes('marker ran'), 'other commands are refused during the dialogue');
 
         await send(page, '2');
         await hasOutput(page, 'The castle is closed.', before);
@@ -160,7 +177,7 @@ test('v2-game-features', async ({ baseURL }) => {
         await page.waitForTimeout(700);
         const restored = link('guard_weather').last();
         check(await restored.isVisible(), 'undoing back into the dialogue shows its options again');
-        before = (await output(page)).length;
+        before = await position(page);
         await restored.click();
         await hasOutput(page, 'Nice weather today.', before);
         console.log('PASS: and they still work');
@@ -175,23 +192,23 @@ test('v2-game-features', async ({ baseURL }) => {
         check(pane.includes('lamp') && pane.includes('poster'), `the inventory pane lists carried objects and scenery (${pane})`);
         check(!pane.includes('ghost') && !pane.includes('bladder'), 'and leaves out what is hidden from it');
 
-        let before = (await output(page)).length;
+        let before = await position(page);
         await send(page, 'inventory');
         await hasOutput(page, 'lamp', before);
         await page.waitForFunction(() => window.canSendCommand === true);
-        const listing = (await output(page)).slice(before);
+        const listing = await outputSince(page, before);
         check(listing.includes('poster') && !listing.includes('ghost') && !listing.includes('bladder'), 'the inventory command agrees');
 
-        before = (await output(page)).length;
+        before = await position(page);
         await send(page, 'drop bladder');
         await hasOutput(page, "You can't drop your bladder.", before);
         console.log('PASS: a hidden object is still held');
 
-        before = (await output(page)).length;
+        before = await position(page);
         await send(page, 'look');
         await hasOutput(page, 'rock', before);
         await page.waitForFunction(() => window.canSendCommand === true);
-        check(!(await output(page)).slice(before).includes('mural'), 'scenery stays out of the room description');
+        check(!(await outputSince(page, before)).includes('mural'), 'scenery stays out of the room description');
         await page.close();
     }
 

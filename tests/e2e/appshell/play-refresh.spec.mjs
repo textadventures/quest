@@ -20,6 +20,12 @@ import { chromium } from '../lib/tracked-chromium.mjs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
+// Booting the Debug WasmPlayer in a fresh browser, while other specs run alongside, has taken
+// over 15s. A boot from the Play tab includes a 5s wait (wasm-player.js's RESOURCE_REQUEST_TIMEOUT_MS):
+// restart-test.aslx includes restart-test.js, and the Play tab never answers the player's
+// request for it.
+const BOOT_TIMEOUT = 60000;
+
 test('play-refresh', async ({ baseURL }) => {
     const baseUrl = baseURL;
     const fixturePath = join(dirname(fileURLToPath(import.meta.url)), '..', 'fixtures', 'restart-test.aslx');
@@ -38,7 +44,7 @@ test('play-refresh', async ({ baseURL }) => {
             context.waitForEvent('page'),
             page.click('button:has-text("Start")'),
         ]);
-        await popup.waitForFunction(() => document.title === 'Simple', null, { timeout: 15000 });
+        await popup.waitForFunction(() => document.title === 'Simple', null, { timeout: BOOT_TIMEOUT });
         return popup;
     }
 
@@ -53,7 +59,7 @@ test('play-refresh', async ({ baseURL }) => {
             console.log('[refresh-recovers] game booted, refreshing player tab...');
 
             await popup.reload();
-            await popup.waitForFunction(() => document.title === 'Simple', null, { timeout: 15000 });
+            await popup.waitForFunction(() => document.title === 'Simple', null, { timeout: BOOT_TIMEOUT });
             console.log('[refresh-recovers] PASS — game re-booted after refresh with AppShell tab still open');
         } catch (err) {
             console.error('[refresh-recovers] FAIL:', err.message);
@@ -68,8 +74,9 @@ test('play-refresh', async ({ baseURL }) => {
         const browser = await chromium.launch();
         const context = await browser.newContext();
         const page = await context.newPage();
+        let popup;
         try {
-            const popup = await startGameFromPlayTab(context, page);
+            popup = await startGameFromPlayTab(context, page);
             console.log('[refresh-errors] game booted, closing AppShell tab, then refreshing player tab...');
             await page.close();
 
@@ -83,7 +90,7 @@ test('play-refresh', async ({ baseURL }) => {
                 popup.click('#qv-file-btn'),
             ]);
             await fileChooser.setFiles(fixturePath);
-            await popup.waitForFunction(() => document.title === 'Simple', null, { timeout: 15000 });
+            await popup.waitForFunction(() => document.title === 'Simple', null, { timeout: BOOT_TIMEOUT });
             console.log('[refresh-errors] PASS — error shown within timeout, and its fallback picker still works');
         } catch (err) {
             console.error('[refresh-errors] FAIL:', err.message);

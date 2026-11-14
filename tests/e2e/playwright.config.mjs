@@ -14,9 +14,17 @@ export default defineConfig({
     // Most specs drive a whole session end to end in one test, and several
     // (Electron especially) take minutes.
     timeout: 5 * 60_000,
-    // Specs were written to run one at a time (Electron ones share
-    // ~/Documents/Quest Games, and the dev servers aren't sized for parallel load).
-    workers: 1,
+    // Spec files run in parallel, four at a time (GitHub's Linux runners have 4
+    // vCPUs); tests inside one file still run in order. Each spec launches its own
+    // browser, so IndexedDB/OPFS never collide, and anything a spec writes to disk
+    // goes to a mkdtemp folder or a /tmp path named after that spec. On an 8-core
+    // Mac, wasmplayer went from 14.9 to 4.4 minutes and appshell from 12.7 to 4.1.
+    // A busy machine makes everything slower, so a spec that sleeps a fixed time for
+    // the page to settle, or checks before it has, can start failing; wait for the
+    // state itself instead. Running a spec with --repeat-each=32 --workers=8 shows up
+    // most of these. Electron stays at one: its specs share ~/Documents/Quest Games
+    // and the app's single-instance lock.
+    workers: 4,
     fullyParallel: false,
     forbidOnly: ci,
     retries: 0,
@@ -49,6 +57,7 @@ export default defineConfig({
         {
             name: 'electron',
             testDir: './electron',
+            workers: 1,
         },
     ],
 });
