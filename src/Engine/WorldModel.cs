@@ -1455,12 +1455,17 @@ public partial class WorldModel : IGame, IGameDebug
         // at every point that matters, including games that never hit any of these
         // constructs at all (count stays 0 throughout, correctly reported as idle).
         PlayerUi.SetTurnPending(_pendingCallbackCount > 0);
-        // Unlike _turnSuspendedTcs.TrySetResult() below (a one-shot signal - only the first
+        // Taken before TurnSuspended fires: its handlers can answer the prompt this signal is for
+        // (FinishWait etc.), from another thread or synchronously, and that replaces
+        // _turnSuspendedTcs with the answer's own turn. Resolving the field afterwards would
+        // resolve that new turn before the rest of the script had run.
+        var turn = _turnSuspendedTcs;
+        // Unlike turn.TrySetResult() below (a one-shot signal - only the first
         // call per command actually resolves anything), this fires every time, so a buffering
         // IPlayer can flush on every suspension boundary rather than only the first one a given
         // command reaches.
         TurnSuspended?.Invoke();
-        if (resolveTurn) _turnSuspendedTcs.TrySetResult();
+        if (resolveTurn) turn.TrySetResult();
     }
 
     // A menu or yes/no question drawn as numbered links in the transcript rather than as a
