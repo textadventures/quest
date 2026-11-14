@@ -480,14 +480,25 @@ public class ExpressionTests
     public async Task TestToIntRejectsDoubleWithQuestTypeName()
     {
         var ex = await Should.ThrowAsync<Exception>(() => RunExpressionGeneric("ToInt(4.9)"));
-        GetExceptionMessages(ex).ShouldContain(m => m.Contains("ToInt function does not handle parameters of types double"));
+        GetExceptionMessages(ex).ShouldContain(m => m.Contains("ToInt function can't take a double"));
     }
 
     [TestMethod]
     public async Task TestParameterTypeErrorUsesQuestTypeNames()
     {
         var ex = await Should.ThrowAsync<Exception>(() => RunExpressionGeneric($"LCase({ObjectName})"));
-        GetExceptionMessages(ex).ShouldContain(m => m.Contains("LCase function does not handle parameters of types object"));
+        GetExceptionMessages(ex).ShouldContain(m => m.Contains("LCase function can't take an object"));
+    }
+
+    [DataTestMethod]
+    [DataRow("Left(\"abc\", 1.5)", "Left function can't take a string and a double")]
+    [DataRow("Left(null, 1.5)", "Left function can't take null and a double")]
+    [DataRow("Left(\"abc\", 1, 2)", "Left function can't take a string, an int and an int")]
+    [DataRow("LCase()", "LCase function can't be called with no parameters")]
+    public async Task TestParameterErrorListsEveryParameter(string expression, string expectedMessage)
+    {
+        var ex = await Should.ThrowAsync<Exception>(() => RunExpressionGeneric(expression));
+        GetExceptionMessages(ex).ShouldContain(m => m.Contains(expectedMessage));
     }
 
     private static List<string> GetExceptionMessages(Exception ex)

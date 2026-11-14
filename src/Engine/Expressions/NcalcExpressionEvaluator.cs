@@ -307,8 +307,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
 
         if (methodNoParams == null)
         {
-            throw new Exception(
-                $"{name} function does not handle parameters of types {string.Join(", ", evaluatedArgs.Select(QuestTypeName))}");
+            throw new Exception(DescribeUnhandledParameters(name, evaluatedArgs));
         }
 
         return (true, methodNoParams.Invoke(instance, evaluatedArgs));
@@ -489,6 +488,29 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
 
     private static bool IsStandardNCalcType(object? value) =>
         value is null or int or long or double or float or decimal or byte or short or uint or ulong or ushort or sbyte or bool or string;
+
+    // "ToInt function can't take a double", "Left function can't take a string and a double". This
+    // is also what a call with the wrong number of parameters gets, so it lists every one.
+    private static string DescribeUnhandledParameters(string name, object?[] args)
+    {
+        if (args.Length == 0)
+        {
+            return $"{name} function can't be called with no parameters";
+        }
+
+        var described = args.Select(a => WithArticle(QuestTypeName(a))).ToList();
+        var list = described.Count == 1
+            ? described[0]
+            : $"{string.Join(", ", described.Take(described.Count - 1))} and {described[^1]}";
+        return $"{name} function can't take {list}";
+    }
+
+    private static string WithArticle(string typeName) => typeName switch
+    {
+        "null" => "null",
+        _ when "aeiou".Contains(char.ToLowerInvariant(typeName[0])) => $"an {typeName}",
+        _ => $"a {typeName}"
+    };
 
     // The type name an author knows a value by, as TypeOf gives it ("int" rather than "Int32"),
     // falling back to the .NET name for anything that isn't a Quest type.

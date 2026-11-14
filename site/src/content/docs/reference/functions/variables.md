@@ -140,7 +140,7 @@ Returns an [int](/reference/attributes/types#int) - converts a string to an inte
 
 Note: An error occurs if a string does not represent an integer. Use [IsInt](#isint) to check first.
 
-`ToInt` doesn't take a double, since that would mean throwing away anything after the point. Passing one stops with "ToInt function does not handle parameters of types double" - use [cast](#cast) for that.
+`ToInt` doesn't take a double, since that would mean throwing away anything after the point. Passing one stops with "ToInt function can't take a double" - use [cast](#cast) for that.
 
 See also [GetInt](/reference/functions/attributes#getint) and [HasInt](/reference/functions/attributes#hasint)
 

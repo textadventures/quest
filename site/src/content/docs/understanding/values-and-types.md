@@ -170,7 +170,7 @@ gives `Value cannot be null. (Parameter 'obj')`.
 | `IsInt(value)`, `IsDouble(value)` | Whether `ToInt` or `ToDouble` will accept a value |
 | `IsNumeric(string)` | Whether a string is a number |
 
-`ToInt` doesn't accept doubles: `ToInt(4.9)` stops with `ToInt function does not handle parameters of types double`. To turn a double into an integer, use `cast(4.9, "int")`, which gives `4`.
+`ToInt` doesn't accept doubles: `ToInt(4.9)` stops with `ToInt function can't take a double`. To turn a double into an integer, use `cast(4.9, "int")`, which gives `4`.
 
 Always check before converting anything the player typed:
 

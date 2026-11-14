@@ -65,7 +65,7 @@ When a script goes wrong, the player prints "[Sorry, an error occurred]" followe
 | Function did not return a value | A function with a return type reached the end of its script without a `return` - usually a missing `return` on one branch of an `if` |
 | Too few parameters passed to X function | The call doesn't match the function's parameter list - see [Functions](/howto/scripting/functions#parameters) |
 | Error evaluating expression '…': The input string 'abc' was not in a correct format | `ToInt` or `ToDouble` was given something that isn't a number - typically what the player typed at a `GetInput()`. Check it with `IsInt` first |
-| X function does not handle parameters of types … | A built-in function was given a type of value it doesn't take - say, a double passed to `ToInt`, or an object where it wanted a string. The message lists the types it was given; check the function's reference page for what it accepts, and use `TypeOf` to find out what a variable actually holds |
+| X function can't take … | A built-in function was given a type of value it doesn't take - say, a double passed to `ToInt`, or an object where it wanted a string - or the wrong number of values. The message lists what it was given; check the function's reference page for what it accepts, and use `TypeOf` to find out what a variable actually holds |
 
 The message quotes the expression that failed but not the line it was on, so to find it, open the script in the editor's Code view and search for what it quotes. The script stops there, so anything you expected to happen after that point didn't - which is often the more visible symptom.
 
