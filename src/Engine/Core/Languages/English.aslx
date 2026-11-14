@@ -548,7 +548,7 @@
   <template name="SavedGameTitle">Saved game</template>
   <template name="LoadSaveConfirm">Load "[name]"? You'll lose anything you've done since you last saved.</template>
   <template name="StartAgainConfirm">Start again from the beginning? You'll lose anything you've done since you last saved.</template>
-  <template name="OverwriteSaveConfirm">Replace "[name]" with your game as it is now?</template>
+  <template name="OverwriteSaveConfirm">Overwrite "[name]"?</template>
   <template name="CancelButton">Cancel</template>
   <template name="CommandInputLabel">Type your command</template>
   <template name="ShowPanesButton">Show panels</template>

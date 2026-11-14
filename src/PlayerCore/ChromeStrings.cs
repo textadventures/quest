@@ -47,7 +47,7 @@ public static class ChromeStrings
         ["SavedGameTitle"] = "Saved game",
         ["LoadSaveConfirm"] = "Load \"[name]\"? You'll lose anything you've done since you last saved.",
         ["StartAgainConfirm"] = "Start again from the beginning? You'll lose anything you've done since you last saved.",
-        ["OverwriteSaveConfirm"] = "Replace \"[name]\" with your game as it is now?",
+        ["OverwriteSaveConfirm"] = "Overwrite \"[name]\"?",
         ["CancelButton"] = "Cancel",
         ["CommandInputLabel"] = "Type your command",
         ["ShowPanesButton"] = "Show panels",
