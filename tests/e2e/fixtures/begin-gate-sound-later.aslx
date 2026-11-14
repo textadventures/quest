@@ -3,7 +3,7 @@
   <include ref="English.aslx"/>
   <include ref="Core.aslx"/>
 
-  <!-- A game with a sound it only plays on a command (verify-wasmplayer-begin-gate.mjs). -->
+  <!-- A game with a sound it only plays on a command (wasmplayer/begin-gate.spec.mjs). -->
   <game name="BeginGateSoundLater">
     <start type="script">
       msg ("The game has started.")

@@ -4,7 +4,7 @@
   <include ref="Core.aslx"/>
 
   <!-- A <script> in output doesn't run on v2, which says so once in the console
-       (verify-wasmplayer-v2-script-warning.mjs, #2608). -->
+       (wasmplayer/v2-script-warning.spec.mjs, #2608). -->
   <game name="V2ScriptWarningTest">
   </game>
 

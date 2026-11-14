@@ -3,7 +3,7 @@
   <include ref="English.aslx"/>
   <include ref="Core.aslx"/>
 
-  <!-- A game stylesheet (game.stylesheet), for verify-wasmplayer-v2-game-stylesheet.mjs. Its rules
+  <!-- A game stylesheet (game.stylesheet), for wasmplayer/v2-game-stylesheet.spec.mjs. Its rules
        are no more specific than v2's own (the location's font-weight, the link's underline), so
        on v2 they only win because the stylesheet isn't in a cascade layer. -->
   <game name="V2GameStylesheetTest">

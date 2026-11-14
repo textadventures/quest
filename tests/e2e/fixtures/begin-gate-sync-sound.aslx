@@ -4,7 +4,7 @@
   <include ref="Core.aslx"/>
 
   <!-- A game whose start plays a sound and waits for it to finish
-       (verify-wasmplayer-begin-gate.mjs). -->
+       (wasmplayer/begin-gate.spec.mjs). -->
   <game name="BeginGateSyncSound">
     <start type="script">
       msg ("Before the sound.")

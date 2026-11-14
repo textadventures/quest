@@ -3,7 +3,7 @@
   <include ref="English.aslx"/>
   <include ref="Core.aslx"/>
 
-  <!-- Player UI v2's ShowMenu and Ask dialogs (verify-wasmplayer-v2-prompts.mjs). Before 600, show
+  <!-- Player UI v2's ShowMenu and Ask dialogs (wasmplayer/v2-prompts.spec.mjs). Before 600, show
        menu and ask go to the player UI as dialogs rather than being drawn in the transcript.
        v2 is for 610 games, so this only plays on it with ?ui=v2. -->
   <game name="V2DialogsTest">

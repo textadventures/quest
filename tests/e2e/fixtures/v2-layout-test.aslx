@@ -3,7 +3,7 @@
   <include ref="English.aslx"/>
   <include ref="Core.aslx"/>
 
-  <!-- Player UI v2's layout presets (verify-wasmplayer-v2-layout.mjs). The game asks for the
+  <!-- Player UI v2's layout presets (wasmplayer/v2-layout.spec.mjs). The game asks for the
        bottom bar when wide and no panes when narrow (layoutpreset, narrowlayoutpreset), which 610
        Core passes to QuestUI.setLayoutPreset; commands switch presets from script. It has a
        pinned status attribute, an exit and something to pick up, so the panes have content. -->

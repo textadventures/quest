@@ -2,7 +2,7 @@
 
   <include ref="GamebookCore.aslx"/>
 
-  <!-- Player UI v2's gamebook layout (verify-wasmplayer-v2-gamebook.mjs): a first page with a
+  <!-- Player UI v2's gamebook layout (wasmplayer/v2-gamebook.spec.mjs): a first page with a
        picture, a YouTube video and a sound, and options to a second page, a page that asks for
        the player's name (GamebookCore's GetInput), and a web link. The last page is kept on
        screen when a page turns (clearlastpage is off). -->

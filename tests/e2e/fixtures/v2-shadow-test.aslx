@@ -3,7 +3,7 @@
   <include ref="English.aslx"/>
   <include ref="Core.aslx"/>
 
-  <!-- Player UI v2's "shadow" command bar preset (verify-wasmplayer-v2-appearance.mjs). -->
+  <!-- Player UI v2's "shadow" command bar preset (wasmplayer/v2-appearance.spec.mjs). -->
   <game name="V2ShadowTest">
     <shadowbox />
   </game>

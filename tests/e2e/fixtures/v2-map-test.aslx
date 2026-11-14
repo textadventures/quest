@@ -3,7 +3,7 @@
   <include ref="English.aslx"/>
   <include ref="Core.aslx"/>
 
-  <!-- Player UI v2's map (verify-wasmplayer-v2-map.mjs): a hall with a library to the north and
+  <!-- Player UI v2's map (wasmplayer/v2-map.spec.mjs): a hall with a library to the north and
        an attic up a level, each 3 squares across, on a 300px map that answers clicks. Commands
        draw on the custom layer (a square, an arrow, a shape, an SVG symbol with a script in it,
        and an image), redraw the square under the same id, hide the custom layer, turn map

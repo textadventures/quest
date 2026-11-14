@@ -3,7 +3,7 @@
   <include ref="English.aslx"/>
   <include ref="Core.aslx"/>
 
-  <!-- Player UI v2's themes and colour tokens (verify-wasmplayer-v2-themes.mjs). The script serves
+  <!-- Player UI v2's themes and colour tokens (wasmplayer/v2-themes.spec.mjs). The script serves
        this with the game inheriting each theme_* type in turn, and with each pane theme, in place
        of the two markers below. It has a link, a pane item, an exit and a status attribute with
        a bar, so every coloured part has something in it. -->

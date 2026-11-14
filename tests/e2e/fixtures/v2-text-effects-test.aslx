@@ -3,7 +3,7 @@
   <include ref="English.aslx"/>
   <include ref="Core.aslx"/>
 
-  <!-- Player UI v2's text effects (verify-wasmplayer-v2-text-effects.mjs): a typewriter with
+  <!-- Player UI v2's text effects (wasmplayer/v2-text-effects.spec.mjs): a typewriter with
        markup in its text, an unscramble, a slow typewriter to interrupt, and a typewriter after
        the game changes its text colour. -->
   <game name="V2TextEffectsTest">

@@ -3,7 +3,7 @@
   <include ref="English.aslx"/>
   <include ref="Core.aslx"/>
 
-  <!-- Player UI v2's links (verify-wasmplayer-v2-links.mjs): object links with verb menus, exit
+  <!-- Player UI v2's links (wasmplayer/v2-links.spec.mjs): object links with verb menus, exit
        and command links, ShowMenu options and an author's data-qv-event link, {popup:}, and an
        ordinary link to another site, all through 610 Core's live text processor. -->
   <game name="V2LinksTest">

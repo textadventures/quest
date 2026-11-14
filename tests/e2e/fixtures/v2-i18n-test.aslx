@@ -3,7 +3,7 @@
   <include ref="Deutsch.aslx"/>
   <include ref="Core.aslx"/>
 
-  <!-- Player UI v2's interface strings in another language (verify-wasmplayer-v2-i18n.mjs): a
+  <!-- Player UI v2's interface strings in another language (wasmplayer/v2-i18n.spec.mjs): a
        German game with a map, an exit and a command that embeds a YouTube video, so every part of
        v2 with its own label is on screen. -->
   <game name="V2I18nTest">

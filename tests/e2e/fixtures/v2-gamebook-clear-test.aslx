@@ -2,7 +2,7 @@
 
   <include ref="GamebookCore.aslx"/>
 
-  <!-- The gamebook layout with clearlastpage on (verify-wasmplayer-v2-gamebook.mjs): each page
+  <!-- The gamebook layout with clearlastpage on (wasmplayer/v2-gamebook.spec.mjs): each page
        replaces the last. Otherwise as v2-gamebook-test.aslx. -->
   <game name="V2GamebookClearTest">
     <clearlastpage />

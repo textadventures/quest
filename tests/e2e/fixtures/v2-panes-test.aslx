@@ -3,7 +3,7 @@
   <include ref="English.aslx"/>
   <include ref="Core.aslx"/>
 
-  <!-- Player UI v2's panes (verify-wasmplayer-v2-panes.mjs): inventory, places and objects (one
+  <!-- Player UI v2's panes (wasmplayer/v2-panes.spec.mjs): inventory, places and objects (one
        with an alias, so its pane text and command name differ), the command and custom status
        panes, and the QuestUI pane hooks. -->
   <game name="V2PanesTest">

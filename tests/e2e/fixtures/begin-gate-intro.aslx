@@ -4,7 +4,7 @@
   <include ref="Core.aslx"/>
 
   <!-- An intro that plays a sound and shows its second line a second later
-       (verify-wasmplayer-begin-gate.mjs). -->
+       (wasmplayer/begin-gate.spec.mjs). -->
   <game name="BeginGateIntro">
     <start type="script">
       play sound ("intro.wav", false, false)

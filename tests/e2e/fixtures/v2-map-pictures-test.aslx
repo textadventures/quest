@@ -3,7 +3,7 @@
   <include ref="English.aslx"/>
   <include ref="Core.aslx"/>
 
-  <!-- Room pictures on player UI v2's map (verify-wasmplayer-v2-map-pictures.mjs, #2199): a hall
+  <!-- Room pictures on player UI v2's map (wasmplayer/v2-map-pictures.spec.mjs, #2199): a hall
        with a picture (grid_image), a fill, a border and a label, and a cellar below without one. -->
   <game name="V2MapPicturesTest">
     <gridmap />

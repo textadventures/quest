@@ -3,7 +3,7 @@
   <include ref="English.aslx"/>
   <include ref="Core.aslx"/>
 
-  <!-- Player UI v2's media (verify-wasmplayer-v2-media.mjs): commands embed a YouTube video
+  <!-- Player UI v2's media (wasmplayer/v2-media.spec.mjs): commands embed a YouTube video
        (ShowYouTube), a Vimeo video, an unlisted Vimeo video (id/hash) and a YouTube id with markup
        in it, play a sound that holds the turn until it ends, start a looping one and stop it. -->
   <game name="V2MediaTest">
