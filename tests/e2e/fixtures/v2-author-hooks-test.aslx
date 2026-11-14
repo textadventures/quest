@@ -3,7 +3,7 @@
   <include ref="English.aslx"/>
   <include ref="Core.aslx"/>
 
-  <!-- The 610 Core author hook functions (verify-wasmplayer-v2-author-hooks.mjs): "setup" calls
+  <!-- The 610 Core author hook functions (wasmplayer/v2-author-hooks.spec.mjs): "setup" calls
        them, and saving and loading must bring back what they set, on v2 and legacy. -->
   <game name="V2AuthorHooksTest">
     <showpanes />

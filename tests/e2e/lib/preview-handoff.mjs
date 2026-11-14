@@ -11,7 +11,7 @@
 // after, so nothing guaranteed the listener was live before the player booted:
 // if the evaluate lost that race, 'ready' was missed and the script waited on
 // it forever. That's how nightly run 41435260262 sat silent in
-// verify-wasmplayer-autoscroll.mjs for six hours until GitHub cancelled it.
+// wasmplayer/autoscroll.spec.mjs for six hours until GitHub cancelled it.
 //
 // So this awaits the listener's setup before navigating, and puts a time limit
 // on the wait for the handoff itself.

@@ -3,7 +3,7 @@
   <include ref="English.aslx"/>
   <include ref="Core.aslx"/>
 
-  <!-- Player UI v2's turns and timing (verify-wasmplayer-v2-timing.mjs). startcountdown runs a
+  <!-- Player UI v2's turns and timing (wasmplayer/v2-timing.spec.mjs). startcountdown runs a
        JavaScript countdown that updates the custom status pane through QuestUI and calls back
        into the game once, through ASLEvent, at zero. lightgray and rgbbackground send the
        Background request older Core uses, and throwui makes that request's UI call throw. -->

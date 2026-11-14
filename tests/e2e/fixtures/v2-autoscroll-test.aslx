@@ -3,7 +3,7 @@
   <include ref="English.aslx"/>
   <include ref="Core.aslx"/>
 
-  <!-- Player UI v2's autoscroll (verify-wasmplayer-v2-autoscroll.mjs). shout1..shout6 each print
+  <!-- Player UI v2's autoscroll (wasmplayer/v2-autoscroll.spec.mjs). shout1..shout6 each print
        more than a screenful, starting from a marker. showframe puts a picture-sized box in the
        picture frame, through the engine's SetPanelContents request. gopage prints a long page,
        waits, clears the screen and prints a short one, and clearpage clears straight away. -->

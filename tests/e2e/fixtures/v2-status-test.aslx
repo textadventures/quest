@@ -3,7 +3,7 @@
   <include ref="English.aslx"/>
   <include ref="Core.aslx"/>
 
-  <!-- Player UI v2's status pane and pinned status bar (verify-wasmplayer-v2-status.mjs). Score and
+  <!-- Player UI v2's status pane and pinned status bar (wasmplayer/v2-status.spec.mjs). Score and
        health are pinned; health has a numeric maximum and mana's maximum is another attribute,
        so both are drawn as bars; gold is text only. -->
   <game name="V2StatusTest">

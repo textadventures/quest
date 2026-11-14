@@ -9,20 +9,21 @@ description: How to runtime-verify changes in this repo (WasmPlayer/AppShell/Ele
 left checked in. The suite is moving from standalone scripts to Playwright
 Test (`tests/e2e/playwright.config.mjs`), one project per directory:
 
-- **Converted so far: `site/` and `electron/`.** A new test there is a
-  `<topic>.spec.mjs` file in that directory, using `test()` from
+- **Converted so far: `site/`, `wasmplayer/` and `electron/`.** A new test
+  there is a `<topic>.spec.mjs` file in that directory, using `test()` from
   `@playwright/test` (copy a neighbour). Run it with
-  `npx playwright test --project=electron <topic>` from `tests/e2e`. Nothing
-  to wire up: CI runs the whole directory. For `site`, the server URL comes
-  from the `baseURL` fixture (override with `SITE_URL`).
-- **Not converted yet: WasmPlayer and AppShell.** These are still standalone
+  `npx playwright test --project=wasmplayer <topic>` from `tests/e2e`.
+  Nothing to wire up: CI runs the whole directory. For `site` and
+  `wasmplayer`, the server URL comes from the `baseURL` fixture (override with
+  `SITE_URL` / `WASMPLAYER_URL`).
+- **Not converted yet: AppShell.** These are still standalone
   `verify-<topic>.mjs` scripts, run with `node verify-<topic>.mjs <baseUrl>`;
   follow that convention for them until they move, and wire each one in as
   described below.
 
 **Every new `verify-*.mjs` script must also get a step in `.github/workflows/e2e.yml`**, in
-the job whose dev server it needs (`wasmplayer_chromium`, `appshell_chromium`,
-`electron`, ...), copying a neighbouring step's `node
+the job whose dev server it needs (`appshell_chromium` or
+`appshell_opfs_firefox`), copying a neighbouring step's `node
 verify-<topic>.mjs <baseUrl>` + `working-directory: tests/e2e` shape. The
 nightly run only runs listed scripts, and the required `check_e2e_manifest` PR
 check (`node tests/e2e/check-workflow-manifest.mjs`) fails otherwise. A

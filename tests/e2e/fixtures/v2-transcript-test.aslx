@@ -3,7 +3,7 @@
   <include ref="English.aslx"/>
   <include ref="Core.aslx"/>
 
-  <!-- The transcript on player UI v2 and legacy (verify-wasmplayer-v2-transcript.mjs): the
+  <!-- The transcript on player UI v2 and legacy (wasmplayer/v2-transcript.spec.mjs): the
        built-in "transcript on", "view transcript" and "transcript off", plus a picture with alt
        text and a text effect to record. -->
   <game name="V2TranscriptTest">

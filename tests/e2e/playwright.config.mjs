@@ -30,6 +30,11 @@ export default defineConfig({
             use: { baseURL: process.env.SITE_URL ?? 'http://localhost:4321' },
         },
         {
+            name: 'wasmplayer',
+            testDir: './wasmplayer',
+            use: { baseURL: process.env.WASMPLAYER_URL ?? 'http://localhost:5175' },
+        },
+        {
             name: 'electron',
             testDir: './electron',
         },

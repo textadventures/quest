@@ -4,7 +4,7 @@
   <include ref="Core.aslx"/>
 
   <!-- Player UI v2's backgrounds, web fonts and output sections
-       (verify-wasmplayer-v2-appearance.mjs): a background image at half opacity over a colour
+       (wasmplayer/v2-appearance.spec.mjs): a background image at half opacity over a colour
        blend, the Special Elite web font, a command that switches to another web font, and
        commands that print inside an output section and then hide it. -->
   <game name="V2AppearanceTest">

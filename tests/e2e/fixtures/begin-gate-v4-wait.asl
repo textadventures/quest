@@ -1,4 +1,4 @@
-' A Quest 4 game whose start script waits for a key (verify-wasmplayer-begin-gate.mjs).
+' A Quest 4 game whose start script waits for a key (wasmplayer/begin-gate.spec.mjs).
 
 define game <BeginGateV4Wait>
 	asl-version <410>

@@ -3,7 +3,7 @@
   <include ref="English.aslx"/>
   <include ref="Core.aslx"/>
 
-  <!-- Player UI v2's core loop (verify-wasmplayer-v2-core.mjs): output, alignment, output
+  <!-- Player UI v2's core loop (wasmplayer/v2-core.spec.mjs): output, alignment, output
        sections, clear screen, the location bar and QuestUI's tokens and visibility, through 610
        Core's live functions. -->
   <game name="V2CoreTest">

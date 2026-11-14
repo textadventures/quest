@@ -62,6 +62,7 @@ for (const file of files) {
         if (/^\s*import /.test(line)) errors.push(`line ${i + n + 1}: import after code`);
         let l = rewritePaths(line)
             .replace(/process\.argv\[2\]\s*(\|\||\?\?)\s*(['"`])[^'"`]*\2/, 'baseURL')
+            .replace(/process\.argv\.slice\(2\)\.find\(a => !a\.startsWith\('--'\)\)\s*\|\|\s*(['"`])[^'"`]*\1/, 'baseURL')
             .replace(/process\.exit\(1\);/g, GENERIC_FAILURE);
         if (/process\.exitCode = 1;/.test(l)) {
             // The enclosing block opens on the nearest earlier line indented less than this one.
@@ -77,7 +78,9 @@ for (const file of files) {
             l = l.replace('process.exitCode = 1;', caught ? `throw ${caught[1]};` : GENERIC_FAILURE);
         }
         if (/process\.(argv|exit|exitCode)/.test(l)) errors.push(`line ${i + n + 1}: ${l.trim()}`);
-        if (/import\.meta\.url|import\.meta\.dirname/.test(l) && l === line) {
+        // createRequire(import.meta.url) only resolves packages, which node_modules
+        // one directory up still provides.
+        if (/import\.meta\.url|import\.meta\.dirname/.test(l.replace('createRequire(import.meta.url)', '')) && l === line) {
             errors.push(`line ${i + n + 1}: unrewritten path relative to the script: ${l.trim()}`);
         }
         return l;

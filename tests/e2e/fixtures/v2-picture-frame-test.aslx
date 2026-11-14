@@ -3,7 +3,7 @@
   <include ref="English.aslx"/>
   <include ref="Core.aslx"/>
 
-  <!-- Player UI v2's picture frame (verify-wasmplayer-v2-picture-frame.mjs): a hall with a
+  <!-- Player UI v2's picture frame (wasmplayer/v2-picture-frame.spec.mjs): a hall with a
        picture, a cellar whose picture the test serves slowly and whose description is long enough
        to scroll, and a garden with none (clearframe empties the frame there). Commands set the
        frame through the engine's SetPanelContents request and hide it through QuestUI. -->

@@ -3,7 +3,7 @@
   <include ref="English.aslx"/>
   <include ref="Core.aslx"/>
 
-  <!-- Player UI v2's restart (verify-wasmplayer-v2-saving-restart-undo.mjs). The start script adds
+  <!-- Player UI v2's restart (wasmplayer/v2-saving-restart-undo.spec.mjs). The start script adds
        a pane, and the game's script file counts how many times it has run. -->
   <game name="V2RestartTest">
     <start type="script">

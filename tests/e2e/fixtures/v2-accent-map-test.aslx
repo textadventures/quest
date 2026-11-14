@@ -3,7 +3,7 @@
   <include ref="English.aslx"/>
   <include ref="Core.aslx"/>
 
-  <!-- Player UI v2's accent colour and map position (verify-wasmplayer-v2-accent-map.mjs): a game
+  <!-- Player UI v2's accent colour and map position (wasmplayer/v2-accent-map.spec.mjs): a game
        with its own accent but the editor's other colours, an interface font, and a map in the
        panes. A hall with a thing in it and a garden to the east. -->
   <game name="V2AccentMapTest">

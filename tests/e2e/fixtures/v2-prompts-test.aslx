@@ -3,7 +3,7 @@
   <include ref="English.aslx"/>
   <include ref="Core.aslx"/>
 
-  <!-- Player UI v2's prompts (verify-wasmplayer-v2-prompts.mjs): wait, chained waits, pause,
+  <!-- Player UI v2's prompts (wasmplayer/v2-prompts.spec.mjs): wait, chained waits, pause,
        continue-on-click, get input, and the inline menu and question a 610 game gets from
        show menu and ask. -->
   <game name="V2PromptsTest">
