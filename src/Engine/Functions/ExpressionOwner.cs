@@ -11,7 +11,6 @@ namespace QuestViva.Engine.Functions;
 [SuppressMessage("ReSharper", "UnusedMember.Global")]
 internal class ExpressionOwner(WorldModel worldModel)
 {
-    private Random _random = new();
 
     private static T GetParameter<T>(object? parameter, string caller, string expectedType) where T : class
     {
@@ -710,15 +709,13 @@ internal class ExpressionOwner(WorldModel worldModel)
         // The .net implementation of Random.Next defines the minValue as the
         // inclusive lower bound, but maxValue as the Exclusive upper bound.
         // It makes a bit more sense for maxValue to be inclusive, so we add 1.
-        return _random.Next(min, max + 1);
+        return worldModel.Random.Next(min, max + 1);
     }
 
     public double GetRandomDouble()
     {
-        return _random.NextDouble();
+        return worldModel.Random.NextDouble();
     }
-
-    internal void SetRandomSeed(int seed) => _random = new Random(seed);
 
     public Task<object?> Eval(string? expression)
     {

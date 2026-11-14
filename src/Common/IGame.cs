@@ -41,6 +41,10 @@ public interface IGame
     event Action<int>? RequestNextTimerTick;
     Task Tick(int elapsedTime);
 
+    /// <summary>The seed the game's random numbers started from: a random one unless SetRandomSeed gave it.</summary>
+    int RandomSeed { get; }
+
+    /// <summary>Starts the game's random numbers again from <paramref name="seed"/>, so the same input gives the same results.</summary>
     void SetRandomSeed(int seed);
 
     IEnumerable<string>? GetExternalScripts();

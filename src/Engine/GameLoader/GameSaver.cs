@@ -1,3 +1,4 @@
+using System.Globalization;
 using QuestViva.Common;
 using QuestViva.Engine.Scripts;
 
@@ -86,6 +87,10 @@ internal partial class GameSaver
         if (mode == SaveMode.SavedGame)
         {
             writer.WriteAttributeString("original", _worldModel.Filename);
+            // Where the game's random numbers have got to, so loading the save carries on with the
+            // same sequence instead of a new one, and a bug after a load can be reproduced.
+            writer.WriteAttributeString("randomseed", _worldModel.Random.Seed.ToString(CultureInfo.InvariantCulture));
+            writer.WriteAttributeString("randomsamples", _worldModel.Random.Samples.ToString(CultureInfo.InvariantCulture));
             _worldModel.OutputLogger?.Save(html);
         }
 

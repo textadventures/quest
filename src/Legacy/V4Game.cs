@@ -15,7 +15,7 @@ public partial class V4Game : IGame, IGameDebug
     private readonly List<string> _log = new();
     private readonly int _numSkipCheckFiles;
     private readonly string[] _playerErrorMessageString = new string[39];
-    private Random _random = new();
+    private readonly GameRandom _random = new();
     private readonly Stream _saveData;
     private readonly string[] _skipCheckFile;
     private readonly TextFormatter _textFormatter = new();
@@ -259,7 +259,9 @@ public partial class V4Game : IGame, IGameDebug
         return Task.CompletedTask;
     }
 
-    public void SetRandomSeed(int seed) => _random = new Random(seed);
+    public int RandomSeed => _random.Seed;
+
+    public void SetRandomSeed(int seed) => _random.Reseed(seed);
 
     public event UpdateListHandler UpdateList;
 
