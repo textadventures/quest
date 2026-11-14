@@ -1252,7 +1252,10 @@ function setCommandBarBackground(colour) {
     if (!rule) {
         rule = document.createElement("style");
         rule.id = "qv-command-bar-background";
-        document.head.appendChild(rule);
+        // First in <head>, not last: it's created lazily, after the host has put the game's own
+        // stylesheet (#qv-game-stylesheet) last, and must not land after it. It's only meant to
+        // beat the browser's defaults, which any author style does wherever it is.
+        document.head.insertBefore(rule, document.head.firstChild);
     }
     rule.textContent = colour ? ":where(#txtCommand) { background-color: " + colour + "; }" : "";
 }
