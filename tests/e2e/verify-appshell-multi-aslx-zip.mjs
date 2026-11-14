@@ -11,6 +11,7 @@
 //
 // Requires the AppShell dev server running against a Release WasmEditor build.
 import { firefox } from 'playwright';
+import { ignoreFileChooserCancel } from './lib/file-chooser-cancel.mjs';
 import { zipSync } from 'fflate';
 import { writeFileSync, readFileSync } from 'node:fs';
 
@@ -41,6 +42,7 @@ writeFileSync(zipPath, zipSync({
 
 const browser = await firefox.launch();
 const page = await browser.newPage();
+await ignoreFileChooserCancel(page);
 page.on('pageerror', err => console.log('[pageerror]', err.message));
 
 try {
