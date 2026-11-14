@@ -13,7 +13,7 @@ Quest Viva gives you a point-and-click editor where everything about your game i
 
 You don't need any programming experience to use it. Plenty of people have written and published complete games without ever looking at a line of code.
 
-Quest Viva is the current version of Quest, which people have been using to write text adventures since 1998. If you've used Quest 5 before, see [What's new in Quest Viva 6.0](/whats-new).
+Quest Viva is the current version of Quest, which people have been using to write text adventures since 1998. If you've used Quest 5 before, see [What's new in Quest Viva 6.0](/whats-new#quest-viva-60).
 
 ## What can you make?
 
