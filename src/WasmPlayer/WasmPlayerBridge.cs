@@ -298,6 +298,14 @@ public partial class WasmPlayerBridge
     [JSExport]
     public static string GetGameIfid() => _game?.GameID ?? string.Empty;
 
+    // For the Save/Load dialog's "Copy for a bug report": the seed the game's random numbers started
+    // from (a loaded save's own), so an author can replay the player's commands with a walkthrough.
+    [JSExport]
+    public static int GetRandomSeed() => _game?.RandomSeed ?? 0;
+
+    [JSExport]
+    public static string GetPlayerVersion() => VersionInfo.Version;
+
     // Player-chrome Save/Load dialog strings, sourced from the game's own
     // per-language Core library templates when available (see
     // ChromeStrings.Resolve) - always returns every key, English by default,

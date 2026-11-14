@@ -525,6 +525,9 @@
   <template name="SaveNew">Save new</template>
   <template name="SaveToFile">Save to file</template>
   <template name="LoadFromFile">Load from file</template>
+  <template name="CopyBugReport">Copy for a bug report</template>
+  <template name="BugReportCopied">Copied. Paste it into your bug report.</template>
+  <template name="BugReportCopyFailed">Copy this into your bug report:</template>
   <template name="UnnamedSave">this save</template>
   <template name="SaveWrongGame">This save is for a different game — open that game first, then try again.</template>
   <template name="CloseDialog">Close</template>
