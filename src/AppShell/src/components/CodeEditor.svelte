@@ -1,6 +1,6 @@
 <script lang="ts">
     import { untrack } from "svelte";
-    import { EditorState, Compartment, Transaction } from "@codemirror/state";
+    import { EditorState, Compartment, Prec, Transaction } from "@codemirror/state";
     import { EditorView, keymap, lineNumbers, highlightActiveLine } from "@codemirror/view";
     import { history, defaultKeymap, historyKeymap, indentWithTab } from "@codemirror/commands";
     import { bracketMatching, indentOnInput, codeFolding, foldGutter, foldKeymap } from "@codemirror/language";
@@ -70,16 +70,23 @@
                 bracketMatching(),
                 closeBrackets(),
                 indentOnInput(),
-                autocompletion(),
+                // The completion keymap is registered below instead of CodeMirror's default
+                // one, so Enter can be left out of it (#2669).
+                autocompletion({ defaultKeymap: false }),
                 EditorView.lineWrapping,
+                // Ahead of the main keymap so the arrow keys move through an open completion
+                // list rather than the cursor. Enter is left out: the list opens by itself as
+                // you type, so Enter at the end of a line would otherwise swap a finished word
+                // for the selected suggestion (game.pov -> game.pov_alias) without the author
+                // noticing. Enter always inserts a newline; Tab accepts.
+                Prec.highest(keymap.of(completionKeymap.filter(b => b.key !== "Enter"))),
                 keymap.of([
                     ...closeBracketsKeymap,
                     ...defaultKeymap,
                     ...historyKeymap,
                     ...searchKeymap,
-                    ...completionKeymap,
                     ...foldKeymap,
-                    // Tab also accepts a completion (VS Code-style) — acceptCompletion only
+                    // Tab accepts a completion (Enter doesn't, see above) — acceptCompletion only
                     // returns true while a suggestion is open, so otherwise this falls through
                     // to indentWithTab below.
                     { key: "Tab", run: acceptCompletion },
