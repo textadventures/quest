@@ -13,12 +13,14 @@
 //
 // Requires the AppShell dev server running against a Release WasmEditor build.
 import { firefox } from 'playwright';
+import { ignoreFileChooserCancel } from './lib/file-chooser-cancel.mjs';
 import { fileURLToPath } from 'node:url';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 
 const browser = await firefox.launch();
 const page = await browser.newPage();
+await ignoreFileChooserCancel(page);
 page.on('pageerror', err => console.log('[pageerror]', err.message));
 page.on('console', msg => { if (msg.type() === 'error') console.log('[console.error]', msg.text()); });
 

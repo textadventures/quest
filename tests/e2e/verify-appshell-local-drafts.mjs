@@ -14,6 +14,7 @@
 // to be present, though the code path itself doesn't depend on Release vs Debug):
 //   WASM_CONFIG=Release node ../../src/AppShell/node_modules/.bin/vite dev --root ../../src/AppShell
 import { firefox, webkit } from 'playwright';
+import { ignoreFileChooserCancel } from './lib/file-chooser-cancel.mjs';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
@@ -24,6 +25,7 @@ const browserType = process.argv[3] || 'firefox'; // firefox | webkit
 const launch = browserType === 'webkit' ? webkit : firefox;
 const browser = await launch.launch();
 const page = await browser.newPage();
+await ignoreFileChooserCancel(page);
 page.on('pageerror', err => console.log(`[${browserType}] [pageerror]`, err.message));
 page.on('console', msg => { if (msg.type() === 'error') console.log(`[${browserType}] [console.error]`, msg.text()); });
 
