@@ -149,7 +149,7 @@ test('save-dialog', async ({ baseURL }) => {
         // Overwrite asks first; Cancel leaves the save alone, and the save keeps its name and slot.
         const before = await page.evaluate(slot => GameSaver.listSaves().then(s => s.find(x => x.slotIndex === slot).timestamp.valueOf()), named);
         await pick(named, 'overwrite');
-        check(await page.locator('#qv-saves-confirm-text').textContent() === 'Replace "Before the cellar" with your game as it is now?',
+        check(await page.locator('#qv-saves-confirm-text').textContent() === 'Overwrite "Before the cellar"?',
             'Overwrite asks before replacing a save');
         await page.click('#qv-saves-confirm-cancel');
         check(await page.locator('#qv-saves-confirm-yes').count() === 0 && await focused() === String(named),
