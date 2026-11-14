@@ -1,14 +1,15 @@
-// Aggregates the per-script "touched files" JSON dumped by lib/tracked-chromium.mjs
-// (one file per verify-appshell-*.mjs script, written when QUEST_TOUCHED_FILES_DIR
+// Aggregates the per-spec "touched files" JSON dumped by lib/tracked-chromium.mjs
+// (one file per appshell/*.spec.mjs spec, written when QUEST_TOUCHED_FILES_DIR
 // is set) into a single source-file -> tests lookup, coverage-map.json. That map is
 // what find-affected-tests.mjs reads.
 //
 // Regenerate after a significant AppShell restructuring (new components, renamed
 // files) so the map doesn't drift too far from reality. There's no automated
-// regeneration yet - to refresh it, run the appshell_chromium job's script list
-// locally against a dev server with QUEST_TOUCHED_FILES_DIR set, then:
+// regeneration yet - to refresh it, run the appshell project locally against a dev
+// server with QUEST_TOUCHED_FILES_DIR set, then build the map from what it wrote:
 //
-//   node tests/e2e/build-coverage-map.mjs <touched-files-dir> [output-path]
+//   cd tests/e2e && QUEST_TOUCHED_FILES_DIR=/tmp/touched npx playwright test --project=appshell
+//   node tests/e2e/build-coverage-map.mjs /tmp/touched [output-path]
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -23,7 +24,7 @@ const map = {};
 const files = readdirSync(touchedFilesDir).filter(f => f.endsWith('.json'));
 
 for (const file of files) {
-    const scriptName = file.replace(/\.json$/, '');
+    const scriptName = file.replace(/\.json$/, '').replaceAll('__', '/');
     const touchedFiles = JSON.parse(readFileSync(join(touchedFilesDir, file), 'utf8'));
     for (const sourceFile of touchedFiles) {
         (map[sourceFile] ??= []).push(scriptName);

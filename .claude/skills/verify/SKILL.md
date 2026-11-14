@@ -1,35 +1,35 @@
 ---
 name: verify
-description: How to runtime-verify changes in this repo (WasmPlayer/AppShell/ElectronApp) via Playwright scripts in tests/e2e, and wire new ones into the nightly e2e workflow
+description: How to runtime-verify changes in this repo (WasmPlayer/AppShell/ElectronApp) with Playwright Test specs in tests/e2e, which the nightly e2e workflow runs
 ---
 
 # Verifying changes in Quest Viva
 
-`tests/e2e/` (`quest-e2e` package) holds one Playwright test per bug/feature,
-left checked in. The suite is moving from standalone scripts to Playwright
-Test (`tests/e2e/playwright.config.mjs`), one project per directory:
+`tests/e2e/` (`quest-e2e` package) holds one Playwright Test spec per
+bug/feature, left checked in. `tests/e2e/playwright.config.mjs` has one
+project per directory, matching the server the specs need:
 
-- **Converted so far: `site/`, `wasmplayer/` and `electron/`.** A new test
-  there is a `<topic>.spec.mjs` file in that directory, using `test()` from
-  `@playwright/test` (copy a neighbour). Run it with
-  `npx playwright test --project=wasmplayer <topic>` from `tests/e2e`.
-  Nothing to wire up: CI runs the whole directory. For `site` and
-  `wasmplayer`, the server URL comes from the `baseURL` fixture (override with
-  `SITE_URL` / `WASMPLAYER_URL`).
-- **Not converted yet: AppShell.** These are still standalone
-  `verify-<topic>.mjs` scripts, run with `node verify-<topic>.mjs <baseUrl>`;
-  follow that convention for them until they move, and wire each one in as
-  described below.
+| Project | Needs |
+|---|---|
+| `appshell` | AppShell dev server on 5174 (and WasmPlayer on 5175 for Play-tab specs) |
+| `appshell-firefox` | AppShell on 5174 with a Release WasmEditor (`WASM_CONFIG=Release`), Firefox |
+| `wasmplayer` | WasmPlayer dev server on 5175 |
+| `electron` | a built `src/ElectronApp` (no server) |
+| `site` | the docs site served on 4321 |
 
-**Every new `verify-*.mjs` script must also get a step in `.github/workflows/e2e.yml`**, in
-the job whose dev server it needs (`appshell_chromium` or
-`appshell_opfs_firefox`), copying a neighbouring step's `node
-verify-<topic>.mjs <baseUrl>` + `working-directory: tests/e2e` shape. The
-nightly run only runs listed scripts, and the required `check_e2e_manifest` PR
-check (`node tests/e2e/check-workflow-manifest.mjs`) fails otherwise. A
-`PostToolUse` hook in `.claude/settings.json` runs that check whenever you
-write a `verify-*.mjs` file, so its "Not wired into e2e.yml" message right
-after creating a script is expected: add the step, don't ignore it.
+A new test is a `<topic>.spec.mjs` file in the right directory, using `test()`
+from `@playwright/test` (copy a neighbour). Run it from `tests/e2e` with
+`npx playwright test --project=<project> <topic>`. The server URL comes from
+the `baseURL` fixture (override with `APPSHELL_URL` / `WASMPLAYER_URL` /
+`SITE_URL`). Nothing to wire up: each nightly e2e job runs its whole project.
+The required `check_e2e_manifest` PR check (`node
+tests/e2e/check-workflow-manifest.mjs`) fails if a spec sits outside every
+project directory, and a `PostToolUse` hook in `.claude/settings.json` runs it
+whenever you write a spec, so a misplaced one is flagged straight away.
+
+Before running a spec, check the port is free (`lsof -ti tcp:5175`) or already
+serving the build you mean to test: a dev server you start on a taken port
+fails to bind, and the spec then quietly runs against whatever else is there.
 
 ## Browser surface (WasmPlayer / AppShell)
 
@@ -40,8 +40,8 @@ after creating a script is expected: add the step, don't ignore it.
    build, no separate step needed).
 2. Start the relevant dev server, e.g. `node src/WasmPlayer/dev-server.mjs`
    (serves `http://localhost:5175`, reads `?id=`/`?url=` query params).
-3. Drive it with `playwright`'s `chromium.launch()` from a script in
-   `tests/e2e/`. Use `page.route('**/some/api/**', ...)` to intercept and
+3. Drive it with `playwright`'s `chromium.launch()` from a spec in
+   `tests/e2e/<project>/`. Use `page.route('**/some/api/**', ...)` to intercept and
    inspect outgoing requests (query params etc.) without needing a real
    backend — `route.fulfill()` with a synthetic response is enough when you
    only care about the request shape, not full game boot.

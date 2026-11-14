@@ -1,5 +1,5 @@
-// Given the files changed on the current branch, prints which appshell_chromium
-// e2e scripts (tests/e2e/verify-appshell-*.mjs and friends) actually loaded each
+// Given the files changed on the current branch, prints which AppShell e2e specs
+// (tests/e2e/appshell/*.spec.mjs) actually loaded each
 // changed AppShell source file during a past coverage-collection run — i.e. the
 // tests worth running locally against the dev server before opening a PR, without
 // running the whole ~9-minute suite.
@@ -38,7 +38,7 @@ const coverageMap = JSON.parse(readFileSync(coverageMapPath, 'utf8'));
 const appShellChanges = changedFiles.filter(f => f.startsWith('src/AppShell/src/'));
 const otherChanges = changedFiles.filter(f => !f.startsWith('src/AppShell/src/'));
 
-const affectedTests = new Map(); // script name -> Set of files that flagged it
+const affectedTests = new Map(); // spec path -> Set of files that flagged it
 for (const file of appShellChanges) {
     const tests = coverageMap[file];
     if (!tests) continue;
@@ -53,13 +53,15 @@ const unmapped = appShellChanges.filter(f => !coverageMap[f]);
 console.log(`Changed files vs ${baseRef}: ${changedFiles.length}`);
 
 if (affectedTests.size > 0) {
-    console.log(`\nLikely-affected e2e scripts (run these against a local AppShell dev server before opening the PR):`);
-    for (const [test, files] of [...affectedTests].sort(([a], [b]) => a.localeCompare(b))) {
-        console.log(`  node tests/e2e/${test} http://localhost:5174`);
+    console.log(`\nLikely-affected e2e specs (run these against a local AppShell dev server before opening the PR):`);
+    const sorted = [...affectedTests].sort(([a], [b]) => a.localeCompare(b));
+    for (const [test, files] of sorted) {
+        console.log(`  ${test}`);
         for (const file of files) console.log(`      because of: ${file}`);
     }
+    console.log(`\nRun them all with:\n  cd tests/e2e && npx playwright test ${sorted.map(([test]) => test).join(' ')}`);
 } else if (appShellChanges.length > 0) {
-    console.log('\nNo AppShell e2e script is recorded as touching any changed file — either coverage-map.json is stale, or these files (e.g. a brand-new component) genuinely aren\'t exercised by an existing script yet.');
+    console.log('\nNo AppShell e2e spec is recorded as touching any changed file — either coverage-map.json is stale, or these files (e.g. a brand-new component) genuinely aren\'t exercised by an existing spec yet.');
 }
 
 if (unmapped.length > 0) {
@@ -67,6 +69,6 @@ if (unmapped.length > 0) {
 }
 
 if (otherChanges.length > 0) {
-    console.log(`\n${otherChanges.length} changed file(s) outside src/AppShell/src/ (Engine/EditorCore/WasmEditor/WasmPlayer/etc.) aren't covered by this map at all — it only sees the browser-visible AppShell layer. Use judgment or run the relevant e2e job's scripts manually:`);
+    console.log(`\n${otherChanges.length} changed file(s) outside src/AppShell/src/ (Engine/EditorCore/WasmEditor/WasmPlayer/etc.) aren't covered by this map at all — it only sees the browser-visible AppShell layer. Use judgment or run the relevant e2e project manually:`);
     console.log(`  ${otherChanges.join('\n  ')}`);
 }
