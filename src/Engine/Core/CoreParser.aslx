@@ -13,6 +13,9 @@
   <function name="HandleCommand" parameters="command, metadata">
     <![CDATA[
       handled = false
+      // Left set if the backdrop scope script failed part-way through a previous turn
+      // (see ScopeReachableNotHeldForRoom).
+      game.scopebackdroprunning = null
       if (game.menucallback <> null) {
         if (HandleMenuTextResponse(command)) {
           handled = true

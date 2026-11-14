@@ -150,10 +150,17 @@
           list add(result, obj)
         }
       }
-      if (HasScript(game, "scopebackdrop")) {
+      // A scope function called from inside the backdrop script lands back here, so
+      // the script would call itself forever. While it is running, a nested scope
+      // call gets the room's objects without backdrops instead. HandleCommand clears
+      // the flag in case the script failed part-way through.
+      if (HasScript(game, "scopebackdrop") and not GetBoolean(game, "scopebackdroprunning")) {
         dict = NewDictionary()
         dictionary add (dict, "items", result)
+        dictionary add (dict, "room", room)
+        game.scopebackdroprunning = true
         do (game, "scopebackdrop", dict)
+        game.scopebackdroprunning = null
       }
       return (result)
     ]]>

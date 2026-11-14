@@ -1,0 +1,70 @@
+<asl version="600">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="scopebackdroptest">
+    <!-- Calls ScopeReachable from inside the backdrop script (issue #2670), and
+         uses the room being scoped rather than the player's room -->
+    <scopebackdrop type="script">
+      if (ListContains (ScopeReachable(), car)) {
+        list add (items, car_door)
+      }
+      if (room = garden) {
+        list add (items, sky)
+      }
+    </scopebackdrop>
+  </game>
+  <command name="breakflag">
+    <pattern>breakflag</pattern>
+    <script>
+      game.scopebackdroprunning = true
+    </script>
+  </command>
+  <object name="hall">
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <object name="car">
+      <inherit name="editor_object"/>
+    </object>
+    <exit alias="north" to="garden">
+      <inherit name="northdirection" />
+    </exit>
+  </object>
+  <object name="garden">
+    <exit alias="south" to="hall">
+      <inherit name="southdirection" />
+    </exit>
+  </object>
+  <object name="backdrops">
+    <object name="car_door">
+      <inherit name="editor_object"/>
+      <alias>car door</alias>
+      <look>A red car door.</look>
+    </object>
+    <object name="sky">
+      <inherit name="editor_object"/>
+      <look>Blue.</look>
+    </object>
+  </object>
+
+  <walkthrough name="verify">
+    <steps>
+      <![CDATA[
+      assert:ListContains(ScopeReachable(), car_door)
+      assert:ListContains(ScopeVisible(), car_door)
+      assert:not ListContains(ScopeReachable(), sky)
+      assert:ListContains(ScopeReachableForRoom(garden), sky)
+      x car door
+      assert:game.unresolvedcommand = null
+      assert:not HasAttribute(game, "scopebackdroprunning")
+      breakflag
+      look
+      assert:not HasAttribute(game, "scopebackdroprunning")
+      assert:ListContains(ScopeReachable(), car_door)
+      north
+      assert:ListContains(ScopeReachable(), sky)
+      assert:not ListContains(ScopeReachable(), car_door)
+      ]]>
+    </steps>
+  </walkthrough>
+</asl>

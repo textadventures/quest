@@ -52,7 +52,7 @@ Note that this script only catches text that matched nothing at all. A command t
 
 ## The backdrop scope script
 
-Every time Quest Viva works out which objects are present - to resolve LOOK AT WALL, to decide whether TAKE LAMP can reach the lamp, to build the list of things you can see - it runs `scopebackdrop`, if the game has one. The script is handed an object list called `items` holding everything it has found so far, and anything you add to that list counts as present too.
+Every time Quest Viva works out which objects are present - to resolve LOOK AT WALL, to decide whether TAKE LAMP can reach the lamp, to build the list of things you can see - it runs `scopebackdrop`, if the game has one. The script is handed an object list called `items` holding everything it has found so far, and anything you add to that list counts as present too. It is also handed `room`, the room whose objects are being worked out - usually the player's room, but not always.
 
 That is how you give a game walls, a floor, a sky or a river without creating a copy of them in every room:
 
@@ -64,7 +64,7 @@ list add (items, ceiling)
 
 Keep the objects themselves somewhere off-stage - a room the player can never reach - and mark them as scenery so they do not appear in every room description.
 
-Two things to watch. You must add to the `items` list that was passed in; building a new list and returning it, or using `ListCombine`, has no effect, because it is the passed-in list that Quest Viva goes on to use. And this script runs many times a turn, so keep it short - a loop over every object in the game will be felt.
+Three things to watch. You must add to the `items` list that was passed in; building a new list and returning it, or using `ListCombine`, has no effect, because it is the passed-in list that Quest Viva goes on to use. And this script runs many times a turn, so keep it short - a loop over every object in the game will be felt. Finally, don't call scope functions such as `ScopeReachable` from inside it: to check whether an object is present, use `ListContains (items, car)`.
 
 [Scope](/howto/commands/scope) covers this in full, along with the other ways to change what a command can reach.
 
