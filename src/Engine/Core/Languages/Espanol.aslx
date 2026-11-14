@@ -740,6 +740,9 @@
   <template name="SaveNew">Guardar nueva</template>
   <template name="SaveToFile">Guardar en archivo</template>
   <template name="LoadFromFile">Cargar desde archivo</template>
+  <template name="CopyBugReport">Copiar para un informe de error</template>
+  <template name="BugReportCopied">Copiado. Pégalo en tu informe de error.</template>
+  <template name="BugReportCopyFailed">Copia esto en tu informe de error:</template>
   <template name="UnnamedSave">esta partida</template>
   <template name="SaveWrongGame">Esta partida guardada es de otro juego — abre primero ese juego y vuelve a intentarlo.</template>
   <template name="CloseDialog">Cerrar</template>

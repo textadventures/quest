@@ -132,7 +132,19 @@ let walkthroughStatusMode = null; // null | 'replay' | 'record' | 'play'
 let recordWalkthroughName = null;
 let recordedSteps = [];
 
+// Every input the player has given since the game started or was loaded, as walkthrough steps,
+// for the Save/Load dialog's "Copy for a bug report" (see buildBugReport). Unlike recordedSteps
+// this is always kept, and starts again with each game (resetBugReportSteps).
+let bugReportSteps = [];
+let bugReportFromSave = false;
+
+function resetBugReportSteps(fromSave) {
+    bugReportSteps = [];
+    bugReportFromSave = fromSave;
+}
+
 function recordStep(step) {
+    bugReportSteps.push(step);
     if (walkthroughStatusMode !== 'record') return;
     recordedSteps.push(step);
     updateWalkthroughStatusUi();
@@ -1199,6 +1211,7 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
         reportProgress('failed', errors.join(' ') || 'Unknown error');
         return false;
     }
+    resetBugReportSteps(!!saveBytes);
 
     // Now that a WorldModel is live, resolve the game's own translated chrome
     // strings (falls back to English for any key it doesn't define) and apply
@@ -1405,6 +1418,8 @@ async function restartGameCore(saveBytes) {
                 : 'Failed to load that save.');
             return;
         }
+
+        resetBugReportSteps(!!saveBytes);
 
         // The restarted game has a fresh copy of the UI, still in English.
         applyGameLanguage();
@@ -1698,7 +1713,50 @@ function ensureSavesDialogWired() {
         if (file) await loadSaveFromFile(file);
     });
 
+    document.getElementById('qv-saves-bug-report').addEventListener('click', copyBugReport);
+
     document.getElementById('qv-saves-close').addEventListener('click', () => dlg.close());
+}
+
+// The text "Copy for a bug report" copies: what an author needs to replay the player's game with a
+// walkthrough - the game's seed, and the player's inputs as walkthrough steps - plus, when the game
+// was loaded from a save, a note that the save is needed too, since the steps only start there. In
+// English whatever the game's language, as it's written for the game's author.
+function buildBugReport() {
+    const ifid = Bridge.GetGameIfid();
+    const lines = [
+        `Game: ${currentGameName || originalGameFilename || 'unknown'}` + (originalGameFilename && currentGameName ? ` (${originalGameFilename})` : ''),
+        ...(ifid ? [`Game ID: ${ifid}`] : []),
+        `Quest Viva: ${Bridge.GetPlayerVersion()}`,
+        `Random seed: ${Bridge.GetRandomSeed()}`,
+        bugReportFromSave
+            ? 'Started from: a saved game. Send the save too (Save to file); the steps below start from it.'
+            : 'Started from: the beginning',
+        '',
+        `Steps (${bugReportSteps.length}), to paste into a walkthrough with the same random seed:`,
+        ...bugReportSteps,
+    ];
+    return lines.join('\n');
+}
+
+async function copyBugReport() {
+    const text = buildBugReport();
+    const status = document.getElementById('qv-saves-bug-report-status');
+    const textarea = document.getElementById('qv-saves-bug-report-text');
+    let copied = false;
+    try {
+        await navigator.clipboard.writeText(text);
+        copied = true;
+    } catch {
+        // No clipboard access, e.g. in an iframe that isn't allowed it: show the text to copy by hand.
+    }
+    status.textContent = copied
+        ? (WebPlayer.chromeStrings?.BugReportCopied ?? 'Copied. Paste it into your bug report.')
+        : (WebPlayer.chromeStrings?.BugReportCopyFailed ?? 'Copy this into your bug report:');
+    status.classList.remove('hidden');
+    textarea.value = text;
+    textarea.classList.toggle('hidden', copied);
+    if (!copied) textarea.select();
 }
 
 // mode: 'boot' resolves {type:'new'} or {type:'load', slotIndex} once the
@@ -1708,6 +1766,8 @@ async function openSavesDialog(mode, gameId = WebPlayer.gameId) {
     ensureSavesDialogWired();
     const dlg = document.getElementById('qv-saves');
     hideSavesError();
+    document.getElementById('qv-saves-bug-report-status')?.classList.add('hidden');
+    document.getElementById('qv-saves-bug-report-text')?.classList.add('hidden');
     dlg.dataset.mode = mode;
     dlg.setAttribute('aria-labelledby', mode === 'boot' ? 'qv-saves-heading-boot' : 'qv-saves-heading-manage');
     renderSavesList(await GameSaver.listSaves(gameId), mode);

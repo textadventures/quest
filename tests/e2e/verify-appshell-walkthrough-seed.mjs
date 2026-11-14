@@ -95,6 +95,19 @@ try {
     if (cleared.value !== play1.value) throw new Error(`Clearing the seed didn't go back to the default: ${cleared.value} vs ${play1.value}`);
     console.log('PASS: clearing the seed goes back to the default seed');
 
+    // Pasting several lines into the add-step box - such as the steps from a player's bug report -
+    // adds each line as a step of its own.
+    await stepInput.evaluate(input => {
+        const clipboardData = new DataTransfer();
+        clipboardData.setData('text/plain', 'inventory\r\n\r\nwait  \nlook\n');
+        input.dispatchEvent(new ClipboardEvent('paste', { clipboardData, bubbles: true, cancelable: true }));
+    });
+    for (const step of ['inventory', 'wait']) {
+        await page.getByText(step, { exact: true }).first().waitFor({ state: 'visible', timeout: 5000 });
+    }
+    if (await stepInput.inputValue() !== '') throw new Error('The pasted lines were left in the add-step box');
+    console.log('PASS: a multi-line paste adds one step per line');
+
     const preview = page.locator('button[title="Preview game"]');
     const preview1 = await sampleRun(ctx, page, preview, () => true);
     const preview2 = await sampleRun(ctx, page, preview, () => true);

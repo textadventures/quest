@@ -32,6 +32,16 @@
             newItemValue = "";
         }
     }
+
+    // A single-line input would run several pasted lines together, so a multi-line paste - such as
+    // the steps from a player's bug report - adds each line as an item of its own.
+    function onPaste(e: ClipboardEvent) {
+        const lines = (e.clipboardData?.getData("text") ?? "").split(/\r?\n/).map(line => line.trim()).filter(Boolean);
+        if (lines.length < 2) return;
+        e.preventDefault();
+        for (const line of lines) addListItem(elementKey, attribute, line);
+        newItemValue = "";
+    }
 </script>
 
 <div class="flex flex-col gap-1 w-full">
@@ -92,6 +102,7 @@
             data-staging
             bind:value={newItemValue}
             onkeydown={(e) => { if (e.key === "Enter") onAdd(); }}
+            onpaste={onPaste}
         />
         <button
             type="button"

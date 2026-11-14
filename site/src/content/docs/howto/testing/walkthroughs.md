@@ -37,6 +37,20 @@ Changing the seed is a quick way to check that a walkthrough doesn't only pass b
 
 A walkthrough run from the Debugger's Walkthrough tab is different: it carries on from wherever the game has got to, with whatever random numbers that game has, so anything random may turn out differently from when you recorded it.
 
+## Reproducing a player's bug
+
+When a player finds a problem, ask them to open **Save / Load** in the game and click **Copy for a bug report**, then paste what it copies into their message to you. It gives the game's random seed and everything they typed or chose since the game started, one step per line.
+
+To play through their game:
+
+1. Add a walkthrough and set its **Random seed** to the one in the report.
+2. Copy the lines under "Steps" and paste them into the walkthrough's add-step box. Each line becomes a step of its own.
+3. Click **Play**. The game goes the way it went for the player, random numbers and all, up to the point where they found the problem.
+
+If the report says the player started from a saved game, the steps only begin from that save, so you need the save as well: ask them to use **Save to file** and send you the file. Load it in the game with **Load from file** - the random numbers carry on from where they were when the player saved - and type the steps from there.
+
+A game whose timers use random numbers may not replay exactly: timers run in real time, so they may not fire between the same steps as they did for the player.
+
 ## Creating sub-walkthroughs
 
 Walkthroughs often share their first half - a game with three endings has one route as far as the last room, then three different finishes. Rather than repeating those steps, make one walkthrough a child of another in the tree: when the child runs, it runs all of its parent's steps first.

@@ -581,6 +581,9 @@
   <template name="SaveNew">Neu speichern</template>
   <template name="SaveToFile">In Datei speichern</template>
   <template name="LoadFromFile">Aus Datei laden</template>
+  <template name="CopyBugReport">Für einen Fehlerbericht kopieren</template>
+  <template name="BugReportCopied">Kopiert. Füge es in deinen Fehlerbericht ein.</template>
+  <template name="BugReportCopyFailed">Kopiere dies in deinen Fehlerbericht:</template>
   <template name="UnnamedSave">diesen Spielstand</template>
   <template name="SaveWrongGame">Dieser Spielstand gehört zu einem anderen Spiel — öffne zuerst das passende Spiel und versuche es erneut.</template>
   <template name="CloseDialog">Schließen</template>
