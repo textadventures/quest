@@ -1,4 +1,4 @@
-// Shared teardown helpers for the Electron e2e scripts (tests/e2e/verify-electron-*.mjs
+// Shared teardown helpers for the Electron e2e scripts (tests/e2e/electron/*.spec.mjs
 // and friends). Every one of them launches a real Electron/Chromium process against a
 // throwaway --user-data-dir and has to tear both down afterwards. Chromium's disk-cache
 // writeback (and, on some runners, a lingering Crashpad handler) can still be touching
@@ -6,7 +6,7 @@
 // ENOTEMPTY. That race was independently rediscovered and independently "fixed" in at
 // least three prior PRs (#1978, #2059, #2083), each time by copy-pasting a slightly
 // different retry/try-catch snippet into one script — which is exactly how the same crash
-// (see PR #2083 for verify-electron-unsaved-close-dialog.mjs) still turned up months later
+// (see PR #2083 for electron/unsaved-close-dialog.spec.mjs) still turned up months later
 // in a sibling script that never got the fix. Centralizing it here means a runner-flake fix
 // only has to happen once.
 import { rmSync } from 'node:fs';

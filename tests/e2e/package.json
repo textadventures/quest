@@ -3,8 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "description": "Playwright browser-driven verification scripts for WasmPlayer/AppShell/Electron manual QA — not part of the dotnet test suite.",
+  "description": "Playwright end-to-end tests for WasmPlayer, AppShell, Electron and the docs site — not part of the dotnet test suite.",
   "devDependencies": {
+    "@playwright/test": "^1.65.1",
     "axe-core": "4.14.0",
     "fflate": "^0.8.3",
     "playwright": "^1.65.0"
