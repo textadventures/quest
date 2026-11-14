@@ -18,7 +18,13 @@ test('legacy-records', async ({ baseURL }) => {
     const browser = await chromium.launch();
     const page = await browser.newPage();
 
+    // A turn's output appears before the turn has finished, and the legacy UI silently
+    // drops a command entered while canSendCommand is still false (playercore.js). So
+    // wait for the previous turn to end before typing the next command, or a slow
+    // runner loses it. Each send() waits for its own output first, so canSendCommand
+    // being true here means that turn is over, not that it hasn't started yet.
     async function send(command, waitForText) {
+        await page.waitForFunction(() => window.canSendCommand === true, null, { timeout: 15000 });
         const input = page.locator('#txtCommand');
         await input.fill(command);
         await input.press('Enter');
