@@ -1149,7 +1149,8 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
     const exports = await getAssemblyExports(config.mainAssemblyName);
     Bridge = exports.QuestViva.WasmPlayer.WasmPlayerBridge;
 
-    // Test hooks for replaying a walkthrough reproducibly: see WasmPlayerBridge.SetRandomSeed.
+    // Hooks for replaying a walkthrough reproducibly (the editor's walkthrough Play and Record
+    // pass ?seed=, and tests use them all): see WasmPlayerBridge.SetRandomSeed.
     const testParams = new URLSearchParams(window.location.search);
     const seed = Number.parseInt(testParams.get('seed') ?? '', 10);
     if (Number.isInteger(seed)) Bridge.SetRandomSeed(seed);

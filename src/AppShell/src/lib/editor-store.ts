@@ -661,6 +661,8 @@ function syncPreviewInterface(): void {
     _previewChannel.postMessage({ type: "interface", attributes: changed });
 }
 
+const WALKTHROUGH_SEED = 1234;
+
 export async function previewInWasmPlayer(wasmPlayerUrl: string, opts?: { recordWalkthrough?: string; runWalkthrough?: string }): Promise<void> {
     if (!_bridge || !_adapter) return;
 
@@ -670,7 +672,11 @@ export async function previewInWasmPlayer(wasmPlayerUrl: string, opts?: { record
     const filename = _adapter.filename;
     const adapter = _adapter;
 
-    window.open(wasmPlayerUrl + "?source=editor", "_blank");
+    // Walkthroughs run with a fixed seed, so a recording replays with the same random numbers, and
+    // the same as `qv walkthrough` (HeadlessSession.DefaultSeed) gives. Record replays a
+    // walkthrough's existing steps before recording more, so it has to use the same seed as Play.
+    const isWalkthrough = opts?.recordWalkthrough != null || opts?.runWalkthrough != null;
+    window.open(wasmPlayerUrl + "?source=editor" + (isWalkthrough ? `&seed=${WALKTHROUGH_SEED}` : ""), "_blank");
     const bc = new BroadcastChannel("quest-preview");
     _previewChannel = bc;
 

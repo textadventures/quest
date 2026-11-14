@@ -72,8 +72,9 @@ public partial class WasmPlayerBridge
         return files;
     }
 
-    // Test hooks (wasm-player.js's ?seed= and ?transcript= parameters) so a browser run of a
-    // walkthrough can be diffed against the headless quest-e2e-tests harness's goldens.
+    // wasm-player.js's ?seed= and ?transcript= parameters. The editor's walkthrough Play and Record
+    // pass ?seed= so a walkthrough replays with the same random numbers, and tests use both so a
+    // browser run of a walkthrough can be diffed against the headless quest-e2e-tests harness's goldens.
     private static int? _randomSeed;
     private static List<TranscriptChunk>? _transcript;
 
