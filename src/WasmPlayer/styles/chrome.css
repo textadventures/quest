@@ -162,28 +162,105 @@
     background: rgb(0 0 0 / 0.5);
 }
 
-/* data-mode="boot" is the lightweight Continue/New-Game prompt shown before
-   a game starts — hide the full manager's controls (name input, save/delete,
-   file import/export) so only "start new" + a plain Load list remain. */
+/* data-mode="boot" is the Continue / Start from the beginning prompt shown before a game starts,
+   when it has saves. "manage" is the in-game manager the Save button opens. Each mode hides the
+   other's controls. */
 :scope#qv-saves[data-mode="boot"] .qv-manage-only,
-:scope#qv-saves[data-mode="boot"] [data-delete-slot] {
-    display: none;
-}
-
+:scope#qv-saves[data-mode="manage"] .qv-boot-only,
 :scope#qv-saves[data-mode="manage"] [data-mode-text="boot"] {
     display: none;
 }
 
-/* The save-slot titles are .anchor buttons (renderSavesList in wasm-player.js),
-   and Skeleton's .anchor sets font-size:var(--anchor-font-size) — a custom
-   property Skeleton itself defaults to `inherit`. Unlike .btn/.input/.text-sm
-   (which hard-code their own font-size), that means the slot titles would
-   inherit the current game's <body> font-size — set via JS.setCss("body", ...)
-   at startup, see the font-family note above — and render out of proportion
-   with the rest of the dialog. Pin the list to the dialog's own base size;
-   every .anchor inside it then inherits from here instead of <body>. */
-:scope#qv-saves #qv-saves-list {
+/* Hidden by renderSavesList when the boot prompt has no saves besides the one Continue loads. */
+:scope#qv-saves #qv-saves-other-heading[hidden] {
+    display: none;
+}
+
+/* The game can set <body>'s font size (see the font-family note above), and Skeleton's .anchor
+   (the footer links) inherits it through --anchor-font-size. Pin the dialog to its own base size
+   so the game's font size doesn't leak in. */
+:scope#qv-saves .card {
     font-size: var(--text-base);
+}
+
+:scope#qv-saves .qv-saves-continue-detail {
+    opacity: 0.85;
+}
+
+/* The saves: one bordered list, a row per save. */
+:scope#qv-saves .qv-save-rows:not(:empty) {
+    border: 1px solid var(--color-surface-200-800);
+    border-radius: var(--radius-container);
+    background: var(--color-surface-50-950);
+    overflow: hidden;
+}
+
+:scope#qv-saves .qv-save-row + .qv-save-row {
+    border-top: 1px solid var(--color-surface-200-800);
+}
+
+:scope#qv-saves .qv-save-rows .qv-saves-empty {
+    border: none;
+}
+
+:scope#qv-saves .qv-save-meta {
+    color: var(--color-surface-700-300);
+}
+
+:scope#qv-saves .qv-saves-footer {
+    border-top: 1px solid var(--color-surface-200-800);
+}
+
+:scope#qv-saves .qv-saves-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: var(--text-sm);
+    /* Skeleton's link colour is too light on the dialog for small text (WCAG AA). */
+    color: light-dark(var(--color-primary-700), var(--color-primary-300));
+}
+
+/* A save's options menu. A popover is in the top layer, placed by openSaveMenu, so the UA's
+   centring (inset:0 with auto margins) is undone here. */
+:scope#qv-saves .qv-saves-menu {
+    position: fixed;
+    inset: auto;
+    margin: 0;
+    min-width: 11rem;
+    padding: 0.25rem;
+    border: 1px solid var(--color-surface-200-800);
+    border-radius: var(--radius-container);
+    background: var(--color-surface-50-950);
+    color: light-dark(var(--typo-base--color-light), var(--typo-base--color-dark));
+    box-shadow: 0 8px 24px rgb(0 0 0 / 0.18);
+}
+
+:scope#qv-saves .qv-saves-menu:not(:popover-open) {
+    display: none;
+}
+
+:scope#qv-saves .qv-saves-menu [role="menuitem"] {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.4rem 0.625rem;
+    border-radius: var(--radius-base);
+    font-size: var(--text-sm);
+    text-align: left;
+    cursor: pointer;
+}
+
+:scope#qv-saves .qv-saves-menu [role="menuitem"]:hover,
+:scope#qv-saves .qv-saves-menu [role="menuitem"]:focus-visible {
+    background: var(--color-surface-200-800);
+    outline: none;
+}
+
+/* light-dark() written out here rather than Skeleton's --color-error-700-300: that pair is
+   defined on the dialog itself, so it resolves to the base theme's colours, not the card's. */
+:scope#qv-saves .qv-saves-menu .qv-saves-menu-danger {
+    color: light-dark(var(--color-error-700), var(--color-error-300));
 }
 
 /* Debugger — movable and resizable (wireDebuggerMoveResize in wasm-player.js
@@ -580,9 +657,15 @@
 .qv-icon {
     width: 1.25rem;
     height: 1.25rem;
+    flex-shrink: 0;
     fill: none;
     stroke: currentColor;
     stroke-width: 2;
     stroke-linecap: round;
     stroke-linejoin: round;
+}
+
+.qv-icon.qv-icon-sm {
+    width: 1rem;
+    height: 1rem;
 }

@@ -19,6 +19,8 @@ export interface SaveSlot {
     // before this field existed, and on non-Electron (IndexedDB) saves — both
     // fall back to English, no version/schema handling needed.
     chromeStrings?: Record<string, string> | null;
+    // Where the player was when they saved (the game's location bar text). Absent on older saves.
+    location?: string | null;
 }
 
 const MANIFEST_FILE = "manifest.json";
@@ -87,14 +89,25 @@ export function saveGame(
     data: Uint8Array,
     name: string | null,
     chromeStrings?: Record<string, string> | null,
+    location?: string | null,
 ): Promise<void> {
     return enqueue(gameDirName(gameId), async () => {
         await fs.mkdir(gameDir(gameId), { recursive: true });
         await fs.writeFile(blobPath(gameId, slotIndex), data);
         const slots = await readManifest(gameId);
         const remaining = slots.filter((s) => s.slotIndex !== slotIndex);
-        remaining.push({ slotIndex, name, timestamp: Date.now(), chromeStrings: chromeStrings ?? null });
+        remaining.push({ slotIndex, name, timestamp: Date.now(), chromeStrings: chromeStrings ?? null, location: location ?? null });
         await writeManifest(gameId, remaining);
+    });
+}
+
+export function renameSaveSlot(gameId: string, slotIndex: number, name: string | null): Promise<void> {
+    return enqueue(gameDirName(gameId), async () => {
+        const slots = await readManifest(gameId);
+        const slot = slots.find((s) => s.slotIndex === slotIndex);
+        if (!slot) return;
+        slot.name = name;
+        await writeManifest(gameId, slots);
     });
 }
 

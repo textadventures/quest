@@ -23,7 +23,10 @@ const countPanes = () => page.$$eval('.newwindow-test-pane', els => els.length);
 const restart = async () => {
     await page.click('#cmdSave');
     await page.waitForSelector('#qv-saves', { state: 'visible', timeout: 10000 });
-    await page.click('#qv-saves-start-new');
+    await page.click('#qv-saves-restart');
+    // The dialog asks first when anything has happened since the last save.
+    await page.locator('#qv-saves-confirm-yes, #qv-restarting:not(.hidden)').first().waitFor({ timeout: 5000 });
+    if (await page.locator('#qv-saves-confirm-yes').count()) await page.click('#qv-saves-confirm-yes');
     // #txtCommand is part of the static chrome swapInPlayerUi() puts back
     // immediately, so it's visible well before Initialise()/Begin() (which
     // re-parses the whole Core library XML from scratch) actually finish —

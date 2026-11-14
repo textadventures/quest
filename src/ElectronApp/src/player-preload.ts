@@ -15,7 +15,7 @@ import { contextBridge, ipcRenderer } from "electron";
 // userData/transcripts or reach another transcript beyond appending to
 // whichever one it names.
 //
-// electronGameSaves: save/list/load/delete, keyed by [gameId, slotIndex]
+// electronGameSaves: save/list/load/rename/delete, keyed by [gameId, slotIndex]
 // exactly like the IndexedDB store this replaces (see save-store.ts) — same
 // per-game path escaping, so a game can only ever touch its own save slots.
 //
@@ -34,7 +34,15 @@ contextBridge.exposeInMainWorld("electronTranscripts", {
 contextBridge.exposeInMainWorld("electronGameSaves", {
     list: (
         gameId: string,
-    ): Promise<{ slotIndex: number; name: string | null; timestamp: number | null; chromeStrings: Record<string, string> | null }[]> =>
+    ): Promise<
+        {
+            slotIndex: number;
+            name: string | null;
+            timestamp: number | null;
+            chromeStrings: Record<string, string> | null;
+            location?: string | null;
+        }[]
+    > =>
         ipcRenderer.invoke("gamesave:list", gameId),
     save: (
         gameId: string,
@@ -42,7 +50,10 @@ contextBridge.exposeInMainWorld("electronGameSaves", {
         data: Uint8Array,
         name: string | null,
         chromeStrings?: Record<string, string> | null,
-    ): Promise<void> => ipcRenderer.invoke("gamesave:save", gameId, slotIndex, data, name, chromeStrings),
+        location?: string | null,
+    ): Promise<void> => ipcRenderer.invoke("gamesave:save", gameId, slotIndex, data, name, chromeStrings, location),
+    rename: (gameId: string, slotIndex: number, name: string | null): Promise<void> =>
+        ipcRenderer.invoke("gamesave:rename", gameId, slotIndex, name),
     load: (gameId: string, slotIndex: number): Promise<Uint8Array | null> =>
         ipcRenderer.invoke("gamesave:load", gameId, slotIndex),
     delete: (gameId: string, slotIndex: number): Promise<void> => ipcRenderer.invoke("gamesave:delete", gameId, slotIndex),

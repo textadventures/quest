@@ -138,13 +138,19 @@ let recordedSteps = [];
 let bugReportSteps = [];
 let bugReportFromSave = false;
 
+// How many inputs the player has given since the game was last saved, loaded or started: when
+// there are some, the Save/Load dialog checks before loading a save or starting again.
+let stepsSinceSave = 0;
+
 function resetBugReportSteps(fromSave) {
     bugReportSteps = [];
     bugReportFromSave = fromSave;
+    stepsSinceSave = 0;
 }
 
 function recordStep(step) {
     bugReportSteps.push(step);
+    stepsSinceSave++;
     if (walkthroughStatusMode !== 'record') return;
     recordedSteps.push(step);
     updateWalkthroughStatusUi();
@@ -1222,6 +1228,7 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
     applyGameLanguage();
 
     WebPlayer.onSaveClick = () => openSavesDialog('manage');
+    WebPlayer.onGameSaved = () => { stepsSinceSave = 0; };
     await WebPlayer.initUI();
     wireDebuggerButton();
     wireDebuggerRestartButton(isPreview);
@@ -1547,33 +1554,261 @@ function hideSavesError() {
     if (el) el.style.display = 'none';
 }
 
+// The saves list. A save is titled by its name, else by where the player was, else "Saved game",
+// with when it was made (and where, when it has a name) underneath. Manage mode gives each row a
+// Load button and a ⋯ button for its menu: Overwrite, Rename, Save to file and Delete. Boot
+// mode (the "Continue your game?" prompt) offers the newest save as its Continue button and lists
+// the rest with just a Load button.
 function renderSavesList(saves, mode) {
     const list = document.getElementById('qv-saves-list');
     if (!list) return;
+    const cs = WebPlayer.chromeStrings ?? {};
+
+    if (mode === 'boot') {
+        const [newest, ...rest] = saves;
+        const continueBtn = document.getElementById('qv-saves-continue');
+        continueBtn.dataset.continueSlot = newest ? String(newest.slotIndex) : '';
+        document.getElementById('qv-saves-continue-detail').textContent = newest ? describeSave(newest).summary : '';
+        document.getElementById('qv-saves-other-heading').hidden = rest.length === 0;
+        saves = rest;
+    }
+
     if (!saves.length) {
-        const noSavesText = WebPlayer.chromeStrings?.NoSavedGamesYet ?? 'No saved games yet.';
-        list.innerHTML = `<li class="text-sm text-surface-700-300">${_esc(noSavesText)}</li>`;
+        list.innerHTML = mode === 'manage'
+            ? `<li class="qv-saves-empty text-sm text-surface-700-300">${_esc(cs.NoSavedGamesYet ?? 'No saved games yet.')}</li>`
+            : '';
         return;
     }
-    // s.name already carries a human-readable date/time when the user didn't
-    // type a custom one (see GameSaver.save's default label) — don't also
-    // render s.timestamp separately, or the same moment shows up twice in
-    // two different formats.
-    const deleteLabel = _esc(WebPlayer.chromeStrings?.DeleteSave ?? 'Delete');
+
+    const loadLabel = _esc(cs.LoadSave ?? 'Load');
     list.innerHTML = saves.map(s => {
-        const deleteBtn = mode === 'manage'
-            ? `<button type="button" class="btn-icon preset-tonal-error" data-delete-slot="${s.slotIndex}" aria-label="${deleteLabel}">`
-                + `<svg class="qv-icon" aria-hidden="true"><use href="#trash"></use></svg></button>`
+        const { title, meta } = describeSave(s);
+        const id = `qv-save-${s.slotIndex}`;
+        const options = mode === 'manage'
+            ? `<button type="button" class="btn-icon btn-icon-sm hover:preset-tonal" data-slot-options="${s.slotIndex}" aria-haspopup="menu" aria-expanded="false" aria-controls="qv-saves-menu" aria-label="${_esc((cs.SaveOptions ?? 'Options for [name]').replace('[name]', title))}">`
+                + `<svg class="qv-icon" aria-hidden="true"><use href="#ellipsis"></use></svg></button>`
             : '';
-        return `<li class="flex items-center justify-between gap-2">`
-            + `<button type="button" class="anchor text-left flex-1" data-slot="${s.slotIndex}">${_esc(s.name)}</button>`
-            + deleteBtn
+        return `<li class="qv-save-row px-3 py-2" data-row-slot="${s.slotIndex}">`
+            + `<div class="flex items-center gap-2">`
+            + `<div class="min-w-0 flex-1">`
+            + `<div class="qv-save-title truncate" id="${id}-title">${_esc(title)}</div>`
+            + (meta ? `<div class="qv-save-meta text-xs">${_esc(meta)}</div>` : '')
+            + `</div>`
+            + `<button type="button" class="btn btn-sm preset-outlined-primary-700-300" data-slot="${s.slotIndex}" aria-describedby="${id}-title">${loadLabel}</button>`
+            + options
+            + `</div>`
             + `</li>`;
     }).join('');
 }
 
-async function downloadSaveToFile() {
-    const bytes = await WebPlayer.uiSaveGame(playerUi.getOutputHtml());
+// A save's title and the line under it, and both together for the boot prompt's Continue button.
+function describeSave(save) {
+    const cs = WebPlayer.chromeStrings ?? {};
+    const name = isDefaultSaveLabel(save.name) ? null : save.name;
+    const location = save.location || null;
+    const when = formatSaveTime(save.timestamp);
+    const title = name || location || cs.SavedGameTitle || 'Saved game';
+    const meta = [when, name && location].filter(Boolean).join(' · ');
+    return { title, meta, summary: [title, meta].filter(Boolean).join(' · ') };
+}
+
+// Saves made before saves could be unnamed were given a "Saved game — <date and time>" name.
+// Those are shown like unnamed saves, since the date is shown anyway.
+function isDefaultSaveLabel(name) {
+    if (!name) return false;
+    const template = WebPlayer.chromeStrings?.SavedGameDefaultLabel ?? 'Saved game — [timestamp]';
+    const [before, after = ''] = template.split('[timestamp]');
+    return name.startsWith(before) && name.endsWith(after) && name.length > before.length + after.length;
+}
+
+// "Today, 12:57", "Yesterday, 21:14", or the date and time for anything older.
+function formatSaveTime(timestamp) {
+    if (!timestamp) return '';
+    const date = new Date(timestamp);
+    if (isNaN(date)) return '';
+    const cs = WebPlayer.chromeStrings ?? {};
+    const now = new Date();
+    const time = date.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+    const startOfDay = d => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+    const daysAgo = Math.round((startOfDay(now) - startOfDay(date)) / 86400000);
+    if (daysAgo === 0) return (cs.SavedToday ?? 'Today, [time]').replace('[time]', time);
+    if (daysAgo === 1) return (cs.SavedYesterday ?? 'Yesterday, [time]').replace('[time]', time);
+    const day = date.toLocaleDateString(undefined, {
+        day: 'numeric', month: 'short',
+        ...(date.getFullYear() !== now.getFullYear() ? { year: 'numeric' } : {}),
+    });
+    return `${day}, ${time}`;
+}
+
+// Asks inside the dialog, in place of a native confirm(): the question goes into container, with
+// Cancel and a button that does it. Resolves true if the player goes ahead. Escape cancels (see
+// the dialog's cancel handler in ensureSavesDialogWired).
+let cancelSavesConfirm = null;
+
+function confirmInSavesDialog(container, message, actionLabel, danger = false) {
+    cancelSavesConfirm?.();
+    const cs = WebPlayer.chromeStrings ?? {};
+    const box = document.createElement('div');
+    box.className = 'qv-saves-confirm card preset-tonal-warning p-3 mt-2 space-y-2 text-sm';
+    box.setAttribute('role', 'group');
+    box.innerHTML = `<p id="qv-saves-confirm-text"></p>`
+        + `<div class="flex justify-end gap-2">`
+        + `<button type="button" id="qv-saves-confirm-cancel" class="btn btn-sm preset-tonal"></button>`
+        + `<button type="button" id="qv-saves-confirm-yes" class="btn btn-sm ${danger ? 'preset-filled-error-500' : 'preset-filled-primary-500'}" aria-describedby="qv-saves-confirm-text"></button>`
+        + `</div>`;
+    box.querySelector('#qv-saves-confirm-text').textContent = message;
+    box.querySelector('#qv-saves-confirm-cancel').textContent = cs.CancelButton ?? 'Cancel';
+    box.querySelector('#qv-saves-confirm-yes').textContent = actionLabel;
+    box.setAttribute('aria-labelledby', 'qv-saves-confirm-text');
+    container.append(box);
+
+    return new Promise(resolve => {
+        const finish = (yes) => {
+            cancelSavesConfirm = null;
+            box.remove();
+            resolve(yes);
+        };
+        cancelSavesConfirm = () => finish(false);
+        box.querySelector('#qv-saves-confirm-cancel').addEventListener('click', () => finish(false));
+        box.querySelector('#qv-saves-confirm-yes').addEventListener('click', () => finish(true));
+        box.querySelector('#qv-saves-confirm-yes').focus();
+    });
+}
+
+// A save's menu (#qv-saves-menu), opened by its ⋯ button: placed under the button, or above it
+// when there's no room below, with the first item focused. The arrow keys, Home and End move
+// between items. Escape or a click elsewhere closes it (it's a popover) and focus goes back to
+// the button.
+let saveMenuOpener = null;
+// When the menu last closed because of a press outside it, and whose it was: pressing a save's ⋯
+// button while its menu is open closes the menu that way before the click arrives, which would
+// otherwise open it again. Closing it with Escape or by choosing an item doesn't count
+// (saveMenuClosingByUs), so the button opens it again straight away after those.
+let saveMenuClosed = { opener: null, at: 0 };
+let saveMenuClosingByUs = false;
+
+function openSaveMenu(button) {
+    const menu = document.getElementById('qv-saves-menu');
+    if (!menu) return;
+    if (menu.matches(':popover-open')) {
+        saveMenuClosingByUs = true;
+        menu.hidePopover();
+        if (saveMenuOpener === button) return;
+    } else if (saveMenuClosed.opener === button && performance.now() - saveMenuClosed.at < 500) {
+        return;
+    }
+    cancelSavesConfirm?.();
+    saveMenuOpener = button;
+    menu.dataset.slot = button.dataset.slotOptions;
+    menu.showPopover();
+    const rect = button.getBoundingClientRect();
+    const { width, height } = menu.getBoundingClientRect();
+    const below = rect.bottom + 4;
+    menu.style.top = `${below + height > window.innerHeight - 8 ? Math.max(8, rect.top - 4 - height) : below}px`;
+    menu.style.left = `${Math.max(8, Math.min(rect.right - width, window.innerWidth - 8 - width))}px`;
+    button.setAttribute('aria-expanded', 'true');
+    menu.querySelector('[role="menuitem"]')?.focus();
+}
+
+function wireSaveMenu(onAction) {
+    const menu = document.getElementById('qv-saves-menu');
+    if (!menu) return;
+    // beforetoggle, unlike toggle, fires as the menu closes, so it's recorded before the click
+    // that closed it reaches a ⋯ button.
+    menu.addEventListener('beforetoggle', (e) => {
+        if (e.newState !== 'closed' || !saveMenuOpener) return;
+        saveMenuOpener.setAttribute('aria-expanded', 'false');
+        saveMenuClosed = saveMenuClosingByUs ? { opener: null, at: 0 } : { opener: saveMenuOpener, at: performance.now() };
+        saveMenuClosingByUs = false;
+    });
+    menu.addEventListener('toggle', (e) => {
+        if (e.newState !== 'closed' || !saveMenuOpener) return;
+        // Back to the button, unless the menu closed because the player clicked something else.
+        if (!document.activeElement || document.activeElement === document.body || menu.contains(document.activeElement)) {
+            saveMenuOpener.focus();
+        }
+    });
+    menu.addEventListener('keydown', (e) => {
+        const items = [...menu.querySelectorAll('[role="menuitem"]')];
+        const index = items.indexOf(document.activeElement);
+        const next = { ArrowDown: index + 1, ArrowUp: index - 1, Home: 0, End: items.length - 1 }[e.key];
+        if (next === undefined) {
+            if (e.key === 'Escape') saveMenuClosingByUs = true;
+            if (e.key === 'Tab') { saveMenuClosingByUs = true; menu.hidePopover(); }
+            return;
+        }
+        e.preventDefault();
+        items[(next + items.length) % items.length].focus();
+    });
+    menu.addEventListener('click', (e) => {
+        const item = e.target.closest('[data-menu-action]');
+        if (!item) return;
+        const slotIndex = Number(menu.dataset.slot);
+        const opener = saveMenuOpener;
+        saveMenuClosingByUs = true;
+        menu.hidePopover();
+        onAction(item.dataset.menuAction, slotIndex, opener);
+    });
+}
+
+// Turns a row's title into a text box. Enter or leaving the box keeps the new name (an empty one
+// makes the save unnamed again), Escape keeps the old one.
+function startRenamingSave(slotIndex) {
+    const row = document.querySelector(`#qv-saves-list [data-row-slot="${slotIndex}"]`);
+    const title = row?.querySelector('.qv-save-title');
+    if (!title) return;
+    const cs = WebPlayer.chromeStrings ?? {};
+    const save = currentSaves.find(s => s.slotIndex === slotIndex);
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'input qv-save-rename py-1';
+    input.autocomplete = 'off';
+    input.value = save && !isDefaultSaveLabel(save.name) ? (save.name ?? '') : '';
+    input.placeholder = describeSave(save ?? {}).title;
+    input.setAttribute('aria-label', cs.RenameSaveLabel ?? 'New name');
+    title.replaceWith(input);
+    input.focus();
+    input.select();
+
+    let done = false;
+    const finish = async (keep) => {
+        if (done) return;
+        done = true;
+        renamingSave = null;
+        if (keep && input.value.trim() !== (save?.name ?? '')) {
+            await GameSaver.rename(slotIndex, input.value.trim() || null);
+        }
+        await refreshSavesList();
+        document.querySelector(`#qv-saves-list [data-slot="${slotIndex}"]`)?.focus();
+    };
+    renamingSave = () => finish(false);
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); finish(true); }
+    });
+    input.addEventListener('blur', () => finish(true));
+}
+
+let renamingSave = null;
+let currentSaves = [];
+
+async function refreshSavesList(mode = 'manage') {
+    currentSaves = await GameSaver.listSaves(WebPlayer.gameId);
+    renderSavesList(currentSaves, mode);
+}
+
+function saveTitle(slotIndex) {
+    const save = currentSaves.find(s => s.slotIndex === slotIndex);
+    return save ? describeSave(save).title : (WebPlayer.chromeStrings?.UnnamedSave ?? 'this save');
+}
+
+// Downloads a save from the list as a .quest-save file, the same as "Save to file" gives for the
+// game as it is now.
+async function downloadSaveSlot(slotIndex) {
+    const bytes = await GameSaver.load(slotIndex, WebPlayer.gameId);
+    if (bytes) downloadSaveBytes(bytes);
+}
+
+function downloadSaveBytes(bytes) {
     const blob = new Blob([bytes], { type: 'application/xml' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -1581,7 +1816,13 @@ async function downloadSaveToFile() {
     a.download = WebPlayer.gameId.replace(/\.[^.]+$/, '') + '.quest-save';
     a.click();
     URL.revokeObjectURL(url);
+}
+
+async function downloadSaveToFile() {
+    const bytes = await WebPlayer.uiSaveGame(playerUi.getOutputHtml());
+    downloadSaveBytes(bytes);
     playerUi.clearUnsavedProgress();
+    stepsSinceSave = 0;
 }
 
 // A .quest-save only carries state, not resources — it must be paired with
@@ -1639,70 +1880,111 @@ function ensureSavesDialogWired() {
 
     const dlg = document.getElementById('qv-saves');
     if (!dlg) return;
+    const cs = () => WebPlayer.chromeStrings ?? {};
 
-    // Non-cancellable while a boot-time choice is pending (matches WebPlayer's
-    // Slots dialog); freely closable otherwise.
+    // Escape backs out of whatever is open inside the dialog first: a question or a rename (a save's
+    // menu, being a popover, closes itself). Otherwise it closes the manager. The boot prompt can't
+    // be closed: it's waiting for a choice (matches WebPlayer's Slots dialog).
     dlg.addEventListener('cancel', (e) => {
+        if (cancelSavesConfirm) { e.preventDefault(); cancelSavesConfirm(); return; }
+        if (renamingSave) { e.preventDefault(); renamingSave(); return; }
         if (bootChoiceResolve) e.preventDefault();
     });
 
-    document.getElementById('qv-saves-start-new').addEventListener('click', (e) => {
-        if (bootChoiceResolve) {
-            const resolve = bootChoiceResolve;
-            bootChoiceResolve = null;
-            dlg.close();
-            resolve({ type: 'new' });
-            return;
+    const chooseAtBoot = (choice) => {
+        const resolve = bootChoiceResolve;
+        bootChoiceResolve = null;
+        dlg.close();
+        resolve(choice);
+    };
+
+    document.getElementById('qv-saves-start-new').addEventListener('click', () => {
+        if (bootChoiceResolve) chooseAtBoot({ type: 'new' });
+    });
+
+    document.getElementById('qv-saves-continue').addEventListener('click', (e) => {
+        const slot = e.currentTarget.dataset.continueSlot;
+        if (bootChoiceResolve && slot) chooseAtBoot({ type: 'load', slotIndex: Number(slot) });
+    });
+
+    // Manage mode: starting again mid-game. The button is disabled meanwhile, so a slow restart
+    // (a large game, a low-end device) can't be started twice; #qv-restarting shows it's working.
+    document.getElementById('qv-saves-restart').addEventListener('click', async (e) => {
+        const button = e.currentTarget;
+        if (stepsSinceSave > 0) {
+            const ok = await confirmInSavesDialog(document.getElementById('qv-saves-footer-confirm'),
+                cs().StartAgainConfirm ?? "Start again from the beginning? You'll lose anything you've done since you last saved.",
+                cs().StartAgain ?? 'Start again');
+            if (!ok) { button.focus(); return; }
         }
-        // Manage mode: restarting mid-session, matches WebPlayer's Slots
-        // "Start from the beginning" button (no confirm() there either).
-        // withBusyButton's disable+busy-label+forced-paint makes a slow
-        // restart (a large game, a low-end device) read as "working" rather
-        // than unresponsive — restartGame itself also now guards against
-        // overlapping calls (see restartInProgress's doc comment), but
-        // without this there was no visible feedback at all inviting
-        // exactly the impatient re-click that guard exists for.
-        withBusyButton(e.currentTarget, WebPlayer.chromeStrings?.RestartingBusy ?? 'Restarting…', () => restartGame(null));
+        withBusyButton(button, '', () => restartGame(null));
+    });
+
+    // A save's menu.
+    wireSaveMenu(async (action, slotIndex, opener) => {
+        const row = document.querySelector(`#qv-saves-list [data-row-slot="${slotIndex}"]`);
+        if (!row) return;
+        if (action === 'overwrite') {
+            const ok = await confirmInSavesDialog(row,
+                (cs().OverwriteSaveConfirm ?? 'Replace "[name]" with your game as it is now?').replace('[name]', saveTitle(slotIndex)),
+                cs().OverwriteSave ?? 'Overwrite');
+            if (!ok) { opener?.focus(); return; }
+            await GameSaver.overwrite(slotIndex);
+            await refreshSavesList();
+            document.querySelector(`#qv-saves-list [data-slot="${slotIndex}"]`)?.focus();
+        } else if (action === 'rename') {
+            startRenamingSave(slotIndex);
+        } else if (action === 'download') {
+            await downloadSaveSlot(slotIndex);
+            opener?.focus();
+        } else if (action === 'delete') {
+            const ok = await confirmInSavesDialog(row,
+                (cs().DeleteSaveConfirm ?? 'Delete "[name]"? This can\'t be undone.').replace('[name]', saveTitle(slotIndex)),
+                cs().DeleteSave ?? 'Delete', true);
+            if (!ok) { opener?.focus(); return; }
+            await GameSaver.deleteSlot(slotIndex, WebPlayer.gameId);
+            await refreshSavesList();
+            document.getElementById('qv-saves-name-input')?.focus();
+        }
     });
 
     document.getElementById('qv-saves-list').addEventListener('click', async (e) => {
-        const loadBtn = e.target.closest('[data-slot]');
-        if (loadBtn) {
-            const slotIndex = Number(loadBtn.dataset.slot);
+        const target = e.target.closest('button');
+        if (!target) return;
+        const row = target.closest('[data-row-slot]');
+        const slotIndex = Number(row?.dataset.rowSlot);
+
+        if (target.dataset.slot !== undefined) {
             if (bootChoiceResolve) {
-                const resolve = bootChoiceResolve;
-                bootChoiceResolve = null;
-                dlg.close();
-                resolve({ type: 'load', slotIndex });
-            } else {
-                const bytes = await GameSaver.load(slotIndex, WebPlayer.gameId);
-                await restartGame(bytes);
+                chooseAtBoot({ type: 'load', slotIndex });
+                return;
             }
-            return;
-        }
-        const delBtn = e.target.closest('[data-delete-slot]');
-        if (delBtn) {
-            const name = delBtn.closest('li')?.querySelector('[data-slot]')?.textContent ?? (WebPlayer.chromeStrings?.UnnamedSave ?? 'this save');
-            const confirmTemplate = WebPlayer.chromeStrings?.DeleteSaveConfirm ?? 'Delete "[name]"? This can\'t be undone.';
-            if (!confirm(confirmTemplate.replace('[name]', name))) return;
-            await withBusyButton(delBtn, '', async () => {
-                await GameSaver.deleteSlot(Number(delBtn.dataset.deleteSlot), WebPlayer.gameId);
-            });
-            renderSavesList(await GameSaver.listSaves(WebPlayer.gameId), 'manage');
+            if (stepsSinceSave > 0) {
+                const ok = await confirmInSavesDialog(row,
+                    (cs().LoadSaveConfirm ?? "Load \"[name]\"? You'll lose anything you've done since you last saved.").replace('[name]', saveTitle(slotIndex)),
+                    cs().LoadSave ?? 'Load');
+                if (!ok) { target.focus(); return; }
+            }
+            const bytes = await GameSaver.load(slotIndex, WebPlayer.gameId);
+            await restartGame(bytes);
+        } else if (target.dataset.slotOptions !== undefined) {
+            openSaveMenu(target);
         }
     });
 
-    document.getElementById('qv-saves-save-new').addEventListener('click', async (e) => {
+    document.getElementById('qv-saves-save-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
         const input = document.getElementById('qv-saves-name-input');
-        await withBusyButton(e.currentTarget, WebPlayer.chromeStrings?.SavingBusy ?? 'Saving…', async () => {
+        const button = document.getElementById('qv-saves-save-new');
+        await withBusyButton(button, cs().SavingBusy ?? 'Saving…', async () => {
             await GameSaver.save(input.value.trim() || undefined);
         });
         input.value = '';
-        renderSavesList(await GameSaver.listSaves(WebPlayer.gameId), 'manage');
+        await refreshSavesList();
     });
 
     document.getElementById('qv-saves-download').addEventListener('click', (e) =>
-        withBusyButton(e.currentTarget, WebPlayer.chromeStrings?.SavingBusy ?? 'Saving…', downloadSaveToFile));
+        withBusyButton(e.currentTarget, '', downloadSaveToFile));
 
     const uploadBtn = document.getElementById('qv-saves-upload-btn');
     const fileInput = document.getElementById('qv-saves-file-input');
@@ -1768,9 +2050,17 @@ async function openSavesDialog(mode, gameId = WebPlayer.gameId) {
     hideSavesError();
     document.getElementById('qv-saves-bug-report-status')?.classList.add('hidden');
     document.getElementById('qv-saves-bug-report-text')?.classList.add('hidden');
+    cancelSavesConfirm?.();
+    renamingSave = null;
+    const saveMenu = document.getElementById('qv-saves-menu');
+    if (saveMenu?.matches(':popover-open')) {
+        saveMenuClosingByUs = true;
+        saveMenu.hidePopover();
+    }
     dlg.dataset.mode = mode;
     dlg.setAttribute('aria-labelledby', mode === 'boot' ? 'qv-saves-heading-boot' : 'qv-saves-heading-manage');
-    renderSavesList(await GameSaver.listSaves(gameId), mode);
+    currentSaves = await GameSaver.listSaves(gameId);
+    renderSavesList(currentSaves, mode);
 
     if (mode === 'boot') {
         return new Promise(resolve => {
