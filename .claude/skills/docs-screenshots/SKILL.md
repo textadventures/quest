@@ -43,7 +43,7 @@ see `.claude/skills/verify/SKILL.md` for the base convention this extends):
   `capture`, `openPreview`/`sendCommand` (player screenshots, see below), and
   the `runCapture` try/finally wrapper. Reuse these rather than re-deriving
   selectors — they're built on DOM patterns already proven out across
-  `tests/e2e/verify-appshell-*.mjs`.
+  `tests/e2e/appshell/*.spec.mjs`.
 - **One capture script per doc page**, e.g.
   `capture-tutorial-creating-a-simple-game.mjs`. Each script walks through
   *that page's own narrative* — the same room/object names and steps the
@@ -108,7 +108,7 @@ element in the transcript, so it's the natural `untilLocator` for player shots.
 (e.g. "List children when object is looked at or opened") are flagged
 `<advanced/>` in the `.aslx` control definition and live behind a collapsed
 "Advanced" `<summary>` at the bottom of their tab (see
-`tests/e2e/verify-appshell-advanced-controls.mjs`) — invisible, and
+`tests/e2e/appshell/advanced-controls.spec.mjs`) — invisible, and
 `.check()`/`.fill()` will hang waiting for visibility, until you click
 `page.locator('summary', { hasText: 'Advanced' })` open first.
 

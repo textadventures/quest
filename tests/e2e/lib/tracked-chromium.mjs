@@ -1,5 +1,5 @@
 // Drop-in replacement for `import { chromium } from 'playwright'`, used by every
-// verify-appshell-*.mjs script instead of importing 'playwright' directly.
+// appshell/*.spec.mjs spec instead of importing 'playwright' directly.
 //
 // Always mocks GitHub's releases API (see mockReleasesApi below) on every
 // context/page a launched browser creates. Beyond that, when
@@ -9,7 +9,8 @@
 // When QUEST_TOUCHED_FILES_DIR is set, records real V8 JS coverage for every page
 // a launched browser opens and, on browser.close(), writes the set of AppShell
 // source files (src/AppShell/src/**) that were actually *executed* — not merely
-// requested — to `<dir>/<script-basename>.json`. That's the raw material
+// requested — to `<dir>/<project>__<name>.spec.mjs.json`, named after the running
+// spec (appshell/<name>.spec.mjs). That's the raw material
 // build-coverage-map.mjs turns into a source-file -> tests lookup for
 // find-affected-tests.mjs.
 //
@@ -28,7 +29,7 @@
 //
 // Coverage is snapshotted periodically (stop + immediately restart) rather than
 // once at browser.close(), for two reasons found empirically on a real test
-// (verify-preview-custom-library.mjs): a single end-of-test stopJSCoverage() call
+// (appshell/preview-custom-library.spec.mjs): a single end-of-test stopJSCoverage() call
 // silently loses coverage for scripts V8 has already evicted after a long-enough
 // session (confirmed - a 7-file result for a page that should have had 70+, with
 // only the most-recently-touched files surviving), and it loses ephemeral popup
@@ -36,15 +37,16 @@
 // Preview flow's player window does exactly this). Snapshotting every ~800ms
 // keeps each window short enough that nothing gets evicted before it's recorded.
 import { chromium as realChromium } from 'playwright';
-import { writeFileSync, mkdirSync } from 'node:fs';
-import { join, basename } from 'node:path';
+import { test } from '@playwright/test';
+import { writeFileSync, mkdirSync, readFileSync, existsSync } from 'node:fs';
+import { join, basename, relative } from 'node:path';
 
 const outDir = process.env.QUEST_TOUCHED_FILES_DIR;
 const SNAPSHOT_INTERVAL_MS = 4000;
 
 // HomeHeader mounts DownloadButton (src/AppShell/src/lib/download-links.ts)
 // on every page load, which fires this
-// exact request unauthenticated. Almost every verify-appshell-*.mjs script
+// exact request unauthenticated. Almost every appshell/*.spec.mjs spec
 // navigates to / or /open at least once, so left unmocked here this was
 // hitting GitHub's 60-req/hour unauthenticated rate limit across a full
 // suite run - default-mocked for every context/page so individual scripts
@@ -178,8 +180,13 @@ function withTracking(real, outDir) {
                 }
                 if (touched.size > 0) {
                     mkdirSync(outDir, { recursive: true });
-                    const scriptName = basename(process.argv[1] ?? 'unknown-script');
-                    writeFileSync(join(outDir, `${scriptName}.json`), JSON.stringify([...touched].sort(), null, 2));
+                    // A spec may launch more than one browser, so add to what an earlier
+                    // close() in the same spec already wrote.
+                    const outFile = join(outDir, `${specName().replaceAll('/', '__')}.json`);
+                    if (existsSync(outFile)) {
+                        for (const f of JSON.parse(readFileSync(outFile, 'utf8'))) touched.add(f);
+                    }
+                    writeFileSync(outFile, JSON.stringify([...touched].sort(), null, 2));
                 }
                 return origClose(...a);
             };
@@ -187,4 +194,14 @@ function withTracking(real, outDir) {
             return browser;
         },
     };
+}
+
+// The running spec's path relative to tests/e2e (appshell/<name>.spec.mjs), or the
+// script's file name when run outside Playwright Test.
+function specName() {
+    try {
+        return relative(join(import.meta.dirname, '..'), test.info().file);
+    } catch {
+        return basename(process.argv[1] ?? 'unknown-script');
+    }
 }

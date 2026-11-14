@@ -15,7 +15,7 @@ const imagesDir = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..'
 const out = name => join(imagesDir, name);
 
 // Unlike "Add Object", "Add Command" creates the element immediately with no name modal
-// (see tests/e2e/verify-appshell-multi-control-editors.mjs, which this script's Pattern-field
+// (see tests/e2e/appshell/multi-control-editors.spec.mjs, which this script's Pattern-field
 // selectors are copied from).
 async function addCommand(page) {
     await page.click('button[title="Add element"]');

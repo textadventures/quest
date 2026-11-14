@@ -1,60 +1,62 @@
-// Manifest check: every tests/e2e/verify-*.mjs script must be referenced by a
-// `node <script>.mjs` step in .github/workflows/e2e.yml, and every reference
-// must point at a script that exists on disk. GitHub Actions `run:` steps are
-// literal commands (no way to glob "all scripts matching this prefix" into a
-// job, and different scripts need different jobs/servers anyway), so this check
-// is the enforcement instead: run on PRs touching tests/e2e/** and on the
-// nightly run, an unwired — or dangling — script turns CI red immediately.
+// Manifest check: makes sure every e2e spec actually runs in the nightly e2e workflow.
+// Playwright Test only runs a spec that sits in one of playwright.config.mjs's project
+// directories, and CI only runs a project that .github/workflows/e2e.yml has a
+// `npx playwright test --project=<name>` step for. A spec anywhere else, or a project
+// with no step, would pass every check by never running at all. So this fails if:
+// - a *.spec.mjs file isn't in a project's testDir;
+// - a project in the config has no `--project=<name>` step in e2e.yml (or a step names
+//   a project the config doesn't have);
+// - a standalone verify-*.mjs script is left in tests/e2e (the old format, which
+//   nothing runs any more).
+// Runs on every PR as the required check_e2e_manifest job, with no npm install, so it
+// reads the config as text rather than importing it.
 //
 // Run: node tests/e2e/check-workflow-manifest.mjs  (node builtins only, no deps)
 import { readFileSync, readdirSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
+import { join, relative, sep } from 'node:path';
 
-const here = dirname(fileURLToPath(import.meta.url));
-const workflowPath = join(here, '..', '..', '.github', 'workflows', 'e2e.yml');
+const here = import.meta.dirname;
+const workflow = readFileSync(join(here, '..', '..', '.github', 'workflows', 'e2e.yml'), 'utf8');
+const config = readFileSync(join(here, 'playwright.config.mjs'), 'utf8');
 
-const workflow = readFileSync(workflowPath, 'utf8');
-const scriptsOnDisk = readdirSync(here).filter(f => f.startsWith('verify-') && f.endsWith('.mjs')).sort();
-const referenced = [...new Set(
-    [...workflow.matchAll(/\bnode\s+(verify-[A-Za-z0-9.-]+\.mjs)/g)]
-        .map(m => m[1]),
-)].sort();
+const projects = [...config.matchAll(/name:\s*'([^']+)',\s*testDir:\s*'\.\/([^']+)'/g)]
+    .map(([, name, dir]) => ({ name, dir }));
+const ciProjects = new Set([...workflow.matchAll(/npx playwright test --project=([\w-]+)/g)].map(m => m[1]));
 
-const notWired = scriptsOnDisk.filter(s => !referenced.includes(s));
-const dangling = referenced.filter(s => !scriptsOnDisk.includes(s));
+function specsUnder(dir) {
+    return readdirSync(dir, { withFileTypes: true }).flatMap(entry => {
+        if (entry.name === 'node_modules' || entry.name.startsWith('.')) return [];
+        const path = join(dir, entry.name);
+        if (entry.isDirectory()) return specsUnder(path);
+        return entry.name.endsWith('.spec.mjs') ? [relative(here, path).split(sep).join('/')] : [];
+    });
+}
 
-// Each `- run: node verify-*.mjs` step must also carry its own
-// `working-directory: tests/e2e`, or node resolves the script against the repo
-// root and fails with MODULE_NOT_FOUND. Easy to break by inserting a new step
-// between an existing step's `run:` line and its `working-directory:` line,
-// which silently moves the key onto the new step (#2503 did exactly this).
-const lines = workflow.split('\n');
-const missingWorkingDir = [];
-lines.forEach((line, i) => {
-    const m = line.match(/^(\s*)- run: node (verify-[A-Za-z0-9.-]+\.mjs)/);
-    if (!m) return;
-    const stepIndent = m[1].length;
-    let hasWorkingDir = false;
-    for (let j = i + 1; j < lines.length; j++) {
-        const next = lines[j];
-        if (next.trim() === '') continue;
-        if (next.search(/\S/) <= stepIndent) break;
-        if (/^\s*working-directory:\s*tests\/e2e\s*$/.test(next)) hasWorkingDir = true;
-    }
-    if (!hasWorkingDir) missingWorkingDir.push(`${m[2]} (e2e.yml line ${i + 1})`);
-});
+const problems = [];
+if (projects.length === 0) problems.push('Found no projects in playwright.config.mjs (expected `name: \'...\', testDir: \'./...\'`).');
 
-if (notWired.length || dangling.length || missingWorkingDir.length) {
-    if (notWired.length) {
-        console.error(`Not wired into e2e.yml (add a \`node <script>.mjs\` step to the right job):\n  ${notWired.join('\n  ')}`);
-    }
-    if (dangling.length) {
-        console.error(`Referenced by e2e.yml but missing on disk (typo, or a script renamed without updating the workflow):\n  ${dangling.join('\n  ')}`);
-    }
-    if (missingWorkingDir.length) {
-        console.error(`e2e.yml step missing \`working-directory: tests/e2e\` (node would look for the script at the repo root):\n  ${missingWorkingDir.join('\n  ')}`);
-    }
+const specs = specsUnder(here);
+const outside = specs.filter(spec => !projects.some(p => spec.startsWith(`${p.dir}/`)));
+if (outside.length) {
+    problems.push(`Not in any project's directory, so Playwright never runs them (move each into one of ${projects.map(p => `${p.dir}/`).join(', ')}):\n  ${outside.join('\n  ')}`);
+}
+
+const notInCi = projects.filter(p => !ciProjects.has(p.name)).map(p => p.name);
+if (notInCi.length) {
+    problems.push(`No \`npx playwright test --project=<name>\` step in e2e.yml for:\n  ${notInCi.join('\n  ')}`);
+}
+const unknown = [...ciProjects].filter(name => !projects.some(p => p.name === name));
+if (unknown.length) {
+    problems.push(`e2e.yml runs projects that playwright.config.mjs doesn't define:\n  ${unknown.join('\n  ')}`);
+}
+
+const oldScripts = readdirSync(here).filter(f => f.startsWith('verify-') && f.endsWith('.mjs'));
+if (oldScripts.length) {
+    problems.push(`Standalone verify-*.mjs scripts don't run any more; make each a <topic>.spec.mjs in a project directory:\n  ${oldScripts.join('\n  ')}`);
+}
+
+if (problems.length) {
+    console.error(problems.join('\n\n'));
     process.exit(1);
 }
-console.log(`OK: all ${scriptsOnDisk.length} verify-*.mjs scripts are wired into .github/workflows/e2e.yml`);
+console.log(`OK: all ${specs.length} specs are in a project, and all ${projects.length} projects run in e2e.yml`);

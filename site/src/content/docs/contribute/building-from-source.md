@@ -122,7 +122,7 @@ These exist because the editor links into this site: the help link on an element
 
 ### End-to-end tests
 
-`tests/e2e/` holds Playwright scripts (`verify-*.mjs`) that drive the real thing - WasmPlayer, the AppShell editor and the packaged Electron app - against a local dev server. They're too slow to run on every pull request, so they run nightly, and on demand from the Actions tab.
+`tests/e2e/` holds Playwright tests that drive the real thing - WasmPlayer, the AppShell editor and the packaged Electron app - against a local dev server. They're too slow to run on every pull request, so they run nightly, and on demand from the Actions tab.
 
 Install the tooling once, inside `tests/e2e/`:
 
@@ -132,12 +132,12 @@ npm ci
 npx playwright install chromium
 ```
 
-Then run a script against a dev server you already have running - `./dev.sh` gives you both the editor on 5174 and the player on 5175:
+Then run a test against a dev server you already have running - `./dev.sh` gives you both the editor on 5174 and the player on 5175:
 
 ```bash
-node verify-appshell-code-view.mjs http://localhost:5174
+npx playwright test --project=appshell code-view
 ```
 
-If you add a script, add it to `.github/workflows/e2e.yml` in the same change, under the job whose dev server it needs. A required check fails the pull request otherwise - the workflow runs named scripts, so an unlisted one would never run at all.
+The tests are grouped by the server they need, one folder each: `appshell/`, `appshell-firefox/`, `wasmplayer/`, `electron/` and `site/`. `--project=` picks the folder, and the last argument picks tests whose file name matches it. To add a test, add a `<topic>.spec.mjs` file to the right folder; the nightly run picks it up from there. A required check fails the pull request if a test file sits outside those folders, where it would never run.
 
-When one of these fails, check what changed in the user interface before assuming you've found a regression: the most common cause is a script looking for a control that has since been renamed or restructured.
+When one of these fails, check what changed in the user interface before assuming you've found a regression: the most common cause is a test looking for a control that has since been renamed or restructured.

@@ -35,6 +35,18 @@ export default defineConfig({
             use: { baseURL: process.env.WASMPLAYER_URL ?? 'http://localhost:5175' },
         },
         {
+            name: 'appshell',
+            testDir: './appshell',
+            use: { baseURL: process.env.APPSHELL_URL ?? 'http://localhost:5174' },
+        },
+        {
+            // OPFS local drafts in a browser without the File System Access API, against
+            // AppShell built with a Release WasmEditor (the appshell_opfs_firefox job).
+            name: 'appshell-firefox',
+            testDir: './appshell-firefox',
+            use: { baseURL: process.env.APPSHELL_URL ?? 'http://localhost:5174' },
+        },
+        {
             name: 'electron',
             testDir: './electron',
         },

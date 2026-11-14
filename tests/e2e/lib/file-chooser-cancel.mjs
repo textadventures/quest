@@ -6,8 +6,8 @@
 // AppShell's pickFile() (src/lib/filesystem/file-picker.ts) resolves to null on
 // "cancel", so the stray event makes Import game file do nothing at all: no draft,
 // no error. Nightly appshell_opfs_firefox failed on it every night from the bump
-// on, in verify-appshell-drafts-rekey-backup.mjs; verify-appshell-multi-aslx-zip.mjs
-// and verify-appshell-local-drafts.mjs import the same way and only got lucky with
+// on, in appshell-firefox/drafts-rekey-backup.spec.mjs; appshell-firefox/multi-aslx-zip.spec.mjs
+// and appshell-firefox/local-drafts.spec.mjs import the same way and only got lucky with
 // the event order.
 //
 // Call this before the page loads (it's an init script) in any script that answers

@@ -1,6 +1,6 @@
 // Shared helpers for capturing AppShell editor screenshots for the docs site
 // (site/src/content/docs/). Mirrors the DOM patterns already proven out in the
-// tests/e2e/verify-appshell-*.mjs scripts — see .claude/skills/verify/SKILL.md
+// tests/e2e/appshell/*.spec.mjs specs — see .claude/skills/verify/SKILL.md
 // and .claude/skills/docs-screenshots/SKILL.md for context and conventions.
 import { chromium } from 'playwright';
 
@@ -35,7 +35,7 @@ export async function launch(baseUrl = DEFAULT_BASE_URL) {
 // turn scripts, ...). Paste (not keyboard.type) avoids CodeMirror's closeBrackets/indentOnInput
 // extensions desyncing from synthetic keystrokes on longer text (confirmed interactively: typed
 // content over a few hundred characters can come out corrupted) — see
-// tests/e2e/verify-appshell-code-view.mjs's setCmContent for the same pattern.
+// tests/e2e/appshell/code-view.spec.mjs's setCmContent for the same pattern.
 const selectAllKey = process.platform === 'darwin' ? 'Meta+A' : 'Control+A';
 const pasteKey = process.platform === 'darwin' ? 'Meta+V' : 'Control+V';
 
@@ -81,7 +81,7 @@ export async function createLocalDraft(page, baseUrl, name, { gameType } = {}) {
 // Selects a node in the left tree by its element name. A leaf's clickable row is
 // [data-part="item"]; once it gains children it becomes a branch whose own
 // [role="treeitem"] wrapper carries the same data-value on [data-part="branch-control"]
-// instead — match both (see tests/e2e/verify-appshell-exits-editor.mjs).
+// instead — match both (see tests/e2e/appshell/exits-editor.spec.mjs).
 export async function selectTreeNode(page, name) {
     await page.locator(`[data-value="${name}"][data-part="item"], [data-value="${name}"][data-part="branch-control"]`).first().click();
 }
@@ -111,7 +111,7 @@ export async function openTab(page, tabLabel) {
 
 // Most single-line property fields render as a `<span>label</span>` immediately
 // followed by the input/select, inside a shared flex-row parent — no id/name/
-// aria-label to hook into directly. See tests/e2e/verify-appshell-exits-editor.mjs's
+// aria-label to hook into directly. See tests/e2e/appshell/exits-editor.spec.mjs's
 // `Name:` lookup for the pattern this generalizes.
 export function fieldByLabel(page, labelText) {
     return page.locator(`span:has-text("${labelText}")`).locator('..').locator('input, select, textarea');
@@ -353,7 +353,7 @@ export async function capture(page, outputPath, { untilLocator, padding = 24, cu
     console.log(`SAVED: ${outputPath}`);
 }
 
-// Standard try/run/finally wrapper matching the existing verify-*.mjs convention:
+// Standard try/run/finally wrapper, as the e2e scripts used before they became specs:
 // screenshot to /tmp on failure, always close the browser, non-zero exit on error.
 export async function runCapture(fn) {
     const { browser, page, baseUrl } = await launch();
