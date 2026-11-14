@@ -281,7 +281,7 @@ export class LocalDraftAdapter implements FileAdapter {
             // just that by name rather than every .aslx (which used to hide library files too,
             // leaving them untracked and un-cleanable — see AddLibraryModal/deleteElement).
             if (handle.kind !== "file" || name === "meta.json" || name === this._filename) continue;
-            assets.push({ key: name, url: "", size: (await (handle as FileSystemFileHandle).getFile()).size });
+            assets.push({ key: name, size: (await (handle as FileSystemFileHandle).getFile()).size });
         }
         return assets;
     }

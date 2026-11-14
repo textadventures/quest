@@ -4,7 +4,7 @@
 // globals.css put the pointer back, but Skeleton 5 dropped that rule, so
 // app.css now restores it itself. This catches that rule going missing again.
 // Run against a dev server started with:
-//   PUBLIC_SHOW_HOME=true npm --prefix src/AppShell run dev -- --port 5180
+//   npm --prefix src/AppShell run dev -- --port 5180
 import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5180';

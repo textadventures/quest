@@ -6,7 +6,7 @@
     import { goto } from "$app/navigation";
     import { base } from "#lib/base-path.js";
     import { page } from "$app/state";
-    import { PUBLIC_APPSHELL_VERSION, PUBLIC_BETA_SITE, PUBLIC_SHOW_HOME } from "$app/env/public";
+    import { PUBLIC_APPSHELL_VERSION, PUBLIC_BETA_SITE } from "$app/env/public";
     import { isLoaded, saveGame, saveGameAs, undo, redo, canUndo, canRedo, markFileChangedExternally } from "#lib/editor-store.js";
     import { isElectron } from "#lib/runtime.js";
     import { initI18n, localeReady } from "#lib/i18n/index.js";
@@ -21,7 +21,6 @@
 
     let { children }: { children: Snippet } = $props();
 
-    const showHome = PUBLIC_SHOW_HOME === "true";
     const isBetaSite = PUBLIC_BETA_SITE === "true";
     const rootPath = base || "/";
 
@@ -30,7 +29,7 @@
     // used to also check isLoaded, back when root doubled as both the Play
     // tab and the editor canvas; that meant the tab bar and the page's own
     // rendering could disagree about which one was actually showing.)
-    const showTabs = $derived(showHome && page.url.pathname !== `${base}/edit`);
+    const showTabs = $derived(page.url.pathname !== `${base}/edit`);
 
     // Measured so pages that vertically center their content (e.g. /open)
     // can subtract the actual header+tabs height via the --home-bar-height
@@ -46,8 +45,7 @@
     // standalone Home page had before this was folded into AppShell — Create
     // (/open) keeps following the editor's own theme choice (Light/Dark/Match
     // system, set in the Settings modal), since forcing that too would mean
-    // redoing its markup (also used as-is by textadventures.co.uk's plain
-    // editor-open flow) to match.
+    // redoing its markup to match.
     const isPlayContext = $derived(page.url.pathname === rootPath || page.url.pathname.startsWith(`${base}/play/`));
 
     // Printed once on load, same style as WasmPlayer's console banner — the

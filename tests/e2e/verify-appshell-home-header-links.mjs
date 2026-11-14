@@ -1,15 +1,13 @@
 // Verifies the Documentation/Discord/GitHub links appear in both places
 // they're wired up:
 //   - HomeHeader.svelte, top-right, on the Play (/) and Create (/open) tabs,
-//     as plain <a> elements — only rendered when PUBLIC_SHOW_HOME=true, so
-//     this script needs it set
+//     as plain <a> elements
 //   - Toolbar.svelte, in the editor (/edit), as items inside the overflow
-//     ("...") DropdownMenu — shown unconditionally, regardless of
-//     PUBLIC_SHOW_HOME. These are <button role="menuitem"> elements that call
+//     ("...") DropdownMenu. These are <button role="menuitem"> elements that call
 //     window.open(), NOT anchors, so they're checked by intercepting the popup
 //     rather than by reading an href.
 // Run against a dev server started with:
-//   PUBLIC_SHOW_HOME=true npm --prefix src/AppShell run dev -- --port 5180
+//   npm --prefix src/AppShell run dev -- --port 5180
 import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5180';

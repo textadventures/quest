@@ -457,8 +457,6 @@
 
     "publishModal.title": "Veröffentlichen",
     "publishModal.description": "Wähle, wie du dein Spiel teilen möchtest.",
-    "publishModal.optionServerTitle": "Auf textadventures.co.uk veröffentlichen",
-    "publishModal.optionServerDetail": "Lädt dein Spiel hoch und bringt dich dann zur Website, wo du Beschreibung, Kategorie und Sichtbarkeit angibst.",
     "publishModal.optionQuestTitle": ".quest-Datei",
     "publishModal.optionQuestDetail": "Dein ganzes Spiel in einer Datei, zum Hochladen auf textadventures.co.uk oder zum Öffnen in Quest Viva.",
     "publishModal.optionCdnTitle": "Kleine HTML-Datei",
@@ -482,10 +480,8 @@
     "publishModal.publishing": "Veröffentlichen…",
     "publishModal.progressReading": "Dateien werden gelesen ({done} von {total})…",
     "publishModal.progressBuilding": "Spieldatei wird erstellt…",
-    "publishModal.progressUploading": "Wird auf textadventures.co.uk hochgeladen…",
     "publishModal.progressFetchingPlayer": "Quest-Player wird heruntergeladen…",
     "publishModal.progressZipping": "Zip wird erstellt…",
-    "publishModal.publishToServer": "Auf textadventures.co.uk veröffentlichen…",
     "publishModal.publishButton": "Veröffentlichen…",
 
     "downloadButton.titleWithLabel": "Desktop-App herunterladen — {label}",
@@ -532,14 +528,11 @@
     "categoryPage.loadError": "Diese Kategorie konnte nicht geladen werden.",
 
     "editPage.loadError": "Dieses Spiel konnte nicht geladen werden.",
-    "editPage.failedToLoadGame": "Spiel konnte nicht geladen werden.",
     "editPage.backToHome": "Zurück zur Startseite",
     "editPage.skipToContent": "Zum Editor-Inhalt springen",
 
     "openPage.title": "Quest Viva Editor",
     "openPage.multipleFilesFound": "Mehrere Spieldateien gefunden — wähle eine zum Öffnen aus:",
-    "openPage.serverOnlyMessage": "Dieser Editor öffnet nur Spiele, die du bereits hier hast. Um ein neues Spiel zu erstellen, verwende den kostenlosen Editor auf play.questviva.com — kein Konto nötig.",
-    "openPage.createAtPlayQuestviva": "Neues Spiel auf play.questviva.com erstellen",
     "openPage.openExistingGame": "Vorhandenes Spiel öffnen",
     "openPage.openGameEllipsis": "Spiel öffnen…",
     "openPage.openGameFolder": "Spielordner öffnen",

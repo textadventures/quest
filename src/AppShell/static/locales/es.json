@@ -457,8 +457,6 @@
 
     "publishModal.title": "Publicar",
     "publishModal.description": "Elige cómo quieres compartir tu juego.",
-    "publishModal.optionServerTitle": "Publicar en textadventures.co.uk",
-    "publishModal.optionServerDetail": "Sube tu juego y te lleva al sitio para añadir la descripción, la categoría y la visibilidad.",
     "publishModal.optionQuestTitle": "Archivo .quest",
     "publishModal.optionQuestDetail": "Tu juego completo en un solo archivo, para subirlo a textadventures.co.uk o abrirlo en Quest Viva.",
     "publishModal.optionCdnTitle": "Archivo HTML pequeño",
@@ -482,10 +480,8 @@
     "publishModal.publishing": "Publicando…",
     "publishModal.progressReading": "Leyendo archivos ({done} de {total})…",
     "publishModal.progressBuilding": "Creando el archivo del juego…",
-    "publishModal.progressUploading": "Subiendo a textadventures.co.uk…",
     "publishModal.progressFetchingPlayer": "Descargando el reproductor de Quest…",
     "publishModal.progressZipping": "Creando el zip…",
-    "publishModal.publishToServer": "Publicar en textadventures.co.uk…",
     "publishModal.publishButton": "Publicar…",
 
     "downloadButton.titleWithLabel": "Descargar la app de escritorio — {label}",
@@ -532,14 +528,11 @@
     "categoryPage.loadError": "No se pudo cargar esta categoría.",
 
     "editPage.loadError": "No se pudo cargar este juego.",
-    "editPage.failedToLoadGame": "Error al cargar el juego.",
     "editPage.backToHome": "Volver al inicio",
     "editPage.skipToContent": "Saltar al contenido del editor",
 
     "openPage.title": "Editor de Quest Viva",
     "openPage.multipleFilesFound": "Se encontraron varios archivos de juego — elige uno para abrir:",
-    "openPage.serverOnlyMessage": "Este editor solo abre juegos que ya tienes aquí. Para crear un juego nuevo, usa el editor gratuito de play.questviva.com — no necesitas cuenta.",
-    "openPage.createAtPlayQuestviva": "Crear un juego nuevo en play.questviva.com",
     "openPage.openExistingGame": "Abrir juego existente",
     "openPage.openGameEllipsis": "Abrir juego…",
     "openPage.openGameFolder": "Abrir carpeta del juego",

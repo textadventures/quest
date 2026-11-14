@@ -1,7 +1,7 @@
 import { isElectron } from "./runtime";
 
-// "quest" is the plain .quest package (submitted to textadventures.co.uk in server mode,
-// downloaded otherwise); "cdn" and "zip" wrap that same package in the WasmPlayer.
+// "quest" is the plain .quest package, downloaded; "cdn" and "zip" wrap that same package
+// in the WasmPlayer.
 export type PublishTarget = "quest" | "cdn" | "zip";
 
 function isPublishTarget(value: unknown): value is PublishTarget {

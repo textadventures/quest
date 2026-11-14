@@ -1,7 +1,7 @@
 // Ad-hoc manual verification: the desktop app's update-check banner
 // (UpdateBanner.svelte, PlayCatalog.svelte, home-catalog.ts's fetchCatalog).
 // Requires a fresh build:
-//   PUBLIC_SHOW_HOME=true npm run build --prefix src/AppShell
+//   npm run build --prefix src/AppShell
 //   dotnet build src/WasmEditor/WasmEditor.csproj
 //   dotnet build src/WasmPlayer/WasmPlayer.csproj
 //   (cd src/ElectronApp && npm run build)

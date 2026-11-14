@@ -26,10 +26,6 @@ const mimeTypes: Record<string, string> = {
   '.pdb': 'application/octet-stream',
 }
 
-// Set VITE_API_PROXY=http://localhost:5043 (or your local textadventures.co.uk URL) to proxy
-// /api requests during development. Not needed in production (same-origin).
-const apiProxy = process.env.VITE_API_PROXY
-
 // Overridable so multiple dev.sh instances (e.g. main checkout + a PR worktree) can run
 // concurrently without port clashes — see dev.sh's --port flag.
 const appShellPort = Number(process.env.PORT) || 5174
@@ -96,10 +92,6 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/player/, ''),
       },
-      // Vite matches proxy rules in object-key order and stops at the first
-      // startsWith() match, so the more specific /api/editor must come before
-      // the general /api below — otherwise it'd never be reached.
-      ...(apiProxy ? { '/api/editor': { target: apiProxy, changeOrigin: true } } : {}),
       // /api and /game-resource are WasmPlayer's own literal route names (its
       // dev-server.mjs matches on them directly), not namespaced under
       // /player — so these are forwarded unrewritten, unlike /player above.
@@ -108,9 +100,7 @@ export default defineConfig({
       // the root-relative '/api/' — that resolves against whatever origin the
       // browser is actually on (this Vite server, once proxied under
       // /player/), not WasmPlayer's own, so without this the game 404s
-      // fetching itself. Every /api/* call this app itself makes is under
-      // /api/editor/* (checked via grep), so /api/editor taking priority above
-      // is safe and doesn't shadow any real editor save-API call.
+      // fetching itself.
       '/api': { target: `http://localhost:${playerPort}`, changeOrigin: true },
       '/game-resource': { target: `http://localhost:${playerPort}`, changeOrigin: true },
     },

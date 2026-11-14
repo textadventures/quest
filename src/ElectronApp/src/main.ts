@@ -265,7 +265,7 @@ function routeOpenedFile(filePath: string): void {
 // query shapes are already handled by the target page: /open?action=
 // open-recent&... by open/+page.svelte (shared with the native "Open Recent"
 // menu), /?action=play-file&... by PlayCatalog.svelte (mirrors it for Play —
-// root is always the Play tab in this app, PUBLIC_SHOW_HOME is always true here).
+// root is always the Play tab).
 function initialUrlPath(filePath: string | null): string {
     if (!filePath) return "/";
     const ext = path.extname(filePath).toLowerCase();

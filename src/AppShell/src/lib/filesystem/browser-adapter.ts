@@ -152,7 +152,7 @@ export class BrowserFileAdapter implements FileAdapter {
             for await (const [name, handle] of this._dir) {
                 if (handle.kind === "file" && !isLibraryFilename(name) && !isJunkAssetName(name)) {
                     const size = (await (handle as FileSystemFileHandle).getFile()).size;
-                    assets.push({ key: name, url: "", size });
+                    assets.push({ key: name, size });
                 }
             }
             return assets;

@@ -5,7 +5,6 @@ import { loadWasm } from "./wasm";
 import type { WasmBridge } from "./wasm";
 import { isLibraryFilename, type AssetInfo, type FileAdapter } from "./filesystem/types";
 import { LocalDraftAdapter, shouldShowBackupBanner, markBackupBannerResolved } from "./filesystem/local-adapter";
-import { ServerFileAdapter } from "./filesystem/server-adapter";
 import { triggerDownload } from "./filesystem/download";
 import { withGuessedMimeType } from "./filesystem/mime";
 import { savePublishTarget, type PublishTarget } from "./publish-target";
@@ -144,7 +143,6 @@ async function refreshLegacyUiHacks(adapter: FileAdapter): Promise<void> {
     legacyUiHacks.set(JSON.parse(_bridge.GetLegacyUiHacks(JSON.stringify(files))));
 }
 
-export const canPublishToServer = writable(false);
 export const treeNodes = writable<TreeNode[]>([]);
 export const showLibraryElements = writable(false);
 export const selectedKey = writable<string | null>(null);
@@ -317,7 +315,6 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
     _adapter = adapter;
     canSaveAs.set(adapter.canSaveAs);
     canBackup.set(adapter instanceof LocalDraftAdapter);
-    canPublishToServer.set(adapter instanceof ServerFileAdapter);
     showBackupBanner.set(adapter instanceof LocalDraftAdapter && await shouldShowBackupBanner(adapter.gameId));
     loadingStatus.set(t("editorStore.loadingGame"));
     await preloadAdjacentLibraryAssets(adapter);
@@ -754,7 +751,7 @@ function scheduleAutosave(): void {
     }, AUTOSAVE_DEBOUNCE_MS);
 }
 
-// Transient failures (e.g. ServerFileAdapter's PUT hitting a network blip)
+// Transient failures (e.g. a write to disk failing momentarily)
 // get a few automatic retries with backoff; scheduleRetry() is a no-op if one
 // is already pending so a burst of failures doesn't stack up timers.
 function scheduleRetry(): void {
@@ -896,8 +893,7 @@ export async function dismissBackupBanner(): Promise<void> {
 
 // What a publish will include besides the game itself: every asset the adapter lists — for a
 // game opened from a real folder, that's every file in the folder — except earlier publish
-// output (see isEarlierPublishOutput). size is null where the adapter can't report it cheaply
-// (server mode).
+// output (see isEarlierPublishOutput). size is null where the adapter can't report it cheaply.
 export type PublishFile = { name: string; size: number | null };
 
 // Files a previous Publish, HTML export or Backup of this game would have written next to it:
@@ -932,7 +928,6 @@ export async function listPublishFiles(): Promise<{ files: PublishFile[]; folder
 export type PublishProgress =
     | { step: "reading"; done: number; total: number }
     | { step: "building" }
-    | { step: "uploading" }
     | { step: "fetchingPlayer" }
     | { step: "zipping" };
 export const publishProgress = writable<PublishProgress | null>(null);
@@ -943,28 +938,11 @@ async function yieldToPaint(): Promise<void> {
 
 // Builds a .quest package (game.aslx with included libraries inlined, plus every
 // known asset) — the same package format the v5 desktop editor called "Publish to
-// file". Works identically for local and server-mode games while staging, since
-// staging only touches the FileAdapter interface; the two modes diverge only in
-// what happens to the finished bytes:
-//   - server mode: POST to textadventures.co.uk's publish endpoint, then navigate
-//     there to complete the submission (category/tags/visibility form).
-//   - local mode: trigger a browser download; the user can use the site's classic
-//     manual "submit a game" upload page with the downloaded file.
+// file" — and triggers a browser download of it; the user can then upload it on
+// textadventures.co.uk's "submit a game" page.
 async function publishQuestPackage(signal: AbortSignal): Promise<void> {
     if (!_adapter) return;
     const { packageBytes, embeddedFilename } = await buildPublishPackageBytes(signal);
-
-    if (_adapter instanceof ServerFileAdapter) {
-        publishProgress.set({ step: "uploading" });
-        const resp = await fetch(`/api/editor/games/${_adapter.gameId}/publish`, {
-            method: "POST",
-            headers: { "Content-Type": "application/octet-stream" },
-            body: new Blob([packageBytes.slice()]),
-        });
-        if (!resp.ok) throw new Error(`Publish failed: ${resp.status} ${resp.statusText}`);
-        window.location.href = `/create/publish/${_adapter.gameId}`;
-        return;
-    }
 
     triggerDownload(packageBytes, embeddedFilename);
 }
@@ -1145,9 +1123,7 @@ export async function publishGame(target: PublishTarget, signal: AbortSignal): P
         publishProgress.set(null);
     }
     // Remembered only once the publish has succeeded, so a failed attempt (e.g. the small
-    // HTML file in a non-release build) doesn't become the dialog's next default. The
-    // server-mode .quest path has set location.href by now, but the page doesn't unload
-    // until this task finishes, so the (synchronous, in the browser) save still lands.
+    // HTML file in a non-release build) doesn't become the dialog's next default.
     if (gameId) savePublishTarget(gameId, target);
 }
 
@@ -1325,14 +1301,11 @@ function clearAssetUrlCache() {
     assetUrlCache.clear();
 }
 
-// Resolves an asset key to something usable as an <img src>. Server-mode
-// assets already have a fetchable url from listAssets(); local-mode assets
-// are read as a Blob and turned into a cached object URL (released when the
+// Resolves an asset key to something usable as an <img src>: the asset is
+// read as a Blob and turned into a cached object URL (released when the
 // asset changes or a new game is opened).
 export async function resolveAssetUrl(key: string): Promise<string | null> {
     if (!key || !_adapter) return null;
-    const info = get(assets).find(a => a.key === key);
-    if (info?.url) return info.url;
     const cached = assetUrlCache.get(key);
     if (cached) return cached;
     const blob = await _adapter.getAsset(key);
@@ -1938,7 +1911,7 @@ export async function deleteElement(key: string): Promise<void> {
         );
         if (!ok) return;
         performDeleteElement(key);
-        // Best-effort: some adapters (e.g. ServerFileAdapter) throw on a delete that 404s, which
+        // Best-effort: an adapter may throw on a delete of a file that's already gone, which
         // shouldn't block the element delete above from having already gone through.
         try { await deleteAssetByKey(node.text); } catch { /* already gone, or adapter-side 404 */ }
         return;

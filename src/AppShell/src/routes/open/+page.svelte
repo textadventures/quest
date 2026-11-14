@@ -4,7 +4,6 @@
     import { goto } from "$app/navigation";
     import { page } from "$app/state";
     import { base } from "#lib/base-path.js";
-    import { PUBLIC_HAS_SERVER } from "$app/env/public";
     import { openGame, loadingStatus, lastOpenGameError, lastFailedGameBytes } from "#lib/editor-store.js";
     import { confirmDialog } from "#lib/confirm.js";
     import { hasFSA, openDirectory, loadFileFromDirectory, createLocalGame } from "#lib/filesystem/browser-adapter.js";
@@ -14,8 +13,8 @@
     } from "#lib/filesystem/electron-adapter.js";
     import type { RecentGame } from "#lib/filesystem/electron-adapter.js";
     import { isElectron } from "#lib/runtime.js";
-    import { getGameTemplates } from "#lib/filesystem/server-adapter.js";
-    import type { GameTemplate } from "#lib/filesystem/server-adapter.js";
+    import { getGameTemplates } from "#lib/game-templates.js";
+    import type { GameTemplate } from "#lib/game-templates.js";
     import { pickFile } from "#lib/filesystem/file-picker.js";
     import {
         listLocalDrafts, loadLocalDraft, deleteLocalDraft, createLocalDraft, createLocalDraftFromFile,
@@ -30,8 +29,6 @@
     import Download from "@lucide/svelte/icons/download";
     import { t, locale } from "#lib/i18n/index.js";
     import { DOCS_TUTORIAL_URL } from "#lib/docs-links.js";
-
-    const hasServer = PUBLIC_HAS_SERVER === "true";
 
     // Electron always uses window.electronApp (Node fs via IPC), never FSA —
     // its Chromium supports showDirectoryPicker, but docs/electron-desktop-app.md
@@ -505,18 +502,6 @@
                 class="btn preset-outlined-surface-500 w-full"
                 onclick={() => { pendingDir = null; pendingZip = null; pendingFiles = []; }}
             >{t("common.cancel")}</button>
-        </div>
-    {:else if hasServer}
-        <!-- textadventures.co.uk only opens games you already have — no local
-             storage, no server-side create. New games are always seeded via
-             play.questviva.com, which needs no account. -->
-        <div class="flex flex-col items-center gap-4 w-full max-w-sm text-center">
-            <p class="text-surface-600-400">
-                {t("openPage.serverOnlyMessage")}
-            </p>
-            <a class="btn preset-filled-primary-500" href="https://play.questviva.com/open">
-                {t("openPage.createAtPlayQuestviva")}
-            </a>
         </div>
     {:else}
         <div class="flex flex-col items-center gap-4 w-full max-w-sm">

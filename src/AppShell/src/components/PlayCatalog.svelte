@@ -116,7 +116,7 @@
     // repeat firing on the same file (nonce unchanged) doesn't relaunch the player.
     // There's no user gesture here to attach a picker button to, so this has to be a
     // effect rather than a click handler — but it needs no page of its own, root is
-    // always mounted when Electron is running (PUBLIC_SHOW_HOME is always true there).
+    // always mounted when Electron is running.
     let handledPlayNonce = "";
     $effect(() => {
         if (!isElectronApp) return;

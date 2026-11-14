@@ -14,7 +14,7 @@
 // from both package and editor saves - so unlike Core.aslx game libraries these
 // are never frozen into a .quest file, and a <helpurl> applies to every game.
 // Run against a dev server started with:
-//   PUBLIC_SHOW_HOME=true npm --prefix src/AppShell run dev -- --port 5180
+//   npm --prefix src/AppShell run dev -- --port 5180
 import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5180';

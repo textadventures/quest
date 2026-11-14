@@ -2,6 +2,8 @@
 
 Decided 2026-07-01. **Pipeline + placeholder home shipped 2026-07-01** (PR #1800) — see [appshell-wasm-svelte.md](./appshell-wasm-svelte.md) for editor implementation status and open questions this plan resolves.
 
+**Superseded in 6.1 (2026-11-14):** textadventures.co.uk's editor stays on Quest Viva 6.0; `main` no longer builds it. `PUBLIC_SHOW_HOME`, `PUBLIC_HAS_SERVER`, `ServerFileAdapter` and the `?game=` server load are gone from `main`, so AppShell has one build shape (Play at `/`, Create at `/open`, the editor at `/edit`, local storage only). The 6.0 editor's code lives on `release/6.0`, whose `deploy-play.yml` still builds it, and `finalize-release.yml` redeploys textadventures.co.uk only for a release carrying `WebEditor.zip`. The rest of this document is the design history.
+
 ## Motivation
 
 The old Quest WebEditor at textadventures.co.uk requires a Windows server and is being retired in favour of WasmEditor. WasmEditor is intended to be used **offline-first**, with game files stored locally — but the File System Access API it relies on for local directory access isn't fully supported in Safari or Firefox, so a cloud-storage fallback (syncing games to Azure Blob Storage, as the old WebEditor did) is still needed for those browsers and for existing textadventures.co.uk accounts.

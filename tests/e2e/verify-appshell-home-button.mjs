@@ -4,12 +4,10 @@
 // landing page from /edit. It takes you to the Create tab (/open), not the
 // Play tab (root) — you got here from Create in the first place, and Play
 // is a dead end for an in-progress edit. Confirms the button appears and
-// navigates to /open when PUBLIC_SHOW_HOME=true, and confirms it's absent
-// when PUBLIC_SHOW_HOME=false (textadventures.co.uk mode, where root has no
-// Home page to go back to).
+// navigates to /open.
 //
-// Requires the AppShell dev server running with PUBLIC_SHOW_HOME=true:
-//   (cd src/AppShell && PUBLIC_SHOW_HOME=true npx vite dev) &
+// Requires the AppShell dev server running:
+//   (cd src/AppShell && npx vite dev) &
 import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
@@ -29,7 +27,7 @@ async function run() {
     console.log('PASS: local draft created and opened in the editor (/edit)');
 
     await page.waitForSelector('button[title="Back to Home"]', { timeout: 5000 });
-    console.log('PASS: Home button present in the toolbar when PUBLIC_SHOW_HOME=true');
+    console.log('PASS: Home button present in the toolbar');
 
     await page.click('button[title="Back to Home"]');
     await page.waitForURL(url => url.pathname === '/open', { timeout: 10000 });

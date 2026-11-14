@@ -15,8 +15,6 @@ The dialog offers three things it can make. All three contain the same game - wh
 | The smallest possible upload | **Small HTML file** | A single `.html` page; players fetch the Quest player from a CDN |
 | A competition entry | **Zip with player included** | An entry judges can play with nothing installed - see [Competition entry](/publishing/competition-entry) |
 
-If you are editing a game that is stored on textadventures.co.uk, the first option reads **Publish to textadventures.co.uk** instead. It uploads the game for you and then takes you to the site to fill in the description, category and who can see it, so you never handle the file yourself.
-
 :::note[Publishing is not backing up]
 What the Publish dialog makes is a build for players, not your source: the editor does not open a `.quest` file or an HTML export. If your game is a local draft in the browser, keep a copy of the source with **Backup…** in the **File** menu, which downloads a `.zip` of the game file and its assets that you can import again later. If your game lives in a folder, it is already on your disk - but that's not the same as being backed up. See [Backing up your game](/howto/testing/backups).
 :::
@@ -95,9 +93,9 @@ Assume several rounds of beta versions, each better than the last, and consider 
 
 ## Publishing on textadventures.co.uk
 
-If the **Publish to textadventures.co.uk** option is not offered, publish a `.quest` file and upload it by hand: on textadventures.co.uk, click _Create_ at the top, then _Submit_ below that, and follow the instructions.
+Publish a `.quest` file and upload it: on textadventures.co.uk, click _Create_ at the top, then _Submit_ below that, and follow the instructions.
 
-Either way the site asks "Who can access this game?". Choose **"Only people I give the link to"** while you are testing - that makes the game unlisted, so only people you send the link to can find it - and **"Everybody"** when you are ready to release. There is no separate "private" setting to worry about: unlisted is what keeps a work in progress out of public view while your testers can still reach it.
+The site asks "Who can access this game?". Choose **"Only people I give the link to"** while you are testing - that makes the game unlisted, so only people you send the link to can find it - and **"Everybody"** when you are ready to release. There is no separate "private" setting to worry about: unlisted is what keeps a work in progress out of public view while your testers can still reach it.
 
 Your game then goes into a queue for moderation, which can take a few days. Very basic games are filed under "Sandpit", games with sexual content under "Adult", and everything else in the category you chose.
 

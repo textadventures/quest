@@ -3,7 +3,7 @@
     import { get } from "svelte/store";
     import { goto } from "$app/navigation";
     import { base } from "#lib/base-path.js";
-    import { PUBLIC_WASM_PLAYER_URL, PUBLIC_SHOW_HOME } from "$app/env/public";
+    import { PUBLIC_WASM_PLAYER_URL } from "$app/env/public";
     import {
         gameFilename, isLoaded, isDirty, isSaving, isEditingField, getLastEditedElement, saveError, retrySave, saveGame, saveGameAs, canSaveAs, backupGame, canBackup,
         publishModalOpen,
@@ -56,12 +56,9 @@
     }
 
     const wasmPlayerUrl = PUBLIC_WASM_PLAYER_URL || "/player/";
-    const showHome = PUBLIC_SHOW_HOME === "true";
 
     let saving = $state(false);
 
-    // Only relevant when showHome is true — otherwise root has no content of
-    // its own (see routes/+page.svelte) and there's nowhere useful to go.
     // Edits autosave continuously, so this just flushes the current game
     // first, matching the File > New/Open flush pattern in +layout.svelte.
     async function handleHome() {
@@ -230,15 +227,13 @@
                         aria-label={t("toolbar.forward")}
                     ><ArrowRight size={16} /></button>
                 {/if}
-                {#if showHome}
-                    <button
-                        type="button"
-                        class="toolbar-icon-btn mr-2 shrink-0"
-                        onclick={handleHome}
-                        title={t("toolbar.backToHome")}
-                        aria-label={t("toolbar.backToHome")}
-                    ><Home size={16} /></button>
-                {/if}
+                <button
+                    type="button"
+                    class="toolbar-icon-btn mr-2 shrink-0"
+                    onclick={handleHome}
+                    title={t("toolbar.backToHome")}
+                    aria-label={t("toolbar.backToHome")}
+                ><Home size={16} /></button>
                 {#if $gameFilename}
                     <span class="font-mono text-sm font-medium truncate min-w-0">{$gameFilename}</span>
                 {/if}

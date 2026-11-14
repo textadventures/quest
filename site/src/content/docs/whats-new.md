@@ -39,7 +39,7 @@ Quest 5's online editor kept your games on your textadventures.co.uk account, so
 
 Whichever way you store it, see [Backing up your game](/howto/testing/backups) for why it's worth keeping more than one copy as you go.
 
-If you already have games on a textadventures.co.uk account, they're still there. The editor at textadventures.co.uk can sign you in and load them, as before.
+If you already have games on a textadventures.co.uk account, they're still there, and the editor at textadventures.co.uk can still sign you in and load them. That editor stays on Quest Viva 6.0, though, so it doesn't have the features added since.
 
 ## Games run in the browser, with no server
 

@@ -10,7 +10,7 @@
 //
 // Requires AppShell (5174) and WasmPlayer (5175) dev servers running:
 //   node src/WasmPlayer/dev-server.mjs &
-//   (cd src/AppShell && PUBLIC_SHOW_HOME=true npx vite dev) &
+//   (cd src/AppShell && npx vite dev) &
 import { chromium } from './lib/tracked-chromium.mjs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';

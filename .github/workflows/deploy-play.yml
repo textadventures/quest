@@ -3,11 +3,10 @@ name: Deploy play.questviva.com and AppShell
 # Runs when a version tag is pushed (e.g. v6.0.0-rc.3, normally via
 # release-please merging its release PR), keeping play.questviva.com (stable
 # releases) and play-beta.questviva.com (prereleases) on the release
-# cadence. Tag pushes also attach
-# WasmPlayer/AppBundle/AppShell build artifacts to the GitHub Release
-# release-please already created, which finalize-release.yml then uses to
-# redeploy textadventures.co.uk (stable releases only), so a single release
-# cadence drives both play.questviva.com and AppShell on textadventures.co.uk.
+# cadence. Tag pushes also attach WasmPlayer.zip to the GitHub Release
+# release-please already created. (release/6.0's copy of this workflow also
+# builds the textadventures.co.uk editor, which finalize-release.yml then
+# redeploys; that editor stays on 6.0, so main no longer builds it.)
 on:
   push:
     tags: ['v*']
@@ -95,19 +94,13 @@ jobs:
           # which uses VERSION (checked against the tag above).
           QUESTVIVA_BUILD_VERSION: ${{ github.ref_type != 'tag' && steps.version.outputs.build_version || '' }}
 
-      # BASE_PATH is unset (defaults to root) and PUBLIC_SHOW_HOME=true — this
-      # build serves the Play/Create Home content at root and /open, plus the
-      # editor itself once a game is loaded (see src/AppShell/src/routes/).
-      # Distinct from the textadventures.co.uk build below, which keeps
-      # BASE_PATH=/questviva and PUBLIC_SHOW_HOME unset (that origin has its
-      # own site navigation, not a game-browser homepage).
+      # Serves the Play tab at root, Create at /open and the editor at /edit
+      # (see src/AppShell/src/routes/).
       - name: Build AppShell
         run: npm ci && npm run build
         working-directory: src/AppShell
         env:
           PUBLIC_APPSHELL_VERSION: ${{ steps.version.outputs.build_version }}
-          PUBLIC_HAS_SERVER: false
-          PUBLIC_SHOW_HOME: true
           # Shows BetaBanner.svelte on play-beta.questviva.com only.
           PUBLIC_BETA_SITE: ${{ steps.channel.outputs.pages_project == 'play-questviva-beta' }}
           # Points help links at beta.questviva.com; see docs-links.ts.
@@ -205,42 +198,13 @@ jobs:
       - name: Package WasmPlayer artifact
         run: (cd src/WasmPlayer/bin/Release/net11.0/browser-wasm/AppBundle && zip -r $GITHUB_WORKSPACE/WasmPlayer.zip .)
 
-      # AppShell's build bakes BASE_PATH into its assets, so it needs a second
-      # build for textadventures.co.uk's /questviva path (WasmEditor's output
-      # isn't BASE_PATH-sensitive, so the earlier build is reused as-is).
-      - name: Build AppShell for textadventures.co.uk
-        if: github.ref_type == 'tag'
-        run: npm run build
-        working-directory: src/AppShell
-        env:
-          PUBLIC_APPSHELL_VERSION: ${{ github.ref_name }}
-          BASE_PATH: /questviva
-          PUBLIC_HAS_SERVER: true
-
-      - name: Package editor artifacts for textadventures.co.uk
-        if: github.ref_type == 'tag'
-        run: |
-          (cd src/WasmEditor/bin/Release/net11.0/browser-wasm/AppBundle && zip -r $GITHUB_WORKSPACE/AppBundle.zip .)
-          (cd src/AppShell/build && zip -r $GITHUB_WORKSPACE/WebEditor.zip .)
-
-      - name: Attach player and editor builds to GitHub Release
+      - name: Attach player build to GitHub Release
         # release-please creates the GitHub Release itself (with changelog-based
         # notes) before pushing the tag that triggers this workflow, so just
         # upload assets to it rather than creating a new one. The release is a
         # draft at this point (see release-please.yml) — uploading assets to
         # a draft works fine, no different from a published release.
         if: github.ref_type == 'tag'
-        run: gh release upload ${{ github.ref_name }} WasmPlayer.zip AppBundle.zip WebEditor.zip --clobber
+        run: gh release upload ${{ github.ref_name }} WasmPlayer.zip --clobber
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # Pinning WEBEDITOR_VERSION and dispatching textadventures.co.uk's
-      # redeploy used to happen right here, but that redeploy's own `gh
-      # release download --repo textadventures/quest` uses a plain
-      # GITHUB_TOKEN scoped to that *other* repo, which has no visibility
-      # into a still-draft release on this one — and since this job usually
-      # finishes well before electron-publish.yml's macOS leg (code signing +
-      # notarization, often 15+ minutes), the release would almost always
-      # still be a draft at this point. Both steps now live in
-      # finalize-release.yml, which only runs them once the release is
-      # confirmed public.

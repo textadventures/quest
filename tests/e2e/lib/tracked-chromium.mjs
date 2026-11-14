@@ -43,8 +43,7 @@ const outDir = process.env.QUEST_TOUCHED_FILES_DIR;
 const SNAPSHOT_INTERVAL_MS = 4000;
 
 // HomeHeader mounts DownloadButton (src/AppShell/src/lib/download-links.ts)
-// on every page load when PUBLIC_SHOW_HOME is set (every appshell_chromium
-// e2e script does, via the workflow's dev-server env), which fires this
+// on every page load, which fires this
 // exact request unauthenticated. Almost every verify-appshell-*.mjs script
 // navigates to / or /open at least once, so left unmocked here this was
 // hitting GitHub's 60-req/hour unauthenticated rate limit across a full
