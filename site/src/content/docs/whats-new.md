@@ -39,7 +39,10 @@ Quest 5's online editor kept your games on your textadventures.co.uk account, so
 
 Whichever way you store it, see [Backing up your game](/howto/testing/backups) for why it's worth keeping more than one copy as you go.
 
-If you already have games on a textadventures.co.uk account, they're still there, and the editor at textadventures.co.uk can still sign you in and load them. That editor stays on Quest Viva 6.0, though, so it doesn't have the features added since.
+If you already have games on a textadventures.co.uk account, they're still there, and the editor at textadventures.co.uk can still sign you in and load them. That editor stays on Quest Viva 6.0, though, so it doesn't have the features added since. To move a game over to this version:
+
+1. Go to [Your games](https://textadventures.co.uk/your-games) on textadventures.co.uk and click **Download** next to the game, under "Quest online editor games". That gives you a `.zip` of the game and its assets.
+2. In Quest Viva, go to the **Create** tab and either click **Import game file** and choose the `.zip`, which makes it a local draft in your browser, or unzip it first and open the folder with **Open game folder** (**Open game…** in the desktop app).
 
 ## Games run in the browser, with no server
 
