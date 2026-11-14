@@ -5,13 +5,22 @@ description: How to runtime-verify changes in this repo (WasmPlayer/AppShell/Ele
 
 # Verifying changes in Quest Viva
 
-`tests/e2e/verify-*.mjs` is a growing set of Playwright scripts (`quest-e2e`
-package, `playwright` installed there): one file per bug/feature, run directly
-with `node`, not via `npm test`. Follow that convention: write a new
-`verify-<topic>.mjs` there, run it with `node verify-<topic>.mjs`, and leave
-it checked in.
+`tests/e2e/` (`quest-e2e` package) holds one Playwright test per bug/feature,
+left checked in. The suite is moving from standalone scripts to Playwright
+Test (`tests/e2e/playwright.config.mjs`), one project per directory:
 
-**Every new script must also get a step in `.github/workflows/e2e.yml`**, in
+- **Converted so far: `site/` and `electron/`.** A new test there is a
+  `<topic>.spec.mjs` file in that directory, using `test()` from
+  `@playwright/test` (copy a neighbour). Run it with
+  `npx playwright test --project=electron <topic>` from `tests/e2e`. Nothing
+  to wire up: CI runs the whole directory. For `site`, the server URL comes
+  from the `baseURL` fixture (override with `SITE_URL`).
+- **Not converted yet: WasmPlayer and AppShell.** These are still standalone
+  `verify-<topic>.mjs` scripts, run with `node verify-<topic>.mjs <baseUrl>`;
+  follow that convention for them until they move, and wire each one in as
+  described below.
+
+**Every new `verify-*.mjs` script must also get a step in `.github/workflows/e2e.yml`**, in
 the job whose dev server it needs (`wasmplayer_chromium`, `appshell_chromium`,
 `electron`, ...), copying a neighbouring step's `node
 verify-<topic>.mjs <baseUrl>` + `working-directory: tests/e2e` shape. The
@@ -58,7 +67,8 @@ after creating a script is expected: add the step, don't ignore it.
    });
    const win = await app.firstWindow(); // the editor/Home window
    ```
-   See `tests/e2e/verify-electron-play-local-file.mjs` for a full working
+   (In a spec under `tests/e2e/electron/`, that path has one more `'..'`.)
+   See `tests/e2e/electron/play-local-file.spec.mjs` for a full working
    example (native dialog stubbing via `app.evaluate(({dialog}) => {...})`,
    waiting for a second BrowserWindow via `app.waitForEvent('window')`).
 3. **Gotcha**: the player `BrowserWindow` (opened via
