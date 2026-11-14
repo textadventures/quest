@@ -1926,7 +1926,7 @@ function ensureSavesDialogWired() {
         if (!row) return;
         if (action === 'overwrite') {
             const ok = await confirmInSavesDialog(row,
-                (cs().OverwriteSaveConfirm ?? 'Replace "[name]" with your game as it is now?').replace('[name]', saveTitle(slotIndex)),
+                (cs().OverwriteSaveConfirm ?? 'Overwrite "[name]"?').replace('[name]', saveTitle(slotIndex)),
                 cs().OverwriteSave ?? 'Overwrite');
             if (!ok) { opener?.focus(); return; }
             await GameSaver.overwrite(slotIndex);

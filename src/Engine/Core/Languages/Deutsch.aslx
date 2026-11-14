@@ -603,8 +603,8 @@
   <template name="SavedYesterday">Gestern, [time]</template>
   <template name="SavedGameTitle">Spielstand</template>
   <template name="LoadSaveConfirm">„[name]“ laden? Alles, was du seit dem letzten Speichern getan hast, geht verloren.</template>
-  <template name="StartAgainConfirm">Von vorn beginnen? Alles, was du seit dem letzten Speichern getan hast, geht verloren.</template>
-  <template name="OverwriteSaveConfirm">„[name]“ durch dein Spiel in seinem jetzigen Stand ersetzen?</template>
+  <template name="StartAgainConfirm">Von vorne beginnen? Alles, was du seit dem letzten Speichern getan hast, geht verloren.</template>
+  <template name="OverwriteSaveConfirm">„[name]“ überschreiben?</template>
   <template name="CancelButton">Abbrechen</template>
   <template name="CommandInputLabel">Gib deinen Befehl ein</template>
   <template name="ShowPanesButton">Bereiche anzeigen</template>
