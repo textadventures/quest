@@ -1,6 +1,5 @@
 export interface AssetInfo {
     key: string;
-    url: string;
     // Byte size, when the adapter can get it without reading the file (the Publish dialog's summary).
     size?: number;
 }
@@ -27,7 +26,7 @@ export interface FileAdapter {
     // deletable "asset" of this one — but that same filtering, if reused for library discovery,
     // silently breaks loading any game with a custom Included Library (it did, for both — see
     // git history). Optional: adapters whose listAssets() already surfaces every .aslx
-    // unfiltered (LocalDraftAdapter, ServerFileAdapter) don't need their own implementation —
+    // unfiltered (LocalDraftAdapter) don't need their own implementation —
     // preloadAdjacentLibraryAssets() falls back to filtering listAssets() itself when absent.
     listLibraryCandidates?(): Promise<string[]>;
     // Only implemented by adapters keyed by GameId (LocalDraftAdapter) — moves

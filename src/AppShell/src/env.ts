@@ -8,7 +8,5 @@ export const variables = defineEnvVars({
     PUBLIC_APPSHELL_VERSION: { public: true, static: true, schema: optional },
     PUBLIC_BETA_DOCS: { public: true, static: true, schema: optional },
     PUBLIC_BETA_SITE: { public: true, static: true, schema: optional },
-    PUBLIC_SHOW_HOME: { public: true, static: true, schema: optional },
-    PUBLIC_HAS_SERVER: { public: true, static: true, schema: optional },
     PUBLIC_WASM_PLAYER_URL: { public: true, static: true, schema: optional },
 });

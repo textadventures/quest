@@ -43,7 +43,7 @@ try {
     win.on('pageerror', err => console.log('[editor] [pageerror]', err.message));
     win.on('console', msg => { if (msg.type() === 'error') console.log('[editor] [console.error]', msg.text()); });
 
-    // Root is the Play/Create Home (PUBLIC_SHOW_HOME=true, see electron.sh) — switch to Create, make a local draft.
+    // Root is the Play/Create Home — switch to Create, make a local draft.
     await win.waitForSelector('a:has-text("Create")', { timeout: 30000 });
     await win.click('a:has-text("Create")');
     await win.waitForSelector('input[placeholder="Game name"]', { timeout: 15000 });

@@ -2,6 +2,8 @@
 
 This document describes the server-side API that needs to be implemented on textadventures.co.uk to support the new Quest Viva AppShell in "online mode".
 
+**6.0 only.** From 6.1, `main`'s AppShell has no online mode: textadventures.co.uk's editor stays on 6.0, built from `release/6.0`, which is the only branch whose `ServerFileAdapter` calls this API. See [deployment-domains.md](./deployment-domains.md).
+
 ## Overview
 
 The new AppShell is a static SvelteKit app (deployed on textadventures.co.uk) that runs entirely in the browser. When opened with a `?game={gameId}` URL parameter, it switches to online mode and fetches the game file from the server instead of asking the user to open a local file.

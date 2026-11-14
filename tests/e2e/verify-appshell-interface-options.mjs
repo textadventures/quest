@@ -2,7 +2,7 @@
 // presets, the author hook settings and the classic interface. Each is set in the editor and
 // checked in the game's raw XML.
 // Run against a dev server started with:
-//   PUBLIC_SHOW_HOME=true npx vite dev --port 5174   (in src/AppShell)
+//   npx vite dev --port 5174   (in src/AppShell)
 import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';

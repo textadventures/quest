@@ -4,8 +4,7 @@
     import { goto } from "$app/navigation";
     import { base } from "#lib/base-path.js";
     import { get } from "svelte/store";
-    import { isLoaded, isDirty, isEditingField, markFieldEditing, clearFieldEditing, saveGame, loadingStatus, addElementModal, addJavascriptModalOpen, addLibraryModalOpen, assetManagerOpen, publishModalOpen, codeViewPanelOpen, openGame, lastOpenGameError, lastFailedGameBytes, lastFailedGameFilename, createRoom, createObject, createPage, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType, createJavascript, createIncludedLibrary, moveElementModal, moveElement, moveToFolderModal, setFunctionFolder } from "#lib/editor-store.js";
-    import { loadFromServer } from "#lib/filesystem/server-adapter.js";
+    import { isLoaded, isDirty, isEditingField, markFieldEditing, clearFieldEditing, saveGame, loadingStatus, addElementModal, addJavascriptModalOpen, addLibraryModalOpen, assetManagerOpen, publishModalOpen, codeViewPanelOpen, lastOpenGameError, lastFailedGameBytes, createRoom, createObject, createPage, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType, createJavascript, createIncludedLibrary, moveElementModal, moveElement, moveToFolderModal, setFunctionFolder } from "#lib/editor-store.js";
     import Toolbar from "#components/Toolbar.svelte";
     import BackupBanner from "#components/BackupBanner.svelte";
     import UpgradeBanner from "#components/UpgradeBanner.svelte";
@@ -25,17 +24,12 @@
     import PublishModal from "#components/PublishModal.svelte";
     import { t } from "#lib/i18n/index.js";
 
-    let serverLoadError = $state<string | null>(null);
-
     // Tracks whether this page instance has ever reached a loaded game, so the
     // final fallback branch below can tell "mid-session reload/switch failed"
     // (isLoaded flips back to false — a real error, see that branch's comment)
     // apart from "haven't started loading yet" (isLoaded is still its initial
-    // false and $loadingStatus hasn't been set by openGame() yet because
-    // onMount/loadGameFromServer haven't run/resolved). Without this, that
-    // initial tick rendered the same error UI as a genuine failure — a
-    // half-second flash of "This game could not be loaded" on every open
-    // while loadFromServer's network fetch was still in flight.
+    // false because onMount hasn't run yet). Without this, that initial tick
+    // would render the same error UI as a genuine failure.
     let hasLoadedOnce = $state(false);
     $effect(() => {
         if ($isLoaded) hasLoadedOnce = true;
@@ -115,35 +109,15 @@
         }
         document.addEventListener("visibilitychange", handleVisibilityChange);
 
-        const gameId = new URLSearchParams(window.location.search).get("game");
-        if (gameId) {
-            loadGameFromServer(gameId);
-        } else if (!get(isLoaded) && !get(lastFailedGameBytes)) {
+        if (!get(isLoaded) && !get(lastFailedGameBytes)) {
             // Nothing to edit and nothing to recover — /edit is only ever
-            // reached with something already loaded (via /open), a ?game=
-            // to load here, or a failed load's bytes to fix in Safe Mode
-            // (see the template branch below).
+            // reached with something already loaded (via /open) or a failed
+            // load's bytes to fix in Safe Mode (see the template branch below).
             goto(`${base}/open`);
         }
 
         return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
     });
-
-    async function loadGameFromServer(gameId: string) {
-        try {
-            const loaded = await loadFromServer(gameId);
-            const ok = await openGame(loaded.bytes, loaded.adapter.filename, loaded.adapter);
-            if (!ok) serverLoadError = get(lastOpenGameError) ?? t("editPage.failedToLoadGame");
-        } catch (err) {
-            // Thrown before openGame() ever ran (e.g. an unknown game id) — no bytes exist to
-            // recover into Safe Mode. Clear defensively in case a stale value is still sitting
-            // in the store from an earlier failed attempt this session (see the template's
-            // lastFailedGameBytes branch, which would otherwise take priority over this error).
-            lastFailedGameBytes.set(null);
-            lastFailedGameFilename.set(null);
-            serverLoadError = String(err);
-        }
-    }
 
     async function handleAddConfirm(name: string, target: string | null) {
         const mode = get(addElementModal);
@@ -265,12 +239,6 @@
     {#if $publishModalOpen}
         <PublishModal oncancel={() => publishModalOpen.set(false)} />
     {/if}
-{:else if serverLoadError}
-    <!-- loadGameFromServer's own fetch/parse threw before any bytes ever reached openGame() (e.g.
-         an unknown game id) — nothing to recover into Safe Mode, unlike the branch above. -->
-    <main class="flex flex-col items-center justify-center min-h-svh gap-6 p-8">
-        <p class="text-error-500 max-w-[40ch] text-center whitespace-pre-wrap">{serverLoadError}</p>
-    </main>
 {:else if hasLoadedOnce}
     <!-- Defensive fallback: shouldn't normally be reached now that a genuine openGame() failure
          is caught by the lastFailedGameBytes branch above, but kept in case isLoaded somehow
@@ -280,8 +248,7 @@
         <button type="button" class="btn preset-filled-primary-500" onclick={() => goto(`${base}/open`)}>{t("editPage.backToHome")}</button>
     </main>
 {:else}
-    <!-- The page hasn't reached any terminal state yet: onMount hasn't run/resolved far enough
-         to set $loadingStatus (e.g. loadFromServer's network fetch is still in flight) or to
+    <!-- The page hasn't reached any terminal state yet: onMount hasn't run far enough to
          redirect away. Show the same spinner shell as the $loadingStatus branch rather than
          falling through to the error UI above. -->
     <main class="flex flex-col items-center justify-center min-h-svh gap-6 p-8">

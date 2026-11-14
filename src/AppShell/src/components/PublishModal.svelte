@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { publishGame, canPublishToServer, getCurrentGameId, listPublishFiles, publishProgress, assetManagerOpen, type PublishFile, type PublishProgress } from "#lib/editor-store.js";
+    import { publishGame, getCurrentGameId, listPublishFiles, publishProgress, assetManagerOpen, type PublishFile, type PublishProgress } from "#lib/editor-store.js";
     import { loadPublishTarget, type PublishTarget } from "#lib/publish-target.js";
     import { formatFileSize } from "#lib/format-size.js";
     import { t, tPlural } from "#lib/i18n/index.js";
@@ -51,9 +51,7 @@
     $effect(() => { dialogEl?.focus(); });
 
     const options = $derived<{ value: PublishTarget; title: string; detail: string }[]>([
-        $canPublishToServer
-            ? { value: "quest", title: t("publishModal.optionServerTitle"), detail: t("publishModal.optionServerDetail") }
-            : { value: "quest", title: t("publishModal.optionQuestTitle"), detail: t("publishModal.optionQuestDetail") },
+        { value: "quest", title: t("publishModal.optionQuestTitle"), detail: t("publishModal.optionQuestDetail") },
         { value: "cdn", title: t("publishModal.optionCdnTitle"), detail: t("publishModal.optionCdnDetail") },
         { value: "zip", title: t("publishModal.optionZipTitle"), detail: t("publishModal.optionZipDetail") },
     ]);
@@ -62,7 +60,6 @@
         switch (progress?.step) {
             case "reading": return t("publishModal.progressReading", { done: progress.done + 1, total: progress.total });
             case "building": return t("publishModal.progressBuilding");
-            case "uploading": return t("publishModal.progressUploading");
             case "fetchingPlayer": return t("publishModal.progressFetchingPlayer");
             case "zipping": return t("publishModal.progressZipping");
             default: return t("publishModal.publishing");
@@ -200,7 +197,7 @@
                     type="button"
                     class="btn btn-xs preset-filled-primary-500"
                     onclick={handlePublish}
-                >{target === "quest" && $canPublishToServer ? t("publishModal.publishToServer") : t("publishModal.publishButton")}</button>
+                >{t("publishModal.publishButton")}</button>
             {/if}
         </div>
     </div>

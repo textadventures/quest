@@ -40,7 +40,7 @@ dotnet build src/WasmPlayer/WasmPlayer.csproj --configuration "$DOTNET_CONFIG"
 echo ""
 echo "Building AppShell..."
 [[ -d src/AppShell/node_modules ]] || npm --prefix src/AppShell install
-PUBLIC_SHOW_HOME=true npm --prefix src/AppShell run build
+npm --prefix src/AppShell run build
 
 echo ""
 echo "Building ElectronApp..."

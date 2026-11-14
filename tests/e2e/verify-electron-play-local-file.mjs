@@ -52,7 +52,7 @@ try {
         dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [fp] });
     }, aslxPath);
 
-    // Root is the Play tab (PUBLIC_SHOW_HOME=true, see electron.sh) — there's
+    // Root is the Play tab — there's
     // no separate /play/local route at all; the toolbar button calls
     // pickAndPlayElectronFile() inline (see PlayCatalog.svelte's
     // handleOpenLocal / lib/filesystem/local-play.ts).

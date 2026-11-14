@@ -45,8 +45,7 @@ after creating a script is expected: add the step, don't ignore it.
    `resources/app-static/{editor,AppBundle,player}`. **`copy-static.mjs`
    does *not* rebuild AppShell** — if `src/AppShell/build` doesn't exist yet
    or is stale relative to a change you made there, build it first (`cd
-   src/AppShell && npm run build`; the Home/Play-tab root needs
-   `PUBLIC_SHOW_HOME=true` set at that build time, see `docs/deployment-domains.md`).
+   src/AppShell && npm run build`).
 2. Drive with Playwright's `_electron` launcher:
    ```js
    import { _electron as electron } from 'playwright';

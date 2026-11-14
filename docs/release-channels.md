@@ -9,7 +9,7 @@ Each version tag is either **stable** (`v6.0.0`, `v6.0.1`) or a **prerelease** (
 | Surface | Stable | Prerelease |
 |---|---|---|
 | Web app (`deploy-play.yml`) | play.questviva.com (Cloudflare Pages project `play-questviva`) | play-beta.questviva.com (project `play-questviva-beta`) |
-| textadventures.co.uk `/questviva` (`finalize-release.yml`) | Redeployed | Not touched |
+| textadventures.co.uk `/questviva` (`finalize-release.yml`) | Redeployed, for a 6.0.x release only: the editor there stays on 6.0, and only `release/6.0` builds the `WebEditor.zip` it deploys | Not touched |
 | GitHub Release (`release-please.yml`, `finalize-release.yml`) | Not flagged as a prerelease, marked Latest | Stays flagged as a prerelease, so `releases/latest` never returns it |
 | WebPlayer Docker image (`docker-publish.yml`, on `release/6.0` only) | `:<version>` and `:latest` | None: WebPlayer was removed from `main` in 6.1, so there are no 6.1 images |
 | npm package (`npm-publish.yml`) | dist-tag `latest` | dist-tag `beta` |

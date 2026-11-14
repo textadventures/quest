@@ -5,7 +5,7 @@
 //     part box with the parts as suggestions, and a yes/no choice), not the generic function
 //     call one
 // Run against a dev server started with:
-//   PUBLIC_SHOW_HOME=true npx vite dev --port 5174   (in src/AppShell)
+//   npx vite dev --port 5174   (in src/AppShell)
 import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';

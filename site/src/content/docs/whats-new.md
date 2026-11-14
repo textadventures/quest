@@ -1,16 +1,29 @@
 ---
-title: What's new in Quest Viva 6.0
-description: What has changed for Quest 5 users moving to Quest Viva
+title: What's new in Quest Viva
+description: What has changed in each Quest Viva release, and for Quest 5 users moving to Quest Viva
 sidebar:
   order: 4
-  label: What's new in Quest Viva 6.0
+  label: What's new
 ---
+
+This page summarises what has changed in each Quest Viva release. If you're coming from Quest 5, start with [Quest Viva 6.0](#quest-viva-60), which covers everything that changed since then. If you're new to Quest Viva, you don't need any of this - start with the [Introduction](/intro) instead.
+
+## Quest Viva 6.1
+
+### The editor on textadventures.co.uk stays on 6.0
+
+The online editor at textadventures.co.uk, which opens games stored on your textadventures.co.uk account, stays on Quest Viva 6.0 and doesn't get the features added in 6.1. Your games there are still there, and you can carry on editing them in that editor. To move a game over to 6.1:
+
+1. Go to [Your games](https://textadventures.co.uk/your-games) on textadventures.co.uk and click **Download** next to the game, under "Quest online editor games". That gives you a `.zip` of the game and its assets.
+2. In Quest Viva, go to the **Create** tab and either click **Import game file** and choose the `.zip`, which makes it a local draft in your browser, or unzip it first and open the folder with **Open game folder** (**Open game…** in the desktop app).
+
+Once you have, publish it as a `.quest` file and upload that to textadventures.co.uk - see [Publishing on textadventures.co.uk](/publishing#publishing-on-textadventurescouk).
+
+## Quest Viva 6.0
 
 Quest Viva is the successor to Quest 5, which had been Quest's current major version since 2011. Under the hood it's the same engine and the same scripting language, so if you know Quest 5, you already know Quest Viva - but a lot has changed around it.
 
-This page is a summary for people coming from Quest 5. If you're new to Quest Viva, you don't need any of this - start with the [Introduction](/intro) instead.
-
-## Your existing games still work
+### Your existing games still work
 
 Quest Viva opens the same `.aslx` game files as Quest 5, so you can carry on working on a game you started there. The player will also run `.quest` packages, and games in the much older `.asl` and `.cas` formats, which Quest used from version 1.0 in 1998 right through to 4.1.
 
@@ -18,7 +31,7 @@ Games you've already published keep working too, and don't need republishing. Th
 
 Quest 5 itself is no longer developed. If you need an old installer - to compare behaviour against a particular version, say - they are kept on the [archive site](https://archive.textadventures.co.uk/quest/).
 
-## One editor, everywhere
+### One editor, everywhere
 
 Quest 5's editor only ran on Windows, and the online editor at textadventures.co.uk was a separate thing with its own set of quirks and limitations.
 
@@ -29,7 +42,7 @@ Quest Viva has a single editor, and you can use it either way:
 
 These aren't two editors kept roughly in step with each other. It's the same application in both, so the browser version isn't a cut-down one the way Quest 5's was - anything you can do at your desk, you can do in a browser, and you can move between the two as it suits you.
 
-## Where your games are kept
+### Where your games are kept
 
 Quest 5's online editor kept your games on your textadventures.co.uk account, so using it meant signing up for one. Quest Viva keeps them local by default, with no account needed:
 
@@ -39,9 +52,9 @@ Quest 5's online editor kept your games on your textadventures.co.uk account, so
 
 Whichever way you store it, see [Backing up your game](/howto/testing/backups) for why it's worth keeping more than one copy as you go.
 
-If you already have games on a textadventures.co.uk account, they're still there. The editor at textadventures.co.uk can sign you in and load them, as before.
+If you already have games on a textadventures.co.uk account, they're still there. The editor at textadventures.co.uk can sign you in and load them, as before - but it stays on 6.0: see [Quest Viva 6.1](#the-editor-on-textadventurescouk-stays-on-60) for moving a game over.
 
-## Games run in the browser, with no server
+### Games run in the browser, with no server
 
 This is the biggest change under the hood. Quest 5 games played online ran on a Windows server, with every turn making a round trip over the network. That made games feel slow, limited how many people could play at once, and meant players lost their session if their connection hiccupped.
 
@@ -54,7 +67,7 @@ In Quest Viva, the whole engine is compiled to WebAssembly and runs *inside the 
 
 The player interface is also now fully responsive, so games look right on phones and tablets as well as on a desktop.
 
-## Host your game anywhere
+### Host your game anywhere
 
 Because a game no longer needs a server to run it, you're no longer tied to textadventures.co.uk. You can still [publish there](/publishing) - it's still the easiest way to find an audience - but you can also:
 
@@ -68,11 +81,11 @@ Published `.quest` files now also follow the [Treaty of Babel](https://babel.ifa
 
 WebPlayer, the server-based player, has been rewritten for Quest Viva - Quest 5's needed Windows, and this one runs on cross-platform .NET, so you can host it wherever you like. WasmPlayer has rather overtaken it since, though, so it's a specialist choice now: worth it if you specifically don't want players to be able to download your `.quest` file, for a treasure hunt or a competition say. See the [WebPlayer guide](/publishing/webplayer). 6.0 is the last version that will include WebPlayer: it will be removed in 6.1.
 
-## Players can save without an account
+### Players can save without an account
 
 In Quest 5, saving an online game meant having a textadventures.co.uk account. Quest Viva saves games to the browser's own storage instead, with multiple save slots, and players can also save a game out to a file to keep or move to another device. No account, no login.
 
-## New in the editor
+### New in the editor
 
 The editor was rebuilt for Quest Viva. Most of it does what it always did - here's what's different:
 
@@ -91,7 +104,7 @@ The editor was rebuilt for Quest Viva. Most of it does what it always did - here
 - **Editable included libraries** - you can edit your own libraries from the tree, instead of in a separate text editor. Changes are checked before they're saved, so a mistake can't leave your game unable to load
 - **Small tweaks** - library functions are grouped by the file they come from, the tree remembers which parts you had expanded for each game and can expand or collapse everything at once, Code View can fold sections of a script, and a setting opens scripts in Code View by default
 
-## New in the engine
+### New in the engine
 
 Most of the scripting language is unchanged, but there are some additions:
 

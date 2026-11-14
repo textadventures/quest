@@ -2,7 +2,7 @@ name: Finalize release
 
 # Publishing a tagged release (un-drafting it — see release-please.yml) and
 # notifying textadventures.co.uk to redeploy both need to wait until ALL of
-# deploy-play.yml (uploads WasmPlayer.zip/AppBundle.zip/WebEditor.zip),
+# deploy-play.yml (uploads WasmPlayer.zip, plus AppBundle.zip/WebEditor.zip on release/6.0),
 # electron-publish.yml (uploads the Windows/Mac/Linux installers across all
 # three of its OS legs) and cli-publish.yml (uploads the qv binaries) have
 # finished successfully. Those are separate workflow files, all independently
@@ -135,10 +135,24 @@ jobs:
             echo "just_published=true" >> "$GITHUB_OUTPUT"
           fi
 
-      # textadventures.co.uk only ever gets stable releases — see
-      # docs/release-channels.md.
-      - name: Pin WebEditor version in textadventures.co.uk
+      # textadventures.co.uk only ever gets stable 6.0.x releases — see
+      # docs/release-channels.md. Its editor build (WebEditor.zip) is only
+      # made by release/6.0's deploy-play.yml; main stopped building it in
+      # 6.1, so a stable 6.1+ release has nothing for it to deploy. This
+      # workflow always runs from main's copy, so check the release itself.
+      - name: Check for a textadventures.co.uk editor build
+        id: ta
         if: steps.publish.outputs.just_published == 'true' && steps.channel.outputs.channel == 'stable'
+        run: |
+          if gh release view "${{ steps.ref.outputs.tag }}" --repo ${{ github.repository }} --json assets -q '.assets[].name' | grep -qx WebEditor.zip; then
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "No WebEditor.zip on this release — textadventures.co.uk stays on 6.0."
+            echo "deploy=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Pin WebEditor version in textadventures.co.uk
+        if: steps.ta.outputs.deploy == 'true'
         run: |
           curl -s -o /dev/null -w "%{http_code}" -X PATCH \
             -H "Authorization: token ${{ secrets.TA_DEPLOY_PAT }}" \
@@ -147,7 +161,7 @@ jobs:
             -d "{\"name\":\"WEBEDITOR_VERSION\",\"value\":\"${{ steps.ref.outputs.tag }}\"}"
 
       - name: Trigger textadventures.co.uk deployment
-        if: steps.publish.outputs.just_published == 'true' && steps.channel.outputs.channel == 'stable'
+        if: steps.ta.outputs.deploy == 'true'
         uses: peter-evans/repository-dispatch@v4
         with:
           token: ${{ secrets.TA_DEPLOY_PAT }}

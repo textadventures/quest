@@ -170,7 +170,7 @@ export class ElectronFileAdapter implements FileAdapter {
         const entries = await electronApp().fs.readDir(this.dirPath);
         return entries
             .filter((e) => e.isFile && !isLibraryFilename(e.name) && !isJunkAssetName(e.name))
-            .map((e) => ({ key: e.name, url: "", size: e.size ?? undefined }));
+            .map((e) => ({ key: e.name, size: e.size ?? undefined }));
     }
 
     // See FileAdapter.listLibraryCandidates's own comment for why this can't just be a filtered

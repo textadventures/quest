@@ -119,8 +119,6 @@ jobs:
       - name: Start AppShell dev server (5174)
         run: npx vite dev --port 5174 &
         working-directory: src/AppShell
-        env:
-          PUBLIC_SHOW_HOME: true
 
       - name: Wait for dev server
         run: |
@@ -381,48 +379,6 @@ jobs:
       - run: node verify-appshell-multi-aslx-zip.mjs http://localhost:5174
         working-directory: tests/e2e
 
-  # PUBLIC_HAS_SERVER=true (textadventures.co.uk build mode) — only checks
-  # /open's "existing games only" message/link, never enters the editor, so
-  # no WasmEditor build needed at all.
-  appshell_server_mode:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    if: github.event_name != 'pull_request'
-    steps:
-      - uses: actions/checkout@v7
-
-      - uses: actions/setup-node@v7
-        with:
-          node-version: '22'
-          cache: 'npm'
-          cache-dependency-path: |
-            src/AppShell/package-lock.json
-            tests/e2e/package-lock.json
-
-      - run: npm ci
-        working-directory: src/AppShell
-      - run: npm ci
-        working-directory: tests/e2e
-      - run: npx playwright install --with-deps chromium
-        working-directory: tests/e2e
-
-      - name: Start AppShell dev server (5174, PUBLIC_HAS_SERVER=true)
-        run: npx vite dev --port 5174 &
-        working-directory: src/AppShell
-        env:
-          PUBLIC_HAS_SERVER: true
-
-      - name: Wait for dev server
-        run: |
-          for i in $(seq 1 30); do
-            curl -sf "http://localhost:5174/" > /dev/null && break
-            [ "$i" -eq 30 ] && { echo "port 5174 never came up"; exit 1; }
-            sleep 1
-          done
-
-      - run: node verify-appshell-server-mode-no-create.mjs http://localhost:5174
-        working-directory: tests/e2e
-
   # WasmPlayer alone, no AppShell involved.
   wasmplayer_chromium:
     runs-on: ubuntu-latest
@@ -659,8 +615,6 @@ jobs:
         working-directory: src/AppShell
       - run: npm run build
         working-directory: src/AppShell
-        env:
-          PUBLIC_SHOW_HOME: true
 
       - run: npm ci
         working-directory: src/ElectronApp

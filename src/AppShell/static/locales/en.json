@@ -457,8 +457,6 @@
 
     "publishModal.title": "Publish",
     "publishModal.description": "Choose how to share your game.",
-    "publishModal.optionServerTitle": "Publish to textadventures.co.uk",
-    "publishModal.optionServerDetail": "Uploads your game, then takes you to the site to add a description, category and visibility.",
     "publishModal.optionQuestTitle": ".quest file",
     "publishModal.optionQuestDetail": "Your whole game in one file, for uploading to textadventures.co.uk or opening in Quest Viva.",
     "publishModal.optionCdnTitle": "Small HTML file",
@@ -482,10 +480,8 @@
     "publishModal.publishing": "Publishing…",
     "publishModal.progressReading": "Reading files ({done} of {total})…",
     "publishModal.progressBuilding": "Building the game file…",
-    "publishModal.progressUploading": "Uploading to textadventures.co.uk…",
     "publishModal.progressFetchingPlayer": "Downloading the Quest player…",
     "publishModal.progressZipping": "Creating the zip…",
-    "publishModal.publishToServer": "Publish to textadventures.co.uk…",
     "publishModal.publishButton": "Publish…",
 
     "downloadButton.titleWithLabel": "Download desktop app — {label}",
@@ -532,14 +528,11 @@
     "categoryPage.loadError": "Couldn't load this category.",
 
     "editPage.loadError": "This game could not be loaded.",
-    "editPage.failedToLoadGame": "Failed to load game.",
     "editPage.backToHome": "Back to Home",
     "editPage.skipToContent": "Skip to editor content",
 
     "openPage.title": "Quest Viva Editor",
     "openPage.multipleFilesFound": "Multiple game files found — choose one to open:",
-    "openPage.serverOnlyMessage": "This editor only opens games you already have here. To create a new game, use the free play.questviva.com editor — no account needed.",
-    "openPage.createAtPlayQuestviva": "Create a new game at play.questviva.com",
     "openPage.openExistingGame": "Open existing game",
     "openPage.openGameEllipsis": "Open game…",
     "openPage.openGameFolder": "Open game folder",
