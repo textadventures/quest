@@ -272,7 +272,13 @@ public partial class WorldModel : IGame, IGameDebug
 
     internal ExpressionOwner ExpressionOwner { get; }
 
-    public void SetRandomSeed(int seed) => ExpressionOwner.SetRandomSeed(seed);
+    // The game's random numbers. A saved game stores the seed and how far through it the game has got
+    // (GameSaver), and loading one carries on from there (GameLoader).
+    internal GameRandom Random { get; } = new();
+
+    public int RandomSeed => Random.Seed;
+
+    public void SetRandomSeed(int seed) => Random.Reseed(seed);
 
     internal IPlayer PlayerUi
     {

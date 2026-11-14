@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Globalization;
 using System.Xml;
 using QuestViva.Common;
 
@@ -131,6 +132,14 @@ internal partial class GameLoader
                 if (!string.IsNullOrEmpty(originalFile))
                 {
                     FilenameUpdated?.Invoke(originalFile);
+                }
+
+                // A saved game from before these were written keeps the seed the game started with.
+                if (int.TryParse(reader.GetAttribute("randomseed"), NumberStyles.Integer, CultureInfo.InvariantCulture, out var randomSeed)
+                    && long.TryParse(reader.GetAttribute("randomsamples"), NumberStyles.Integer, CultureInfo.InvariantCulture, out var randomSamples)
+                    && randomSamples >= 0)
+                {
+                    WorldModel.Random.Restore(randomSeed, randomSamples);
                 }
             }
             else
