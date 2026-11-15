@@ -162,7 +162,11 @@ internal partial class GameSaver
 
     public string SaveScript(GameXmlWriter writer, IScript script, int indent)
     {
-        return Utility.IndentScript(script.Save(), writer.IndentLevel + indent, GameXmlWriter.IndentChars);
+        // The XmlWriter doesn't indent the ending tag after text with newlines in it, so end the
+        // script with the indentation that lines the tag up. Unlike a string's value, a script is
+        // parsed on load and written out afresh on save, so the padding never becomes part of it.
+        return Utility.IndentScript(script.Save(), writer.IndentLevel + indent, GameXmlWriter.IndentChars)
+            + Utility.GetIndentChars(writer.IndentLevel + indent - 1, GameXmlWriter.IndentChars);
     }
 
     private void UpdateImpliedTypesCache()
