@@ -4,7 +4,7 @@
     import { goto } from "$app/navigation";
     import { base } from "#lib/base-path.js";
     import { get } from "svelte/store";
-    import { isLoaded, isDirty, isEditingField, markFieldEditing, clearFieldEditing, saveGame, loadingStatus, addElementModal, addJavascriptModalOpen, addLibraryModalOpen, assetManagerOpen, publishModalOpen, codeViewPanelOpen, lastOpenGameError, lastFailedGameBytes, createRoom, createObject, createPage, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType, createJavascript, createIncludedLibrary, moveElementModal, moveElement, moveToFolderModal, setFunctionFolder } from "#lib/editor-store.js";
+    import { isLoaded, isDirty, isEditingField, markFieldEditing, clearFieldEditing, saveGame, loadingStatus, addElementModal, addJavascriptModalOpen, addLibraryModalOpen, assetManagerOpen, publishModalOpen, codeViewPanelOpen, checkPanelOpen, lastOpenGameError, lastFailedGameBytes, createRoom, createObject, createPage, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType, createJavascript, createIncludedLibrary, moveElementModal, moveElement, moveToFolderModal, setFunctionFolder } from "#lib/editor-store.js";
     import Toolbar from "#components/Toolbar.svelte";
     import BackupBanner from "#components/BackupBanner.svelte";
     import UpgradeBanner from "#components/UpgradeBanner.svelte";
@@ -13,6 +13,7 @@
     import TreePanel from "#components/TreePanel.svelte";
     import PropertyEditor from "#components/PropertyEditor.svelte";
     import CodeViewPanel from "#components/CodeViewPanel.svelte";
+    import CheckPanel from "#components/CheckPanel.svelte";
     import SafeModeEditor from "#components/SafeModeEditor.svelte";
     import { isNarrow } from "#lib/layout.svelte.js";
     import AddElementModal from "#components/AddElementModal.svelte";
@@ -190,6 +191,11 @@
                 </div>
             {/if}
         </div>
+        <!-- Hidden while Code View is open: its unapplied edits aren't in what was checked, and a
+             problem can't be shown there. -->
+        {#if $checkPanelOpen && !$codeViewPanelOpen}
+            <CheckPanel onclose={() => checkPanelOpen.set(false)} onnavigate={() => { mobilePane = "props"; }} />
+        {/if}
     </main>
 
     {#if $addElementModal}

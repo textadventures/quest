@@ -15,6 +15,21 @@ This page helps you work out why your game isn't doing what you expect, and how 
 
 ## Finding where a problem comes from
 
+### Check the game
+
+**Check game**, in the **File** menu, looks through every script in your game without playing it, and lists the problems that would stop one with an error when a player reached it:
+
+- a script command or function that doesn't exist, often a misspelt name
+- an expression that's empty or can't be worked out, such as a missing bracket
+- a function given more values than it takes
+- two elements with the same name, where only the last one is used
+
+The problems are listed in a panel at the bottom of the editor. Click one to go to the element it's in: the editor opens the tab with that script and highlights it. Fix it, then click **Check again** to update the list. The check looks at your game as it is now, so you don't need to save first.
+
+It can't find everything. It doesn't know whether an object or variable named in an expression exists when the script runs, so a misspelt object name only shows up when the game reaches it. It checks your game and any library you've added, but not the libraries built into Quest Viva. Two elements with the same name are only found when the game is opened, or when you apply a change in "Raw XML code view".
+
+`qv check` runs the same check from the command line.
+
 ### Read the error message
 
 When a script goes wrong while the game is running, the player shows "[Sorry, an error occurred]" followed by a line like this:

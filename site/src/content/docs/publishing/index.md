@@ -68,10 +68,11 @@ If your game is too large:
 It is tempting to release the moment the game works. Players will not thank you for it. Before you show it to anybody:
 
 1. Play it through and fix everything you find.
-2. Spell check it - see [Spell checking](#spell-checking) below.
-3. Check that every room and object has an alias and a description, and that everything you mention in a description actually exists as an object, even if only as scenery.
-4. Think about what a player might reasonably type and try: alternative names for objects, and verbs that at least say "you can't do that" rather than giving a default response.
-5. Save the game. Quest Viva does extra error checking when it saves that it does not do at any other time, so this is a quick test of your code. Then load it again and check everything still works - loading is especially sensitive to errors in scripts.
+2. Click **Check game** in the **File** menu and fix the problems it finds - see [Check the game](/howto/testing/troubleshooting#check-the-game). **Publish** runs this check too, and stops to tell you if there are any.
+3. Spell check it - see [Spell checking](#spell-checking) below.
+4. Check that every room and object has an alias and a description, and that everything you mention in a description actually exists as an object, even if only as scenery.
+5. Think about what a player might reasonably type and try: alternative names for objects, and verbs that at least say "you can't do that" rather than giving a default response.
+6. Save the game. Quest Viva does extra error checking when it saves that it does not do at any other time, so this is a quick test of your code. Then load it again and check everything still works - loading is especially sensitive to errors in scripts.
 
 And however tempting it is, do not release the game you built while working through the tutorial.
 

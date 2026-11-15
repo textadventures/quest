@@ -304,3 +304,15 @@ export interface FullAttributeData {
   attributes: AttributeDataItem[]
   inheritedTypes: AttributeDataItem[]
 }
+
+// A problem the Editor's Check game finds (WasmEditorBridge.CheckGame, which runs what `qv check`
+// runs). element and attribute say where, when that's known: attribute is a script's attribute, or
+// for a script dictionary its attribute and key, such as giveto["Shopkeeper"]. filename is the
+// included library the element comes from, or null for the game file itself.
+export interface CheckProblem {
+  message: string
+  kind: string | null
+  element: string | null
+  attribute: string | null
+  filename: string | null
+}

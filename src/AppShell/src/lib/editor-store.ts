@@ -11,7 +11,7 @@ import { savePublishTarget, type PublishTarget } from "./publish-target";
 import { confirmDialog } from "./confirm";
 import { showToast } from "./toast";
 import { t, tPlural, locale } from "./i18n";
-import type { TreeNode, EditorDataResponse, ScriptBlockData, ScriptCommandCategoriesData, ExpressionTemplateData, ExpressionTemplate, FullAttributeData, ExitsData, VerbInfo, ExpressionFunctionInfo, FeatureLeftover } from "./types";
+import type { TreeNode, EditorDataResponse, ScriptBlockData, ScriptCommandCategoriesData, ExpressionTemplateData, ExpressionTemplate, FullAttributeData, ExitsData, VerbInfo, ExpressionFunctionInfo, FeatureLeftover, CheckProblem } from "./types";
 
 export type AddElementModalState = { type: "room" | "object" | "page" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type"; parent: string | null; folder: string | null } | null;
 
@@ -314,6 +314,9 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
     // this should always be a no-op in practice — but a leftover timer here
     // would otherwise fire against the wrong _bridge/_adapter below.
     cancelPendingAutosave();
+    // A check's problems belong to the game they were found in.
+    checkPanelOpen.set(false);
+    checkProblems.set(null);
     // A Preview that's still open is playing the game being closed, so it gets no more of
     // this one's interface changes (syncPreviewInterface).
     _previewInterface = null;
@@ -460,6 +463,9 @@ export async function setGameXml(xml: string): Promise<string> {
         // that must be corrected here rather than trusted from refreshUndoRedo() above.
         isDirty.set(true);
         scheduleAutosave();
+        // The game was reloaded from the new XML, so an open Problems list is out of date, and
+        // this is when a duplicate name made in Code View can be found.
+        if (get(checkPanelOpen)) void checkGame();
     }
     return result;
 }
@@ -528,6 +534,50 @@ async function validateLibraryXml(filename: string, xml: string): Promise<string
     // blocking validation, same as setGameXml/openGame.
     await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
     return _bridge.SetLibraryXml(filename, xml);
+}
+
+// The Check game panel (CheckPanel.svelte): the problems the last check found, or null before the
+// first one, and whether one is running. Cleared when another game opens.
+export const checkPanelOpen = writable(false);
+export const checkProblems = writable<CheckProblem[] | null>(null);
+export const isCheckingGame = writable(false);
+
+// Runs what `qv check` runs on the game as it is now, unsaved edits included. It blocks the UI
+// thread while it parses every script, so the caller's busy state is painted first.
+export async function checkGame(): Promise<CheckProblem[]> {
+    if (!_bridge) return [];
+    isCheckingGame.set(true);
+    try {
+        await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
+        const problems = JSON.parse(_bridge.CheckGame()) as CheckProblem[];
+        checkProblems.set(problems);
+        return problems;
+    } finally {
+        isCheckingGame.set(false);
+    }
+}
+
+export function openCheckPanel(): void {
+    checkPanelOpen.set(true);
+    void checkGame();
+}
+
+// Asks PropertyEditor to show an attribute's control once that element is selected: it switches
+// to the tab the control is on, then scrolls to it and highlights it.
+export const attributeFocusRequest = writable<{ key: string; attribute: string } | null>(null);
+
+// Passed on by PropertyEditor when the attribute has no control of its own, for the Verbs or
+// Attributes editor to select it in its list.
+export const listAttributeFocus = writable<{ key: string; attribute: string } | null>(null);
+
+// Selects a problem's element and shows the attribute it's in. False when there's no longer an
+// element of that name (it was renamed or deleted since the check).
+export async function goToProblem(problem: CheckProblem): Promise<boolean> {
+    if (!_bridge || !problem.element) return false;
+    await selectNode(problem.element);
+    if (!get(selectedData)) return false;
+    if (problem.attribute) attributeFocusRequest.set({ key: problem.element, attribute: problem.attribute });
+    return true;
 }
 
 export async function selectNode(key: string) {
