@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.0.5](https://github.com/textadventures/quest/compare/v6.0.4...v6.0.5) (2026-11-15)
+
+
+### Bug Fixes
+
+* **Editor:** indent a multi-line script's closing tag again ([#2871](https://github.com/textadventures/quest/issues/2871)) ([e44742d](https://github.com/textadventures/quest/commit/e44742dbd596b3401a46b3df240cd6ecda35b0d2))
+
 ## [6.0.4](https://github.com/textadventures/quest/compare/v6.0.3...v6.0.4) (2026-11-08)
 
 
