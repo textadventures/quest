@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using QuestViva.Engine;
 
 namespace QuestViva.EditorCore;
@@ -40,6 +41,12 @@ internal class EditorDefinition : IEditorDefinition
     public string? AppliesTo { get; }
 
     public string? Pattern { get; }
+
+    // Compiled once and kept: matching an expression against every template used to build a
+    // new Regex for each one on every call, which is slow in the interpreted WASM runtime and
+    // made the script editor freeze after edits (#2747).
+    public Regex? PatternRegex => Pattern == null ? null : _patternRegex ??= new Regex(Pattern, RegexOptions.IgnoreCase);
+    private Regex? _patternRegex;
 
     public string? Create { get; }
 
