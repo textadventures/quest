@@ -14,12 +14,23 @@
 // directly keeps this page static/serverless, consistent with
 // play.questviva.com having no backend of its own.
 
-const RELEASES_API_URL = "https://api.github.com/repos/textadventures/quest/releases/latest";
-const RELEASES_PAGE_URL = "https://github.com/textadventures/quest/releases/latest";
+//
+// play-beta.questviva.com (PUBLIC_BETA_SITE) offers the newest prerelease
+// rather than GitHub's "latest", which is always the newest stable release.
+
+import { PUBLIC_BETA_SITE } from "$app/env/public";
+
+const isBetaSite = PUBLIC_BETA_SITE === "true";
+
+const LATEST_RELEASE_API_URL = "https://api.github.com/repos/textadventures/quest/releases/latest";
+const RELEASES_API_URL = "https://api.github.com/repos/textadventures/quest/releases?per_page=30";
+const RELEASES_PAGE_URL = isBetaSite
+    ? "https://github.com/textadventures/quest/releases"
+    : "https://github.com/textadventures/quest/releases/latest";
 
 // Short-lived cache only to avoid a duplicate fetch if the widget re-mounts
 // during one visit — not a substitute for GitHub's own CDN caching.
-const CACHE_KEY = "questviva-latest-release";
+const CACHE_KEY = isBetaSite ? "questviva-latest-prerelease" : "questviva-latest-release";
 const CACHE_TTL_MS = 10 * 60 * 1000;
 
 export interface DownloadLink {
@@ -42,8 +53,30 @@ interface ReleaseAsset {
 
 interface ReleaseResponse {
     tag_name: string;
+    html_url?: string;
     published_at: string;
+    prerelease?: boolean;
+    draft?: boolean;
     assets: ReleaseAsset[];
+}
+
+async function fetchJson<T>(url: string): Promise<T | null> {
+    const response = await fetch(url);
+    if (!response.ok) return null;
+    return (await response.json()) as T;
+}
+
+// The beta site wants the newest prerelease: the releases list is newest
+// first, and drafts (a release still waiting for its installers, see
+// finalize-release.yml) only show up for authenticated callers anyway. If no
+// prerelease is in the first page, fall back to the stable release.
+async function fetchRelease(): Promise<ReleaseResponse | null> {
+    if (isBetaSite) {
+        const releases = await fetchJson<ReleaseResponse[]>(RELEASES_API_URL);
+        const prerelease = releases?.find((r) => r.prerelease && !r.draft);
+        if (prerelease) return prerelease;
+    }
+    return fetchJson<ReleaseResponse>(LATEST_RELEASE_API_URL);
 }
 
 // Uses the visitor's own browser locale (undefined locale arg) rather than a
@@ -115,7 +148,9 @@ function buildLinks(release: ReleaseResponse, detected: DetectedOs): DownloadLin
         releaseDate: formatReleaseDate(release.published_at),
         primary,
         others,
-        releasePage: RELEASES_PAGE_URL,
+        // On the beta site, this prerelease's own page, since GitHub's
+        // releases/latest is always the stable one.
+        releasePage: isBetaSite && release.html_url ? release.html_url : RELEASES_PAGE_URL,
     };
 }
 
@@ -139,9 +174,8 @@ export async function fetchDownloadLinks(): Promise<DownloadLinks> {
     }
 
     try {
-        const response = await fetch(RELEASES_API_URL);
-        if (!response.ok) return fallbackLinks();
-        const release = (await response.json()) as ReleaseResponse;
+        const release = await fetchRelease();
+        if (!release) return fallbackLinks();
 
         try {
             sessionStorage.setItem(CACHE_KEY, JSON.stringify({ fetchedAt: Date.now(), release }));
