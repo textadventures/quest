@@ -9,7 +9,7 @@
     import { hasFSA, openDirectory, loadFileFromDirectory, createLocalGame } from "#lib/filesystem/browser-adapter.js";
     import {
         openElectronFile, loadElectronFile, createElectronGame, getDefaultGamesDir, pickGameLocation,
-        listRecentGames, removeRecentGame, showItemInFolder,
+        listRecentGames, removeRecentGame, showItemInFolder, FileNotFoundError, describeElectronError,
     } from "#lib/filesystem/electron-adapter.js";
     import type { RecentGame } from "#lib/filesystem/electron-adapter.js";
     import { isElectron } from "#lib/runtime.js";
@@ -321,15 +321,33 @@
     async function loadFromElectron(dirPath: string, filename: string) {
         loading = true;
         error = null;
+        missingRecent = null;
         try {
             const loaded = await loadElectronFile(dirPath, filename);
             const ok = await openGame(loaded.bytes, loaded.adapter.filename, loaded.adapter);
             if (ok) { goto(`${base}/edit`); return; }
             error = openGameErrorMessage(t("openPage.failedToLoadGameFile"));
         } catch (err) {
-            error = String(err);
+            if (err instanceof FileNotFoundError) {
+                error = t("common.fileNotFound", { filename: err.filename, folder: err.dirPath });
+                missingRecent = recentGames.find((g) => g.dirPath === err.dirPath && g.filename === err.filename) ?? null;
+            } else {
+                error = describeElectronError(err);
+            }
         }
         loading = false;
+    }
+
+    // Set alongside error when a Recent entry's file has gone, so the error can
+    // offer to drop it from the list.
+    let missingRecent = $state<RecentGame | null>(null);
+
+    async function handleRemoveMissingRecent() {
+        if (!missingRecent) return;
+        const game = missingRecent;
+        error = null;
+        missingRecent = null;
+        await handleRemoveRecent(game);
     }
 
     async function handleImportFile() {
@@ -549,7 +567,11 @@
 
             {#if error}
                 <p class="text-error-500 text-sm whitespace-pre-wrap">{error}</p>
-                {#if $lastFailedGameBytes}
+                {#if missingRecent}
+                    <button type="button" class="btn btn-xs preset-tonal" onclick={handleRemoveMissingRecent}>
+                        {t("openPage.removeFromRecent")}
+                    </button>
+                {:else if $lastFailedGameBytes}
                     <button type="button" class="btn btn-xs preset-tonal" onclick={() => goto(`${base}/edit`)}>
                         {t("openPage.fixInSafeMode")}
                     </button>

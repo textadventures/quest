@@ -227,6 +227,24 @@ export async function openElectronPlayFile(): Promise<{ dirPath: string; filenam
     return { dirPath: dirname(filePath), filename: basename(filePath) };
 }
 
+// Thrown by loadElectronFile when the file isn't there any more, so callers can
+// say so plainly (and offer to drop it from Recent) instead of showing Node's
+// ENOENT text wrapped in Electron's "Error invoking remote method" prefix.
+export class FileNotFoundError extends Error {
+    constructor(readonly dirPath: string, readonly filename: string) {
+        super(`File not found: ${filename}`);
+        this.name = "FileNotFoundError";
+    }
+}
+
+// Electron rejects a failed ipcRenderer.invoke with "Error invoking remote method
+// 'fs:readFile': Error: <the real message>", which String(err) then prefixes with
+// another "Error: ". Keeps only the real message for showing to the user.
+export function describeElectronError(err: unknown): string {
+    const message = err instanceof Error ? err.message : String(err);
+    return message.replace(/^Error invoking remote method '[^']*': (?:\w*Error: )?/, "");
+}
+
 // kind defaults to "edit" for the /open (editor) callers; local-play.ts
 // passes "play" explicitly so a game opened to play tracks into its own
 // Recently Played list instead of the editor's Recent — see RecentKind above.
@@ -235,7 +253,17 @@ export async function loadElectronFile(
     filename: string,
     kind: RecentKind = "edit",
 ): Promise<{ bytes: Uint8Array; adapter: ElectronFileAdapter }> {
-    const bytes = await electronApp().fs.readFile(electronApp().path.join(dirPath, filename));
+    const filePath = electronApp().path.join(dirPath, filename);
+    let bytes: Uint8Array;
+    try {
+        bytes = await electronApp().fs.readFile(filePath);
+    } catch (err) {
+        // Most often a Recent entry whose file has since been moved, renamed or
+        // deleted. Checked with fs:exists rather than by matching "ENOENT" in the
+        // message, which is Node's wording passed through Electron's IPC wrapper.
+        if (!(await electronApp().fs.exists(filePath))) throw new FileNotFoundError(dirPath, filename);
+        throw err;
+    }
     await trackRecent(dirPath, filename, kind);
     if (kind === "edit") await armFileWatch(dirPath, filename);
     return { bytes, adapter: new ElectronFileAdapter(dirPath, filename) };
