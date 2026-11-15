@@ -31,7 +31,7 @@ public class ForScriptConstructor : IScriptConstructor
                 new Expression<int>(parameters[3], scriptContext), loopScript);
         }
 
-        throw new Exception(string.Format("'for' script should have 3 or 4 parameters: 'for ({0})'", param));
+        throw new ScriptParseException("forParameterCount", ("parameters", param));
     }
 
     public IScriptFactory ScriptFactory { get; set; } = null!;

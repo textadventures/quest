@@ -15,6 +15,9 @@
         }
       }
       TwoParams (1, 2, 3)
+      for (i, 1) {
+        msg ("a 'for' with too few parameters")
+      }
     </start>
   </game>
   <object name="room">

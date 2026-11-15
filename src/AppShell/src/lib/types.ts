@@ -318,4 +318,12 @@ export interface CheckProblem {
   element: string | null
   attribute: string | null
   filename: string | null
+  // message in a form that can be translated, when there is one (Engine's ProblemText)
+  text: ProblemText | null
+}
+
+export interface ProblemText {
+  code: string
+  args: Record<string, string>
+  reason: ProblemText | null
 }

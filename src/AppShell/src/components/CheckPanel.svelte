@@ -2,6 +2,7 @@
     import { checkProblems, isCheckingGame, checkGame, goToProblem } from "#lib/editor-store.js";
     import { showToast } from "#lib/toast.js";
     import { t, tPlural } from "#lib/i18n/index.js";
+    import { problemMessage } from "#lib/check-problem-text.js";
     import type { CheckProblem } from "#lib/types.js";
     import X from "@lucide/svelte/icons/x";
     import RefreshCw from "@lucide/svelte/icons/refresh-cw";
@@ -59,7 +60,7 @@
                             <span class="font-medium">{problem.element ?? t("checkPanel.game")}</span>
                             {#if problem.attribute}<span class="font-mono text-xs text-surface-600-400"> {problem.attribute}</span>{/if}
                             {#if problem.filename}<span class="text-xs text-surface-600-400"> {t("checkPanel.inLibrary", { filename: problem.filename })}</span>{/if}
-                            <span class="check-problem-message block break-words text-surface-700-300">{problem.message}</span>
+                            <span class="check-problem-message block break-words text-surface-700-300">{problemMessage(problem)}</span>
                         </span>
                     </button>
                 </li>

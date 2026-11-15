@@ -12,7 +12,7 @@ public class RunDelegateScriptConstructor : ScriptConstructorBase
     {
         if (parameters.Count < 2)
         {
-            throw new Exception("Expected at least 2 parameters in rundelegate call");
+            throw new ScriptParseException("rundelegateParameterCount");
         }
 
         var obj = new Expression<Element>(parameters[0], scriptContext);

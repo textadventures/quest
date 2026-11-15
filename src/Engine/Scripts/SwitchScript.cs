@@ -65,7 +65,7 @@ public class SwitchScriptConstructor : IScriptConstructor
                 }
                 else
                 {
-                    throw new Exception(string.Format("Invalid inside switch block: '{0}'", cases));
+                    throw new ScriptParseException("invalidInSwitch", ("text", cases));
                 }
             }
 
@@ -192,7 +192,7 @@ public class SwitchScript : ScriptBase
 
                 if (CasesAsQuestDictionary.ContainsKey(caseString))
                 {
-                    throw new Exception(string.Format("'switch' block contains duplicate case '{0}'", caseString));
+                    throw new ScriptParseException("duplicateSwitchCase", ("case", caseString));
                 }
 
                 CasesAsQuestDictionary.Add(caseString, script);

@@ -66,7 +66,7 @@ public class IfScriptConstructor : IScriptConstructor
         if (afterExpr!.StartsWith(")"))
         {
             // We have a mismatch of brackets in the expression
-            throw new Exception("Too many ')'");
+            throw new ScriptParseException("tooManyCloseBrackets");
         }
 
         var then = Utility.GetScript(afterExpr);

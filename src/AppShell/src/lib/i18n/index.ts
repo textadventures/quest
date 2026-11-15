@@ -94,6 +94,11 @@ export function t(key: string, params?: Record<string, string | number>): string
     return template.replace(/\{(\w+)\}/g, (_, name: string) => String(params[name] ?? `{${name}}`));
 }
 
+// Whether the current locale (or English, which backfills it) has key.
+export function hasMessage(key: string): boolean {
+    return key in messages;
+}
+
 export function tPlural(key: string, count: number, params?: Record<string, string | number>): string {
     const category = new Intl.PluralRules(get(locale)).select(count);
     const template = messages[`${key}.${category}`] ?? messages[`${key}.other`] ?? `${key}.${category}`;
