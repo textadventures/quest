@@ -6,7 +6,7 @@
 // - A game with no API (?url=) shows its own name on the Begin card, and reports nothing.
 // - Progress reports: "started" once the game appears, "begin" first if the Begin card shows,
 //   "failed" if the game can't be started. Each carries the playId sent with api/Game/{id}, and
-//   "started" names the player UI.
+//   "started" names the player UI. After a Begin card, "started" also says how long it waited.
 // - They're sent with fetch, not sendBeacon, which content blockers drop without the page being
 //   able to tell (#2783). Only a fetch that's blocked falls back to a beacon.
 //
@@ -106,6 +106,7 @@ test('splash-progress', async ({ baseURL }) => {
             check(started.type === 'fetch', `with fetch, not a beacon (${started.type})`);
             check(Boolean(seen.playId) && started.playId === seen.playId, 'with the playId it sent to api/Game');
             check(started.ui === 'v2' && Number(started.ms) > 0 && started.source === 'web', 'and the player UI, time and source');
+            check(started.waited === undefined, 'with no Begin wait when there was no Begin card');
             await page.close();
         }
 
@@ -115,10 +116,16 @@ test('splash-progress', async ({ baseURL }) => {
             check((await page.textContent('#qv-game-name')) === 'The Listed Name', 'the Begin card keeps the listed name, not the game\'s own');
             await waitForReports(seen, 1);
             check(seen.reports.map((r) => r.stage).join() === 'begin', 'showing Begin reports "begin"');
+            check(seen.reports[0].waited === undefined, 'with no Begin wait yet');
+            await new Promise((r) => setTimeout(r, 1500));
             await page.click('#qv-clicktobegin-btn');
             await page.waitForFunction(() => !document.getElementById('qv-start'), null, { timeout: 10000 });
             await waitForReports(seen, 2);
             check(seen.reports.map((r) => r.stage).join() === 'begin,started', 'then "started" once it\'s clicked');
+            const [begin, started] = seen.reports;
+            const waited = Number(started.waited);
+            check(waited >= 1500 && waited <= Number(started.ms) - Number(begin.ms),
+                `which says how long Begin waited (${waited} ms, begin at ${begin.ms}, started at ${started.ms})`);
             await page.close();
         }
 

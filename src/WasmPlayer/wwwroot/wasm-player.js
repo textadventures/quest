@@ -433,6 +433,10 @@ const playId = crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(
 // rejects, so only then is the beacon tried instead.
 let progressUrl = null;
 const reportedStages = new Set();
+// How long the Begin card waited for its click, once it has. Sent as "waited" with the reports
+// that follow, since their "ms" counts from the page opening and so includes that wait: the load
+// time is ms - waited.
+let beginWaitMs = null;
 function reportProgress(stage, error = null) {
     if (!progressUrl || reportedStages.has(stage)) return;
     reportedStages.add(stage);
@@ -440,6 +444,7 @@ function reportProgress(stage, error = null) {
     params.set('stage', stage);
     params.set('ms', String(Math.round(performance.now())));
     if (currentPlayerUiName) params.set('ui', currentPlayerUiName);
+    if (beginWaitMs !== null) params.set('waited', String(beginWaitMs));
     if (error) params.set('error', String(error).slice(0, 500));
     const url = `${progressUrl}?${params}`;
     const beacon = () => {
@@ -550,8 +555,10 @@ async function beginBehindStartScreen() {
     gate.style.display = 'flex';
     button.focus();
     reportProgress('begin');
+    const beginShownAt = performance.now();
 
     await new Promise(resolve => button.addEventListener('click', resolve, { once: true }));
+    beginWaitMs = Math.round(performance.now() - beginShownAt);
     beginShowing = false;
     playBlockedMedia();
     releaseClock();
