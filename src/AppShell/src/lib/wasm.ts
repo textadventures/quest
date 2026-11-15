@@ -39,6 +39,7 @@ export interface WasmBridge {
   GetOwnJavascriptFiles(): string
   GetLiveInterfaceAttributes(): string
   GetLegacyUiHacks(javascriptFilesJson: string): string
+  CheckGame(): string
   IsBuiltInLibrary(filename: string): boolean
   GetLibraryXml(filename: string): string | null
   SetLibraryXml(filename: string, xml: string): Promise<string>

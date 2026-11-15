@@ -146,6 +146,12 @@ public sealed class EditorController : IDisposable
 
     public bool SaveWillUpgrade => WorldModel.Version < WorldModel.EditorSaveVersion;
 
+    // What `qv check` finds in the game as it is now, unsaved edits included: scripts and
+    // expressions that would fail when the game runs them. Two elements with the same name are
+    // only found as the game loads, so a duplicate made since then (through Code View, say) shows
+    // once the game is reloaded.
+    public IReadOnlyList<CheckProblem> CheckGame() => GameChecker.Check(WorldModel);
+
     // The .js files the game itself includes. The caller reads them and passes them to
     // FindLegacyUiHacks, since they're assets in the host's storage.
     public IEnumerable<string> OwnJavascriptFiles =>

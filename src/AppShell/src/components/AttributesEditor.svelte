@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { Snippet } from "svelte";
-    import { fullAttributeData, selectedKey, removeAttribute, addInheritedType, removeInheritedType, getTypeNames, setAttribute, setObjectReference, changeAttributeType, setPatternAttribute, getObjectNames } from "#lib/editor-store.js";
+    import { fullAttributeData, selectedKey, removeAttribute, addInheritedType, removeInheritedType, getTypeNames, setAttribute, setObjectReference, changeAttributeType, setPatternAttribute, getObjectNames, listAttributeFocus } from "#lib/editor-store.js";
     import type { AttributeDataItem } from "#lib/types.js";
     import { Switch } from "@skeletonlabs/skeleton-svelte";
     import X from "@lucide/svelte/icons/x";
@@ -65,6 +65,16 @@
             editingObject = "";
             newAttrName = "";
         }
+    });
+
+    // Selects the attribute a Check game problem is in, when PropertyEditor sends it here. After
+    // the reset above, which runs first when this mounts for a newly selected element.
+    $effect(() => {
+        const focus = $listAttributeFocus;
+        if (!focus || focus.key !== $selectedKey) return;
+        if (!($fullAttributeData?.attributes ?? []).some(a => a.name === focus.attribute)) return;
+        selectedAttrName = focus.attribute;
+        listAttributeFocus.set(null);
     });
 
     // Sync editing state when selectedAttr changes

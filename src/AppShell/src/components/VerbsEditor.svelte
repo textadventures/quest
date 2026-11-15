@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { fullAttributeData, scriptVersion, setAttribute, removeAttribute, changeAttributeType, getVerbAttributesInfo, addVerb } from "#lib/editor-store.js";
+    import { fullAttributeData, scriptVersion, setAttribute, removeAttribute, changeAttributeType, getVerbAttributesInfo, addVerb, listAttributeFocus } from "#lib/editor-store.js";
     import type { AttributeDataItem } from "#lib/types.js";
     import ScriptEditor from "./ScriptEditor.svelte";
     import ScriptDictionaryEditor from "./ScriptDictionaryEditor.svelte";
@@ -57,6 +57,16 @@
             newVerbPattern = "";
             addError = null;
         }
+    });
+
+    // Selects the attribute a Check game problem is in, when PropertyEditor sends it here. After
+    // the reset above, which runs first when this mounts for a newly selected element.
+    $effect(() => {
+        const focus = $listAttributeFocus;
+        if (!focus || focus.key !== elementKey) return;
+        if (!verbs.some(a => a.name === focus.attribute)) return;
+        selectedAttrName = focus.attribute;
+        listAttributeFocus.set(null);
     });
 
     // The "Print a message" value buffer. Deliberately NOT kept in sync via a $effect watching

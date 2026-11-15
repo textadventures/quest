@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { publishGame, getCurrentGameId, listPublishFiles, publishProgress, assetManagerOpen, type PublishFile, type PublishProgress } from "#lib/editor-store.js";
+    import { publishGame, getCurrentGameId, listPublishFiles, publishProgress, assetManagerOpen, checkGame, checkPanelOpen, type PublishFile, type PublishProgress } from "#lib/editor-store.js";
     import { loadPublishTarget, type PublishTarget } from "#lib/publish-target.js";
     import { formatFileSize } from "#lib/format-size.js";
     import { t, tPlural } from "#lib/i18n/index.js";
@@ -66,6 +66,35 @@
         }
     }
 
+    // Publish checks the game first, the last chance to catch its problems before players do. Any
+    // it finds are shown here, with the choice to look at them or publish anyway; the check runs
+    // once per opening of this dialog, so Publish anyway doesn't repeat it.
+    let checking = $state(false);
+    let problemCount = $state<number | null>(null);
+
+    async function handlePublishClick() {
+        if (problemCount === null) {
+            checking = true;
+            error = "";
+            try {
+                problemCount = (await checkGame()).length;
+            } catch (err) {
+                // A check that fails shouldn't stop the game being published.
+                console.error("Check game failed", err);
+                problemCount = 0;
+            } finally {
+                checking = false;
+            }
+            if (problemCount > 0) return;
+        }
+        await handlePublish();
+    }
+
+    function showProblems() {
+        oncancel();
+        checkPanelOpen.set(true);
+    }
+
     async function handlePublish() {
         publishing = true;
         error = "";
@@ -120,7 +149,7 @@
 
         <p class="text-sm text-surface-600-400">{t("publishModal.description")}</p>
 
-        <fieldset class="flex flex-col gap-3" disabled={publishing}>
+        <fieldset class="flex flex-col gap-3" disabled={publishing || checking}>
             <legend class="sr-only">{t("publishModal.title")}</legend>
             {#each options as option (option.value)}
                 <label class="flex items-start gap-2 text-sm cursor-pointer">
@@ -186,17 +215,26 @@
             </p>
         {/if}
 
+        {#if problemCount}
+            <p class="publish-problems-warning text-sm text-warning-700-300" role="alert">{tPlural("publishModal.problems", problemCount)}</p>
+        {/if}
+
         {#if error}<p class="text-xs text-error-500">{error}</p>{/if}
 
         <div class="flex items-center gap-3">
             {#if publishing}
                 <button type="button" class="btn btn-xs preset-tonal" onclick={close}>{t("common.cancel")}</button>
                 <p class="publish-progress text-sm text-surface-600-400" role="status">{progressLabel($publishProgress)}</p>
+            {:else if checking}
+                <p class="publish-checking text-sm text-surface-600-400" role="status">{t("publishModal.checking")}</p>
+            {:else if problemCount}
+                <button type="button" class="publish-show-problems btn btn-xs preset-filled-primary-500" onclick={showProblems}>{t("publishModal.showProblems")}</button>
+                <button type="button" class="publish-anyway btn btn-xs preset-tonal" onclick={handlePublish}>{t("publishModal.publishAnyway")}</button>
             {:else}
                 <button
                     type="button"
                     class="btn btn-xs preset-filled-primary-500"
-                    onclick={handlePublish}
+                    onclick={handlePublishClick}
                 >{t("publishModal.publishButton")}</button>
             {/if}
         </div>

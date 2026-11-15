@@ -7,6 +7,7 @@
     import {
         gameFilename, isLoaded, isDirty, isSaving, isEditingField, getLastEditedElement, saveError, retrySave, saveGame, saveGameAs, canSaveAs, backupGame, canBackup,
         publishModalOpen,
+        openCheckPanel,
         previewInWasmPlayer,
         undo, redo, canUndo, canRedo,
         navigateBack, navigateForward, canGoBack, canGoForward,
@@ -34,6 +35,7 @@
     import Save from "@lucide/svelte/icons/save";
     import Download from "@lucide/svelte/icons/download";
     import Package from "@lucide/svelte/icons/package";
+    import ListChecks from "@lucide/svelte/icons/list-checks";
     import Play from "@lucide/svelte/icons/play";
     import Check from "@lucide/svelte/icons/check";
     import LoaderCircle from "@lucide/svelte/icons/loader-circle";
@@ -177,12 +179,14 @@
             : { label: t("toolbar.addPage"), action: () => openAddModal("page", null) },
     ]);
 
-    // File menu (desktop): Save As / Backup / Publish, each only present under
+    // File menu (desktop): Save As / Backup / Check game / Publish, each only present under
     // the same conditions the old individual buttons used.
     let fileMenuItems = $derived.by((): DropdownMenuItem[] => {
         const items: DropdownMenuItem[] = [];
         if ($canSaveAs) items.push({ label: t("toolbar.saveAs"), action: handleSaveAs, icon: Save, disabled: saving });
         if ($canBackup) items.push({ label: t("toolbar.backup"), action: handleBackup, icon: Download, disabled: saving });
+        // Not while Code View is open: the check can't see its unapplied edits.
+        items.push({ label: t("toolbar.checkGame"), action: openCheckPanel, icon: ListChecks, disabled: $codeViewPanelOpen });
         if ($gameFilename) items.push({ label: t("toolbar.publish"), action: handlePublish, icon: Package });
         return items;
     });

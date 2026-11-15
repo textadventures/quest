@@ -462,7 +462,8 @@ test('i18n-pseudoloc', async ({ baseURL }) => {
         // the Toolbar DOM-order comment near the top of this file). ---
         await page.click('header button >> nth=9');
         await page.waitForSelector('.absolute button', { timeout: 10000 });
-        await page.click('.absolute button >> nth=1'); // "Publish…" (Backup…, Publish…)
+        assertPseudo('File menu Check game', await page.textContent('.absolute button >> nth=1'));
+        await page.click('.absolute button >> nth=2'); // "Publish…" (Backup…, Check game, Publish…)
         await page.waitForSelector('div[role="dialog"]', { timeout: 10000 });
         assertPseudo('PublishModal title', await page.textContent('div[role="dialog"] h2'));
         assertPseudo('PublishModal Close button', await page.textContent('div[role="dialog"] button >> nth=0'));

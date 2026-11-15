@@ -19,6 +19,10 @@ The online editor at textadventures.co.uk, which opens games stored on your text
 
 Once you have, publish it as a `.quest` file and upload that to textadventures.co.uk - see [Publishing on textadventures.co.uk](/publishing#publishing-on-textadventurescouk).
 
+### Check your game for problems
+
+**Check game**, in the editor's **File** menu, finds problems in your scripts without playing the game: script commands and functions that don't exist, expressions that can't be worked out, a function given too many values, and two elements with the same name. Click a problem to go straight to the script it's in. **Publish** checks the game first too, so you know about any problems before your players do. See [Check the game](/howto/testing/troubleshooting#check-the-game).
+
 ## Quest Viva 6.0
 
 Quest Viva is the successor to Quest 5, which had been Quest's current major version since 2011. Under the hood it's the same engine and the same scripting language, so if you know Quest 5, you already know Quest Viva - but a lot has changed around it.

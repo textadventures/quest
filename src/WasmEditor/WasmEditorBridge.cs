@@ -268,6 +268,7 @@ internal record ExpressionFunctionData(string Name, List<string> Parameters, boo
 [JsonSerializable(typeof(SetDropdownTypeResponse))]
 [JsonSerializable(typeof(Dictionary<string, string>))]
 [JsonSerializable(typeof(IReadOnlyList<LegacyUiHack>))]
+[JsonSerializable(typeof(IReadOnlyList<CheckProblem>))]
 internal partial class WasmEditorJsonContext : JsonSerializerContext
 {
 }
@@ -888,6 +889,13 @@ public partial class WasmEditorBridge
 
         return System.Text.Encoding.UTF8.GetString(stream.ToArray());
     }
+
+    // The game's problems, as `qv check` finds them (EditorController.CheckGame), for the Check
+    // game panel and Publish. Blocks the UI thread while it parses every script, so the caller
+    // paints its busy state first.
+    [JSExport]
+    public static string CheckGame() => JsonSerializer.Serialize(_controller?.CheckGame() ?? [],
+        WasmEditorJsonContext.Default.IReadOnlyListCheckProblem);
 
     // javascriptFilesJson maps each of GetOwnJavascriptFiles' files to its text, for those the
     // host could read: a .js file is an asset in the host's own storage, not something C# can see.

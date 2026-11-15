@@ -1,5 +1,6 @@
 <script lang="ts">
-    import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, removeAttribute, setDropdownType, setMultiType, setObjectReference, setSelectedFilter, addDictItem, removeDictItem, updateDictItem, moveDictItem, getObjectNames, getExitNames, getPageNames, selectNode, createPageSilent, openAddModal, openAddLibraryModal, openAddJavascriptModal, getAssetText, putAssetText, putLibraryAssetText, isBuiltInLibrary, getLibraryXml, setPatternAttribute, getFeatureLeftovers, turnOffFeature, removeFeatureLeftovers } from "#lib/editor-store.js";
+    import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, removeAttribute, setDropdownType, setMultiType, setObjectReference, setSelectedFilter, addDictItem, removeDictItem, updateDictItem, moveDictItem, getObjectNames, getExitNames, getPageNames, selectNode, createPageSilent, openAddModal, openAddLibraryModal, openAddJavascriptModal, getAssetText, putAssetText, putLibraryAssetText, isBuiltInLibrary, getLibraryXml, setPatternAttribute, getFeatureLeftovers, turnOffFeature, removeFeatureLeftovers, attributeFocusRequest, listAttributeFocus, getVerbAttributesInfo } from "#lib/editor-store.js";
+    import { tick } from "svelte";
     import { chooseDialog } from "#lib/confirm.js";
     import { showToast } from "#lib/toast.js";
     import { isLibraryFilename } from "#lib/filesystem/types.js";
@@ -302,6 +303,32 @@
         if (highlightTimer) clearTimeout(highlightTimer);
         highlightTimer = setTimeout(() => { highlighted = null; }, 1500);
     }
+
+    // Shows the attribute a Check game problem is in (attributeFocusRequest): the tab with its
+    // control, or for a script dictionary item such as giveto["Shopkeeper"] the dictionary's.
+    // An attribute with no control of its own is a verb, shown on the Verbs tab, or else one the
+    // Attributes tab lists; either is asked to select it (listAttributeFocus).
+    $effect(() => {
+        const request = $attributeFocusRequest;
+        const data = $selectedData;
+        if (!request || !data || request.key !== $selectedKey) return;
+        attributeFocusRequest.set(null);
+        const attribute = request.attribute.replace(/\[.*$/, "");
+        const tabs = data.tabs.length > 0 ? data.tabs : [{ caption: activeTab, controls: data.controls }];
+        const own = tabs.find(tab => tab.controls.some(c => c.attribute === attribute));
+        if (own) {
+            activeTab = own.caption;
+            void tick().then(() => focusAttribute(attribute));
+            return;
+        }
+        const isVerb = getVerbAttributesInfo().some(v => v.attribute === attribute);
+        const list = (isVerb ? tabs.find(tab => tab.controls.some(c => c.controlType === "verbs")) : undefined)
+            ?? tabs.find(tab => tab.controls.some(c => c.controlType === "attributes"));
+        if (list) {
+            activeTab = list.caption;
+            listAttributeFocus.set({ key: request.key, attribute });
+        }
+    });
 
     // A <playertheme/> colour left empty is the player's own, until the game has colours of its
     // own: then the game's text, link and page colours fall back to Quest's classic ones. Judged
