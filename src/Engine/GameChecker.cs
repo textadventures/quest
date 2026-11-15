@@ -196,19 +196,22 @@ public static class GameChecker
                 var other = first;
                 var otherFilename = LibraryFilename(other);
                 // A verb added in the Editor gets a generated name such as "k94", so say which verb by
-                // its pattern too.
+                // its pattern too, when it has one.
                 var pattern = verb.Fields.Get("pattern") switch
                 {
-                    EditorCommandPattern { Pattern.Length: > 0 } p => $" ({p.Pattern})",
-                    string { Length: > 0 } p => $" ({p})",
-                    _ => ""
+                    EditorCommandPattern { Pattern.Length: > 0 } p => p.Pattern,
+                    string { Length: > 0 } p => p,
+                    _ => null
                 };
                 var code = IsBuiltIn(other) ? "verbSharesBuiltInAttribute"
                     : otherFilename != null ? "verbSharesAttributeInLibrary"
                     : "verbSharesAttribute";
+                (string, object)[] args =
+                    [("attribute", group.Key), ("other", other.Name), ("filename", otherFilename ?? "")];
                 problems.Add(new CheckProblem(
-                    ProblemText.Of(code, ("pattern", pattern), ("attribute", group.Key), ("other", other.Name),
-                        ("filename", otherFilename ?? "")),
+                    pattern == null
+                        ? ProblemText.Of(code, args)
+                        : ProblemText.Of(code + "WithPattern", [("pattern", pattern), ..args]),
                     Kind(verb), verb.Name, "property", LibraryFilename(verb)));
             }
         }

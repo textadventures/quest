@@ -27,16 +27,29 @@ public sealed partial record ProblemText(
             "'{name}' is also the name of a function built into the engine. An expression such as x = {name}(...) " +
             "calls the built-in one, so this function's return value is never used. Give it a different name.",
         ["verbSharesBuiltInAttribute"] =
-            "This verb{pattern} runs the attribute '{attribute}', and so does the built-in verb '{other}' in " +
+            "This verb runs the attribute '{attribute}', and so does the built-in verb '{other}' in " +
+            "{filename}. Two verbs can't share an attribute: the game shows an error as it starts, and leaves some " +
+            "verbs out of objects' verb lists. Remove this verb, and give objects a '{attribute}' script or text for " +
+            "the built-in one to use.",
+        ["verbSharesBuiltInAttributeWithPattern"] =
+            "This verb ({pattern}) runs the attribute '{attribute}', and so does the built-in verb '{other}' in " +
             "{filename}. Two verbs can't share an attribute: the game shows an error as it starts, and leaves some " +
             "verbs out of objects' verb lists. Remove this verb, and give objects a '{attribute}' script or text for " +
             "the built-in one to use.",
         ["verbSharesAttribute"] =
-            "This verb{pattern} runs the attribute '{attribute}', and so does the verb '{other}'. Two verbs can't " +
+            "This verb runs the attribute '{attribute}', and so does the verb '{other}'. Two verbs can't " +
+            "share an attribute: the game shows an error as it starts, and leaves some verbs out of objects' verb " +
+            "lists. Give one of them a different attribute.",
+        ["verbSharesAttributeWithPattern"] =
+            "This verb ({pattern}) runs the attribute '{attribute}', and so does the verb '{other}'. Two verbs can't " +
             "share an attribute: the game shows an error as it starts, and leaves some verbs out of objects' verb " +
             "lists. Give one of them a different attribute.",
         ["verbSharesAttributeInLibrary"] =
-            "This verb{pattern} runs the attribute '{attribute}', and so does the verb '{other}' in {filename}. Two " +
+            "This verb runs the attribute '{attribute}', and so does the verb '{other}' in {filename}. Two " +
+            "verbs can't share an attribute: the game shows an error as it starts, and leaves some verbs out of " +
+            "objects' verb lists. Give one of them a different attribute.",
+        ["verbSharesAttributeInLibraryWithPattern"] =
+            "This verb ({pattern}) runs the attribute '{attribute}', and so does the verb '{other}' in {filename}. Two " +
             "verbs can't share an attribute: the game shows an error as it starts, and leaves some verbs out of " +
             "objects' verb lists. Give one of them a different attribute.",
         ["emptyExpression"] =

@@ -97,7 +97,9 @@ public class GameCheckTests
         var problem = Single(await ProblemsAsync(), "runs the attribute 'buy'");
         Assert.AreEqual("command", problem.Kind);
         Assert.AreEqual("property", problem.Attribute);
-        StringAssert.Contains(problem.Message, "(buy)");
+        StringAssert.Contains(problem.Message, "This verb (buy) runs");
+        Assert.AreEqual("verbSharesBuiltInAttributeWithPattern", problem.Text!.Code);
+        Assert.AreEqual("buy", problem.Text.Args["pattern"]);
         StringAssert.Contains(problem.Message, "built-in verb 'buy' in CoreCommands.aslx");
     }
 
