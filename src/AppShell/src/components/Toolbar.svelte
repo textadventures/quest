@@ -16,6 +16,7 @@
         assetManagerOpen,
         codeViewPanelOpen,
         codeViewCloseRequested,
+        applyPendingCodeViewEdits,
     } from "#lib/editor-store.js";
     import { hasActiveCmView, cmUndo, cmRedo } from "#lib/code-editor-registry.js";
     import { settingsModalOpen } from "#lib/settings-store.js";
@@ -70,25 +71,36 @@
     // author was mid-edit in — put it back once the save completes.
     async function handleSaveNow() {
         const field = getLastEditedElement();
+        if (!(await applyPendingCodeViewEdits())) return;
         await saveGame();
         field?.focus();
     }
 
     async function handleSaveAs() {
+        if (!(await applyPendingCodeViewEdits())) return;
         saving = true;
         try { await saveGameAs(); } finally { saving = false; }
     }
 
     async function handleBackup() {
+        if (!(await applyPendingCodeViewEdits())) return;
         saving = true;
         try { await backupGame(); } finally { saving = false; }
+    }
+
+    async function handlePublish() {
+        if (!(await applyPendingCodeViewEdits())) return;
+        publishModalOpen.set(true);
     }
 
     async function handlePreview() {
         // Without this, a field the author is still mid-typing in (not yet blurred) never
         // commits into the bridge at all — Preview would open showing stale content, since text
         // inputs commit on blur/change, not on every keystroke. Same flush saveGame() already
-        // does before navigating home/away; Preview just never called it.
+        // does before navigating home/away; Preview just never called it. Unapplied raw XML
+        // code view edits are the same problem one level up, so those are applied first — and
+        // if they're invalid the panel shows why and there's nothing worth previewing yet.
+        if (!(await applyPendingCodeViewEdits())) return;
         await saveGame();
         await previewInWasmPlayer(wasmPlayerUrl);
     }
@@ -171,7 +183,7 @@
         const items: DropdownMenuItem[] = [];
         if ($canSaveAs) items.push({ label: t("toolbar.saveAs"), action: handleSaveAs, icon: Save, disabled: saving });
         if ($canBackup) items.push({ label: t("toolbar.backup"), action: handleBackup, icon: Download, disabled: saving });
-        if ($gameFilename) items.push({ label: t("toolbar.publish"), action: () => publishModalOpen.set(true), icon: Package });
+        if ($gameFilename) items.push({ label: t("toolbar.publish"), action: handlePublish, icon: Package });
         return items;
     });
 

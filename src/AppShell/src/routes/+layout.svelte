@@ -7,7 +7,7 @@
     import { base } from "#lib/base-path.js";
     import { page } from "$app/state";
     import { PUBLIC_APPSHELL_VERSION, PUBLIC_BETA_SITE } from "$app/env/public";
-    import { isLoaded, saveGame, saveGameAs, undo, redo, canUndo, canRedo, markFileChangedExternally } from "#lib/editor-store.js";
+    import { isLoaded, saveGame, saveGameAs, applyPendingCodeViewEdits, undo, redo, canUndo, canRedo, markFileChangedExternally } from "#lib/editor-store.js";
     import { isElectron } from "#lib/runtime.js";
     import { initI18n, localeReady } from "#lib/i18n/index.js";
     import { initTheme } from "#lib/theme-store.js";
@@ -97,11 +97,13 @@
                     })();
                     break;
                 }
+                // Explicit saves apply unapplied raw XML code view edits first, same as
+                // Toolbar's own Save/Preview (see applyPendingCodeViewEdits).
                 case "save":
-                    if (get(isLoaded)) void saveGame();
+                    if (get(isLoaded)) void applyPendingCodeViewEdits().then(ok => { if (ok) return saveGame(); });
                     break;
                 case "save-as":
-                    if (get(isLoaded)) void saveGameAs();
+                    if (get(isLoaded)) void applyPendingCodeViewEdits().then(ok => { if (ok) return saveGameAs(); });
                     break;
                 // Guarded on canUndo/canRedo rather than sent unconditionally
                 // like the actions above: EditorCore's UndoLogger throws on
