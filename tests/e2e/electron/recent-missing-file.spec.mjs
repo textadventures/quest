@@ -2,6 +2,7 @@
 // Play tab (Recently Played) or the Create tab (Recent) should say plainly that
 // the file can't be found and offer to remove it from the list, not show
 // Node's ENOENT text inside Electron's "Error invoking remote method" wrapper.
+// On the Play tab that notice replaces the card itself.
 //
 // Seeds both recent lists through the same recent:add IPC the app itself uses,
 // pointing at a file that was never created.
@@ -46,15 +47,19 @@ test('recent-missing-file', async () => {
         await playCard.waitFor({ timeout: 30000 });
         await playCard.click();
 
-        const playAlert = win.locator('[role="alert"]');
-        await playAlert.waitFor({ timeout: 10000 });
-        const playText = await playAlert.innerText();
-        console.log('[play] error shown:', playText);
-        assertFriendly(playText);
+        // The card itself turns into a "File not found" notice with a Remove button.
+        const missingNotice = win.locator('[role="alert"]', { hasText: 'File not found' });
+        await missingNotice.waitFor({ timeout: 10000 });
+        const playText = await missingNotice.innerText();
+        console.log('[play] card shows:', playText);
+        for (const raw of ['ENOENT', 'Error invoking remote method']) {
+            if (playText.includes(raw)) throw new Error(`Raw error text "${raw}" leaked onto the card: ${playText}`);
+        }
+        if (await playCard.count() !== 0) throw new Error('Missing file still shown as a playable card');
 
-        await playAlert.getByRole('button', { name: 'Remove from Recently Played' }).click();
-        await playCard.waitFor({ state: 'detached', timeout: 5000 });
-        if (await playAlert.count() !== 0) throw new Error('Play tab error still showing after removing the entry');
+        await win.getByRole('button', { name: 'Remove', exact: true }).click();
+        await missingNotice.waitFor({ state: 'detached', timeout: 5000 });
+        if (await win.locator('text=' + filename).count() !== 0) throw new Error('Missing file still listed after Remove');
         const playRecents = await win.evaluate(() => window.electronApp.recent.list('play'));
         if (playRecents.length !== 0) throw new Error(`Play recent list not emptied: ${JSON.stringify(playRecents)}`);
         console.log('PASS: Play tab explained the missing file and removed it from Recently Played');

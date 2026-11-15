@@ -2,11 +2,15 @@
     import type { RecentGame } from "#lib/filesystem/electron-adapter.js";
     import { resolveAndCacheCover } from "#lib/local-cover.js";
     import Gamepad2 from "@lucide/svelte/icons/gamepad-2";
+    import Laptop from "@lucide/svelte/icons/laptop";
+    import TriangleAlert from "@lucide/svelte/icons/triangle-alert";
     import { t } from "#lib/i18n/index.js";
 
     // Electron only — there's no browser equivalent (see PlayCatalog.svelte),
     // so unlike RecentGameCard this never needs a non-Electron branch.
-    let { game, onplay, onremove }: { game: RecentGame; onplay: () => void; onremove: () => void } = $props();
+    // missing: the last attempt to play this found the file gone. The card then
+    // says so in place of its cover, and offers Remove rather than Play.
+    let { game, missing = false, onplay, onremove }: { game: RecentGame; missing?: boolean; onplay: () => void; onremove: () => void } = $props();
 
     // game.coverDataUrl is cached on the RecentGame record (resolved once at play time, or
     // here as a one-off self-heal for a legacy entry — see local-cover.ts) — the common case
@@ -48,24 +52,43 @@
 </script>
 
 <div class="relative">
-    <button
-        type="button"
-        onclick={onplay}
-        class="flex flex-col w-full text-left rounded-lg border border-surface-800 overflow-hidden hover:border-primary-500 transition-colors"
-    >
-        <div class="aspect-[3/4] bg-surface-800 flex items-center justify-center overflow-hidden">
-            {#if coverUrl}
-                <img src={coverUrl} alt="" loading="lazy" class="w-full h-full object-cover" />
-            {:else}
-                <Gamepad2 size={40} class="text-surface-600" />
-            {/if}
+    {#if missing}
+        <div class="flex flex-col w-full rounded-lg border border-error-800 overflow-hidden">
+            <div class="aspect-[3/4] bg-error-950/40 flex flex-col items-center justify-center gap-2 p-3 text-center" role="alert">
+                <TriangleAlert size={28} class="text-error-400" aria-hidden="true" />
+                <span class="text-sm font-semibold text-error-300">{t("playCatalog.fileNotFound")}</span>
+                <span class="text-xs text-error-200">{t("playCatalog.fileNotFoundHint")}</span>
+            </div>
+            <div class="p-2 flex flex-col gap-2">
+                <div class="text-sm font-semibold truncate text-surface-400" title={game.dirPath}>{game.filename}</div>
+                <button type="button" class="btn btn-sm preset-tonal self-start" onclick={handleRemove}>
+                    {t("playCatalog.remove")}
+                </button>
+            </div>
         </div>
-        <div class="p-2 flex flex-col gap-1">
-            <div class="text-sm font-semibold truncate">{game.filename}</div>
-            <div class="text-xs text-surface-400 truncate">{folderName(game.dirPath)}</div>
-            <div class="text-xs text-surface-500">{relativeTime(game.lastOpened)}</div>
-        </div>
-    </button>
+    {:else}
+        <button
+            type="button"
+            onclick={onplay}
+            class="flex flex-col w-full text-left rounded-lg border border-surface-800 overflow-hidden hover:border-primary-500 transition-colors"
+        >
+            <div class="aspect-[3/4] bg-surface-800 flex items-center justify-center overflow-hidden">
+                {#if coverUrl}
+                    <img src={coverUrl} alt="" loading="lazy" class="w-full h-full object-cover" />
+                {:else}
+                    <Gamepad2 size={40} class="text-surface-600" />
+                {/if}
+            </div>
+            <div class="p-2 flex flex-col gap-1">
+                <div class="text-sm font-semibold truncate">{game.filename}</div>
+                <div class="flex items-center gap-1 text-xs text-surface-400 min-w-0">
+                    <Laptop size={12} class="shrink-0" aria-hidden="true" />
+                    <span class="truncate">{folderName(game.dirPath)}</span>
+                </div>
+                <div class="text-xs text-surface-500">{relativeTime(game.lastOpened)}</div>
+            </div>
+        </button>
+    {/if}
     <button
         type="button"
         class="absolute top-1 right-1 flex items-center justify-center size-6 rounded-full bg-surface-950/80 text-surface-300 hover:text-error-500 transition-colors"

@@ -106,7 +106,8 @@ test('i18n-pseudoloc', async ({ baseURL }) => {
         assertPseudo('HomeHeader Settings button (Play tab)', await page.getAttribute('button.home-header-link', 'title'));
 
         // --- HomeTabs (PR 5) — Play/Create nav labels ---
-        const homeTabLabels = await page.$$eval('nav a', els => els.map(el => el.textContent ?? ''));
+        // The first nav: the Play tab also has a category-chip nav further down.
+        const homeTabLabels = await page.locator('nav').first().locator('a').allTextContents();
         if (homeTabLabels.length !== 2) throw new Error(`HomeTabs: expected 2 nav links, found ${homeTabLabels.length}`);
         for (const text of homeTabLabels) assertPseudo('HomeTabs nav link', text);
 
@@ -122,7 +123,11 @@ test('i18n-pseudoloc', async ({ baseURL }) => {
         assertPseudo('PlayCatalog search placeholder', await page.getAttribute('input[type="search"]', 'placeholder'));
         assertPseudo('PlayCatalog search title (hint)', await page.getAttribute('input[type="search"]', 'title'));
         assertPseudo('PlayCatalog search button', await page.textContent('form button[type="submit"]'));
-        assertPseudo('PlayCatalog "Open a game file…" button', await page.textContent('button.preset-outlined-surface-500.whitespace-nowrap'));
+        // Fresh context, so no Recently Played: the open control is the slim
+        // first-run bar under Discover, not the tile.
+        assertPseudo('PlayCatalog "Open a game file…" button', await page.textContent('[data-testid="open-file-bar"] button'));
+        assertPseudo('PlayCatalog first-run open hint', await page.textContent('[data-testid="open-file-bar"] p'));
+        assertPseudo('PlayCatalog Discover heading', await page.textContent('#discover-heading'));
 
         // --- DownloadButton — HomeHeader's compact "Desktop app" dropdown (only
         // rendered outside Electron, which this dev-server check always is). ---

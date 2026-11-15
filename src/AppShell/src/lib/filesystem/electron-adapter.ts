@@ -221,6 +221,14 @@ export async function openElectronFile(): Promise<{ dirPath: string; filename: s
 // .aslx,.asl,.cas") in PlayCatalog.svelte.
 const PLAY_FILTER = [{ name: "Quest game files", extensions: ["quest", "aslx", "asl", "cas"] }];
 
+// A file dragged onto the window, as the same dirPath/filename pair the picker
+// gives. null when the File has no on-disk path (dragged from another app).
+export function electronDroppedFilePath(file: File): { dirPath: string; filename: string } | null {
+    const filePath = electronApp().path.forFile(file);
+    if (!filePath) return null;
+    return { dirPath: dirname(filePath), filename: basename(filePath) };
+}
+
 export async function openElectronPlayFile(): Promise<{ dirPath: string; filename: string } | null> {
     const filePath = await electronApp().dialog.openFile({ filters: PLAY_FILTER });
     if (!filePath) return null;
