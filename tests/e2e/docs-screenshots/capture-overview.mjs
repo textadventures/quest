@@ -7,8 +7,8 @@ import { fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
 import {
     runCapture, createLocalDraft, selectTreeNode, addElement, openTab, addVerb,
-    toggleFeature, addScriptCommand, ifExpressionSelect, ifObjectSelect,
-    setScriptCodeView, openPreview, capture,
+    toggleFeature, addScriptCommand, ifExpressionSelect, pickIfObject,
+    openPreview, capture, capturePlayer
 } from './lib.mjs';
 
 const imagesDir = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'site', 'public', 'images');
@@ -101,7 +101,7 @@ await runCapture(async ({ page, baseUrl }) => {
 
     // --- overview-textadventure.png: initial player view of that same room ---
     const p1 = await openPreview(page);
-    await capture(p1, out('overview-textadventure.png'), { untilLocator: p1.locator('#txtCommand') });
+    await capturePlayer(p1, out('overview-textadventure.png'));
     await p1.close();
 
     // --- overview-multimedia.png: room picture (Picture frame feature) shown in the game pane ---
@@ -116,7 +116,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await uploadInput.setInputFiles(loungePicture);
     await page.waitForTimeout(500);
     const p2 = await openPreview(page);
-    await capture(p2, out('overview-multimedia.png'), { untilLocator: p2.locator('#txtCommand') });
+    await capturePlayer(p2, out('overview-multimedia.png'));
     await p2.close();
 
     // --- overview-script.png: Bob's "speak to" verb, an if/else script ---
@@ -126,8 +126,8 @@ await runCapture(async ({ page, baseUrl }) => {
     await page.locator('select').first().selectOption('script');
     await addScriptCommand(page, page.locator('button:has-text("+ Add script")').first(), { category: 'Scripts', item: 'If...' });
     await ifExpressionSelect(page).selectOption('object has flag');
-    await ifObjectSelect(page).selectOption({ label: 'Bob' });
-    const flagNameInput = page.locator('xpath=(//span[text()="if"]/following::input)[1]');
+    await pickIfObject(page, 'Bob');
+    const flagNameInput = page.locator('xpath=(//span[text()="if"]/..//span[text()="flag name"]/following::input)[1]');
     await flagNameInput.fill('alive');
     await addScriptCommand(page, page.locator('button:has-text("+ Add script")').first());
     const thenMsg = page.locator('xpath=//span[text()="Print"]/following-sibling::textarea[1]');
@@ -138,36 +138,49 @@ await runCapture(async ({ page, baseUrl }) => {
     await elseMsg.fill('Bob stares at you blankly.');
     await capture(page, out('overview-script.png'), { untilLocator: elseMsg, padding: 40 });
 
-    // --- overview-customui.png: a distinct atmospheric custom pane style ---
+    // --- overview-customui.png: a distinct atmospheric look, from the game's Stylesheet (Appearance
+    // tab, under Advanced) - the player's --qv- custom properties and data-qv-part names, which
+    // site/src/content/docs/customise/css.md documents as the stable hooks. ---
     await selectTreeNode(page, 'game');
-    await openTab(page, 'Features');
-    await toggleFeature(page, 'Show advanced scripts for the game object');
-    await openTab(page, 'Advanced Scripts');
-    // Two halves, matching what the page's prose promises: the game's own colour/font settings,
-    // then CSS for the panes. The transcript's colours have to come from the former - every line
-    // of output is emitted already wrapped in a <span style="color:..."> built from
-    // game.defaultforeground (CoreOutput.aslx's OutputTextNoBr), so a stylesheet can't reach it.
-    // The pane chrome is the other way round: it's static markup, so CSS is the only lever.
-    await setScriptCodeView(page, page.locator('button:has-text("Code view")').first(), `SetBackgroundColour ("#141c26")
-SetForegroundColour ("#dde6f0")
-SetLinkForegroundColour ("#7cc3d8")
-SetFontName ("Georgia, serif")
-panel = "background:#1b2430;border:1px solid #35485f"
-JS.setCss ("#qv-status", "background:#1b2430;border:none;color:#f0c987")
-JS.setCss ("#txtCommand", "background:#1b2430;color:#dde6f0;border:1px solid #35485f")
-JS.setCss ("#gamePanes", "margin-top:16px")
-JS.setCss (".ui-accordion-header", "border-radius:4px 4px 0 0;" + panel)
-JS.setCss (".ui-accordion-content", "border-radius:0 0 4px 4px;border-top:none;color:#dde6f0;" + panel)
-JS.setCss (".accordion-header-text", "color:#f0c987;letter-spacing:0.04em;padding-left:0.9em")
-// The accordion's expand/collapse triangle only - NOT a bare ".ui-icon", which would also hide
-// the compass's direction arrows (they're .ui-icon too, see playercore.js's compass buttons).
-JS.setCss (".ui-accordion-header > .ui-icon", "display:none")
-JS.setCss (".compassbutton", "background:#25344a;border:1px solid #35485f")
-JS.setCss (".compassbutton .ui-icon", "filter:invert(1) brightness(1.7)")
-JS.setCss ("#compassTable .ui-button", "color:#7cc3d8")`);
-    await page.waitForSelector('text=Set variable', { timeout: 5000 });
+    await openTab(page, 'Appearance');
+    const advanced = page.locator('summary', { hasText: 'Advanced' });
+    if (!(await advanced.evaluate(el => el.closest('details')?.open))) await advanced.click();
+    const stylesheet = page.getByRole('group', { name: 'Stylesheet' }).locator('.cm-content');
+    await stylesheet.click();
+    await page.keyboard.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
+    await page.evaluate(t => navigator.clipboard.writeText(t), `qv-player {
+    --qv-bg: #141c26;
+    --qv-text: #dde6f0;
+    --qv-link: #7cc3d8;
+    --qv-accent: #f0c987;
+    --qv-page-bg: #0e141c;
+    --qv-border-colour: #35485f;
+    --qv-font-body: Georgia, serif;
+    --qv-font-ui: Georgia, serif;
+    --qv-status-bg: #1b2430;
+    --qv-status-fg: #f0c987;
+    --qv-pane-bg: #1b2430;
+    --qv-pane-fg: #dde6f0;
+    --qv-pane-heading-fg: #f0c987;
+    --qv-command-bg: #1b2430;
+    --qv-command-fg: #dde6f0;
+    --qv-radius: 6px;
+}
+
+[data-qv-part="location"] {
+    letter-spacing: 0.08em;
+}
+
+[data-qv-part="pane"] {
+    border: 1px solid #35485f;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}`);
+    await page.keyboard.press(process.platform === 'darwin' ? 'Meta+V' : 'Control+V');
+    await page.evaluate(() => { if (document.activeElement instanceof HTMLElement) document.activeElement.blur(); });
+    await page.waitForTimeout(300);
     const p3 = await openPreview(page);
-    await capture(p3, out('overview-customui.png'), { untilLocator: p3.locator('#txtCommand') });
+    await capturePlayer(p3, out('overview-customui.png'));
     await p3.close();
 });
 

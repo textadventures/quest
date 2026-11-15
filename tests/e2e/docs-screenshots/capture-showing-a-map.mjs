@@ -5,27 +5,21 @@ import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
 import {
     runCapture, createLocalDraft, selectTreeNode, addElement, openTab, toggleFeature,
-    sendCommand,
+    sendCommand, waitForPlayer,
 } from './lib.mjs';
 
 // The Map tab's "Width"/"Length" labels are exact-text substrings of "Border width", so use
 // an exact match rather than lib.mjs's fieldByLabel (a plain substring match).
-const mapField = (page, label) => page.getByText(label, { exact: true }).locator('xpath=..').locator('input, select, textarea');
+const mapField = (page, label) => page.getByText(label, { exact: true }).locator('xpath=..').locator('input:not([aria-hidden="true"]), select, textarea');
 
 const imagesDir = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'site', 'public', 'images');
 const out = name => join(imagesDir, name);
 
-function saveTrimmed(gridPanelScreenshotPath, { chopTop } = {}) {
-    // #gridPanel is a large fixed-size canvas mostly empty around the drawn rooms - the old
+function saveTrimmed(gridPanelScreenshotPath) {
+    // The map view is much larger than the drawn rooms - the old
     // screenshots were tightly cropped to just the map itself, so trim the whitespace border
     // ImageMagick leaves after drawing (matches this repo's other post-processing conventions).
     const args = [gridPanelScreenshotPath];
-    if (chopTop) {
-        // The panel has its own thin coloured top border, only reachable by -trim (and thus
-        // wrongly kept as "content") on a tall enough canvas/layout that nothing else reaches
-        // close to true y=0 - confirmed only needed for map6.png's up/down-level layout.
-        args.push('-chop', `0x${chopTop}+0+0`);
-    }
     args.push('-trim', '+repage', '-bordercolor', 'white', '-border', '15', gridPanelScreenshotPath);
     execFileSync('magick', args);
     console.log(`SAVED: ${gridPanelScreenshotPath}`);
@@ -84,19 +78,17 @@ async function setReciprocalExitLength(page, roomName, destName, length) {
     await setExitLength(page, roomName, destName, length);
 }
 
-// The player dot (and, after it, the view's pan/recentre offset) animate toward their new
-// position over several requestAnimationFrame ticks rather than snapping instantly - see
-// src/WasmPlayer/wwwroot/legacy/grid.js's onFrame()/gridApi.drawPlayer (playerVector/offsetVector
-// are plain top-level `var`s in a non-module script, so genuinely reachable as window globals).
-// sendCommand() only waits for the game-logic turn to finish, not this separate canvas
-// animation, so a screenshot taken right after the last movement command can catch the dot
-// mid-slide or the view mid-pan. Wait for both vectors to null out (onFrame's own "arrived"
-// signal) before every grid screenshot in this file.
+// The new interface's map (src/WasmPlayer/ui-v2/src/map/renderer.ts) is an SVG under #qv-map,
+// drawn by map.js, which is only loaded once a game first draws a map. lib.mjs's launch() turns
+// on reduced motion, which stops the player's dot sliding to its new room, so the map is
+// settled once it has been drawn: wait for the SVG, then two frames for it to paint.
+const MAP_VIEW = '#qv-map .qv-map-view';
 async function waitForGridAnimation(playerPage) {
-    await playerPage.waitForFunction(
-        () => window.playerVector == null && window.offsetVector == null,
-        { timeout: 10000 },
-    );
+    await playerPage.waitForSelector(`${MAP_VIEW} svg`, { timeout: 10000 });
+    // The zoom buttons sit in the map's bottom-right corner, which would stop saveTrimmed()
+    // cropping down to the rooms.
+    await playerPage.addStyleTag({ content: '.qv-map-zoom { display: none !important; }' });
+    await playerPage.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))));
 }
 
 async function freshPreview(context, page) {
@@ -104,8 +96,7 @@ async function freshPreview(context, page) {
         context.waitForEvent('page', { timeout: 15000 }),
         page.click('button:has-text("Preview")'),
     ]);
-    await playerPage.waitForSelector('#txtCommand', { state: 'visible', timeout: 60000 });
-    await playerPage.waitForFunction(() => window.canSendCommand === true, { timeout: 30000 });
+    await waitForPlayer(playerPage);
     return playerPage;
 }
 
@@ -114,6 +105,9 @@ await runCapture(async ({ page, baseUrl }) => {
     await selectTreeNode(page, 'game');
     await openTab(page, 'Interface');
     await toggleFeature(page, 'Show a map that draws itself');
+    // Map2.png's 5x3 lounge reaches exactly the top edge of the default 300px map, which cuts
+    // off its top border.
+    await mapField(page, 'Height (pixels):').fill('400');
 
     await selectTreeNode(page, 'room');
     await addElement(page, 'Add Room', 'kitchen');
@@ -128,19 +122,17 @@ await runCapture(async ({ page, baseUrl }) => {
     await page.click('button:has-text("Create exit")');
     await page.waitForSelector('text=south → kitchen', { timeout: 10000 });
 
-    // openPreview() itself waits for #txtCommand, which is fine here (command bar is on) -
-    // inlined rather than imported since we need the raw context/page anyway for a screenshot
+    // Inlined rather than imported since we need the raw context/page anyway for a screenshot
     // of just the grid canvas afterwards.
     const context = page.context();
     const [playerPage] = await Promise.all([
         context.waitForEvent('page', { timeout: 15000 }),
         page.click('button:has-text("Preview")'),
     ]);
-    await playerPage.waitForSelector('#txtCommand', { state: 'visible', timeout: 60000 });
-    await playerPage.waitForFunction(() => window.canSendCommand === true, { timeout: 30000 });
+    await waitForPlayer(playerPage);
     await sendCommand(playerPage, 'south');
 
-    const gridPanel = playerPage.locator('#gridPanel');
+    const gridPanel = playerPage.locator(MAP_VIEW);
     await gridPanel.waitFor({ state: 'visible', timeout: 10000 });
     await waitForGridAnimation(playerPage);
     const mapPath = out('Map.png');
@@ -167,10 +159,9 @@ await runCapture(async ({ page, baseUrl }) => {
         context.waitForEvent('page', { timeout: 15000 }),
         page.click('button:has-text("Preview")'),
     ]);
-    await playerPage2.waitForSelector('#txtCommand', { state: 'visible', timeout: 60000 });
-    await playerPage2.waitForFunction(() => window.canSendCommand === true, { timeout: 30000 });
+    await waitForPlayer(playerPage2);
     await sendCommand(playerPage2, 'south');
-    const gridPanel2 = playerPage2.locator('#gridPanel');
+    const gridPanel2 = playerPage2.locator(MAP_VIEW);
     await gridPanel2.waitFor({ state: 'visible', timeout: 10000 });
     await waitForGridAnimation(playerPage2);
     const map2Path = out('Map2.png');
@@ -275,7 +266,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await sendCommand(playerPage3, 'south');
     await sendCommand(playerPage3, 'north');
     await sendCommand(playerPage3, 'west');
-    const gridPanel3 = playerPage3.locator('#gridPanel');
+    const gridPanel3 = playerPage3.locator(MAP_VIEW);
     await gridPanel3.waitFor({ state: 'visible', timeout: 10000 });
     await waitForGridAnimation(playerPage3);
     const map7Path = out('map7.png');
@@ -344,7 +335,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await sendCommand(playerPage3a, 'east');
     await sendCommand(playerPage3a, 'south');
     await sendCommand(playerPage3a, 'north');
-    const gridPanel3a = playerPage3a.locator('#gridPanel');
+    const gridPanel3a = playerPage3a.locator(MAP_VIEW);
     await gridPanel3a.waitFor({ state: 'visible', timeout: 10000 });
     await waitForGridAnimation(playerPage3a);
     const map3Path = out('map3.png');
@@ -381,7 +372,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await sendCommand(playerPage4, 'south');
     await sendCommand(playerPage4, 'east');
     await sendCommand(playerPage4, 'north');
-    const gridPanel4 = playerPage4.locator('#gridPanel');
+    const gridPanel4 = playerPage4.locator(MAP_VIEW);
     await gridPanel4.waitFor({ state: 'visible', timeout: 10000 });
     await waitForGridAnimation(playerPage4);
     const map4Path = out('map4.png');
@@ -408,7 +399,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await sendCommand(playerPage5, 'south');
     await sendCommand(playerPage5, 'east');
     await sendCommand(playerPage5, 'north');
-    const gridPanel5 = playerPage5.locator('#gridPanel');
+    const gridPanel5 = playerPage5.locator(MAP_VIEW);
     await gridPanel5.waitFor({ state: 'visible', timeout: 10000 });
     await waitForGridAnimation(playerPage5);
     const map5Path = out('map5.png');
@@ -465,10 +456,10 @@ await runCapture(async ({ page, baseUrl }) => {
     await sendCommand(playerPage6, 'north');
     await sendCommand(playerPage6, 'south');
     await sendCommand(playerPage6, 'east');
-    const gridPanel6 = playerPage6.locator('#gridPanel');
+    const gridPanel6 = playerPage6.locator(MAP_VIEW);
     await gridPanel6.waitFor({ state: 'visible', timeout: 10000 });
     await waitForGridAnimation(playerPage6);
     const map6Path = out('map6.png');
     await gridPanel6.screenshot({ path: map6Path });
-    saveTrimmed(map6Path, { chopTop: 6 });
+    saveTrimmed(map6Path);
 });

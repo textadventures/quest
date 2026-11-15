@@ -16,7 +16,9 @@ const VIEWPORT = { width: 960, height: 800 };
 
 export async function launch(baseUrl = DEFAULT_BASE_URL) {
     const browser = await chromium.launch();
-    const context = await browser.newContext({ viewport: VIEWPORT });
+    // Reduced motion turns off the v2 player's map animation (the dot sliding to the new room,
+    // then the view recentring), so a map is settled as soon as the turn is.
+    const context = await browser.newContext({ viewport: VIEWPORT, reducedMotion: 'reduce' });
     await context.grantPermissions(['clipboard-read', 'clipboard-write']);
     const page = await context.newPage();
     page.on('pageerror', err => console.log('[pageerror]', err.message));
@@ -181,17 +183,52 @@ export async function addScriptCommand(page, addButtonLocator, { category, item 
 export function ifExpressionSelect(page, { label = 'if', nth = 0 } = {}) {
     return page.locator(`xpath=(//span[text()="${label}"]/following-sibling::select[1])[${nth + 1}]`);
 }
-// The object picker is the second following <select> (after the condition type). A field's
-// simple/expression switch is an fx <button>, not a <select>, so it doesn't count. Pass
-// `selectIndex` if a condition ever puts another <select> before the object picker.
-export function ifObjectSelect(page, { label = 'if', nth = 0, selectIndex = 2 } = {}) {
-    return page.locator(`xpath=(//span[text()="${label}"]/following-sibling::select[${selectIndex}])[${nth + 1}]`);
+// The object picker on an "if"/"else if" condition row (e.g. "object is switched on" → TV): a
+// Combobox (a text input with role="combobox"), found within the condition's own line - the
+// parent of the "if" label, which holds only that line, not the then-block under it.
+export function ifObjectSelect(page, { label = 'if', nth = 0 } = {}) {
+    return page.locator(`xpath=//span[text()="${label}"]/..`).nth(nth).locator('input[role="combobox"]').first();
+}
+
+// Picks `objectName` in an if/else-if row's object Combobox (see ifObjectSelect).
+export async function pickIfObject(page, objectName, opts) {
+    await pickObject(page, ifObjectSelect(page, opts), objectName);
+}
+
+// Picks `objectName` in a script editor object Combobox, e.g. the one on a "Set flag" line:
+// `page.locator('xpath=//span[text()="Set flag"]/..').locator('input[role="combobox"]').first()`.
+export async function pickObject(page, combobox, objectName) {
+    await combobox.click();
+    await combobox.fill(objectName);
+    await page.getByRole('option', { name: objectName, exact: true }).click({ timeout: 5000 });
+    // Picking starts an autosave that re-renders the script. Clicking the toolbar's save pill
+    // (capture()'s saveIfDirty) in the middle of that puts focus back in this input, which
+    // reopens its list with the input cleared, so move focus away, as a click elsewhere would,
+    // and let the save finish first.
+    await combobox.evaluate(el => el.blur());
+    await page.waitForFunction(() => !document.querySelector('.save-chip-unsaved') && !document.querySelector('.save-chip-saving'), { timeout: 15000 });
+    const picked = await combobox.inputValue();
+    if (picked !== objectName) throw new Error(`Picked "${objectName}" but the combobox shows "${picked}"`);
 }
 
 // Ticks a Features-tab checkbox by its row's leading label text (e.g. "Container:",
 // "Switchable:") to reveal that feature's own properties tab.
 export async function toggleFeature(page, labelPrefix) {
     await page.locator(`text=${labelPrefix}`).locator('..').locator('input[type="checkbox"]').check();
+}
+
+// The player's command input. A game created in the editor today uses the new (v2) interface,
+// whose input is `.qv-command-input`; `#txtCommand` is the classic interface's, for a game that
+// sets `classicinterface`.
+export const COMMAND_INPUT = '.qv-command-input, #txtCommand';
+
+// Waits for a WasmPlayer tab to boot and be ready to accept a command. The command input is
+// "visible" while the start screen (#qv-start, a full-window overlay) still covers it, so wait
+// for that to go too: it stays up a little longer when the game's start plays a sound.
+export async function waitForPlayer(playerPage) {
+    await playerPage.waitForSelector(COMMAND_INPUT, { state: 'visible', timeout: 60000 });
+    await playerPage.waitForSelector('#qv-start', { state: 'detached', timeout: 30000 });
+    await playerPage.waitForFunction(() => window.canSendCommand === true, { timeout: 30000 });
 }
 
 // Clicks the toolbar Preview button and returns the WasmPlayer tab it opens, once booted
@@ -204,28 +241,53 @@ export async function toggleFeature(page, labelPrefix) {
 // (it's the BroadcastChannel sender: it answers WasmPlayer's "ready" with the current game
 // bytes, and again on every subsequent "ready" if the player reloads) — closing or
 // navigating it away mid-capture strands the player on its boot screen.
-// `capture()` (this module's own) works unchanged against the returned page — pass
-// `page.locator('#txtCommand')` as `untilLocator` to crop to the bottom of the transcript.
+// Capture gameplay from the returned page with `capturePlayer()`.
 export async function openPreview(page) {
     const context = page.context();
     const [playerPage] = await Promise.all([
         context.waitForEvent('page', { timeout: 15000 }),
         page.click('button:has-text("Preview")'),
     ]);
-    await playerPage.waitForSelector('#txtCommand', { state: 'visible', timeout: 60000 });
-    await playerPage.waitForFunction(() => window.canSendCommand === true, { timeout: 30000 });
+    await waitForPlayer(playerPage);
     return playerPage;
 }
 
 // Types a command into a WasmPlayer tab (as returned by openPreview) and submits it,
-// waiting for the previous command's turn to fully finish first — sendCommand() in
-// player.js silently drops a command while canSendCommand is still false from the last
-// one's round-trip, so a fixed sleep between commands would be flaky.
+// waiting for the previous command's turn to fully finish first — the player silently
+// drops a command while canSendCommand is still false from the last one's round-trip,
+// so a fixed sleep between commands would be flaky.
 export async function sendCommand(playerPage, command) {
     await playerPage.waitForFunction(() => window.canSendCommand === true, { timeout: 10000 });
-    await playerPage.fill('#txtCommand', command);
-    await playerPage.press('#txtCommand', 'Enter');
+    await playerPage.fill(COMMAND_INPUT, command);
+    await playerPage.press(COMMAND_INPUT, 'Enter');
     await playerPage.waitForFunction(() => window.canSendCommand === true, { timeout: 10000 });
+}
+
+// Captures a WasmPlayer tab with the viewport sized to fit what's on screen. The new interface
+// pins its command bar to the bottom of the window and fills the window's height, so cropping
+// (capture()'s `untilLocator`) would leave a tall empty gap above the command bar. Instead,
+// shrink the window, measure how tall the page and the panes column want to be, and resize to
+// that, so the command bar sits just below the last line of text.
+export async function capturePlayer(playerPage, outputPath, { minHeight = 360 } = {}) {
+    // Some parts size themselves from the window's height (the picture frame takes up to half of
+    // it), so measuring once at a small height comes out short: grow until the measurement stops
+    // changing.
+    const measure = () => playerPage.evaluate(async (min) => {
+        await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+        const panes = document.querySelector('.qv-panes');
+        return Math.ceil(Math.max(min, document.documentElement.scrollHeight, panes ? panes.scrollHeight : 0));
+    }, minHeight);
+    await playerPage.setViewportSize({ width: VIEWPORT.width, height: 200 });
+    let height = await measure();
+    for (let i = 0; i < 5; i++) {
+        await playerPage.setViewportSize({ width: VIEWPORT.width, height });
+        const next = await measure();
+        if (next <= height) break;
+        height = next;
+    }
+    await playerPage.screenshot({ path: outputPath });
+    await playerPage.setViewportSize(VIEWPORT);
+    console.log(`SAVED: ${outputPath}`);
 }
 
 const CURSOR_ELEMENT_ID = '__docs-capture-cursor';

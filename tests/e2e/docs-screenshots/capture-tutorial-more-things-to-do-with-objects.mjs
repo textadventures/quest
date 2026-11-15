@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 import {
     runCapture, createLocalDraft, selectTreeNode, addElement, addAdvancedElement, openTab,
     toggleFeature, addScriptCommand, selectLabeledField, fieldByLabel,
-    ifExpressionSelect, ifObjectSelect, capture,
+    ifExpressionSelect, pickIfObject, pickObject, capture,
 } from './lib.mjs';
 
 const imagesDir = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'site', 'public', 'images');
@@ -16,11 +16,10 @@ const out = name => join(imagesDir, name);
 
 const addScriptButtons = page => page.locator('button:has-text("+ Add script")');
 
-// Fills the flag-name text input on a just-added "if" row (the field immediately following
-// the object picker <select>, once "object has flag" is selected as the expression type) —
-// it's the first plain input after the "if" label in document order.
+// The flag-name input on a just-added "if" row, once "object has flag" is selected as the
+// expression type: the input after the row's "flag name" label (and its fx toggle).
 function ifFlagNameInput(page) {
-    return page.locator('xpath=(//span[text()="if"]/following::input)[1]');
+    return page.locator('xpath=(//span[text()="if"]/..//span[text()="flag name"]/following::input)[1]');
 }
 
 await runCapture(async ({ page, baseUrl }) => {
@@ -34,7 +33,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await selectLabeledField(page, 'object description:', 'script');
     await addScriptCommand(page, addScriptButtons(page).first(), { category: 'Scripts', item: 'If...' });
     await ifExpressionSelect(page).selectOption('object has flag');
-    await ifObjectSelect(page).selectOption({ label: 'Bob' });
+    await pickIfObject(page, 'Bob');
     await ifFlagNameInput(page).fill('alive');
 
     await addScriptCommand(page, addScriptButtons(page).first());
@@ -69,8 +68,8 @@ await runCapture(async ({ page, baseUrl }) => {
     const use3Msg = page.locator('xpath=//span[text()="Print"]/following-sibling::textarea[1]');
     await use3Msg.fill('Miraculously, the defibrillator lived up to its promise, and Bob is now alive again. He says his head feels kind of fuzzy.');
     await addScriptCommand(page, useonSection.locator('button:has-text("+ Add script")').last(), { category: 'Variables', item: 'Set object flag' });
-    const use3FlagObject = page.locator('xpath=//span[text()="Set flag"]/following-sibling::select[1]');
-    await use3FlagObject.selectOption({ label: 'Bob' });
+    const use3FlagObject = page.locator('xpath=//span[text()="Set flag"]/..').locator('input[role="combobox"]').first();
+    await pickObject(page, use3FlagObject, 'Bob');
     const use3FlagName = page.locator('xpath=//span[text()="Set flag"]/following-sibling::input[1]');
     await use3FlagName.fill('alive');
     await capture(page, out('Use3.png'), { untilLocator: use3FlagName });
@@ -81,8 +80,8 @@ await runCapture(async ({ page, baseUrl }) => {
     const funcMsg = page.locator('xpath=//span[text()="Print"]/following-sibling::textarea[1]');
     await funcMsg.fill('Miraculously, the defibrillator lived up to its promise, and Bob is now alive again. He says his head feels kind of fuzzy.');
     await addScriptCommand(page, addScriptButtons(page).last(), { category: 'Variables', item: 'Set object flag' });
-    const funcFlagObject = page.locator('xpath=//span[text()="Set flag"]/following-sibling::select[1]');
-    await funcFlagObject.selectOption({ label: 'Bob' });
+    const funcFlagObject = page.locator('xpath=//span[text()="Set flag"]/..').locator('input[role="combobox"]').first();
+    await pickObject(page, funcFlagObject, 'Bob');
     const funcFlagName = page.locator('xpath=//span[text()="Set flag"]/following-sibling::input[1]');
     await funcFlagName.fill('alive');
     await capture(page, out('Functionrevive.png'), { untilLocator: funcFlagName });
@@ -95,11 +94,9 @@ await runCapture(async ({ page, baseUrl }) => {
     const useOwnActionSelect = page.locator('select').first();
     await useOwnActionSelect.selectOption({ label: 'Run script' });
     await addScriptCommand(page, addScriptButtons(page).first(), { category: 'Scripts', item: 'Call function' });
-    const callFnInput = page.locator('xpath=//*[contains(text(), "Call function")]/following::input[@type="text"][1]');
-    await callFnInput.fill('revive bob');
-    // Dismiss the function-name autocomplete popover (which would otherwise overlap the crop)
-    // by clicking the section heading instead of pressing Escape - Escape clears the field.
-    await page.getByText('Use (on its own)', { exact: true }).click();
+    // The function name is a combobox listing the game's functions.
+    const callFnInput = page.locator('xpath=//*[contains(text(), "Call function")]/following::input[@role="combobox"][1]');
+    await pickObject(page, callFnInput, 'revive bob');
     await capture(page, out('Functionrevive2.png'), { untilLocator: callFnInput });
 
     // --- Asktell.png: global Ask/Tell feature, Bob's Ask/Tell tab, one topic with a guarded script ---
@@ -117,7 +114,7 @@ await runCapture(async ({ page, baseUrl }) => {
 
     await addScriptCommand(page, addScriptButtons(page).first(), { category: 'Scripts', item: 'If...' });
     await ifExpressionSelect(page).selectOption('object has flag');
-    await ifObjectSelect(page).selectOption({ label: 'Bob' });
+    await pickIfObject(page, 'Bob');
     await ifFlagNameInput(page).fill('alive');
     await addScriptCommand(page, addScriptButtons(page).first());
     const askMsg = page.locator('xpath=//span[text()="Print"]/following-sibling::textarea[1]');
