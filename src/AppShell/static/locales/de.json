@@ -4,6 +4,7 @@
     "common.delete": "Löschen",
     "common.help": "Hilfe",
     "common.settings": "Einstellungen",
+    "common.fileNotFound": "{filename} wurde in {folder} nicht gefunden. Die Datei wurde möglicherweise verschoben, umbenannt oder gelöscht.",
 
     "toolbar.back": "Zurück",
     "toolbar.forward": "Vor",

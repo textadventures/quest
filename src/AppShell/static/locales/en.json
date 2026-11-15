@@ -4,6 +4,7 @@
     "common.delete": "Delete",
     "common.help": "Help",
     "common.settings": "Settings",
+    "common.fileNotFound": "Couldn't find {filename} in {folder}. It may have been moved, renamed or deleted.",
 
     "toolbar.back": "Back",
     "toolbar.forward": "Forward",

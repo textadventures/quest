@@ -4,6 +4,7 @@
     "common.delete": "[Délété]",
     "common.help": "[Hélp]",
     "common.settings": "[Séttíngs]",
+    "common.fileNotFound": "[Cóúldn't fínd {filename} ín {folder}. Ít máy hávé béén móvéd, rénáméd ór délétéd.]",
     "toolbar.back": "[Báck]",
     "toolbar.forward": "[Fórwárd]",
     "toolbar.backToHome": "[Báck tó Hómé]",

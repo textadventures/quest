@@ -5,7 +5,7 @@
     import { page } from "$app/state";
     import { fetchCatalog, type CatalogCategory, type UpdateInfo } from "#lib/home-catalog.js";
     import { isElectron } from "#lib/runtime.js";
-    import { listRecentGames, removeRecentGame, type RecentGame } from "#lib/filesystem/electron-adapter.js";
+    import { listRecentGames, removeRecentGame, FileNotFoundError, describeElectronError, type RecentGame } from "#lib/filesystem/electron-adapter.js";
     import { playElectronFile, pickAndPlayElectronFile, closeLocalPlayChannel } from "#lib/filesystem/local-play.js";
     import { pickFile } from "#lib/filesystem/file-picker.js";
     import { listRecentCatalogPlays, removeRecentCatalogPlay, type RecentCatalogPlay } from "#lib/recent-catalog-plays.svelte.js";
@@ -83,26 +83,51 @@
     // that at all, so there's no separate destination page needed here either way.
     let electronOpenBusy = $state(false);
     let electronOpenError = $state<string | null>(null);
+    // Set alongside electronOpenError when the file has gone, so the error can
+    // offer to drop it from Recently Played.
+    let missingRecent = $state<RecentGame | null>(null);
+
+    function showElectronOpenError(err: unknown) {
+        if (err instanceof FileNotFoundError) {
+            electronOpenError = t("common.fileNotFound", { filename: err.filename, folder: err.dirPath });
+            missingRecent = recentLocalPlays.find((g) => g.dirPath === err.dirPath && g.filename === err.filename) ?? null;
+        } else {
+            electronOpenError = describeElectronError(err);
+            missingRecent = null;
+        }
+    }
+
+    function clearElectronOpenError() {
+        electronOpenError = null;
+        missingRecent = null;
+    }
+
+    async function handleRemoveMissingRecent() {
+        if (!missingRecent) return;
+        const game = missingRecent;
+        clearElectronOpenError();
+        await handleRemoveRecentLocal(game);
+    }
 
     async function handleOpenLocal() {
-        electronOpenError = null;
+        clearElectronOpenError();
         electronOpenBusy = true;
         try {
             await pickAndPlayElectronFile(refreshRecentLocalPlays);
         } catch (err) {
-            electronOpenError = String(err);
+            showElectronOpenError(err);
         } finally {
             electronOpenBusy = false;
         }
     }
 
     async function playLocalRecent(game: RecentGame) {
-        electronOpenError = null;
+        clearElectronOpenError();
         electronOpenBusy = true;
         try {
             await playElectronFile(game.dirPath, game.filename, refreshRecentLocalPlays);
         } catch (err) {
-            electronOpenError = String(err);
+            showElectronOpenError(err);
         } finally {
             electronOpenBusy = false;
         }
@@ -128,10 +153,10 @@
         const filename = params.get("file");
         if (!dirPath || !filename) return;
         handledPlayNonce = nonce;
-        electronOpenError = null;
+        clearElectronOpenError();
         electronOpenBusy = true;
         void playElectronFile(dirPath, filename, refreshRecentLocalPlays)
-            .catch((err) => { electronOpenError = String(err); })
+            .catch(showElectronOpenError)
             .finally(() => { electronOpenBusy = false; });
     });
 
@@ -313,7 +338,14 @@
         </div>
 
         {#if electronOpenError}
-            <p class="text-error-500 text-sm text-center">{electronOpenError}</p>
+            <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-sm text-center" role="alert">
+                <p class="text-error-500">{electronOpenError}</p>
+                {#if missingRecent}
+                    <button type="button" class="btn btn-sm preset-tonal" onclick={handleRemoveMissingRecent}>
+                        {t("recentGameCard.removeTitle")}
+                    </button>
+                {/if}
+            </div>
         {/if}
         {#if !isElectronApp && pickError}
             <p class="text-error-500 text-sm text-center">{pickError}</p>
