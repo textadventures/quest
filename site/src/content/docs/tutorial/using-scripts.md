@@ -55,8 +55,10 @@ Now would be a good time to play the game to test that it works properly. Switch
 A few things are worth knowing once your scripts get longer than two commands:
 
 - Commands run **in order, from top to bottom**. Use the arrows beside a command to move it up or down, and the delete button to remove it.
+- The **⋯ menu** beside each command adds a new command, or pastes one, directly **above or below** it, so you don't have to add it at the end and move it up a row at a time. It also has the command's help page. On a phone or tablet, the ⋯ menu is the only button, and it holds everything.
 - The **filter box** at the top of the command list is usually quicker than hunting through the categories, once you know roughly what a command is called.
-- A script can be **nested** inside another, as you have just seen — the "Then" and "Else" parts of an `if` are scripts in their own right, and can hold `if` commands of their own.
+- A script can be **nested** inside another, as you have just seen — the "Then" and "Else" parts of an `if` are scripts in their own right, and can hold `if` commands of their own. Click the ▼ at the start of a branch or a nested block to collapse it to one line, which shows how many commands it holds. When you click into a command, the editor outlines the block it's in, and each block's "Add script" button says which block it adds to - "Add script to else", say - so you can tell where you are in a deeply nested script.
+- **Tick the box** beside a command to select it, and shift-click another box to select everything in between. A selected command is shaded along with everything nested inside it, since that's what Cut, Copy and Delete will take with it. The toolbar that appears can copy, cut, delete or move the selection, and its count is a menu with **Select to end** and **Select all**. You can paste what you copied into another script, too.
 - Anywhere the editor offers "Run a script" instead of a plain message, you get exactly this editor. Verbs, commands, "after taking the object", a room's "after entering" script — they all work the same way.
 
 ## Where else scripts go

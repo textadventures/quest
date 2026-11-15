@@ -10,6 +10,69 @@ This page summarises what has changed in each Quest Viva release. If you're comi
 
 ## Quest Viva 6.1
 
+### A new player interface
+
+Games now play in a new interface, built for phones as much as for wide screens. It follows the player's light or dark mode, and players get a button to choose **Light** or **Dark** for themselves. You choose where the panes go: beside the game, in a sheet the player opens from beside the command bar, or nowhere - and something different on a phone, where by default they're in a drawer. The map is drawn afresh too, with room pictures, and can go above the game or in the panes. On a phone, a strip of buttons under the text shows the exits you can take, so players don't have to open the drawer to move. See [The player interface](/customise/player-interface).
+
+New games use it, and so does any game once you save it in the 6.1 editor. Games made with older versions of Quest keep the [classic interface](/customise/classic/) until then, so a game you've already published plays exactly as it did. If your game has JavaScript of its own that changes the classic interface - with `JS.setCss` or jQuery, say - the editor tells you when you open it, with a **Keep the classic interface** button. [Moving to the new interface](/customise/moving-from-classic) has what to use instead of each of the common snippets.
+
+### Themes, colours and your own stylesheet
+
+The game's Display tab is now two tabs: **Appearance** for how the game looks, and **Interface** for what's on screen. Gamebooks get an Appearance tab too. See [Look and feel](/customise/look-and-feel).
+
+- **New themes** - Parchment, Noir, Storybook, Midnight and Terminal join Standard, Novella and Typewriter, and the Theme chooser shows each one as a little page in its own colours and font. Retro and Hot Dog Stand are retired, though a game that uses one keeps it. A theme now only changes the look, not what's on screen, and **Reset** takes you back to the theme's own look.
+- **Light and dark colours** - a new game leaves its colours to the player's light or dark mode. Give your game colours of its own, and you can give it a dark version of each, side by side with the light one. Every colour option has a colour picker.
+- **Previews** - the Appearance tab shows sample text in your game's fonts and colours, in light and dark mode, and the Interface tab shows the layout in miniature, on a wide screen and on a phone.
+- **A stylesheet** - add your own CSS on the Appearance tab, with syntax highlighting. The player has custom properties and part names for it to use, so your CSS works on a phone and in dark mode, and survives future versions. See [Styling the player with CSS](/customise/css).
+- **Changes show while you play** - anything you change on these tabs, including the stylesheet, shows in an open Preview straight away, without restarting the game or losing your place.
+- **Script commands for the interface** - a new Interface category in the script editor shows and hides parts of the interface, adds panes, sets the command pane and more, during play. Unlike the JavaScript you needed before, they still apply after the player loads a saved game. See [Changing the interface during play](/customise/interface-scripts).
+
+### Check your game for problems
+
+**Check game**, in the editor's **File** menu, finds problems in your scripts without playing the game: script commands and functions that don't exist, expressions that can't be worked out, a function given too many values, and two elements with the same name. Click a problem to go straight to the script it's in. **Publish** checks the game first too, so you know about any problems before your players do. See [Check the game](/howto/testing/troubleshooting#check-the-game).
+
+### Easier script editing
+
+- **Add or paste in the middle of a script.** Each command's ⋯ menu adds or pastes a command directly above or below it, instead of only at the end.
+- **Collapse a block.** Each branch of an `if`, and the script inside a command such as `for` or `firsttime`, can be collapsed to one line, so you can see which `else` belongs to which `if`.
+- **See where you are.** The editor outlines the block you're working in, and each "Add script" button says which block it adds to.
+- **See what you've selected.** A ticked command is shaded with everything nested inside it, Copy says how many commands it took, shift-click selects a range, and **Select to end** selects everything from the first ticked command down. Several ticked commands can be moved up or down together.
+
+See [Working with a script](/tutorial/using-scripts#working-with-a-script).
+
+### Other editor improvements
+
+- **Turning a feature off** asks whether to keep or remove what you set up for it, since those settings would still take effect in the game. See [Turning a feature off](/howto/objects/features#turning-a-feature-off).
+- **A function named after a built-in one** - a function that returns a value but has the same name as one built into the engine, such as `CapFirst`, can't be called from an expression, so the editor now warns you. See [Overriding Core library functions](/customise/overriding).
+- **Pasting several lines** into a list's add-item box adds one item per line.
+
+### Reproducing your players' bugs
+
+Every game now has a random seed, which decides its random numbers, and a saved game remembers where its random numbers had got to. So when a player finds a problem, they can open **Save / Load** and click **Copy for a bug report**, and send you the game's seed and everything they did. Paste it into a walkthrough, set the walkthrough's new **Random seed**, and it plays out exactly as it did for them, dice rolls and all.
+
+Walkthroughs in the editor now always play with the same random numbers, so a walkthrough through something random plays the same way every time. See [Using walkthroughs](/howto/testing/walkthroughs#random-numbers).
+
+### For players
+
+- **A new Save / Load dialog.** Saving takes one click, and a save with no name is called after the room the player was in. Saves are listed newest first, each with Load and a menu to overwrite, rename, save to file or delete it. The dialog asks before loading or starting again would lose progress, and when a game starts it offers to continue from the newest save.
+- **`LOOK IN` and `LOOK INSIDE`** list what's in a container. See [Containers](/howto/objects/containers).
+- **The loading screen shows the game.** While a game loads, and on the Begin button screen, players see its title, and its author and cover art when the player knows them, instead of a big Quest Viva heading. The browser tab shows the game's name too.
+
+### The qv command-line tool
+
+`qv` plays, checks, tests, previews and publishes Quest games from the command line. It's handy if you like to work in a text editor, or to run your walkthroughs automatically every time you change your game. It can also let an AI agent play your game and tell you where it got stuck. It plays games from every version of Quest, back to Quest 1. See [The qv command-line tool](/howto/testing/command-line).
+
+### Publishing
+
+- **Link previews.** A game you publish as HTML has your game's title and description in it, so a link shared on Discord, a forum or social media shows them. The zip export also includes your cover art for the preview. See [Where these are used](/publishing/game-details#where-these-are-used).
+- **WebPlayer has been removed.** Its 6.0 version is still available, but it can't play games saved by Quest Viva 6.1. See [WebPlayer](/publishing/webplayer).
+
+### Games saved in 6.1 are version 610
+
+A game saved in the 6.1 editor is marked as ASL version 610 - `<asl version="610">` at the top of the file - and it's what makes a game use the new interface. Quest Viva 6.0 and earlier can't open or play a game once it's saved this way.
+
+So the editor now warns you. When you open a game made with an older version of Quest, a banner at the top says that changing it will save it in the newer format. Its **Download original** button saves the file exactly as you opened it, even after the editor has saved your changes, so you can always go back. See [Game file versions](/reference/asl-versions).
+
 ### The editor on textadventures.co.uk stays on 6.0
 
 The online editor at textadventures.co.uk, which opens games stored on your textadventures.co.uk account, stays on Quest Viva 6.0 and doesn't get the features added in 6.1. Your games there are still there, and you can carry on editing them in that editor. To move a game over to 6.1:
@@ -19,9 +82,7 @@ The online editor at textadventures.co.uk, which opens games stored on your text
 
 Once you have, publish it as a `.quest` file and upload that to textadventures.co.uk - see [Publishing on textadventures.co.uk](/publishing#publishing-on-textadventurescouk).
 
-### Check your game for problems
-
-**Check game**, in the editor's **File** menu, finds problems in your scripts without playing the game: script commands and functions that don't exist, expressions that can't be worked out, a function given too many values, and two elements with the same name. Click a problem to go straight to the script it's in. **Publish** checks the game first too, so you know about any problems before your players do. See [Check the game](/howto/testing/troubleshooting#check-the-game).
+Plenty of smaller additions and fixes besides - see the [changelog](https://github.com/textadventures/quest/blob/main/CHANGELOG.md).
 
 ## Quest Viva 6.0
 

@@ -28,7 +28,7 @@ The problems are listed in a panel at the bottom of the editor. Click one to go 
 
 It can't find everything. It doesn't know whether an object or variable named in an expression exists when the script runs, so a misspelt object name only shows up when the game reaches it. It checks your game and any library you've added, but not the libraries built into Quest Viva. Two elements with the same name are only found when the game is opened, or when you apply a change in "Raw XML code view".
 
-`qv check` runs the same check from the command line.
+[`qv check`](/howto/testing/command-line#checking-a-game-for-problems) runs the same check from the command line.
 
 ### Read the error message
 
