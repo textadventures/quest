@@ -7,6 +7,9 @@
 // - Progress reports: "started" once the game appears, "begin" first if the Begin card shows,
 //   "failed" if the game can't be started. Each carries the playId sent with api/Game/{id}, and
 //   "started" names the player UI. After a Begin card, "started" also says how long it waited.
+// - Each report says when every stage of the load it reached finished, the game file's size and
+//   whether the runtime came from the cache (#2857). After the Continue/New Game prompt, it says
+//   how long that waited too.
 // - They're sent with fetch, not sendBeacon, which content blockers drop without the page being
 //   able to tell (#2783). Only a fetch that's blocked falls back to a beacon.
 //
@@ -17,6 +20,9 @@
 //   node src/WasmPlayer/dev-server.mjs
 import { test } from '@playwright/test';
 import { chromium } from 'playwright';
+import { statSync } from 'node:fs';
+
+const fixtureSize = (name) => statSync(new URL(`../fixtures/${name}`, import.meta.url)).size;
 
 test('splash-progress', async ({ baseURL }) => {
     const baseUrl = baseURL;
@@ -107,6 +113,36 @@ test('splash-progress', async ({ baseURL }) => {
             check(Boolean(seen.playId) && started.playId === seen.playId, 'with the playId it sent to api/Game');
             check(started.ui === 'v2' && Number(started.ms) > 0 && started.source === 'web', 'and the player UI, time and source');
             check(started.waited === undefined, 'with no Begin wait when there was no Begin card');
+
+            // How long each stage took (#2857): every stage's time, in the order they happen.
+            const stages = ['api', 'gameBytes', 'runtimeDownloaded', 'runtimeReady', 'initialised', 'begun'];
+            const missing = stages.filter((s) => !(Number(started[s]) > 0));
+            check(missing.length === 0, `"started" says when each stage finished (missing: ${missing.join() || 'none'})`);
+            const at = Object.fromEntries(stages.map((s) => [s, Number(started[s])]));
+            check(at.api <= at.gameBytes && at.runtimeDownloaded <= at.runtimeReady && at.gameBytes <= at.initialised
+                && at.runtimeReady <= at.initialised && at.initialised <= at.begun && at.begun <= Number(started.ms),
+                `in the order they happen (${JSON.stringify(at)}, started at ${started.ms})`);
+            check(started.gameSize === String(fixtureSize('begin-gate-no-sound.aslx')), `and the game file's size (${started.gameSize})`);
+            // The dev server sends the runtime with no-store, so it's never from the cache here.
+            check(started.runtimeCached === '0', `and that the runtime wasn't from the cache (${started.runtimeCached})`);
+            check(started.savesWaited === undefined, 'with no saves prompt wait when there were no saves');
+
+            // With a save, the next load asks Continue or start again first. That wait is reported
+            // separately, like Begin's, since it falls inside the stages after it.
+            await page.evaluate(() => openSavesDialog('manage'));
+            await page.locator('#qv-saves[open]').waitFor({ timeout: 5000 });
+            await page.click('#qv-saves-save-new');
+            await page.waitForFunction(() => document.querySelectorAll('#qv-saves-list [data-row-slot]').length === 1, null, { timeout: 10000 });
+            seen.reports.length = 0;
+            await page.reload();
+            await page.locator('#qv-saves[open][data-mode="boot"]').waitFor({ timeout: 30000 });
+            await new Promise((r) => setTimeout(r, 1000));
+            await page.click('#qv-saves-start-new');
+            await page.waitForFunction(() => !document.getElementById('qv-start') && window.canSendCommand, null, { timeout: 30000 });
+            await waitForReports(seen, 1);
+            const savesWaited = Number(seen.reports[0]?.savesWaited);
+            check(seen.reports[0]?.stage === 'started' && savesWaited >= 1000 && savesWaited <= Number(seen.reports[0].initialised),
+                `after a saves prompt, "started" says how long it waited (${JSON.stringify(seen.reports)})`);
             await page.close();
         }
 
@@ -135,6 +171,8 @@ test('splash-progress', async ({ baseURL }) => {
             await waitForReports(seen, 1);
             const failed = seen.reports.find((r) => r.stage === 'failed');
             check(seen.reports.length === 1 && failed && failed.error.length > 0, `a game that can't be loaded reports "failed", with the error (${failed?.error})`);
+            check(Number(failed.api) > 0 && failed.gameBytes === undefined && failed.initialised === undefined && failed.gameSize === undefined,
+                `with the stages it reached, and none it didn't (${JSON.stringify(failed)})`);
             await page.close();
         }
 

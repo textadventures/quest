@@ -437,6 +437,34 @@ const reportedStages = new Set();
 // that follow, since their "ms" counts from the page opening and so includes that wait: the load
 // time is ms - waited.
 let beginWaitMs = null;
+// How long the Continue/New Game prompt waited for an answer, when the player had saves for the
+// game. Sent as "savesWaited", since that wait falls inside the stages after it, like "waited".
+let savesWaitMs = null;
+// When each stage of the first load finished, by performance.now(), sent with every report so
+// textadventures.co.uk can tell where a slow load's time went (#2857). A stage that hasn't been
+// reached is left out, so a "failed" report also shows how far the load got:
+//   api                api/game/{id} responded
+//   gameBytes          the game file finished downloading (after api: its URL comes from there)
+//   runtimeDownloaded  the .NET runtime finished downloading (alongside both of those)
+//   runtimeReady       the runtime started and the player's exports are ready
+//   initialised        Bridge.Initialise returned: the game is parsed and loaded
+//   begun              Bridge.Begin returned: the game's start script has run
+// Only the first time counts: a restart runs Initialise and Begin again, long after the reports.
+const loadTimings = {};
+let gameSizeBytes = null;
+function markLoad(stage) {
+    loadTimings[stage] ??= Math.round(performance.now());
+}
+// Whether the runtime's dotnet.native.wasm, by far its largest file, came from the HTTP cache,
+// so cold and warm loads can be told apart: "1" cached, "0" downloaded. Left out when there's no
+// timing entry for it yet, or one with no sizes (a cross-origin file without Timing-Allow-Origin
+// reports every size as 0, which would look cached).
+function runtimeCachedParam() {
+    const entry = performance.getEntriesByType?.('resource')
+        .find(e => new URL(e.name).pathname.endsWith('/dotnet.native.wasm'));
+    if (!entry || entry.decodedBodySize === 0) return null;
+    return entry.transferSize === 0 ? '1' : '0';
+}
 function reportProgress(stage, error = null) {
     if (!progressUrl || reportedStages.has(stage)) return;
     reportedStages.add(stage);
@@ -445,6 +473,11 @@ function reportProgress(stage, error = null) {
     params.set('ms', String(Math.round(performance.now())));
     if (currentPlayerUiName) params.set('ui', currentPlayerUiName);
     if (beginWaitMs !== null) params.set('waited', String(beginWaitMs));
+    if (savesWaitMs !== null) params.set('savesWaited', String(savesWaitMs));
+    for (const [name, ms] of Object.entries(loadTimings)) params.set(name, String(ms));
+    const cached = runtimeCachedParam();
+    if (cached !== null) params.set('runtimeCached', cached);
+    if (gameSizeBytes !== null) params.set('gameSize', String(gameSizeBytes));
     if (error) params.set('error', String(error).slice(0, 500));
     const url = `${progressUrl}?${params}`;
     const beacon = () => {
@@ -523,6 +556,7 @@ async function beginBehindStartScreen() {
     holdClock();
     try {
         await Bridge.Begin();
+        markLoad('begun');
         // An <audio autoplay> the browser refused never calls play(), so try it here.
         for (const element of document.querySelectorAll('audio[autoplay], video[autoplay]')) {
             if (element.paused && !element.muted) element.play().catch(() => {});
@@ -1110,7 +1144,7 @@ function loadRuntimeBuilder() {
 // downloads some of a runtime it won't use. That costs a failed load some
 // bandwidth; not doing it costs every successful load ~1.7s.
 function preloadRuntime() {
-    loadRuntimeBuilder().then(builder => builder.download()).catch(() => {});
+    loadRuntimeBuilder().then(builder => builder.download()).then(() => markLoad('runtimeDownloaded')).catch(() => {});
 }
 
 async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, isPreview = false, recordWalkthrough = null, runWalkthrough = null, adjacentFiles = null, allowDebug = false) {
@@ -1182,6 +1216,7 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
     const config = getConfig();
     const exports = await getAssemblyExports(config.mainAssemblyName);
     Bridge = exports.QuestViva.WasmPlayer.WasmPlayerBridge;
+    markLoad('runtimeReady');
 
     // Hooks for replaying a walkthrough reproducibly (the editor's walkthrough Play and Record
     // pass ?seed=, and tests use them all): see WasmPlayerBridge.SetRandomSeed.
@@ -1216,6 +1251,7 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
     const ok = saveBytes
         ? await Bridge.InitialiseWithSave(gameBytes, filename, saveBytes)
         : await Bridge.Initialise(gameBytes, filename);
+    markLoad('initialised');
     if (!ok) {
         // The game file itself was fine (downloaded/picked), but the engine
         // rejected its contents — same errors the Editor shows on load.
@@ -1495,7 +1531,9 @@ async function startGame(bytes, filename, bc = null, gameIdOverride = null, isPr
                 WebPlayer.chromeStrings = snapshot;
                 applyChromeStrings(snapshot);
             }
+            const promptShownAt = performance.now();
             const choice = await openSavesDialog('boot', gameId);
+            savesWaitMs = Math.round(performance.now() - promptShownAt);
             if (choice.type === 'load') {
                 saveBytes = await GameSaver.load(choice.slotIndex, gameId);
             }
@@ -3244,6 +3282,7 @@ async function fetchGameBytes(url) {
         progressUrl = `${apiRoot}gameprogress/${encodeURIComponent(id)}`;
         const gamePromise = (async () => {
             const apiResponse = await fetch(`${apiRoot}game/${id}?${clientInfoParams()}`);
+            markLoad('api');
             if (!apiResponse.ok) {
                 const err = new Error(`API: HTTP ${apiResponse.status}`);
                 err.status = apiResponse.status;
@@ -3255,6 +3294,8 @@ async function fetchGameBytes(url) {
             resolvedSourceUrl = sourceGameUrl;
             resourceRoot = resRoot || null;
             const { bytes, filename } = await fetchGameBytes(sourceGameUrl);
+            markLoad('gameBytes');
+            gameSizeBytes = bytes.length;
             return { bytes, filename };
         })();
 
