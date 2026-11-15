@@ -7,12 +7,7 @@ using System.Text.RegularExpressions;
 namespace QuestViva.Engine;
 
 [SuppressMessage("Microsoft.Usage", "CA2237:MarkISerializableTypesWithSerializable")]
-public class MismatchingQuotesException : Exception
-{
-    public MismatchingQuotesException(string message) : base(message)
-    {
-    }
-}
+public class MismatchingQuotesException(string text) : ScriptParseException("missingQuote", ("text", text));
 
 public static partial class Utility
 {
@@ -47,7 +42,7 @@ public static partial class Utility
         var param = GetParameter(script, out afterParameter);
         if (param == null)
         {
-            throw new Exception($"Expected a parameter list in '{script}'");
+            throw new ScriptParseException("parameterListExpected", ("script", script));
         }
 
         return param;
@@ -150,7 +145,7 @@ public static partial class Utility
 
         if (braceCount != 0)
         {
-            throw new Exception(string.Format("Missing '{0}'", close));
+            throw new ScriptParseException("missingBracket", ("bracket", close));
         }
 
         afterParameter = text[(pos + 1)..];
@@ -371,7 +366,7 @@ public static partial class Utility
 
         if (!gotCloseQuote)
         {
-            throw new MismatchingQuotesException("Missing quote character in " + text);
+            throw new MismatchingQuotesException(text);
         }
 
         result.Add(curParam.ToString());

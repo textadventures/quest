@@ -31,7 +31,9 @@ internal static class CheckCommand
 
         if (json)
         {
-            Console.WriteLine(JsonSerializer.Serialize(result, JsonOptions));
+            // Each problem's Text is for the Editor to translate its message: --json has just the English.
+            var english = result with { Problems = [..result.Problems.Select(p => p with { Text = null })] };
+            Console.WriteLine(JsonSerializer.Serialize(english, JsonOptions));
         }
         else
         {

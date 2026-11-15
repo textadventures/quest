@@ -157,7 +157,7 @@ public class EditableScriptTests : EditorControllerTestBase
         var newScripts = Controller.CreateNewEditableScripts("game", "somescript", "msg (\"hello\")", true);
 
         // Simulates a paste that got cut off mid-block - a dangling unclosed brace.
-        Assert.ThrowsException<Exception>(() => newScripts.Code = "if (x) {\nmsg (\"hi\")");
+        Assert.ThrowsException<QuestViva.Engine.ScriptParseException>(() => newScripts.Code = "if (x) {\nmsg (\"hi\")");
 
         // The original script is untouched by the failed parse - not silently replaced with the
         // unparseable text (or an opaque placeholder for it).

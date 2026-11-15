@@ -14,7 +14,7 @@ public class AskScriptConstructor : IScriptConstructor
         var parameters = Utility.SplitParameter(param).ToArray();
         if (parameters.Count() != 1)
         {
-            throw new Exception($"'ask' script should have 1 parameter: 'ask ({param})'");
+            throw new ScriptParseException("askParameterCount", ("parameters", param));
         }
 
         var callbackScript = ScriptFactory.CreateScript(callback);

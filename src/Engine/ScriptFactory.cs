@@ -114,7 +114,7 @@ public partial class ScriptFactory : IScriptFactory
             {
                 if (addExceptionsToLog)
                 {
-                    AddError(string.Format("Error adding script '{0}': {1}", line, ex.Message));
+                    AddError(ScriptError(line, ex));
                     break;
                 }
 
@@ -133,7 +133,7 @@ public partial class ScriptFactory : IScriptFactory
                 {
                     if (lastIf == null)
                     {
-                        AddError("Unexpected 'else' (error with parent 'if'?):" + line);
+                        AddError(ProblemText.Of("unexpectedElse", ("script", line)));
                     }
                     else
                     {
@@ -154,7 +154,7 @@ public partial class ScriptFactory : IScriptFactory
                 {
                     if (lastFirstTime == null)
                     {
-                        AddError("Unexpected 'otherwise' (error with parent 'firsttime'?):" + line);
+                        AddError(ProblemText.Of("unexpectedOtherwise", ("script", line)));
                     }
                     else
                     {
@@ -212,7 +212,7 @@ public partial class ScriptFactory : IScriptFactory
                             }
                             catch (Exception ex)
                             {
-                                AddError(string.Format("Error adding script '{0}': {1}", line, ex.Message));
+                                AddError(ScriptError(line, ex));
                                 addedError = true;
                             }
                         }
@@ -238,7 +238,7 @@ public partial class ScriptFactory : IScriptFactory
                 {
                     if (newScript == null)
                     {
-                        AddError(string.Format("Unrecognised script command '{0}'", line));
+                        AddError(ProblemText.Of("unrecognisedCommand", ("script", line)));
                     }
                     else
                     {
@@ -333,13 +333,24 @@ public partial class ScriptFactory : IScriptFactory
         return constructor;
     }
 
-    private void AddError(string error)
+    private void AddError(ProblemText text)
     {
-        ErrorHandler?.Invoke(this, new AddErrorEventArgs { Error = error });
+        ErrorHandler?.Invoke(this, new AddErrorEventArgs { Error = text.ToEnglish(), Text = text });
     }
+
+    // "Error adding script ...", with the error inside it as the Reason when it's one the Editor
+    // can translate.
+    private static ProblemText ScriptError(string line, Exception ex) =>
+        ProblemText.Of("scriptError", ("script", line), ("reason", ex.Message)) with
+        {
+            Reason = (ex as ScriptParseException)?.Text
+        };
 
     public class AddErrorEventArgs : EventArgs
     {
         public required string Error { get; set; }
+
+        // Error, in a form the Editor can translate.
+        public required ProblemText Text { get; set; }
     }
 }

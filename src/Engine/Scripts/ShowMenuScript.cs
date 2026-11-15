@@ -16,7 +16,7 @@ public class ShowMenuScriptConstructor : IScriptConstructor
         var parameters = Utility.SplitParameter(param).ToArray();
         if (parameters.Count() != 3)
         {
-            throw new Exception(string.Format("'show menu' script should have 3 parameters: 'show menu ({0})'", param));
+            throw new ScriptParseException("showMenuParameterCount", ("parameters", param));
         }
 
         var callbackScript = ScriptFactory.CreateScript(callback);

@@ -31,8 +31,8 @@ public abstract class ScriptConstructorBase : IScriptConstructor
         {
             if (!ExpectedParameters.Contains(numParams))
             {
-                throw new Exception(string.Format("Expected {0} parameter(s) in script '{1}'",
-                    FormatExpectedParameters(), script));
+                throw new ScriptParseException("parameterCount", ("expected", FormatExpectedParameters()),
+                    ("script", script));
             }
         }
 

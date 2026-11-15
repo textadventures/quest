@@ -16,7 +16,7 @@ public class ForEachScriptConstructor : IScriptConstructor
         var parameters = Utility.SplitParameter(param).ToArray();
         if (parameters.Count() != 2)
         {
-            throw new Exception(string.Format("'foreach' script should have 2 parameters: 'foreach ({0})'", param));
+            throw new ScriptParseException("foreachParameterCount", ("parameters", param));
         }
 
         var loopScript = ScriptFactory.CreateScript(loop);

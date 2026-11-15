@@ -9,12 +9,28 @@ namespace QuestViva.Engine;
 // One problem GameChecker found, each one something that fails when the game runs it. Element and
 // Attribute say where, when it's known: Kind is the element's kind ("object", "exit", "command",
 // "function", "type", ...), and Filename the library it comes from, or null for the game file itself.
+// Text is Message in a form the Editor can translate, when there is one: Message is always English.
 public sealed record CheckProblem(
     string Message,
     string? Kind = null,
     string? Element = null,
     string? Attribute = null,
-    string? Filename = null);
+    string? Filename = null,
+    ProblemText? Text = null)
+{
+    public CheckProblem(ProblemText text, string? kind = null, string? element = null, string? attribute = null,
+        string? filename = null)
+        : this(text.ToEnglish(), kind, element, attribute, filename, text)
+    {
+    }
+
+    // This problem, at the same place, saying text instead.
+    public CheckProblem Saying(ProblemText text) => this with { Message = text.ToEnglish(), Text = text };
+
+    // This problem, at the same place, saying what went wrong in ex.
+    public CheckProblem Saying(Exception ex) =>
+        ex is ScriptParseException parse ? Saying(parse.Text) : this with { Message = ex.Message, Text = null };
+}
 
 // Finds problems in a loaded game without running it, for `qv check`.
 //
@@ -75,8 +91,8 @@ public static class GameChecker
         {
             var replacement = world.Elements.Get(displaced.Name);
             problems.Add(new CheckProblem(
-                $"There's more than one element called '{displaced.Name}'. Only the last one is used: " +
-                $"this {Kind(displaced)} is replaced by {Article(Kind(replacement))}.",
+                ProblemText.Of("duplicateElement", ("name", displaced.Name), ("kind", Kind(displaced)),
+                    ("replacementKind", Kind(replacement))),
                 Kind(displaced), displaced.Name, null, LibraryFilename(displaced)));
         }
 
@@ -87,9 +103,7 @@ public static class GameChecker
             if (!IsBuiltIn(function) && IsHiddenByEngineFunction(function))
             {
                 problems.Add(new CheckProblem(
-                    $"'{function.Name}' is also the name of a function built into the engine. An expression such as " +
-                    $"x = {function.Name}(...) calls the built-in one, so this function's return value is never used. " +
-                    "Give it a different name.",
+                    ProblemText.Of("hiddenByEngineFunction", ("name", function.Name)),
                     Kind(function), function.Name, null, LibraryFilename(function)));
             }
         }
@@ -150,7 +164,7 @@ public static class GameChecker
             }
             catch (Exception ex)
             {
-                problems.Add(where with { Message = ex.Message });
+                problems.Add(where.Saying(ex));
             }
         }
     }
@@ -180,9 +194,7 @@ public static class GameChecker
             foreach (var verb in group.Where(v => v != first && !IsBuiltIn(v)))
             {
                 var other = first;
-                var otherDescription = IsBuiltIn(other)
-                    ? $"the built-in verb '{other.Name}' in {LibraryFilename(other)}"
-                    : $"the verb '{other.Name}'" + (LibraryFilename(other) is { } file ? $" in {file}" : "");
+                var otherFilename = LibraryFilename(other);
                 // A verb added in the Editor gets a generated name such as "k94", so say which verb by
                 // its pattern too.
                 var pattern = verb.Fields.Get("pattern") switch
@@ -191,13 +203,12 @@ public static class GameChecker
                     string { Length: > 0 } p => $" ({p})",
                     _ => ""
                 };
+                var code = IsBuiltIn(other) ? "verbSharesBuiltInAttribute"
+                    : otherFilename != null ? "verbSharesAttributeInLibrary"
+                    : "verbSharesAttribute";
                 problems.Add(new CheckProblem(
-                    $"This verb{pattern} runs the attribute '{group.Key}', and so does {otherDescription}. Two verbs " +
-                    "can't share an attribute: the game shows an error as it starts, and leaves some verbs out of " +
-                    "objects' verb lists. " +
-                    (IsBuiltIn(other)
-                        ? $"Remove this verb, and give objects a '{group.Key}' script or text for the built-in one to use."
-                        : "Give one of them a different attribute."),
+                    ProblemText.Of(code, ("pattern", pattern), ("attribute", group.Key), ("other", other.Name),
+                        ("filename", otherFilename ?? "")),
                     Kind(verb), verb.Name, "property", LibraryFilename(verb)));
             }
         }
@@ -235,7 +246,7 @@ public static class GameChecker
         List<CheckProblem> problems)
     {
         void OnError(object? sender, ScriptFactory.AddErrorEventArgs e) =>
-            problems.Add(where with { Message = e.Error });
+            problems.Add(where.Saying(e.Text));
 
         // Each expression and call once per script: a script that repeats one only needs one report.
         var expressions = new HashSet<string>();
@@ -249,7 +260,7 @@ public static class GameChecker
         }
         catch (Exception ex)
         {
-            problems.Add(where with { Message = ex.Message });
+            problems.Add(where.Saying(ex));
         }
         finally
         {
@@ -273,7 +284,7 @@ public static class GameChecker
     {
         if (expression.Trim().Length == 0)
         {
-            problems.Add(where with { Message = "An expression is empty: a condition or argument with nothing in it, such as 'if () { }' or 'MoveObject (coin, )'" });
+            problems.Add(where.Saying(ProblemText.Of("emptyExpression")));
             return;
         }
 
@@ -285,7 +296,8 @@ public static class GameChecker
         catch (Exception ex)
         {
             var reason = ex.InnerException?.Message ?? ex.Message;
-            problems.Add(where with { Message = $"Can't parse the expression '{expression}': {reason}" });
+            problems.Add(where.Saying(ProblemText.Of("unparseableExpression", ("expression", expression),
+                ("reason", reason))));
             return;
         }
 
@@ -301,17 +313,15 @@ public static class GameChecker
             var procedure = world.Procedure(name);
             if (procedure == null)
             {
-                problems.Add(where with { Message = $"Unknown function '{name}' in '{expression}'" });
+                problems.Add(where.Saying(ProblemText.Of("unknownFunction", ("name", name), ("expression", expression))));
                 continue;
             }
 
             var paramCount = procedure.Fields[FieldDefinitions.ParamNames]?.Count ?? 0;
             if (argCount > paramCount)
             {
-                problems.Add(where with
-                {
-                    Message = $"'{name}' takes {Plural(paramCount, "parameter")}, but is given {argCount} in '{expression}'"
-                });
+                problems.Add(where.Saying(ProblemText.Of("expressionArgumentCount", ("name", name),
+                    ("count", paramCount), ("arguments", argCount), ("expression", expression))));
             }
         }
     }
@@ -325,7 +335,7 @@ public static class GameChecker
         var procedure = world.Procedure(name);
         if (procedure == null)
         {
-            problems.Add(where with { Message = $"Unknown script command or function '{name}'" });
+            problems.Add(where.Saying(ProblemText.Of("unknownCommandOrFunction", ("name", name))));
             return;
         }
 
@@ -337,16 +347,10 @@ public static class GameChecker
 
         if (argCount > paramCount || world.Version >= WorldModelVersion.v520)
         {
-            problems.Add(where with
-            {
-                Message = $"'{name}' takes {Plural(paramCount, "parameter")}, but is given {argCount}"
-            });
+            problems.Add(where.Saying(ProblemText.Of("callArgumentCount", ("name", name), ("count", paramCount),
+                ("arguments", argCount))));
         }
     }
-
-    private static string Article(string noun) => ("aeiou".Contains(noun[0]) ? "an " : "a ") + noun;
-
-    private static string Plural(int n, string word) => n == 1 ? $"1 {word}" : $"{n} {word}s";
 
     private static IEnumerable<Function> Functions(LogicalExpression expression)
     {

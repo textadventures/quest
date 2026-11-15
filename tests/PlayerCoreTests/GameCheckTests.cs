@@ -149,7 +149,46 @@ public class GameCheckTests
     [TestMethod]
     public async Task ExactlyTheExpectedProblems()
     {
-        Assert.HasCount(12, await ProblemsAsync());
+        Assert.HasCount(13, await ProblemsAsync());
+    }
+
+    [TestMethod]
+    public async Task EveryProblemCanBeTranslated()
+    {
+        // The Editor translates each problem from its Text, so every one needs it, saying what
+        // Message says in English.
+        foreach (var problem in await ProblemsAsync())
+        {
+            Assert.IsNotNull(problem.Text, problem.Message);
+            Assert.AreEqual(problem.Message, problem.Text.ToEnglish());
+        }
+    }
+
+    [TestMethod]
+    public async Task AScriptThatCantBeCreatedSaysWhy()
+    {
+        var problem = Single(await ProblemsAsync(), "'for' script should have 3 or 4 parameters");
+        StringAssert.StartsWith(problem.Message, "Error adding script 'for (i, 1)");
+        Assert.AreEqual("scriptError", problem.Text!.Code);
+        Assert.AreEqual("forParameterCount", problem.Text.Reason!.Code);
+        Assert.AreEqual("i, 1", problem.Text.Reason.Args["parameters"]);
+    }
+
+    [TestMethod]
+    public async Task ArgumentCountsArePlural()
+    {
+        var problem = (await ProblemsAsync()).First(p => p.Text?.Code == "callArgumentCount");
+        Assert.AreEqual("2", problem.Text!.Args["count"]);
+        Assert.AreEqual("'TwoParams' takes 2 parameters, but is given 3", problem.Message);
+    }
+
+    [TestMethod]
+    public async Task DuplicateNamesSayEachKind()
+    {
+        var problem = Single(await ProblemsAsync(), "more than one element called 'lamp'");
+        Assert.AreEqual("object", problem.Text!.Args["kind"]);
+        Assert.AreEqual("object", problem.Text.Args["replacementKind"]);
+        StringAssert.EndsWith(problem.Message, "this object is replaced by the object defined after it.");
     }
 
     [TestMethod]

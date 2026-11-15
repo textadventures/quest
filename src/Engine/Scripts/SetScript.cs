@@ -49,16 +49,14 @@ public class SetScriptConstructor : IScriptConstructor
                 {
                     if (!Utility.IsValidFieldName(variable))
                     {
-                        var error = string.Format("Invalid variable name '{0}' in '{1}'", variable, script);
-                        throw new Exception(error);
+                        throw new ScriptParseException("invalidVariableName", ("name", variable), ("script", script));
                     }
                 }
                 else
                 {
                     if (!Utility.IsValidAttributeName(variable))
                     {
-                        var error = string.Format("Invalid attribute name '{0}' in '{1}'", variable, script);
-                        throw new Exception(error);
+                        throw new ScriptParseException("invalidAttributeName", ("name", variable), ("script", script));
                     }
                 }
             }

@@ -26,7 +26,7 @@ public class JSScriptConstructor : IScriptConstructor
 
         if (!JsFunctionName.IsMatch(script))
         {
-            throw new Exception(string.Format("Invalid JS function name in '{0}'", script));
+            throw new ScriptParseException("invalidJsFunctionName", ("script", script));
         }
 
         var functionName = JsFunctionName.Match(script).Groups[1].Value;
