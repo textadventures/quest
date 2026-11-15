@@ -79,6 +79,14 @@
         }
       ]
     },
+    "appx": {
+      "identityName": "15834TextAdventuresLtd.QuestViva",
+      "publisher": "CN=0ADCF4A4-B6EA-4DA5-B946-BB118BF660B7",
+      "publisherDisplayName": "Alex Warren",
+      "applicationId": "QuestViva",
+      "displayName": "Quest Viva",
+      "backgroundColor": "transparent"
+    },
     "linux": {
       "icon": "build/icons",
       "category": "Utility",

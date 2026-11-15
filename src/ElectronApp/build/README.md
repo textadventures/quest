@@ -96,3 +96,38 @@ for size in 16 24 32 48 64 96 128 256 512 1024; do
   rsvg-convert -w "$size" -h "$size" "$SRC" -o "icons/${size}x${size}.png"
 done
 ```
+
+## Microsoft Store tile images (`appx/`)
+
+The Microsoft Store package (see "Microsoft Store" in
+`docs/electron-desktop-app.md`) takes its Start menu, taskbar and Store images
+from `appx/`, which electron-builder picks up by name. They're generated from
+`icon-source.svg` too: the small logos use the whole icon, and the medium and
+wide tiles centre it at two-thirds of the tile's height on a transparent
+background (the manifest's tile background is `transparent`, set in
+`package.json`). Each comes in 100%, 200% and 400% scales, and the app list
+and taskbar logo also comes in fixed target sizes. Because the names carry
+`.scale-`/`.targetsize-`, electron-builder runs `makepri` to index them, which
+only happens on Windows.
+
+To regenerate, from this directory:
+
+```bash
+SRC=icon-source.svg
+rm -rf appx && mkdir -p appx
+for s in 100 200 400; do
+  n=$((50*s/100)); rsvg-convert -w $n -h $n "$SRC" -o appx/StoreLogo.scale-$s.png
+  n=$((44*s/100)); rsvg-convert -w $n -h $n "$SRC" -o appx/Square44x44Logo.scale-$s.png
+  i=$((100*s/100))
+  n=$((150*s/100))
+  rsvg-convert -w $i -h $i "$SRC" | magick - -background none -gravity center -extent ${n}x${n} appx/Square150x150Logo.scale-$s.png
+  w=$((310*s/100)); h=$((150*s/100))
+  rsvg-convert -w $i -h $i "$SRC" | magick - -background none -gravity center -extent ${w}x${h} appx/Wide310x150Logo.scale-$s.png
+done
+for t in 16 24 32 48 256; do
+  rsvg-convert -w $t -h $t "$SRC" -o appx/Square44x44Logo.targetsize-$t.png
+  cp appx/Square44x44Logo.targetsize-$t.png appx/Square44x44Logo.targetsize-${t}_altform-unplated.png
+done
+```
+
+There's no beta set: betas aren't packaged for the Store.
