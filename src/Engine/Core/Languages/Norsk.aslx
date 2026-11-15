@@ -3,6 +3,7 @@
   <template name="LanguageId">nb</template>
 
   <template name="UnresolvedObject">Kan ikke se det.</template>
+  <dynamictemplate name="PronounResolved">"(" + GetDisplayAlias(object) + ")"</dynamictemplate>
   <template name="UnresolvedLocation">Du kan ikke gå dit.</template>
   <template name="DefaultObjectDescription">Ikke noe uvanlig å se.</template>
   <template name="DefaultSelfDescription">Ser bra ut.</template>

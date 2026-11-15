@@ -1,5 +1,6 @@
 using Moq;
 using QuestViva.Common;
+using Shouldly;
 
 namespace QuestViva.EngineTests;
 
@@ -38,5 +39,50 @@ public class PronounScopeTests
                 await worldModel.SendCommand(cmd);
             }
         }
+    }
+
+    private static async Task<string> Run(GameDriver driver, string command)
+    {
+        return string.Join("\n", await driver.SendCommandAsync(command));
+    }
+
+    // Issue #2698: a command that names no object (LOOK, N, S) used to replace
+    // game.lastobjects with an empty list, so "it" stopped working after it
+    [TestMethod]
+    public async Task PronounSurvivesCommandsWithNoObject()
+    {
+        var driver = await GameDriver.LoadAsync("pronounscopetest.aslx");
+        await Run(driver, "x stick");
+        await Run(driver, "look");
+        await Run(driver, "n");
+        await Run(driver, "s");
+
+        (await Run(driver, "x it")).ShouldContain("A short stick.");
+    }
+
+    [TestMethod]
+    public async Task PronounOutOfSightStillUnresolved()
+    {
+        var driver = await GameDriver.LoadAsync("pronounscopetest.aslx");
+        await Run(driver, "x stick");
+        await Run(driver, "n");
+
+        var output = await Run(driver, "x it");
+        output.ShouldContain("I can't see that.");
+        output.ShouldNotContain("(the stick)");
+        (await driver.Model.AssertAsync("ListContains(game.lastobjects, stick)")).ShouldBeTrue();
+    }
+
+    [TestMethod]
+    public async Task PronounEchoesTheObjectItMeans()
+    {
+        var driver = await GameDriver.LoadAsync("pronounscopetest.aslx");
+        (await Run(driver, "x stick")).ShouldNotContain("(the stick)");
+
+        var output = await driver.SendCommandAsync("x it");
+        output.ShouldContain("(the stick)");
+        string.Join("\n", output).ShouldContain("A short stick.");
+
+        (await Run(driver, "get it")).ShouldContain("(the stick)");
     }
 }

@@ -6,6 +6,7 @@
   <template name="LanguageId">eo</template>
 
   <template name="UnresolvedObject">Mi ne vidas tion.</template>
+  <dynamictemplate name="PronounResolved">"(" + GetDisplayAlias(object) + ")"</dynamictemplate>
   <template name="UnresolvedLocation">Vi ne povas iri tien.</template>
   <template name="DefaultObjectDescription">Nenio eksterordinare.</template>
   <template name="DefaultSelfDescription">Ŝajne bonaspektas.</template>

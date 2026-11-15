@@ -3,6 +3,7 @@
   <template name="LanguageId">is</template>
 
   <template name="UnresolvedObject">Ég sé þetta ekki.</template>
+  <dynamictemplate name="PronounResolved">"(" + GetDisplayAlias(object) + ")"</dynamictemplate>
   <template name="UnresolvedLocation">Þú getur ekki farið þarna.</template>
   <template name="DefaultObjectDescription">Ekkert óvenjulegt þarna.</template>
   <template name="DefaultSelfDescription">Flottur!</template>

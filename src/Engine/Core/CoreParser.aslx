@@ -364,7 +364,11 @@
       if (resolvedall) {
         // All the objects have been resolved, so now we can actually do the command
         // TO DO (#2073): game.lastobjects should be game.pov.lastobjects
-        game.lastobjects = game.pov.currentcommandresolvedobjects
+        // Only a command that names an object changes what "it" means, so LOOK or N in
+        // between leaves the pronouns pointing where they did (issue #2698)
+        if (ListCount(game.pov.currentcommandresolvedobjects) > 0) {
+          game.lastobjects = game.pov.currentcommandresolvedobjects
+        }
         if (not DictionaryContains(game.pov.currentcommandresolvedelements, "multiple")) {
           dictionary add (game.pov.currentcommandresolvedelements, "multiple", false)
         }
@@ -525,6 +529,8 @@
       value = Trim(LCase(value))
       fullmatches = NewObjectList()
       partialmatches = NewObjectList()
+      // objects the value names exactly as a pronoun, so we can say which one we picked
+      pronounmatches = NewObjectList()
 
       foreach (obj, scope) {
         name = LCase(GetDisplayAlias(obj))
@@ -543,6 +549,9 @@
           if (ListContains (scope, obj)) {
             CompareNames (LCase(obj.article), value, obj, fullmatches, partialmatches)
             CompareNames (LCase(obj.gender), value, obj, fullmatches, partialmatches)
+            if (value = LCase(obj.article) or value = LCase(obj.gender)) {
+              list add (pronounmatches, obj)
+            }
           }
         }
       }
@@ -566,13 +575,25 @@
             if (ListContains (secondaryscope, obj)) {
               CompareNames (LCase(obj.article), value, obj, fullmatches, partialmatches)
               CompareNames (LCase(obj.gender), value, obj, fullmatches, partialmatches)
+              if (value = LCase(obj.article) or value = LCase(obj.gender)) {
+                list add (pronounmatches, obj)
+              }
             }
           }
         }
       }
 
       if (ListCount(fullmatches) = 1) {
-        return (ListItem(fullmatches, 0))
+        result = ListItem(fullmatches, 0)
+        // "X IT" says which object "it" turned out to be, e.g. "(the lamp)". An author can
+        // turn this off by making the PronounResolved template empty.
+        if (ListContains(pronounmatches, result)) {
+          pronounecho = DynamicTemplate("PronounResolved", result)
+          if (LengthOf(pronounecho) > 0) {
+            msg (pronounecho)
+          }
+        }
+        return (result)
       }
       else if (ListCount(fullmatches) = 0 and ListCount(partialmatches) = 1) {
         return (ListItem(partialmatches, 0))

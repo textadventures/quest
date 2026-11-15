@@ -25,6 +25,7 @@
   <template name="NothingToRepeat">Δεν υπάρχει κάτι να ξανακάνω.</template>
 
   <template name="UnresolvedObject">Δεν βλέπω κάτι τέτοιο.</template>
+  <dynamictemplate name="PronounResolved">"(" + GetDisplayAlias(object) + ")"</dynamictemplate>
   <template name="UnresolvedLocation">Δεν μπορείς να πας προς τα εκεί.</template>
   <template name="DefaultObjectDescription">Τίποτα το ιδιαίτερο.</template>
   <template name="DefaultSelfDescription">Είσαι μια χαρά.</template>

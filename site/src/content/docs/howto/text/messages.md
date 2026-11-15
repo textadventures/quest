@@ -82,6 +82,7 @@ You can use a template in your own scripts too. `Template("UnresolvedObject")` r
 | `TakeUnsuccessful` | dynamic | "You can't take it." |
 | `DefaultSpeakTo` | dynamic | "He says nothing." |
 | `LookAtDarkness` | dynamic | "It is too dark to make anything out." |
+| `PronounResolved` | dynamic | "(the lamp)": shown when the player types IT, HIM, HER or THEM, to say which object that meant. Set it to `""` to show nothing |
 
 `DefaultObjectDescription` is worth changing early: it's what every object you haven't described yet falls back on, and a more characterful line makes an unfinished game feel less unfinished.
 

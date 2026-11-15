@@ -10,6 +10,7 @@
 
   <template name="LanguageId">pt-BR</template>
   <template name="UnresolvedObject">Não encontro isso aqui.</template>
+  <dynamictemplate name="PronounResolved">"(" + GetDisplayAlias(object) + ")"</dynamictemplate>
   <template name="UnresolvedLocation">Você não pode ir para lá.</template>
   <template name="DefaultObjectDescription">Nada de extraordinário.</template>
   <template name="DefaultSelfDescription">Parece bem.</template>

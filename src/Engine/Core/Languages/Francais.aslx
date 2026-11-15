@@ -3,6 +3,7 @@
   <template name="LanguageId">fr</template>
 
   <template name="UnresolvedObject">[Objet introuvable. Vérifiez l'article de l'élément, et sa présence dans le lieu où vous vous trouvez. Si vous n'êtes pas sûr(e) d'une commande, tapez "aide".]</template>
+  <dynamictemplate name="PronounResolved">"(" + GetDisplayAlias(object) + ")"</dynamictemplate>
   <template name="UnresolvedLocation">Vous ne pouvez pas y aller.</template>
   <template name="DefaultObjectDescription">Vous ne voyez rien d'extraordinaire.</template>
   <template name="DefaultSelfDescription">Je vais bien...</template>

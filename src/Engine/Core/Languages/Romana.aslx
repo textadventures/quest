@@ -4,6 +4,7 @@
   <include ref="English.aslx"/>
   <template name="LanguageId">ro</template>
   <template name="UnresolvedObject">Nu poți vedea acest obiect.</template>
+  <dynamictemplate name="PronounResolved">"(" + GetDisplayAlias(object) + ")"</dynamictemplate>
   <template name="UnresolvedLocation">Nu poți merge acolo.</template>
   <template name="DefaultObjectDescription">Nimic neobișnuit.</template>
   <template name="DefaultSelfDescription">Arăți bine, ca de obicei.</template>

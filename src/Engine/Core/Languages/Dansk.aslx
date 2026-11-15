@@ -7,6 +7,7 @@
   <template name="NothingToRepeat">Der er ikke noget at gentage.</template>
 
   <template name="UnresolvedObject">Det kan jeg ikke se.</template>
+  <dynamictemplate name="PronounResolved">"(" + GetDisplayAlias(object) + ")"</dynamictemplate>
   <template name="UnresolvedLocation">Der kan du ikke komme hen.</template>
   <template name="DefaultObjectDescription">Der er ikke noget usædvanligt at se.</template>
   <template name="DefaultSelfDescription">Du ser godt ud.</template>

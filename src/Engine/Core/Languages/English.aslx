@@ -7,6 +7,7 @@
   <template name="Again2">g</template>
   <template name="NothingToRepeat">There is nothing to repeat.</template>
   <template name="UnresolvedObject">I can't see that.</template>
+  <dynamictemplate name="PronounResolved">"(" + GetDefiniteName(object) + ")"</dynamictemplate>
   <template name="UnresolvedLocation">{=WriteVerb(game.pov, "can't")} go there.</template>
   <template name="DefaultObjectDescription">Nothing out of the ordinary.</template>
   <template name="DefaultSelfDescription">Looking good.</template>
