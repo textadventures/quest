@@ -7,6 +7,8 @@
 // - Progress reports: "started" once the game appears, "begin" first if the Begin card shows,
 //   "failed" if the game can't be started. Each carries the playId sent with api/Game/{id}, and
 //   "started" names the player UI.
+// - They're sent with fetch, not sendBeacon, which content blockers drop without the page being
+//   able to tell (#2783). Only a fetch that's blocked falls back to a beacon.
 //
 // Media elements' play() is replaced by a fake that's refused until the page has been clicked, so
 // fixtures/begin-gate-sync-sound.aslx shows the Begin card (see begin-gate.spec.mjs).
@@ -31,7 +33,7 @@ test('splash-progress', async ({ baseURL }) => {
 
         // Opens a page, with the API mocked to point at fixture (or a missing file), and records
         // the api/Game/{id} request's playId and every GameProgress report.
-        async function open(path, { fixture, holdGameFile = false } = {}) {
+        async function open(path, { fixture, holdGameFile = false, blockFetch = false } = {}) {
             const page = await browser.newPage();
             await page.addInitScript(() => {
                 let activated = false;
@@ -59,8 +61,14 @@ test('splash-progress', async ({ baseURL }) => {
                 });
             });
             await page.route('**/api/gameprogress/**', (route) => {
-                const url = new URL(route.request().url());
-                seen.reports.push({ method: route.request().method(), ...Object.fromEntries(url.searchParams) });
+                const request = route.request();
+                const type = request.resourceType();
+                if (blockFetch && type === 'fetch') {
+                    seen.blocked = (seen.blocked ?? 0) + 1;
+                    return route.abort('blockedbyclient');
+                }
+                const url = new URL(request.url());
+                seen.reports.push({ method: request.method(), type, ...Object.fromEntries(url.searchParams) });
                 return route.fulfill({ status: 204 });
             });
             await page.route('https://images.example.test/**', (route) => route.fulfill({ contentType: 'image/png', body: png }));
@@ -95,6 +103,7 @@ test('splash-progress', async ({ baseURL }) => {
             await waitForReports(seen, 1);
             const started = seen.reports.find((r) => r.stage === 'started');
             check(seen.reports.length === 1 && started?.method === 'POST', `the game reports "started", once (${JSON.stringify(seen.reports)})`);
+            check(started.type === 'fetch', `with fetch, not a beacon (${started.type})`);
             check(Boolean(seen.playId) && started.playId === seen.playId, 'with the playId it sent to api/Game');
             check(started.ui === 'v2' && Number(started.ms) > 0 && started.source === 'web', 'and the player UI, time and source');
             await page.close();
@@ -119,6 +128,16 @@ test('splash-progress', async ({ baseURL }) => {
             await waitForReports(seen, 1);
             const failed = seen.reports.find((r) => r.stage === 'failed');
             check(seen.reports.length === 1 && failed && failed.error.length > 0, `a game that can't be loaded reports "failed", with the error (${failed?.error})`);
+            await page.close();
+        }
+
+        {
+            const { page, seen } = await open('?id=listed', { fixture: 'begin-gate-no-sound.aslx', blockFetch: true });
+            await page.waitForFunction(() => !document.getElementById('qv-start') && window.canSendCommand, null, { timeout: 30000 });
+            await waitForReports(seen, 1);
+            await new Promise((r) => setTimeout(r, 500));
+            check(seen.blocked === 1 && seen.reports.length === 1 && seen.reports[0].stage === 'started' && seen.reports[0].type !== 'fetch',
+                `a blocked fetch is sent again as a beacon, once (${seen.blocked} blocked, ${JSON.stringify(seen.reports)})`);
             await page.close();
         }
 

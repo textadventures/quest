@@ -424,8 +424,13 @@ const playId = crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(
 // For a game from textadventures.co.uk (?id=), tells it how far the game got (its GameProgress
 // API): "begin" when the Begin card shows, "started" when the game appears, "failed" if it
 // couldn't be started. Compared with the api/Game/{id} fetch, these show how many players leave
-// while a game loads or at Begin. Each is sent at most once a page load, with sendBeacon so it
-// still goes if the player is leaving. Nothing is sent for a game from anywhere else.
+// while a game loads or at Begin. Each is sent at most once a page load, with a keepalive fetch
+// so it still goes if the player is leaving. Nothing is sent for a game from anywhere else.
+//
+// Not sendBeacon: EasyPrivacy, which uBlock Origin, AdGuard and Brave turn on by default, blocks
+// every cross-site beacon (`*$ping,third-party`), and sendBeacon still returns true when a
+// blocker drops it, so nothing can notice. A fetch isn't a beacon to them, and a blocked fetch
+// rejects, so only then is the beacon tried instead.
 let progressUrl = null;
 const reportedStages = new Set();
 function reportProgress(stage, error = null) {
@@ -437,10 +442,14 @@ function reportProgress(stage, error = null) {
     if (currentPlayerUiName) params.set('ui', currentPlayerUiName);
     if (error) params.set('error', String(error).slice(0, 500));
     const url = `${progressUrl}?${params}`;
+    const beacon = () => {
+        try { navigator.sendBeacon?.(url); } catch { /* nothing more to try */ }
+    };
     try {
-        if (navigator.sendBeacon?.(url)) return;
-    } catch { /* fall back to fetch */ }
-    fetch(url, { method: 'POST', mode: 'no-cors', keepalive: true }).catch(() => {});
+        fetch(url, { method: 'POST', mode: 'no-cors', keepalive: true }).catch(beacon);
+    } catch {
+        beacon();
+    }
 }
 
 // Shows the game's name, and its author and cover when known, on the start screen while it
