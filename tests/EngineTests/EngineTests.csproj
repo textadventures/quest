@@ -142,6 +142,9 @@
         <None Update="sceneryinventorytest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="disambiguationtest.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="pronounscopetest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
