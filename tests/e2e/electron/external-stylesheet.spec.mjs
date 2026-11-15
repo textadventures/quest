@@ -53,7 +53,13 @@ test('external-stylesheet', async () => {
         playerWindow.on('pageerror', err => console.log('[player] [pageerror]', err.message));
         playerWindow.on('console', msg => { if (msg.type() === 'error') console.log('[player] [console.error]', msg.text()); });
 
-        await playerWindow.waitForFunction(() => document.title === 'External stylesheet', null, { timeout: 15000 });
+        // A cold boot of the Debug WasmPlayer (untrimmed: ~240 requests, ~32 MB,
+        // nothing cached in a fresh userData dir) takes 6-7s on a fast Mac and
+        // over 15s on a slow macOS runner, so give it the same 30s as
+        // colour-scheme-persist. If it does time out, app.close() below shuts the
+        // static server mid-boot, and the player's last requests log
+        // net::ERR_CONNECTION_REFUSED - a symptom of the close, not the cause.
+        await playerWindow.waitForFunction(() => document.title === 'External stylesheet', null, { timeout: 30000 });
         console.log('[player] game booted');
 
         const link = await playerWindow.waitForSelector('link[rel="stylesheet"][href^="data:"]', { state: 'attached', timeout: 10000 });
