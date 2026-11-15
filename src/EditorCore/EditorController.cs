@@ -2544,21 +2544,24 @@ public sealed class EditorController : IDisposable
         // regex by the SimplePattern attribute loader]
 
         // Initialise only puts definitions with a pattern into _expressionDefinitions
-        var candidates = from def in _expressionDefinitions.Values
-            where def.ExpressionType == expressionType
-            where Engine.Utility.IsRegexMatch(def.Pattern!, expression)
-            select def;
-
-        if (!candidates.Any())
+        EditorDefinition? best = null;
+        var bestStrength = int.MinValue;
+        foreach (var def in _expressionDefinitions.Values)
         {
-            return null;
+            if (def.ExpressionType != expressionType || !def.PatternRegex!.IsMatch(expression))
+            {
+                continue;
+            }
+
+            var strength = Engine.Utility.GetMatchStrength(def.PatternRegex, expression);
+            if (strength > bestStrength)
+            {
+                best = def;
+                bestStrength = strength;
+            }
         }
 
-        var orderedCandidates = from def in candidates
-            orderby Engine.Utility.GetMatchStrength(def.Pattern!, expression) descending
-            select def;
-
-        return orderedCandidates.First();
+        return best;
     }
 
     public IEditorData GetExpressionEditorData(string expression, string expressionType, IEditorData parentData)

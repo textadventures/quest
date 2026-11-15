@@ -514,6 +514,11 @@ public static partial class Utility
         return GetMatchStrengthInternal(cache.GetRegex(regexPattern, cacheID), input);
     }
 
+    public static int GetMatchStrength(Regex regex, string input)
+    {
+        return GetMatchStrengthInternal(regex, input);
+    }
+
     private static int GetMatchStrengthInternal(Regex regex, string input)
     {
         var match = regex.Match(input);

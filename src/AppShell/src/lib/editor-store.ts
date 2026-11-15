@@ -345,6 +345,7 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
     const result = await _bridge.Initialise(bytes, filename);
     loadingStatus.set(null);
     clearAssetUrlCache();
+    expressionTemplateDataCache.clear();
     const ok = result === "ok";
     if (!ok) {
         lastOpenGameError.set(result.startsWith("error:") ? result.slice("error:".length) : result);
@@ -1236,6 +1237,7 @@ export async function undo() {
     refreshSelectedData();
     refreshUndoRedo();
     refreshCutElementKeys();
+    _lastScriptChange = null;
     scriptVersion.update(n => n + 1);
     void warnAboutDetachedAssetOwners(beforeKeys);
 }
@@ -1247,6 +1249,7 @@ export function redo() {
     refreshSelectedData();
     refreshUndoRedo();
     refreshCutElementKeys();
+    _lastScriptChange = null;
     scriptVersion.update(n => n + 1);
     void warnAboutDetachedAssetOwners(beforeKeys);
 }
@@ -1506,7 +1509,7 @@ export function moveDictItem(elementKey: string, attribute: string, key: string,
 export function makeScriptEditable(elementKey: string, attribute: string): string {
     if (!_bridge) return "error";
     const result = _bridge.MakeScriptEditable(elementKey, attribute);
-    if (result === "ok") { refreshSelectedData(); bumpScriptVersion(); }
+    if (result === "ok") { refreshSelectedData(); bumpScriptVersion(elementKey, attribute); }
     refreshUndoRedo();
     return result;
 }
@@ -1514,7 +1517,7 @@ export function makeScriptEditable(elementKey: string, attribute: string): strin
 export function makeScriptDictEditable(elementKey: string, attribute: string): string {
     if (!_bridge) return "error";
     const result = _bridge.MakeScriptDictEditable(elementKey, attribute);
-    if (result === "ok") { refreshSelectedData(); bumpScriptVersion(); }
+    if (result === "ok") { refreshSelectedData(); bumpScriptVersion(elementKey, attribute); }
     refreshUndoRedo();
     return result;
 }
@@ -1522,7 +1525,7 @@ export function makeScriptDictEditable(elementKey: string, attribute: string): s
 export function addScriptDictItem(elementKey: string, attribute: string, key: string): string {
     if (!_bridge) return "error";
     const result = _bridge.AddScriptDictionaryItem(elementKey, attribute, key);
-    if (result === "ok") { refreshSelectedData(); bumpScriptVersion(); }
+    if (result === "ok") { refreshSelectedData(); bumpScriptVersion(elementKey, attribute); }
     refreshUndoRedo();
     return result;
 }
@@ -1530,7 +1533,7 @@ export function addScriptDictItem(elementKey: string, attribute: string, key: st
 export function removeScriptDictItem(elementKey: string, attribute: string, key: string): string {
     if (!_bridge) return "error";
     const result = _bridge.RemoveScriptDictionaryItem(elementKey, attribute, key);
-    if (result === "ok") { refreshSelectedData(); bumpScriptVersion(); }
+    if (result === "ok") { refreshSelectedData(); bumpScriptVersion(elementKey, attribute); }
     refreshUndoRedo();
     return result;
 }
@@ -1538,7 +1541,7 @@ export function removeScriptDictItem(elementKey: string, attribute: string, key:
 export function renameScriptDictItem(elementKey: string, attribute: string, oldKey: string, newKey: string): string {
     if (!_bridge) return "error";
     const result = _bridge.RenameScriptDictionaryItem(elementKey, attribute, oldKey, newKey);
-    if (result === "ok") { refreshSelectedData(); bumpScriptVersion(); }
+    if (result === "ok") { refreshSelectedData(); bumpScriptVersion(elementKey, attribute); }
     refreshUndoRedo();
     return result;
 }
@@ -1576,7 +1579,7 @@ export function getScriptCode(elementKey: string, attribute: string): string {
 export function setScriptCode(elementKey: string, attribute: string, code: string): string {
     if (!_bridge) return "error";
     const result = _bridge.SetScriptCode(elementKey, attribute, code);
-    if (result === "ok") bumpScriptVersion();
+    if (result === "ok") bumpScriptVersion(elementKey, attribute);
     refreshUndoRedo();
     return result;
 }
@@ -1591,7 +1594,7 @@ export function copyScripts(elementKey: string, attribute: string, containerPath
 export function cutScripts(elementKey: string, attribute: string, containerPath: string, indices: number[]): string {
     if (!_bridge) return "error";
     const result = _bridge.CutScripts(elementKey, attribute, containerPath, JSON.stringify(indices));
-    if (result === "ok") { bumpScriptVersion(); scriptClipboardHasContent.set(true); }
+    if (result === "ok") { bumpScriptVersion(elementKey, attribute); scriptClipboardHasContent.set(true); }
     refreshUndoRedo();
     return result;
 }
@@ -1599,7 +1602,7 @@ export function cutScripts(elementKey: string, attribute: string, containerPath:
 export function deleteScripts(elementKey: string, attribute: string, containerPath: string, indices: number[]): string {
     if (!_bridge) return "error";
     const result = _bridge.DeleteScripts(elementKey, attribute, containerPath, JSON.stringify(indices));
-    if (result === "ok") bumpScriptVersion();
+    if (result === "ok") bumpScriptVersion(elementKey, attribute);
     refreshUndoRedo();
     return result;
 }
@@ -1608,7 +1611,7 @@ export function deleteScripts(elementKey: string, attribute: string, containerPa
 export function pasteScripts(elementKey: string, attribute: string, containerPath: string, index = -1): string {
     if (!_bridge) return "error";
     const result = _bridge.PasteScripts(elementKey, attribute, containerPath, index);
-    if (result === "ok") bumpScriptVersion();
+    if (result === "ok") bumpScriptVersion(elementKey, attribute);
     refreshUndoRedo();
     return result;
 }
@@ -1619,14 +1622,29 @@ export function getScriptData(elementKey: string, attribute: string): ScriptBloc
     return json ? JSON.parse(json) : null;
 }
 
-function bumpScriptVersion() {
+// Which script the latest scriptVersion bump changed, so a root ScriptEditor showing some
+// other script can skip reloading its whole tree (#2747). null means it could be any script
+// (undo/redo), so every editor reloads.
+let _lastScriptChange: { elementKey: string; attribute: string } | null = null;
+
+// Whether the latest scriptVersion bump could have changed this script. A script dictionary's
+// entries are edited as "attr[key]", while adding/removing/renaming entries names just "attr".
+export function scriptChangeAffects(elementKey: string, attribute: string): boolean {
+    const change = _lastScriptChange;
+    if (!change) return true;
+    return change.elementKey === elementKey
+        && (change.attribute === attribute || attribute.startsWith(`${change.attribute}[`));
+}
+
+function bumpScriptVersion(elementKey: string, attribute: string) {
+    _lastScriptChange = { elementKey, attribute };
     scriptVersion.update(n => n + 1);
 }
 
 export function setScriptParameter(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramName: string, value: string): string {
     if (!_bridge) return "error";
     const result = _bridge.SetScriptParameter(elementKey, attribute, containerPath, scriptIndex, paramName, value);
-    if (result === "ok") bumpScriptVersion();
+    if (result === "ok") bumpScriptVersion(elementKey, attribute);
     refreshUndoRedo();
     return result;
 }
@@ -1634,7 +1652,7 @@ export function setScriptParameter(elementKey: string, attribute: string, contai
 export function addScriptListItem(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramAttribute: string, value: string): string {
     if (!_bridge) return "error";
     const result = _bridge.AddScriptListItem(elementKey, attribute, containerPath, scriptIndex, paramAttribute, value);
-    if (result === "ok") bumpScriptVersion();
+    if (result === "ok") bumpScriptVersion(elementKey, attribute);
     refreshUndoRedo();
     return result;
 }
@@ -1642,7 +1660,7 @@ export function addScriptListItem(elementKey: string, attribute: string, contain
 export function removeScriptListItem(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramAttribute: string, key: string): string {
     if (!_bridge) return "error";
     const result = _bridge.RemoveScriptListItem(elementKey, attribute, containerPath, scriptIndex, paramAttribute, key);
-    if (result === "ok") bumpScriptVersion();
+    if (result === "ok") bumpScriptVersion(elementKey, attribute);
     refreshUndoRedo();
     return result;
 }
@@ -1650,7 +1668,7 @@ export function removeScriptListItem(elementKey: string, attribute: string, cont
 export function updateScriptListItem(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramAttribute: string, key: string, value: string): string {
     if (!_bridge) return "error";
     const result = _bridge.UpdateScriptListItem(elementKey, attribute, containerPath, scriptIndex, paramAttribute, key, value);
-    if (result === "ok") bumpScriptVersion();
+    if (result === "ok") bumpScriptVersion(elementKey, attribute);
     refreshUndoRedo();
     return result;
 }
@@ -1658,7 +1676,7 @@ export function updateScriptListItem(elementKey: string, attribute: string, cont
 export function setScriptListItemCount(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramAttribute: string, count: number): string {
     if (!_bridge) return "error";
     const result = _bridge.SetScriptListItemCount(elementKey, attribute, containerPath, scriptIndex, paramAttribute, count);
-    if (result === "ok") bumpScriptVersion();
+    if (result === "ok") bumpScriptVersion(elementKey, attribute);
     refreshUndoRedo();
     return result;
 }
@@ -1666,7 +1684,7 @@ export function setScriptListItemCount(elementKey: string, attribute: string, co
 export function addScriptDictCase(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramAttribute: string, key: string): string {
     if (!_bridge) return "error";
     const result = _bridge.AddScriptDictCase(elementKey, attribute, containerPath, scriptIndex, paramAttribute, key);
-    if (result === "ok") bumpScriptVersion();
+    if (result === "ok") bumpScriptVersion(elementKey, attribute);
     refreshUndoRedo();
     return result;
 }
@@ -1674,7 +1692,7 @@ export function addScriptDictCase(elementKey: string, attribute: string, contain
 export function removeScriptDictCase(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramAttribute: string, key: string): string {
     if (!_bridge) return "error";
     const result = _bridge.RemoveScriptDictCase(elementKey, attribute, containerPath, scriptIndex, paramAttribute, key);
-    if (result === "ok") bumpScriptVersion();
+    if (result === "ok") bumpScriptVersion(elementKey, attribute);
     refreshUndoRedo();
     return result;
 }
@@ -1682,7 +1700,7 @@ export function removeScriptDictCase(elementKey: string, attribute: string, cont
 export function renameScriptDictCase(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramAttribute: string, oldKey: string, newKey: string): string {
     if (!_bridge) return "error";
     const result = _bridge.RenameScriptDictCase(elementKey, attribute, containerPath, scriptIndex, paramAttribute, oldKey, newKey);
-    if (result === "ok") bumpScriptVersion();
+    if (result === "ok") bumpScriptVersion(elementKey, attribute);
     refreshUndoRedo();
     return result;
 }
@@ -1690,7 +1708,7 @@ export function renameScriptDictCase(elementKey: string, attribute: string, cont
 export function setIfExpression(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, expression: string): string {
     if (!_bridge) return "error";
     const result = _bridge.SetIfExpression(elementKey, attribute, containerPath, scriptIndex, expression);
-    if (result === "ok") bumpScriptVersion();
+    if (result === "ok") bumpScriptVersion(elementKey, attribute);
     refreshUndoRedo();
     return result;
 }
@@ -1698,7 +1716,7 @@ export function setIfExpression(elementKey: string, attribute: string, container
 export function setElseIfExpression(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, elseIfIndex: number, expression: string): string {
     if (!_bridge) return "error";
     const result = _bridge.SetElseIfExpression(elementKey, attribute, containerPath, scriptIndex, elseIfIndex, expression);
-    if (result === "ok") bumpScriptVersion();
+    if (result === "ok") bumpScriptVersion(elementKey, attribute);
     refreshUndoRedo();
     return result;
 }
@@ -1707,7 +1725,7 @@ export function setElseIfExpression(elementKey: string, attribute: string, conta
 export function addScript(elementKey: string, attribute: string, containerPath: string, keyword: string, index = -1): string {
     if (!_bridge) return "error";
     const result = _bridge.AddScript(elementKey, attribute, containerPath, keyword, index);
-    if (result === "ok") bumpScriptVersion();
+    if (result === "ok") bumpScriptVersion(elementKey, attribute);
     refreshUndoRedo();
     return result;
 }
@@ -1715,7 +1733,7 @@ export function addScript(elementKey: string, attribute: string, containerPath: 
 export function deleteScript(elementKey: string, attribute: string, containerPath: string, scriptIndex: number): string {
     if (!_bridge) return "error";
     const result = _bridge.DeleteScript(elementKey, attribute, containerPath, scriptIndex);
-    if (result === "ok") bumpScriptVersion();
+    if (result === "ok") bumpScriptVersion(elementKey, attribute);
     refreshUndoRedo();
     return result;
 }
@@ -1723,7 +1741,7 @@ export function deleteScript(elementKey: string, attribute: string, containerPat
 export function moveScript(elementKey: string, attribute: string, containerPath: string, index1: number, index2: number): string {
     if (!_bridge) return "error";
     const result = _bridge.MoveScript(elementKey, attribute, containerPath, index1, index2);
-    if (result === "ok") bumpScriptVersion();
+    if (result === "ok") bumpScriptVersion(elementKey, attribute);
     refreshUndoRedo();
     return result;
 }
@@ -1733,7 +1751,7 @@ export function moveScript(elementKey: string, attribute: string, containerPath:
 export function moveScriptRange(elementKey: string, attribute: string, containerPath: string, start: number, count: number, delta: -1 | 1): string {
     if (!_bridge) return "error";
     const result = _bridge.MoveScriptRange(elementKey, attribute, containerPath, start, count, delta);
-    if (result === "ok") bumpScriptVersion();
+    if (result === "ok") bumpScriptVersion(elementKey, attribute);
     refreshUndoRedo();
     return result;
 }
@@ -1741,7 +1759,7 @@ export function moveScriptRange(elementKey: string, attribute: string, container
 export function addElse(elementKey: string, attribute: string, containerPath: string, scriptIndex: number): string {
     if (!_bridge) return "error";
     const result = _bridge.AddElse(elementKey, attribute, containerPath, scriptIndex);
-    if (result === "ok") bumpScriptVersion();
+    if (result === "ok") bumpScriptVersion(elementKey, attribute);
     refreshUndoRedo();
     return result;
 }
@@ -1749,7 +1767,7 @@ export function addElse(elementKey: string, attribute: string, containerPath: st
 export function addElseIf(elementKey: string, attribute: string, containerPath: string, scriptIndex: number): string {
     if (!_bridge) return "error";
     const result = _bridge.AddElseIf(elementKey, attribute, containerPath, scriptIndex);
-    if (result === "ok") bumpScriptVersion();
+    if (result === "ok") bumpScriptVersion(elementKey, attribute);
     refreshUndoRedo();
     return result;
 }
@@ -1757,7 +1775,7 @@ export function addElseIf(elementKey: string, attribute: string, containerPath: 
 export function removeElse(elementKey: string, attribute: string, containerPath: string, scriptIndex: number): string {
     if (!_bridge) return "error";
     const result = _bridge.RemoveElse(elementKey, attribute, containerPath, scriptIndex);
-    if (result === "ok") bumpScriptVersion();
+    if (result === "ok") bumpScriptVersion(elementKey, attribute);
     refreshUndoRedo();
     return result;
 }
@@ -1765,7 +1783,7 @@ export function removeElse(elementKey: string, attribute: string, containerPath:
 export function removeElseIf(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, elseIfIndex: number): string {
     if (!_bridge) return "error";
     const result = _bridge.RemoveElseIf(elementKey, attribute, containerPath, scriptIndex, elseIfIndex);
-    if (result === "ok") bumpScriptVersion();
+    if (result === "ok") bumpScriptVersion(elementKey, attribute);
     refreshUndoRedo();
     return result;
 }
@@ -1806,12 +1824,28 @@ export function getExpressionTemplates(expressionType: string): ExpressionTempla
     } catch { return null; }
 }
 
+// The script editor asks for this for every condition/expression field each time it renders,
+// and every edit re-renders the whole script, so with a large nested script the same answers
+// were being worked out over and over (#2747). The answer depends only on the expression text
+// and the game's expression templates, which are fixed once the game has loaded (a newly added
+// library only takes effect on reload), so it's cached until the next openGame.
+const expressionTemplateDataCache = new Map<string, ExpressionTemplateData | null>();
+const EXPRESSION_TEMPLATE_DATA_CACHE_LIMIT = 2000;
+
 export function getExpressionTemplateData(expression: string, expressionType: string): ExpressionTemplateData | null {
     if (!_bridge) return null;
+    const key = `${expressionType}\u0000${expression}`;
+    const cached = expressionTemplateDataCache.get(key);
+    if (cached !== undefined) return cached;
+    let data: ExpressionTemplateData | null;
     try {
         const json = _bridge.GetExpressionTemplateData(expression, expressionType);
-        return json ? JSON.parse(json) : null;
+        data = json ? JSON.parse(json) : null;
     } catch { return null; }
+    // Typing into a field asks about every intermediate value, so keep the cache bounded.
+    if (expressionTemplateDataCache.size >= EXPRESSION_TEMPLATE_DATA_CACHE_LIMIT) expressionTemplateDataCache.clear();
+    expressionTemplateDataCache.set(key, data);
+    return data;
 }
 
 function refreshSelectedData() {

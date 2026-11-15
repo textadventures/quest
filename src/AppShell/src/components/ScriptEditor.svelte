@@ -14,8 +14,10 @@
     import { t, tPlural } from "#lib/i18n/index.js";
     import { docsUrlForScriptKeyword } from "#lib/docs-links.js";
     import { showToast } from "#lib/toast.js";
+    import { get } from "svelte/store";
     import {
         scriptVersion,
+        scriptChangeAffects,
         scriptClipboardHasContent,
         getScriptData,
         getScriptCode,
@@ -135,6 +137,7 @@
     // Staged "add case" key text, keyed by `${scriptIndex}:${paramAttribute}` - one row of
     // scriptdictionary controls can only appear once per script node, so this is unambiguous.
     let newCaseKeys = $state<Record<string, string>>({});
+    let lookupsLoaded = false;
     let objectNames = $state<string[]>([]);
     let exitNames = $state<string[]>([]);
     let pageNames = $state<string[]>([]);
@@ -164,11 +167,26 @@
         if (isRoot) codeViewMode = $defaultCodeView;
     });
 
-    // Load on mount and whenever scriptVersion bumps (undo/redo)
+    // What the root's scriptData was last loaded for, so a scriptVersion bump from an edit to
+    // some other script doesn't reload (and re-render) this one's whole tree (#2747).
+    let loadedVersion = -1;
+    let loadedKey: string | null = null;
+    let loadedAttribute: string | null = null;
+
+    // Load on mount, when the element/attribute changes, and whenever scriptVersion bumps for
+    // this script (an edit to it, or undo/redo)
     $effect(() => {
         const version = $scriptVersion; // track for reactivity on undo/redo
+        const key = elementKey;
+        const attr = attribute;
         if (isRoot) {
-            scriptData = version >= 0 ? loadScriptData() : null;
+            const shown = key === loadedKey && attr === loadedAttribute;
+            if (!shown || (version !== loadedVersion && scriptChangeAffects(key, attr))) {
+                loadedKey = key;
+                loadedAttribute = attr;
+                scriptData = loadScriptData();
+            }
+            loadedVersion = version;
         }
         // Any cut/delete/undo just removed the currently-selected rows, so a selection can't
         // survive a scriptVersion bump — except a move, which pre-sets nextSelection (see
@@ -178,26 +196,18 @@
         selectedIndices.clear();
         for (const i of nextSelection ?? []) selectedIndices.add(i);
         nextSelection = null;
-        if (categories.length === 0) {
+        // Once per editor instance, not on every scriptVersion bump: with a big nested script
+        // there's one instance per nested block, and a list that's legitimately empty (a game
+        // with no exits or pages) was fetched again by every one of them on every edit (#2747).
+        if (!lookupsLoaded) {
+            lookupsLoaded = true;
             void getScriptCommandCategories().then(cats => {
                 if (cats) categories = cats.categories;
             });
-        }
-        if (objectNames.length === 0) {
-            const names = getObjectNames();
-            if (names && names.length > 0) objectNames = names;
-        }
-        if (exitNames.length === 0) {
-            const names = getExitNames();
-            if (names && names.length > 0) exitNames = names;
-        }
-        if (pageNames.length === 0) {
-            const names = getPageNames();
-            if (names && names.length > 0) pageNames = names;
-        }
-        if (functionInfos.length === 0) {
-            const infos = getExpressionFunctions().filter(f => f.isUserDefined);
-            if (infos.length > 0) functionInfos = infos;
+            objectNames = getObjectNames() ?? [];
+            exitNames = getExitNames() ?? [];
+            pageNames = getPageNames() ?? [];
+            functionInfos = getExpressionFunctions().filter(f => f.isUserDefined);
         }
         for (const type of EXPRESSION_TEMPLATE_TYPES) {
             if (!(type in templatesByType)) {
@@ -260,6 +270,9 @@
     function refresh() {
         if (isRoot) {
             scriptData = loadScriptData();
+            // An edit has already bumped scriptVersion by now, so the load effect needn't
+            // reload the same data again.
+            loadedVersion = get(scriptVersion);
         }
         expressionOverrides.clear();
         templateParamOverrides.clear();
