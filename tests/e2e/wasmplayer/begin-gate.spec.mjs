@@ -16,6 +16,10 @@
 //   Begin shows, and the script carries on once the sound has played.
 // - fixtures/begin-gate-autoplay.aslx: a start script that writes an <audio autoplay>. Begin
 //   shows, and the music plays on the click.
+// - fixtures/begin-gate-video.aslx: the same with a <video autoplay> that has sound (#2854).
+//   Begin shows, and the video plays on the click.
+// - fixtures/begin-gate-video-muted.aslx: a muted <video autoplay>, which browsers allow. No
+//   Begin.
 // - fixtures/begin-gate-intro.aslx: an intro whose second line comes from a 1-second timer.
 //   Game time stands still while Begin shows, so the line only comes after the click.
 // - fixtures/begin-gate-v4-wait.asl: a Quest 4 start script that waits for a key. The game is
@@ -139,6 +143,23 @@ test('begin-gate', async ({ baseURL }) => {
             await page.click('#qv-clicktobegin-btn');
             await page.waitForFunction(() => window.__played.length > 0, null, { timeout: 5000 }).catch(() => {});
             check((await played(page)).join() === 'theme.mp3', 'clicking Begin plays the music');
+            await page.close();
+        }
+
+        {
+            const { page, outcome } = await open('begin-gate-video.aslx');
+            check(outcome === 'begin', 'a start script that writes a <video autoplay> with sound shows Begin');
+            check((await played(page)).length === 0, 'the video waits for the click');
+            await page.click('#qv-clicktobegin-btn');
+            await page.waitForFunction(() => window.__played.length > 0, null, { timeout: 5000 }).catch(() => {});
+            check((await played(page)).join() === 'intro.mp4', 'clicking Begin plays the video');
+            await page.close();
+        }
+
+        {
+            const { page, outcome } = await open('begin-gate-video-muted.aslx');
+            check(outcome === 'started', 'a start script that writes a muted <video autoplay> starts without Begin');
+            await waitForText(page, 'The silent film starts.');
             await page.close();
         }
 
