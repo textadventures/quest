@@ -172,16 +172,18 @@ export interface VerbInfo {
   displayPattern: string
 }
 
+// Fields left at null/false are left out of the JSON (see ScriptDataJsonContext), so all but
+// controlType are optional.
 export interface ScriptControlData {
   controlType: string
-  caption: string | null
-  attribute: string | null
-  value: string | null
-  simpleEditor: string | null
-  simpleLabel: string | null
-  source: string | null
-  options: ControlOption[] | null
-  scripts: ScriptNodeData[] | null
+  caption?: string | null
+  attribute?: string | null
+  value?: string | null
+  simpleEditor?: string | null
+  simpleLabel?: string | null
+  source?: string | null
+  options?: ControlOption[] | null
+  scripts?: ScriptNodeData[] | null
   objectType?: string | null
   isFunctionPicker?: boolean
   isFunctionParams?: boolean
@@ -238,6 +240,7 @@ export interface ScriptNodeData {
   expression?: string
   thenScripts?: ScriptNodeData[]
   elseIfClauses?: ElseIfClauseData[]
+  // Absent when the if has no else; an else with no scripts in it is an empty list.
   elseScripts?: ScriptNodeData[] | null
 }
 

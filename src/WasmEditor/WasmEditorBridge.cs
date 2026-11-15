@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.JavaScript;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -246,12 +247,20 @@ internal record VerbInfo(string Attribute, string DisplayPattern);
 
 internal record ExpressionFunctionData(string Name, List<string> Parameters, bool IsUserDefined, bool IsLibrary);
 
-// MaxDepth: ScriptBlockData nests 4 JSON levels per wait/for/firsttime block (node -> controls ->
-// control -> scripts), so the default limit of 64 failed at ~15 nested blocks (#2586).
+// The script editor's data (GetScriptData), which it reloads after every edit. Most of each
+// control's fields are null or false, and writing them all out for every control of a big nested
+// script made the JSON about three times the size, so this leaves defaults out (#2747) - the
+// client's types mark those fields optional. MaxDepth: ScriptBlockData nests 4 JSON levels per
+// wait/for/firsttime block (node -> controls -> control -> scripts), so the default limit of 64
+// failed at ~15 nested blocks (#2586).
+[JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase, MaxDepth = 1024,
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault)]
+[JsonSerializable(typeof(ScriptBlockData))]
+internal partial class ScriptDataJsonContext : JsonSerializerContext;
+
 [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase, MaxDepth = 1024)]
 [JsonSerializable(typeof(List<TreeNodeData>))]
 [JsonSerializable(typeof(EditorDataResponse))]
-[JsonSerializable(typeof(ScriptBlockData))]
 [JsonSerializable(typeof(ScriptCommandCategoriesData))]
 [JsonSerializable(typeof(List<string>))]
 [JsonSerializable(typeof(List<ExpressionTemplate>))]
@@ -1867,7 +1876,7 @@ public partial class WasmEditorBridge
             return null;
         }
 
-        return JsonSerializer.Serialize(BuildScriptBlockData(scripts), WasmEditorJsonContext.Default.ScriptBlockData);
+        return JsonSerializer.Serialize(BuildScriptBlockData(scripts), ScriptDataJsonContext.Default.ScriptBlockData);
     }
 
     [JSExport]
@@ -4359,8 +4368,6 @@ public partial class WasmEditorBridge
     private static ScriptControlData BuildScriptControlData(IEditorControl ctrl, IEditorData editorData)
     {
         string? value = null;
-        string? simpleEditor = null;
-        List<ControlOption>? options = null;
         List<ScriptNodeData>? nestedScripts = null;
         List<CaseScriptData>? cases = null;
 
@@ -4395,6 +4402,62 @@ public partial class WasmEditorBridge
             }
         }
 
+        var info = ScriptControlInfoCache.GetValue(ctrl, BuildScriptControlInfo);
+        return new ScriptControlData(
+            ctrl.ControlType!,
+            ctrl.Caption,
+            ctrl.Attribute,
+            value,
+            info.SimpleEditor,
+            info.SimpleLabel,
+            info.Source,
+            info.Options,
+            nestedScripts,
+            info.ObjectType,
+            info.IsFunctionPicker,
+            info.IsFunctionParams,
+            info.BreakBefore,
+            info.UseTemplates,
+            cases,
+            info.Multiline,
+            info.Expand,
+            info.Freetext,
+            info.Minimum,
+            info.Maximum,
+            info.Increment,
+            info.Colour
+        );
+    }
+
+    // What a script control's definition says about how to edit it, which doesn't change while a
+    // game is open. Every edit reloads the whole script, so for a big nested script reading these
+    // again for every control on every edit added up (#2747). Keyed by the control itself, which
+    // EditorController keeps for as long as the game is open; a weak table, so a closed game's
+    // controls aren't kept alive.
+    private static readonly ConditionalWeakTable<IEditorControl, ScriptControlInfo> ScriptControlInfoCache = new();
+
+    private sealed record ScriptControlInfo(
+        string? SimpleEditor,
+        string? SimpleLabel,
+        string? Source,
+        List<ControlOption>? Options,
+        string? ObjectType,
+        bool IsFunctionPicker,
+        bool IsFunctionParams,
+        bool BreakBefore,
+        string? UseTemplates,
+        bool Multiline,
+        bool Expand,
+        bool Freetext,
+        double? Minimum,
+        double? Maximum,
+        double? Increment,
+        string? Colour);
+
+    private static ScriptControlInfo BuildScriptControlInfo(IEditorControl ctrl)
+    {
+        string? simpleEditor = null;
+        List<ControlOption>? options = null;
         string? simpleLabel = null;
         string? source = null;
         string? objectType = null;
@@ -4469,22 +4532,16 @@ public partial class WasmEditorBridge
         var maximum = isNumericSimpleEditor ? GetNumericHint(ctrl, "maximum") : null;
         var increment = isNumericSimpleEditor ? GetNumericHint(ctrl, "increment") : null;
 
-        return new ScriptControlData(
-            ctrl.ControlType!,
-            ctrl.Caption,
-            ctrl.Attribute,
-            value,
+        return new ScriptControlInfo(
             simpleEditor,
             simpleLabel,
             source,
             options,
-            nestedScripts,
             objectType,
             isFunctionPicker,
             isFunctionParams,
             breakBefore,
             useTemplates,
-            cases,
             multiline,
             expand,
             freetext,
