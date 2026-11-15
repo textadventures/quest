@@ -1,0 +1,22 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- A game whose start writes a muted <video autoplay>, which browsers play without a click
+       (wasmplayer/begin-gate.spec.mjs). -->
+  <game name="BeginGateVideoMuted">
+    <start type="script">
+      msg ("&lt;video src='intro.mp4' autoplay muted&gt;&lt;/video&gt;The silent film starts.")
+    </start>
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="editor_object" />
+      <inherit name="editor_player" />
+    </object>
+  </object>
+
+</asl>

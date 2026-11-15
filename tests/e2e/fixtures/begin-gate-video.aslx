@@ -1,0 +1,22 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- A game whose start writes a <video autoplay> with sound, as in issue #2854
+       (wasmplayer/begin-gate.spec.mjs). -->
+  <game name="BeginGateVideo">
+    <start type="script">
+      msg ("&lt;video src='intro.mp4' autoplay&gt;&lt;/video&gt;The film starts.")
+    </start>
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="editor_object" />
+      <inherit name="editor_player" />
+    </object>
+  </object>
+
+</asl>
