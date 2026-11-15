@@ -50,6 +50,8 @@ Leave "Use default prefix and suffix" ticked and Quest Viva works the prefix out
 
 The dropdown near the bottom of the tab sets whether the object is an inanimate thing, a male or female character, a named character, or a plural. This decides which pronouns Quest Viva uses when it writes about the object — "it", "him", "her", "them" — and how the default prefix comes out. Getting it right saves you writing round the problem in every message.
 
+The same pronoun is what the player can type for the object they last mentioned: after X LAMP, TAKE IT takes the lamp, with "(the lamp)" printed first so they know which object Quest Viva picked.
+
 ### Descriptions
 
 The **"Look at" object description** is what the player is shown when they examine the object. It can be plain text, or a script if the description depends on the state of the game. Text descriptions can use the [text processor](/howto/text/text-processor), which is usually simpler than a script:

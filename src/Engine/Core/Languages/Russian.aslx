@@ -15,6 +15,7 @@ This is first version done by Daria Mikhaylova, Yeshi Namkhai. It manages declin
   <template name="LanguageId">ru</template>
 
   <template name="UnresolvedObject">Я не вижу ничего с таким названием</template>
+  <dynamictemplate name="PronounResolved">"(" + GetDisplayAlias(object) + ")"</dynamictemplate>
   <template name="UnresolvedLocation">Ты не можешь туда пойти</template>
   <template name="DefaultObjectDescription">Ничего из ряда вон выходящего</template>
   <template name="DefaultSelfDescription">Хорошо выглядишь</template>

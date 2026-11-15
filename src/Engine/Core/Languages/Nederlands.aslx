@@ -5,6 +5,7 @@
 
   <!-- Contributed by Lina Anna -->
   <template name="UnresolvedObject">Ik zie dat hier niet.</template>
+  <dynamictemplate name="PronounResolved">"(" + GetDisplayAlias(object) + ")"</dynamictemplate>
   <template name="UnresolvedLocation">Je kan hier niet heen gaan.</template>
   <template name="DefaultObjectDescription">Niets bijzonders.</template>
   <dynamictemplate name="TakeSuccessful">"Je pakt " + object.article + " op."</dynamictemplate>

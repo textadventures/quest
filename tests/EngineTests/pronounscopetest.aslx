@@ -20,6 +20,14 @@
       <take />
       <look>A short stick.</look>
     </object>
+    <exit alias="north" to="hall">
+      <inherit name="northdirection" />
+    </exit>
+  </object>
+  <object name="hall">
+    <exit alias="south" to="room">
+      <inherit name="southdirection" />
+    </exit>
   </object>
   <object name="elsewhere"/>
 

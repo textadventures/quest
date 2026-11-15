@@ -18,6 +18,7 @@
   <!-- questa riga sopra, suggerita da Pertex, serve a includere anche il template inglese -->
 
   <template name="UnresolvedObject">Non vedo nulla con questo nome.</template>
+  <dynamictemplate name="PronounResolved">"(" + GetDisplayAlias(object) + ")"</dynamictemplate>
   <template name="UnresolvedLocation">Non puoi andare la'.</template>
   <template name="DefaultObjectDescription">Non si tratta di niente di straordinario.</template>
   <template name="DefaultSelfDescription">Sembri a posto.</template>

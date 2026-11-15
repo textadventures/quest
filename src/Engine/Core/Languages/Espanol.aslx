@@ -15,6 +15,7 @@
   <template name="NothingToRepeat">No hay nada para repetir.</template>
 
   <template name="UnresolvedObject">No veo eso.</template>
+  <dynamictemplate name="PronounResolved">"(" + GetDisplayAlias(object) + ")"</dynamictemplate>
   <template name="UnresolvedLocation">No puedes ir por ahí.</template>
   <template name="DefaultObjectDescription">Nada fuera de lo común.</template>
   <template name="DefaultSelfDescription">Te ves bien.</template>
