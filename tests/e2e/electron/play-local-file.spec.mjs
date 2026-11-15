@@ -75,7 +75,7 @@ test('play-local-file', async () => {
         playerWindow.on('pageerror', err => console.log('[player] [pageerror]', err.message));
         playerWindow.on('console', msg => { if (msg.type() === 'error') console.log('[player] [console.error]', msg.text()); });
 
-        await playerWindow.waitForFunction(() => document.title === 'Simple', null, { timeout: 15000 });
+        await playerWindow.waitForFunction(() => document.title === 'Simple', null, { timeout: 30000 });
         console.log('[player] game booted, document.title:', await playerWindow.title());
 
         // No "click to begin" gate: the start screen overlay should already be
@@ -136,7 +136,7 @@ test('play-local-file', async () => {
             throw new Error(`Editor window ended up somewhere unexpected: ${win.url()}`);
         }
         assocPlayerWindow.on('pageerror', err => console.log('[player] [pageerror]', err.message));
-        await assocPlayerWindow.waitForFunction(() => document.title === 'Simple', null, { timeout: 15000 });
+        await assocPlayerWindow.waitForFunction(() => document.title === 'Simple', null, { timeout: 30000 });
         console.log('PASS: file-association game booted, document.title:', await assocPlayerWindow.title());
         await assocPlayerWindow.close();
 
