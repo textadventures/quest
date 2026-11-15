@@ -87,7 +87,7 @@ Quest Viva responds with "It weighs grams." Why? Because he doesn't have a "weig
 
 Go back to the script for the "weigh" command, select the existing "Print a message" command and click the "Cut" button on the Script Editor to move this to the clipboard.
 
-Now, add a new "if" command. From the dropdown, select "object has attribute". Enter the object expression "object". For the attribute, leave "name" selected and type in "weight".
+Now, add a new "if" command. From the dropdown, select "object has attribute". For the object, enter the expression "object", and for the attribute, type "weight".
 
 Expand the "Then" script, and click Paste to restore the previous "print a message" script. For the "Else" script, print a message like "You can't weigh that".
 

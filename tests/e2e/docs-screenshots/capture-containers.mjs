@@ -91,7 +91,7 @@ chest.locked = false`);
     const maxObjectsField = page.getByText('Maximum number of objects:', { exact: true })
         .locator('xpath=following::input[1]');
     await maxObjectsField.fill('5');
-    const countMessageField = page.getByText('Full container message (leave blank for default):', { exact: true }).first()
+    const countMessageField = page.getByText('Too many objects message (leave blank for default):', { exact: true })
         .locator('xpath=following::input[1]');
     await countMessageField.fill("You can't fit anything else in the backpack.");
 

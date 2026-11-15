@@ -67,12 +67,10 @@ await runCapture(async ({ page, baseUrl }) => {
     await addScriptCommand(page, addScriptButtons(page).first(), { category: 'Scripts', item: 'If...' });
     const ifSelect = page.locator('xpath=(//span[text()="if"]/following-sibling::select[1])[1]');
     await ifSelect.selectOption('object has attribute');
-    // Two inputs follow: the object expression (defaults to "object", left as-is) and the
-    // attribute name (defaults to an empty quoted string) — take the second by document
-    // position. Not following-sibling: the object expression's input is now wrapped in its
-    // own <div> alongside an "Insert object or function" button, so it's no longer a direct
-    // sibling of the "if" span.
-    const attrNameInput = page.locator('xpath=//span[text()="if"]/following::input[2]');
+    // The template's fields are labelled ("Object", "Attribute"), each label followed by its
+    // fx toggle and then its input. The doc tells the reader to enter "object" for the object.
+    await page.locator('xpath=//span[text()="if"]/..//span[text()="Object"]/following::input[1]').fill('object');
+    const attrNameInput = page.locator('xpath=//span[text()="if"]/..//span[text()="Attribute"]/following::input[1]');
     await attrNameInput.fill('weight');
 
     // The "Then" block's own "+ Add script" is the first on screen at this point (the if's

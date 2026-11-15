@@ -95,14 +95,22 @@ WasmPlayer's game-bytes request, including on every reload.
 ```js
 const playerPage = await openPreview(page);
 await sendCommand(playerPage, 'open fridge');
-await capture(playerPage, out('Containerfridge.png'), { untilLocator: playerPage.locator('#txtCommand') });
+await capturePlayer(playerPage, out('Containerfridge.png'));
 ```
 
-`sendCommand` waits for the previous turn to finish (`window.canSendCommand`)
-both before and after submitting, so the transcript is fully settled by the
-time you call `capture()` — no arbitrary `waitForTimeout`. `capture()` itself
-is unchanged and works against either page; `#txtCommand` is always the last
-element in the transcript, so it's the natural `untilLocator` for player shots.
+A game made in the editor plays in the new (v2) interface, whose command bar is pinned to the
+bottom of the window, so cropping with `capture()`'s `untilLocator` would leave a tall gap above
+it. `capturePlayer()` instead resizes the window to fit the transcript and panes. `sendCommand`
+waits for the previous turn to finish (`window.canSendCommand`) both before and after submitting,
+and `openPreview`/`waitForPlayer` wait for the start screen to go, so nothing needs an arbitrary
+`waitForTimeout`. `COMMAND_INPUT` matches both interfaces' command input. `launch()` turns on
+reduced motion, which stops the map animating, so a map is settled once its turn is.
+
+**Object pickers are comboboxes.** In the script editor, an object or function picker (an `if`
+condition's object, "Set flag", "Call function") is a text input with `role="combobox"`, not a
+`<select>`: use `pickIfObject`/`pickObject`, which type the name, click the option, and wait for
+the autosave. Find template fields by their label (`//span[text()="flag name"]/following::input[1]`)
+rather than by position, since the combobox is an input too.
 
 **Gotcha:** several container/object fields the tutorial text references
 (e.g. "List children when object is looked at or opened") are flagged

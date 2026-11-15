@@ -5,7 +5,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
     runCapture, createLocalDraft, selectTreeNode, addElement, addAdvancedElement, addVerb,
-    openTab, setScriptCodeView, ifExpressionSelect, ifObjectSelect, capture,
+    openTab, setScriptCodeView, ifExpressionSelect, pickIfObject, capture,
 } from './lib.mjs';
 
 const imagesDir = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'site', 'public', 'images');
@@ -36,7 +36,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await page.getByRole('button', { name: 'OK', exact: true }).click();
     await page.waitForSelector('text=then');
     await ifExpressionSelect(page).selectOption('player is in room');
-    await ifObjectSelect(page).selectOption('room');
+    await pickIfObject(page, 'room');
     await page.locator('button:has-text("+ Add script")').first().click();
     await page.waitForSelector('text=Add Script Command');
     await page.getByRole('button', { name: 'OK', exact: true }).click();

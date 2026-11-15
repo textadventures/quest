@@ -5,7 +5,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
     runCapture, createLocalDraft, selectTreeNode, addElement, openTab,
-    toggleFeature, selectLabeledField, openPreview, sendCommand, capture,
+    toggleFeature, selectLabeledField, openPreview, sendCommand, capture, capturePlayer
 } from './lib.mjs';
 
 const imagesDir = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'site', 'public', 'images');
@@ -56,5 +56,5 @@ await runCapture(async ({ page, baseUrl }) => {
     await sendCommand(playerPage, 'look at tv');
     await sendCommand(playerPage, 'switch on tv');
     await sendCommand(playerPage, 'look at tv');
-    await capture(playerPage, out('Switchonoffplay.png'), { untilLocator: playerPage.locator('#txtCommand') });
+    await capturePlayer(playerPage, out('Switchonoffplay.png'));
 });

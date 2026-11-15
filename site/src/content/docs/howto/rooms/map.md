@@ -14,7 +14,7 @@ To turn the map on, select "game" in the tree, go to the _Interface_ tab, and ti
 - **Exit width** and **Exit colour** - how the lines between rooms are drawn.
 - **Respond to clicks on the map**, under Advanced - see [Handling player clicks](#handling-player-clicks).
 
-Run your game and move between rooms. When the player first enters a room, it's drawn on the map, and the yellow dot shows where they are. This is what it looks like for the tutorial game:
+Run your game and move between rooms. When the player first enters a room, it's drawn on the map, and a dot shows where they are. This is what it looks like for the tutorial game:
 
 ![](/images/Map.png)
 

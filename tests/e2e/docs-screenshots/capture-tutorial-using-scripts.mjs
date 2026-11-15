@@ -5,7 +5,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
     runCapture, createLocalDraft, selectTreeNode, addElement, openTab, addVerb,
-    ifExpressionSelect, ifObjectSelect, capture,
+    ifExpressionSelect, ifObjectSelect, pickIfObject, capture,
 } from './lib.mjs';
 
 const imagesDir = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'site', 'public', 'images');
@@ -46,7 +46,7 @@ await runCapture(async ({ page, baseUrl }) => {
 
     // --- Addif3.png: condition set to "object is switched on", object "TV" ---
     await ifExpressionSelect(page).selectOption('object is switched on');
-    await ifObjectSelect(page).selectOption('TV');
+    await pickIfObject(page, 'TV');
     await capture(page, out('Addif3.png'), { untilLocator: elseIfButton, cursorAt: ifObjectSelect(page) });
 
     // --- Addif4.png: Then/Else print-message scripts filled in ---
