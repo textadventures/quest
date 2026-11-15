@@ -12,7 +12,7 @@ This page summarises what has changed in each Quest Viva release. If you're comi
 
 ### A new player interface
 
-The biggest change in 6.1 is a new interface for playing games. The old one dates back to Quest 5. Quest Viva 6.0 made it work on phones, but it was never really designed for them. The new one was designed for phones and desktops from the start.
+The biggest change in 6.1 is a new interface for playing games. The old one dates back to Quest 5, around 2012. Quest Viva 6.0 made it work well on phones, but it still looked very much of its time. The new one has a cleaner, more modern look, and gives you more control over the layout.
 
 Here's what's different:
 
