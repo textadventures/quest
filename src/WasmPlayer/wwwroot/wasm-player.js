@@ -2939,6 +2939,15 @@ function showError(downloadUrl, isLocalFile, error) {
     if (isLocalFile) {
         html = '<strong>Couldn\'t open that file.</strong> '
             + 'It doesn\'t look like a Quest game file (.quest, .aslx, .asl or .cas). Choose a different file below.';
+    } else if (error?.fromGameApi && error.status === 410) {
+        // textadventures.co.uk answers 410 Gone for a game it has removed on
+        // purpose. That's nothing the player can fix, so don't suggest checking
+        // the address: say what happened and where to find other games.
+        html = '<strong>This game is no longer available.</strong> '
+            + 'It has been removed from textadventures.co.uk, so it can\'t be played here any more. '
+            + '<a class="anchor" href="https://textadventures.co.uk/" target="_blank" rel="noopener">'
+            + 'Find other games on textadventures.co.uk</a>. '
+            + 'If you have your own copy of the game file, you can still load it with the file picker below.';
     } else if (Number.isInteger(error?.status)) {
         // We got a real HTTP response, so we know exactly why it failed —
         // no need to guess at CORS. downloadUrl may still be unknown here
@@ -3238,6 +3247,7 @@ async function fetchGameBytes(url) {
             if (!apiResponse.ok) {
                 const err = new Error(`API: HTTP ${apiResponse.status}`);
                 err.status = apiResponse.status;
+                err.fromGameApi = true;
                 throw err;
             }
             const { sourceGameUrl, resourceRoot: resRoot, name, author, cover } = await apiResponse.json();
