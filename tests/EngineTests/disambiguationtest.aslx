@@ -1,0 +1,38 @@
+<asl version="600">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="disambiguationtest"/>
+  <object name="room">
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <!-- Both keys match "key" in full through their alt name; the key ring only partially -->
+    <object name="red_key">
+      <inherit name="editor_object"/>
+      <alias>red key</alias>
+      <alt type="stringlist">
+        <value>key</value>
+      </alt>
+    </object>
+    <object name="blue_key">
+      <inherit name="editor_object"/>
+      <alias>blue key</alias>
+      <alt type="stringlist">
+        <value>key</value>
+      </alt>
+    </object>
+    <object name="key_ring">
+      <inherit name="editor_object"/>
+      <alias>key ring</alias>
+    </object>
+    <!-- Neither matches "box" in full -->
+    <object name="box_lid">
+      <inherit name="editor_object"/>
+      <alias>box lid</alias>
+    </object>
+    <object name="boxing_glove">
+      <inherit name="editor_object"/>
+      <alias>boxing glove</alias>
+    </object>
+  </object>
+</asl>

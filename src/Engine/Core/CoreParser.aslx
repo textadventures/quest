@@ -604,7 +604,14 @@
       else {
         // Added this line to resolve issue with new FinishTurn setup in 580
         game.disambiguating = true
-        candidates = ListCompact(ListCombine(fullmatches, partialmatches))
+        // Partial matches are only offered when nothing matched the whole name, the same rule
+        // as the single-match cases above
+        if (ListCount(fullmatches) > 0) {
+          candidates = fullmatches
+        }
+        else {
+          candidates = partialmatches
+        }
 
         if (LengthOf(variable) > 0) {
           // single object command, so after showing the menu, add the object to game.pov.currentcommandresolvedelements
