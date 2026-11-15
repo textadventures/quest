@@ -307,7 +307,7 @@
     // this same simple/expression-shape check works for both an ordinary script command param
     // and a control nested inside an expression template (e.g. RandomChance's "percentile") -
     // see inTemplateParamSimpleMode below, which is the only other caller of this shape.
-    type SimpleValueLike = { simpleEditor: string | null; value: string | null };
+    type SimpleValueLike = { simpleEditor?: string | null; value?: string | null };
 
     function isSimpleValue(ctrl: SimpleValueLike, names: string[]): boolean {
         const v = ctrl.value ?? "";
@@ -374,16 +374,16 @@
     // expression, so the name stays put in both modes. A field right after a label control
     // (e.g. "Draw line from X1 [...]") is already named by it, so it gets no label of its own,
     // but that label's text still gives the toggle its accessible name.
-    type NamedControl = { controlType: string; caption: string | null; simpleLabel: string | null };
+    type NamedControl = { controlType: string; caption?: string | null; simpleLabel?: string | null };
 
     function fieldNames(controls: readonly NamedControl[], index: number): { visible: string | null; accessible: string | null } {
         const ctrl = controls[index];
         const prev = index > 0 ? controls[index - 1] : undefined;
         if (prev?.controlType === "label") {
             const text = (prev.caption ?? "").replace(/^[\s,;:]+|[\s,;:]+$/g, "");
-            return { visible: null, accessible: text || ctrl.simpleLabel || ctrl.caption };
+            return { visible: null, accessible: text || ctrl.simpleLabel || ctrl.caption || null };
         }
-        const name = ctrl.simpleLabel ?? ctrl.caption;
+        const name = ctrl.simpleLabel ?? ctrl.caption ?? null;
         return { visible: name, accessible: name };
     }
 
@@ -783,7 +783,7 @@
         mutate(() => updateScriptListItem(elementKey, attribute, containerPath, scriptIndex, paramAttribute, key, value));
     }
 
-    function parseListItems(value: string | null): {key: string, value: string}[] {
+    function parseListItems(value: string | null | undefined): {key: string, value: string}[] {
         try { return JSON.parse(value ?? "[]"); } catch { return []; }
     }
 
@@ -1136,7 +1136,7 @@
         {#if !labelIsRedundant}
             <span class="text-surface-600-400 select-none">{ctrl.caption ?? ""}</span>
         {/if}
-    {:else if ctrl.controlType === "script" && ctrl.attribute !== null}
+    {:else if ctrl.controlType === "script" && ctrl.attribute != null}
         <!-- Nested script block for commands like for/while/foreach/firsttime -->
         {@const blockKey = `${siblingScriptId(scriptIndex)}/param/${ctrl.attribute}`}
         {@const collapsed = collapsedBlocks.has(blockKey)}
@@ -1163,7 +1163,7 @@
                 />
             {/if}
         </div>
-    {:else if ctrl.attribute !== null}
+    {:else if ctrl.attribute != null}
         {@render valueControl(ctrl, scriptIndex, siblingControls, controlIndex)}
     {/if}
 {/snippet}
@@ -1190,7 +1190,7 @@
 {/snippet}
 
 {#snippet valueControl(ctrl: ScriptControlData, scriptIndex: number, siblingControls: ScriptControlData[], controlIndex: number)}
-    {#if ctrl.controlType === "expression" && ctrl.simpleEditor !== null}
+    {#if ctrl.controlType === "expression" && ctrl.simpleEditor != null}
         {@const simple = inSimpleMode(ctrl, scriptIndex)}
         {@const names = fieldNames(siblingControls, controlIndex)}
         {#if ctrl.simpleEditor === "boolean"}
