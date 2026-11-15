@@ -17,6 +17,13 @@ public class GameData(byte[] data, string filename, IReadOnlyDictionary<string, 
 
     public Stream? GetAdjacentFile(string file)
     {
+        // A game is never its own adjacent file. Without this, deutsch.aslx including
+        // Deutsch.aslx finds itself on a case-insensitive disk instead of the built-in library.
+        if (string.Equals(file, GameId, StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
         return adjacentFiles != null && adjacentFiles.TryGetValue(file, out var bytes)
             ? new MemoryStream(bytes)
             : null;
