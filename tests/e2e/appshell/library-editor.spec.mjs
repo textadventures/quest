@@ -135,14 +135,17 @@ test('library-editor', async ({ baseURL }) => {
         // Core.aslx itself — a literal child <msg> element is not valid there.
         await setCmContent(page, `<library>\n  <function name="MyLibraryGreeting">\n    <![CDATA[<msg>${EDITED_MARKER}</msg>]]>\n  </function>\n</library>`);
         await page.locator('[data-value="game"][data-part="branch-control"]').click();
-        await page.waitForSelector('text=Reload the editor to apply your library changes', { timeout: 5000 });
+        // The banner waits for the edit to be checked by a throwaway load of the whole game
+        // (editor-store.ts's validateLibraryXml), as slow as a reload on a busy machine.
+        await page.waitForSelector('text=Reload the editor to apply your library changes', { timeout: 90000 });
         console.log('PASS: editing the custom library writes the file and shows the LibraryReloadBanner on blur');
 
         // --- Reload and confirm the edit persisted (file was actually written) ---
         await page.click('button:has-text("Reload")');
-        // WASM re-initialisation + game reload can take a while on slower first runs, so allow longer.
+        // The More button stays up while the editor reloads, so it doesn't say the reload is done; the
+        // banner going away does (editor-store.ts hides it once the game has loaded again).
+        await page.waitForSelector('text=Reload the editor to apply your library changes', { state: 'hidden', timeout: 90000 });
         await page.waitForSelector('button[title="More"]', { timeout: 90000 });
-        await page.waitForSelector('text=Reload the editor to apply your library changes', { state: 'hidden', timeout: 5000 });
         await revealLibraries(page);
         await treeItem(page, CUSTOM_LIBRARY).first().click();
         await page.waitForSelector('.cm-editor', { timeout: 10000 });
@@ -167,10 +170,14 @@ test('library-editor', async ({ baseURL }) => {
         // fail to load the game. Coming back up healthy with the valid content is the regression check.
         await setCmContent(page, `<library>\n  <function name="MyLibraryGreeting">\n    <![CDATA[<msg>${EDITED_MARKER} after a rejected edit</msg>]]>\n  </function>\n</library>`);
         await page.locator('[data-value="game"][data-part="branch-control"]').click();
-        await page.waitForSelector('text=Reload the editor to apply your library changes', { timeout: 5000 });
+        // The banner waits for the edit to be checked by a throwaway load of the whole game
+        // (editor-store.ts's validateLibraryXml), as slow as a reload on a busy machine.
+        await page.waitForSelector('text=Reload the editor to apply your library changes', { timeout: 90000 });
         await page.click('button:has-text("Reload")');
+        // The More button stays up while the editor reloads, so it doesn't say the reload is done; the
+        // banner going away does (editor-store.ts hides it once the game has loaded again).
+        await page.waitForSelector('text=Reload the editor to apply your library changes', { state: 'hidden', timeout: 90000 });
         await page.waitForSelector('button[title="More"]', { timeout: 90000 });
-        await page.waitForSelector('text=Reload the editor to apply your library changes', { state: 'hidden', timeout: 5000 });
         await revealLibraries(page);
         await treeItem(page, CUSTOM_LIBRARY).first().click();
         await page.waitForSelector('.cm-editor', { timeout: 10000 });
