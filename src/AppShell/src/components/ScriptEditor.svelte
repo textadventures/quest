@@ -976,7 +976,7 @@
                             >↓</button>
                             <button
                                 type="button"
-                                class="btn btn-xs preset-tonal-error px-1 py-0 text-xs leading-none pointer-coarse:hidden"
+                                class="btn btn-xs preset-outlined-error-500 px-1 py-0 text-xs leading-none pointer-coarse:hidden"
                                 title={t("common.delete")}
                                 onclick={() => onDelete(i)}
                             >×</button>
@@ -1075,8 +1075,8 @@
     {/if}
 
     {#if !(isRoot && isLocked)}
-        <!-- Add script row. Hovering or focusing it highlights the block it adds to (see
-             the style block), and a nested block's button names that block (#2663). -->
+        <!-- Add script row. Hovering Add script or Paste highlights the block they add to
+             (see the style block), and a nested block's button names that block (#2663). -->
         <div class="add-row flex items-center gap-1 mt-1 flex-wrap">
             {#if !codeViewMode && categories.length > 0}
                 <button
@@ -1092,14 +1092,14 @@
             {#if $scriptClipboardHasContent && !codeViewMode}
                 <button
                     type="button"
-                    class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5"
+                    class="paste-script btn btn-xs preset-outlined-primary-500 text-xs py-0.5"
                     onclick={() => onPaste()}
                 >{t("common.paste")}</button>
             {/if}
             {#if isRoot}
                 <button
                     type="button"
-                    class="btn btn-xs preset-outlined-primary-500 text-xs py-0.5"
+                    class="code-view-toggle btn btn-xs preset-outlined-primary-500 text-xs py-0.5"
                     onclick={onToggleCodeView}
                 >{codeViewMode ? t("scriptEditor.visualEditor") : t("scriptEditor.codeView")}</button>
             {/if}
@@ -1836,8 +1836,10 @@
 <style>
     /* #2663: show which block the author is working in. The row holding focus, and the
        innermost block holding it, get the primary colour (an outer row or block that only
-       holds focus through a nested one doesn't), as does that block's Add script button.
-       Hovering or focusing an Add script row highlights the block it adds to. */
+       holds focus through a nested one doesn't), and that block's Add script button is
+       tinted so the author can find it. Hovering Add script or Paste lights up only the
+       frame of the block they add to, not the button, so all the buttons in that row
+       react to hover alike. Code view adds nothing, so it highlights nothing. */
     .script-row:focus-within:not(:has(.script-row:focus-within)) {
         border-color: var(--color-primary-500);
     }
@@ -1847,15 +1849,14 @@
         border-color: var(--color-primary-500);
         background-color: color-mix(in oklab, var(--color-primary-500) 8%, var(--color-surface-50-950));
     }
-    .script-block:focus-within:not(:has(.script-block:focus-within)),
-    .script-block:has(> .add-row:hover) {
+    .script-block:focus-within:not(:has(.script-block:focus-within, > .add-row .code-view-toggle:focus)),
+    .script-block:has(> .add-row :is(.add-script, .paste-script):hover) {
         border-left-color: var(--color-primary-500);
         /* A second pixel outside the 1px rule, so the highlight is visible without the
            block's contents shifting. */
         box-shadow: -1px 0 0 var(--color-primary-500);
     }
-    .script-block:focus-within:not(:has(.script-block:focus-within)) > .add-row .add-script,
-    .add-row:hover .add-script {
+    .script-block:focus-within:not(:has(.script-block:focus-within, > .add-row .code-view-toggle:focus)) > .add-row .add-script {
         background-color: color-mix(in oklab, var(--color-primary-500) 15%, transparent);
     }
 </style>
