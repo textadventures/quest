@@ -212,6 +212,21 @@ public class HeadlessSessionTests
         StringAssert.Contains((await session.SendAsync("hello")).Text, "You typed: hello");
     }
 
+    // A Quest 4 game's Begin() only returns once its start has finished, so a wait in the intro
+    // or start script used to leave StartAsync waiting forever.
+    [TestMethod]
+    public async Task Quest4StartWaitsAreAnswered()
+    {
+        var session = await StartAsync("quest4-startwait.asl").WaitAsync(TimeSpan.FromSeconds(5));
+        var text = session.Opening.Text;
+        foreach (var expected in new[] { "Intro before the key.", "Intro after the key.", "Before the wait.", "After the wait." })
+        {
+            StringAssert.Contains(text, expected);
+        }
+
+        StringAssert.Contains((await session.SendAsync("look")).Text, "You are in room.");
+    }
+
     [TestMethod]
     public async Task Quest4TimersFireOnTick()
     {

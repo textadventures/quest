@@ -135,8 +135,31 @@ public sealed class HeadlessSession
                 $"Game '{gameData.GameId}' failed to load: {string.Join("; ", session._game.Errors)}");
         }
 
-        session.Opening = await session.RunStepAsync(() => session._game.Begin());
+        session.Opening = await session.RunStepAsync(session.BeginAsync);
         return session;
+    }
+
+    // Returns once the game's start has finished or is waiting on the player, whichever is first,
+    // like WasmPlayerBridge.Begin. A Quest 4 game's Begin() doesn't return until its start script
+    // has finished, so awaiting it would never reach AutoAdvanceAsync to answer a "press a key" in
+    // the start script or the intro text.
+    private async Task BeginAsync()
+    {
+        var suspended = new TaskCompletionSource();
+        void OnSuspended() => suspended.TrySetResult();
+        _game.TurnSuspended += OnSuspended;
+        try
+        {
+            var begin = _game.Begin();
+            if (await Task.WhenAny(begin, suspended.Task) == begin)
+            {
+                await begin;
+            }
+        }
+        finally
+        {
+            _game.TurnSuspended -= OnSuspended;
+        }
     }
 
     // Input as a player would type it: the answer to a pending menu or question, or else a command.
