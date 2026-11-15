@@ -27,7 +27,7 @@ Recording captures menu choices and yes/no answers as well as commands, so a wal
 
 ## Random numbers
 
-Play and Record always start the game with the same random numbers, so a walkthrough that goes through something random - a dice roll, a wandering character, a `{random:...}` description - plays out the same way every time you run it. The `qv walkthrough` command uses the same random numbers too.
+Play and Record always start the game with the same random numbers, so a walkthrough that goes through something random - a dice roll, a wandering character, a `{random:...}` description - plays out the same way every time you run it. The [`qv walkthrough`](/howto/testing/command-line#running-walkthroughs) command uses the same random numbers too.
 
 Which random numbers a game gets is decided by a number called its *seed*: the same seed always gives the same numbers. To play a walkthrough with different ones, give it a **Random seed** - any whole number - in the walkthrough editor. A sub-walkthrough uses its parent's seed unless it has one of its own. Leave the field empty to go back to the usual random numbers.
 

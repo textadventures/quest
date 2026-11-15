@@ -11,7 +11,7 @@ export const sidebar = [
                 "slug": "intro"
             },
             {
-                "label": "What's new in Quest Viva 6.0",
+                "label": "What's new",
                 "slug": "whats-new"
             },
             {
@@ -427,6 +427,10 @@ export const sidebar = [
                     {
                         "label": "Backing up your game",
                         "slug": "howto/testing/backups"
+                    },
+                    {
+                        "label": "The qv command-line tool",
+                        "slug": "howto/testing/command-line"
                     }
                 ]
             }

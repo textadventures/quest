@@ -51,6 +51,16 @@ Rooms have no _Features_ tab. The features above are all about things the player
 
 A feature on its own is still not enough for the first four in that list: the tab it reveals starts with a dropdown ("Can be eaten", "Object is a container", and so on) that is set to the inactive option. Tick the feature, go to the tab, and choose the option — otherwise nothing has changed.
 
+## Turning a feature off
+
+Unticking a feature hides its tab, but anything you set up there would still take effect in the game. So if the feature still has settings, the editor asks what to do with them, and lists them:
+
+- **Keep them** unticks the feature and leaves the settings as they are.
+- **Remove them** unticks the feature and removes its settings too. A single **Undo** puts them all back.
+- **Cancel** leaves the feature ticked.
+
+The same goes for a game feature: unticking Ask/Tell on the game lists every object that still has ask/tell topics. If an object has settings for a feature that's turned off - in a game made with an older version of Quest, say - the feature's tab stays visible, with a banner offering to turn the feature back on or remove the settings.
+
 ## Annotations
 
 With the "Annotations" game feature on, every room gains a _Notes_ tab: a free-text box for your own notes about that room. Nothing you write there is ever shown to the player, and it has no effect on the game.

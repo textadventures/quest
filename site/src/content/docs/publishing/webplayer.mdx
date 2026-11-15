@@ -6,8 +6,8 @@ sidebar:
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-:::caution[WebPlayer is deprecated]
-WebPlayer will be removed in Quest Viva 6.1, and no new versions of its Docker image will be published after that. The 6.0 images will stay available, so an existing WebPlayer server keeps working: pin it to a 6.0 version tag (for example `ghcr.io/textadventures/quest-viva-webplayer:6.0.0`) instead of `latest`.
+:::caution[WebPlayer is no longer part of Quest Viva]
+WebPlayer was removed in Quest Viva 6.1. Its last version is 6.0, which still works and can still play games made with Quest 5 and Quest Viva 6.0, but it won't get new features, and it can't play a game saved by Quest Viva 6.1 or later. To be sure of getting a 6.0 image, pin it to a 6.0 version tag (for example `ghcr.io/textadventures/quest-viva-webplayer:6.0.0`) instead of `latest`.
 
 For anything new, use [WasmPlayer](/publishing/hosting/) instead.
 :::

@@ -40,4 +40,6 @@ Gamebooks also have a **Language** dropdown here, recording the language your ga
 
 Everything on this tab travels with the published game file, and a catalogue that lists your game reads its title, author, category, cover art and description from there.
 
+When you [publish as HTML](/publishing/hosting#publish-as-html), the page gets your game's title and description too, so a link to it shared on Discord, a forum or social media shows a preview card with your game's name and blurb rather than Quest Viva's. The **Zip with player included** export also puts your cover art beside the page, for the preview to show.
+
 The _Setup_ tab is only the description of the game, though — getting it in front of players is a separate step. See [Publishing your game](/publishing).
