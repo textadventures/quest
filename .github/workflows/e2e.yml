@@ -333,10 +333,19 @@ jobs:
         working-directory: site
       - run: npm run build
         working-directory: site
+      # beta.questviva.com's build, for the specs that check what differs there
+      - run: npm run build -- --outDir dist-beta
+        working-directory: site
+        env:
+          PUBLIC_BETA_SITE: 'true'
       - run: npm ci
         working-directory: tests/e2e
       - run: npx playwright install --with-deps chromium
         working-directory: tests/e2e
+
+      - name: Start beta site server (4322)
+        run: python3 -m http.server 4322 -d dist-beta &
+        working-directory: site
 
       - name: Start site preview server (4321)
         run: npx astro preview &
@@ -349,11 +358,17 @@ jobs:
             [ "$i" -eq 30 ] && { echo "port 4321 never came up"; exit 1; }
             sleep 1
           done
+          for i in $(seq 1 30); do
+            curl -sf "http://localhost:4322/" > /dev/null && break
+            [ "$i" -eq 30 ] && { echo "port 4322 never came up"; exit 1; }
+            sleep 1
+          done
 
       - run: npx playwright test --project=site
         working-directory: tests/e2e
         env:
           SITE_URL: http://localhost:4321
+          BETA_SITE_URL: http://localhost:4322
       - name: Upload Playwright report
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v7

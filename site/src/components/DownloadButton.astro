@@ -5,17 +5,26 @@
 // Play tab) — same detect+fetch+match rules, duplicated rather than shared
 // since these are separate build pipelines (Astro vs. SvelteKit) with no
 // shared package between them.
+//
+// beta.questviva.com documents the next release, so it offers the newest
+// prerelease rather than GitHub's "latest" (which is always the newest stable
+// release). See "Docs site" in docs/release-channels.md.
+import { betaSite } from "../channel.mjs";
+
+const fallbackUrl = betaSite
+    ? "https://github.com/textadventures/quest/releases"
+    : "https://github.com/textadventures/quest/releases/latest";
 ---
 
-<div id="download-widget" class="download-widget">
-    <a class="download-fallback-link" href="https://github.com/textadventures/quest/releases/latest">
+<div id="download-widget" class="download-widget" data-beta={betaSite ? "true" : undefined}>
+    <a class="download-fallback-link" href={fallbackUrl}>
         All downloads (GitHub Releases)
     </a>
 </div>
 
 <script>
-    const RELEASES_API_URL = "https://api.github.com/repos/textadventures/quest/releases/latest";
-    const RELEASES_PAGE_URL = "https://github.com/textadventures/quest/releases/latest";
+    const LATEST_RELEASE_API_URL = "https://api.github.com/repos/textadventures/quest/releases/latest";
+    const RELEASES_API_URL = "https://api.github.com/repos/textadventures/quest/releases?per_page=30";
 
     interface ReleaseAsset {
         name: string;
@@ -23,8 +32,35 @@
     }
     interface ReleaseResponse {
         tag_name: string;
+        html_url: string;
         published_at: string;
+        prerelease: boolean;
+        draft: boolean;
         assets: ReleaseAsset[];
+    }
+
+    async function fetchJson<T>(url: string): Promise<T | null> {
+        try {
+            const response = await fetch(url);
+            if (!response.ok) return null;
+            return (await response.json()) as T;
+        } catch {
+            return null;
+        }
+    }
+
+    // The stable site wants GitHub's "latest" release, which is never a
+    // prerelease. The beta site wants the newest prerelease: the releases list
+    // is newest first, and drafts (a release still waiting for its installers,
+    // see finalize-release.yml) only show up for authenticated callers anyway.
+    // If no prerelease is in the first page, fall back to the stable release.
+    async function fetchRelease(beta: boolean): Promise<ReleaseResponse | null> {
+        if (beta) {
+            const releases = await fetchJson<ReleaseResponse[]>(RELEASES_API_URL);
+            const prerelease = releases?.find((r) => r.prerelease && !r.draft);
+            if (prerelease) return prerelease;
+        }
+        return fetchJson<ReleaseResponse>(LATEST_RELEASE_API_URL);
     }
 
     // Uses the visitor's own browser locale (undefined locale arg) rather
@@ -73,14 +109,10 @@
         if (!container) return;
         const detected = detectOs();
 
-        let release: ReleaseResponse;
-        try {
-            const response = await fetch(RELEASES_API_URL);
-            if (!response.ok) return; // keep the static fallback link
-            release = await response.json();
-        } catch {
-            return; // keep the static fallback link
-        }
+        const beta = container.dataset.beta === "true";
+        const fallbackUrl = container.querySelector("a")?.href ?? "https://github.com/textadventures/quest/releases";
+        const release = await fetchRelease(beta);
+        if (!release) return; // keep the static fallback link
 
         // Linux gets two candidates, not one — .deb and AppImage are both
         // valid choices (a release can also ship only one of the two;
@@ -114,7 +146,10 @@
             if (!other.asset) continue;
             nodes.push(makeLink(other.label, other.asset.browser_download_url, "download-secondary-link"));
         }
-        nodes.push(makeLink("All downloads", RELEASES_PAGE_URL, "download-fallback-link"));
+        // The beta site links to this prerelease's own page, since GitHub's
+        // releases/latest is always the stable one.
+        const allDownloadsUrl = beta && release.html_url ? release.html_url : fallbackUrl;
+        nodes.push(makeLink("All downloads", allDownloadsUrl, "download-fallback-link"));
 
         container.replaceChildren(...nodes);
     }

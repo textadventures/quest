@@ -5,9 +5,10 @@ editUrl: false
 ---
 
 import DownloadButton from '../../components/DownloadButton.astro';
+import { playSiteUrl } from '../../channel.mjs';
 
 Quest Viva is available as a native desktop app for Windows, Mac, and Linux.
 
 <DownloadButton />
 
-You can also play games and use the editor directly in your browser at [play.questviva.com](https://play.questviva.com) - no download required.
+You can also play games and use the editor directly in your browser at <a href={playSiteUrl}>{new URL(playSiteUrl).host}</a> - no download required.
