@@ -85,8 +85,10 @@ test('add-language-library', async ({ baseURL }) => {
 
         // Reloading proves the saved file has that order, and that the game still loads with it
         await page.click('button:has-text("Reload")');
+        // The More button stays up while the editor reloads, so it doesn't say the reload is done; the
+        // banner going away does (editor-store.ts hides it once the game has loaded again).
+        await page.waitForSelector('text=Reload the editor to apply your library changes', { state: 'hidden', timeout: 90000 });
         await page.waitForSelector('button[title="More"]', { timeout: 90000 });
-        await page.waitForSelector('text=Reload the editor to apply your library changes', { state: 'hidden', timeout: 10000 });
         assertOrder(await includeOrder(page), expected, 'After reload');
         console.log('PASS: after the editor reloads the game, the include order is unchanged');
 

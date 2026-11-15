@@ -135,12 +135,18 @@ test('colour-grid', async ({ baseURL }) => {
         if (screenshotDir) await grid.screenshot({ path: join(screenshotDir, 'colour-grid-wide.png') });
 
         // A narrow pane: each caption goes above its two colours, and nothing overflows.
+        // The table takes a moment to reflow, longer on a busy machine, so wait up to 5s for it.
         await page.setViewportSize({ width: 480, height: 900 });
-        await page.waitForTimeout(300);
-        const pageCaption = await grid.getByText('Page colour:', { exact: true }).boundingBox();
-        const pageLight = await field('Page colour').boundingBox();
-        const pageDark = await field('Dark mode page colour').boundingBox();
-        if (!pageCaption || !pageLight || !pageDark || pageLight.y <= pageCaption.y + pageCaption.height - 1 || Math.abs(pageLight.y - pageDark.y) > 1) {
+        let pageCaption, pageLight, pageDark;
+        const stacked = async () => {
+            pageCaption = await grid.getByText('Page colour:', { exact: true }).boundingBox();
+            pageLight = await field('Page colour').boundingBox();
+            pageDark = await field('Dark mode page colour').boundingBox();
+            return pageCaption && pageLight && pageDark
+                && pageLight.y > pageCaption.y + pageCaption.height - 1 && Math.abs(pageLight.y - pageDark.y) <= 1;
+        };
+        for (const deadline = Date.now() + 5000; !await stacked() && Date.now() < deadline;) await page.waitForTimeout(100);
+        if (!await stacked()) {
             throw new Error(`in a narrow pane the Page colour caption isn't above its two colours: ${JSON.stringify({ pageCaption, pageLight, pageDark })}`);
         }
         const overflow = await grid.evaluate(el => el.scrollWidth - el.clientWidth);

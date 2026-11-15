@@ -106,8 +106,13 @@ test('library-xml-extension', async ({ baseURL }) => {
         //     candidate discovery, not just that the upload succeeded ---
         await setCmContent(page, '<library>\n  <function name="MyXmlLibraryGreeting">\n    <![CDATA[<msg>Edited xml library</msg>]]>\n  </function>\n</library>');
         await page.locator('[data-value="game"][data-part="branch-control"]').click();
-        await page.waitForSelector('text=Reload the editor to apply your library changes', { timeout: 5000 });
+        // The banner waits for the edit to be checked by a throwaway load of the whole game
+        // (editor-store.ts's validateLibraryXml), as slow as a reload on a busy machine.
+        await page.waitForSelector('text=Reload the editor to apply your library changes', { timeout: 90000 });
         await page.click('button:has-text("Reload")');
+        // The More button stays up while the editor reloads, so it doesn't say the reload is done; the
+        // banner going away does (editor-store.ts hides it once the game has loaded again).
+        await page.waitForSelector('text=Reload the editor to apply your library changes', { state: 'hidden', timeout: 90000 });
         await page.waitForSelector('button[title="More"]', { timeout: 90000 });
         await revealLibraries(page);
         await treeItem(page, CUSTOM_LIBRARY).first().waitFor({ state: 'visible', timeout: 10000 });

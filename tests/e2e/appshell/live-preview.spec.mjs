@@ -73,7 +73,12 @@ test('live-preview', async ({ baseURL }) => {
                 throw new Error(`Preview didn't pick up ${what}: ${JSON.stringify(await playerState())}`);
             }
         };
+        // A change swaps in a fresh UI, which takes the new colours and layout before the output so
+        // far is put back into it (applyInterfaceChangesCore in wasm-player.js), so wait for that.
         const assertKept = async (after) => {
+            await preview.waitForFunction((before) => window.__livePreviewMarker !== true
+                || document.querySelector('[data-qv-part="output"]')?.innerText.includes(before), outputBefore.trim(), { timeout: 10000 })
+                .catch(() => {});
             const state = await playerState();
             if (!state.marker) throw new Error(`Preview reloaded after ${after}`);
             if (!state.output.includes(outputBefore.trim())) {

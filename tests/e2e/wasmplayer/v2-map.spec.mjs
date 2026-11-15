@@ -113,13 +113,21 @@ test('v2-map', async ({ baseURL }) => {
         });
         const zoomOf = (transform) => parseFloat(/scale\(([^)]+)\)/.exec(transform)?.[1] ?? 'NaN');
         // The dot settles in the middle once it has moved and the map has recentred.
-        const settled = (page) => page.waitForFunction(() => {
+        // Waits until the player's dot has reached the room and the map has recentred on it. Until a
+        // move's first animation frame the dot is still centred in the room it's leaving, so being
+        // centred isn't enough. The dot is drawn 15 below its room's label, and rooms are 120 apart.
+        const settled = (page, room) => page.waitForFunction((room) => {
             const svg = document.querySelector('[data-qv-part="map"] svg');
             const box = svg?.getBoundingClientRect();
-            const dot = svg?.querySelector('.qv-map-player')?.getBoundingClientRect();
-            return !!box && !!dot && Math.abs(dot.x + dot.width / 2 - (box.x + box.width / 2)) < 1.5
+            const player = svg?.querySelector('.qv-map-player');
+            const dot = player?.getBoundingClientRect();
+            const label = [...(svg?.querySelectorAll('g[data-z]:not(.qv-map-custom) text') ?? [])].find((t) => t.textContent === room);
+            return !!box && !!dot && !!label
+                && Math.abs(Number(player.getAttribute('cx')) - Number(label.getAttribute('x'))) < 20
+                && Math.abs(Number(player.getAttribute('cy')) - Number(label.getAttribute('y'))) < 20
+                && Math.abs(dot.x + dot.width / 2 - (box.x + box.width / 2)) < 1.5
                 && Math.abs(dot.y + dot.height / 2 - (box.y + box.height / 2)) < 1.5;
-        }, null, { timeout: 5000 }).catch(() => { throw new Error("the player's dot never settled in the middle of the map"); });
+        }, room, { timeout: 5000 }).catch(() => { throw new Error(`the player's dot never settled in the middle of the map, in the ${room}`); });
         // Waits until no animation is moving the map: its transform is the same 300ms apart.
         const still = (page) => page.waitForFunction(() => {
             const read = () => document.querySelector('[data-qv-part="map"] svg > g')?.getAttribute('transform');
@@ -156,7 +164,7 @@ test('v2-map', async ({ baseURL }) => {
                     });
                     throw new Error(`the map never drew\n${JSON.stringify({ ...diag, errors }, null, 2)}`);
                 });
-            await settled(page);
+            await settled(page, 'Hall');
             let m = await map(page);
             check(m.shown && m.height === 300, `the map shows, as high as game.mapsize (${m.height}px)`);
             check(m.inHeader && m.afterFrame, 'the map is in the sticky header, under the picture frame');
@@ -169,18 +177,18 @@ test('v2-map', async ({ baseURL }) => {
             await audit(page, 'with the map');
 
             await send(page, 'north', 'A library.');
-            await settled(page);
+            await settled(page, 'Library');
             m = await map(page);
             check(m.labels.join() === 'Hall,Library', `the library is drawn after going north (${m.labels})`);
             check(m.dot && Math.abs(m.dot.dx) < 1.5 && Math.abs(m.dot.dy) < 1.5, "the map recentres on the player's dot");
 
             await send(page, 'south', 'A hall.');
             await send(page, 'up', 'An attic.');
-            await settled(page);
+            await settled(page, 'Attic');
             m = await map(page);
             check(m.levels['1'] === '1' && m.levels['0'] === '0.2', `going up fades the level below (${JSON.stringify(m.levels)})`);
             await send(page, 'down', 'A hall.');
-            await settled(page);
+            await settled(page, 'Hall');
             m = await map(page);
             check(m.levels['0'] === '1' && m.levels['1'] === '0.2', `coming back down fades the attic's level (${JSON.stringify(m.levels)})`);
 
@@ -264,7 +272,7 @@ test('v2-map', async ({ baseURL }) => {
 
             // ── Interaction off, then hidden ──
             await send(page, 'nointeract', 'Map fixed.');
-            await settled(page);
+            await settled(page, 'Hall');
             await still(page);
             m = await map(page);
             check(m.tabindex === null && m.zoomButtons.every((b) => b.width === 0), 'setMapInteractive(false) takes away focus and the zoom buttons');
@@ -318,7 +326,7 @@ test('v2-map', async ({ baseURL }) => {
                 .catch(() => { throw new Error("loading didn't restore the saved game"); });
             await page.waitForFunction(() => document.querySelectorAll('[data-qv-part="map"] svg text').length === 2, null, { timeout: 10000 })
                 .catch(() => { throw new Error('the map was never redrawn after loading'); });
-            await settled(page);
+            await settled(page, 'Library');
             const m = await map(page);
             check(m.labels.join() === 'Hall,Library' && m.shown, `loading a save redraws the saved game's map (${m.labels})`);
             check(await mapScriptLoads(page) === 1, 'map.js is still only loaded once');
@@ -349,7 +357,7 @@ test('v2-map', async ({ baseURL }) => {
             await page.click('.qv-map-button');
             m = await map(page);
             check(m.shown && m.button.expanded === 'true', 'and expands it again');
-            await settled(page);
+            await settled(page, 'Library');
 
             if (errors.length) throw new Error(`narrow: page errors:\n  ${errors.join('\n  ')}`);
             await page.close();

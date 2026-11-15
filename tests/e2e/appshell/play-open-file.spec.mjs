@@ -16,6 +16,12 @@ import { chromium } from '../lib/tracked-chromium.mjs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
+// Booting the Debug WasmPlayer in a fresh browser, while other specs run alongside, has taken
+// over 15s. A boot from the Play tab includes a 5s wait (wasm-player.js's RESOURCE_REQUEST_TIMEOUT_MS):
+// restart-test.aslx includes restart-test.js, and the Play tab never answers the player's
+// request for it.
+const BOOT_TIMEOUT = 60000;
+
 test('play-open-file', async ({ baseURL }) => {
     const baseUrl = baseURL;
 
@@ -50,7 +56,7 @@ test('play-open-file', async ({ baseURL }) => {
         popup.on('pageerror', err => console.log('[player] [pageerror]', err.message));
         popup.on('console', msg => { if (msg.type() === 'error') console.log('[player] [console.error]', msg.text()); });
 
-        await popup.waitForFunction(() => document.title === 'Simple', null, { timeout: 15000 });
+        await popup.waitForFunction(() => document.title === 'Simple', null, { timeout: BOOT_TIMEOUT });
         console.log('[player] game booted, document.title:', await popup.title());
 
         // A raw .aslx played straight from the Play tab (unlike a packaged .quest)
