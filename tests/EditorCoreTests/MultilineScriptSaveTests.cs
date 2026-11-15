@@ -9,7 +9,7 @@ namespace QuestViva.EditorCoreTests;
 public class MultilineScriptSaveTests
 {
     private const string Game = """
-        <asl version="610">
+        <asl version="580">
           <include ref="English.aslx" />
           <include ref="Core.aslx" />
           <game name="Test">
@@ -40,7 +40,7 @@ public class MultilineScriptSaveTests
     private static async Task<string> Save(string xml)
     {
         using var controller = new EditorController();
-        Assert.IsTrue(await controller.Initialise(new GameData(System.Text.Encoding.UTF8.GetBytes(xml), "test.aslx")));
+        Assert.IsTrue(await controller.Initialise(new ByteArrayGameDataProvider(System.Text.Encoding.UTF8.GetBytes(xml), "test.aslx")));
         return controller.Save();
     }
 
