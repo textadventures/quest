@@ -386,6 +386,10 @@ internal partial class GameLoader
         }
     }
 
+    // Whether a file is already open further up the include chain.
+    private bool IsLoadingFile(string filename) =>
+        _currentFile.Any(f => string.Equals(f.Filename, filename, StringComparison.OrdinalIgnoreCase));
+
     private struct FileData
     {
         public string Filename;

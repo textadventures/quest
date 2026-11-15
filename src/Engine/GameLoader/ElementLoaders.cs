@@ -346,6 +346,14 @@ internal partial class GameLoader
                 return null;
             }
 
+            // Two libraries that include each other would otherwise recurse until the stack
+            // overflows. Case-insensitive, as library lookups are on macOS and Windows.
+            if (GameLoader.IsLoadingFile(filename))
+            {
+                RaiseError($"Included file '{filename}' includes itself");
+                return null;
+            }
+
             var stream = WorldModel.GetLibraryStream(filename);
             // BaseURI (via this url overload) is what LoadXml/GameLoader.AddedElement records as
             // MetaFieldDefinitions.Filename for every element loaded from this stream — used by the
@@ -358,7 +366,11 @@ internal partial class GameLoader
 
             if (newReader.Name != "library")
             {
+                // Loading it anyway could reach the same <include> again: a game file's root is
+                // <asl>, so this is often the game including itself.
                 RaiseError($"Included file '{filename}' is not a library");
+                newReader.Close();
+                return null;
             }
 
             LoadXml(stream, newReader);
