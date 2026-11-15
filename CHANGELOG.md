@@ -5,9 +5,7 @@
 
 ### ⚠ BREAKING CHANGES
 
-* replace IGameDataProvider with a plain GameData ([#2464](https://github.com/textadventures/quest/issues/2464))
-* make GameQuery take the game's bytes, not a path ([#2463](https://github.com/textadventures/quest/issues/2463))
-* remove WebPlayer ([#2458](https://github.com/textadventures/quest/issues/2458))
+* remove WebPlayer, the self-hosted Docker server player; its 6.0.x images are still published ([#2458](https://github.com/textadventures/quest/issues/2458))
 
 ### Features
 
@@ -143,6 +141,8 @@
 
 
 ### Code Refactoring
+
+These change the API of the QuestViva NuGet packages, and break code that uses it. They make no difference to playing or writing games.
 
 * make GameQuery take the game's bytes, not a path ([#2463](https://github.com/textadventures/quest/issues/2463)) ([a92f9fc](https://github.com/textadventures/quest/commit/a92f9fc6b779f6b55ded9701b7b6b0aa60aadeac))
 * replace IGameDataProvider with a plain GameData ([#2464](https://github.com/textadventures/quest/issues/2464)) ([3266a6c](https://github.com/textadventures/quest/commit/3266a6c9f39fd33afd5771255c5c7f3ea399dbae))
