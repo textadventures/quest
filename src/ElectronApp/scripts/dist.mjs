@@ -43,7 +43,23 @@ const channelConfig = isBeta
               desktopName: "quest-viva-beta.desktop",
           },
       }
-    : { extraMetadata: {} };
+    : {
+          // Stable builds also produce a Microsoft Store package (.appx) on
+          // Windows, alongside the NSIS installer. It's unsigned: the Store
+          // signs it after certification, which is the point (no SmartScreen
+          // warning, no code-signing certificate of our own). That also means
+          // it can't be installed outside the Store, so electron-publish.yml
+          // keeps it as a workflow artifact and never attaches it to the
+          // GitHub Release. Its identity (package.json's "appx" block) belongs
+          // to the reserved "Quest Viva" Store listing, so it's never built
+          // for the beta, which has its own appId. electron-builder
+          // concatenates arrays when merging config, so this adds to
+          // package.json's nsis target rather than replacing it, and only
+          // takes effect when packaging on Windows. The package version is
+          // VERSION's major.minor.patch plus ".0", the form the Store needs.
+          win: { target: [{ target: "appx", arch: ["x64"] }] },
+          extraMetadata: {},
+      };
 
 // The About panel (and, on Linux, the window) icon ships as an extraResource
 // (see aboutIconPath() in main.ts). electron-builder concatenates array

@@ -192,6 +192,11 @@ interface ElectronApi {
     // disambiguate Linux downloads (GetDownloadUrlAsync) — Windows/Mac
     // electron-builder targets are each single-arch.
     arch?: "x64" | "arm64";
+    // True when running from the Microsoft Store package (Electron's
+    // process.windowsStore, read in preload.ts). The Store installs updates
+    // itself, so PlayCatalog hides the "new version, download it" banner.
+    // Absent in desktop builds older than this field.
+    windowsStore?: boolean;
 }
 
 declare global {

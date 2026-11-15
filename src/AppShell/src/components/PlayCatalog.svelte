@@ -255,7 +255,9 @@
      wider than 5xl shows the page's real (light-mode) background down the
      sides instead of dark. -->
 <div class="play-dark min-h-svh bg-surface-950 text-surface-100">
-    {#if isElectronApp && update}
+    <!-- Not in the Microsoft Store build: the Store updates the app itself,
+         and the banner's link is the GitHub installer, a different install. -->
+    {#if isElectronApp && update && !window.electronApp?.windowsStore}
         <UpdateBanner {update} />
     {/if}
     <div class="flex flex-col gap-8 w-full max-w-5xl mx-auto p-8">

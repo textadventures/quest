@@ -9,6 +9,16 @@ on:
   push:
     tags: ['v*']
   workflow_dispatch:
+    inputs:
+      channel:
+        # A manual run builds the beta by default. "stable" builds the stable
+        # app instead, including the Microsoft Store package, so it can be
+        # tried before a stable release. Nothing is attached to a release
+        # either way.
+        description: Release channel to package
+        type: choice
+        options: [prerelease, stable]
+        default: prerelease
 
 jobs:
   publish:
@@ -21,7 +31,13 @@ jobs:
             upload-artifact-path: "src/ElectronApp/release/*.dmg"
           - os: windows-latest
             artifact-glob: "*.exe"
-            upload-artifact-path: "src/ElectronApp/release/*.exe"
+            # Stable builds also produce the Microsoft Store package (see
+            # scripts/dist.mjs). It's a workflow artifact only, uploaded to
+            # Partner Center by hand: it's unsigned until the Store signs it,
+            # so it can't be installed from the GitHub Release.
+            upload-artifact-path: |
+              src/ElectronApp/release/*.exe
+              src/ElectronApp/release/*.appx
           - os: ubuntu-latest
             # gh release upload (below) needs bash's own brace expansion, but
             # actions/upload-artifact's glob engine doesn't expand
@@ -50,13 +66,17 @@ jobs:
 
       # Prereleases are packaged as a separate "Quest Viva Beta" app (see
       # src/ElectronApp/scripts/dist.mjs) so they install side by side with
-      # the stable app. A manual (non-tag) run builds the beta variant too,
-      # matching deploy-play.yml. See docs/release-channels.md.
+      # the stable app. A manual (non-tag) run builds the beta variant unless
+      # its channel input says otherwise. See docs/release-channels.md.
       - name: Determine the release channel
         shell: bash
+        env:
+          INPUT_CHANNEL: ${{ inputs.channel }}
         run: |
           if [ "$GITHUB_REF_TYPE" == "tag" ]; then
             CHANNEL="$(.github/scripts/release-channel.sh "$GITHUB_REF_NAME")"
+          elif [ "$INPUT_CHANNEL" == "stable" ]; then
+            CHANNEL=stable
           else
             CHANNEL=prerelease
           fi
