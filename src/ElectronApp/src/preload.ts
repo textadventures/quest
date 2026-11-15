@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from "electron";
+import { contextBridge, ipcRenderer, webUtils } from "electron";
 import type { RecentGame, RecentKind } from "./recent-games";
 import type { RecentCatalogPlay } from "./catalog-plays-store";
 
@@ -73,6 +73,9 @@ contextBridge.exposeInMainWorld("electronApp", {
     },
     path: {
         join: joinPath,
+        // The on-disk path of a File from a drag-and-drop. Electron removed
+        // File.path, and webUtils is only reachable from the preload.
+        forFile: (file: File): string => webUtils.getPathForFile(file),
     },
     paths: {
         defaultGamesDir: (): Promise<string> => ipcRenderer.invoke("paths:defaultGamesDir"),

@@ -37,6 +37,9 @@ interface ElectronFileWatchApi {
 
 interface ElectronPathApi {
     join(...segments: string[]): string;
+    // The on-disk path of a dropped File; "" when it has none (e.g. dragged
+    // out of another app rather than from the file system).
+    forFile(file: File): string;
 }
 
 interface ElectronPathsApi {

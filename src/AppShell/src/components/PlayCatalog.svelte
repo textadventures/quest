@@ -5,7 +5,7 @@
     import { page } from "$app/state";
     import { fetchCatalog, type CatalogCategory, type UpdateInfo } from "#lib/home-catalog.js";
     import { isElectron } from "#lib/runtime.js";
-    import { listRecentGames, removeRecentGame, FileNotFoundError, describeElectronError, type RecentGame } from "#lib/filesystem/electron-adapter.js";
+    import { listRecentGames, removeRecentGame, electronDroppedFilePath, FileNotFoundError, describeElectronError, type RecentGame } from "#lib/filesystem/electron-adapter.js";
     import { playElectronFile, pickAndPlayElectronFile, closeLocalPlayChannel } from "#lib/filesystem/local-play.js";
     import { pickFile } from "#lib/filesystem/file-picker.js";
     import { listRecentCatalogPlays, removeRecentCatalogPlay, type RecentCatalogPlay } from "#lib/recent-catalog-plays.svelte.js";
@@ -13,7 +13,8 @@
     import GameCard from "#components/GameCard.svelte";
     import RecentGameCard from "#components/RecentGameCard.svelte";
     import LocalFileRecentCard from "#components/LocalFileRecentCard.svelte";
-    import ChevronDown from "@lucide/svelte/icons/chevron-down";
+    import FolderOpen from "@lucide/svelte/icons/folder-open";
+    import SearchIcon from "@lucide/svelte/icons/search";
     import { t } from "#lib/i18n/index.js";
 
     const isElectronApp = isElectron();
@@ -70,6 +71,7 @@
     }
 
     async function handleRemoveRecentLocal(game: RecentGame) {
+        if (isMissing(game)) clearElectronOpenError();
         await removeRecentGame(game.dirPath, game.filename, "play");
         await refreshRecentLocalPlays();
     }
@@ -83,8 +85,8 @@
     // that at all, so there's no separate destination page needed here either way.
     let electronOpenBusy = $state(false);
     let electronOpenError = $state<string | null>(null);
-    // Set alongside electronOpenError when the file has gone, so the error can
-    // offer to drop it from Recently Played.
+    // Set alongside electronOpenError when a Recently Played file has gone; its
+    // card then shows that in place of the error message.
     let missingRecent = $state<RecentGame | null>(null);
 
     function showElectronOpenError(err: unknown) {
@@ -97,16 +99,14 @@
         }
     }
 
+    // By path, not identity: the recent list can be re-read in between.
+    function isMissing(game: RecentGame): boolean {
+        return missingRecent?.dirPath === game.dirPath && missingRecent.filename === game.filename;
+    }
+
     function clearElectronOpenError() {
         electronOpenError = null;
         missingRecent = null;
-    }
-
-    async function handleRemoveMissingRecent() {
-        if (!missingRecent) return;
-        const game = missingRecent;
-        clearElectronOpenError();
-        await handleRemoveRecentLocal(game);
     }
 
     async function handleOpenLocal() {
@@ -180,10 +180,13 @@
     let browserPlayChannel: BroadcastChannel | null = null;
 
     async function handlePickFile() {
+        const file = await pickFile(PLAY_EXTENSIONS.join(","));
+        if (file) await acceptBrowserFile(file);
+    }
+
+    async function acceptBrowserFile(file: File) {
         pickError = null;
         startError = null;
-        const file = await pickFile(".quest,.aslx,.asl,.cas");
-        if (!file) return;
         try {
             pickedBytes = new Uint8Array(await file.arrayBuffer());
             pickedFile = file;
@@ -250,6 +253,77 @@
         closeLocalPlayChannel();
     });
 
+    // ── Drag and drop (both builds) ─────────────────────────────────────────
+    // A game file dropped anywhere on the page. Electron plays it straight away,
+    // like the picker; the browser build treats it as picked and still needs the
+    // Start click, since a drop doesn't grant the activation window.open() needs.
+    const PLAY_EXTENSIONS = [".quest", ".aslx", ".asl", ".cas"];
+
+    function isPlayableFilename(name: string): boolean {
+        const lower = name.toLowerCase();
+        return PLAY_EXTENSIONS.some((ext) => lower.endsWith(ext));
+    }
+
+    // dragenter/dragleave fire for every child crossed, so count them rather
+    // than toggling, or the overlay flickers as the pointer moves.
+    let dragDepth = $state(0);
+    const dragActive = $derived(dragDepth > 0);
+
+    function isFileDrag(e: DragEvent): boolean {
+        return e.dataTransfer?.types.includes("Files") ?? false;
+    }
+
+    function handleDragEnter(e: DragEvent) {
+        if (!isFileDrag(e)) return;
+        e.preventDefault();
+        dragDepth++;
+    }
+
+    function handleDragOver(e: DragEvent) {
+        if (!isFileDrag(e)) return;
+        // Without this the drop event never fires, and Electron would navigate
+        // the window to the dropped file instead.
+        e.preventDefault();
+        if (e.dataTransfer) e.dataTransfer.dropEffect = "copy";
+    }
+
+    function handleDragLeave(e: DragEvent) {
+        if (!isFileDrag(e)) return;
+        dragDepth = Math.max(0, dragDepth - 1);
+    }
+
+    async function handleDrop(e: DragEvent) {
+        if (!isFileDrag(e)) return;
+        e.preventDefault();
+        dragDepth = 0;
+        const file = e.dataTransfer?.files[0];
+        if (!file) return;
+        if (!isPlayableFilename(file.name)) {
+            const message = t("playCatalog.unsupportedFile", { filename: file.name });
+            if (isElectronApp) { missingRecent = null; electronOpenError = message; } else { pickError = message; }
+            return;
+        }
+        if (!isElectronApp) {
+            await acceptBrowserFile(file);
+            return;
+        }
+        const dropped = electronDroppedFilePath(file);
+        if (!dropped) {
+            missingRecent = null;
+            electronOpenError = t("playCatalog.unsupportedFile", { filename: file.name });
+            return;
+        }
+        clearElectronOpenError();
+        electronOpenBusy = true;
+        try {
+            await playElectronFile(dropped.dirPath, dropped.filename, refreshRecentLocalPlays);
+        } catch (err) {
+            showElectronOpenError(err);
+        } finally {
+            electronOpenBusy = false;
+        }
+    }
+
     let searchQuery = $state("");
     function handleSearch(e: SubmitEvent) {
         e.preventDefault();
@@ -259,16 +333,9 @@
     }
 
     // Tag categories only (curated sections like Latest Games have slug ===
-    // null — see CatalogCategory) — already in the same descending-game-count
-    // order fetchCatalog's categories come back in, so the dropdown matches
-    // the page's own "See all" ordering below.
-    const tagCategories = $derived((categories ?? []).filter((c) => c.slug != null));
-
-    function handleCategorySelect(e: Event) {
-        const slug = (e.currentTarget as HTMLSelectElement).value;
-        if (!slug) return;
-        void goto(`${base}/play/category/${slug}`);
-    }
+    // null — see CatalogCategory), in the order fetchCatalog returns them, so
+    // the chips match the order of the sections further down the page.
+    const tagCategories = $derived((categories ?? []).filter((c): c is CatalogCategory & { slug: string } => c.slug != null));
 </script>
 
 <!-- Always dark (see +layout.svelte) — surface-950/400/800 are the fixed
@@ -279,94 +346,109 @@
      content column, so it must not also carry the background, or anything
      wider than 5xl shows the page's real (light-mode) background down the
      sides instead of dark. -->
-<div class="play-dark min-h-svh bg-surface-950 text-surface-100">
+<!-- The drag handlers are on the whole page so a game file can be dropped
+     anywhere; there's no keyboard equivalent to provide, since the Open tile
+     and button do the same thing. -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<div
+    class="play-dark min-h-svh bg-surface-950 text-surface-100"
+    ondragenter={handleDragEnter}
+    ondragover={handleDragOver}
+    ondragleave={handleDragLeave}
+    ondrop={handleDrop}
+>
     <!-- Not in the Microsoft Store build: the Store updates the app itself,
          and the banner's link is the GitHub installer, a different install. -->
     {#if isElectronApp && update && !window.electronApp?.windowsStore}
         <UpdateBanner {update} />
     {/if}
-    <div class="flex flex-col gap-8 w-full max-w-5xl mx-auto p-8">
-        <div class="flex flex-wrap gap-2 items-stretch justify-center w-full max-w-2xl mx-auto">
-            <form class="flex gap-2 flex-1 min-w-[240px]" onsubmit={handleSearch}>
-                <input
-                    type="search"
-                    bind:value={searchQuery}
-                    placeholder={t("search.searchPlaceholder")}
-                    title={t("search.searchHint")}
-                    class="input flex-1 bg-surface-900 border-surface-700 text-surface-100 placeholder:text-surface-500"
-                />
-                <button type="submit" class="btn preset-outlined-primary-500">{t("search.searchButton")}</button>
-            </form>
-            {#if tagCategories.length > 0}
-                <div class="relative">
-                    <select
-                        class="input appearance-none pr-8 h-full bg-surface-900 border-surface-700 text-surface-100"
-                        onchange={handleCategorySelect}
-                    >
-                        <option value="">{t("playCatalog.browseCategory")}</option>
-                        {#each tagCategories as category (category.slug)}
-                            <option value={category.slug}>{category.title}</option>
-                        {/each}
-                    </select>
-                    <ChevronDown size={14} class="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-surface-400" />
-                </div>
-            {/if}
-            {#if isElectronApp}
-                <button
-                    type="button"
-                    class="btn preset-outlined-surface-500 whitespace-nowrap"
-                    onclick={handleOpenLocal}
-                    disabled={electronOpenBusy}
-                >
-                    {electronOpenBusy ? t("playCatalog.opening") : t("playCatalog.openGameFile")}
-                </button>
-            {:else if !pickedFile}
-                <button type="button" class="btn preset-outlined-surface-500 whitespace-nowrap" onclick={handlePickFile}>
-                    {t("playCatalog.openGameFile")}
-                </button>
-            {:else}
-                <div class="flex items-center gap-2">
-                    <span class="text-sm text-surface-300 truncate max-w-[20ch]">{pickedFile.name}</span>
-                    <button type="button" class="btn btn-xs preset-outlined-surface-500" onclick={handleClearPicked} disabled={starting}>
-                        {t("playCatalog.change")}
-                    </button>
-                    <button type="button" class="btn preset-filled-primary-500" onclick={handleBrowserStart} disabled={starting}>
-                        {starting ? t("playCatalog.starting") : t("playCatalog.startButton") + " ▶"}
-                    </button>
-                </div>
-            {/if}
-        </div>
 
-        {#if electronOpenError}
-            <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-sm text-center" role="alert">
-                <p class="text-error-500">{electronOpenError}</p>
-                {#if missingRecent}
-                    <button type="button" class="btn btn-sm preset-tonal" onclick={handleRemoveMissingRecent}>
-                        {t("recentGameCard.removeTitle")}
-                    </button>
-                {/if}
+    {#if dragActive}
+        <div class="pointer-events-none fixed inset-3 z-50 flex items-center justify-center rounded-2xl border-2 border-dashed border-primary-500 bg-surface-950/85">
+            <div class="flex flex-col items-center gap-3 text-surface-100">
+                <FolderOpen size={40} class="text-primary-400" />
+                <p class="text-lg font-semibold">{t("playCatalog.dropToPlay")}</p>
             </div>
-        {/if}
-        {#if !isElectronApp && pickError}
-            <p class="text-error-500 text-sm text-center">{pickError}</p>
-        {/if}
-        {#if !isElectronApp && startError}
-            <p class="text-error-500 text-sm text-center">{startError}</p>
-        {/if}
+        </div>
+    {/if}
 
+    <div class="flex flex-col gap-12 w-full max-w-5xl mx-auto px-4 py-8 sm:px-6">
         {#if recentEntries.length > 0}
-            <section>
-                <h2 class="text-lg font-semibold mb-3">{t("playCatalog.recentlyPlayed")}</h2>
-                <div class="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-4">
+            <section aria-labelledby="recently-played-heading">
+                <h2 id="recently-played-heading" class="text-xl font-semibold mb-4">{t("playCatalog.recentlyPlayed")}</h2>
+                {@render openErrors()}
+                <!-- One scrolling row rather than a wrapping grid, so a long
+                     history never pushes Discover off the first screen. -->
+                <div class="flex gap-4 overflow-x-auto pb-2">
+                    <div class="w-[150px] shrink-0 flex">
+                        {@render openFileTile()}
+                    </div>
                     {#each recentEntries as entry (entry.key)}
-                        {#if entry.kind === "catalog"}
-                            <RecentGameCard game={entry.game} onremove={() => handleRemoveRecentCatalog(entry.game.id)} />
-                        {:else}
-                            <LocalFileRecentCard game={entry.game} onplay={() => playLocalRecent(entry.game)} onremove={() => handleRemoveRecentLocal(entry.game)} />
-                        {/if}
+                        <div class="w-[150px] shrink-0">
+                            {#if entry.kind === "catalog"}
+                                <RecentGameCard game={entry.game} onremove={() => handleRemoveRecentCatalog(entry.game.id)} />
+                            {:else}
+                                <LocalFileRecentCard
+                                    game={entry.game}
+                                    missing={isMissing(entry.game)}
+                                    onplay={() => playLocalRecent(entry.game)}
+                                    onremove={() => handleRemoveRecentLocal(entry.game)}
+                                />
+                            {/if}
+                        </div>
                     {/each}
                 </div>
             </section>
+        {/if}
+
+        <section aria-labelledby="discover-heading" class="flex flex-col gap-5 rounded-2xl border border-surface-800 bg-surface-900 p-5 sm:p-7">
+            <div class="flex flex-wrap items-baseline justify-between gap-2">
+                <h2 id="discover-heading" class="text-xl font-semibold">{t("playCatalog.discoverTitle")}</h2>
+                <a href="https://textadventures.co.uk" target="_blank" rel="noopener" class="anchor text-sm">{t("playCatalog.discoverSource")}</a>
+            </div>
+
+            <form
+                role="search"
+                class="flex items-center gap-2 h-12 pl-4 pr-1.5 rounded-xl border border-surface-700 bg-surface-950 focus-within:border-primary-500 transition-colors"
+                onsubmit={handleSearch}
+            >
+                <SearchIcon size={18} class="shrink-0 text-surface-400" aria-hidden="true" />
+                <input
+                    type="search"
+                    bind:value={searchQuery}
+                    aria-label={t("search.searchButton")}
+                    placeholder={t("search.searchPlaceholder")}
+                    title={t("search.searchHint")}
+                    class="flex-1 min-w-0 h-full bg-transparent border-0 outline-none text-base text-surface-100 placeholder:text-surface-500"
+                />
+                <button type="submit" class="btn preset-filled-primary-500 h-9 shrink-0">{t("search.searchButton")}</button>
+            </form>
+
+            {#if tagCategories.length > 0}
+                <nav aria-label={t("playCatalog.browseCategories")} class="flex flex-wrap gap-2">
+                    {#each tagCategories as category (category.slug)}
+                        <a
+                            href="{base}/play/category/{category.slug}"
+                            class="inline-flex items-center h-9 px-3.5 rounded-full border border-surface-700 text-sm text-surface-200 hover:border-surface-500 hover:text-surface-50 transition-colors"
+                        >{category.title}</a>
+                    {/each}
+                </nav>
+            {/if}
+        </section>
+
+        {#if recentEntries.length === 0}
+            <!-- Nothing played yet: opening a file shrinks to one line under
+                 Discover rather than leading the page. -->
+            <div class="flex flex-col gap-3">
+                <div data-testid="open-file-bar" class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-dashed border-surface-700 px-5 py-3.5">
+                    <p class="flex items-center gap-3 text-sm text-surface-300">
+                        <FolderOpen size={20} class="shrink-0 text-primary-400" aria-hidden="true" />
+                        {t("playCatalog.openFileHint")}
+                    </p>
+                    {@render openFileControls()}
+                </div>
+                {@render openErrors()}
+            </div>
         {/if}
 
         {#if loading}
@@ -398,3 +480,74 @@
         {/if}
     </div>
 </div>
+
+<!-- Errors from opening a local file. A missing Recently Played file is shown
+     on its own card instead (see LocalFileRecentCard's missing state). -->
+{#snippet openErrors()}
+    {#if electronOpenError && !missingRecent}
+        <p class="text-error-500 text-sm mb-3" role="alert">{electronOpenError}</p>
+    {/if}
+    {#if !isElectronApp && pickError}
+        <p class="text-error-500 text-sm mb-3" role="alert">{pickError}</p>
+    {/if}
+    {#if !isElectronApp && startError}
+        <p class="text-error-500 text-sm mb-3" role="alert">{startError}</p>
+    {/if}
+{/snippet}
+
+<!-- First tile of the Recently Played row. Fills the row's height, so it
+     matches the cards beside it and never changes size as its label does. -->
+{#snippet openFileTile()}
+    {#if !isElectronApp && pickedFile}
+        <div class="flex flex-col items-center justify-center gap-3 w-full rounded-lg border-2 border-primary-500 p-3 text-center">
+            <FolderOpen size={28} class="text-primary-400" aria-hidden="true" />
+            <span class="text-sm font-semibold break-all line-clamp-3">{pickedFile.name}</span>
+            <button type="button" class="btn preset-filled-primary-500 w-full" onclick={handleBrowserStart} disabled={starting}>
+                {starting ? t("playCatalog.starting") : t("playCatalog.startButton") + " ▶"}
+            </button>
+            <button type="button" class="btn btn-sm preset-tonal" onclick={handleClearPicked} disabled={starting}>
+                {t("playCatalog.change")}
+            </button>
+        </div>
+    {:else}
+        <button
+            type="button"
+            class="flex flex-col items-center justify-center gap-3 w-full rounded-lg border-2 border-dashed border-surface-700 p-3 text-center text-surface-300 hover:border-primary-500 transition-colors"
+            onclick={isElectronApp ? handleOpenLocal : handlePickFile}
+            disabled={electronOpenBusy}
+        >
+            <span class="flex items-center justify-center size-12 rounded-full bg-primary-950 text-primary-300">
+                <FolderOpen size={24} aria-hidden="true" />
+            </span>
+            <span class="text-sm font-semibold text-surface-50">
+                {electronOpenBusy ? t("playCatalog.opening") : t("playCatalog.openGameFile")}
+            </span>
+            <span class="text-xs text-surface-400">{t("playCatalog.fileTypes")}</span>
+            <span class="text-xs text-surface-500">{t("playCatalog.dropHint")}</span>
+        </button>
+    {/if}
+{/snippet}
+
+<!-- The same choices as the tile, as a row of buttons for the slim
+     first-run bar. -->
+{#snippet openFileControls()}
+    {#if isElectronApp}
+        <button type="button" class="btn preset-tonal min-w-44" onclick={handleOpenLocal} disabled={electronOpenBusy}>
+            {electronOpenBusy ? t("playCatalog.opening") : t("playCatalog.openGameFile")}
+        </button>
+    {:else if !pickedFile}
+        <button type="button" class="btn preset-tonal" onclick={handlePickFile}>
+            {t("playCatalog.openGameFile")}
+        </button>
+    {:else}
+        <div class="flex items-center gap-2">
+            <span class="text-sm text-surface-300 truncate max-w-[20ch]">{pickedFile.name}</span>
+            <button type="button" class="btn btn-sm preset-tonal" onclick={handleClearPicked} disabled={starting}>
+                {t("playCatalog.change")}
+            </button>
+            <button type="button" class="btn preset-filled-primary-500" onclick={handleBrowserStart} disabled={starting}>
+                {starting ? t("playCatalog.starting") : t("playCatalog.startButton") + " ▶"}
+            </button>
+        </div>
+    {/if}
+{/snippet}

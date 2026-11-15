@@ -575,7 +575,6 @@
 
     "recentGameCard.removeTitle": "Quitar de Jugados Recientemente",
 
-    "playCatalog.browseCategory": "Explorar categoría…",
     "playCatalog.opening": "Abriendo…",
     "playCatalog.openGameFile": "Abrir un archivo de juego…",
     "playCatalog.change": "Cambiar",
@@ -586,6 +585,17 @@
     "playCatalog.loadingGames": "Cargando juegos…",
     "playCatalog.loadError": "No se pudo cargar la lista de juegos.",
     "playCatalog.seeAll": "Ver todos →",
+    "playCatalog.fileTypes": ".quest, .aslx, .asl o .cas",
+    "playCatalog.dropHint": "También puedes arrastrar un archivo a esta ventana",
+    "playCatalog.dropToPlay": "Suelta un archivo de juego para jugarlo",
+    "playCatalog.openFileHint": "¿Tienes un archivo de juego (.quest, .aslx, .asl o .cas)? Ábrelo aquí o arrástralo a esta ventana.",
+    "playCatalog.unsupportedFile": "{filename} no es un juego de Quest. Elige un archivo .quest, .aslx, .asl o .cas.",
+    "playCatalog.discoverTitle": "Descubre juegos",
+    "playCatalog.discoverSource": "De textadventures.co.uk",
+    "playCatalog.browseCategories": "Explorar por categoría",
+    "playCatalog.fileNotFound": "Archivo no encontrado",
+    "playCatalog.fileNotFoundHint": "Es posible que se haya movido, renombrado o eliminado.",
+    "playCatalog.remove": "Quitar",
 
     "playDetails.loadError": "No se pudieron cargar los detalles de este juego.",
     "playDetails.playButton": "Jugar",

@@ -575,7 +575,6 @@
 
     "recentGameCard.removeTitle": "Aus \"Zuletzt gespielt\" entfernen",
 
-    "playCatalog.browseCategory": "Kategorie durchsuchen…",
     "playCatalog.opening": "Öffnen…",
     "playCatalog.openGameFile": "Eine Spieldatei öffnen…",
     "playCatalog.change": "Ändern",
@@ -586,6 +585,17 @@
     "playCatalog.loadingGames": "Spiele werden geladen…",
     "playCatalog.loadError": "Die Spieleliste konnte nicht geladen werden.",
     "playCatalog.seeAll": "Alle anzeigen →",
+    "playCatalog.fileTypes": ".quest, .aslx, .asl oder .cas",
+    "playCatalog.dropHint": "Du kannst eine Datei auch in dieses Fenster ziehen",
+    "playCatalog.dropToPlay": "Spieldatei ablegen, um sie zu spielen",
+    "playCatalog.openFileHint": "Hast du eine Spieldatei (.quest, .aslx, .asl oder .cas)? Öffne sie hier oder ziehe sie in dieses Fenster.",
+    "playCatalog.unsupportedFile": "{filename} ist kein Quest-Spiel. Wähle eine .quest-, .aslx-, .asl- oder .cas-Datei.",
+    "playCatalog.discoverTitle": "Spiele entdecken",
+    "playCatalog.discoverSource": "Von textadventures.co.uk",
+    "playCatalog.browseCategories": "Nach Kategorie stöbern",
+    "playCatalog.fileNotFound": "Datei nicht gefunden",
+    "playCatalog.fileNotFoundHint": "Sie wurde möglicherweise verschoben, umbenannt oder gelöscht.",
+    "playCatalog.remove": "Entfernen",
 
     "playDetails.loadError": "Die Details zu diesem Spiel konnten nicht geladen werden.",
     "playDetails.playButton": "Spielen",
