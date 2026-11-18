@@ -227,7 +227,8 @@
 </script>
 
 <AppBar>
-    <AppBar.Toolbar class="grid-cols-[auto_1fr_auto]">
+    <!-- Two columns: the lead, and the buttons straight after it -->
+    <AppBar.Toolbar class="grid-cols-[auto_1fr]">
         <AppBar.Lead class="flex-1 min-w-0">
             <div class="flex items-center min-w-0">
                 {#if $isLoaded}
@@ -265,18 +266,18 @@
                             class="save-chip save-chip-error shrink-0"
                             onclick={() => retrySave()}
                             title={$saveError}
-                        ><TriangleAlert size={13} /> <span class="hidden md:inline">{t("toolbar.saveFailedRetry")}</span></button>
+                        ><TriangleAlert size={13} /> <span class="hidden lg:inline">{t("toolbar.saveFailedRetry")}</span></button>
                     {:else if $isSaving}
-                        <span class="save-chip save-chip-saving shrink-0"><LoaderCircle size={13} class="animate-spin" /> <span class="hidden md:inline">{t("toolbar.saving")}</span></span>
+                        <span class="save-chip save-chip-saving shrink-0"><LoaderCircle size={13} class="animate-spin" /> <span class="hidden lg:inline">{t("toolbar.saving")}</span></span>
                     {:else if $isDirty || $isEditingField}
                         <button
                             type="button"
                             class="save-chip save-chip-unsaved shrink-0"
                             onclick={handleSaveNow}
                             title={t("toolbar.saveNow")}
-                        ><Circle size={8} fill="currentColor" /> <span class="hidden md:inline">{t("toolbar.unsaved")}</span></button>
+                        ><Circle size={8} fill="currentColor" /> <span class="hidden lg:inline">{t("toolbar.unsaved")}</span></button>
                     {:else if $gameFilename}
-                        <span class="save-chip save-chip-saved shrink-0"><Check size={13} /> <span class="hidden md:inline">{t("toolbar.saved")}</span></span>
+                        <span class="save-chip save-chip-saved shrink-0"><Check size={13} /> <span class="hidden lg:inline">{t("toolbar.saved")}</span></span>
                     {/if}
                 </span>
             </div>
@@ -315,14 +316,16 @@
                 <!-- Delete button: always rendered, disabled when nothing deletable is
                      selected (or the raw XML panel is open — see the Add dropdown above), so
                      surrounding buttons don't shift as selection changes.
-                     Desktop only — folded into the ⋯ menu on mobile. -->
+                     Desktop only — folded into the ⋯ menu on mobile — and icon-only below lg,
+                     where the toolbar needs the room. -->
                 <button
                     type="button"
                     class="btn btn-xs preset-outlined-error-500 hidden md:inline-flex"
                     onclick={() => selectedNode && deleteElement(selectedNode.key)}
                     disabled={$codeViewPanelOpen || !canDelete}
                     title={canDelete ? t("toolbar.deleteTitleNamed", { name: selectedNode?.text ?? "" }) : t("toolbar.deleteTitle")}
-                ><Trash2 size={14} /> {t("common.delete")}</button>
+                    aria-label={t("common.delete")}
+                ><Trash2 size={14} /> <span class="hidden lg:inline">{t("common.delete")}</span></button>
                 <div class="toolbar-divider hidden md:block"></div>
                 <button type="button" class="toolbar-icon-btn !hidden md:!inline-flex" onclick={() => assetManagerOpen.set(true)} title={t("toolbar.manageAssets")} aria-label={t("toolbar.manageAssets")}><ImageIcon size={16} /></button>
                 <button type="button" class="toolbar-icon-btn !hidden md:!inline-flex" onclick={handleUndo} disabled={$hasActiveCmView ? false : !$canUndo} title={$hasActiveCmView ? t("toolbar.undoInCodeEditor") : t("toolbar.undo")} aria-label={$hasActiveCmView ? t("toolbar.undoInCodeEditor") : t("toolbar.undo")}><Undo2 size={16} /></button>
@@ -387,7 +390,8 @@
         min-width: 6.25rem;
         justify-content: center;
     }
-    @media (max-width: 767px) {
+    /* Just the icon below lg, where the toolbar's buttons need the room */
+    @media (max-width: 1023px) {
         .save-chip-saved,
         .save-chip-saving,
         .save-chip-unsaved {

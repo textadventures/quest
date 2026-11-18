@@ -1,6 +1,7 @@
 // The toolbar's File, Add and More menus open from their button's left edge, as a menu
 // bar's do, and flip to its right edge only where that would go off the screen. Also
-// checks File comes first in the toolbar's right-hand group.
+// checks File comes first in the toolbar's right-hand group, and that the buttons don't run
+// over the game's name and save state.
 import { test } from '@playwright/test';
 import { chromium } from '../lib/tracked-chromium.mjs';
 
@@ -49,9 +50,13 @@ test('toolbar-menu-alignment', async ({ baseURL }) => {
     }
 
     try {
-        for (const [width, height] of [[1440, 900], [800, 900], [375, 812]]) {
+        for (const [width, height] of [[1440, 900], [1024, 900], [800, 900], [768, 900], [375, 812]]) {
             const label = `${width}px`;
             const page = await openEditor({ width, height });
+            const chip = await page.locator('.save-chip').boundingBox();
+            const trail = await page.locator('[data-scope="app-bar"][data-part="trail"]').boundingBox();
+            if (chip.x + chip.width > trail.x) throw new Error(`${label}: the toolbar's buttons (from x=${trail.x}) overlap the save chip (to x=${chip.x + chip.width})`);
+            console.log(`PASS: ${label}: the toolbar's buttons don't overlap the save chip`);
             const menus = [['File', page.getByRole('button', { name: 'File' })],
                 ['Add', page.getByRole('button', { name: /^Add/ })],
                 ['More', page.getByRole('button', { name: 'More' })]];
@@ -69,7 +74,7 @@ test('toolbar-menu-alignment', async ({ baseURL }) => {
             }
             // The cases this is about: from the left at a wide width, flipping near the right edge
             if (width === 1440 && Object.values(sides).some(s => s !== 'left')) throw new Error(`${label}: expected every menu to open from the left edge`);
-            if (width !== 1440 && sides.More !== 'right') throw new Error(`${label}: expected the More menu to flip to the right edge`);
+            if (width <= 800 && sides.More !== 'right') throw new Error(`${label}: expected the More menu to flip to the right edge`);
             await page.context().close();
         }
     } finally {
