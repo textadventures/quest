@@ -1,4 +1,9 @@
 <script lang="ts">
+    // The editor's toolbar: back/forward, home, the game's name and save state on the left; on
+    // the right, in groups, as a menu bar would be: File, then Add and Delete, then images,
+    // Undo/Redo and Code view, then Preview and the overflow menu. The right-hand group sits just
+    // after the game's name rather than at the screen's right edge, so its menus open from their
+    // button's left edge, as a menu bar's do, unless that would go off the screen.
     import { AppBar } from "@skeletonlabs/skeleton-svelte";
     import { get } from "svelte/store";
     import { goto } from "$app/navigation";
@@ -278,10 +283,23 @@
         </AppBar.Lead>
         <AppBar.Trail>
             <div class="flex gap-1.5 items-center">
+                <!-- File menu: desktop only — its items are folded into the ⋯ menu on mobile -->
+                {#if fileMenuItems.length > 0}
+                    <div class="hidden md:block">
+                        <DropdownMenu items={fileMenuItems} align="left">
+                            {#snippet trigger(toggle, open)}
+                                <button type="button" class="btn btn-xs preset-outlined-primary-500" onclick={toggle} disabled={saving} title={t("toolbar.file")}
+                                    aria-haspopup="menu" aria-expanded={open}
+                                >{t("toolbar.file")} <ChevronDown size={12} /></button>
+                            {/snippet}
+                        </DropdownMenu>
+                    </div>
+                    <div class="toolbar-divider hidden md:block"></div>
+                {/if}
                 <!-- Add dropdown: icon-only below md. Disabled while the raw XML panel is open —
                      there's no tree selection context there, and the tree itself isn't even
                      mounted (see edit/+page.svelte), so these actions have nothing to act on. -->
-                <DropdownMenu items={addOptions}>
+                <DropdownMenu items={addOptions} align="left">
                     {#snippet trigger(toggle, open)}
                         <button
                             type="button"
@@ -311,23 +329,12 @@
                 <button type="button" class="toolbar-icon-btn !hidden md:!inline-flex" onclick={handleRedo} disabled={$hasActiveCmView ? false : !$canRedo} title={$hasActiveCmView ? t("toolbar.redoInCodeEditor") : t("toolbar.redo")} aria-label={$hasActiveCmView ? t("toolbar.redoInCodeEditor") : t("toolbar.redo")}><Redo2 size={16} /></button>
                 <button type="button" class="toolbar-icon-btn !hidden md:!inline-flex" onclick={handleToggleCodeView} title={t("toolbar.rawXmlCodeView")} aria-label={t("toolbar.rawXmlCodeView")}><FileCode size={16} /></button>
                 <div class="toolbar-divider hidden md:block"></div>
-                {#if fileMenuItems.length > 0}
-                    <div class="hidden md:block">
-                        <DropdownMenu items={fileMenuItems}>
-                            {#snippet trigger(toggle, open)}
-                                <button type="button" class="btn btn-xs preset-outlined-primary-500" onclick={toggle} disabled={saving} title={t("toolbar.file")}
-                                    aria-haspopup="menu" aria-expanded={open}
-                                >{t("toolbar.file")} <ChevronDown size={12} /></button>
-                            {/snippet}
-                        </DropdownMenu>
-                    </div>
-                {/if}
                 {#if $gameFilename}
                     <button type="button" class="btn btn-xs preset-filled-primary-500" onclick={handlePreview} title={t("toolbar.previewGame")}><Play size={14} /> <span class="hidden md:inline">{t("toolbar.preview")}</span></button>
                 {/if}
                 <!-- Overflow menu: community links + Settings on desktop; also Delete/Assets/
                      Undo/Redo/File-menu items on mobile (see overflowItems) -->
-                <DropdownMenu items={overflowItems}>
+                <DropdownMenu items={overflowItems} align="left">
                     {#snippet trigger(toggle, open)}
                         <button type="button" class="toolbar-icon-btn" onclick={toggle} title={t("toolbar.more")} aria-label={t("toolbar.more")} aria-haspopup="menu" aria-expanded={open}><Ellipsis size={16} /></button>
                     {/snippet}

@@ -13,6 +13,8 @@
     interface Props {
         trigger: Snippet<[toggle: (e: MouseEvent) => void, open: boolean]>;
         items: DropdownMenuItem[];
+        // Which edge of the trigger the menu lines up with, if it fits on screen that way;
+        // otherwise it lines up with the other one
         align?: "left" | "right";
         // Position the menu against the viewport instead of its trigger's box, so a
         // scrolling ancestor can't clip it. It opens upwards when there isn't room below,
@@ -26,6 +28,8 @@
     let menuEl = $state<HTMLDivElement | undefined>();
 
     let open = $state(false);
+    // The edge the menu lines up with this time it's open
+    let side = $state<"left" | "right">("right");
     let rootEl = $state<HTMLDivElement | undefined>();
     let triggerEl: HTMLElement | undefined;
     let itemEls: (HTMLButtonElement | undefined)[] = $state([]);
@@ -34,7 +38,18 @@
         e.stopPropagation();
         triggerEl = e.currentTarget as HTMLElement;
         open = !open;
+        if (open) chooseSide();
         if (open && fixed) placeFixed();
+    }
+
+    // The menu is w-56 (14rem) wide
+    function chooseSide() {
+        side = align;
+        const r = (fixed ? triggerEl : rootEl)?.getBoundingClientRect();
+        if (!r) return;
+        const width = 14 * parseFloat(getComputedStyle(document.documentElement).fontSize);
+        if (align === "left" && r.left + width > window.innerWidth && r.right - width >= 0) side = "right";
+        if (align === "right" && r.right - width < 0 && r.left + width <= window.innerWidth) side = "left";
     }
 
     // Below the trigger, or above it when the menu wouldn't fit below. The menu's height
@@ -42,7 +57,7 @@
     function placeFixed(menuHeight = items.length * 30 + 16) {
         if (!triggerEl) return;
         const r = triggerEl.getBoundingClientRect();
-        const horizontal = align === "right"
+        const horizontal = side === "right"
             ? `right: ${window.innerWidth - r.right}px;`
             : `left: ${r.left}px;`;
         const fitsBelow = r.bottom + 4 + menuHeight <= window.innerHeight || r.top < menuHeight + 4;
@@ -148,7 +163,7 @@
             role="menu"
             tabindex="-1"
             style={fixed ? fixedStyle : undefined}
-            class="{fixed ? "" : `absolute ${align === "right" ? "right-0" : "left-0"} top-full mt-1`} z-[999] w-56 bg-surface-50-950 border border-surface-200-800 rounded shadow-lg py-1"
+            class="{fixed ? "" : `absolute ${side === "right" ? "right-0" : "left-0"} top-full mt-1`} z-[999] w-56 bg-surface-50-950 border border-surface-200-800 rounded shadow-lg py-1"
             onkeydown={onMenuKeydown}
         >
             {#each items as item, i (item.label)}
