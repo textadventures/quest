@@ -14,8 +14,8 @@
 // addElementModal.addHeading interpolating an already-pseudo-localized label.
 //
 // Toolbar.svelte's buttons are selected by position within its one <header>
-// (verified empirically: Back, Forward, BackToHome, Add, Delete, ManageAssets,
-// Undo, Redo, RawXmlView, File, Preview, More — in that DOM order) rather
+// (verified empirically: Back, Forward, BackToHome, File, Add, Delete,
+// ManageAssets, Undo, Redo, RawXmlView, Preview, More — in that DOM order) rather
 // than by title text, since every title here is pseudo-mutated and therefore
 // not stable across xx.json regenerations.
 //
@@ -205,8 +205,8 @@ test('i18n-pseudoloc', async ({ baseURL }) => {
         await page.waitForSelector('header .toolbar-icon-btn', { timeout: 30000 });
         await assertAllTitlesPseudo('Toolbar', 'header');
 
-        // --- AddElementModal — opened via the Add dropdown (4th header button) ---
-        await page.click('header button >> nth=3');
+        // --- AddElementModal — opened via the Add dropdown (5th header button) ---
+        await page.click('header button >> nth=4');
         await page.waitForSelector('div.absolute button', { timeout: 10000 });
         await page.click('div.absolute button >> nth=0'); // "Add Room" at the tree root
         await page.waitForSelector('div[role="dialog"]', { timeout: 10000 });
@@ -217,8 +217,8 @@ test('i18n-pseudoloc', async ({ baseURL }) => {
         for (const text of addModalButtons) assertPseudo('AddElementModal button', text);
         await closeDialog();
 
-        // --- AssetManagerModal — opened via the toolbar's image icon (6th header button) ---
-        await page.click('header button >> nth=5');
+        // --- AssetManagerModal — opened via the toolbar's image icon (7th header button) ---
+        await page.click('header button >> nth=6');
         await page.waitForSelector('div[role="dialog"]', { timeout: 10000 });
         assertPseudo('AssetManagerModal heading', await page.textContent('div[role="dialog"] h2'));
         const assetModalButtons = await page.$$eval('div[role="dialog"] button', els => els.map(el => el.textContent ?? ''));
@@ -463,9 +463,9 @@ test('i18n-pseudoloc', async ({ baseURL }) => {
         assertPseudo('LibraryElementBanner message', await page.textContent('.bg-warning-100-900 span'));
         assertPseudo('LibraryElementBanner copy button', await page.textContent('.bg-warning-100-900 button'));
 
-        // --- PublishModal — via the toolbar's File menu (9th header button; see
+        // --- PublishModal — via the toolbar's File menu (4th header button; see
         // the Toolbar DOM-order comment near the top of this file). ---
-        await page.click('header button >> nth=9');
+        await page.click('header button >> nth=3');
         await page.waitForSelector('.absolute button', { timeout: 10000 });
         assertPseudo('File menu Check game', await page.textContent('.absolute button >> nth=1'));
         await page.click('.absolute button >> nth=2'); // "Publish…" (Backup…, Check game, Publish…)
