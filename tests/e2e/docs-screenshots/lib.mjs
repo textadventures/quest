@@ -206,7 +206,7 @@ export async function pickObject(page, combobox, objectName) {
     // reopens its list with the input cleared, so move focus away, as a click elsewhere would,
     // and let the save finish first.
     await combobox.evaluate(el => el.blur());
-    await page.waitForFunction(() => !document.querySelector('.save-chip-unsaved') && !document.querySelector('.save-chip-saving'), { timeout: 15000 });
+    await page.waitForFunction(() => !document.querySelector('.save-chip-unsaved') && !document.querySelector('.save-chip-saving'), null, { timeout: 15000 });
     const picked = await combobox.inputValue();
     if (picked !== objectName) throw new Error(`Picked "${objectName}" but the combobox shows "${picked}"`);
 }
@@ -228,7 +228,7 @@ export const COMMAND_INPUT = '.qv-command-input, #txtCommand';
 export async function waitForPlayer(playerPage) {
     await playerPage.waitForSelector(COMMAND_INPUT, { state: 'visible', timeout: 60000 });
     await playerPage.waitForSelector('#qv-start', { state: 'detached', timeout: 30000 });
-    await playerPage.waitForFunction(() => window.canSendCommand === true, { timeout: 30000 });
+    await playerPage.waitForFunction(() => window.canSendCommand === true, null, { timeout: 30000 });
 }
 
 // Clicks the toolbar Preview button and returns the WasmPlayer tab it opens, once booted
@@ -257,10 +257,10 @@ export async function openPreview(page) {
 // drops a command while canSendCommand is still false from the last one's round-trip,
 // so a fixed sleep between commands would be flaky.
 export async function sendCommand(playerPage, command) {
-    await playerPage.waitForFunction(() => window.canSendCommand === true, { timeout: 10000 });
+    await playerPage.waitForFunction(() => window.canSendCommand === true, null, { timeout: 10000 });
     await playerPage.fill(COMMAND_INPUT, command);
     await playerPage.press(COMMAND_INPUT, 'Enter');
-    await playerPage.waitForFunction(() => window.canSendCommand === true, { timeout: 10000 });
+    await playerPage.waitForFunction(() => window.canSendCommand === true, null, { timeout: 10000 });
 }
 
 // Captures a WasmPlayer tab with the viewport sized to fit what's on screen. The new interface
@@ -365,7 +365,7 @@ async function saveIfDirty(page) {
     // chip to detach would resolve mid-save, capturing "Saving..." instead of the settled state.
     await page.waitForFunction(() => {
         return !document.querySelector('.save-chip-unsaved') && !document.querySelector('.save-chip-saving');
-    }, { timeout: 15000 }).catch(() => {});
+    }, null, { timeout: 15000 }).catch(() => {});
 }
 
 // Dismisses the "This game is only stored in this browser" backup nudge (BackupBanner.svelte)

@@ -81,7 +81,7 @@ test('sound-timer', async ({ baseURL }) => {
     // sendCommand() in player.js silently drops a command while canSendCommand is
     // still false from the previous one's round-trip.
     async function waitUntilCanSendCommand() {
-        await page.waitForFunction(() => window.canSendCommand === true, { timeout: 20000 });
+        await page.waitForFunction(() => window.canSendCommand === true, null, { timeout: 20000 });
     }
 
     async function sendCommand(command) {

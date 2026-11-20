@@ -23,10 +23,10 @@ test('bug-report', async ({ baseURL }) => {
     const commandInput = page.locator('#txtCommand:visible, qv-command-bar input:visible').first();
 
     async function sendCommand(command) {
-        await page.waitForFunction(() => window.canSendCommand === true, { timeout: 30000 });
+        await page.waitForFunction(() => window.canSendCommand === true, null, { timeout: 30000 });
         await commandInput.fill(command);
         await commandInput.press('Enter');
-        await page.waitForFunction(() => window.canSendCommand === true, { timeout: 30000 });
+        await page.waitForFunction(() => window.canSendCommand === true, null, { timeout: 30000 });
     }
 
     // Opens the Save/Load dialog, clicks "Copy for a bug report" and returns the status line and the

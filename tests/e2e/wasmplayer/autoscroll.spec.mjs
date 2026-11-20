@@ -79,7 +79,7 @@ test('autoscroll', async ({ baseURL }) => {
     await previewPage.waitForFunction(() => {
         const el = document.querySelector('[data-walkthrough-status]');
         return el && el.textContent && el.textContent !== 'Running…';
-    }, { timeout: 15000 });
+    }, null, { timeout: 15000 });
     console.log('step: got status');
     const status = await previewPage.$eval('[data-walkthrough-status]', el => el.textContent);
     check('Walkthrough runs to completion', status === 'Done');

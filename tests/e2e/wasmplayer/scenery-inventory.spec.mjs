@@ -28,7 +28,7 @@ test('scenery-inventory', async ({ baseURL }) => {
     page.on('pageerror', err => console.log('[pageerror]', err.message));
 
     async function waitUntilCanSendCommand() {
-        await page.waitForFunction(() => window.canSendCommand === true, { timeout: 20000 });
+        await page.waitForFunction(() => window.canSendCommand === true, null, { timeout: 20000 });
     }
 
     async function sendCommand(command) {

@@ -214,6 +214,7 @@ test('debugger', async ({ baseURL }) => {
     // finished processing "look" yet) — poll for the output to actually mention livingroom instead.
     await previewPage.waitForFunction(
         () => /livingroom/i.test(document.querySelector('#divOutput')?.textContent ?? ''),
+        null,
         { timeout: 5000 }
     ).catch(() => {});
     const outputText = await previewPage.$eval('#divOutput', el => el.textContent);
@@ -313,7 +314,7 @@ test('debugger', async ({ baseURL }) => {
     await previewPage.waitForFunction(() => {
         const el = document.querySelector('#qv-debugger-override-error');
         return el && !el.classList.contains('hidden') && el.textContent.length > 0;
-    }, { timeout: 5000 });
+    }, null, { timeout: 5000 });
     const errorText = await previewPage.$eval('#qv-debugger-override-error', el => el.textContent);
     check('Bad override shows an inline error', errorText.length > 0);
     console.log('  error text:', errorText);
@@ -404,7 +405,7 @@ test('debugger', async ({ baseURL }) => {
     await previewPage.waitForFunction(() => {
         const el = document.querySelector('[data-walkthrough-status]');
         return el && el.textContent && el.textContent !== 'Running…';
-    }, { timeout: 15000 });
+    }, null, { timeout: 15000 });
     const walkthroughStatus = await previewPage.$eval('[data-walkthrough-status]', el => el.textContent);
     check('Walkthrough runs to completion', walkthroughStatus === 'Done');
 
@@ -447,7 +448,7 @@ test('debugger', async ({ baseURL }) => {
     await previewPage.waitForFunction(() => {
         const el = document.querySelector('[data-walkthrough-status]');
         return el && el.textContent && el.textContent !== 'Running…';
-    }, { timeout: 15000 });
+    }, null, { timeout: 15000 });
     const cancelledStatus = await previewPage.$eval('[data-walkthrough-status]', el => el.textContent);
     check('Cancel still works after reopening the dialog', cancelledStatus !== 'Running…');
     const cancelHiddenAfterCancel = await previewPage.$eval('[data-cancel-walkthrough]', el => el.classList.contains('hidden'));
@@ -490,12 +491,12 @@ test('debugger', async ({ baseURL }) => {
     );
 
     await previewPage.waitForSelector('#txtCommand', { state: 'visible', timeout: 30000 });
-    await previewPage.waitForFunction(() => document.getElementById('divOutput')?.textContent.length > 20, { timeout: 10000 });
+    await previewPage.waitForFunction(() => document.getElementById('divOutput')?.textContent.length > 20, null, { timeout: 10000 });
     // Output can already be visible slightly before restartGameCore's finally
     // block (which hides the spinner) actually runs — flushed text and the
     // JS await returning aren't quite the same instant (same reasoning as the
     // 300ms buffer a few checks below, for restartInProgress).
-    await previewPage.waitForFunction(() => document.getElementById('qv-restarting')?.classList.contains('hidden'), { timeout: 5000 });
+    await previewPage.waitForFunction(() => document.getElementById('qv-restarting')?.classList.contains('hidden'), null, { timeout: 5000 });
     const spinnerHiddenAfter = await previewPage.$eval('#qv-restarting', el => getComputedStyle(el).display === 'none');
     check('Restarting spinner hides again once the restart finishes', spinnerHiddenAfter);
 

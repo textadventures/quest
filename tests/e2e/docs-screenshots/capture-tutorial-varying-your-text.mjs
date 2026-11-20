@@ -20,6 +20,7 @@ async function settleSave(page) {
     await chip.click();
     await page.waitForFunction(
         () => !document.querySelector('.save-chip-unsaved') && !document.querySelector('.save-chip-saving'),
+        null,
         { timeout: 15000 },
     ).catch(() => {});
 }
