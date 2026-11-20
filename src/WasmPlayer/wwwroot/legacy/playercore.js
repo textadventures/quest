@@ -50,7 +50,7 @@ function initPlayerUI() {
     $("#txtCommand").bind("inview", function (event, visible) {
         // allows spacebar to scroll browser when txtCommand is not visible
         if (visible == true) {
-            if (!_touchedElsewhere) $("#txtCommand").focus();
+            if (!_touchedElsewhere && !verbMenuHasFocus()) $("#txtCommand").focus();
         } else {
             $("#txtCommand").blur();
         }
@@ -787,8 +787,19 @@ document.addEventListener("pointerdown", function (e) {
 // same function to restore focus once the command bar comes back.
 function focusCommandInput() {
     if (_touchedElsewhere) return;
+    if (verbMenuHasFocus()) return;
     if (!isElementVisible("#txtCommandDiv") || !isElementVisible("#txtCommand")) return;
     document.getElementById("txtCommand")?.focus({preventScroll: true});
+}
+
+// True while the player is in an open verb menu. Nothing the game does by itself
+// (a turn ending, a picture finishing loading and re-scrolling, the command bar
+// scrolling into view) should take focus out of one: the menu's keys (arrows,
+// Enter, Escape) only work while one of its items has focus, so a game that had just
+// loaded could leave the player in a menu they can't close from the keyboard.
+function verbMenuHasFocus() {
+    var active = document.activeElement;
+    return !!(active && active.closest && active.closest("div[id^=jjmenu]"));
 }
 
 // beginningOfCurrentTurnScrollPosition is set by markScrollPosition() before

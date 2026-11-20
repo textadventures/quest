@@ -55,6 +55,7 @@ test('mobile-touch-targets', async ({ baseURL }) => {
         // them, so poll for the room description rather than racing it.
         await page.waitForFunction(
             () => document.querySelectorAll('#divOutput .elementmenu').length > 0,
+            undefined,
             { timeout: 15000 },
         );
     }
@@ -67,7 +68,7 @@ test('mobile-touch-targets', async ({ baseURL }) => {
 
     async function closeVerbMenu() {
         await page.keyboard.press('Escape');
-        await page.waitForFunction(() => !document.querySelector('#jjmenu_main'), { timeout: 5000 });
+        await page.waitForFunction(() => !document.querySelector('#jjmenu_main'), undefined, { timeout: 5000 });
     }
 
     async function run() {
@@ -137,7 +138,7 @@ test('mobile-touch-targets', async ({ baseURL }) => {
 
         // Side pane.
         await page.click('#cmdShowPanes');
-        await page.waitForFunction(() => getComputedStyle(document.querySelector('#sidebar')).display === 'block', { timeout: 5000 });
+        await page.waitForFunction(() => getComputedStyle(document.querySelector('#sidebar')).display === 'block', undefined, { timeout: 5000 });
 
         // Nothing in the opened overlay may overlap the bar it drops down from, and
         // it has to stop at the bottom of the window rather than running off it.
@@ -238,7 +239,7 @@ test('mobile-touch-targets', async ({ baseURL }) => {
         // The desktop layout must be exactly as it was, so everything above has to
         // come back down again rather than being a one-way change.
         await page.setViewportSize(DESKTOP);
-        await page.waitForFunction(() => !document.body.classList.contains('qv-narrow'), { timeout: 5000 });
+        await page.waitForFunction(() => !document.body.classList.contains('qv-narrow'), undefined, { timeout: 5000 });
         console.log('PASS: body.qv-narrow cleared when the window widens past the game width');
 
         // 32px = the 30px of CSS height plus .ui-widget-header's 1px border top and
