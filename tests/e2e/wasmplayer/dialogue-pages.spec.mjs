@@ -23,7 +23,7 @@ test('dialogue-pages', async ({ baseURL }) => {
     page.on('console', msg => { if (msg.type() === 'error') console.log('[console.error]', msg.text()); });
 
     async function waitUntilCanSendCommand() {
-        await page.waitForFunction(() => window.canSendCommand === true, { timeout: 10000 });
+        await page.waitForFunction(() => window.canSendCommand === true, null, { timeout: 10000 });
     }
 
     async function sendCommand(command) {
@@ -136,7 +136,7 @@ test('dialogue-pages', async ({ baseURL }) => {
         await page.waitForFunction(() => {
             const link = document.querySelector('a.cmdlink[data-command="guard_castle"]');
             return !link || link.offsetParent === null;
-        }, { timeout: 5000 });
+        }, null, { timeout: 5000 });
         console.log('PASS: previous page option links are hidden after a choice');
 
         // Typed option number. The intro page's options were printed once already, so only count

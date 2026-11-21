@@ -49,7 +49,7 @@ test('autoscroll-frame-load-race', async ({ baseURL }) => {
     console.log('typing shout1 (frame still empty/0-height, as it would be before a real image loads)');
     await page.fill('#txtCommand', 'shout1');
     await page.press('#txtCommand', 'Enter');
-    await page.waitForFunction(() => document.querySelector('#divOutput')?.textContent.includes('Turn 1, filler line 60'), { timeout: 15000 });
+    await page.waitForFunction(() => document.querySelector('#divOutput')?.textContent.includes('Turn 1, filler line 60'), null, { timeout: 15000 });
     // Let the turn-boundary scroll settle, exactly as it would in real play.
     await page.waitForTimeout(1000);
 

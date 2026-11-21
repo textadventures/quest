@@ -7,7 +7,12 @@
 // - a project in the config has no `--project=<name>` step in e2e.yml (or a step names
 //   a project the config doesn't have);
 // - a standalone verify-*.mjs script is left in tests/e2e (the old format, which
-//   nothing runs any more).
+//   nothing runs any more);
+// - a script under tests/e2e passes waitForFunction's options as its second argument.
+//   Playwright's signature is waitForFunction(pageFunction, arg, options), so
+//   waitForFunction(fn, { timeout: N }) hands that object to fn as its argument and no
+//   timeout applies: a stuck wait hangs until the whole test times out instead of
+//   failing fast. The options go third: waitForFunction(fn, null, { timeout: N }).
 // Runs on every PR as the required check_e2e_manifest job, with no npm install, so it
 // reads the config as text rather than importing it.
 //
@@ -53,6 +58,65 @@ if (unknown.length) {
 const oldScripts = readdirSync(here).filter(f => f.startsWith('verify-') && f.endsWith('.mjs'));
 if (oldScripts.length) {
     problems.push(`Standalone verify-*.mjs scripts don't run any more; make each a <topic>.spec.mjs in a project directory:\n  ${oldScripts.join('\n  ')}`);
+}
+
+// The top-level argument texts of the call whose '(' is at index `open`. Skips over
+// strings, template literals and comments, which is enough for these scripts.
+function callArgs(src, open) {
+    const args = [];
+    let depth = 0, start = open + 1;
+    for (let i = open; i < src.length; i++) {
+        const c = src[i];
+        if (c === '"' || c === "'" || c === '`') {
+            for (i++; i < src.length && src[i] !== c; i++) {
+                if (src[i] === '\\') i++;
+                else if (c === '`' && src[i] === '$' && src[i + 1] === '{') {
+                    for (let d = 0; i < src.length; i++) {
+                        if (src[i] === '{') d++;
+                        else if (src[i] === '}' && --d === 0) break;
+                    }
+                }
+            }
+        } else if (c === '/' && src[i + 1] === '/') {
+            i = src.indexOf('\n', i);
+            if (i < 0) break;
+        } else if (c === '/' && src[i + 1] === '*') {
+            i = src.indexOf('*/', i + 2) + 1;
+            if (i <= 0) break;
+        } else if ('([{'.includes(c)) {
+            depth++;
+        } else if (')]}'.includes(c)) {
+            if (--depth === 0) { args.push(src.slice(start, i)); break; }
+        } else if (c === ',' && depth === 1) {
+            args.push(src.slice(start, i));
+            start = i + 1;
+        }
+    }
+    const trimmed = args.map(a => a.trim());
+    if (trimmed.at(-1) === '') trimmed.pop(); // trailing comma
+    return trimmed;
+}
+
+function scriptsUnder(dir) {
+    return readdirSync(dir, { withFileTypes: true }).flatMap(entry => {
+        if (entry.name === 'node_modules' || entry.name.startsWith('.')) return [];
+        const path = join(dir, entry.name);
+        if (entry.isDirectory()) return scriptsUnder(path);
+        return entry.name.endsWith('.mjs') && path !== import.meta.filename ? [path] : [];
+    });
+}
+
+const misplacedOptions = scriptsUnder(here).flatMap(path => {
+    const src = readFileSync(path, 'utf8');
+    return [...src.matchAll(/\bwaitForFunction\s*\(/g)].flatMap(m => {
+        const args = callArgs(src, m.index + m[0].length - 1);
+        if (args.length !== 2 || !/^\{\s*(timeout|polling)\b/.test(args[1])) return [];
+        const line = src.slice(0, m.index).split('\n').length;
+        return [`${relative(here, path).split(sep).join('/')}:${line}`];
+    });
+});
+if (misplacedOptions.length) {
+    problems.push(`waitForFunction(fn, { timeout }) hands the options to fn as its argument, so no timeout applies; pass them third, as waitForFunction(fn, null, { timeout }):\n  ${misplacedOptions.join('\n  ')}`);
 }
 
 if (problems.length) {
