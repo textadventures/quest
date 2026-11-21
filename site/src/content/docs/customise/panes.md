@@ -12,6 +12,7 @@ The panes show what the player is carrying and what's in the room, the Status pa
 | Show a number as a bar, such as health out of 100 | A status attribute with a maximum |
 | Give the player one-click commands such as LOOK and WAIT | The command pane |
 | Show your own HTML beside the game | The custom status pane, or a pane of your own |
+| Make a pane look like part of the game, such as a phone | A pane of your own, styled with a [stylesheet](#example-a-phone-that-shows-the-inventory-and-exits) |
 | Show or hide a pane partway through the game | The "Show/hide part of the interface" script command |
 
 Everything on this page works in both the new interface and the [classic interface](/customise/classic/), except where it says otherwise.
@@ -129,6 +130,98 @@ SetPaneContent ("notes", "The butler was in the kitchen at nine.")
 ```
 
 The ID is how you refer to the pane from then on: with `SetPaneContent`, with "Show/hide part of the interface" to hide it, and in your stylesheet as `[data-qv-pane="notes"]` (see [Styling the player with CSS](/customise/css#part-names)). Use letters, numbers and hyphens. The game keeps your panes and their content, so they're still there after the player loads a saved game. Adding a pane that's already there does nothing, so it's safe to do from a script that runs more than once.
+
+### Example: a phone that shows the inventory and exits
+
+Your own pane can hold any HTML, and its links work like the ones in the game text. So you can make a pane look like part of the game world, such as a phone the player carries, which lists what they're holding and where they can go, and hide the standard panes it replaces.
+
+In the game's start script, on the _Scripts_ tab, add the pane, hide the Inventory pane and the compass, and fill it for the first time:
+
+```quest
+AddPane ("phone", "Phone")
+SetPaneVisible ("inventory", false)
+SetPaneVisible ("compass", false)
+UpdatePhone
+```
+
+Add a function called `UpdatePhone`, which builds the phone's screen and puts it in the pane. `{object:...}` and `{exit:...}` make links, as they do in the game text, and `ProcessText` turns them into HTML:
+
+```quest
+html = "<div class='phone-screen'><h3>Carrying</h3><ul>"
+items = ScopeInventory()
+if (ListCount(items) = 0) {
+  html = html + "<li>Nothing</li>"
+}
+foreach (obj, items) {
+  html = html + "<li>{object:" + obj.name + "}</li>"
+}
+html = html + "</ul><h3>Exits</h3><ul class='phone-exits'>"
+foreach (exit, GetExitsList()) {
+  html = html + "<li>{exit:" + exit.name + "}</li>"
+}
+html = html + "</ul></div>"
+SetPaneContent ("phone", ProcessText(html))
+```
+
+To keep it up to date, add a turn script, tick "Enabled when the game begins", and give it this script:
+
+```quest
+UpdatePhone
+```
+
+Then make it look like a phone, in **Stylesheet**, under Advanced on the game's _Appearance_ tab. `[data-qv-pane="phone"]` is the pane itself, and `phone-screen` and `phone-exits` are the classes you gave your own HTML:
+
+```css
+[data-qv-pane="phone"] {
+    padding: 14px 10px 28px;
+    border-radius: 32px;
+    background: #1c1c1e;
+    color: #e8f0ff;
+}
+
+.phone-screen {
+    min-height: 16rem;
+    padding: 0.75rem;
+    border-radius: 18px;
+    background: linear-gradient(#24476b, #0f1f33);
+}
+
+.phone-screen h3 {
+    margin: 0 0 0.25rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.75;
+}
+
+.phone-screen ul {
+    margin: 0 0 1rem;
+    padding: 0;
+    list-style: none;
+}
+
+.phone-screen a.cmdlink {
+    color: #9cd0ff;
+}
+
+.phone-exits {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.phone-exits a.cmdlink {
+    padding: 0.2rem 0.7rem;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 15%);
+    color: inherit;
+    text-decoration: none;
+}
+```
+
+Clicking an object on the phone opens its verb menu, and clicking an exit goes that way, just as in the game text. The phone is still a pane, so it goes wherever the panes go: beside the game on a wide screen, and in the drawer or sheet on a phone. (The classic interface draws the pane's heading above the phone, rather than inside it.) Add anything else the game knows to `UpdatePhone` in the same way, such as the score or the time.
+
+The turn script updates the phone at the end of each turn, so it doesn't see a change made by a timer until the next turn. Call `UpdatePhone` from the timer's script as well if that matters to your game.
 
 ## Showing and hiding panes during the game
 
