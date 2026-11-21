@@ -1,0 +1,5 @@
+<library>
+  <function name="PickedLibraryGreeting">
+    msg ("The picked library loaded.")
+  </function>
+</library>

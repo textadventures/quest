@@ -1,0 +1,19 @@
+<!--A game that includes a library of its own from beside it: see picked-library-files.spec.mjs-->
+<asl version="610">
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+  <include ref="picked-library.aslx"/>
+
+  <game name="Picked Library Game">
+    <start type="script">
+      PickedLibraryGreeting
+    </start>
+  </game>
+
+  <object name="room">
+    <isroom/>
+    <object name="player">
+      <inherit name="editor_player"/>
+    </object>
+  </object>
+</asl>

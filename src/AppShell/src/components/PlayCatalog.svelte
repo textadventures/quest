@@ -7,7 +7,8 @@
     import { isElectron } from "#lib/runtime.js";
     import { listRecentGames, removeRecentGame, electronDroppedFilePath, FileNotFoundError, describeElectronError, type RecentGame } from "#lib/filesystem/electron-adapter.js";
     import { playElectronFile, pickAndPlayElectronFile, closeLocalPlayChannel } from "#lib/filesystem/local-play.js";
-    import { pickFile } from "#lib/filesystem/file-picker.js";
+    import { pickFiles } from "#lib/filesystem/file-picker.js";
+    import { splitPickedGameFiles } from "#lib/filesystem/picked-game-files.js";
     import { listRecentCatalogPlays, removeRecentCatalogPlay, type RecentCatalogPlay } from "#lib/recent-catalog-plays.svelte.js";
     import UpdateBanner from "#components/UpdateBanner.svelte";
     import GameCard from "#components/GameCard.svelte";
@@ -15,7 +16,7 @@
     import LocalFileRecentCard from "#components/LocalFileRecentCard.svelte";
     import FolderOpen from "@lucide/svelte/icons/folder-open";
     import SearchIcon from "@lucide/svelte/icons/search";
-    import { t } from "#lib/i18n/index.js";
+    import { t, tPlural } from "#lib/i18n/index.js";
 
     const isElectronApp = isElectron();
 
@@ -168,6 +169,10 @@
     // same click's single-use activation grant.
     let pickedFile = $state<File | null>(null);
     let pickedBytes = $state<Uint8Array | null>(null);
+    // Library files picked along with an .aslx game (see picked-game-files.ts). Raw, not a deep
+    // $state proxy, since it goes over a BroadcastChannel, which can't clone a proxy.
+    let pickedAdjacentFiles = $state.raw<Record<string, Uint8Array>>({});
+    const pickedLibraryCount = $derived(Object.keys(pickedAdjacentFiles).length);
     let pickError = $state<string | null>(null);
     let starting = $state(false);
     let startError = $state<string | null>(null);
@@ -180,16 +185,22 @@
     let browserPlayChannel: BroadcastChannel | null = null;
 
     async function handlePickFile() {
-        const file = await pickFile(PLAY_EXTENSIONS.join(","));
-        if (file) await acceptBrowserFile(file);
+        const files = await pickFiles(PLAY_EXTENSIONS.join(","));
+        if (files.length) await acceptBrowserFiles(files);
     }
 
-    async function acceptBrowserFile(file: File) {
+    async function acceptBrowserFiles(files: File[]) {
         pickError = null;
         startError = null;
         try {
-            pickedBytes = new Uint8Array(await file.arrayBuffer());
-            pickedFile = file;
+            const picked = await splitPickedGameFiles(files);
+            if (!picked) {
+                pickError = t("playCatalog.noGameInFiles");
+                return;
+            }
+            pickedBytes = picked.bytes;
+            pickedAdjacentFiles = picked.adjacentFiles;
+            pickedFile = picked.file;
         } catch (err) {
             pickError = String(err);
         }
@@ -198,6 +209,7 @@
     function handleClearPicked() {
         pickedFile = null;
         pickedBytes = null;
+        pickedAdjacentFiles = {};
         pickError = null;
         startError = null;
     }
@@ -206,9 +218,9 @@
     // click's activation, and awaiting anything beforehand (there's nothing to await
     // here; the bytes are already read in handlePickFile) would let the popup blocker
     // silently no-op it. Hands the bytes to the new tab over a BroadcastChannel — see
-    // wasm-player.js's `source=local` boot branch. No resource-request handling on this
-    // path: a raw picked File has no directory to resolve sibling assets against (unlike
-    // the Electron path above), so this only really supports self-contained .quest packages.
+    // wasm-player.js's `source=local` boot branch — with any library files picked along with
+    // the game. No resource-request handling on this path: a raw picked File has no directory
+    // to resolve sibling assets such as images against (unlike the Electron path above).
     function handleBrowserStart() {
         if (!pickedFile || !pickedBytes) return;
         startError = null;
@@ -224,6 +236,7 @@
         starting = true;
         const bytes = pickedBytes;
         const filename = pickedFile.name;
+        const adjacentFiles = pickedAdjacentFiles;
         const bc = new BroadcastChannel("quest-play-local");
         browserPlayChannel = bc;
         // Deliberately left open (not closed after the first message) — WasmPlayer
@@ -232,7 +245,7 @@
         // exactly like the never-closed editor-preview channel it mirrors.
         bc.onmessage = ({ data }) => {
             if (data.type === "ready") {
-                bc.postMessage({ type: "game", bytes, filename });
+                bc.postMessage({ type: "game", bytes, filename, adjacentFiles, picked: true });
                 starting = false;
                 handleClearPicked();
             }
@@ -296,17 +309,21 @@
         if (!isFileDrag(e)) return;
         e.preventDefault();
         dragDepth = 0;
-        const file = e.dataTransfer?.files[0];
-        if (!file) return;
-        if (!isPlayableFilename(file.name)) {
-            const message = t("playCatalog.unsupportedFile", { filename: file.name });
+        const files = [...(e.dataTransfer?.files ?? [])];
+        if (!files.length) return;
+        const unsupported = files.find((f) => !isPlayableFilename(f.name));
+        if (unsupported) {
+            const message = t("playCatalog.unsupportedFile", { filename: unsupported.name });
             if (isElectronApp) { missingRecent = null; electronOpenError = message; } else { pickError = message; }
             return;
         }
         if (!isElectronApp) {
-            await acceptBrowserFile(file);
+            await acceptBrowserFiles(files);
             return;
         }
+        // Electron reads a game's libraries from its folder itself, so only the game is needed
+        // from a drop of a game and its libraries.
+        const file = files.length === 1 ? files[0] : (await splitPickedGameFiles(files))?.file ?? files[0];
         const dropped = electronDroppedFilePath(file);
         if (!dropped) {
             missingRecent = null;
@@ -502,6 +519,9 @@
         <div class="flex flex-col items-center justify-center gap-3 w-full rounded-lg border-2 border-primary-500 p-3 text-center">
             <FolderOpen size={28} class="text-primary-400" aria-hidden="true" />
             <span class="text-sm font-semibold break-all line-clamp-3">{pickedFile.name}</span>
+            {#if pickedLibraryCount > 0}
+                <span class="text-xs text-surface-400">{tPlural("playCatalog.withLibraries", pickedLibraryCount)}</span>
+            {/if}
             <button type="button" class="btn preset-filled-primary-500 w-full" onclick={handleBrowserStart} disabled={starting}>
                 {starting ? t("playCatalog.starting") : t("playCatalog.startButton") + " ▶"}
             </button>
@@ -542,6 +562,9 @@
     {:else}
         <div class="flex items-center gap-2">
             <span class="text-sm text-surface-300 truncate max-w-[20ch]">{pickedFile.name}</span>
+            {#if pickedLibraryCount > 0}
+                <span class="text-xs text-surface-400">{tPlural("playCatalog.withLibraries", pickedLibraryCount)}</span>
+            {/if}
             <button type="button" class="btn btn-sm preset-tonal" onclick={handleClearPicked} disabled={starting}>
                 {t("playCatalog.change")}
             </button>
