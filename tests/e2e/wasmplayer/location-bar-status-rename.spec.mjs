@@ -37,6 +37,7 @@ test('location-bar-status-rename', async ({ baseURL }) => {
         // colour to actually land rather than racing it.
         await page.waitForFunction(
             () => getComputedStyle(document.querySelector('#qv-status')).backgroundColor === 'rgb(255, 0, 255)',
+            null,
             { timeout: 10000 },
         );
 
@@ -78,6 +79,7 @@ test('location-bar-status-rename', async ({ baseURL }) => {
         // before asserting on it or its sibling #location.
         await page.waitForFunction(
             () => getComputedStyle(document.querySelector('#qv-status')).display === 'block',
+            null,
             { timeout: 10000 },
         );
 
@@ -123,6 +125,7 @@ test('location-bar-status-rename', async ({ baseURL }) => {
         // InitInterface has actually run.
         await page.waitForFunction(
             () => document.querySelector('#location').style.display === 'none',
+            null,
             { timeout: 10000 },
         );
 
@@ -146,6 +149,7 @@ test('location-bar-status-rename', async ({ baseURL }) => {
         await page.setViewportSize({ width: 500, height: 800 });
         await page.waitForFunction(
             () => getComputedStyle(document.querySelector('#cmdShowPanes')).display !== 'none',
+            null,
             { timeout: 10000 },
         );
         const narrowStatusDisplay = await page.$eval('#qv-status', el => getComputedStyle(el).display);

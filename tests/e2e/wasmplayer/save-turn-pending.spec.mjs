@@ -34,7 +34,7 @@ test('save-turn-pending', async ({ baseURL }) => {
     // still false from the previous one's round-trip - waiting on a fixed sleep
     // between commands is flaky, so poll the same flag the client uses instead.
     async function waitUntilCanSendCommand() {
-        await page.waitForFunction(() => window.canSendCommand === true, { timeout: 10000 });
+        await page.waitForFunction(() => window.canSendCommand === true, null, { timeout: 10000 });
     }
 
     async function sendCommand(command) {

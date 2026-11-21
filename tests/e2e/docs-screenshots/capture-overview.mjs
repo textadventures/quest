@@ -199,6 +199,6 @@ await runCapture(async ({ page, baseUrl }) => {
         context.waitForEvent('page', { timeout: 15000 }),
         page.click('button:has-text("Preview")'),
     ]);
-    await p.waitForFunction(() => document.body?.innerText.includes('This is page 1'), { timeout: 20000 });
+    await p.waitForFunction(() => document.body?.innerText.includes('This is page 1'), null, { timeout: 20000 });
     await capture(p, out('overview-gamebook.png'), { untilLocator: p.getByText('And this link goes to page 3'), padding: 60 });
 });

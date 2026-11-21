@@ -203,6 +203,7 @@ test('code-view', async ({ baseURL }) => {
         // refreshUndoRedo() runs asynchronously after the reload, so poll rather than check once.
         await page.waitForFunction(
             () => document.querySelector('button[title="Undo"]')?.disabled === true,
+            null,
             { timeout: 5000 }
         );
         console.log('PASS: Undo is disabled after applying raw XML edits (undo history cleared, as warned)');

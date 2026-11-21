@@ -36,6 +36,7 @@ test('asset-versioning', async ({ baseURL }) => {
         await page.goto(`${baseUrl}/?url=/examples/simple.aslx`, { waitUntil: 'load' });
         await page.waitForFunction(
             () => document.querySelector('#divOutput')?.textContent?.includes('You are in a room'),
+            null,
             { timeout: 120000 });
 
         const version = await page.evaluate(() => window.QuestVivaVersion);

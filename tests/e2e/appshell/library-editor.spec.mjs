@@ -99,7 +99,7 @@ test('library-editor', async ({ baseURL }) => {
         await page.click('.tree-dropdown button:has-text("Add library")');
         await page.waitForSelector('[role="dialog"]', { timeout: 5000 });
         await page.setInputFiles('[role="dialog"] input[type="file"]', fixture);
-        await page.waitForFunction(() => document.querySelector('[role="dialog"] button') !== null, { timeout: 5000 });
+        await page.waitForFunction(() => document.querySelector('[role="dialog"] button') !== null, null, { timeout: 5000 });
         await page.click('[role="dialog"] button:has-text("Add library")');
         await page.waitForSelector('[role="dialog"]', { state: 'hidden', timeout: 5000 }).catch(() => {});
         await treeItem(page, CUSTOM_LIBRARY).first().waitFor({ state: 'visible', timeout: 10000 });

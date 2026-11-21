@@ -20,7 +20,7 @@ test('save-slot-title-size', async ({ baseURL }) => {
     try {
         await page.goto(`${baseUrl}/?url=/examples/simple.aslx`);
         await page.waitForSelector('#txtCommand', { timeout: 30000, state: 'attached' });
-        await page.waitForFunction(() => window.canSendCommand === true, { timeout: 10000 });
+        await page.waitForFunction(() => window.canSendCommand === true, null, { timeout: 10000 });
 
         // Simulate a game that restyles <body> (Core.aslx's JS.setCss call), open
         // the save dialog in manage mode, and inject a couple of slots the way

@@ -28,7 +28,7 @@ test('save-random-state', async ({ baseURL }) => {
     try {
         await page.goto(`${baseUrl}/?url=/examples/simple.aslx`);
         await page.waitForSelector('#txtCommand, qv-command-bar input', { timeout: 30000, state: 'attached' });
-        await page.waitForFunction(() => window.canSendCommand === true, { timeout: 30000 });
+        await page.waitForFunction(() => window.canSendCommand === true, null, { timeout: 30000 });
 
         await roll();
         await page.evaluate(async () => {
@@ -38,7 +38,7 @@ test('save-random-state', async ({ baseURL }) => {
         const expected = await roll();
 
         await page.evaluate(async () => { await restartGameCore(window.__savedBytes); });
-        await page.waitForFunction(() => window.canSendCommand === true, { timeout: 30000 });
+        await page.waitForFunction(() => window.canSendCommand === true, null, { timeout: 30000 });
         const actual = await roll();
 
         if (JSON.stringify(actual) !== JSON.stringify(expected)) {
