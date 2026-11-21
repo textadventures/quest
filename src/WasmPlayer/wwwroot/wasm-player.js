@@ -1082,6 +1082,9 @@ function swapInPlayerUi() {
 // so the Debug button's visibility stays correct after "Start from the
 // beginning"/Load in an editor-preview session.
 let currentIsPreview = false;
+// True when the game came from files the player picked (the start screen's file picker, or the
+// Play tab's): see showGameLoadError's hint about choosing a game's library files too.
+let gameFromPickedFiles = false;
 
 // Same idea as currentIsPreview, but for the source=local .aslx case (see
 // setCanDebug's call sites below) — kept separate from isPreview because it
@@ -1265,7 +1268,7 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
         // A live app (Play tab / editor preview) handed this game over via bc —
         // it owns the file-picking UI, so don't re-offer the start-screen
         // pickers; just show the error, editor-style.
-        showGameLoadError(errors, !bc);
+        showGameLoadError(errors, !bc, gameFromPickedFiles);
         reportProgress('failed', errors.join(' ') || 'Unknown error');
         return false;
     }
@@ -3033,7 +3036,7 @@ function showError(downloadUrl, isLocalFile, error) {
 // header+bullets format the Editor uses for a load-time error (see
 // EditorController.cs's "Failed to load game due to the following errors:"),
 // with a blank line between the header and the error message.
-function showGameLoadError(errors, showPickers = true) {
+function showGameLoadError(errors, showPickers = true, fromPickedFiles = false) {
     document.documentElement.classList.remove('qv-booting');
     const pickers = document.getElementById('qv-pickers');
     const msg = document.getElementById('qv-loading-msg');
@@ -3042,15 +3045,25 @@ function showGameLoadError(errors, showPickers = true) {
     if (pickers) pickers.style.display = showPickers ? 'block' : 'none';
     if (!errorEl) return;
     const list = errors.length ? errors : ['Unknown error'];
+    // A game picked from disk only brings the files the player chose, so a library it includes
+    // from its own folder is missing unless it was chosen too. Say how to fix that.
+    const missingLibraries = fromPickedFiles
+        ? list.map(e => /Library file not found: (.+)$/.exec(e)?.[1]).filter(Boolean)
+        : [];
+    const libraryHint = missingLibraries.length
+        ? `This game uses ${missingLibraries.join(', ')}. Open the game again, and choose `
+            + `${missingLibraries.length === 1 ? 'that file' : 'those files'} too, along with the game file.`
+        : null;
     errorEl.style.whiteSpace = showPickers ? '' : 'pre-wrap';
     if (showPickers) {
         errorEl.innerHTML = '<strong>This game couldn\'t be started.</strong> '
             + 'The game file loaded, but Quest Viva reported a problem with its contents:<br/>'
             + list.map(_esc).join('<br/>')
-            + '<br/>You can try a different file below.';
+            + (libraryHint ? '<br/>' + _esc(libraryHint) : '<br/>You can try a different file below.');
     } else {
         errorEl.innerHTML = _esc('Failed to load game due to the following errors:\n\n'
-            + list.map(e => '* ' + e).join('\n'));
+            + list.map(e => '* ' + e).join('\n')
+            + (libraryHint ? '\n\n' + libraryHint : ''));
     }
     errorEl.style.display = 'block';
     wireStartScreen();
@@ -3069,6 +3082,31 @@ function setLocationParam(name, value) {
     history.replaceState(null, '', newUrl);
 }
 
+// An .aslx game can <include ref="..."/> a library from its own folder, and a picked file brings
+// no folder with it, so the player can choose the game together with its libraries. Of the
+// files chosen, the game is the .quest/.asl/.cas, or else the .aslx whose root element is <asl>
+// (a library's is <library>); every other .aslx is passed on as an adjacent file for
+// WorldModel.GetLibraryStream to find. Returns null when no game is among them.
+async function splitPickedGameFiles(files) {
+    const read = await Promise.all(files.map(async f => ({ name: f.name, bytes: new Uint8Array(await f.arrayBuffer()) })));
+    const isAslx = f => /\.aslx$/i.test(f.name);
+    const game = read.find(f => /\.(quest|asl|cas)$/i.test(f.name))
+        ?? read.find(f => isAslx(f) && aslxRootElement(f.bytes) === 'asl')
+        ?? (read.length === 1 ? read[0] : null);
+    if (!game) return null;
+    const adjacentFiles = {};
+    for (const f of read) {
+        if (f !== game && isAslx(f)) adjacentFiles[f.name] = f.bytes;
+    }
+    return { bytes: game.bytes, filename: game.name, adjacentFiles };
+}
+
+// The name of an XML file's root element, skipping any XML declaration and comments (TextDecoder drops a BOM).
+function aslxRootElement(bytes) {
+    const text = new TextDecoder().decode(bytes.subarray(0, 4096));
+    return /^\s*(?:<\?[\s\S]*?\?>\s*|<!--[\s\S]*?-->\s*)*<([A-Za-z_][\w.-]*)/.exec(text)?.[1] ?? null;
+}
+
 let _startScreenWired = false;
 function wireStartScreen() {
     if (_startScreenWired) return;
@@ -3081,15 +3119,23 @@ function wireStartScreen() {
     if (!fileBtn) return;
 
     fileBtn.addEventListener('click', () => fileInput.click());
-    fileInput.addEventListener('change', () => {
-        const file = fileInput.files?.[0];
-        if (!file) return;
+    fileInput.addEventListener('change', async () => {
+        const files = [...(fileInput.files ?? [])];
+        fileInput.value = '';
+        if (!files.length) return;
         setLocationParam(null);
         showLoading();
-        const reader = new FileReader();
-        reader.onload = () => startGame(new Uint8Array(reader.result), file.name)
-            .catch(() => showError(null, true));
-        reader.readAsArrayBuffer(file);
+        try {
+            const picked = await splitPickedGameFiles(files);
+            if (!picked) {
+                showError(null, true);
+                return;
+            }
+            gameFromPickedFiles = true;
+            await startGame(picked.bytes, picked.filename, null, null, false, null, null, picked.adjacentFiles);
+        } catch {
+            showError(null, true);
+        }
     });
 
     async function doLoadUrl() {
@@ -3217,6 +3263,7 @@ async function fetchGameBytes(url) {
                 // play session (isPreview stays false) since a real save is
                 // still wanted here.
                 const allowDebug = /\.aslx$/i.test(data.filename ?? '');
+                gameFromPickedFiles = !!data.picked;
                 await startGame(data.bytes, data.filename, bc, null, false, null, null, data.adjacentFiles ?? null, allowDebug);
             }
         };
