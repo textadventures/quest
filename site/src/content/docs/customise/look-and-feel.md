@@ -44,12 +44,14 @@ Choosing a different theme clears the look you've set yourself (the fonts and co
 
 To go back to the theme's own look without choosing a different one, click **Reset** beside the **Theme** dropdown. Hover over it to see which of your settings it clears. It's greyed out when there's nothing to reset.
 
+Themes are made for the new interface. With **Use the classic interface** ticked, only some of a theme shows, such as its text font and colours, and the editor says so under the **Theme** dropdown.
+
 ### Text
 
 - **Base font** - a font from the list, each with fallbacks, such as "Georgia, serif". These work on every device.
 - **Web font** - optionally, any font from [Google Fonts](https://fonts.google.com/) (the **Browse available web fonts** link opens the catalogue). The player's browser downloads it from Google when the game starts. If it can't - because the player is offline, for example - the base font is used instead, so choose a base font that's a reasonable substitute.
 - **Font size** - in points. The default is 12.
-- **Interface font** - the font of the location bar, panes, menus and buttons. Leave it empty for the default.
+- **Interface font** - the font of the location bar, panes, menus and buttons, and beside it the **Font size** of the location bar and panes, in points. Leave them empty for the defaults.
 
 For all the colour boxes on these tabs, type any HTML colour, such as `DarkOrange` or `#336699`, or click the palette button beside the box to pick one. As you type, the matching colour names are suggested, and the ▾ button lists them all. To clear a colour, empty the box or click its ×. Cleared, the text, link and page colours go back to the theme's own, which for the Standard theme is **Default**: the game follows the player's light or dark mode.
 

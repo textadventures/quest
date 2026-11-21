@@ -169,6 +169,7 @@
   <template name="EditorGameShowCustomStatusPaneHelp">Rellénalo con el comando de script "Establecer el contenido de un panel", con el ID customstatus.</template>
   <template name="EditorGameMapHelp">Los scripts también pueden dibujar en él con las funciones Grid.</template>
   <template name="EditorGameTheme">Tema</template>
+  <template name="EditorGameThemeClassicHelp">Los temas están hechos para la nueva interfaz. Con «Usar la interfaz clásica» activado (en la pestaña Interfaz), solo se ve parte del tema, como la fuente y los colores del texto.</template>
   <template name="EditorGameFont">Fuente</template>
   <template name="EditorGameBasefont">Fuente base</template>
   <template name="EditorGameWebfont">Fuente web</template>
@@ -201,7 +202,7 @@
   <template name="EditorGamePanesCaption">Paneles de Juego</template>
   <template name="EditorGameMapinteractive">El mapa se puede arrastrar y ampliar</template>
   <template name="EditorGameInterfacefont">Fuente de la interfaz</template>
-  <template name="EditorGameInterfacefontHelp">La fuente de la barra de ubicación, los paneles y los botones. Déjala vacía para usar la predeterminada.</template>
+  <template name="EditorGameInterfacefontHelp">La fuente y el tamaño de la barra de ubicación, los paneles y los botones. Déjalos vacíos para usar los predeterminados.</template>
   <template name="EditorGameAccentColour">Color de acento</template>
   <template name="EditorGameAccentColourHelp">El color de acento es para los enlaces, la brújula y el indicador de comandos.</template>
   <template name="EditorGameLightDarkHelp">Cómo funcionan el modo claro y el oscuro</template>
@@ -266,6 +267,12 @@
   <template name="EditorGameClearpicture">Vaciar el cuadro de imagen en lugares sin imagen</template>
   <template name="EditorGameStylesheetTitle">Hoja de estilo</template>
   <template name="EditorGameStylesheetHelp">CSS para la interfaz del juego, que se aplica sobre los estilos predeterminados al jugar.</template>
+  <template name="EditorGameStylesheetDocs">Cómo usar CSS en un juego</template>
+  <template name="EditorGameStylesheetPlaceholder">/* Por ejemplo, para mostrar los enlaces del juego en negrita:
+
+a.cmdlink {
+    font-weight: bold;
+} */</template>
   <template name="EditorGameStylesheet">Hoja de estilo</template>
   <template name="EditorGameScript">Programas</template>
   <template name="EditorGameAdvancedScript">Programas Avanzados</template>

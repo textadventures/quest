@@ -101,6 +101,8 @@ export interface ControlInfo {
   // <darkattribute> - on a "colour" control: the attribute of its dark mode counterpart, another
   // colour control in the same tab, shown beside it in a Light/Dark table (ColourGrid).
   darkAttribute?: string | null
+  // <placeholder> - on a "csseditor" control: example text shown while it's empty.
+  placeholder?: string | null
 }
 
 // A theme's look (EditorController.GetDropdownTypePreviews). A null colour is the player's own,

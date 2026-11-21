@@ -183,7 +183,13 @@
         <previews/>
         <!-- Choosing a theme, or its Reset button, clears the game's own value for anything a theme sets and for the rest of the look below, so the theme isn't hidden by options chosen under another. Images, the stylesheet and link underlining are the author's own and are kept. -->
         <resetoverrides/>
-        <resetattributes type="simplestringlist">defaultfont;defaultwebfont;defaultfontsize;defaultforeground;interfacefont;accentcolour;defaultlinkforeground;defaultbackground;darkbackground;darkforeground;darklinkforeground;darkaccentcolour;marginscolour;darkmarginscolour;darkbordercolour;darkcustomlocationcolour;darkcustomlocationtextcolour;darkcustomlocationbordercolour;colourblend;colourblendtop;colourblendbottom;bordercolour;panestheme;customlocationcolour;customlocationtextcolour;customlocationbordercolour;borderlesscursor;commandcursor;shadowbox;menufont;menufontsize;menubackground;menuforeground;menuhoverbackground;menuhoverforeground</resetattributes>
+        <resetattributes type="simplestringlist">defaultfont;defaultwebfont;defaultfontsize;defaultforeground;interfacefont;interfacefontsize;accentcolour;defaultlinkforeground;defaultbackground;darkbackground;darkforeground;darklinkforeground;darkaccentcolour;marginscolour;darkmarginscolour;darkbordercolour;darkcustomlocationcolour;darkcustomlocationtextcolour;darkcustomlocationbordercolour;colourblend;colourblendtop;colourblendbottom;bordercolour;panestheme;customlocationcolour;customlocationtextcolour;customlocationbordercolour;borderlesscursor;commandcursor;shadowbox;menufont;menufontsize;menubackground;menuforeground;menuhoverbackground;menuhoverforeground</resetattributes>
+      </control>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>[EditorGameThemeClassicHelp]</caption>
+        <onlydisplayif>GetBoolean(game, "classicinterface")</onlydisplayif>
       </control>
 
       <control>
@@ -231,6 +237,15 @@
         <source>basefonts</source>
         <freetext/>
         <onlydisplayif>not GetBoolean(game, "classicinterface")</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <caption>[EditorGameFontsize]</caption>
+        <attribute>interfacefontsize</attribute>
+        <onlydisplayif>not GetBoolean(game, "classicinterface")</onlydisplayif>
+        <samerow/>
+        <width>64</width>
       </control>
 
       <control>
@@ -700,9 +715,18 @@
       </control>
 
       <control>
+        <controltype>label</controltype>
+        <caption>[EditorGameStylesheetDocs]</caption>
+        <href>/customise/css/</href>
+        <advanced/>
+      </control>
+
+      <control>
         <controltype>csseditor</controltype>
         <caption>[EditorGameStylesheet]</caption>
         <attribute>stylesheet</attribute>
+        <!-- An example, shown while the stylesheet is empty: a rule both interfaces understand -->
+        <placeholder>[EditorGameStylesheetPlaceholder]</placeholder>
         <advanced/>
       </control>
 

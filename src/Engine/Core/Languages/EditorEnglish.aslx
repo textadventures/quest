@@ -171,6 +171,7 @@
   <template name="EditorGameShowCustomStatusPaneHelp">Fill it with the "Set the content of a pane" script command, using the ID customstatus.</template>
   <template name="EditorGameMapHelp">Scripts can also draw on it with the Grid functions.</template>
   <template name="EditorGameTheme">Theme</template>
+  <template name="EditorGameThemeClassicHelp">Themes are made for the new interface. With "Use the classic interface" turned on (on the Interface tab), only some of a theme shows, such as its text font and colours.</template>
   <template name="EditorGameFont">Text</template>
   <template name="EditorGameBasefont">Base font</template>
   <template name="EditorGameWebfont">Web font</template>
@@ -205,7 +206,7 @@
   <template name="EditorGamePanesCaption">Game panes</template>
   <template name="EditorGameMapinteractive">Map can be dragged and zoomed</template>
   <template name="EditorGameInterfacefont">Interface font</template>
-  <template name="EditorGameInterfacefontHelp">The font of the location bar, panes and buttons. Leave it empty for the default.</template>
+  <template name="EditorGameInterfacefontHelp">The font and size of the location bar, panes and buttons. Leave them empty for the default.</template>
   <template name="EditorGameAccentColour">Accent colour</template>
   <template name="EditorGameAccentColourHelp">The accent colour is for links, the compass and the command prompt.</template>
   <template name="EditorGameLightDarkHelp">How light and dark mode work</template>
@@ -270,6 +271,12 @@
   <template name="EditorGameClearpicture">Empty the picture frame in rooms without a picture</template>
   <template name="EditorGameStylesheetTitle">Stylesheet</template>
   <template name="EditorGameStylesheetHelp">CSS for the game's interface, applied over the default styles when the game is played.</template>
+  <template name="EditorGameStylesheetDocs">How to use CSS in a game</template>
+  <template name="EditorGameStylesheetPlaceholder">/* For example, to show the game's links in bold:
+
+a.cmdlink {
+    font-weight: bold;
+} */</template>
   <template name="EditorGameStylesheet">Stylesheet</template>
   <template name="EditorGameScript">Scripts</template>
   <template name="EditorGameAdvancedScript">Advanced Scripts</template>

@@ -9,6 +9,7 @@
   <game name="V2AccentMapTest">
     <accentcolour>#7a3e6e</accentcolour>
     <interfacefont>Verdana, sans-serif</interfacefont>
+    <interfacefontsize type="int">15</interfacefontsize>
     <gridmap />
     <mapsize type="int">200</mapsize>
     <mapscale type="int">30</mapscale>

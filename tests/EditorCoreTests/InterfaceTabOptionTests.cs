@@ -18,11 +18,11 @@ public class InterfaceTabOptionTests
     ];
 
     private static readonly string[] AppearanceAttributes =
-        ["accentcolour", "interfacefont", "darkbackground", "darkforeground", "darklinkforeground", "darkaccentcolour"];
+        ["accentcolour", "interfacefont", "interfacefontsize", "darkbackground", "darkforeground", "darklinkforeground", "darkaccentcolour"];
 
     // Shown only for v2, and only for the classic interface (docs/ui-v2-contract.md).
     private static readonly string[] V2OnlyAttributes =
-        ["layoutpreset", "narrowlayoutpreset", "accentcolour", "interfacefont", "mapposition"];
+        ["layoutpreset", "narrowlayoutpreset", "accentcolour", "interfacefont", "interfacefontsize", "mapposition"];
     private static readonly string[] ClassicOnlyAttributes = ["panestheme"];
 
     private static async Task<EditorController> LoadController(string templateName)
@@ -109,6 +109,32 @@ public class InterfaceTabOptionTests
         game.SetAttribute("classicinterface", true);
         foreach (var attribute in V2OnlyAttributes) await AssertVisible(attribute, false, "classic");
         foreach (var attribute in ClassicOnlyAttributes) await AssertVisible(attribute, true, "classic");
+    }
+
+    [TestMethod]
+    [DataRow("English", "Appearance")]
+    [DataRow("Deutsch", "Darstellung")]
+    [DataRow("Español", "Apariencia")]
+    public async Task TheStylesheet_HasATranslatedExampleOverSeveralLines(string templateName, string tabCaption)
+    {
+        using var controller = await LoadController(templateName);
+        var stylesheet = InterfaceTab(controller, tabCaption).Controls.Single(c => c.Attribute == "stylesheet");
+        var placeholder = stylesheet.GetString("placeholder");
+        Assert.IsNotNull(placeholder);
+        StringAssert.Contains(placeholder, "a.cmdlink {\n");
+        StringAssert.DoesNotMatch(placeholder, new System.Text.RegularExpressions.Regex(@"\[Editor"));
+    }
+
+    [TestMethod]
+    public async Task TheClassicInterfaceThemeNote_ShowsOnlyWithTheClassicInterface()
+    {
+        using var controller = await LoadController("English");
+        var game = controller.GetEditorData("game")!;
+        var note = GameControls(controller).Single(c => c.ControlType == "label" && c.Caption!.StartsWith("Themes are made"));
+
+        Assert.IsFalse(await note.IsControlVisible(game));
+        game.SetAttribute("classicinterface", true);
+        Assert.IsTrue(await note.IsControlVisible(game));
     }
 
     [TestMethod]

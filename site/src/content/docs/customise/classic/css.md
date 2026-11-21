@@ -119,6 +119,8 @@ Setting `background` rather than `background-color` also removes the classic sty
 
 ### Adding the score and turns to the location bar
 
+This recipe is for the classic interface only. The new interface has no `controlButtons` element, and its markup isn't safe to add to: show the score and turns as [status attributes](/customise/panes#status-attributes-as-bars) instead. They appear in the Status pane, and on a phone you can keep them in view under the location bar.
+
 This shows "Score: 5 | Turns: 12" at the right of the location bar, next to the Save/Load button. On a phone it moves onto a second line of the bar.
 
 Tick "Score" on the game's _Features_ tab, and on the game's _Attributes_ tab add an attribute `turns`, of type integer, set to 0. Add a Javascript element with this function, which adds a `status-extra` element to the location bar the first time it's called and then updates it:
