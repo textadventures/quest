@@ -6,7 +6,7 @@
   <!-- The "phone" recipe from the panes docs (customise/panes.md, wasmplayer/v2-phone-pane.spec.mjs):
        a pane of the game's own, styled as a phone, showing what the player carries and the exits
        as links, and updated by a turn script. Keep it in step with the docs. -->
-  <game name="V2PhonePaneTest">
+  <game name="Phone example">
     <showpanes />
     <start type="script">
       AddPane ("phone", "Phone")

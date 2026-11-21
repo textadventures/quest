@@ -219,6 +219,8 @@ Then make it look like a phone, in **Stylesheet**, under Advanced on the game's 
 }
 ```
 
+![The game text on the left, and beside it a pane drawn as a dark phone, its screen listing the torch the player is carrying and a north exit button](/images/phone_pane.png)
+
 Clicking an object on the phone opens its verb menu, and clicking an exit goes that way, just as in the game text. The phone is still a pane, so it goes wherever the panes go: beside the game on a wide screen, and in the drawer or sheet on a phone. (The classic interface draws the pane's heading above the phone, rather than inside it.) Add anything else the game knows to `UpdatePhone` in the same way, such as the score or the time.
 
 The turn script updates the phone at the end of each turn, so it doesn't see a change made by a timer until the next turn. Call `UpdatePhone` from the timer's script as well if that matters to your game.
