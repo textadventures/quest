@@ -1,5 +1,19 @@
 # Changelog
 
+## [6.1.0-beta.2](https://github.com/textadventures/quest/compare/v6.1.0-beta.1...v6.1.0-beta.2) (2026-11-21)
+
+
+### Features
+
+* **Editor:** put File first in the toolbar, and open its menus from the left ([#2896](https://github.com/textadventures/quest/issues/2896)) ([205753c](https://github.com/textadventures/quest/commit/205753c412146e7deb02c1fda2bccfd3e584380f))
+
+
+### Bug Fixes
+
+* **Player:** keep focus in an open verb menu when the game refocuses the command box ([#2899](https://github.com/textadventures/quest/issues/2899)) ([1032312](https://github.com/textadventures/quest/commit/1032312478baca623f9c575e2f196069420e8bda))
+* **Player:** let a game picked in the browser bring its library files ([#2901](https://github.com/textadventures/quest/issues/2901)) ([4c6531c](https://github.com/textadventures/quest/commit/4c6531c9039437e0680fbb9f0fd4d6c97b294d80))
+* **Player:** offer the beta desktop app from play-beta.questviva.com ([#2886](https://github.com/textadventures/quest/issues/2886)) ([77253fd](https://github.com/textadventures/quest/commit/77253fd2f75b66d21c23d4c6eb13ff3d05247363))
+
 ## [6.1.0-beta.1](https://github.com/textadventures/quest/compare/v6.0.0...v6.1.0-beta.1) (2026-11-15)
 
 
