@@ -45,6 +45,7 @@ Most of them are also set by an option on the Appearance or Interface tab, so yo
 |---|---|---|
 | `--qv-font-body`, `--qv-font-size` | The game text's font and size | **Base font**, **Web font**, **Font size** |
 | `--qv-font-ui` | The font of the location bar, panes, menus and buttons | **Interface font** |
+| `--qv-font-size-ui` | The size of the location bar and panes. Their headings and buttons are drawn in proportion to it | **Font size**, beside **Interface font** |
 | `--qv-text`, `--qv-bg`, `--qv-link` | Text, page and link colours | **Text colour**, **Page colour**, **Link colour** |
 | `--qv-accent` | The highlight colour: links, the compass, the command prompt, the menu's hover, the player on the map | **Accent colour** |
 | `--qv-link-decoration` | `underline` or `none` | **Underline links** |

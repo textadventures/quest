@@ -172,6 +172,7 @@
   <template name="EditorGameShowCustomStatusPaneHelp">Mit dem Skriptbefehl "Inhalt eines Bereichs festlegen" und der ID customstatus füllen.</template>
   <template name="EditorGameMapHelp">Skripte können mit den Grid-Funktionen auch darauf zeichnen.</template>
   <template name="EditorGameTheme">Thema</template>
+  <template name="EditorGameThemeClassicHelp">Themen sind für die neue Oberfläche gemacht. Wenn „Klassische Oberfläche verwenden“ (auf der Registerkarte Oberfläche) eingeschaltet ist, wird nur ein Teil des Themas angezeigt, etwa die Schriftart und die Farben des Textes.</template>
   <template name="EditorGameFont">Schriftart</template>
   <template name="EditorGameBasefont">Basisschriftart</template>
   <template name="EditorGameWebfont">Webschriftart</template>
@@ -205,7 +206,7 @@
   <template name="EditorGamePanesCaption">Spielleisten</template>
   <template name="EditorGameMapinteractive">Karte kann verschoben und gezoomt werden</template>
   <template name="EditorGameInterfacefont">Schriftart der Oberfläche</template>
-  <template name="EditorGameInterfacefontHelp">Die Schriftart der Raumleiste, der Bereiche und der Schaltflächen. Leer lassen für die Standardschrift.</template>
+  <template name="EditorGameInterfacefontHelp">Die Schriftart und -größe der Raumleiste, der Bereiche und der Schaltflächen. Leer lassen für die Standardwerte.</template>
   <template name="EditorGameAccentColour">Akzentfarbe</template>
   <template name="EditorGameAccentColourHelp">Die Akzentfarbe ist für Links, den Kompass und die Eingabeaufforderung.</template>
   <template name="EditorGameLightDarkHelp">So funktionieren der helle und der dunkle Modus</template>
@@ -270,6 +271,12 @@
   <template name="EditorGameClearpicture">Bilderrahmen in Räumen ohne Bild leeren</template>
   <template name="EditorGameStylesheetTitle">Stylesheet</template>
   <template name="EditorGameStylesheetHelp">CSS für die Oberfläche des Spiels, die beim Spielen über die Standardstile angewendet wird.</template>
+  <template name="EditorGameStylesheetDocs">So verwendest du CSS in einem Spiel</template>
+  <template name="EditorGameStylesheetPlaceholder">/* Zum Beispiel, um die Links des Spiels fett anzuzeigen:
+
+a.cmdlink {
+    font-weight: bold;
+} */</template>
   <template name="EditorGameStylesheet">Stylesheet</template>
   <template name="EditorGameScript">Skripte</template>
   <template name="EditorGameAdvancedScript">Erweiterte Skripte</template>

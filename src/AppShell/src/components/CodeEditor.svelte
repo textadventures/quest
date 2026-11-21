@@ -1,7 +1,7 @@
 <script lang="ts">
     import { untrack } from "svelte";
     import { EditorState, Compartment, Prec, Transaction } from "@codemirror/state";
-    import { EditorView, keymap, lineNumbers, highlightActiveLine } from "@codemirror/view";
+    import { EditorView, keymap, lineNumbers, highlightActiveLine, placeholder as placeholderText } from "@codemirror/view";
     import { history, defaultKeymap, historyKeymap, indentWithTab } from "@codemirror/commands";
     import { bracketMatching, indentOnInput, codeFolding, foldGutter, foldKeymap } from "@codemirror/language";
     import { closeBrackets, closeBracketsKeymap, autocompletion, completionKeymap, acceptCompletion } from "@codemirror/autocomplete";
@@ -24,11 +24,13 @@
         // options, would otherwise take Undo away from all of them.
         toolbarUndo?: boolean;
         onChange?: (value: string) => void;
+        // Shown while the text is empty, such as an example of what to write
+        placeholder?: string;
         minHeight?: string;
         class?: string;
     }
 
-    let { value, language, readonly = false, toolbarUndo = true, onChange, minHeight = "10rem", class: className = "" }: Props = $props();
+    let { value, language, readonly = false, toolbarUndo = true, onChange, placeholder, minHeight = "10rem", class: className = "" }: Props = $props();
 
     let editorEl = $state<HTMLDivElement | null>(null);
     let view: EditorView | null = null;
@@ -74,6 +76,7 @@
                 // one, so Enter can be left out of it (#2669).
                 autocompletion({ defaultKeymap: false }),
                 EditorView.lineWrapping,
+                ...(untrack(() => placeholder) ? [placeholderText(untrack(() => placeholder)!)] : []),
                 // Ahead of the main keymap so the arrow keys move through an open completion
                 // list rather than the cursor. Enter is left out: the list opens by itself as
                 // you type, so Enter at the end of a line would otherwise swap a finished word

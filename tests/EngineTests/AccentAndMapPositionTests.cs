@@ -4,10 +4,10 @@ using Shouldly;
 
 namespace QuestViva.EngineTests;
 
-// The game options for v2's look: accentcolour (--qv-accent), interfacefont (--qv-font-ui) and
-// mapposition (QuestUI.setMapPosition). An accent is sent on its own, so a game that only sets one
-// keeps the UI's light and dark colours; a game with its own colours but no accent gets its link
-// colour as the accent.
+// The game options for v2's look: accentcolour (--qv-accent), interfacefont (--qv-font-ui),
+// interfacefontsize (--qv-font-size-ui) and mapposition (QuestUI.setMapPosition). An accent is
+// sent on its own, so a game that only sets one keeps the UI's light and dark colours; a game with
+// its own colours but no accent gets its link colour as the accent.
 [TestClass]
 public class AccentAndMapPositionTests
 {
@@ -87,6 +87,20 @@ public class AccentAndMapPositionTests
     {
         Tokens(await LoadAsync("<interfacefont>Verdana, sans-serif</interfacefont>"))["--qv-font-ui"]
             .ShouldBe("Verdana, sans-serif");
+    }
+
+    [TestMethod]
+    public async Task AnInterfaceFontSize_IsTheUIFontSize()
+    {
+        Tokens(await LoadAsync("<interfacefontsize type=\"int\">14</interfacefontsize>"))["--qv-font-size-ui"]
+            .ShouldBe("14pt");
+    }
+
+    [TestMethod]
+    public async Task NoInterfaceFontSize_SendsNothing()
+    {
+        Tokens(await LoadAsync("<interfacefontsize type=\"int\">0</interfacefontsize>"))
+            .ShouldNotContainKey("--qv-font-size-ui");
     }
 
     [TestMethod]

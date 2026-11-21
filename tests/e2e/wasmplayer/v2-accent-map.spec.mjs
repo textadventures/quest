@@ -5,7 +5,8 @@
 // - A game on the defaults draws its links and open compass directions in v2's own accent, and
 //   its location bar on the game's background rather than a dark bar.
 // - A game's accentcolour is drawn as given on the light scheme, and lightened on the dark one,
-//   unless the game has sent its own background too. Its interfacefont is the panes' font.
+//   unless the game has sent its own background too. Its interfacefont is the panes' font, and its
+//   interfacefontsize (15pt, 20px) the size the panes and top bar are drawn at.
 // - mapposition "panes" puts the map in the first pane, drawn and with no collapse button at
 //   either width; a layout with no panes puts it back above the game, as does setMapPosition
 //   ("header").
@@ -81,6 +82,8 @@ test('v2-accent-map', async ({ baseURL }) => {
                 topbar: rgb(css('.qv-topbar', 'backgroundColor')),
                 frame: rgb(css('[data-qv-part="border"]', 'backgroundColor')),
                 panesFont: css('[data-qv-part="panes"]', 'fontFamily'),
+                panesSize: css('[data-qv-part="panes"]', 'fontSize'),
+                topbarSize: css('.qv-topbar', 'fontSize'),
                 mapInPane: !!region?.closest('qv-pane[data-qv-pane="map"]'),
                 mapInHeader: !!region?.closest('.qv-header'),
                 mapPaneFirst: document.querySelector('[data-qv-part="panes"] qv-pane')?.dataset.qvPane === 'map',
@@ -126,6 +129,8 @@ test('v2-accent-map', async ({ baseURL }) => {
             check(a.link === '122,62,110', `links are the game's accent, #7a3e6e, on the light scheme (${a.link})`);
             check(a.exit === a.link, `so is an open compass direction (${a.exit})`);
             check(a.panesFont.startsWith('Verdana'), `the panes are in the game's interface font (${a.panesFont})`);
+            check(a.panesSize === '19px' && a.topbarSize === '19px',
+                `the panes and top bar are drawn at the game's interface font size (${a.panesSize}, ${a.topbarSize})`);
             check(a.mapInPane && a.mapPaneFirst && a.mapPaneShown, 'the map is the first pane');
             check(a.mapDrawn, 'the map is drawn in its pane, with the player on it');
             await audit(page, 'with the map in the panes (light)');

@@ -84,7 +84,9 @@ internal record ControlInfo(
     // <darkattribute> - on a "colour" control: the attribute of its dark mode counterpart, another
     // colour control in the same tab. The property editor shows each such pair side by side, in a
     // table with Light and Dark columns, rather than as two separate rows.
-    string? DarkAttribute = null);
+    string? DarkAttribute = null,
+    // <placeholder> - on a "csseditor" control: example text shown while it's empty.
+    string? Placeholder = null);
 
 // LeftoverFeature is set when the tab is shown only because its feature (a "feature_..."
 // checkbox, on the game when LeftoverFeatureOnGame) is turned off while the element still has
@@ -4765,7 +4767,8 @@ public partial class WasmEditorBridge
             Previews: ctrl.ControlType == "dropdowntypes" && ctrl.GetBool("previews")
                 ? _controller!.GetDropdownTypePreviews(ctrl)
                 : null,
-            DarkAttribute: ctrl.ControlType == "colour" ? ctrl.GetString("darkattribute") : null);
+            DarkAttribute: ctrl.ControlType == "colour" ? ctrl.GetString("darkattribute") : null,
+            Placeholder: ctrl.ControlType == "csseditor" ? ctrl.GetString("placeholder") : null);
     }
 
     // The attributes by their captions on the editor, where it has a control for them.

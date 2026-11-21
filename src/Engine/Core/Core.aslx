@@ -78,6 +78,12 @@
       if (HasString(game, "interfacefont")) {
         AddUIToken (tokens, "--qv-font-ui", game.interfacefont)
       }
+      // In points, like the text's font size. 0 or less is the player's own size.
+      if (HasInt(game, "interfacefontsize")) {
+        if (game.interfacefontsize > 0) {
+          AddUIToken (tokens, "--qv-font-size-ui", ToString(game.interfacefontsize) + "pt")
+        }
+      }
       if (not game.underlinehyperlinks) {
         AddUIToken (tokens, "--qv-link-decoration", "none")
       }

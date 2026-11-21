@@ -1116,6 +1116,7 @@
             <CodeEditor
                 value={attrValue(ctrl.attribute) ?? ""}
                 language="css"
+                placeholder={ctrl.placeholder ?? undefined}
                 toolbarUndo={false}
                 onChange={(v) => {
                     if (v !== (attrValue(ctrl.attribute!) ?? "")) onTextChange(ctrl.attribute!, ctrl.controlType, v, true);
