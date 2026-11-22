@@ -1,5 +1,6 @@
 import { isJunkAssetName, isLibraryAslxContent, isLibraryFilename, type AssetInfo, type FileAdapter, type LoadedFile } from "./types";
 import { toBlob, triggerDownload } from "./download";
+import { sameBytes, toBytes, type DiskState } from "./disk-state";
 
 // FSA globals — not in the TS DOM lib at this target version
 declare function showDirectoryPicker(options?: {
@@ -64,7 +65,7 @@ export async function loadFileFromDirectory(dir: FileSystemDirectoryHandle, file
     const fh = await dir.getFileHandle(filename);
     const file = await fh.getFile();
     const bytes = new Uint8Array(await file.arrayBuffer());
-    return { bytes, adapter: new BrowserFileAdapter(filename, dir) };
+    return { bytes, adapter: new BrowserFileAdapter(filename, dir, bytes) };
 }
 
 /**
@@ -84,7 +85,7 @@ export async function createLocalGame(
         const bytes = new TextEncoder().encode(content);
         return {
             kind: "opened",
-            loaded: { bytes, adapter: new BrowserFileAdapter(filename, dir) },
+            loaded: { bytes, adapter: new BrowserFileAdapter(filename, dir, bytes) },
         };
     } catch (err: unknown) {
         if (err instanceof Error && err.name === "AbortError") return null;
@@ -95,9 +96,13 @@ export async function createLocalGame(
 // ── Adapter ───────────────────────────────────────────────────────────────────
 
 export class BrowserFileAdapter implements FileAdapter {
+    // lastKnown is the file as this adapter last read or wrote it, which checkDisk() compares
+    // the disk with. File System Access can't watch a file, so this is how the editor finds out
+    // that something else has changed it.
     constructor(
         private _filename: string,
         private _dir: FileSystemDirectoryHandle,
+        private _lastKnown: Uint8Array | null = null,
     ) {}
 
     get filename() { return this._filename; }
@@ -107,6 +112,7 @@ export class BrowserFileAdapter implements FileAdapter {
     async saveFile(data: Uint8Array | string): Promise<void> {
         const fh = await this._dir.getFileHandle(this._filename, { create: true });
         await writeToHandle(fh, data);
+        this._lastKnown = toBytes(data);
     }
 
     async saveFileAs(data: Uint8Array | string, suggestedName?: string): Promise<string | null> {
@@ -120,6 +126,7 @@ export class BrowserFileAdapter implements FileAdapter {
                 });
                 await writeToHandle(handle, data);
                 this._filename = handle.name;
+                this._lastKnown = toBytes(data);
                 return handle.name;
             } catch (err: unknown) {
                 if (err instanceof Error && err.name === "AbortError") return null;
@@ -186,7 +193,21 @@ export class BrowserFileAdapter implements FileAdapter {
 
     async reload(): Promise<Uint8Array> {
         const fh = await this._dir.getFileHandle(this._filename);
-        return new Uint8Array(await (await fh.getFile()).arrayBuffer());
+        const bytes = new Uint8Array(await (await fh.getFile()).arrayBuffer());
+        this._lastKnown = bytes;
+        return bytes;
+    }
+
+    async checkDisk(): Promise<DiskState> {
+        if (!this._lastKnown) return "unchanged";
+        let file: File;
+        try {
+            file = await (await this._dir.getFileHandle(this._filename)).getFile();
+        } catch (err: unknown) {
+            if (err instanceof DOMException && err.name === "NotFoundError") return "missing";
+            throw err;
+        }
+        return sameBytes(new Uint8Array(await file.arrayBuffer()), this._lastKnown) ? "unchanged" : "changed";
     }
 }
 

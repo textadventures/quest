@@ -1,5 +1,6 @@
 import { isJunkAssetName, isLibraryFilename, type AssetInfo, type FileAdapter } from "./types";
 import { guessMimeType } from "./mime";
+import { sameBytes, toBytes, type DiskState } from "./disk-state";
 
 const ASLX_FILTER = [{ name: "Quest game files", extensions: ["aslx"] }];
 
@@ -99,9 +100,13 @@ async function armFileWatch(dirPath: string, filename: string): Promise<void> {
  * Access API, which docs/electron-desktop-app.md rules out inside Electron.
  */
 export class ElectronFileAdapter implements FileAdapter {
+    // lastKnown is the file as this adapter last read or wrote it, which checkDisk() compares
+    // the disk with before each save. The main process's watcher (armFileWatch) only raises a
+    // notice; this is what stops a save going over a change it reported, or one it missed.
     constructor(
         private readonly dirPath: string,
         private _filename: string,
+        private _lastKnown: Uint8Array | null = null,
     ) {}
 
     get filename() { return this._filename; }
@@ -135,6 +140,7 @@ export class ElectronFileAdapter implements FileAdapter {
 
     async saveFile(data: Uint8Array | string): Promise<void> {
         await electronApp().fs.writeFile(this.resolve(this._filename), data);
+        this._lastKnown = toBytes(data);
         await armFileWatch(this.dirPath, this._filename);
     }
 
@@ -146,6 +152,7 @@ export class ElectronFileAdapter implements FileAdapter {
         if (!path) return null;
         await electronApp().fs.writeFile(path, data);
         this._filename = basename(path);
+        this._lastKnown = toBytes(data);
         await trackRecent(dirname(path), this._filename);
         await armFileWatch(dirname(path), this._filename);
         return this._filename;
@@ -190,8 +197,23 @@ export class ElectronFileAdapter implements FileAdapter {
 
     async reload(): Promise<Uint8Array> {
         const bytes = await electronApp().fs.readFile(this.resolve(this._filename));
+        this._lastKnown = bytes;
         await armFileWatch(this.dirPath, this._filename);
         return bytes;
+    }
+
+    async checkDisk(): Promise<DiskState> {
+        if (!this._lastKnown) return "unchanged";
+        const filePath = this.resolve(this._filename);
+        let bytes: Uint8Array;
+        try {
+            bytes = await electronApp().fs.readFile(filePath);
+        } catch (err) {
+            // Checked with fs:exists rather than by matching "ENOENT", as loadElectronFile does.
+            if (!(await electronApp().fs.exists(filePath))) return "missing";
+            throw err;
+        }
+        return sameBytes(bytes, this._lastKnown) ? "unchanged" : "changed";
     }
 }
 
@@ -274,7 +296,7 @@ export async function loadElectronFile(
     }
     await trackRecent(dirPath, filename, kind);
     if (kind === "edit") await armFileWatch(dirPath, filename);
-    return { bytes, adapter: new ElectronFileAdapter(dirPath, filename) };
+    return { bytes, adapter: new ElectronFileAdapter(dirPath, filename, bytes) };
 }
 
 // Documents/Quest Games — matches Quest 5's desktop editor, which proposes
@@ -326,5 +348,6 @@ export async function createElectronGame(
     await electronApp().fs.writeFile(filePath, content);
     await trackRecent(dirPath, filename);
     await armFileWatch(dirPath, filename);
-    return { bytes: new TextEncoder().encode(content), adapter: new ElectronFileAdapter(dirPath, filename) };
+    const bytes = new TextEncoder().encode(content);
+    return { bytes, adapter: new ElectronFileAdapter(dirPath, filename, bytes) };
 }
