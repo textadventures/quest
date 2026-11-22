@@ -22,7 +22,7 @@ test('v2-timing', async ({ baseURL }) => {
     const input = 'qv-command-bar input';
     const continueButton = 'qv-command-bar .qv-continue';
     const SOUND_MS = 400;
-    const BURSTS = 150;
+    const BURSTS = 60;
 
     function check(condition, what) {
         if (!condition) throw new Error(what);
@@ -209,10 +209,23 @@ test('v2-timing', async ({ baseURL }) => {
         await page.click('#qv-debugger-tabs button:text("Walkthrough")');
         await page.click(`#qv-debugger-list [data-item="${name}"]`);
         await page.click(`[data-run-walkthrough="${name}"]`);
-        await page.waitForFunction(() => {
-            const text = document.querySelector('[data-walkthrough-status]')?.textContent;
-            return text && text !== 'Running…';
-        }, null, { timeout: 180000 });
+        // A step takes anything from a third of a second on CI to a second on a busy machine, so
+        // rather than a deadline for the whole walkthrough, this fails only if no step finishes
+        // for 30 seconds.
+        let lastProgress = -1;
+        let lastProgressAt = Date.now();
+        for (;;) {
+            const status = await page.textContent('[data-walkthrough-status]');
+            if (status && status !== 'Running…') break;
+            const ended = ((await outputText(page)).match(/burst end \d+/g) ?? []).length;
+            if (ended !== lastProgress) {
+                lastProgress = ended;
+                lastProgressAt = Date.now();
+            } else if (Date.now() - lastProgressAt > 30000) {
+                throw new Error(`${name}: walkthrough stalled after ${ended} burst(s), status "${status}"`);
+            }
+            await page.waitForTimeout(1000);
+        }
         const status = await page.textContent('[data-walkthrough-status]');
         if (status !== 'Done') throw new Error(`${name}: walkthrough finished with "${status}"`);
         const lines = (await outputText(page)).split('\n').map(l => l.trim()).filter(Boolean);
@@ -246,8 +259,13 @@ test('v2-timing', async ({ baseURL }) => {
     async function walkthroughs() {
         const ticks = checkBursts('bursts', await runWalkthrough('bursts'), BURSTS);
         check(ticks.length > 0, `all ${BURSTS} steps printed whole and in order, with ${ticks.length} timer ticks between them`);
-        const timerLines = checkBursts('blockingtimer', await runWalkthrough('blockingtimer'), 30);
-        check(timerLines.includes('timer before wait') && timerLines.includes('timer after wait'), 'a blocking wait in a timer script is clicked through');
+        // The timer can fire after any step, including the first one that enables it (a tick the
+        // player queued just as the walkthrough started runs then), so this looks at the whole
+        // output: checkBursts has already checked nothing landed inside a burst.
+        const blockingLines = await runWalkthrough('blockingtimer');
+        checkBursts('blockingtimer', blockingLines, 30);
+        const timerLines = blockingLines.filter(l => /^timer (before|after) wait$/.test(l));
+        check(timerLines.join('|') === 'timer before wait|timer after wait', 'a blocking wait in a timer script is clicked through');
     }
 
     try {

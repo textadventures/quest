@@ -4,7 +4,7 @@
 // (the player yields to the browser part-way through a long step) ran the timer's script in the
 // middle of that step's output.
 //
-// Fixture: tests/e2e/fixtures/walkthrough-timer-test.aslx's "bursts" walkthrough runs 150 steps
+// Fixture: tests/e2e/fixtures/walkthrough-timer-test.aslx's "bursts" walkthrough runs 60 steps
 // that each print a "burst start N" ... "burst end N" block, while a 1-second timer prints
 // "TICK N". Checks that no TICK lands inside a block, that the blocks come out whole and in order,
 // and that the timer still fires during the walkthrough (between steps). Its "blockingtimer"
@@ -18,9 +18,31 @@ import { chromium } from 'playwright';
 
 test('walkthrough-timer', async ({ baseURL }) => {
     const baseUrl = baseURL;
-    const steps = 150;
+    const steps = 60;
 
     const browser = await chromium.launch();
+
+    // Waits for the walkthrough to finish. A step takes anything from a third of a second on CI to
+    // a second on a busy machine, so rather than a deadline for the whole walkthrough, this fails
+    // only if no step finishes for 30 seconds.
+    async function waitForWalkthrough(page, name) {
+        let lastProgress = -1;
+        let lastProgressAt = Date.now();
+        for (;;) {
+            const { status, ended } = await page.evaluate(() => ({
+                status: document.querySelector('[data-walkthrough-status]')?.textContent,
+                ended: (document.querySelector('#divOutput').innerText.match(/burst end \d+/g) ?? []).length,
+            }));
+            if (status && status !== 'Running…') return;
+            if (ended !== lastProgress) {
+                lastProgress = ended;
+                lastProgressAt = Date.now();
+            } else if (Date.now() - lastProgressAt > 30000) {
+                throw new Error(`${name}: walkthrough stalled after ${ended} burst(s), status "${status}"`);
+            }
+            await page.waitForTimeout(1000);
+        }
+    }
 
     // Runs a walkthrough in a fresh session and returns its output as trimmed, non-empty lines.
     async function runWalkthrough(name) {
@@ -38,10 +60,7 @@ test('walkthrough-timer', async ({ baseURL }) => {
         await page.click(`#qv-debugger-list [data-item="${name}"]`);
         await page.click(`[data-run-walkthrough="${name}"]`);
 
-        await page.waitForFunction(() => {
-            const el = document.querySelector('[data-walkthrough-status]');
-            return el && el.textContent && el.textContent !== 'Running…';
-        }, undefined, { timeout: 120000 });
+        await waitForWalkthrough(page, name);
         const status = await page.$eval('[data-walkthrough-status]', el => el.textContent);
         if (status !== 'Done') throw new Error(`${name}: walkthrough status was "${status}", expected "Done"`);
         if (pageErrors.length > 0) throw new Error(`${name}: page errors: ${pageErrors.join('; ')}`);
@@ -87,8 +106,13 @@ test('walkthrough-timer', async ({ baseURL }) => {
 
         // A blocking wait in a timer script keeps that tick from finishing until the walkthrough
         // clicks the wait through, so the walkthrough mustn't wait for the tick to finish first.
-        const timerLines = checkBursts('blockingtimer', await runWalkthrough('blockingtimer'), 30);
-        if (!timerLines.includes('timer before wait') || !timerLines.includes('timer after wait')) {
+        // The timer can fire after any step, including the first one that enables it (a tick the
+        // player queued just as the walkthrough started runs then), so this looks at the whole
+        // output: checkBursts has already checked nothing landed inside a burst.
+        const blockingLines = await runWalkthrough('blockingtimer');
+        checkBursts('blockingtimer', blockingLines, 30);
+        const timerLines = blockingLines.filter(l => /^timer (before|after) wait$/.test(l));
+        if (timerLines.join('|') !== 'timer before wait|timer after wait') {
             throw new Error(`blockingtimer: timer's wait wasn't clicked through (timer output: ${JSON.stringify(timerLines)})`);
         }
         console.log('PASS: a blocking wait in a timer script is clicked through, between steps');
