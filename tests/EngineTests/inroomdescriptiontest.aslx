@@ -1,0 +1,92 @@
+<asl version="610">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="inroomdescriptiontest">
+    <appendobjectdescription />
+  </game>
+  <!-- A room whose description is text: in-room descriptions are appended to it. -->
+  <object name="hall">
+    <inherit name="editor_room" />
+    <description>A long hall.</description>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <!-- Described in the prose, so left out of the object list. -->
+    <object name="statue">
+      <inherit name="editor_object" />
+      <inroomdescription>A marble statue watches you.</inroomdescription>
+    </object>
+    <!-- Left out too, but what is on it is still listed. -->
+    <object name="table">
+      <inherit name="editor_object" />
+      <inherit name="surface" />
+      <inroomdescription>A heavy table stands by the window.</inroomdescription>
+      <object name="book">
+        <inherit name="editor_object" />
+      </object>
+    </object>
+    <!-- Listed as normal, with what is in it apart from the gem. -->
+    <object name="box">
+      <inherit name="editor_object" />
+      <inherit name="container_open" />
+      <object name="gem">
+        <inherit name="editor_object" />
+        <inroomdescription>Something glitters in the box.</inroomdescription>
+      </object>
+      <object name="pebble">
+        <inherit name="editor_object" />
+      </object>
+    </object>
+    <object name="rock">
+      <inherit name="editor_object" />
+    </object>
+    <exit alias="east" to="study">
+      <inherit name="eastdirection" />
+    </exit>
+  </object>
+  <!-- A room whose description is a script: nothing is appended, so nothing is left out. -->
+  <object name="study">
+    <inherit name="editor_room" />
+    <description type="script">
+      msg ("A quiet study.")
+    </description>
+    <object name="clock">
+      <inherit name="editor_object" />
+      <inroomdescription>A clock ticks on the wall.</inroomdescription>
+    </object>
+  </object>
+
+  <function name="HallList" type="string">
+    return (FormatObjectList("Here:", hall, "and", "."))
+  </function>
+
+  <function name="StudyList" type="string">
+    return (FormatObjectList("Here:", study, "and", "."))
+  </function>
+
+  <function name="BoxList" type="string">
+    return (FormatObjectList("Inside:", box, "and", "."))
+  </function>
+
+  <walkthrough name="verify">
+    <steps>
+      <![CDATA[
+      assert:GetRoomDescription() = "A long hall. A marble statue watches you. A heavy table stands by the window. Something glitters in the box."
+      assert:Instr(HallList(), "statue") = 0
+      assert:Instr(HallList(), "table") = 0
+      assert:Instr(HallList(), "book") > 0
+      assert:Instr(HallList(), "rock") > 0
+      assert:Instr(HallList(), "box") > 0
+      assert:Instr(HallList(), "pebble") > 0
+      assert:Instr(HallList(), "gem") = 0
+      assert:Instr(BoxList(), "gem") > 0
+      assert:Instr(BoxList(), "pebble") > 0
+      east
+      assert:game.pov.parent = study
+      assert:Instr(StudyList(), "clock") > 0
+      assert:GetInRoomDescriptions() = "A clock ticks on the wall."
+      assert:not InRoomDescriptionsShown()
+      ]]>
+    </steps>
+  </walkthrough>
+</asl>
