@@ -38,7 +38,17 @@ public static class HeadlessWalkthrough
             throw new ArgumentException($"The game has no walkthrough called '{name}'.", nameof(name));
         }
 
-        var steps = walkthrough.Steps.Select(s => s.Trim()).Where(s => s.Length > 0).ToList();
+        List<string> steps;
+        try
+        {
+            steps = walkthrough.Steps.Select(s => s.Trim()).Where(s => s.Length > 0).ToList();
+        }
+        catch (InvalidOperationException ex)
+        {
+            // Its steps aren't a list, which isn't something to report as zero steps passing.
+            return new WalkthroughResult(name, 0, 0, null, ex.Message);
+        }
+
         var delay = 0;
         var elapsed = 0;
 
