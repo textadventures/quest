@@ -448,11 +448,14 @@
     "betaBanner.message": "Esta es la beta de Quest Viva. Los borradores locales y las partidas guardadas aquí se guardan aparte de los de play.questviva.com.",
     "betaBanner.stableLink": "Ir a play.questviva.com",
 
-    "fileChangedBanner.message": "Este archivo fue modificado fuera del editor, por otro programa.",
-    "fileChangedBanner.reloadFromDisk": "Recargar desde el disco",
     "fileChangedBanner.conflictMessage": "Este archivo se modificó fuera del editor, así que tus cambios aquí no se han guardado. ¿Qué versión quieres conservar?",
     "fileChangedBanner.useChangedFile": "Usar el archivo modificado",
     "fileChangedBanner.keepMyChanges": "Conservar mis cambios",
+    "fileChangedBanner.reloaded": "Recargado: el archivo se modificó fuera del editor.",
+    "fileChangedBanner.loadErrorMessage": "Este archivo se modificó fuera del editor, pero el archivo modificado no se puede cargar: {error} El editor lo cargará en cuanto se corrija.",
+    "fileChangedBanner.missingMessage": "Este archivo se eliminó o se movió fuera del editor, así que tus cambios no se están guardando.",
+    "fileChangedBanner.saveAgain": "Guardarlo de nuevo",
+    "fileChangedBanner.closeGame": "Cerrarlo",
 
     "libraryElementBanner.message": "Este elemento viene de una biblioteca{filename} y no se puede editar directamente.",
     "libraryElementBanner.copying": "Copiando…",

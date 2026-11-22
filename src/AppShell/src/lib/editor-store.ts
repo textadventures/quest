@@ -4,6 +4,8 @@ import { PUBLIC_WASM_PLAYER_URL, PUBLIC_APPSHELL_VERSION } from "$app/env/public
 import { loadWasm } from "./wasm";
 import type { WasmBridge } from "./wasm";
 import { isLibraryFilename, type AssetInfo, type FileAdapter } from "./filesystem/types";
+import { sameBytes } from "./filesystem/disk-state";
+import { isElectron } from "./runtime";
 import { LocalDraftAdapter, shouldShowBackupBanner, markBackupBannerResolved } from "./filesystem/local-adapter";
 import { triggerDownload } from "./filesystem/download";
 import { withGuessedMimeType } from "./filesystem/mime";
@@ -78,25 +80,29 @@ export function dismissLibraryReloadBanner() {
     showLibraryReloadBanner.set(false);
 }
 
-// Set when the open game file or one of its included libraries was changed by something other
-// than this editor, such as an AI agent or a text editor. Electron's main-process watcher
-// (ipc/file-watch.ts, armed by electron-adapter.ts) reports it as it happens; for every adapter
-// that implements FileAdapter.checkDisk, doPersist() also finds it before saving, and then sets
-// savesHeld too. See FileChangedExternallyBanner.svelte.
-export const showFileChangedExternallyBanner = writable(false);
-export function dismissFileChangedExternallyBanner() {
-    showFileChangedExternallyBanner.set(false);
-}
-// True once a save found the game file changed on disk since the editor last read or wrote it.
-// Autosave and Save then write nothing, so the editor's copy can't silently replace the other
-// change, until the author picks one: useChangedFile() or keepMyChanges().
+// Following changes made to the open game outside the editor, such as by an AI agent or a text
+// editor (issue #2922). checkForExternalChanges() looks when Electron's watcher reports a change
+// (ipc/file-watch.ts), when the window gets the focus, and on a timer in the browser, where File
+// System Access can't watch a file; doPersist() also looks before every save. With nothing
+// unsaved, the editor reloads by itself and keeps the author's place (reloadInPlace). Otherwise
+// it stops saving and asks, through FileChangedExternallyBanner.svelte.
+
+// True once the game file was found changed on disk while there were unsaved edits here, or
+// changed into something that can't be loaded (externalChangeError). Autosave and Save then
+// write nothing, so the editor's copy can't silently replace the other change, until the author
+// picks one: reloadGameFromDisk() ("Use the changed file") or keepMyChanges().
 export const savesHeld = writable(false);
-// Called from +layout.svelte's electronApp().fileWatch.onChanged listener.
-// Guarded on isLoaded so a notification that arrives after the game/window
-// has already moved on (e.g. mid-navigation) doesn't pop a banner for
-// nothing to reload.
-export function markFileChangedExternally() {
-    if (get(isLoaded)) showFileChangedExternallyBanner.set(true);
+// Why the changed file couldn't be loaded, while savesHeld. The editor keeps showing the game as
+// it was, and loads the file once it changes again into something that does load.
+export const externalChangeError = writable<string | null>(null);
+// True when the game file was deleted, or moved or renamed away, while open. Saves are held so
+// they don't quietly put it back; "Save it again" (keepMyChanges) does that on purpose.
+export const gameFileMissing = writable(false);
+
+function resetDiskNotices(): void {
+    savesHeld.set(false);
+    externalChangeError.set(null);
+    gameFileMissing.set(false);
 }
 
 // Set when the open game was last saved by an older Quest version: the editor saves every game as
@@ -299,6 +305,7 @@ export async function listSafeModeLibraryFiles(): Promise<string[]> {
 // GameData).
 async function preloadAdjacentLibraryAssets(adapter: FileAdapter): Promise<void> {
     const files = await resolveLibraryCandidateFiles(adapter);
+    _libraryBaseline = new Map(Object.entries(files));
     for (const [key, bytes] of Object.entries(files)) {
         _bridge!.AddAdjacentFile(key, bytes);
     }
@@ -376,8 +383,7 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
         treeNodes.set(nodes);
         showLibraryElements.set(false);
         showLibraryReloadBanner.set(false);
-        showFileChangedExternallyBanner.set(false);
-        savesHeld.set(false);
+        resetDiskNotices();
         isLoaded.set(true);
         gameFilename.set(filename);
         refreshUndoRedo();
@@ -412,27 +418,160 @@ export async function reloadGame(): Promise<boolean> {
     return openGame(bytes, _adapter.filename, _adapter);
 }
 
-// FileChangedExternallyBanner's "Use the changed file" (or, with nothing unsaved, "Reload from
-// disk"): loads the game as it is on disk now. Deliberately doesn't save first like reloadGame()
-// above, since the point is that the change made outside the editor wins. Any unsaved edits here
-// are discarded, which the button's label says, so there's no confirmation. openGame() resets
-// isDirty and savesHeld once the file is loaded.
+// FileChangedExternallyBanner's "Use the changed file": loads the game as it is on disk now.
+// Deliberately doesn't save first like reloadGame() above, since the point is that the change
+// made outside the editor wins: any unsaved edits here (including unapplied Code View edits) are
+// discarded, which the button's label says, so there's no confirmation. If the changed file
+// can't be loaded, the game stays as it was and the banner says why.
 export async function reloadGameFromDisk(): Promise<boolean> {
     if (!_adapter) return false;
     cancelPendingAutosave();
+    codeViewPanelOpen.set(false);
     const bytes = await _adapter.reload();
-    return openGame(bytes, _adapter.filename, _adapter);
+    const result = await reloadInPlace(bytes);
+    if (result === "ok") return true;
+    holdSaves(loadErrorText(result));
+    return false;
 }
 
-// FileChangedExternallyBanner's "Keep my changes": saves the editor's copy over the file, which
-// the save guard in doPersist() would otherwise refuse to do.
+// FileChangedExternallyBanner's "Keep my changes" and "Save it again": saves the editor's copy
+// over the file (or as it, once it's gone), which doPersist()'s disk check would otherwise
+// refuse to do. Saves even with nothing unsaved, since that's when the file on disk is the one
+// that couldn't be loaded.
 export async function keepMyChanges(): Promise<void> {
-    savesHeld.set(false);
-    showFileChangedExternallyBanner.set(false);
+    resetDiskNotices();
     _overwriteOnNextSave = true;
     (document.activeElement as HTMLElement | null)?.blur();
     cancelPendingAutosave();
     await persistNow();
+}
+
+let _checkingDisk = false;
+let _reloadingInPlace = false;
+// Set when only a library changed while a field was mid-edit: the game is saved and reloaded once
+// that edit has been saved (see doPersist).
+let _recheckAfterSave = false;
+// The included libraries as last staged for a load (preloadAdjacentLibraryAssets) or written by
+// the editor (putAssetText), which librariesChanged() compares the folder with.
+let _libraryBaseline = new Map<string, Uint8Array>();
+
+// See the comment above savesHeld. Best effort: a failed read just waits for the next check.
+export async function checkForExternalChanges(): Promise<void> {
+    const adapter = _adapter;
+    if (!adapter?.checkDisk || !_bridge || !get(isLoaded) || get(loadingStatus) !== null) return;
+    if (_checkingDisk || _reloadingInPlace || _saveInFlight) return;
+    // Already asking. A load error is the exception: a newer change may load.
+    if (get(savesHeld) && !get(externalChangeError)) return;
+    _checkingDisk = true;
+    try {
+        const state = await adapter.checkDisk();
+        if (adapter !== _adapter) return;
+        if (state === "missing") {
+            markGameFileMissing();
+            return;
+        }
+        // Back again: an editor's save-by-rename, or the author putting it back.
+        if (get(gameFileMissing)) gameFileMissing.set(false);
+        const gameChanged = state === "changed";
+        if (!gameChanged && !(await librariesChanged(adapter))) return;
+        const editing = get(isEditingField) || get(codeViewPanelOpen);
+        if (gameChanged && (editing || get(isDirty))) {
+            holdSaves();
+            return;
+        }
+        if (!gameChanged) {
+            // Only a library changed, so nothing stops the game being saved first.
+            if (editing) {
+                _recheckAfterSave = true;
+                return;
+            }
+            if (get(isDirty)) {
+                await persistNow();
+                if (get(savesHeld) || get(gameFileMissing) || get(isDirty)) return;
+            }
+        }
+        const result = await reloadInPlace(await adapter.reload());
+        if (result === "ok") showToast(t("fileChangedBanner.reloaded"), "info", 4000);
+        else holdSaves(loadErrorText(result));
+    } catch {
+        // The next check tries again.
+    } finally {
+        _checkingDisk = false;
+    }
+}
+
+const DISK_POLL_MS = 2000;
+
+// Called by edit/+page.svelte while the editor is showing. Electron's watcher reports changes as
+// they happen (+layout.svelte); in the browser the timer stands in for one, and runs while the
+// page is visible rather than only while it has the focus, since an author watching an agent
+// work usually has the focus in the agent's window.
+export function watchForExternalChanges(): () => void {
+    const check = () => { void checkForExternalChanges(); };
+    const onVisibility = () => { if (!document.hidden) check(); };
+    window.addEventListener("focus", check);
+    document.addEventListener("visibilitychange", onVisibility);
+    const timer = isElectron() ? null : setInterval(() => { if (!document.hidden) check(); }, DISK_POLL_MS);
+    return () => {
+        window.removeEventListener("focus", check);
+        document.removeEventListener("visibilitychange", onVisibility);
+        if (timer !== null) clearInterval(timer);
+    };
+}
+
+async function librariesChanged(adapter: FileAdapter): Promise<boolean> {
+    for (const [name, known] of _libraryBaseline) {
+        const blob = await adapter.getAsset(name);
+        // A library that's gone is left to the game file: an <include> of it fails the next load
+        // anyway, and a rename shows up as a change to the game file.
+        if (blob && !sameBytes(new Uint8Array(await blob.arrayBuffer()), known)) return true;
+    }
+    return false;
+}
+
+function loadErrorText(result: string): string {
+    return result.startsWith("error:") ? result.slice("error:".length) : result;
+}
+
+// Reloads the open game from bytes just read from its file, keeping the author's place: the
+// selected element (and so its tab, since PropertyEditor keeps the tab for the same key), the
+// tree's expanded nodes and scroll position (the editor stays mounted: no loadingStatus), whether
+// library elements are shown, and an open Problems list, which is re-run. Undo history starts
+// again, as with any reload. Goes through SetGameXml rather than openGame()'s Initialise, so a
+// file that doesn't load (an agent's edit half written, say) leaves the game as it was instead
+// of replacing the editor with an error.
+async function reloadInPlace(bytes: Uint8Array): Promise<string> {
+    if (!_bridge || !_adapter) return "error";
+    _reloadingInPlace = true;
+    try {
+        cancelPendingAutosave();
+        const previousKey = get(selectedKey);
+        const showingLibrary = get(showLibraryElements);
+        await preloadAdjacentLibraryAssets(_adapter);
+        const result = await _bridge.SetGameXml(new TextDecoder().decode(bytes));
+        if (result !== "ok") return result;
+        clearAssetUrlCache();
+        expressionTemplateDataCache.clear();
+        _loadedGameId = _bridge.GetGameId() || null;
+        isGamebook.set(_bridge.IsGamebook());
+        if (showingLibrary) _bridge.SetShowLibraryElements(true);
+        const nodes: TreeNode[] = JSON.parse(_bridge.GetTreeNodes());
+        treeNodes.set(nodes);
+        cutElementKeys.set(new Set());
+        resetDiskNotices();
+        await refreshAssets();
+        await refreshLegacyUiHacks(_adapter);
+        const keep = previousKey && nodes.some(n => n.key === previousKey)
+            ? previousKey
+            : nodes.find(n => n.nodeType === "game")?.key ?? null;
+        if (keep) await selectNode(keep);
+        resetNavHistory(keep);
+        refreshUndoRedo();
+        if (get(checkPanelOpen)) void checkGame();
+        return "ok";
+    } finally {
+        _reloadingInPlace = false;
+    }
 }
 
 // Read-only peek at the current game's XML for the raw Code View panel — unlike Save(), this
@@ -884,7 +1023,7 @@ const MIN_SAVING_VISIBLE_MS = 300;
 async function doPersist(): Promise<void> {
     if (!_bridge || !_adapter) return;
     // Held until the author chooses which copy to keep (see savesHeld).
-    if (get(savesHeld)) return;
+    if (get(savesHeld) || get(gameFileMissing)) return;
     isSaving.set(true);
     const startedAt = performance.now();
     try {
@@ -892,8 +1031,13 @@ async function doPersist(): Promise<void> {
         _overwriteOnNextSave = false;
         // Before _bridge.Save(), which would clear the bridge's dirty flag for a save that
         // never happens.
-        if (!overwrite && await _adapter.checkDisk?.() === "changed") {
+        const diskState = overwrite ? "unchanged" : await _adapter.checkDisk?.();
+        if (diskState === "changed") {
             holdSaves();
+            return;
+        }
+        if (diskState === "missing") {
+            markGameFileMissing();
             return;
         }
         await rekeyIfGameIdChanged();
@@ -908,6 +1052,11 @@ async function doPersist(): Promise<void> {
         if (_adapter instanceof LocalDraftAdapter) {
             showBackupBanner.set(await shouldShowBackupBanner(_adapter.gameId));
         }
+        if (_recheckAfterSave) {
+            _recheckAfterSave = false;
+            // After _saveInFlight clears, which checkForExternalChanges waits for.
+            setTimeout(() => { void checkForExternalChanges(); }, 0);
+        }
     } catch (err) {
         saveError.set(err instanceof Error ? err.message : "Save failed");
         scheduleRetry();
@@ -921,10 +1070,18 @@ async function doPersist(): Promise<void> {
 }
 
 // The game file changed on disk since the editor last read or wrote it, so a save now would
-// overwrite that change: stop saving and ask (FileChangedExternallyBanner).
-function holdSaves(): void {
+// overwrite that change: stop saving and ask (FileChangedExternallyBanner). loadError is set when
+// the change was loaded and failed, so there's only the editor's copy to offer.
+function holdSaves(loadError: string | null = null): void {
     savesHeld.set(true);
-    showFileChangedExternallyBanner.set(true);
+    externalChangeError.set(loadError);
+    cancelPendingAutosave();
+    _retryAttempt = 0;
+    saveError.set(null);
+}
+
+function markGameFileMissing(): void {
+    gameFileMissing.set(true);
     cancelPendingAutosave();
     _retryAttempt = 0;
     saveError.set(null);
@@ -967,8 +1124,7 @@ export async function saveGameAs(): Promise<void> {
     if (newName) {
         gameFilename.set(newName);
         // A new file now, so there's nothing on disk to overwrite.
-        savesHeld.set(false);
-        showFileChangedExternallyBanner.set(false);
+        resetDiskNotices();
     }
     isDirty.set(false);
     saveError.set(null);
@@ -1371,6 +1527,8 @@ export async function getAssetText(key: string): Promise<string | null> {
 
 export async function putAssetText(key: string, text: string): Promise<void> {
     if (!_adapter) return;
+    // The editor's own write, so checkForExternalChanges doesn't take it for an outside one.
+    if (isLibraryFilename(key)) _libraryBaseline.set(key, new TextEncoder().encode(text));
     await _adapter.putAsset(key, new Blob([text], { type: "text/javascript" }));
     releaseAssetUrl(key);
     await refreshAssets();
