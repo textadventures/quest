@@ -298,6 +298,11 @@ GetLinkTextColour()
 GetLinkTextFormat(colour)
 ```
 
+## GetListableChildren
+```quest
+GetListableChildren(parent, includeScenery, exclude)
+```
+
 ## GetPlacesObjectsList
 ```quest
 GetPlacesObjectsList()
