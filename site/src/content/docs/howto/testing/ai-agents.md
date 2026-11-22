@@ -33,7 +33,7 @@ Then ask for what you want, giving the path to your game:
 
 Claude checks the game with `qv check` after every change. When it fixes a bug, it first writes a [walkthrough](/howto/testing/walkthroughs) that shows the bug, then fixes it and runs the walkthrough again to see it pass. The walkthroughs stay in your game, so you can run them yourself with `qv walkthrough` whenever you change something. To see a change yourself, ask Claude to preview the game: it gives you an address to open in your browser, which reloads whenever the game changes.
 
-Close your game in the Quest Viva editor while an agent works on it, or reload it afterwards. Otherwise the editor and the agent can each save over the other's changes.
+If your game is open in the Quest Viva editor while an agent works on it, take care: the editor saves your game whenever you change something, so an edit you make there can save over the agent's changes. In the desktop app, a bar appears when the agent changes the file: click **Reload from disk** before you carry on editing. The editor in your browser doesn't notice changes made outside it, so close your game there while the agent works, and open it again afterwards.
 
 ## Other agents
 
