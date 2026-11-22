@@ -13,7 +13,7 @@ You'll need `qv` installed first: see [Installing qv](/howto/testing/command-lin
 
 ## The Quest Viva plugin for Claude Code
 
-In Claude Code, run:
+Install it once, from Claude Code:
 
 ```text
 /plugin marketplace add textadventures/quest
@@ -25,11 +25,17 @@ The plugin adds two things:
 - **A Quest Viva skill**, which Claude loads whenever it works on an `.aslx` file. It covers the game file format, Quest's script language and its common mistakes, text adventures and gamebooks, and how to check, test, play and preview a game after each change.
 - **The `qv` MCP server**, so Claude can play your game, check it, run its walkthroughs, look things up in this documentation and preview your game in your browser, without you setting anything up. It runs `qv mcp --debug-tools`. If you added the server by hand before, remove that one with `claude mcp remove qv`.
 
-Then ask for what you want, giving the path to your game:
+It's then there in every Claude Code session.
 
-- "Add a kitchen to the east of the hall in ~/games/mygame.aslx, with a locked cupboard and a key in the garden."
-- "When I eat the apple in mygame.aslx it's still in my inventory. Fix it."
-- "Play mygame.aslx and tell me which puzzles were unfair."
+## Working on your game
+
+Start Claude Code in your game's folder, the one with your `.aslx` file: open a terminal there and run `claude`, or choose the folder when you start a session in the Claude desktop app. Claude then finds your game itself, and everything it makes, such as a preview, stays with it. Then ask for what you want:
+
+- "Add a kitchen to the east of the hall, with a locked cupboard and a key in the garden."
+- "When I eat the apple it's still in my inventory. Fix it."
+- "Play the game and tell me which puzzles were unfair."
+
+If the folder holds more than one game, say which one. To start a new game, start Claude Code in an empty folder and describe the game you want.
 
 Claude checks the game with `qv check` after every change. When it fixes a bug, it first writes a [walkthrough](/howto/testing/walkthroughs) that shows the bug, then fixes it and runs the walkthrough again to see it pass. The walkthroughs stay in your game, so you can run them yourself with `qv walkthrough` whenever you change something. To see a change yourself, ask Claude to preview the game: it gives you an address to open in your browser, which reloads whenever the game changes.
 
