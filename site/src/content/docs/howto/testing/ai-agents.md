@@ -29,7 +29,7 @@ It's then there in every Claude Code session.
 
 ## Working on your game
 
-Start Claude Code in your game's folder, the one with your `.aslx` file: open a terminal there and run `claude`, or choose the folder when you start a session in the Claude desktop app. Claude then finds your game itself, and everything it makes, such as a preview, stays with it. Then ask for what you want:
+Start Claude Code in your game's folder, the one with your `.aslx` file: open a terminal there and run `claude`, or choose the folder when you start a session in the Claude desktop app. Claude then finds your game itself, so you don't need to give its path. Then ask for what you want:
 
 - "Add a kitchen to the east of the hall, with a locked cupboard and a key in the garden."
 - "When I eat the apple it's still in my inventory. Fix it."
