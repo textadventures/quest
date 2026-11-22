@@ -4,7 +4,7 @@
     import { goto } from "$app/navigation";
     import { base } from "#lib/base-path.js";
     import { get } from "svelte/store";
-    import { isLoaded, isDirty, isEditingField, markFieldEditing, clearFieldEditing, saveGame, loadingStatus, addElementModal, addJavascriptModalOpen, addLibraryModalOpen, assetManagerOpen, publishModalOpen, codeViewPanelOpen, checkPanelOpen, lastOpenGameError, lastFailedGameBytes, createRoom, createObject, createPage, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType, createJavascript, createIncludedLibrary, moveElementModal, moveElement, moveToFolderModal, setFunctionFolder } from "#lib/editor-store.js";
+    import { isLoaded, isDirty, isEditingField, watchForExternalChanges, markFieldEditing, clearFieldEditing, saveGame, loadingStatus, addElementModal, addJavascriptModalOpen, addLibraryModalOpen, assetManagerOpen, publishModalOpen, codeViewPanelOpen, checkPanelOpen, lastOpenGameError, lastFailedGameBytes, createRoom, createObject, createPage, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType, createJavascript, createIncludedLibrary, moveElementModal, moveElement, moveToFolderModal, setFunctionFolder } from "#lib/editor-store.js";
     import Toolbar from "#components/Toolbar.svelte";
     import BackupBanner from "#components/BackupBanner.svelte";
     import UpgradeBanner from "#components/UpgradeBanner.svelte";
@@ -109,6 +109,7 @@
             if (document.hidden && (get(isDirty) || get(isEditingField))) void saveGame();
         }
         document.addEventListener("visibilitychange", handleVisibilityChange);
+        const stopWatchingDisk = watchForExternalChanges();
 
         if (!get(isLoaded) && !get(lastFailedGameBytes)) {
             // Nothing to edit and nothing to recover — /edit is only ever
@@ -117,7 +118,10 @@
             goto(`${base}/open`);
         }
 
-        return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+        return () => {
+            document.removeEventListener("visibilitychange", handleVisibilityChange);
+            stopWatchingDisk();
+        };
     });
 
     async function handleAddConfirm(name: string, target: string | null) {

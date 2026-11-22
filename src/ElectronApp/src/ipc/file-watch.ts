@@ -38,7 +38,14 @@ async function checkForChanges(dirPath: string, onChanged: (filenames: string[])
     const changed: string[] = [];
     for (const [filename, knownMtime] of baseline) {
         const mtime = await statMtime(path.join(dirPath, filename));
-        if (mtime !== null && mtime > knownMtime) {
+        if (mtime === null) {
+            // Gone: reported too, so the editor can stop its next save from putting the file
+            // back. 0 makes it count as changed again if it comes back.
+            if (knownMtime !== 0) {
+                baseline.set(filename, 0);
+                changed.push(filename);
+            }
+        } else if (mtime > knownMtime) {
             baseline.set(filename, mtime);
             changed.push(filename);
         }

@@ -4,8 +4,11 @@
 // origin-private file system: a real FileSystemDirectoryHandle that the test can also write to
 // from page.evaluate, standing in for the other program.
 //
-// 1. Change the file outside the editor, then edit in the editor: autosave writes nothing and the
-//    banner asks which copy to keep. "Keep my changes" then saves over the file.
+// The editor checks the file every couple of seconds, and reloads by itself when nothing is
+// unsaved (disk-change-follow.spec.mjs), so each scenario changes the file while an edit is still
+// being typed:
+// 1. The banner asks which copy to keep, and when the edit is finished autosave writes nothing.
+//    "Keep my changes" then saves over the file.
 // 2. Same again, but "Use the changed file": the editor loads the outside change and the edit is
 //    dropped.
 import { test } from '@playwright/test';
@@ -48,14 +51,29 @@ test('disk-change-save-guard', async ({ baseURL }) => {
 
     // The game node is selected on load; its first text field is the description. See
     // autosave.spec.mjs for why the Filter box is excluded and the events dispatched by hand.
-    async function editDescription(text) {
-        const box = page.locator('textarea, input[type="text"]:not([placeholder="Filter..."])').first();
+    const descriptionBox = () => page.locator('textarea, input[type="text"]:not([placeholder="Filter..."])').first();
+    async function startEdit(text) {
+        const box = descriptionBox();
         await box.waitFor({ timeout: 10000 });
         await box.fill(text);
         await box.dispatchEvent('input');
-        await box.dispatchEvent('change');
+    }
+    async function finishEdit() {
+        await descriptionBox().dispatchEvent('change');
         await page.click('.toolbar-divider');
         await page.locator('.save-chip-unsaved').waitFor({ state: 'visible', timeout: 5000 });
+    }
+    async function editDescription(text) {
+        await startEdit(text);
+        await finishEdit();
+    }
+    // Changes the file while an edit is being typed, then finishes the edit.
+    async function editDuringOutsideChange(text, roomName) {
+        await startEdit(text);
+        const changed = await changeOutside(roomName);
+        await banner.getByRole('button', { name: 'Keep my changes' }).waitFor({ timeout: 10000 });
+        await finishEdit();
+        return changed;
     }
 
     const banner = page.getByTestId('file-changed-banner');
@@ -87,9 +105,8 @@ test('disk-change-save-guard', async ({ baseURL }) => {
         await page.waitForSelector('button[title="Manage assets"]', { timeout: 30000 });
 
         // --- 1. Keep my changes ---
-        const outside1 = await changeOutside('agentroomone');
         const marker1 = `Kept ${Date.now()}`;
-        await editDescription(marker1);
+        const outside1 = await editDuringOutsideChange(marker1, 'agentroomone');
         await expectHeld(outside1);
         await banner.getByRole('button', { name: 'Keep my changes' }).click();
         await page.locator('.save-chip-saved').waitFor({ state: 'visible', timeout: 10000 });
@@ -105,9 +122,7 @@ test('disk-change-save-guard', async ({ baseURL }) => {
         if (!(await readDisk()).includes(marker2)) throw new Error('A normal save after "Keep my changes" did not happen');
 
         // --- 2. Use the changed file ---
-        const outside2 = await changeOutside('agentroomtwo');
-        const marker3 = `Dropped ${Date.now()}`;
-        await editDescription(marker3);
+        const outside2 = await editDuringOutsideChange(`Dropped ${Date.now()}`, 'agentroomtwo');
         await expectHeld(outside2);
         await banner.getByRole('button', { name: 'Use the changed file' }).click();
         await banner.waitFor({ state: 'hidden', timeout: 30000 });

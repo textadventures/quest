@@ -7,7 +7,7 @@
     import { base } from "#lib/base-path.js";
     import { page } from "$app/state";
     import { PUBLIC_APPSHELL_VERSION, PUBLIC_BETA_SITE } from "$app/env/public";
-    import { isLoaded, saveGame, saveGameAs, applyPendingCodeViewEdits, undo, redo, canUndo, canRedo, markFileChangedExternally } from "#lib/editor-store.js";
+    import { isLoaded, saveGame, saveGameAs, applyPendingCodeViewEdits, undo, redo, canUndo, canRedo, checkForExternalChanges } from "#lib/editor-store.js";
     import { isElectron } from "#lib/runtime.js";
     import { initI18n, localeReady } from "#lib/i18n/index.js";
     import { initTheme } from "#lib/theme-store.js";
@@ -141,9 +141,9 @@
             void goto(`${rootPath}${query}`);
         });
         // Main-process file watcher (ElectronApp's ipc/file-watch.ts, armed by
-        // electron-adapter.ts) — see FileChangedExternallyBanner.svelte for
-        // the actual banner UI, rendered from edit/+page.svelte.
-        const unsubscribeFileChanged = window.electronApp!.fileWatch.onChanged(() => markFileChangedExternally());
+        // electron-adapter.ts): the game or a library changed outside the editor,
+        // so reload it or ask (see checkForExternalChanges).
+        const unsubscribeFileChanged = window.electronApp!.fileWatch.onChanged(() => { void checkForExternalChanges(); });
         return () => {
             unsubscribeAction();
             unsubscribeRecent();
