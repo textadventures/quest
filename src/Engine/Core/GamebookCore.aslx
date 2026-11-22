@@ -1,4 +1,8 @@
 <library>
+  <!-- As in Core.aslx: each line of a walkthrough's <steps> is one step. Without this, <steps>
+       with no type attribute loads as a single string, and the walkthrough has no steps. -->
+  <implied element="walkthrough" property="steps" type="simplestringlist"/>
+
   <!-- [Xxx]-in-<include ref> indirection, not a hardcoded EditorEnglish.aslx
        include: <caption> text (and everything else read by GetTemplate) is
        template-substituted eagerly at XML *parse* time (GameLoader.GetTemplate

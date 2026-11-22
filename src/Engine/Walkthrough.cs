@@ -63,15 +63,21 @@ public class Walkthrough : IWalkthrough
 
     internal const string SeedAttribute = "seed";
 
+    // Steps that aren't a list are an error, not an empty walkthrough: a <steps> element with no
+    // type attribute in a game whose libraries don't imply one (a gamebook saved before
+    // GamebookCore.aslx implied simplestringlist) loads as one string, and reading that as no
+    // steps would let a walkthrough that tests nothing pass.
     private string[] ThisSteps()
     {
-        var result = new List<string>();
-        IEnumerable<string>? steps = _element.Fields[FieldDefinitions.Steps];
-        if (steps != null)
+        return _element.Fields.Get(FieldDefinitions.Steps.Property) switch
         {
-            result.AddRange(steps);
-        }
-
-        return result.ToArray();
+            null => [],
+            IEnumerable<string> steps => steps.ToArray(),
+            var other => throw new InvalidOperationException(
+                $"Walkthrough '{_element.Name}' has steps that aren't a list ({TypeName(other)}). " +
+                "Give its <steps> element type=\"simplestringlist\", with one step on each line.")
+        };
     }
+
+    private static string TypeName(object value) => value is string ? "a string" : value.GetType().Name;
 }

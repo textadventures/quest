@@ -108,6 +108,34 @@ public class HeadlessWalkthroughTests
     }
 
     [TestMethod]
+    public async Task StepsThatArentAListFail()
+    {
+        // A gamebook saved before GamebookCore.aslx implied simplestringlist for <steps> has them as
+        // one string. That isn't a walkthrough with no steps that passes.
+        const string game = """
+            <asl version="610" templatetype="gamebook">
+              <include ref="GamebookCore.aslx"/>
+              <game name="Gamebook"/>
+              <object name="Page1">
+                <object name="player"><inherit name="defaultplayer"/></object>
+                <description>Start.</description>
+              </object>
+              <walkthrough name="stringsteps">
+                <steps type="string">assert:false</steps>
+              </walkthrough>
+            </asl>
+            """;
+        var session = await HeadlessSession.StartAsync(
+            new GameData(System.Text.Encoding.UTF8.GetBytes(game), "gamebook.aslx"));
+
+        var result = await HeadlessWalkthrough.RunAsync(session, "stringsteps");
+
+        Assert.IsFalse(result.Passed);
+        Assert.AreEqual(0, result.StepCount);
+        StringAssert.Contains(result.Failure, "aren't a list");
+    }
+
+    [TestMethod]
     public async Task UnknownWalkthroughThrows()
     {
         await Assert.ThrowsAsync<ArgumentException>(() => RunAsync("nosuchwalkthrough"));

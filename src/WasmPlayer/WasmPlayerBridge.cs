@@ -451,9 +451,19 @@ public partial class WasmPlayerBridge
     [JSExport]
     public static string GetWalkthroughStepsJson(string name)
     {
-        var steps = GameDebug != null && GameDebug.Walkthroughs.Walkthroughs.TryGetValue(name, out var walkthrough)
-            ? walkthrough.Steps
-            : [];
+        string[] steps = [];
+        if (GameDebug != null && GameDebug.Walkthroughs.Walkthroughs.TryGetValue(name, out var walkthrough))
+        {
+            try
+            {
+                steps = walkthrough.Steps;
+            }
+            catch (InvalidOperationException)
+            {
+                // Its steps aren't a list. RunWalkthrough reports why.
+            }
+        }
+
         return JsonSerializer.Serialize(steps, WasmJsonContext.Default.StringArray);
     }
 
@@ -471,7 +481,14 @@ public partial class WasmPlayerBridge
         if (_ui.Runner != null) return "A walkthrough is already running";
 
         var runner = new WalkthroughRunner(GameDebug, name);
-        if (runner.Steps == 0) return $"Walkthrough \"{name}\" was not found or has no steps";
+        try
+        {
+            if (runner.Steps == 0) return $"Walkthrough \"{name}\" was not found or has no steps";
+        }
+        catch (InvalidOperationException ex)
+        {
+            return ex.Message;
+        }
 
         _ui.Runner = runner;
         try
