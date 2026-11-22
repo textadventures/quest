@@ -15,6 +15,7 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath, URL } from "node:url";
 import { join, relative } from "node:path";
 import { globSync } from "node:fs";
+import { readSkillFile } from "./agent-guide.mjs";
 
 const docsDir = fileURLToPath(new URL("./content/docs/", import.meta.url));
 
@@ -24,7 +25,7 @@ function readFrontMatterField(file, field) {
     return line?.[1].trim().replace(/^(["'])(.*)\1$/, "$2");
 }
 
-function pageFile(slug) {
+export function pageFile(slug) {
     const candidates = [".md", ".mdx", "/index.md", "/index.mdx"].map((ext) => join(docsDir, slug + ext));
     return candidates.find((path) => existsSync(path));
 }
@@ -47,15 +48,16 @@ function renderItems(items, site, depth) {
 }
 
 /**
- * The ASL primer in asl-primer.md: what an agent needs to know before writing a
- * game file, short enough to read up front. Its links are site-relative, so
+ * The ASL primer, the Claude Code plugin's references/asl-primer.md (see
+ * agent-guide.mjs): what an agent needs to know before writing a game file,
+ * short enough to read up front. Its links are site-relative, so
  * they also work as page ids in `qv mcp`'s docs tool; here they're made
  * absolute, and the build fails if one names a page that doesn't exist or if
  * the primer has a heading, which the llms.txt format doesn't allow here.
  * @param {string} site the site's absolute URL
  */
 export function llmsPrimer(site) {
-    const primer = readFileSync(fileURLToPath(new URL("./asl-primer.md", import.meta.url)), "utf8").trim();
+    const primer = readSkillFile("references/asl-primer.md").trim();
     let inFence = false;
     for (const line of primer.split("\n")) {
         if (fence.test(line)) inFence = !inFence;

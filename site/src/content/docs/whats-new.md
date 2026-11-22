@@ -83,7 +83,7 @@ Walkthroughs in the editor also now use the same random numbers every time they'
 
 6.1 includes `qv`, a new command-line tool for authors. You can use it to play games in a terminal, check them for problems, run walkthroughs, preview them in a browser, and publish them. That's useful if you prefer to edit your game in a text editor, or if you want your walkthroughs to run automatically whenever you make a change.
 
-You can also use `qv` to let an AI agent such as Claude play your game, and tell you about anywhere it got stuck.
+You can also use `qv` to let an AI agent such as Claude play your game, and tell you about anywhere it got stuck. With the Quest Viva plugin for Claude Code, Claude can also write and fix your game, checking and playing each change as it goes. See [Writing with an AI agent](/howto/testing/ai-agents).
 
 `qv` plays games from any version of Quest, all the way back to Quest 1. See [The qv command-line tool](/howto/testing/command-line).
 
