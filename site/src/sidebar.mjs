@@ -431,6 +431,10 @@ export const sidebar = [
                     {
                         "label": "The qv command-line tool",
                         "slug": "howto/testing/command-line"
+                    },
+                    {
+                        "label": "Writing with an AI agent",
+                        "slug": "howto/testing/ai-agents"
                     }
                 ]
             }

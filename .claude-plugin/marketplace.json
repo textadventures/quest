@@ -1,0 +1,17 @@
+{
+  "name": "questviva",
+  "description": "Plugins for writing Quest Viva text adventures and gamebooks",
+  "owner": {
+    "name": "Quest Viva",
+    "url": "https://questviva.com"
+  },
+  "plugins": [
+    {
+      "name": "questviva",
+      "source": "./plugins/questviva",
+      "description": "Helps Claude write, check, play and publish Quest Viva games (.aslx files) with the qv command-line tool",
+      "category": "development",
+      "tags": ["quest", "questviva", "interactive-fiction", "text-adventure", "gamebook", "games"]
+    }
+  ]
+}

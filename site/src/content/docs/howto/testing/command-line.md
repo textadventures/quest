@@ -1,6 +1,6 @@
 ---
 title: The qv command-line tool
-description: Play, check, test, preview and publish Quest games from the command line with qv, and let an AI agent playtest your game
+description: Play, check, test, preview and publish Quest games from the command line with qv, and let an AI agent work on your game
 sidebar:
   order: 40
 ---
@@ -83,22 +83,12 @@ makes a `.quest` file of your game, as **Publish** does in the editor, ready to 
 
 It checks the game first, as `qv check` does, and won't publish if there are problems unless you add `--force`. It also warns you about any picture, sound or other file your game refers to that isn't in its folder, and if your game has no Game ID.
 
-## Letting an AI agent play your game
+## AI agents
 
 ```bash
 qv mcp
 ```
 
-runs an [MCP](https://modelcontextprotocol.io/) server: a way for an AI agent, such as Claude, to use `qv`. Its tools let the agent start a game and type commands, so you can ask it to play your game and tell you where it got stuck, which puzzles it found unfair or which descriptions confused it. The agent sees what a player would see, including the exits the compass shows and the lines of the status pane.
-
-For example, to add it to Claude Code:
-
-```bash
-claude mcp add qv -- qv mcp
-```
-
-and then ask Claude to play your game, giving it the path to your `.aslx` or `.quest` file. Give a game after `qv mcp` to let the agent play only that one.
-
-By default the agent only gets the tools a player would have, so it gets a fair game. Add `--debug-tools` to give it more: it can then work out expressions against the game's current state, move the game clock on to fire timers, check the game, run its walkthroughs, preview it and publish it, and look things up in this documentation and in the game's functions. That turns it from a playtester into something that can help you track down and fix a problem: an agent that can edit files can change your `.aslx`, check it, and play the change straight away.
+runs an [MCP](https://modelcontextprotocol.io/) server: a way for an AI agent, such as Claude, to use `qv`. Its tools let the agent play your game and tell you where it got stuck, or, with `--debug-tools`, check, test and fix it as well. See [Writing with an AI agent](/howto/testing/ai-agents), which also has the Quest Viva plugin for Claude Code.
 
 There's also `qv serve`, which lets another program drive a game by sending it commands and reading the responses as JSON - for writing a test harness of your own, for example.

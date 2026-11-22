@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "qv": {
+      "command": "qv",
+      "args": ["mcp", "--debug-tools"]
+    }
+  }
+}

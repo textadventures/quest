@@ -2,6 +2,7 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import starlightLlmsTxt from "starlight-llms-txt";
+import { agentGuideFile } from "./src/agent-guide.mjs";
 import { llmsExampleGames, llmsPageIndex, llmsPrimer, llmsTxtLinks } from "./src/llms-txt.mjs";
 import { questGrammar } from "./src/quest-grammar.mjs";
 import { redirects } from "./src/redirects.mjs";
@@ -100,5 +101,6 @@ export default defineConfig({
             ],
         }),
         llmsTxtLinks(site, llmsTxtOptions),
+        agentGuideFile(site),
     ],
 });
