@@ -450,6 +450,9 @@
 
     "fileChangedBanner.message": "This file was changed outside the editor, by another program.",
     "fileChangedBanner.reloadFromDisk": "Reload from disk",
+    "fileChangedBanner.conflictMessage": "This file was changed outside the editor, so your changes here haven't been saved. Which version do you want to keep?",
+    "fileChangedBanner.useChangedFile": "Use the changed file",
+    "fileChangedBanner.keepMyChanges": "Keep my changes",
 
     "libraryElementBanner.message": "This element comes from a library{filename} and can't be edited directly.",
     "libraryElementBanner.copying": "Copying…",

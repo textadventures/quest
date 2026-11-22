@@ -78,15 +78,19 @@ export function dismissLibraryReloadBanner() {
     showLibraryReloadBanner.set(false);
 }
 
-// Set when Electron's main-process file watcher (ipc/file-watch.ts, armed by
-// electron-adapter.ts) reports the currently-open game file or one of its
-// included libraries was changed by something other than this app — e.g. an
-// external text editor. Electron-only; other adapters have no equivalent of
-// "another program touched this file". See FileChangedExternallyBanner.svelte.
+// Set when the open game file or one of its included libraries was changed by something other
+// than this editor, such as an AI agent or a text editor. Electron's main-process watcher
+// (ipc/file-watch.ts, armed by electron-adapter.ts) reports it as it happens; for every adapter
+// that implements FileAdapter.checkDisk, doPersist() also finds it before saving, and then sets
+// savesHeld too. See FileChangedExternallyBanner.svelte.
 export const showFileChangedExternallyBanner = writable(false);
 export function dismissFileChangedExternallyBanner() {
     showFileChangedExternallyBanner.set(false);
 }
+// True once a save found the game file changed on disk since the editor last read or wrote it.
+// Autosave and Save then write nothing, so the editor's copy can't silently replace the other
+// change, until the author picks one: useChangedFile() or keepMyChanges().
+export const savesHeld = writable(false);
 // Called from +layout.svelte's electronApp().fileWatch.onChanged listener.
 // Guarded on isLoaded so a notification that arrives after the game/window
 // has already moved on (e.g. mid-navigation) doesn't pop a banner for
@@ -373,6 +377,7 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
         showLibraryElements.set(false);
         showLibraryReloadBanner.set(false);
         showFileChangedExternallyBanner.set(false);
+        savesHeld.set(false);
         isLoaded.set(true);
         gameFilename.set(filename);
         refreshUndoRedo();
@@ -401,28 +406,33 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
 export async function reloadGame(): Promise<boolean> {
     if (!_adapter) return false;
     await saveGame();
+    // The save was held (see savesHeld), so reloading now would lose the unsaved edits.
+    if (get(savesHeld)) return false;
     const bytes = await _adapter.reload();
     return openGame(bytes, _adapter.filename, _adapter);
 }
 
-// Backs FileChangedExternallyBanner's Reload action. Deliberately does NOT
-// call saveGame() first like reloadGame() above does — the whole point here
-// is that the on-disk copy (changed by something outside this app) should
-// win, not get silently clobbered by whatever's still in memory. Confirms
-// first if there are unsaved in-editor edits, since those are what's about
-// to be discarded; openGame()'s own refreshUndoRedo() call resets isDirty
-// once the fresh copy is loaded.
+// FileChangedExternallyBanner's "Use the changed file" (or, with nothing unsaved, "Reload from
+// disk"): loads the game as it is on disk now. Deliberately doesn't save first like reloadGame()
+// above, since the point is that the change made outside the editor wins. Any unsaved edits here
+// are discarded, which the button's label says, so there's no confirmation. openGame() resets
+// isDirty and savesHeld once the file is loaded.
 export async function reloadGameFromDisk(): Promise<boolean> {
     if (!_adapter) return false;
-    if (get(isDirty)) {
-        const ok = await confirmDialog(
-            "This file was changed outside the editor. Reloading now will discard your unsaved changes here and load the version from disk. Continue?",
-            { confirmLabel: "Reload from disk", danger: true },
-        );
-        if (!ok) return false;
-    }
+    cancelPendingAutosave();
     const bytes = await _adapter.reload();
     return openGame(bytes, _adapter.filename, _adapter);
+}
+
+// FileChangedExternallyBanner's "Keep my changes": saves the editor's copy over the file, which
+// the save guard in doPersist() would otherwise refuse to do.
+export async function keepMyChanges(): Promise<void> {
+    savesHeld.set(false);
+    showFileChangedExternallyBanner.set(false);
+    _overwriteOnNextSave = true;
+    (document.activeElement as HTMLElement | null)?.blur();
+    cancelPendingAutosave();
+    await persistNow();
 }
 
 // Read-only peek at the current game's XML for the raw Code View panel — unlike Save(), this
@@ -815,6 +825,8 @@ let _retryTimer: ReturnType<typeof setTimeout> | null = null;
 let _retryAttempt = 0;
 let _saveInFlight: Promise<void> | null = null;
 let _resaveQueued = false;
+// Set by keepMyChanges() so the next save skips the disk check once.
+let _overwriteOnNextSave = false;
 
 function cancelPendingAutosave(): void {
     if (_autosaveTimer !== null) { clearTimeout(_autosaveTimer); _autosaveTimer = null; }
@@ -871,9 +883,19 @@ const MIN_SAVING_VISIBLE_MS = 300;
 
 async function doPersist(): Promise<void> {
     if (!_bridge || !_adapter) return;
+    // Held until the author chooses which copy to keep (see savesHeld).
+    if (get(savesHeld)) return;
     isSaving.set(true);
     const startedAt = performance.now();
     try {
+        const overwrite = _overwriteOnNextSave;
+        _overwriteOnNextSave = false;
+        // Before _bridge.Save(), which would clear the bridge's dirty flag for a save that
+        // never happens.
+        if (!overwrite && await _adapter.checkDisk?.() === "changed") {
+            holdSaves();
+            return;
+        }
         await rekeyIfGameIdChanged();
         await _adapter.saveFile(_bridge.Save()); // Save() clears _isDirty in the bridge
         isDirty.set(false);
@@ -896,6 +918,16 @@ async function doPersist(): Promise<void> {
         }
         isSaving.set(false);
     }
+}
+
+// The game file changed on disk since the editor last read or wrote it, so a save now would
+// overwrite that change: stop saving and ask (FileChangedExternallyBanner).
+function holdSaves(): void {
+    savesHeld.set(true);
+    showFileChangedExternallyBanner.set(true);
+    cancelPendingAutosave();
+    _retryAttempt = 0;
+    saveError.set(null);
 }
 
 // If the user regenerated the gameid field (PropertyEditor.svelte's "Generate"
@@ -932,7 +964,12 @@ export async function saveGameAs(): Promise<void> {
     (document.activeElement as HTMLElement | null)?.blur();
     cancelPendingAutosave();
     const newName = await _adapter.saveFileAs(_bridge.Save()); // Save() clears _isDirty in the bridge
-    if (newName) gameFilename.set(newName);
+    if (newName) {
+        gameFilename.set(newName);
+        // A new file now, so there's nothing on disk to overwrite.
+        savesHeld.set(false);
+        showFileChangedExternallyBanner.set(false);
+    }
     isDirty.set(false);
     saveError.set(null);
 }

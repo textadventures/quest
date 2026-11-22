@@ -1,3 +1,5 @@
+import type { DiskState } from "./disk-state";
+
 export interface AssetInfo {
     key: string;
     // Byte size, when the adapter can get it without reading the file (the Publish dialog's summary).
@@ -38,6 +40,11 @@ export interface FileAdapter {
     // browser navigation. Every adapter already holds what it needs to do this
     // with no user interaction (no picker/dialog), so it's always implemented.
     reload(): Promise<Uint8Array>;
+    // Compares the game file with what this adapter last read or wrote, so the editor can
+    // refuse to save over a change made outside it (editor-store.ts's doPersist). Only adapters
+    // over a real folder something else can write to implement it (BrowserFileAdapter,
+    // ElectronFileAdapter): nothing outside the editor can change an OPFS draft.
+    checkDisk?(): Promise<DiskState>;
 }
 
 export interface LoadedFile {
