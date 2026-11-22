@@ -46,7 +46,13 @@ test('preview-flush', async ({ baseURL }) => {
         if (activeAfter === 'INPUT') throw new Error('Expected clicking Preview to blur the focused field (so its edit commits into the bridge), but it is still focused');
         console.log('PASS: clicking Preview blurs the focused field, committing its pending edit');
 
-        await page.waitForSelector('.save-chip-saved', { timeout: 5000 });
+        await page.waitForSelector('.save-chip-saved', { timeout: 5000 }).catch(async err => {
+            // Which chip is showing instead (a failed save's error is its title), or with no chip at
+            // all, what the page is showing, say why.
+            const chip = await page.$eval('.save-chip', el => `${el.className} "${el.textContent.trim()}" title="${el.title}"`).catch(e => `none (${e.message.split('\n')[0]})`);
+            const header = await page.$eval('header', el => el.innerText.replace(/\s+/g, ' ')).catch(e => e.message.split('\n')[0]);
+            throw new Error(`${err.message}\nSave chip: ${chip}\nPage: ${page.url()}, header: ${header}`);
+        });
         console.log('PASS: clicking Preview flushes the committed edit to storage (chip settles to Saved, not left Unsaved)');
 
         console.log('PASS: all checks passed');
