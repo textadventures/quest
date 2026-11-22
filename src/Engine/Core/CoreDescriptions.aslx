@@ -119,16 +119,73 @@
       }
 
       if (game.appendobjectdescription) {
-        foreach (val, ScopeVisibleNotHeld()) {
-          if (HasString(val, "inroomdescription")) {
-            if (LengthOf(val.inroomdescription) > 0 and val <> game.pov) {
-              fulldesc = fulldesc + " " + val.inroomdescription
-            }
-          }
-        }
+        fulldesc = fulldesc + " " + GetInRoomDescriptions()
       }
 
       return (Trim(fulldesc))
+    ]]>
+  </function>
+
+  <!--
+    The visible objects whose in-room description (the "In-room descriptions"
+    game feature) would be added to the room description: anything in scope and
+    not carried, other than the player, with a non-empty inroomdescription.
+  -->
+  <function name="GetInRoomDescriptionObjects" type="objectlist">
+    <![CDATA[
+      result = NewObjectList()
+      foreach (val, ScopeVisibleNotHeld()) {
+        if (HasString(val, "inroomdescription")) {
+          if (LengthOf(val.inroomdescription) > 0 and val <> game.pov) {
+            list add (result, val)
+          }
+        }
+      }
+      return (result)
+    ]]>
+  </function>
+
+  <!--
+    The in-room descriptions of everything in GetInRoomDescriptionObjects, joined
+    with spaces. GetRoomDescription appends this to a text room description; a
+    room whose description is a script gets nothing added, and can call this to
+    put the sentences where it wants them.
+  -->
+  <function name="GetInRoomDescriptions" type="string">
+    <![CDATA[
+      result = ""
+      foreach (val, GetInRoomDescriptionObjects()) {
+        if (LengthOf(result) > 0) result = result + " "
+        result = result + val.inroomdescription
+      }
+      return (result)
+    ]]>
+  </function>
+
+  <!--
+    True when ShowRoomDescription will print the in-room descriptions for the
+    player's current room, which only happens through GetRoomDescription: the
+    feature is on, the room's description (or dark-room description) is text
+    rather than a script, and the automatic description includes it.
+  -->
+  <function name="InRoomDescriptionsShown" type="boolean">
+    <![CDATA[
+      if (not game.appendobjectdescription) {
+        return (false)
+      }
+      if (CheckDarkness()) {
+        descriptionfield = "darkroomdescription"
+      }
+      else {
+        descriptionfield = "description"
+      }
+      if (HasScript(game.pov.parent, descriptionfield)) {
+        return (false)
+      }
+      if (game.autodescription) {
+        return (game.autodescription_description > 0 and game.autodescription_description < 5)
+      }
+      return (true)
     ]]>
   </function>
 
@@ -207,8 +264,22 @@
     ]]>
   </function>
 
+  <!--
+    Lists the objects in a room or container. When this is the room the player
+    is in and its description is showing the in-room descriptions, objects that
+    have one are left out, as they are already part of the description's prose;
+    anything visible inside them is listed in their place.
+  -->
   <function name="FormatObjectList" type="string" parameters="preList, parent, preFinal, postList">
-    return (FormatContentsList(preList, parent, preFinal, postList, false))
+    <![CDATA[
+      exclude = NewObjectList()
+      if (parent = GetNonTransparentParent(game.pov.parent)) {
+        if (InRoomDescriptionsShown()) {
+          exclude = GetInRoomDescriptionObjects()
+        }
+      }
+      return (FormatContentsListExcluding(preList, parent, preFinal, postList, false, exclude))
+    ]]>
   </function>
 
   <!--
@@ -224,18 +295,19 @@
   </function>
 
   <function name="FormatContentsList" type="string" parameters="preList, parent, preFinal, postList, includeScenery">
+    return (FormatContentsListExcluding(preList, parent, preFinal, postList, includeScenery, NewObjectList()))
+  </function>
+
+  <!--
+    FormatContentsList, leaving out the objects in "exclude" at any depth. What
+    is visible inside an excluded object is listed in its place, so leaving out
+    a table doesn't hide the book on it.
+  -->
+  <function name="FormatContentsListExcluding" type="string" parameters="preList, parent, preFinal, postList, includeScenery, exclude">
     <![CDATA[
       result = ""
       count = 0
-      if (includeScenery) {
-        list = RemoveInventoryHiddenObjects(RemoveInvisibleObjects(GetDirectChildren(parent)))
-      }
-      else {
-        list = RemoveSceneryObjects(GetDirectChildren(parent))
-      }
-      if (CheckDarkness()) {
-        list = RemoveDarkObjects(list)
-      }
+      list = GetListableChildren(parent, includeScenery, exclude)
       listLength = ListCount(list)
       foreach (item, list) {
         if (LengthOf(result) = 0) result = preList + " "
@@ -243,7 +315,7 @@
         if (CanSeeThrough(item)) {
           // Carried scenery stays listed however deep it is - a scenery object
           // inside a bag the player is carrying is still being carried.
-          result = result + FormatContentsList(" (" + item.contentsprefix, item, preFinal, ")", includeScenery)
+          result = result + FormatContentsListExcluding(" (" + item.contentsprefix, item, preFinal, ")", includeScenery, exclude)
         }
         count = count + 1
         if (count = listLength - 1) {
@@ -254,6 +326,32 @@
         }
         else {
           result = result + postList
+        }
+      }
+      return (result)
+    ]]>
+  </function>
+
+  <function name="GetListableChildren" type="objectlist" parameters="parent, includeScenery, exclude">
+    <![CDATA[
+      if (includeScenery) {
+        list = RemoveInventoryHiddenObjects(RemoveInvisibleObjects(GetDirectChildren(parent)))
+      }
+      else {
+        list = RemoveSceneryObjects(GetDirectChildren(parent))
+      }
+      if (CheckDarkness()) {
+        list = RemoveDarkObjects(list)
+      }
+      result = NewObjectList()
+      foreach (obj, list) {
+        if (ListContains(exclude, obj)) {
+          if (CanSeeThrough(obj)) {
+            result = ListCombine(result, GetListableChildren(obj, includeScenery, exclude))
+          }
+        }
+        else {
+          list add (result, obj)
         }
       }
       return (result)

@@ -81,6 +81,13 @@ FormatContentsList (string pre-list, object parent, string pre-final, string pos
 
 Returns a [string](/reference/attributes/types#string) containing a formatted list of the direct children of **parent**. This is the shared implementation behind [FormatObjectList](#formatobjectlist) (`include scenery` false) and [FormatInventoryList](#formatinventorylist) (`include scenery` true) - call one of those instead unless you specifically need a third scenery-filtering behaviour.
 
+## FormatContentsListExcluding
+```quest
+FormatContentsListExcluding (string pre-list, object parent, string pre-final, string post-list, boolean include scenery, objectlist exclude)
+```
+
+Like [FormatContentsList](#formatcontentslist), but leaves out the objects in **exclude** at any depth. Anything visible inside an excluded object is listed in its place. [FormatObjectList](#formatobjectlist) uses it to leave out objects that have an [in-room description](/reference/attributes/all#inroomdescription).
+
 ## FormatExitList
 ```quest
 FormatExitList (string pre-list, objectlist exits, string pre-final, string post-list)
@@ -115,6 +122,8 @@ Returns a [string](/reference/attributes/types#string) containing a formatted li
 Used by [ShowRoomDescription](#showroomdescription) to list what is in the room, and by the "look at" handling to list what is inside a container. The "inventory" command uses [FormatInventoryList](#formatinventorylist) instead, because it needs scenery included.
 
 FormatObjectList will display children of listed objects within brackets, if the parent object can be seen through.
+
+When **parent** is the room the player is in and [InRoomDescriptionsShown](#inroomdescriptionsshown) is true, objects with an [in-room description](/reference/attributes/all#inroomdescription) are left out, as the room description already mentions them.
 
 For example, this:
 
@@ -194,6 +203,26 @@ GetDisplayVerbs (object)
 
 Returns a [stringlist](/reference/attributes/types#stringlist) with the current display verbs for the object. If the object is in the current player's inventory, the [inventoryverbs](/reference/attributes/all#inventoryverbs) are used as a base, otherwise the [displayverbs](/reference/attributes/all#displayverbs) are used. If [autodisplayverbs](/reference/attributes/all#autodisplayverbs) is turned on, any verbs set up for the object will be added to the list returned.
 
+## GetInRoomDescriptionObjects
+```quest
+GetInRoomDescriptionObjects ()
+```
+
+Returns an [objectlist](/reference/attributes/types#objectlist) of the visible objects not carried by the player that have a non-empty [inroomdescription](/reference/attributes/all#inroomdescription).
+
+## GetInRoomDescriptions
+```quest
+GetInRoomDescriptions ()
+```
+
+Returns a [string](/reference/attributes/types#string) of the [in-room descriptions](/reference/attributes/all#inroomdescription) of everything in [GetInRoomDescriptionObjects](#getinroomdescriptionobjects), joined with spaces. [GetRoomDescription](#getroomdescription) appends it to a text room description. A room whose description is a script gets nothing appended, and can call this to print the sentences where it wants them:
+
+```quest
+msg ("A quiet study, lined with books. " + GetInRoomDescriptions())
+```
+
+The objects are still listed under "You can see" in that case. To leave them out, make them [scenery](/reference/attributes/all#scenery).
+
 ## GetListDisplayAlias
 ```quest
 GetListDisplayAlias (object)
@@ -259,6 +288,13 @@ HelperOpenObject (object)
 Opens the object. This simply sets the [isopen](/reference/attributes/all#isopen) attribute to true.
 
 See also [HelperCloseObject](#helpercloseobject)
+
+## InRoomDescriptionsShown
+```quest
+InRoomDescriptionsShown ()
+```
+
+Returns a [boolean](/reference/attributes/types#boolean) - **true** if the room description for the player's current room will include the [in-room descriptions](/reference/attributes/all#inroomdescription): [appendobjectdescription](/reference/attributes/all#appendobjectdescription) is on, the room's description (or dark-room description, in the dark) is text rather than a script, and the automatic room description includes it.
 
 ## IsSwitchedOn
 ```quest

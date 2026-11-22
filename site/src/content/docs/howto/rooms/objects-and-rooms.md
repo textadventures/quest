@@ -64,7 +64,9 @@ The **in-room description** is a separate, optional line that appears only if th
 
 > You are in a dusty study. **A brass key glints on the desk.**
 
-That makes it worth using for objects whose presence should be written into the prose of the room rather than listed underneath it. It follows the object, so the same sentence appears wherever it is moved to — which means it should be phrased so that it works anywhere, or changed when you move the object.
+That makes it worth using for objects whose presence should be written into the prose of the room rather than listed underneath it, and an object with one is left out of the "You can see" list. Anything visible on or in it is listed in its place. It follows the object, so the same sentence appears wherever it is moved to — which means it should be phrased so that it works anywhere, or changed when you move the object.
+
+In-room descriptions are only added when the room's description is text. If it is a script, the room writes its own description, so nothing is added and the object is listed as usual. The script can call [GetInRoomDescriptions](/reference/functions/core#getinroomdescriptions) to include the sentences itself.
 
 ## The _Room_ tab
 

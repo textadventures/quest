@@ -20,7 +20,7 @@ The "alt" attribute is a [stringlist](/reference/attributes/types#stringlist) of
 
 ## appendobjectdescription
 
-"appendobjectdescription" is a [boolean](/reference/attributes/types#boolean) attribute. If set to "true", when room descriptions are printed, the [description](#description) tag of the objects inside the room is appended.
+"appendobjectdescription" is a [boolean](/reference/attributes/types#boolean) attribute. If set to "true", the [inroomdescription](#inroomdescription) of each object in the room is appended to the room's description. This is the "In-room descriptions" game feature.
 
 ## article
 
@@ -233,9 +233,7 @@ This type defines default behaviour for an object:
 "description" is an object attribute which can be either a [string](/reference/attributes/types#string) or a [script](/reference/attributes/types#script). It is used to describe the room when the player enters.
 
 -   If it is a string, an automatic room description is generated which lists the objects in the room and available exits (if [autodescription](#autodescription) is turned on). Then the string is printed.
--   If it is a script, no automatic room description is generated. The script is run instead.
-
-This attribute is only usually used for objects which are rooms. But if you have [appendobjectdescription](#appendobjectdescription) turned on, it is also used for objects within rooms. In this case, it is a [string](/reference/attributes/types#string) which is appended to the parent room description when the player enters.
+-   If it is a script, the script is run in place of the text. The automatic description, if it is on, still lists the objects and exits around it, but no [in-room descriptions](#inroomdescription) are added.
 
 ## displayroomdescriptiononstart
 
@@ -433,6 +431,12 @@ The attribute value itself encodes the sides as individual bits (for NESW).
 ## hidefrominventory
 
 "hidefrominventory" is a [boolean](/reference/attributes/types#boolean) attribute. If set to true, the object is left out of the "inventory" command's output and the "Inventory" pane while the player is carrying it, along with anything inside it. It stays in [ScopeInventory](/reference/functions/scope#scopeinventory), so the player can still refer to it and drop it.
+
+## inroomdescription
+
+"inroomdescription" is a [string](/reference/attributes/types#string) attribute, used when [appendobjectdescription](#appendobjectdescription) is on. It is a sentence appended to the description of whatever room the object is in, and the object is then left out of the room's list of objects, as it has already been mentioned. Anything visible inside it is listed in its place.
+
+This only happens when the room's [description](#description) is text. A script description gets nothing appended, and its objects are listed as usual; the script can call [GetInRoomDescriptions](/reference/functions/core#getinroomdescriptions) to include the sentences itself.
 
 ## inventoryverbs
 
