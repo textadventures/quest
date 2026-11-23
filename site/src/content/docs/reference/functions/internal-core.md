@@ -66,6 +66,13 @@ AddAccentToken (tokens, owncolours)
 AddExternalStylesheet(stylesheet)
 ```
 
+## AddFontFiles
+```quest
+AddFontFiles ()
+```
+
+Loads the game's own fonts, the files listed in [fontfiles](/reference/attributes/all#fontfiles). Called when the game starts.
+
 ## AddMenuTokens
 ```quest
 AddMenuTokens (tokens)
