@@ -136,6 +136,7 @@ Leave the rest of the player's page alone. The new interface's element IDs, clas
 | `turnEnded` | The game has finished that turn, and its text is on screen | nothing |
 | `outputAdded` | Text is added to the game text | `{ html }`, the HTML added |
 | `locationChanged` | The location bar changes | `{ location }`, the new location |
+| `inventoryChanged`, `objectsChanged`, `exitsChanged`, `statusChanged` | What the Inventory, Places and Objects, compass or Status pane shows changes, after a turn or a timer | the new list: see [Lists](/reference/js#lists) |
 
 Timers don't start turns. For example, this puts the player's location in the browser tab's title. Add it to your `.js` file:
 

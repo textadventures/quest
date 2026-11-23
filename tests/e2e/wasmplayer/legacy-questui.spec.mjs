@@ -28,7 +28,7 @@ test('legacy-questui', async ({ baseURL }) => {
         'setCompassDirections', 'setLocation', 'setStatusAttributes',
         'setTokens', 'setCommandBarStyle', 'setCommandBarPreset', 'setCommandPrompt', 'addStylesheet',
         'addPane', 'setPaneContent', 'setCommands', 'setAutoScroll', 'setContinueOnClick',
-        'fadePreviousOutput', 'setCommandPlaceholder', 'setMapInteractive', 'on', 'off',
+        'fadePreviousOutput', 'setCommandPlaceholder', 'setMapInteractive', 'lists', 'on', 'off',
     ];
     const mapMembers = [
         'show', 'setInteractive', 'respondToClicks', 'setScale', 'setCentre', 'drawBox', 'drawLabel',

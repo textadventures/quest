@@ -85,6 +85,7 @@ The pieces of text `setInterfaceString` can change are `InventoryLabel`, `Status
 | `fadePreviousOutput(on)` | Fades the text from earlier turns | [SetFadePreviousOutput](/reference/functions/user-interface#setfadepreviousoutput) |
 | `setCommandPlaceholder(text)` | Sets the hint in the empty command bar | [SetCommandPlaceholder](/reference/functions/user-interface#setcommandplaceholder) |
 | `setMapInteractive(on)` | Lets the player drag and zoom the map | [SetMapInteractive](/reference/functions/user-interface#setmapinteractive) |
+| `lists()` | What the Inventory, Places and Objects, compass and Status panes have now (see [Lists](#lists)) | |
 | `on(event, fn)`, `off(event, fn)` | Starts or stops calling `fn` when `event` happens (see below) | |
 
 ## Events
@@ -97,8 +98,38 @@ The pieces of text `setInterfaceString` can change are `InventoryLabel`, `Status
 | `turnEnded` | The game has finished the turn, and its text is on screen | nothing |
 | `outputAdded` | Text is added to the game text | `{ html }` |
 | `locationChanged` | The location bar changes | `{ location }` |
+| `inventoryChanged` | What the player is carrying changes | `{ items }`, as in `lists().inventory` |
+| `objectsChanged` | The places and objects the player can see change | `{ items }`, as in `lists().objects` |
+| `exitsChanged` | The exits the player can take change | `{ exits }`, as in `lists().exits` |
+| `statusChanged` | The status attributes change | `{ items }`, as in `lists().status` |
 
-Timers don't start turns. See [Reacting to the player's turns](/customise/javascript#reacting-to-the-players-turns) for an example.
+Timers don't start turns. The game checks its lists at the end of every turn and after a timer runs, so the last four can happen between turns too. They only happen when something has changed, and always once at the start of the game and after the player loads a saved game. See [Reacting to the player's turns](/customise/javascript#reacting-to-the-players-turns) for an example.
+
+## Lists
+
+`QuestUI.lists()` gives you the lists the player shows in its panes, so you can draw them your own way, such as on a [phone](/customise/panes#example-a-phone-that-shows-the-inventory-and-exits). It's an object with four lists, which the events above give you one at a time as they change:
+
+| List | What it has |
+|---|---|
+| `inventory` | What the player is carrying |
+| `objects` | The places and objects the player can see, without the exits the compass has |
+| `exits` | The names of the exits the player can take, such as `north`. The compass shows those that are directions |
+| `status` | The [status attributes](/reference/attributes/status) |
+
+Each item in `inventory` and `objects` has:
+
+| Field | What it is |
+|---|---|
+| `text` | Its name as the pane shows it, which may have HTML in it |
+| `name` | The object's name, as a command uses it |
+| `elementId` | The object's ID in the game |
+| `verbs` | The verbs its menu has, such as `Look at` and `Take`, as a list |
+
+Each item in `status` has `text`, the line the Status pane shows, and may also have `name` (the attribute), `label`, `value`, `max` (for a bar) and `pinned` (kept in view on a phone). A game made before Quest Viva only gives `text`.
+
+A link like the game text's object links opens the same verb menu as the pane, and keeps its verbs up to date after each turn. Give it the classes `cmdlink elementmenu`, the item's `elementId` as `data-elementid` and its verbs, joined with `/`, as `data-verbs`. For a link that runs a command, such as going through an exit, use the classes `cmdlink commandlink`, an empty `data-elementid` and the command as `data-command`. Put them in a pane of your own with `setPaneContent`.
+
+`lists()` gives you a copy each time, so changing it doesn't change what the panes show.
 
 ## Theming
 

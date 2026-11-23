@@ -5,14 +5,13 @@
 
   <!-- The "phone" recipe from the panes docs (customise/panes.md, wasmplayer/v2-phone-pane.spec.mjs):
        a pane of the game's own, styled as a phone, showing what the player carries and the exits
-       as links, and updated by a turn script. Keep it in step with the docs. -->
+       as links, drawn by v2-phone-pane-test.js from QuestUI's list events. Keep both in step with the docs. -->
   <game name="Phone example">
     <showpanes />
     <start type="script">
       AddPane ("phone", "Phone")
       SetPaneVisible ("inventory", false)
       SetPaneVisible ("compass", false)
-      UpdatePhone
     </start>
     <stylesheet><![CDATA[
 [data-qv-pane="phone"] {
@@ -63,31 +62,7 @@
 ]]></stylesheet>
   </game>
 
-  <function name="UpdatePhone">
-    <![CDATA[
-    html = "<div class='phone-screen'><h3>Carrying</h3><ul>"
-    items = ScopeInventory()
-    if (ListCount(items) = 0) {
-      html = html + "<li>Nothing</li>"
-    }
-    foreach (obj, items) {
-      html = html + "<li>{object:" + obj.name + "}</li>"
-    }
-    html = html + "</ul><h3>Exits</h3><ul class='phone-exits'>"
-    foreach (exit, GetExitsList()) {
-      html = html + "<li>{exit:" + exit.name + "}</li>"
-    }
-    html = html + "</ul></div>"
-    SetPaneContent ("phone", ProcessText(html))
-    ]]>
-  </function>
-
-  <turnscript name="phone_update">
-    <enabled />
-    <script>
-      UpdatePhone
-    </script>
-  </turnscript>
+  <javascript src="v2-phone-pane-test.js" />
 
   <object name="hall">
     <inherit name="editor_room" />

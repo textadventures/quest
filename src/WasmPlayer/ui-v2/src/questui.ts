@@ -16,6 +16,7 @@ import { setPictureFrame } from './picture-frame';
 import { addPane, setCommands, setPaneContent, setPaneLabel, setPaneOrder } from './panes';
 import { player } from './player';
 import { emit, off, on, state } from './state';
+import { lists } from './lists';
 
 // Each member is passed on to the map's renderer by name (map.ts), with its arguments as they came.
 const forward = (name: string) => (...args: unknown[]): void => mapCall(name, args);
@@ -135,6 +136,7 @@ export const QuestUI: QuestUIContract = {
         player()?.commandBar?.updatePlaceholder();
     },
     setMapInteractive: (on) => mapCall('setInteractive', [on]),
+    lists,
     on,
     off,
 };

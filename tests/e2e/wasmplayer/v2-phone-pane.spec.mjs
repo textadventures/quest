@@ -3,8 +3,9 @@
 //
 // - The game's own pane, styled by its stylesheet, takes the place of the Inventory pane and the
 //   compass, which it hides.
-// - It lists what the player carries ("Nothing" at first) and the exits, and a turn script keeps
-//   it up to date: taking the torch adds it.
+// - It lists what the player carries ("Nothing" at first) and the exits, and its JavaScript keeps
+//   it up to date from QuestUI's list events: taking the torch adds it.
+// - Its objects are links that open the verb menu: dropping the torch from it takes it off again.
 // - Its exits are links: clicking one moves the player, and the pane then shows the new exits.
 //
 // Requires the WasmPlayer dev server running locally:
@@ -61,7 +62,17 @@ test('v2-phone-pane', async ({ baseURL }) => {
             null, { timeout: 10000 })
             .catch(() => { throw new Error('the phone never listed the torch after taking it'); });
         p = await phone();
-        check(p.carrying === 'torch', `the turn script updates it after taking the torch (${p.carrying})`);
+        check(p.carrying === 'torch', `it's updated after taking the torch (${p.carrying})`);
+
+        await page.waitForFunction(ready, null, { timeout: 10000 });
+        await page.click('[data-qv-pane="phone"] .phone-screen a.elementmenu');
+        const verbs = await page.evaluate(() => [...document.querySelectorAll('qv-verb-menu.qv-open [role=menuitem]')].map((b) => b.textContent));
+        check(verbs.includes('Drop'), `clicking the torch opens its verb menu (${verbs})`);
+        await page.click('qv-verb-menu.qv-open [role=menuitem]:text-is("Drop")');
+        await page.waitForFunction(() => document.querySelector('[data-qv-pane="phone"] .phone-screen ul')?.textContent.trim() === 'Nothing',
+            null, { timeout: 10000 })
+            .catch(() => { throw new Error('choosing Drop from the phone never dropped the torch'); });
+        check(true, 'choosing Drop drops the torch, and the phone says the player carries nothing');
 
         await page.waitForFunction(ready, null, { timeout: 10000 });
         await page.click('[data-qv-pane="phone"] .phone-exits a.cmdlink');

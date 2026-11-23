@@ -135,39 +135,45 @@ The ID is how you refer to the pane from then on: with `SetPaneContent`, with "S
 
 Your own pane can hold any HTML, and its links work like the ones in the game text. So you can make a pane look like part of the game world, such as a phone the player carries, which lists what they're holding and where they can go, and hide the standard panes it replaces.
 
-In the game's start script, on the _Scripts_ tab, add the pane, hide the Inventory pane and the compass, and fill it for the first time:
+In the game's start script, on the _Scripts_ tab, add the pane, and hide the Inventory pane and the compass:
 
 ```quest
 AddPane ("phone", "Phone")
 SetPaneVisible ("inventory", false)
 SetPaneVisible ("compass", false)
-UpdatePhone
 ```
 
-Add a function called `UpdatePhone`, which builds the phone's screen and puts it in the pane. `{object:...}` and `{exit:...}` make links, as they do in the game text, and `ProcessText` turns them into HTML:
+The player already knows what's in the inventory and which exits there are, as it shows them in those panes, and [QuestUI](/reference/js#lists) passes them on to your JavaScript whenever they change: after each turn, and after a timer. So the phone's screen is drawn in JavaScript. Add a `.js` file to the game (see [Calling the game from JavaScript](/customise/javascript)) with this in it:
 
-```quest
-html = "<div class='phone-screen'><h3>Carrying</h3><ul>"
-items = ScopeInventory()
-if (ListCount(items) = 0) {
-  html = html + "<li>Nothing</li>"
+```js
+function phoneAttribute(text) {
+  return String(text).replace(/&/g, "&amp;").replace(/"/g, "&quot;");
 }
-foreach (obj, items) {
-  html = html + "<li>{object:" + obj.name + "}</li>"
+
+function drawPhone() {
+  var lists = QuestUI.lists();
+  var html = '<div class="phone-screen"><h3>Carrying</h3><ul>';
+  if (lists.inventory.length === 0) {
+    html += "<li>Nothing</li>";
+  }
+  lists.inventory.forEach(function (item) {
+    html += '<li><a class="cmdlink elementmenu" data-elementid="' + phoneAttribute(item.elementId) +
+      '" data-verbs="' + phoneAttribute(item.verbs.join("/")) + '">' + item.text + "</a></li>";
+  });
+  html += '</ul><h3>Exits</h3><ul class="phone-exits">';
+  lists.exits.forEach(function (exit) {
+    html += '<li><a class="cmdlink commandlink" data-elementid="" data-command="' + phoneAttribute(exit) +
+      '">' + exit + "</a></li>";
+  });
+  html += "</ul></div>";
+  QuestUI.setPaneContent("phone", html);
 }
-html = html + "</ul><h3>Exits</h3><ul class='phone-exits'>"
-foreach (exit, GetExitsList()) {
-  html = html + "<li>{exit:" + exit.name + "}</li>"
-}
-html = html + "</ul></div>"
-SetPaneContent ("phone", ProcessText(html))
+
+QuestUI.on("inventoryChanged", drawPhone);
+QuestUI.on("exitsChanged", drawPhone);
 ```
 
-To keep it up to date, add a turn script, tick "Enabled when the game begins", and give it this script:
-
-```quest
-UpdatePhone
-```
+`drawPhone` builds the phone's screen and puts it in the pane. Each object is a link with the classes `cmdlink elementmenu`, which opens the object's verb menu as an object link in the game text does, and each exit is a link with the classes `cmdlink commandlink`, which goes that way. `QuestUI.on` calls `drawPhone` whenever the inventory or the exits change, including at the start of the game and when the player loads a saved game.
 
 Then make it look like a phone, in **Stylesheet**, under Advanced on the game's _Appearance_ tab. `[data-qv-pane="phone"]` is the pane itself, and `phone-screen` and `phone-exits` are the classes you gave your own HTML:
 
@@ -221,9 +227,7 @@ Then make it look like a phone, in **Stylesheet**, under Advanced on the game's 
 
 ![The game text on the left, and beside it a pane drawn as a dark phone, its screen listing the torch the player is carrying and a north exit button](/images/phone_pane.png)
 
-Clicking an object on the phone opens its verb menu, and clicking an exit goes that way, just as in the game text. The phone is still a pane, so it goes wherever the panes go: beside the game on a wide screen, and in the drawer or sheet on a phone. (The classic interface draws the pane's heading above the phone, rather than inside it.) Add anything else the game knows to `UpdatePhone` in the same way, such as the score or the time.
-
-The turn script updates the phone at the end of each turn, so it doesn't see a change made by a timer until the next turn. Call `UpdatePhone` from the timer's script as well if that matters to your game.
+Clicking an object on the phone opens its verb menu, and clicking an exit goes that way, just as in the game text. The phone is still a pane, so it goes wherever the panes go: beside the game on a wide screen, and in the drawer or sheet on a phone. (The classic interface draws the pane's heading above the phone, rather than inside it.) To show more on it, such as the score, draw `lists().status` too, and call `drawPhone` on `statusChanged` as well.
 
 ## Showing and hiding panes during the game
 

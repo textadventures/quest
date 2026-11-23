@@ -219,7 +219,8 @@ These have no Core caller today. They're the supported versions of the survey's 
 | `fadePreviousOutput(on)` | fading `#divOutput` children |
 | `setCommandPlaceholder(text)` | setting `#txtCommand`'s placeholder |
 | `setMapInteractive(on)` | `gridApi.zoomIn = function(){}` and turning off paper.js drag (same as `map.setInteractive`) |
-| `on(event, fn)` / `off(event, fn)` with `turnStarted`, `turnEnded`, `outputAdded` (`{ html }`), `locationChanged` (`{ location }`) | wrapping player functions to observe them |
+| `lists()`: the inventory, places-and-objects, exits and status lists the panes show (`{ inventory, objects, exits, status }`, a copy) | reading the panes' markup |
+| `on(event, fn)` / `off(event, fn)` with `turnStarted`, `turnEnded`, `outputAdded` (`{ html }`), `locationChanged` (`{ location }`), and `inventoryChanged`, `objectsChanged`, `statusChanged` (`{ items }`) and `exitsChanged` (`{ exits }`) when that list changes, after a turn or a timer tick | wrapping player functions to observe them |
 
 A **turn** is one engine round trip the player starts: a command, an event (`sendEvent`, a `data-qv-event` link), or answering a wait, pause, menu or question. `turnStarted` fires before the input goes to the engine and `turnEnded` once the engine has finished with it and its output is on screen. Timer ticks aren't turns.
 

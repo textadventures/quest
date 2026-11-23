@@ -6,6 +6,7 @@
 // down, in, out. A direction's button sends its name as a command, as legacy's does. The engine
 // says which are available after each turn (the adapter's updateCompass).
 
+import { setList } from './lists';
 import { pane } from './panes';
 import { player } from './player';
 import { state } from './state';
@@ -103,6 +104,7 @@ export function renderCompass(): void {
 /** The adapter's updateCompass: the available directions, "/"-separated. */
 export function updateCompass(data: string): void {
     available = String(data ?? '').split('/').filter(Boolean);
+    setList('exits', [...available]);
     renderCompass();
 }
 

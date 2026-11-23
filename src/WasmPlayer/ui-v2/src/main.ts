@@ -18,6 +18,7 @@ import { QvOutput, rememberImageSize } from './output';
 import { setPictureFrame } from './picture-frame';
 import { player, QvPlayer } from './player';
 import * as prompts from './prompts';
+import { resetLists } from './lists';
 import { QvPane, setDrawerOpen, updateList } from './panes';
 import { renderStatus, resetStatus, updateStatus } from './status';
 import { QuestUI, setCompassDirections, setInterfaceString, setLocation } from './questui';
@@ -59,6 +60,7 @@ window.resetQuestUIState = () => {
     prompts.resetPrompts();
     resetCompass();
     resetStatus();
+    resetLists();
     resetMap();
     finishTextEffects();
 };
