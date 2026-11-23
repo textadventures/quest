@@ -48,6 +48,24 @@ export interface AppearanceLook {
     webFont: string | null;
     fontSizePt: number;
     underlineLinks: boolean;
+    // The menu that opens from a link
+    menu: MenuLook;
+    // How the command bar is drawn (Core.aslx's InitInterface): an underline with a "›" in the
+    // accent, typed straight onto the page after the game's prompt ("borderless"), or a box
+    // with a glow ("shadow")
+    commandBar: "underline" | "borderless" | "shadow";
+    // The game's prompt, as text, for a borderless command bar. Empty means the "›".
+    commandPrompt: string;
+}
+
+// The verb menu's font and colours, as AddMenuTokens sends them to v2
+export interface MenuLook {
+    // Empty for the interface font
+    font: string;
+    // A CSS size, empty for v2's 1rem
+    size: string;
+    // The game's own colours, which go together, or null for the page's
+    colours: { background: string; text: string; hoverBackground: string; hoverText: string } | null;
 }
 
 export function computeAppearance(get: (attribute: string) => string | null): AppearanceLook {
@@ -132,7 +150,36 @@ export function computeAppearance(get: (attribute: string) => string | null): Ap
         webFont,
         fontSizePt: Number.isFinite(size) && size > 0 ? size : 12,
         underlineLinks: get("underlinehyperlinks") === null || bool("underlinehyperlinks"),
+        menu: menuLook(str, isDefault),
+        commandBar: bool("borderlesscursor") ? "borderless" : bool("shadowbox") ? "shadow" : "underline",
+        commandPrompt: bool("borderlesscursor") ? textOf(str("commandcursor")).trim() : "",
     };
+}
+
+function menuLook(str: (a: string) => string, isDefault: (colour: string, def: string) => boolean): MenuLook {
+    // Quest 5's Arial at 9pt, which most older games store, counts as unset
+    const font = str("menufont");
+    const size = Number(str("menufontsize"));
+    const colours = [str("menubackground"), str("menuforeground"), str("menuhoverbackground"), str("menuhoverforeground")];
+    const own = !(isDefault(colours[0], "white") && isDefault(colours[1], "black")
+        && isDefault(colours[2], "lightgrey") && isDefault(colours[3], "black"));
+    return {
+        font: font.toLowerCase() === "arial" ? "" : font,
+        size: Number.isFinite(size) && size > 0 && size !== 9 ? `${size}pt` : "",
+        colours: own ? {
+            background: colours[0] || "White",
+            text: colours[1] || "Black",
+            hoverBackground: colours[2] || "LightGrey",
+            hoverText: colours[3] || "Black",
+        } : null,
+    };
+}
+
+// A prompt may hold markup (v2 sets it as HTML), but the preview shows it as text
+function textOf(html: string): string {
+    const template = document.createElement("template");
+    template.innerHTML = html;
+    return template.content.textContent ?? "";
 }
 
 // The colours text sits on that have no dark mode default of the player's, each with its dark

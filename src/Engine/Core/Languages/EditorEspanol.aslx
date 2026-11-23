@@ -162,7 +162,7 @@
   <template name="EditorGameColoursCaption">Colores</template>
   <template name="EditorGameOnScreenCaption">En pantalla</template>
   <template name="EditorGameLinksMenusCaption">Enlaces y menús</template>
-  <template name="EditorGameMenuFont">Fuente</template>
+  <template name="EditorGameMenuFont">Fuente de los menús de verbos</template>
   <template name="EditorGamePictureframeHelp">Cada lugar puede tener su propia imagen, o un script puede asignar una.</template>
   <template name="EditorGameShowCommandPaneHelp">Rellénalo con el comando de script "Establecer el panel de comandos".</template>
   <template name="EditorGameShowCustomStatusPaneHelp">Rellénalo con el comando de script "Establecer el contenido de un panel", con el ID customstatus.</template>
@@ -182,7 +182,8 @@
   <template name="EditorGameUnderlinehyperlinks">Subrayar enlaces</template>
   <template name="EditorGameAfterusing">Desactivar un enlace de comando después de pulsarlo</template>
   <template name="EditorGameVerbMenus">Menú de verbos</template>
-  <template name="EditorGameMenuFontHelp">Déjalos vacíos para usar los predeterminados.</template>
+  <template name="EditorGameMenuFontHelp">La fuente y el tamaño de los menús que se abren desde los enlaces. Predeterminada es la fuente de la interfaz. Deja el tamaño vacío para usar el predeterminado.</template>
+  <template name="EditorGameMenuFontClassicHelp">La fuente y el tamaño de los menús que se abren desde los enlaces. Deja el tamaño vacío para usar el predeterminado.</template>
   <template name="EditorGameDoNotClearMenus">Mantener un menú en el texto después de elegir</template>
   <template name="EditorGameShowMenuResponses">Mostrar la opción elegida del menú</template>
   <template name="EditorGameBackground">Color de fondo</template>

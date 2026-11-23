@@ -88,6 +88,47 @@ test('appearance-preview', async ({ baseURL }) => {
         console.log('PASS: a new game shows the player\'s own light and dark colours side by side, with the location bar, links and command bar');
         await shot('new-game');
 
+        // The command bar as v2 draws it: an underline with a "›" in the accent, or with "Plain
+        // command bar with a prompt", the game's prompt and no underline.
+        const commandBar = () => preview.locator('[data-appearance-command]').first().evaluate(el => ({
+            style: el.dataset.appearanceCommand,
+            mark: el.querySelector('[data-appearance-accent]')?.textContent ?? null,
+            prompt: el.querySelector('[data-appearance-prompt]')?.textContent ?? null,
+            underline: getComputedStyle(el.firstElementChild).borderBottomStyle,
+        }));
+        expectEqual('a new game\'s command bar', JSON.stringify(await commandBar()), JSON.stringify({ style: 'underline', mark: '›', prompt: null, underline: 'solid' }));
+        await page.getByLabel('Plain command bar with a prompt', { exact: true }).check();
+        await settle();
+        expectEqual('the plain command bar', JSON.stringify(await commandBar()), JSON.stringify({ style: 'borderless', mark: null, prompt: '>', underline: 'none' }));
+        await page.getByLabel('Plain command bar with a prompt', { exact: true }).uncheck();
+        await settle();
+        expectEqual('the command bar back to the underline', (await commandBar()).style, 'underline');
+        console.log('PASS: the preview\'s command bar follows "Plain command bar with a prompt"');
+
+        // A verb menu open under the first link, in the interface font until the game has a menu
+        // font, and clicking the other link opens its menu instead.
+        const menus = () => preview.locator('[data-appearance-menu]').evaluateAll(els => els.map(el => ({
+            font: getComputedStyle(el).fontFamily,
+            size: getComputedStyle(el).fontSize,
+            items: el.textContent,
+        })));
+        let m = await menus();
+        expectEqual('the verb menus shown', m.map(x => x.items).join(','), 'Look atTake,Look atTake');
+        if (!m[0].font.startsWith('system-ui')) throw new Error(`a new game's verb menu is in ${m[0].font}, not the interface font`);
+        const menuFont = page.locator('[data-font-picker-button][aria-label^="Verb menu font:"]');
+        await menuFont.click();
+        await page.getByRole('listbox').getByRole('option', { name: 'Courier Prime', exact: true }).click();
+        // (The third Font size: the text's, the interface's, then the menus')
+        const menuSize = page.locator('label', { hasText: /^\s*Font size:/ }).nth(2).locator('input');
+        await menuSize.fill('10');
+        await menuSize.press('Tab');
+        await settle();
+        m = await menus();
+        if (!m.every(x => x.font.startsWith('"Courier Prime"') && x.size === '13.3333px')) throw new Error(`the verb menus don't follow the menu font and size: ${JSON.stringify(m)}`);
+        await preview.locator('[data-appearance-link]').nth(1).click();
+        expectEqual('the menus after clicking the second link', (await menus()).map(x => x.items).join(','), 'Look atRead,Look atRead');
+        console.log('PASS: the preview\'s links have verb menus in the menu font and size');
+
         // An accent of its own: as given in light mode, lightened in dark mode, and still both.
         await colour('Accent colour').fill('#a31515');
         await settle();

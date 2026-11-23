@@ -268,6 +268,10 @@ export interface GameFont extends FontChoice {
 // also loaded into the editor's own page, for the font pickers and previews to show it in.
 export const gameFonts = writable<GameFont[]>([]);
 
+// Whether the Fonts dialog is open. The Fonts button opens it, and so does a font picker's
+// Add fonts… choice.
+export const fontsDialogOpen = writable(false);
+
 // The font files the game lists, from game.fontfiles as the editor gives it (a list's JSON)
 export function listedFontFiles(value: string | null): { key: string; file: string }[] {
     if (!value) return [];

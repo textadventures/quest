@@ -236,6 +236,9 @@
     "appearancePreview.object1": "una lámpara de latón",
     "appearancePreview.textBetween": " y ",
     "appearancePreview.object2": "una carta",
+    "appearancePreview.verbLookAt": "Mirar",
+    "appearancePreview.verbTake": "Coger",
+    "appearancePreview.verbRead": "Leer",
     "appearancePreview.textAfter": ".",
     "appearancePreview.gamebookText": "Estás donde se divide el camino. Un cuervo te observa desde el poste indicador.",
     "appearancePreview.gamebookChoice1": "Toma el camino del bosque",
@@ -698,7 +701,7 @@
 
     "fontPicker.default": "Predeterminada",
     "fontPicker.gameFonts": "Fuentes de este juego",
-    "fontPicker.noGameFonts": "Ninguna todavía: añade alguna con Fuentes…",
+    "fontPicker.addFonts": "Añadir fuentes…",
     "fontPicker.builtIn": "Incluidas en Quest Viva",
     "fontPicker.system": "En la mayoría de los ordenadores",
     "fontPicker.custom": "Personalizada…",

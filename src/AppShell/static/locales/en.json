@@ -236,6 +236,9 @@
     "appearancePreview.object1": "a brass lamp",
     "appearancePreview.textBetween": " and ",
     "appearancePreview.object2": "a letter",
+    "appearancePreview.verbLookAt": "Look at",
+    "appearancePreview.verbTake": "Take",
+    "appearancePreview.verbRead": "Read",
     "appearancePreview.textAfter": ".",
     "appearancePreview.gamebookText": "You stand where the road divides. A crow watches from the signpost.",
     "appearancePreview.gamebookChoice1": "Take the forest road",
@@ -698,7 +701,7 @@
 
     "fontPicker.default": "Default",
     "fontPicker.gameFonts": "This game's fonts",
-    "fontPicker.noGameFonts": "None yet: add some with Fonts…",
+    "fontPicker.addFonts": "Add fonts…",
     "fontPicker.builtIn": "Built into Quest Viva",
     "fontPicker.system": "On most computers",
     "fontPicker.custom": "Custom…",
