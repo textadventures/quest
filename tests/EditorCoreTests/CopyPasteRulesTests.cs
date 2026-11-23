@@ -1,6 +1,7 @@
 using System.Text;
 using QuestViva.Common;
 using QuestViva.EditorCore;
+using QuestViva.Engine.Scripts;
 
 namespace QuestViva.EditorCoreTests;
 
@@ -55,6 +56,39 @@ public class CopyPasteRulesTests
         Assert.AreNotEqual("template", pasted);
         Assert.IsTrue(controller.ElementExists("template"), "copying must leave the original in place");
         Assert.IsTrue(controller.ElementExists(pasted));
+
+        controller.Uninitialise();
+    }
+
+    // #2890: a pasted function shared the original's callback script - the { ... } after a
+    // function call such as ShowMenu - so editing the menu's choices in the copy changed the
+    // original too, until the game was reloaded.
+    [TestMethod]
+    public async Task TestCopiedFunction_DoesNotShareFunctionCallCallbackWithOriginal()
+    {
+        var controller = await LoadTemplateController("English");
+        controller.CreateNewFunction("template");
+        var scripts = controller.CreateNewEditableScripts("template", "script", null, false);
+        scripts.Code = """
+            ShowMenu ("Which?", Split("a;b", ";"), false) {
+              switch (result) {
+                case ("a") {
+                  msg ("original a")
+                }
+              }
+            }
+            """;
+
+        controller.CopyElements(["template"]);
+        var pasted = controller.PasteElements("_functions")!;
+
+        var pastedScript = (IMultiScript)controller.WorldModel.Elements.Get(pasted).Fields.GetAsType<IScript>("script")!;
+        var pastedCall = (IFunctionCallScript)pastedScript.Scripts.Single();
+        ((IMultiScript)pastedCall.GetFunctionCallParameterScript()!).LoadCode("msg (\"changed in copy\")");
+
+        var original = controller.WorldModel.Elements.Get("template").Fields.GetAsType<IScript>("script")!.Save();
+        StringAssert.Contains(original, "original a");
+        Assert.IsFalse(original.Contains("changed in copy"), "editing the copy changed the original: " + original);
 
         controller.Uninitialise();
     }

@@ -261,8 +261,10 @@ public class FunctionCallScript : ScriptBase, IFunctionCallScript
 
     protected override ScriptBase CloneScript()
     {
+        // Clone the callback script too: sharing it meant editing a copied function's
+        // ShowMenu choices (say) also changed the original's (#2890).
         return new FunctionCallScript(_worldModel, _procedure, _parameters.Parameters,
-            _paramFunction);
+            (IScript?) _paramFunction?.Clone());
     }
 
     protected override void SetParameterInternal(int index, object? value)
