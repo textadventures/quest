@@ -470,7 +470,7 @@
     "publishModal.title": "Veröffentlichen",
     "publishModal.description": "Wähle, wie du dein Spiel teilen möchtest.",
     "publishModal.optionOnlineTitle": "textadventures.co.uk",
-    "publishModal.optionOnlineDetail": "Stelle dein Spiel kostenlos online, wo Spieler es finden können, oder aktualisiere es dort.",
+    "publishModal.optionOnlineDetail": "Stelle dein Spiel kostenlos online, wo Spieler es finden können. Erneutes Veröffentlichen aktualisiert es.",
     "publishModal.optionQuestTitle": ".quest-Datei",
     "publishModal.optionQuestDetail": "Dein ganzes Spiel in einer Datei, um es selbst auf textadventures.co.uk hochzuladen oder in Quest Viva zu öffnen.",
     "publishModal.optionCdnTitle": "Kleine HTML-Datei",
