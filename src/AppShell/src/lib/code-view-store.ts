@@ -1,5 +1,6 @@
 import { writable } from "svelte/store";
 import { isElectron } from "./runtime";
+import { localStorageOrNull } from "./web-storage";
 
 // Whether ScriptEditor instances default to raw code view instead of the
 // visual block editor. Changing it also flips every ScriptEditor currently
@@ -20,9 +21,10 @@ async function readStoredDefaultCodeView(): Promise<boolean | null> {
             return null;
         }
     }
-    if (typeof localStorage === "undefined") return null;
+    const storage = localStorageOrNull();
+    if (!storage) return null;
     try {
-        const stored = localStorage.getItem(STORAGE_KEY);
+        const stored = storage.getItem(STORAGE_KEY);
         return stored === null ? null : stored === "true";
     } catch {
         return null;
@@ -38,9 +40,10 @@ async function writeStoredDefaultCodeView(value: boolean): Promise<void> {
         }
         return;
     }
-    if (typeof localStorage === "undefined") return;
+    const storage = localStorageOrNull();
+    if (!storage) return;
     try {
-        localStorage.setItem(STORAGE_KEY, String(value));
+        storage.setItem(STORAGE_KEY, String(value));
     } catch {
         // Storage can be unavailable (private browsing, quota) — losing the
         // preference just means it's re-detected next load, not fatal.

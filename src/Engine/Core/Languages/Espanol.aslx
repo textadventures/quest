@@ -736,6 +736,7 @@
   <template name="StartFromBeginning">Empezar desde el principio</template>
   <template name="SavedGamesHeading">Partidas guardadas</template>
   <template name="NoSavedGamesYet">Todavía no hay partidas guardadas.</template>
+  <template name="SavingNotAvailable">No se puede guardar aquí porque este navegador está bloqueando el almacenamiento (por ejemplo, en una ventana privada). Aún puedes guardar en un archivo y cargar desde uno.</template>
   <template name="DeleteSave">Eliminar</template>
   <template name="SaveNameOptional">Nombre (opcional)</template>
   <template name="SaveButton">Guardar</template>

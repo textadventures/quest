@@ -521,6 +521,7 @@
   <template name="StartFromBeginning">Start from the beginning</template>
   <template name="SavedGamesHeading">Saved games</template>
   <template name="NoSavedGamesYet">No saved games yet.</template>
+  <template name="SavingNotAvailable">Saving here isn't available, because this browser is blocking storage (for example in a private window). You can still save to a file and load from one.</template>
   <template name="DeleteSave">Delete</template>
   <template name="SaveNameOptional">Name (optional)</template>
   <template name="SaveButton">Save</template>

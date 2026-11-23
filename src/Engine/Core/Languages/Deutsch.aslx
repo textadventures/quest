@@ -577,6 +577,7 @@
   <template name="StartFromBeginning">Von vorne beginnen</template>
   <template name="SavedGamesHeading">Gespeicherte Spiele</template>
   <template name="NoSavedGamesYet">Noch keine gespeicherten Spiele.</template>
+  <template name="SavingNotAvailable">Speichern ist hier nicht möglich, weil dieser Browser den Speicher blockiert (zum Beispiel in einem privaten Fenster). Du kannst trotzdem in eine Datei speichern und aus einer Datei laden.</template>
   <template name="DeleteSave">Löschen</template>
   <template name="SaveNameOptional">Name (optional)</template>
   <template name="SaveButton">Speichern</template>

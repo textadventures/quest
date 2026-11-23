@@ -1,4 +1,5 @@
 import { isElectron } from "./runtime";
+import { localStorageOrNull } from "./web-storage";
 
 // "quest" is the plain .quest package, downloaded; "cdn" and "zip" wrap that same package
 // in the WasmPlayer.
@@ -24,9 +25,10 @@ export async function loadPublishTarget(gameId: string): Promise<PublishTarget |
             return null;
         }
     }
-    if (typeof localStorage === "undefined") return null;
+    const storage = localStorageOrNull();
+    if (!storage) return null;
     try {
-        const stored = localStorage.getItem(STORAGE_KEY_PREFIX + gameId);
+        const stored = storage.getItem(STORAGE_KEY_PREFIX + gameId);
         return isPublishTarget(stored) ? stored : null;
     } catch {
         return null;
@@ -44,9 +46,10 @@ export function savePublishTarget(gameId: string, target: PublishTarget): void {
         }
         return;
     }
-    if (typeof localStorage === "undefined") return;
+    const storage = localStorageOrNull();
+    if (!storage) return;
     try {
-        localStorage.setItem(STORAGE_KEY_PREFIX + gameId, target);
+        storage.setItem(STORAGE_KEY_PREFIX + gameId, target);
     } catch {
         // Storage can be unavailable (private browsing, quota) — losing the
         // preference just means the dialog starts on its default, not fatal.

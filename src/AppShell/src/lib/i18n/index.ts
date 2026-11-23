@@ -3,6 +3,7 @@ import { base } from "#lib/base-path.js";
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES, type Locale } from "./locales";
 import { detectDefaultLocale } from "./detect";
 import { isElectron } from "../runtime";
+import { localStorageOrNull } from "../web-storage";
 
 export { DEFAULT_LOCALE, SUPPORTED_LOCALES };
 export type { Locale };
@@ -31,9 +32,10 @@ async function readStoredLocale(): Promise<Locale | null> {
             return null;
         }
     }
-    if (typeof localStorage === "undefined") return null;
+    const storage = localStorageOrNull();
+    if (!storage) return null;
     try {
-        return localStorage.getItem(STORAGE_KEY);
+        return storage.getItem(STORAGE_KEY);
     } catch {
         return null;
     }
@@ -48,9 +50,10 @@ async function writeStoredLocale(loc: Locale): Promise<void> {
         }
         return;
     }
-    if (typeof localStorage === "undefined") return;
+    const storage = localStorageOrNull();
+    if (!storage) return;
     try {
-        localStorage.setItem(STORAGE_KEY, loc);
+        storage.setItem(STORAGE_KEY, loc);
     } catch {
         // Storage can be unavailable (private browsing, quota) — losing the
         // preference just means it's re-detected next load, not fatal.

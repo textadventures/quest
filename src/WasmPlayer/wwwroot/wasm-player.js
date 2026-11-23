@@ -1693,7 +1693,7 @@ function renderSavesList(saves, mode) {
     }
 
     if (!saves.length) {
-        list.innerHTML = mode === 'manage'
+        list.innerHTML = mode === 'manage' && !document.getElementById('qv-saves').hasAttribute('data-storage-blocked')
             ? `<li class="qv-saves-empty text-sm text-surface-700-300">${_esc(cs.NoSavedGamesYet ?? 'No saved games yet.')}</li>`
             : '';
         return;
@@ -1911,8 +1911,27 @@ let renamingSave = null;
 let currentSaves = [];
 
 async function refreshSavesList(mode = 'manage') {
-    currentSaves = await GameSaver.listSaves(WebPlayer.gameId);
+    currentSaves = await listSavesOrReportBlocked(WebPlayer.gameId);
     renderSavesList(currentSaves, mode);
+}
+
+// Lists the game's saves, or, when the browser won't open IndexedDB at all (a Firefox private
+// window, all site data blocked, a privacy add-on), says in the dialog that saving here isn't
+// available and hides the Save form, instead of the dialog failing to open. Save to file and Load
+// from file don't use the browser's storage, so they stay.
+async function listSavesOrReportBlocked(gameId) {
+    const dlg = document.getElementById('qv-saves');
+    try {
+        const saves = await GameSaver.listSaves(gameId);
+        delete dlg.dataset.storageBlocked;
+        return saves;
+    } catch (err) {
+        console.warn('Saved games are unavailable:', err);
+        dlg.dataset.storageBlocked = '';
+        showSavesError(WebPlayer.chromeStrings?.SavingNotAvailable
+            ?? "Saving here isn't available, because this browser is blocking storage (for example in a private window). You can still save to a file and load from one.");
+        return [];
+    }
 }
 
 function saveTitle(slotIndex) {
@@ -2178,7 +2197,7 @@ async function openSavesDialog(mode, gameId = WebPlayer.gameId) {
     }
     dlg.dataset.mode = mode;
     dlg.setAttribute('aria-labelledby', mode === 'boot' ? 'qv-saves-heading-boot' : 'qv-saves-heading-manage');
-    currentSaves = await GameSaver.listSaves(gameId);
+    currentSaves = await listSavesOrReportBlocked(gameId);
     renderSavesList(currentSaves, mode);
 
     if (mode === 'boot') {
