@@ -671,5 +671,21 @@
     "colourInput.notSetHint": "Not set: uses the default",
     "colourInput.pick": "Pick a colour",
     "colourInput.clear": "Clear colour",
-    "colourInput.showNames": "Show colour names"
+    "colourInput.showNames": "Show colour names",
+
+    "errorPage.title": "Something went wrong",
+    "errorPage.saving": "Saving your changes…",
+    "errorPage.saved": "Your changes are saved, so it's safe to reload and open your game again.",
+    "errorPage.saveFailed": "Couldn't save your changes: {error}",
+    "errorPage.savesHeld": "the game file was changed outside the editor.",
+    "errorPage.gameFileMissing": "the game file was deleted or moved outside the editor.",
+    "errorPage.notSaved": "they're still unsaved.",
+    "errorPage.reload": "Reload",
+    "errorPage.home": "Go to the home page",
+    "errorPage.bug": "This is a bug in Quest Viva {version}. Please report it with these details, and what you were doing when it happened.",
+    "errorPage.report": "Report it on GitHub",
+    "errorPage.copyDetails": "Copy details",
+    "errorPage.copied": "Copied",
+    "errorPage.notFoundTitle": "Page not found",
+    "errorPage.notFoundMessage": "There's no page at this address."
 }

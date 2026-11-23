@@ -541,5 +541,20 @@
     "colourInput.notSetHint": "[Nót sét: úsés thé défáúlt]",
     "colourInput.pick": "[Píck á cólóúr]",
     "colourInput.clear": "[Cléár cólóúr]",
-    "colourInput.showNames": "[Shów cólóúr námés]"
+    "colourInput.showNames": "[Shów cólóúr námés]",
+    "errorPage.title": "[Sóméthíng wént wróng]",
+    "errorPage.saving": "[Sávíng yóúr chángés…]",
+    "errorPage.saved": "[Yóúr chángés áré sávéd, só ít's sáfé tó rélóád ánd ópén yóúr gámé ágáín.]",
+    "errorPage.saveFailed": "[Cóúldn't sávé yóúr chángés: {error}]",
+    "errorPage.savesHeld": "[thé gámé fílé wás chángéd óútsídé thé édítór.]",
+    "errorPage.gameFileMissing": "[thé gámé fílé wás délétéd ór móvéd óútsídé thé édítór.]",
+    "errorPage.notSaved": "[théy'ré stíll únsávéd.]",
+    "errorPage.reload": "[Rélóád]",
+    "errorPage.home": "[Gó tó thé hómé págé]",
+    "errorPage.bug": "[Thís ís á búg ín Qúést Vívá {version}. Pléásé répórt ít wíth thésé détáíls, ánd whát yóú wéré dóíng whén ít háppénéd.]",
+    "errorPage.report": "[Répórt ít ón GítHúb]",
+    "errorPage.copyDetails": "[Cópy détáíls]",
+    "errorPage.copied": "[Cópíéd]",
+    "errorPage.notFoundTitle": "[Págé nót fóúnd]",
+    "errorPage.notFoundMessage": "[Théré's nó págé át thís áddréss.]"
 }
