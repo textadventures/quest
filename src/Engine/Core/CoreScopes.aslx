@@ -351,9 +351,4 @@
       JS.QuestUI.updateLinks("command", commands)
     }
   </function>
-
-  <!-- To be overriden by authors to do something useful -->
-  <function name="SecondaryScopeReachableForRoom" parameters="room" type="objectlist">
-    return (NewObjectList())
-  </function>
 </library>

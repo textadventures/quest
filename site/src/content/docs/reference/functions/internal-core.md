@@ -918,11 +918,6 @@ ResolveNextNameListItem()
 RunTurnScripts()
 ```
 
-## SecondaryScopeReachableForRoom
-```quest
-SecondaryScopeReachableForRoom(room)
-```
-
 ## SetLinkForegroundColour
 ```quest
 SetLinkForegroundColour(colour)
