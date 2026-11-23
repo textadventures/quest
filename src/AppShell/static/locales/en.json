@@ -636,6 +636,7 @@
     "openPage.gameNamePlaceholder": "Game name",
     "openPage.loadingTemplates": "Loading templates...",
     "openPage.gameType": "Game type",
+    "openPage.language": "Language",
     "openPage.creating": "Creating...",
     "openPage.createFolderTitle": "Choose where to create your game's folder",
     "openPage.createLocalDraftTitle": "Save as a local draft in this browser",
