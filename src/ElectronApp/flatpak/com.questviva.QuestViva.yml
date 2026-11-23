@@ -1,0 +1,83 @@
+# Flathub manifest for Quest Viva. The live copy belongs in the
+# flathub/com.questviva.QuestViva repository; this one is the reference it's
+# copied from (see "Flathub" in docs/electron-desktop-app.md).
+#
+# It repackages the stable release's .deb rather than building from source:
+# building .NET, Node and Electron offline inside flatpak-builder is a project
+# of its own, and Flathub accepts repackaged Electron apps. Everything
+# Flathub-specific (metainfo, desktop file, MIME types, scalable icon) ships
+# inside the .deb under resources/flatpak, so a new release only changes the
+# two .deb sources below, and flatpak-external-data-checker updates those.
+id: com.questviva.QuestViva
+runtime: org.freedesktop.Platform
+runtime-version: '26.08'
+sdk: org.freedesktop.Sdk
+base: org.electronjs.Electron2.BaseApp
+base-version: '26.08'
+command: quest-viva
+separate-locales: false
+
+finish-args:
+  - --share=ipc
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --device=dri
+  # Game sounds and music.
+  - --socket=pulseaudio
+  # The textadventures.co.uk game catalog, and downloading games from it.
+  - --share=network
+  # Quest Viva opens a game by its .aslx (or .quest) file, then reads and
+  # writes the rest of that game's folder: images, sounds, scripts,
+  # stylesheets and included libraries next to the game file, for the editor,
+  # preview and publishing. The file-chooser portal grants access to the one
+  # chosen file only, so the folder around it would be invisible.
+  - --filesystem=home
+
+modules:
+  - name: quest-viva
+    buildsystem: simple
+    sources:
+      - type: file
+        dest-filename: quest-viva.deb
+        only-arches: [x86_64]
+        url: https://github.com/textadventures/quest/releases/download/v@VERSION@/quest-viva-desktop_@VERSION@_amd64.deb
+        sha256: '@SHA256_AMD64@'
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/textadventures/quest/releases/latest
+          version-query: .tag_name | sub("^v"; "")
+          url-query: .assets[] | select(.name == "quest-viva-desktop_" + $version + "_amd64.deb") | .browser_download_url
+          is-main-source: true
+      - type: file
+        dest-filename: quest-viva.deb
+        only-arches: [aarch64]
+        url: https://github.com/textadventures/quest/releases/download/v@VERSION@/quest-viva-desktop_@VERSION@_arm64.deb
+        sha256: '@SHA256_ARM64@'
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/textadventures/quest/releases/latest
+          version-query: .tag_name | sub("^v"; "")
+          url-query: .assets[] | select(.name == "quest-viva-desktop_" + $version + "_arm64.deb") | .browser_download_url
+      - type: script
+        dest-filename: quest-viva.sh
+        commands:
+          - exec zypak-wrapper /app/quest-viva/quest-viva-desktop "$@"
+    build-commands:
+      - ar x quest-viva.deb
+      - mkdir deb && tar -xf data.tar.xz -C deb
+      - cp -a "deb/opt/Quest Viva" /app/quest-viva
+      # zypak (from the Electron BaseApp) replaces Chromium's setuid sandbox
+      # helper inside Flatpak, and AppArmor doesn't apply here.
+      - rm -f /app/quest-viva/chrome-sandbox /app/quest-viva/resources/apparmor-profile
+      - install -Dm755 quest-viva.sh /app/bin/quest-viva
+      - |
+        set -e
+        res=/app/quest-viva/resources/flatpak
+        install -Dm644 $res/com.questviva.QuestViva.metainfo.xml -t /app/share/metainfo
+        install -Dm644 $res/com.questviva.QuestViva.desktop -t /app/share/applications
+        install -Dm644 $res/com.questviva.QuestViva.mime.xml /app/share/mime/packages/com.questviva.QuestViva.xml
+        install -Dm644 $res/com.questviva.QuestViva.svg -t /app/share/icons/hicolor/scalable/apps
+        for size in 16 24 32 48 64 96 128 256 512; do
+          install -Dm644 deb/usr/share/icons/hicolor/${size}x${size}/apps/quest-viva-desktop.png \
+            /app/share/icons/hicolor/${size}x${size}/apps/com.questviva.QuestViva.png
+        done

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+  <mime-type type="application/x-quest-viva-source">
+    <sub-class-of type="application/xml"/>
+    <comment>Quest game source</comment>
+    <glob pattern="*.aslx"/>
+  </mime-type>
+  <mime-type type="application/x-quest-viva-game">
+    <sub-class-of type="application/zip"/>
+    <comment>Quest game</comment>
+    <glob pattern="*.quest"/>
+  </mime-type>
+  <mime-type type="application/x-quest-legacy-game">
+    <comment>Quest 1–4 game</comment>
+    <glob pattern="*.asl"/>
+    <glob pattern="*.cas"/>
+  </mime-type>
+</mime-info>

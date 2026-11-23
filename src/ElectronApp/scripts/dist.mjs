@@ -7,7 +7,7 @@
 // build({ config: {...} }) merges with package.json's "build" field the same
 // way the CLI's -c/--config dot-path flags do (same underlying function).
 
-import { copyFileSync, mkdirSync, readFileSync } from "node:fs";
+import { copyFileSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { build } from "electron-builder";
@@ -58,6 +58,9 @@ const channelConfig = isBeta
           // takes effect when packaging on Windows. The package version is
           // VERSION's major.minor.patch plus ".0", the form the Store needs.
           win: { target: [{ target: "appx", arch: ["x64"] }] },
+          // The Flathub package repackages the stable .deb, and takes the
+          // files only Flatpak needs from here (see stageFlatpakFiles below).
+          linux: { extraResources: [{ from: "resources/flatpak", to: "flatpak" }] },
           extraMetadata: {},
       };
 
@@ -70,6 +73,32 @@ const iconDir = path.join(__dirname, "..", "build", ...(isBeta ? ["beta"] : []),
 const stagedIconDir = path.join(__dirname, "..", "resources", "app-icon");
 mkdirSync(stagedIconDir, { recursive: true });
 copyFileSync(path.join(iconDir, "512x512.png"), path.join(stagedIconDir, "icon.png"));
+
+// Flathub (see "Flathub" in docs/electron-desktop-app.md) repackages the
+// stable .deb, so the files Flathub needs beyond the app itself travel inside
+// it, in resources/flatpak: the AppStream metainfo, a desktop file and MIME
+// types under the Flathub app ID, and the scalable icon. Shipping them in the
+// .deb means a release only changes the .deb's URL and checksum in the
+// Flathub manifest. The metainfo gets this release's version, date and tag
+// (its screenshot URLs point at the tag, so they never change under a
+// release). The beta isn't on Flathub, so it doesn't get them.
+function stageFlatpakFiles() {
+    const src = path.join(__dirname, "..", "flatpak");
+    const dest = path.join(__dirname, "..", "resources", "flatpak");
+    rmSync(dest, { recursive: true, force: true });
+    mkdirSync(dest, { recursive: true });
+    const id = "com.questviva.QuestViva";
+    const date = new Date().toISOString().slice(0, 10);
+    const metainfo = readFileSync(path.join(src, `${id}.metainfo.xml`), "utf8")
+        .replaceAll("@VERSION@", version)
+        .replaceAll("@DATE@", date)
+        .replaceAll("@TAG@", `v${version}`);
+    writeFileSync(path.join(dest, `${id}.metainfo.xml`), metainfo);
+    copyFileSync(path.join(src, `${id}.desktop`), path.join(dest, `${id}.desktop`));
+    copyFileSync(path.join(src, `${id}.mime.xml`), path.join(dest, `${id}.mime.xml`));
+    copyFileSync(path.join(__dirname, "..", "build", "icon-source.svg"), path.join(dest, `${id}.svg`));
+}
+if (!isBeta) stageFlatpakFiles();
 
 try {
     // electron-builder defaults to implicit publishing when it detects CI

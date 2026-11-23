@@ -3,3 +3,4 @@ dist
 release
 resources/app-static
 resources/app-icon
+resources/flatpak
