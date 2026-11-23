@@ -1,5 +1,6 @@
 import type { CatalogGame } from "./home-catalog";
 import { isElectron } from "./runtime";
+import { localStorageOrNull } from "./web-storage";
 
 export interface RecentCatalogPlay extends CatalogGame {
     lastPlayed: number;
@@ -9,9 +10,10 @@ const STORAGE_KEY = "questviva-recent-catalog-plays";
 const MAX_ENTRIES = 12;
 
 function readAll(): RecentCatalogPlay[] {
-    if (typeof localStorage === "undefined") return [];
+    const storage = localStorageOrNull();
+    if (!storage) return [];
     try {
-        const raw = localStorage.getItem(STORAGE_KEY);
+        const raw = storage.getItem(STORAGE_KEY);
         if (!raw) return [];
         const parsed = JSON.parse(raw);
         return Array.isArray(parsed) ? parsed : [];
@@ -21,9 +23,10 @@ function readAll(): RecentCatalogPlay[] {
 }
 
 function writeAll(entries: RecentCatalogPlay[]): void {
-    if (typeof localStorage === "undefined") return;
+    const storage = localStorageOrNull();
+    if (!storage) return;
     try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+        storage.setItem(STORAGE_KEY, JSON.stringify(entries));
     } catch {
         // ignore — recent-plays tracking is a convenience, never worth failing the actual play over
     }

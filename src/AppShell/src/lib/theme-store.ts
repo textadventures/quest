@@ -1,5 +1,6 @@
 import { writable, get } from "svelte/store";
 import { isElectron } from "./runtime";
+import { localStorageOrNull } from "./web-storage";
 
 export type ThemePreference = "light" | "dark" | "system";
 
@@ -66,9 +67,10 @@ async function readStoredTheme(): Promise<ThemePreference | null> {
             return null;
         }
     }
-    if (typeof localStorage === "undefined") return null;
+    const storage = localStorageOrNull();
+    if (!storage) return null;
     try {
-        const stored = localStorage.getItem(STORAGE_KEY);
+        const stored = storage.getItem(STORAGE_KEY);
         return stored === "light" || stored === "dark" || stored === "system" ? stored : null;
     } catch {
         return null;
@@ -84,9 +86,10 @@ async function writeStoredTheme(pref: ThemePreference): Promise<void> {
         }
         return;
     }
-    if (typeof localStorage === "undefined") return;
+    const storage = localStorageOrNull();
+    if (!storage) return;
     try {
-        localStorage.setItem(STORAGE_KEY, pref);
+        storage.setItem(STORAGE_KEY, pref);
     } catch {
         // Storage can be unavailable (private browsing, quota) — losing the
         // preference just means it's re-detected next load, not fatal.

@@ -3,6 +3,7 @@
     import type { UpdateInfo } from "#lib/home-catalog.js";
     import { t } from "#lib/i18n/index.js";
     import { isElectron } from "#lib/runtime.js";
+    import { localStorageOrNull } from "#lib/web-storage.js";
 
     let { update }: { update: UpdateInfo } = $props();
 
@@ -34,14 +35,15 @@
         manuallyDismissed ||
         (isElectronApp
             ? electronDismissed
-            : typeof localStorage !== "undefined" && localStorage.getItem(dismissedKey) === update.latestVersion)
+            : localStorageOrNull()?.getItem(dismissedKey) === update.latestVersion)
     );
 
     function handleDismiss() {
         if (isElectronApp) {
             void window.electronApp!.updateDismiss.set(update.latestVersion);
         } else {
-            localStorage.setItem(dismissedKey, update.latestVersion);
+            // Best effort: with storage blocked, the banner just comes back next visit.
+            try { localStorageOrNull()?.setItem(dismissedKey, update.latestVersion); } catch { /* full or blocked */ }
         }
         manuallyDismissed = true;
     }

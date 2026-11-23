@@ -19,6 +19,7 @@ public static class ChromeStrings
         ["StartFromBeginning"] = "Start from the beginning",
         ["SavedGamesHeading"] = "Saved games",
         ["NoSavedGamesYet"] = "No saved games yet.",
+        ["SavingNotAvailable"] = "Saving here isn't available, because this browser is blocking storage (for example in a private window). You can still save to a file and load from one.",
         ["DeleteSave"] = "Delete",
         ["SaveNameOptional"] = "Name (optional)",
         ["SaveButton"] = "Save",

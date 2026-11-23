@@ -171,6 +171,12 @@
     display: none;
 }
 
+/* Set by listSavesOrReportBlocked when the browser blocks IndexedDB: there's nowhere to save to,
+   so the Save form goes and the dialog's error box says why. */
+:scope#qv-saves[data-storage-blocked] #qv-saves-save-form {
+    display: none;
+}
+
 /* Hidden by renderSavesList when the boot prompt has no saves besides the one Continue loads. */
 :scope#qv-saves #qv-saves-other-heading[hidden] {
     display: none;

@@ -36,6 +36,9 @@ export const DOCS_URL = docsUrl("/intro");
 /** Step-by-step "build your first game" walkthrough, for first-time authors. */
 export const DOCS_TUTORIAL_URL = docsUrl("/tutorial/tutorial-introduction");
 
+/** The desktop app's download page, for when the browser can't keep local drafts. */
+export const DOCS_DOWNLOAD_URL = docsUrl("/download");
+
 /** What changes when the editor saves a game made with an older Quest version. */
 export const DOCS_ASL_VERSIONS_URL = docsUrl("/reference/asl-versions");
 

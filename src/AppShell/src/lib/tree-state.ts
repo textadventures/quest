@@ -1,4 +1,5 @@
 import { isElectron } from "./runtime";
+import { localStorageOrNull } from "./web-storage";
 
 // Per-game game-tree expansion state (which node ids are expanded), keyed by
 // the game's <gameid> element so each game remembers its own tree layout
@@ -19,9 +20,10 @@ export async function loadTreeState(gameId: string): Promise<string[] | null> {
             return null;
         }
     }
-    if (typeof localStorage === "undefined") return null;
+    const storage = localStorageOrNull();
+    if (!storage) return null;
     try {
-        const raw = localStorage.getItem(STORAGE_KEY_PREFIX + gameId);
+        const raw = storage.getItem(STORAGE_KEY_PREFIX + gameId);
         if (!raw) return null;
         const parsed: unknown = JSON.parse(raw);
         return Array.isArray(parsed) ? (parsed as string[]) : null;
@@ -44,9 +46,10 @@ export function saveTreeState(gameId: string, expandedIds: string[]): void {
         }
         return;
     }
-    if (typeof localStorage === "undefined") return;
+    const storage = localStorageOrNull();
+    if (!storage) return;
     try {
-        localStorage.setItem(STORAGE_KEY_PREFIX + gameId, JSON.stringify(expandedIds));
+        storage.setItem(STORAGE_KEY_PREFIX + gameId, JSON.stringify(expandedIds));
     } catch {
         // Storage can be unavailable (private browsing, quota) — losing the
         // tree state just means the default is used next load, not fatal.

@@ -28,7 +28,8 @@
     import Trash2 from "@lucide/svelte/icons/trash-2";
     import Download from "@lucide/svelte/icons/download";
     import { t, locale } from "#lib/i18n/index.js";
-    import { DOCS_TUTORIAL_URL } from "#lib/docs-links.js";
+    import { DOCS_TUTORIAL_URL, DOCS_DOWNLOAD_URL } from "#lib/docs-links.js";
+    import { checkBrowserStorage } from "#lib/filesystem/storage-check.js";
 
     // Electron always uses window.electronApp (Node fs via IPC), never FSA —
     // its Chromium supports showDirectoryPicker, but docs/electron-desktop-app.md
@@ -80,11 +81,25 @@
     let drafts = $state<LocalDraftSummary[]>([]);
     const isSafari = typeof navigator !== "undefined" && /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
+    // Set when the browser won't let us use OPFS at all (private window, cookies
+    // blocked, a privacy add-on — see storage-check.ts). Every local-draft action
+    // would fail with the browser's own error, so the page swaps them for one
+    // notice instead. Null until the check resolves, and always null in Electron.
+    let storageBlockedDetail = $state<string | null>(null);
+
     async function refreshDrafts() {
         if (isElectronApp) return;
+        const check = await checkBrowserStorage();
+        if (!check.ok) {
+            storageBlockedDetail = check.detail;
+            return;
+        }
         drafts = (await listLocalDrafts()).sort((a, b) => b.lastModified - a.lastModified);
     }
     void refreshDrafts();
+    // Blocked storage and no folder access either (Firefox, Safari): nothing on
+    // this page can open or create a game, so it shows only the notice.
+    const nothingToOpen = $derived(storageBlockedDetail !== null && !canUseFSA);
 
     // Recently opened/created/saved-as game folders (Electron only — tracked
     // by electron-adapter.ts on every successful load/create/saveAs).
@@ -440,6 +455,7 @@
     // every other browser → an OPFS local draft, regardless of FSA support,
     // so trying the editor never opens with a folder-permission prompt.
     async function handleCreateLocal() {
+        if (storageBlockedDetail !== null) return;
         createLocalError = null;
         creatingLocal = true;
         try {
@@ -525,13 +541,15 @@
         <div class="flex flex-col items-center gap-4 w-full max-w-sm">
 
             <!-- Open existing game -->
-            <p class="text-surface-600-400 text-sm font-medium self-start">{t("openPage.openExistingGame")}</p>
+            {#if !nothingToOpen}
+                <p class="text-surface-600-400 text-sm font-medium self-start">{t("openPage.openExistingGame")}</p>
+            {/if}
 
             {#if isElectronApp}
                 <button type="button" class="btn preset-filled-primary-500 w-full" onclick={handleOpenFolder}>
                     {isElectron() ? t("openPage.openGameEllipsis") : t("openPage.openGameFolder")}
                 </button>
-            {:else}
+            {:else if storageBlockedDetail === null}
                 <div class="flex items-center gap-2 w-full">
                     <button type="button" class="btn preset-filled-primary-500 flex-1" onclick={handleImportFile}>
                         {t("openPage.importGameFile")}
@@ -558,11 +576,15 @@
                         {/if}
                     </div>
                 </div>
-                {#if canUseFSA}
-                    <button type="button" class="btn preset-outlined-primary-500 w-full" onclick={handleOpenFolder}>
-                        {t("openPage.openGameFolder")}
-                    </button>
-                {/if}
+            {/if}
+            {#if !isElectronApp && canUseFSA}
+                <button
+                    type="button"
+                    class="btn w-full {storageBlockedDetail === null ? "preset-outlined-primary-500" : "preset-filled-primary-500"}"
+                    onclick={handleOpenFolder}
+                >
+                    {t("openPage.openGameFolder")}
+                </button>
             {/if}
 
             {#if error}
@@ -611,7 +633,23 @@
                 </div>
             {/if}
 
-            {#if !isElectronApp && drafts.length > 0}
+            {#if storageBlockedDetail !== null}
+                {#if !nothingToOpen}
+                    <hr class="w-full border-surface-300-700 my-2" />
+                {/if}
+                <div class="card preset-tonal-warning w-full p-4 flex flex-col gap-2 text-sm" role="status" data-testid="storage-blocked">
+                    <p class="font-semibold">{t("openPage.storageBlockedTitle")}</p>
+                    <p>{t("openPage.storageBlockedBody")}</p>
+                    {#if canUseFSA}
+                        <p>{t("openPage.storageBlockedFolder")}</p>
+                    {/if}
+                    <p>{t("openPage.storageBlockedFix")}</p>
+                    <a class="anchor self-start" href={DOCS_DOWNLOAD_URL} target="_blank" rel="noopener noreferrer">
+                        {t("openPage.storageBlockedDownload")}
+                    </a>
+                    <p class="text-xs text-surface-600-400 break-words">{t("openPage.storageBlockedDetail")} {storageBlockedDetail}</p>
+                </div>
+            {:else if !isElectronApp && drafts.length > 0}
                 <hr class="w-full border-surface-300-700 my-2" />
                 <p class="text-surface-600-400 text-sm font-medium self-start">{t("openPage.yourLocalDrafts")}</p>
                 <div class="flex flex-col gap-2 w-full">
@@ -649,12 +687,16 @@
                 {/if}
             {/if}
 
-            <hr class="w-full border-surface-300-700 my-2" />
+            {#if !nothingToOpen}
+                <hr class="w-full border-surface-300-700 my-2" />
 
-            <!-- Create new game -->
-            <p class="text-surface-600-400 text-sm font-medium self-start">{t("openPage.createNewGame")}</p>
+                <!-- Create new game -->
+                <p class="text-surface-600-400 text-sm font-medium self-start">{t("openPage.createNewGame")}</p>
+            {/if}
 
-            {#if templatesError}
+            {#if nothingToOpen}
+                <!-- Nothing to create into: no OPFS and no folder access. The notice above says why. -->
+            {:else if templatesError}
                 <p class="text-error-500 text-sm">{templatesError}</p>
             {:else}
                 <div class="flex flex-col gap-3 w-full">
@@ -665,7 +707,7 @@
                         placeholder={t("openPage.gameNamePlaceholder")}
                         bind:value={createName}
                         onfocus={ensureTemplates}
-                        onkeydown={(e) => { if (e.key === "Enter") handleCreateLocal(); }}
+                        onkeydown={(e) => { if (e.key === "Enter") void (storageBlockedDetail === null ? handleCreateLocal() : handleCreateLocalFolder()); }}
                         disabled={creating}
                     />
 
@@ -731,25 +773,27 @@
                         </div>
                     {:else}
                         <div class="flex gap-2">
-                            <div class="flex flex-col gap-1 flex-1 min-w-0">
-                                <button
-                                    type="button"
-                                    class="btn preset-filled-primary-500 w-full whitespace-normal h-auto"
-                                    onclick={handleCreateLocal}
-                                    disabled={!createName.trim()}
-                                    title={isElectronApp ? t("openPage.createFolderTitle") : t("openPage.createLocalDraftTitle")}
-                                >
-                                    {isElectronApp ? t("openPage.createButton") : t("openPage.createLocalDraftButton")}
-                                </button>
-                                {#if !isElectronApp}
-                                    <p class="text-xs text-surface-600-400 text-center">{t("openPage.storedInBrowserOnly")}</p>
-                                {/if}
-                            </div>
+                            {#if storageBlockedDetail === null}
+                                <div class="flex flex-col gap-1 flex-1 min-w-0">
+                                    <button
+                                        type="button"
+                                        class="btn preset-filled-primary-500 w-full whitespace-normal h-auto"
+                                        onclick={handleCreateLocal}
+                                        disabled={!createName.trim()}
+                                        title={isElectronApp ? t("openPage.createFolderTitle") : t("openPage.createLocalDraftTitle")}
+                                    >
+                                        {isElectronApp ? t("openPage.createButton") : t("openPage.createLocalDraftButton")}
+                                    </button>
+                                    {#if !isElectronApp}
+                                        <p class="text-xs text-surface-600-400 text-center">{t("openPage.storedInBrowserOnly")}</p>
+                                    {/if}
+                                </div>
+                            {/if}
                             {#if canUseFSA}
                                 <div class="flex flex-col gap-1 flex-1 min-w-0">
                                     <button
                                         type="button"
-                                        class="btn preset-outlined-primary-500 w-full whitespace-normal h-auto"
+                                        class="btn w-full whitespace-normal h-auto {storageBlockedDetail === null ? "preset-outlined-primary-500" : "preset-filled-primary-500"}"
                                         onclick={handleCreateLocalFolder}
                                         disabled={!createName.trim()}
                                         title={t("openPage.saveToFolderTitle")}
