@@ -10,6 +10,7 @@ import SquareFunction from "@lucide/svelte/icons/square-function";
 import Timer from "@lucide/svelte/icons/timer";
 import Route from "@lucide/svelte/icons/route";
 import Library from "@lucide/svelte/icons/library";
+import Palette from "@lucide/svelte/icons/palette";
 import LayoutTemplate from "@lucide/svelte/icons/layout-template";
 import Braces from "@lucide/svelte/icons/braces";
 import Shapes from "@lucide/svelte/icons/shapes";
@@ -58,6 +59,7 @@ export const HEADER_ICON: Record<string, IconComponent> = {
     _dynamictemplate: Braces,
     _objecttype: Shapes,
     _javascript: FileCode,
+    _stylesheet: Palette,
     _gameVerbs: MessageSquare,
     _gameCommands: Terminal,
 };

@@ -267,6 +267,7 @@
   <template name="EditorGameStylesheetTitle">Hoja de estilo</template>
   <template name="EditorGameStylesheetHelp">CSS para la interfaz del juego, que se aplica sobre los estilos predeterminados al jugar.</template>
   <template name="EditorGameStylesheetDocs">Cómo usar CSS en un juego</template>
+  <template name="EditorGameStylesheetMoved">La hoja de estilo tiene una página propia: Hoja de estilo, en Avanzado en el árbol.</template>
   <template name="EditorGameStylesheetPlaceholder">/* Por ejemplo, para mostrar los enlaces del juego en negrita:
 
 a.cmdlink {

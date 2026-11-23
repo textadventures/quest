@@ -716,25 +716,12 @@
         <advanced/>
       </control>
 
+      <!-- The stylesheet has a pane of its own, the Stylesheet node under Advanced in the tree
+           (its editor is in CoreEditorElements.aslx): a link to it, where it used to be -->
       <control>
         <controltype>label</controltype>
-        <caption>[EditorGameStylesheetHelp]</caption>
-        <advanced/>
-      </control>
-
-      <control>
-        <controltype>label</controltype>
-        <caption>[EditorGameStylesheetDocs]</caption>
-        <href>/customise/css/</href>
-        <advanced/>
-      </control>
-
-      <control>
-        <controltype>csseditor</controltype>
-        <caption>[EditorGameStylesheet]</caption>
-        <attribute>stylesheet</attribute>
-        <!-- An example, shown while the stylesheet is empty: a rule both interfaces understand -->
-        <placeholder>[EditorGameStylesheetPlaceholder]</placeholder>
+        <caption>[EditorGameStylesheetMoved]</caption>
+        <href>#_stylesheet</href>
         <advanced/>
       </control>
 

@@ -9,7 +9,7 @@ This page is about the new interface. For a game that uses the classic interface
 
 ## Where your CSS goes
 
-Select the `game` object, go to the _Appearance_ tab, and type your CSS into **Stylesheet**, under Advanced at the bottom of the tab:
+The stylesheet has a page of its own: expand **Advanced** in the tree and select **Stylesheet** (the Advanced section at the bottom of the game's _Appearance_ tab links to it too). Type your CSS into it, for example:
 
 ```css
 qv-player {

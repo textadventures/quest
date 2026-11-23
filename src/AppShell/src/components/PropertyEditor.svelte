@@ -1125,8 +1125,9 @@
         </div>
     {:else if ctrl.controlType === "csseditor" && ctrl.attribute !== null}
         <!-- The game's stylesheet (game.stylesheet), kept in the game itself rather than in a file:
-             the player applies it over its own styles. -->
-        <div class="w-full min-h-48">
+             the player applies it over its own styles. It's on the Stylesheet node, a pane of its
+             own, so it starts tall. -->
+        <div class="w-full min-h-96">
             <CodeEditor
                 value={attrValue(ctrl.attribute) ?? ""}
                 language="css"
@@ -1135,7 +1136,7 @@
                 onChange={(v) => {
                     if (v !== (attrValue(ctrl.attribute!) ?? "")) onTextChange(ctrl.attribute!, ctrl.controlType, v, true);
                 }}
-                minHeight="12rem"
+                minHeight="24rem"
                 class="h-full"
             />
         </div>
@@ -1296,7 +1297,15 @@
                 {ctrl.caption ?? ""}
             </div>
         {:else if ctrl.controlType === "label"}
-            {#if ctrl.href}
+            {#if ctrl.href?.startsWith("#")}
+                <!-- A link to another node in the tree, such as the Appearance tab's to the
+                     Stylesheet node: "#" and the node's key -->
+                <button
+                    type="button"
+                    onclick={() => void selectNode(ctrl.href!.slice(1))}
+                    class={"block px-3 py-1 text-xs text-left text-primary-600-400 italic hover:underline" + (ctrl.bold ? " font-semibold" : "")}
+                >{ctrl.caption ?? ""}</button>
+            {:else if ctrl.href}
                 <a
                     href={ctrl.href.startsWith("/") ? docsUrlForPath(ctrl.href) : ctrl.href}
                     target="_blank"

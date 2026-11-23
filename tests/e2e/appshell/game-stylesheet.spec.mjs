@@ -1,8 +1,9 @@
-// Verifies the game stylesheet editor (#2613 PR 7): a CSS code editor under the game's Appearance
-// tab, in its Advanced section, that edits game.stylesheet. The CSS is pasted in (a single
-// CodeMirror transaction, as code-view.spec.mjs explains), committed on blur, still
-// there after switching tabs, syntax-highlighted, saved into the game's XML with its line breaks,
-// and removed again when the editor is emptied.
+// Verifies the game stylesheet editor (#2613 PR 7): a CSS code editor that edits game.stylesheet, on
+// a Stylesheet node of its own under Advanced in the tree, which the Appearance tab's Advanced
+// section links to. The CSS is pasted in (a single CodeMirror transaction, as code-view.spec.mjs
+// explains), committed on blur, still there after going to another node and back,
+// syntax-highlighted, saved into the game's XML with its line breaks, and removed again when the
+// editor is emptied.
 //
 // Run: build WasmEditor (Debug) first, then
 //   npx playwright test --project=appshell game-stylesheet
@@ -35,16 +36,25 @@ test('game-stylesheet', async ({ baseURL }) => {
         await page.getByRole('button', { name: 'Appearance', exact: true }).click();
 
         const editorGroup = page.getByRole('group', { name: 'Stylesheet' });
-        const openAdvanced = async () => {
-            const summary = page.locator('summary', { hasText: 'Advanced' });
-            await summary.waitFor({ state: 'visible', timeout: 5000 });
-            if (!(await summary.evaluate(el => el.closest('details')?.open))) await summary.click();
+        const summary = page.locator('summary', { hasText: 'Advanced' });
+        await summary.waitFor({ state: 'visible', timeout: 5000 });
+        if (!(await summary.evaluate(el => el.closest('details')?.open))) await summary.click();
+        if (await editorGroup.count()) throw new Error('The Appearance tab still has the stylesheet editor');
+        await page.getByRole('button', { name: /^The stylesheet has a page of its own/ }).click();
+        await editorGroup.waitFor({ state: 'visible', timeout: 5000 });
+        const treeNode = page.locator('[data-value="_stylesheet"]');
+        await page.waitForSelector('[data-value="_stylesheet"][data-selected]', { timeout: 5000 })
+            .catch(() => { throw new Error('The link didn\'t select the Stylesheet node in the tree'); });
+        const cm = editorGroup.locator('.cm-content');
+        if (!(await cm.count())) throw new Error('The Stylesheet node has no code editor');
+        console.log('PASS: the Appearance tab links to the Stylesheet node under Advanced, which has the code editor');
+
+        const openStylesheet = async () => {
+            await page.locator('[data-value="game"][data-part="branch-control"]').click();
+            await page.getByRole('button', { name: 'Appearance', exact: true }).waitFor();
+            await treeNode.first().click();
             await editorGroup.waitFor({ state: 'visible', timeout: 5000 });
         };
-        await openAdvanced();
-        const cm = editorGroup.locator('.cm-content');
-        if (!(await cm.count())) throw new Error('The Stylesheet control has no code editor');
-        console.log('PASS: the Appearance tab\'s Advanced section has a Stylesheet code editor');
 
         const setCss = async (text) => {
             await cm.click();
@@ -60,12 +70,10 @@ test('game-stylesheet', async ({ baseURL }) => {
         };
         await setCss(css);
 
-        await page.getByRole('button', { name: 'Setup', exact: true }).click();
-        await page.getByRole('button', { name: 'Appearance', exact: true }).click();
-        await openAdvanced();
+        await openStylesheet();
         const shown = await cm.innerText();
         if (shown.replace(/\n+/g, '\n').trim() !== css) throw new Error(`The stylesheet didn't persist: ${JSON.stringify(shown)}`);
-        console.log('PASS: the CSS is kept after switching tabs');
+        console.log('PASS: the CSS is kept after going to another node and back');
 
         // HighlightStyle.define() generates obfuscated per-rule class names, so check that the
         // selector and the custom property land in classed token spans rather than naming a class.
@@ -89,9 +97,7 @@ test('game-stylesheet', async ({ baseURL }) => {
         }
         console.log('PASS: the CSS is saved as the game\'s stylesheet attribute, line breaks and all');
 
-        await page.locator('[data-value="game"][data-part="branch-control"]').click();
-        await page.getByRole('button', { name: 'Appearance', exact: true }).click();
-        await openAdvanced();
+        await openStylesheet();
         await setCss('');
         xml = await rawXml();
         if (xml.includes('<stylesheet')) throw new Error('Emptying the editor left a <stylesheet> attribute behind');

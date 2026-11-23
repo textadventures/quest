@@ -356,7 +356,7 @@ The built-in themes and the pane themes (on legacy, where they apply) keep WCAG 
 
 ## Game stylesheet
 
-A 610 game's own CSS is its `stylesheet` attribute, a string on `game`, edited as CSS under Advanced on the game's Appearance tab (#2613, decision 6; it moved there from the Interface tab in #2719). It's saved and packaged like any other attribute, and like any other a script can change it, though it's only reapplied on the next start or restore.
+A 610 game's own CSS is its `stylesheet` attribute, a string on `game`, edited as CSS on the Stylesheet node under Advanced in the editor's tree (#2613, decision 6; it moved from the Interface tab to the Appearance tab in #2719, and from there to a node of its own). It's saved and packaged like any other attribute, and like any other a script can change it, though it's only reapplied on the next start or restore.
 
 The host applies it, not the UI and not Core, so it needs no `QuestUI` call:
 

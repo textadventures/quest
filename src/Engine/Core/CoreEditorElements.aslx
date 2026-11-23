@@ -47,6 +47,37 @@
     </tab>
   </editor>
 
+  <!-- The game's stylesheet, on a node of its own in the tree: the node's editor data is the
+       game's (EditorController.StylesheetNode) -->
+  <editor>
+    <appliesto>_stylesheet</appliesto>
+    <tab>
+      <caption>[EditorGameStylesheetTitle]</caption>
+      <!-- A running Preview shows a change straight away (EditorController.GetLiveInterfaceAttributes) -->
+      <liveinterface/>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>[EditorGameStylesheetHelp]</caption>
+      </control>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>[EditorGameStylesheetDocs]</caption>
+        <href>/customise/css/</href>
+      </control>
+
+      <control>
+        <controltype>csseditor</controltype>
+        <caption>[EditorGameStylesheet]</caption>
+        <attribute>stylesheet</attribute>
+        <!-- An example, shown while the stylesheet is empty: a rule both interfaces understand -->
+        <placeholder>[EditorGameStylesheetPlaceholder]</placeholder>
+      </control>
+
+    </tab>
+  </editor>
+
   <editor>
     <appliesto>_functions</appliesto>
     <tab>

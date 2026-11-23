@@ -271,6 +271,7 @@
   <template name="EditorGameStylesheetTitle">Stylesheet</template>
   <template name="EditorGameStylesheetHelp">CSS für die Oberfläche des Spiels, die beim Spielen über die Standardstile angewendet wird.</template>
   <template name="EditorGameStylesheetDocs">So verwendest du CSS in einem Spiel</template>
+  <template name="EditorGameStylesheetMoved">Das Stylesheet hat eine eigene Seite: Stylesheet, unter Fortgeschritten im Baum.</template>
   <template name="EditorGameStylesheetPlaceholder">/* Zum Beispiel, um die Links des Spiels fett anzuzeigen:
 
 a.cmdlink {

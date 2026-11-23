@@ -115,14 +115,21 @@ public class InterfaceTabOptionTests
     [DataRow("English", "Appearance")]
     [DataRow("Deutsch", "Darstellung")]
     [DataRow("Español", "Apariencia")]
-    public async Task TheStylesheet_HasATranslatedExampleOverSeveralLines(string templateName, string tabCaption)
+    public async Task TheStylesheet_IsOnItsOwnNode_WithATranslatedExampleOverSeveralLines(string templateName, string tabCaption)
     {
         using var controller = await LoadController(templateName);
-        var stylesheet = InterfaceTab(controller, tabCaption).Controls.Single(c => c.Attribute == "stylesheet");
+        // On the Stylesheet node, with a link to it from where it used to be on the Appearance tab
+        var definition = controller.GetEditorDefinition(controller.GetElementEditorName(EditorController.StylesheetNode)!);
+        var stylesheet = definition.Tabs.Values.Single().Controls.Single(c => c.Attribute == "stylesheet");
         var placeholder = stylesheet.GetString("placeholder");
         Assert.IsNotNull(placeholder);
         StringAssert.Contains(placeholder, "a.cmdlink {\n");
         StringAssert.DoesNotMatch(placeholder, new System.Text.RegularExpressions.Regex(@"\[Editor"));
+
+        var appearance = InterfaceTab(controller, tabCaption).Controls;
+        Assert.IsFalse(appearance.Any(c => c.Attribute == "stylesheet"));
+        var link = appearance.Single(c => c.GetString("href") == "#" + EditorController.StylesheetNode);
+        Assert.IsFalse(link.Caption!.StartsWith("[Editor"), link.Caption);
     }
 
     [TestMethod]

@@ -41,7 +41,7 @@ The script commands are in the **Interface** category of the script editor. Each
 
 ## Styling
 
-The classic interface was styled by its element IDs, such as `#divOutput` and `#gamePanes`, usually from the user interface initialisation script. The new interface has a **Stylesheet** box instead, under Advanced on the game's Appearance tab, which is applied whenever the game starts or a saved game is loaded. Your rules there always win over the player's own, so you don't need `!important`.
+The classic interface was styled by its element IDs, such as `#divOutput` and `#gamePanes`, usually from the user interface initialisation script. The new interface has a **Stylesheet** instead, under Advanced in the tree, which is applied whenever the game starts or a saved game is loaded. Your rules there always win over the player's own, so you don't need `!important`.
 
 Select parts of the page by their part names rather than IDs. This, in the classic interface:
 

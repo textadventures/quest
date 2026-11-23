@@ -62,6 +62,11 @@ public sealed class EditorController : IDisposable
     private const string Commands = "_gameCommands";
     private const string Verbs = "_gameVerbs";
 
+    // The game's stylesheet (game.stylesheet) has a node of its own in the tree, under Advanced
+    // beside Javascript, so it has a pane to itself. It isn't an element: its editor data is the
+    // game's, so its editor (CoreEditorElements.aslx) edits the game's attribute.
+    public const string StylesheetNode = "_stylesheet";
+
     private static readonly Dictionary<ValidationMessage, string> ValidationMessages = new()
     {
         {ValidationMessage.OK, "No error"},
@@ -524,6 +529,7 @@ public sealed class EditorController : IDisposable
             "_advanced");
         AddTreeHeader(EditorStyle.TextAdventure, ElementType.ObjectType, "_objecttype", "Object Types", "_advanced");
         AddTreeHeader(null, ElementType.Javascript, "_javascript", "Javascript", "_advanced");
+        AddTreeHeader(EditorStyle.TextAdventure, null, StylesheetNode, "Stylesheet", "_advanced");
     }
 
     private void AddTreeHeader(EditorStyle? editorStyle, ElementType? type, string key, string title, string? parent)
@@ -869,7 +875,7 @@ public sealed class EditorController : IDisposable
 
     /// <summary>
     /// The game's current value of each attribute on its editor's &lt;liveinterface/&gt; tabs (the
-    /// Display and Interface tabs), including inherited ones, for the editor's Preview to copy onto
+    /// Display and Interface tabs) and the Stylesheet node's (<see cref="StylesheetNode"/>), including inherited ones, for the editor's Preview to copy onto
     /// the running game before re-running InitInterface. Only strings, booleans and numbers: the
     /// tabs' other controls (scripts, most lists) aren't what InitInterface reads. The exception is
     /// a list of strings, such as the game's font files (fontfiles), given as a copy. A null value
@@ -880,7 +886,9 @@ public sealed class EditorController : IDisposable
         var result = new SortedDictionary<string, object?>(StringComparer.Ordinal);
         var editorName = GetElementEditorName("game");
         if (editorName == null) return result;
-        var attributes = GetEditorDefinition(editorName).Tabs.Values
+        var attributes = new[] { editorName, GetElementEditorName(StylesheetNode) }
+            .OfType<string>()
+            .SelectMany(name => GetEditorDefinition(name).Tabs.Values)
             .Where(tab => tab.IsLiveInterface)
             .SelectMany(tab => tab.Controls)
             .Select(control => control.Attribute)
@@ -903,6 +911,11 @@ public sealed class EditorController : IDisposable
 
     public IEditorData? GetEditorData(string elementKey)
     {
+        if (elementKey == StylesheetNode)
+        {
+            elementKey = "game";
+        }
+
         if (!WorldModel.Elements.ContainsKey(elementKey))
         {
             return null;

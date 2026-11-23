@@ -3495,7 +3495,8 @@ public partial class WasmEditorBridge
             return null;
         }
 
-        var data = _controller.GetEditorData(elementKey);
+        // The Stylesheet node edits one of the game's attributes, not all of them
+        var data = elementKey == EditorController.StylesheetNode ? null : _controller.GetEditorData(elementKey);
         if (data is not IEditorDataExtendedAttributeInfo extended)
         {
             return null;

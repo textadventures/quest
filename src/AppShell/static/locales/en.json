@@ -155,6 +155,7 @@
     "treePanel.header.objectTypes": "Object Types",
     "treePanel.header.javascript": "Javascript",
     "treePanel.header.commands": "Commands",
+    "treePanel.header.stylesheet": "Stylesheet",
 
     "elementsList.noItems": "No items.",
     "elementsList.cannotDelete": "This can't be deleted",
