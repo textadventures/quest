@@ -163,14 +163,15 @@ gives `Value cannot be null. (Parameter 'obj')`.
 | Function | Does |
 |---|---|
 | `ToString(value)` | Anything to a string |
-| `ToInt(value)` | A string to an integer (an integer comes back unchanged) |
+| `ToInt(value)` | A string or double to an integer, discarding anything after the point (an integer comes back unchanged) |
 | `ToDouble(value)` | A string or integer to a double |
 | `cast(value, "int")` | A double or string to an integer, discarding anything after the point |
 | `cast(value, "double")` | An integer or string to a double |
-| `IsInt(value)`, `IsDouble(value)` | Whether `ToInt` or `ToDouble` will accept a value |
+| `IsInt(value)` | Whether a value is a whole number - an int, or a string that represents one |
+| `IsDouble(value)` | Whether `ToDouble` will accept a value |
 | `IsNumeric(string)` | Whether a string is a number |
 
-`ToInt` doesn't accept doubles: `ToInt(4.9)` stops with `ToInt function can't take a double`. To turn a double into an integer, use `cast(4.9, "int")`, which gives `4`.
+`ToInt(4.9)` gives `4`, but `ToInt("4.9")` is an error: a number is converted, while text has to actually be a whole number. `IsInt(4.9)` is false, since 4.9 isn't a whole number, even though `ToInt` will take it.
 
 Always check before converting anything the player typed:
 

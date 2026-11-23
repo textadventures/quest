@@ -568,9 +568,24 @@ internal class ExpressionOwner(WorldModel worldModel)
         return int.Parse(number, CultureInfo.InvariantCulture);
     }
 
-    // So that ToInt works on anything IsInt says it will. A double is still an error, since
-    // dropping its fraction is a decision for the author to make with cast.
+    // So that ToInt works on anything IsInt says it will.
     public int ToInt(int number) => number;
+
+    // Truncates towards zero, like cast(x, "int"), so that Floor and friends (which return a
+    // double) have an obvious way to an int. IsInt still says false for a double: it answers
+    // whether a value already is a whole number, which 4.9 isn't. A value outside int's range is
+    // an error rather than the garbage a plain (int) cast would give.
+    public int ToInt(double number)
+    {
+        var truncated = Math.Truncate(number);
+        if (double.IsNaN(truncated) || truncated < int.MinValue || truncated > int.MaxValue)
+        {
+            throw new ArgumentOutOfRangeException(nameof(number),
+                $"ToInt can't convert {number.ToString(CultureInfo.InvariantCulture)} to an int, as it's out of range");
+        }
+
+        return (int) truncated;
+    }
 
     public double ToDouble(string? number)
     {

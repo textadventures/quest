@@ -24,7 +24,7 @@ These all take a single floating point number, and return the corresponding floa
 * Tan
 * Tanh
 
-These take a floating point parameter and return a whole number, but still as a floating point value - `TypeOf(Floor(2.9))` is `double`, not `int`. If you need an `int`, use `cast(Floor(2.9), "int")`; `ToInt` only accepts strings. See [Values and types](/understanding/values-and-types).
+These take a floating point parameter and return a whole number, but still as a floating point value - `TypeOf(Floor(2.9))` is `double`, not `int`. If you need an `int`, use `ToInt(Floor(2.9))`. See [Values and types](/understanding/values-and-types).
 
 * Ceiling
 * Floor
