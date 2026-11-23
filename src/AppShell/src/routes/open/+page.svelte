@@ -706,18 +706,21 @@
                             </div>
                         </div>
 
-                        {#if selectedTemplate?.type === "textadventure" && textAdventureTemplates.length > 1}
-                            <select class="select" bind:value={selectedTemplateId} disabled={creating}>
-                                {#each textAdventureTemplates as tpl (tpl.id)}
-                                    <option value={tpl.id}>{tpl.label}</option>
-                                {/each}
-                            </select>
-                        {:else if selectedTemplate?.type === "gamebook" && gamebookTemplates.length > 1}
-                            <select class="select" bind:value={selectedTemplateId} disabled={creating}>
-                                {#each gamebookTemplates as tpl (tpl.id)}
-                                    <option value={tpl.id}>{gamebookTemplateDisplayLabel(tpl.label)}</option>
-                                {/each}
-                            </select>
+                        {#if (selectedTemplate?.type === "textadventure" && textAdventureTemplates.length > 1) || (selectedTemplate?.type === "gamebook" && gamebookTemplates.length > 1)}
+                            <label class="flex flex-col gap-1">
+                                <span class="text-sm text-surface-600-400">{t("openPage.language")}</span>
+                                <select class="select leading-tight" bind:value={selectedTemplateId} disabled={creating}>
+                                    {#if selectedTemplate?.type === "gamebook"}
+                                        {#each gamebookTemplates as tpl (tpl.id)}
+                                            <option value={tpl.id}>{gamebookTemplateDisplayLabel(tpl.label)}</option>
+                                        {/each}
+                                    {:else}
+                                        {#each textAdventureTemplates as tpl (tpl.id)}
+                                            <option value={tpl.id}>{tpl.label}</option>
+                                        {/each}
+                                    {/if}
+                                </select>
+                            </label>
                         {/if}
                     {/if}
 

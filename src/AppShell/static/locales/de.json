@@ -636,6 +636,7 @@
     "openPage.gameNamePlaceholder": "Spielname",
     "openPage.loadingTemplates": "Vorlagen laden...",
     "openPage.gameType": "Spieltyp",
+    "openPage.language": "Sprache",
     "openPage.creating": "Erstellen...",
     "openPage.createFolderTitle": "Wähle, wo der Ordner für dein Spiel erstellt werden soll",
     "openPage.createLocalDraftTitle": "Als lokalen Entwurf in diesem Browser speichern",
