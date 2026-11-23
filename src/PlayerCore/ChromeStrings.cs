@@ -64,6 +64,9 @@ public static class ChromeStrings
         // Core's own template, which games already have in every language, standing in for
         // QuestUI.setInterfaceString("CompassLabel") until the game sets it.
         ["CompassLabel"] = "Compass",
+        // Also Core's own template, the link text "view transcript" prints, which names the toolbar
+        // button that opens the same viewer.
+        ["TranscriptViewerLinkText"] = "Your Transcripts",
     };
 
     // Keys that replaced one whose English wording no longer fits the dialog: the new key, the old

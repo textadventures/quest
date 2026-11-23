@@ -56,12 +56,14 @@ Starting every note with `*` also makes them easy to search for afterwards.
 
 ## Reading and sending a transcript
 
-Type `VIEW TRANSCRIPT` (or `SHOW TRANSCRIPT`, or `DISPLAY TRANSCRIPT`) at any time. The game prints a link to a transcript viewer, which lists every transcript recorded for any game, with buttons to open, download or delete each one. "Download" saves it as a plain `.txt` file - that's what a tester should send you.
+Once there is a transcript to view, a **Your Transcripts** button appears at the top of the game. Click it to open the transcript viewer, which lists every transcript recorded for any game, with buttons to open, download or delete each one. "Download" saves it as a plain `.txt` file - that's what a tester should send you.
+
+You can also type `VIEW TRANSCRIPT` (or `SHOW TRANSCRIPT`, or `DISPLAY TRANSCRIPT`) at any time, and the game prints a link to the same viewer. Games using the [classic interface](/customise/classic/) don't have the button, so that's the way to reach the viewer there.
 
 Where transcripts are kept depends on how the game is being played:
 
 - **In a browser** - in that browser's local storage for the site the game is on. They survive closing the tab, but are lost if the player clears the site's browsing data, or if they were playing in a private window. Download anything worth keeping first.
-- **In the [desktop app](/download/)** - as files in the app's own data folder, so clearing browser data doesn't touch them. The `VIEW TRANSCRIPT` link opens the same viewer.
+- **In the [desktop app](/download/)** - as files in the app's own data folder, so clearing browser data doesn't touch them. The button and the `VIEW TRANSCRIPT` link open the same viewer.
 
 Either way transcripts stay on the player's own machine. Nothing is uploaded, so a tester has to send you the downloaded file themselves.
 

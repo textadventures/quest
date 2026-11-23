@@ -75,6 +75,7 @@ Walkthroughs in the editor also now use the same random numbers every time they'
 ### For players
 
 - **A redesigned Save / Load dialog.** Saving now takes one click, and you don't have to type a name. A save without a name is labelled with the room the player was in. The newest saves are at the top, and each save has a menu to overwrite, rename or delete it, or save it to a file. The dialog checks with the player before loading a game or starting again if they'd lose any progress, and when a game starts, it offers to carry on from their most recent save.
+- **A button for transcripts.** Once a player has recorded a [transcript](/howto/testing/transcripts), a **Your Transcripts** button at the top of the game opens the transcript viewer, so testers no longer need to type `VIEW TRANSCRIPT`.
 - **Exit buttons on phones.** On a phone, a row of buttons under the text shows which way the player can go, so they don't have to open the drawer to get to the compass. This works with the classic interface too.
 - **`LOOK IN`.** `LOOK IN` and `LOOK INSIDE` now list what's inside a container. See [Containers](/howto/objects/containers).
 - **The loading screen shows the game.** While a game is loading, the screen shows the game's title instead of the Quest Viva heading, and for games on textadventures.co.uk, its author and cover art too. The browser tab shows the game's name as well.

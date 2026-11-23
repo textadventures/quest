@@ -9,6 +9,9 @@
 //   line breaks as @@@NEW_LINE@@@ (as legacy has always stored them), and a text effect's text
 //   once. "transcript off" stops it.
 // - "view transcript" links to the transcript viewer, which lists the transcript.
+// - The toolbar's Your Transcripts button (#2882) appears once there's a transcript to view, stays
+//   after "transcript off" and on the next visit, and opens the viewer. A game with
+//   "notranscript", from the start or once it's turned on, doesn't show it.
 // - Legacy records the same game to the same store.
 // - axe-core finds no WCAG A/AA violations on v2 at 1200px and 390px.
 //
@@ -37,7 +40,7 @@ test('v2-transcript', async ({ baseURL }) => {
     try {
         browser = await chromium.launch();
 
-        async function open(context, width, name) {
+        async function open(context, width, name, fixture = 'v2-transcript-test', expect = 'A recording room.') {
             const page = await context.newPage();
             await page.setViewportSize({ width, height: 700 });
             const errors = [];
@@ -45,9 +48,9 @@ test('v2-transcript', async ({ baseURL }) => {
             page.on('console', (msg) => {
                 if (msg.type() === 'error') errors.push(msg.text());
             });
-            await page.goto(`${baseUrl}/?url=/e2e-fixtures/v2-transcript-test.aslx&ui=${name}`);
-            await page.waitForFunction((sel) => !document.getElementById('qv-start') && window.canSendCommand
-                && document.querySelector(sel)?.textContent.includes('A recording room.'), ui[name].output, { timeout: 30000 })
+            await page.goto(`${baseUrl}/?url=/e2e-fixtures/${fixture}.aslx&ui=${name}`);
+            await page.waitForFunction(([sel, text]) => !document.getElementById('qv-start') && window.canSendCommand
+                && document.querySelector(sel)?.textContent.includes(text), [ui[name].output, expect], { timeout: 30000 })
                 .catch(() => { throw new Error(`the game never started on ${name}`); });
             await page.addScriptTag({ path: axePath });
             return { page, errors, sel: ui[name] };
@@ -71,6 +74,10 @@ test('v2-transcript', async ({ baseURL }) => {
             if (violations.length) throw new Error(`axe found WCAG violations ${state}:\n    ${violations.join('\n    ')}`);
             console.log(`PASS: no WCAG A/AA violations ${state}`);
         }
+        const buttonShown = (page) => page.evaluate(() => {
+            const button = document.getElementById('cmdTranscripts');
+            return !!button && getComputedStyle(button).display !== 'none';
+        });
         const stored = (page, name) => page.evaluate((n) => localStorage.getItem(`questtranscript-${n}`) ?? '', name);
 
         // "transcript on" with a name, then the same recording on either UI.
@@ -99,7 +106,11 @@ test('v2-transcript', async ({ baseURL }) => {
         {
             const context = await browser.newContext();
             const { page, errors, sel } = await open(context, 1200, 'v2');
+            check(!await buttonShown(page), 'the Your Transcripts button is hidden before there are any transcripts');
             await record(page, sel, 'v2', 'My run');
+            check(await buttonShown(page), 'the Your Transcripts button appears once a transcript is recording');
+            const label = await page.locator('#cmdTranscripts .qv-button-label').textContent();
+            check(label === 'Your Transcripts', `the button is named by Core's link text ("${label}")`);
 
             await send(page, sel, 'typewriter', 'Typed for the record.');
             let text = await stored(page, 'My run');
@@ -118,14 +129,30 @@ test('v2-transcript', async ({ baseURL }) => {
             const before = await stored(page, 'My run');
             await send(page, sel, 'secret', 'Not for the record.');
             check(await stored(page, 'My run') === before, '"transcript off" stops recording');
+            check(await buttonShown(page), 'the button stays after "transcript off"');
 
-            const viewer = await context.newPage();
-            await viewer.goto(`${baseUrl}/TranscriptViewer/index.html`);
+            const [viewer] = await Promise.all([context.waitForEvent('page'), page.click('#cmdTranscripts')]);
+            await viewer.waitForLoadState();
+            check(new URL(viewer.url()).pathname.endsWith('/TranscriptViewer/index.html'),
+                `the button opens the transcript viewer (${viewer.url()})`);
             await viewer.waitForFunction(() => document.body.textContent.includes('My run'), null, { timeout: 10000 })
                 .catch(() => { throw new Error("the transcript viewer doesn't list the transcript"); });
             check(true, 'the transcript viewer lists it');
+            await viewer.close();
+
+            await send(page, sel, 'no transcripts', 'Transcripts are off.');
+            check(!await buttonShown(page), 'the button goes when the game turns transcripts off');
 
             if (errors.length) throw new Error(`v2: page errors:\n  ${errors.join('\n  ')}`);
+
+            // The next visit, with the transcript kept.
+            const again = await open(context, 1200, 'v2');
+            check(await buttonShown(again.page), 'the button is there on the next visit, with a transcript kept');
+            const none = await open(context, 1200, 'v2', 'v2-notranscript-test', 'A quiet room.');
+            check(!await buttonShown(none.page), 'a game with "notranscript" never shows the button');
+            for (const opened of [again, none]) {
+                if (opened.errors.length) throw new Error(`v2 next visit: page errors:\n  ${opened.errors.join('\n  ')}`);
+            }
             await context.close();
         }
 
