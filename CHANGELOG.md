@@ -1,5 +1,34 @@
 # Changelog
 
+## [6.1.0-beta.2](https://github.com/textadventures/quest/compare/v6.1.0-beta.1...v6.1.0-beta.2) (2026-11-23)
+
+
+### Features
+
+* a Claude Code plugin for writing Quest Viva games ([#2919](https://github.com/textadventures/quest/issues/2919)) ([f68a24b](https://github.com/textadventures/quest/commit/f68a24b1373a3b20265f22231a3ae4cac80b9db3))
+* **Editor:** an interface font size, a classic-interface note on themes, and an example stylesheet ([#2904](https://github.com/textadventures/quest/issues/2904)) ([1c9c3c7](https://github.com/textadventures/quest/commit/1c9c3c7b8c6052e4ded17d168968f38c61bf2c0b))
+* **Editor:** copy fonts into the game, and pick them on the Appearance tab ([#2930](https://github.com/textadventures/quest/issues/2930)) ([c4a80fd](https://github.com/textadventures/quest/commit/c4a80fdf827c50946493cfe6de52abe834ea792e))
+* **Editor:** follow changes made to the open game outside the editor ([#2924](https://github.com/textadventures/quest/issues/2924)) ([2281ffc](https://github.com/textadventures/quest/commit/2281ffcb16cae82c601c45c0de5bb6fc7227120c))
+* **Editor:** put File first in the toolbar, and open its menus from the left ([#2896](https://github.com/textadventures/quest/issues/2896)) ([205753c](https://github.com/textadventures/quest/commit/205753c412146e7deb02c1fda2bccfd3e584380f))
+* **Player:** a toolbar button for the transcript viewer ([#2929](https://github.com/textadventures/quest/issues/2929)) ([11a26ea](https://github.com/textadventures/quest/commit/11a26ea531b4094c026781cac54c9aa8b5ed4699))
+* **Player:** QuestUI events for the inventory, objects, exits and status lists ([#2933](https://github.com/textadventures/quest/issues/2933)) ([78a46c1](https://github.com/textadventures/quest/commit/78a46c191e715e512e982ce8326f5112050da851))
+* **Player:** ToInt accepts a double, truncating it like cast ([#2931](https://github.com/textadventures/quest/issues/2931)) ([a2fa47b](https://github.com/textadventures/quest/commit/a2fa47bd32e7a9a7083d4d4f56471019ac613b3e))
+
+
+### Bug Fixes
+
+* **Editor:** don't save over a change made to the game file outside the editor ([#2923](https://github.com/textadventures/quest/issues/2923)) ([82f7c7d](https://github.com/textadventures/quest/commit/82f7c7d9b4823cf023647402db4c94756388cf54))
+* **Editor:** don't share a function call's callback script with its copy ([#2926](https://github.com/textadventures/quest/issues/2926)) ([997da7e](https://github.com/textadventures/quest/commit/997da7e74c3fdcd2d6aea23ee9440ceb216a2ced))
+* **Editor:** inset and unclip the language dropdown on the Create new game form ([#2934](https://github.com/textadventures/quest/issues/2934)) ([63db4a2](https://github.com/textadventures/quest/commit/63db4a240b6d60754b08c258b188828b5b731c6e))
+* **Editor:** read a gamebook walkthrough's steps as a list ([#2921](https://github.com/textadventures/quest/issues/2921)) ([5cfb785](https://github.com/textadventures/quest/commit/5cfb7852c4531e8ab875c524de1c6bd29164370e))
+* **Editor:** remove the dead SecondaryScopeReachableForRoom hook ([#2932](https://github.com/textadventures/quest/issues/2932)) ([25c1e31](https://github.com/textadventures/quest/commit/25c1e31f8a999076fa67ac73b123092e2307cdae))
+* **Editor:** say so when the browser blocks storage, instead of failing with the browser's error ([#2936](https://github.com/textadventures/quest/issues/2936)) ([13734cb](https://github.com/textadventures/quest/commit/13734cbf27475d1d6122691f2bb7d1e93bd69924))
+* **Editor:** the error page shows what went wrong, and saves the open game ([#2927](https://github.com/textadventures/quest/issues/2927)) ([4847c04](https://github.com/textadventures/quest/commit/4847c04f51eecdebc03c28136a2cc91173014dbb))
+* **Player:** keep focus in an open verb menu when the game refocuses the command box ([#2899](https://github.com/textadventures/quest/issues/2899)) ([1032312](https://github.com/textadventures/quest/commit/1032312478baca623f9c575e2f196069420e8bda))
+* **Player:** let a game picked in the browser bring its library files ([#2901](https://github.com/textadventures/quest/issues/2901)) ([4c6531c](https://github.com/textadventures/quest/commit/4c6531c9039437e0680fbb9f0fd4d6c97b294d80))
+* **Player:** offer the beta desktop app from play-beta.questviva.com ([#2886](https://github.com/textadventures/quest/issues/2886)) ([77253fd](https://github.com/textadventures/quest/commit/77253fd2f75b66d21c23d4c6eb13ff3d05247363))
+* **Player:** stop listing objects whose in-room description is already shown ([#2920](https://github.com/textadventures/quest/issues/2920)) ([833307e](https://github.com/textadventures/quest/commit/833307ebbf7039eedf76bd2d90d6c0ca6001d027))
+
 ## [6.1.0-beta.1](https://github.com/textadventures/quest/compare/v6.0.0...v6.1.0-beta.1) (2026-11-15)
 
 
