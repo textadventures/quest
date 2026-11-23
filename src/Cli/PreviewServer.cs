@@ -54,7 +54,7 @@ internal sealed class PreviewServer : IAsyncDisposable
     private readonly HttpListener _listener;
     private readonly int? _seed;
     private readonly CancellationTokenSource _stopping = new();
-    private readonly List<HttpListenerResponse> _eventClients = [];
+    private readonly List<EventClient> _eventClients = [];
     private readonly Lock _lock = new();
     private readonly Task _acceptLoop;
     private FileInfo _game;
@@ -145,13 +145,15 @@ internal sealed class PreviewServer : IAsyncDisposable
         {
             foreach (var client in _eventClients)
             {
-                client.Abort();
+                client.Response.Abort();
             }
 
             _eventClients.Clear();
         }
 
-        _listener.Stop();
+        // Close, not Stop then Close: on Linux and macOS, HttpListener unregisters its prefixes again
+        // on a Close after a Stop, by port, so if another listener has been given this port since,
+        // it's that one's prefix that goes.
         _listener.Close();
         try
         {
@@ -208,7 +210,7 @@ internal sealed class PreviewServer : IAsyncDisposable
     private void Broadcast(string message)
     {
         var bytes = Encoding.UTF8.GetBytes(message);
-        List<HttpListenerResponse> clients;
+        List<EventClient> clients;
         lock (_lock)
         {
             clients = [.. _eventClients];
@@ -218,8 +220,11 @@ internal sealed class PreviewServer : IAsyncDisposable
         {
             try
             {
-                client.OutputStream.Write(bytes);
-                client.OutputStream.Flush();
+                lock (client.WriteLock)
+                {
+                    client.Response.OutputStream.Write(bytes);
+                    client.Response.OutputStream.Flush();
+                }
             }
             catch (Exception ex) when (ex is IOException or HttpListenerException or ObjectDisposedException
                                            or InvalidOperationException)
@@ -283,11 +288,18 @@ internal sealed class PreviewServer : IAsyncDisposable
                 response.ContentType = "text/event-stream";
                 response.Headers["Cache-Control"] = "no-store";
                 response.SendChunked = true;
-                response.OutputStream.Write(": connected\n\n"u8);
-                response.OutputStream.Flush();
-                lock (_lock)
+                // Added before ": connected" is sent, so a reload sent once the page has seen it reaches
+                // the page. The write lock keeps that reload from being written in the middle of it.
+                var client = new EventClient(response);
+                lock (client.WriteLock)
                 {
-                    _eventClients.Add(response);
+                    lock (_lock)
+                    {
+                        _eventClients.Add(client);
+                    }
+
+                    response.OutputStream.Write(": connected\n\n"u8);
+                    response.OutputStream.Flush();
                 }
 
                 // Left open: Broadcast writes to it until the page goes away.
@@ -376,5 +388,13 @@ internal sealed class PreviewServer : IAsyncDisposable
         response.Headers["Cache-Control"] = "no-store";
         response.ContentLength64 = body.Length;
         response.OutputStream.Write(body);
+    }
+
+    // A page's event stream. Its writes take WriteLock, so a reload, a keep-alive and the first
+    // comment never interleave on the stream.
+    private sealed class EventClient(HttpListenerResponse response)
+    {
+        public HttpListenerResponse Response { get; } = response;
+        public Lock WriteLock { get; } = new();
     }
 }
