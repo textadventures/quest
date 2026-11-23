@@ -246,6 +246,37 @@
         <onlydisplayif>not GetBoolean(game, "classicinterface")</onlydisplayif>
       </control>
 
+      <!-- The font of the menus that open from links. Empty is the interface font in the new
+           interface, and Arial in the classic one. The preview shows a menu open. -->
+      <control>
+        <controltype>font</controltype>
+        <caption>[EditorGameMenuFont]</caption>
+        <attribute>menufont</attribute>
+        <nullable/>
+        <onlydisplayif>game.enablehyperlinks</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <caption>[EditorGameFontsize]</caption>
+        <attribute>menufontsize</attribute>
+        <onlydisplayif>game.enablehyperlinks</onlydisplayif>
+        <samerow/>
+        <width>64</width>
+      </control>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>[EditorGameMenuFontHelp]</caption>
+        <onlydisplayif>game.enablehyperlinks and not GetBoolean(game, "classicinterface")</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>[EditorGameMenuFontClassicHelp]</caption>
+        <onlydisplayif>game.enablehyperlinks and GetBoolean(game, "classicinterface")</onlydisplayif>
+      </control>
+
       <!-- The Fonts dialog's button. Its attribute is only so a running Preview gets the game's
            font files when they change (EditorController.GetLiveInterfaceAttributes). -->
       <control>
@@ -560,35 +591,13 @@
         <alsodisplayifset>shadowbox</alsodisplayifset>
       </control>
 
+      <!-- Only for a game that already has its own verb menu colours, which the new interface's
+           menus show but which the editor no longer offers -->
       <control>
         <controltype>title</controltype>
         <caption>[EditorGameVerbMenus]</caption>
-        <onlydisplayif>game.enablehyperlinks</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>dropdown</controltype>
-        <caption>[EditorGameMenuFont]</caption>
-        <attribute>menufont</attribute>
-        <source>basefonts</source>
-        <freetext/>
-        <nullable/>
-        <onlydisplayif>game.enablehyperlinks</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>number</controltype>
-        <caption>[EditorGameFontsize]</caption>
-        <attribute>menufontsize</attribute>
-        <onlydisplayif>game.enablehyperlinks</onlydisplayif>
-        <samerow/>
-        <width>64</width>
-      </control>
-
-      <control>
-        <controltype>label</controltype>
-        <caption>[EditorGameMenuFontHelp]</caption>
-        <onlydisplayif>game.enablehyperlinks</onlydisplayif>
+        <onlydisplayif>game.enablehyperlinks and false</onlydisplayif>
+        <alsodisplayifset type="simplestringlist">menubackground;menuforeground;menuhoverbackground;menuhoverforeground</alsodisplayifset>
       </control>
 
       <control>

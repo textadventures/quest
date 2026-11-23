@@ -1,13 +1,14 @@
 <script lang="ts">
     // A font setting on the Appearance tab (a "font" control): the game's text font, or its
     // interface font. A list of fonts each shown in its own font: the game's own (added with the
-    // Fonts dialog), the ones built into the player and the ones most computers have. Custom… is
-    // for typing a CSS font-family list, and a setting that's none of those shows as one. See
-    // lib/fonts.ts.
+    // Fonts dialog), the ones built into the player and the ones most computers have. Add fonts…
+    // under the game's own opens the Fonts dialog. Custom… is for typing a CSS font-family list,
+    // and a setting that's none of those shows as one. See lib/fonts.ts.
     import { tick } from "svelte";
     import ChevronDown from "@lucide/svelte/icons/chevron-down";
     import Check from "@lucide/svelte/icons/check";
-    import { BUILT_IN_FONTS, SYSTEM_FONTS, findFont, firstFamily, type FontChoice, type GameFont } from "#lib/fonts.js";
+    import Plus from "@lucide/svelte/icons/plus";
+    import { BUILT_IN_FONTS, SYSTEM_FONTS, findFont, firstFamily, fontsDialogOpen, type FontChoice, type GameFont } from "#lib/fonts.js";
     import { t } from "#lib/i18n/index.js";
     import "#lib/builtin-fonts.js";
 
@@ -28,12 +29,14 @@
     interface Option {
         key: string;
         label: string;
-        // What choosing it sets, or null for Custom…
+        // What choosing it sets, or null for Custom… and Add fonts…
         stack: string | null;
+        // Add fonts…, which opens the Fonts dialog rather than being a font
+        add?: boolean;
         // The font to show it in
         font: string;
     }
-    interface Group { heading: string | null; options: Option[]; empty?: string }
+    interface Group { heading: string | null; options: Option[] }
 
     const choice = (prefix: string) => (f: FontChoice): Option => ({ key: `${prefix}:${f.stack}`, label: f.family, stack: f.stack, font: f.stack });
 
@@ -41,8 +44,10 @@
         ...(allowDefault ? [{ heading: null, options: [{ key: "default", label: t("fontPicker.default"), stack: "", font: DEFAULT_UI_FONT }] }] : []),
         {
             heading: t("fontPicker.gameFonts"),
-            options: fonts.filter(f => f.listed).map(choice("game")),
-            empty: t("fontPicker.noGameFonts"),
+            options: [
+                ...fonts.filter(f => f.listed).map(choice("game")),
+                { key: "add", label: t("fontPicker.addFonts"), stack: null, font: "inherit", add: true },
+            ],
         },
         { heading: t("fontPicker.builtIn"), options: BUILT_IN_FONTS.map(choice("builtin")) },
         { heading: t("fontPicker.system"), options: SYSTEM_FONTS.map(choice("system")) },
@@ -85,6 +90,11 @@
     }
 
     async function choose(option: Option) {
+        if (option.add) {
+            close(false);
+            fontsDialogOpen.set(true);
+            return;
+        }
         close(option.stack !== null);
         if (option.stack === null) {
             customChosen = true;
@@ -187,9 +197,6 @@
                 {:else if g > 0}
                     <div class="font-picker-divider" role="presentation"></div>
                 {/if}
-                {#if !group.options.length && group.empty}
-                    <div class="font-picker-empty" role="presentation">{group.empty}</div>
-                {/if}
                 {#each group.options as option (option.key)}
                     {@const index = options.indexOf(option)}
                     <div
@@ -210,8 +217,13 @@
                         onkeydown={() => {}}
                         onpointermove={() => { active = index; }}
                     >
-                        <span class="font-picker-check">{#if option.key === selectedKey}<Check size={12} />{/if}</span>
-                        <span style:font-family={option.font}>{option.label}</span>
+                        {#if option.add}
+                            <span class="font-picker-check"><Plus size={12} /></span>
+                            <span class="font-picker-add">{option.label}</span>
+                        {:else}
+                            <span class="font-picker-check">{#if option.key === selectedKey}<Check size={12} />{/if}</span>
+                            <span style:font-family={option.font}>{option.label}</span>
+                        {/if}
                     </div>
                 {/each}
             {/each}
@@ -285,11 +297,9 @@
         border-top: 1px solid var(--color-surface-200-800);
     }
 
-    .font-picker-empty {
-        padding: 0.125rem 0.75rem 0.25rem 1.75rem;
-        color: var(--color-surface-600-400);
-        font-size: 0.75rem;
-        font-style: italic;
+    .font-picker-add {
+        color: var(--color-primary-700-300);
+        font-size: 0.8125rem;
     }
 
     .font-picker-option {

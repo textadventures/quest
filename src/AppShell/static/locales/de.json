@@ -236,6 +236,9 @@
     "appearancePreview.object1": "eine Messinglampe",
     "appearancePreview.textBetween": " und ",
     "appearancePreview.object2": "einen Brief",
+    "appearancePreview.verbLookAt": "Ansehen",
+    "appearancePreview.verbTake": "Nehmen",
+    "appearancePreview.verbRead": "Lesen",
     "appearancePreview.textAfter": ".",
     "appearancePreview.gamebookText": "Du stehst an einer Weggabelung. Eine Krähe beobachtet dich vom Wegweiser aus.",
     "appearancePreview.gamebookChoice1": "Nimm den Waldweg",
@@ -698,7 +701,7 @@
 
     "fontPicker.default": "Standard",
     "fontPicker.gameFonts": "Schriftarten dieses Spiels",
-    "fontPicker.noGameFonts": "Noch keine: füge welche mit „Schriftarten…“ hinzu",
+    "fontPicker.addFonts": "Schriftarten hinzufügen…",
     "fontPicker.builtIn": "In Quest Viva enthalten",
     "fontPicker.system": "Auf den meisten Computern",
     "fontPicker.custom": "Eigene…",

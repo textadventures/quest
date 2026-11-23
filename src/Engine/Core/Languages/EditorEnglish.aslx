@@ -164,7 +164,7 @@
   <template name="EditorGameColoursCaption">Colours</template>
   <template name="EditorGameOnScreenCaption">On screen</template>
   <template name="EditorGameLinksMenusCaption">Links and menus</template>
-  <template name="EditorGameMenuFont">Font</template>
+  <template name="EditorGameMenuFont">Verb menu font</template>
   <template name="EditorGamePictureframeHelp">Each room can have its own picture, or a script can set one.</template>
   <template name="EditorGameShowCommandPaneHelp">Fill it with the "Set the command pane" script command.</template>
   <template name="EditorGameShowCustomStatusPaneHelp">Fill it with the "Set the content of a pane" script command, using the ID customstatus.</template>
@@ -184,7 +184,8 @@
   <template name="EditorGameUnderlinehyperlinks">Underline links</template>
   <template name="EditorGameAfterusing">Deactivate a command link once it's been clicked</template>
   <template name="EditorGameVerbMenus">Verb menus</template>
-  <template name="EditorGameMenuFontHelp">Leave these empty for the defaults.</template>
+  <template name="EditorGameMenuFontHelp">The font and size of the menus that open from links. Default is the interface font. Leave the size empty for the default.</template>
+  <template name="EditorGameMenuFontClassicHelp">The font and size of the menus that open from links. Leave the size empty for the default.</template>
   <template name="EditorGameBackground">Background colour</template>
   <template name="EditorGameHoverbackground">Background colour under the pointer</template>
   <template name="EditorGameHoverforeground">Text colour under the pointer</template>

@@ -51,12 +51,13 @@ Themes are made for the new interface. With **Use the classic interface** ticked
 ### Text
 
 - **Font** - the font of the game's text. Click it for a list of fonts, each shown in its own font:
-  - **This game's fonts** - fonts you've added with **Fonts...** (see below).
+  - **This game's fonts** - fonts you've added with **Fonts...** (see below). **Add fonts...**, at the end of them, opens **Fonts...** from the list.
   - **Built into Quest Viva** - Literata, Nunito, Courier Prime, Special Elite and VT323, the themes' fonts. They come with the player, so every player sees them.
   - **On most computers** - fonts such as Georgia and Verdana, which most players' devices have. Each comes with fallbacks for devices that don't.
   - **Custom...** - type a list of fonts yourself, as CSS's `font-family` gives them, such as `'Book Antiqua', Palatino, serif`.
 - **Font size** - beside the font, in points. The default is 12.
 - **Interface font** - the font of the location bar, panes, menus and buttons, from the same list, or **Default** for the player's own. Beside it, the **Font size** of the location bar and panes, in points. Leave it empty for the default.
+- **Verb menu font** - when objects are links, the font of the pop-up menu of verbs that appears when the player clicks an object, from the same list. Beside it, the menu's **Font size**, in points. Leave them as **Default** and empty for the interface font at the game's text size (with the classic interface, Arial at 9 points). On a phone, the menu's text is made larger if needed, so it's easy to tap.
 - **Fonts...** - add any of the fonts on [Fontsource](https://fontsource.org), which has all of Google Fonts and other open source fonts. It suggests some good fonts for games, and searches over 2,000 more, each shown in its own font. Choose one to see a sample, and which letters to include: Latin and Latin Extended, enough for English and most European languages, are chosen for you. Then click **Add to game**. Tick **Use it for the game's text** to make it the game's font straight away.
 
 ### The game's own fonts
@@ -80,7 +81,7 @@ For all the colour boxes on these tabs, type any HTML colour, such as `DarkOrang
 
 The page is the column the text appears in, and the margins are either side of it. On a phone, the page fills the screen and the margins disappear.
 
-At the top of **Colours**, a preview shows some sample text in the game's font and colours, with the location bar and command bar when they're turned on. It shows the game in light mode and dark mode side by side, or once when the game looks the same in both, with the reason underneath. The classic interface has no preview.
+At the top of **Colours**, a preview shows some sample text in the game's font and colours, with the location bar and command bar when they're turned on. When objects are links, a verb menu is open under one of them, in the verb menu font: click the other link to see its menu. It shows the game in light mode and dark mode side by side, or once when the game looks the same in both, with the reason underneath. The classic interface has no preview.
 
 The page, text, link, accent, margin and border colours are in a table with a **Light** and a **Dark** column (see [Light and dark](#light-and-dark) for the Dark one):
 
@@ -119,10 +120,6 @@ With the classic interface, these appear once you untick **Classic location styl
 ### Command bar
 
 When the command bar is shown (on the Interface tab), **Plain command bar with a prompt** drops the box or line the player types into, and shows a **Prompt** in front of what they type. The default is `>`. Any character works, such as `▶`, but check it appears in the fonts your players will have.
-
-### Verb menus
-
-When objects are links, **Font** and **Font size** style the pop-up menu of verbs that appears when the player clicks an object. Leave them empty for the interface font at the game's text size (with the classic interface, Arial at 9 points). On a phone, the menu's text is made larger if needed, so it's easy to tap.
 
 ### Advanced
 

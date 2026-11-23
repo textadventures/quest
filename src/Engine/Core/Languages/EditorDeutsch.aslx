@@ -165,7 +165,7 @@
   <template name="EditorGameColoursCaption">Farben</template>
   <template name="EditorGameOnScreenCaption">Auf dem Bildschirm</template>
   <template name="EditorGameLinksMenusCaption">Links und Menüs</template>
-  <template name="EditorGameMenuFont">Schriftart</template>
+  <template name="EditorGameMenuFont">Schriftart der Verbmenüs</template>
   <template name="EditorGamePictureframeHelp">Jeder Raum kann ein eigenes Bild haben, oder ein Skript legt eines fest.</template>
   <template name="EditorGameShowCommandPaneHelp">Mit dem Skriptbefehl "Befehlsbereich festlegen" füllen.</template>
   <template name="EditorGameShowCustomStatusPaneHelp">Mit dem Skriptbefehl "Inhalt eines Bereichs festlegen" und der ID customstatus füllen.</template>
@@ -185,7 +185,8 @@
   <template name="EditorGameUnderlinehyperlinks">Links unterstreichen</template>
   <template name="EditorGameAfterusing">Einen Kommando-Link nach dem Anklicken deaktivieren</template>
   <template name="EditorGameVerbMenus">Verbmenüs</template>
-  <template name="EditorGameMenuFontHelp">Leer lassen für die Standardwerte.</template>
+  <template name="EditorGameMenuFontHelp">Die Schriftart und -größe der Menüs, die sich über Links öffnen. „Standard“ ist die Schriftart der Oberfläche. Die Größe leer lassen für den Standardwert.</template>
+  <template name="EditorGameMenuFontClassicHelp">Die Schriftart und -größe der Menüs, die sich über Links öffnen. Die Größe leer lassen für den Standardwert.</template>
   <template name="EditorGameBackground">Hintergrundfarbe</template>
   <template name="EditorGameHoverbackground">Hintergrundfarbe unter dem Mauszeiger</template>
   <template name="EditorGameHoverforeground">Textfarbe unter dem Mauszeiger</template>

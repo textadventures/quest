@@ -107,10 +107,11 @@ test('fonts', async ({ baseURL }) => {
         expect('the interface font back to Default', (await uiFont.getAttribute('aria-label')) === 'Interface font: Default', await uiFont.getAttribute('aria-label'));
         console.log('PASS: the interface font has Default and Custom…');
 
-        // Adding a font with the Fonts dialog
-        await page.getByRole('button', { name: 'Fonts…', exact: true }).click();
+        // Adding a font with the Fonts dialog, opened from a font picker's Add fonts…
+        await textFont.click();
+        await page.getByRole('listbox').getByRole('option', { name: 'Add fonts…', exact: true }).click();
         const dialog = page.locator('[data-fonts-modal]');
-        await dialog.waitFor();
+        await dialog.waitFor({ timeout: 5000 }).catch(() => { throw new Error('Add fonts… doesn\'t open the Fonts dialog'); });
         await dialog.getByRole('searchbox', { name: 'Search fonts' }).fill('lor');
         await dialog.locator('[data-font-result="Lora"]').click();
         await dialog.getByText('Letters for').waitFor();
