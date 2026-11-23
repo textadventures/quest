@@ -368,7 +368,9 @@ Grid_CalculateMapCoordinates (room, playerobject)
 Grid_ClearCustomLayer ()
 ```
 
-Clears the custom grid drawing layer. This currently has no effect, because nothing can be drawn onto the custom layer ([#2435](https://github.com/textadventures/quest/issues/2435)): [Grid_DrawLine](#grid_drawline), [Grid_DrawArrow](#grid_drawarrow), [Grid_DrawSquare](#grid_drawsquare) and similar draw onto the map itself. To remove everything, rooms included, use `JS.QuestUI.map.clearAllLayers ()`.
+Removes everything drawn on the custom drawing layer (see [Grid_ShowCustomLayer](#grid_showcustomlayer)), leaving the map itself alone. To remove everything, rooms included, use `JS.QuestUI.map.clearAllLayers ()`.
+
+In the [classic interface](/customise/classic/) this has no effect, because nothing is ever drawn onto the custom layer there.
 
 ## Grid_DrawArrow
 ```quest
@@ -501,7 +503,9 @@ Grid_SetScale(scale)
 Grid_ShowCustomLayer (boolean visible)
 ```
 
-Meant to show or hide a separate custom drawing layer in place of the map, but this currently has no effect ([#2435](https://github.com/textadventures/quest/issues/2435)). The custom layer stays hidden, and [Grid_DrawImage](#grid_drawimage), [Grid_DrawSquare](#grid_drawsquare) and the other drawing functions draw onto the map itself, on the level the player is on.
+Shows or hides the custom drawing layer, which sits on top of the map. While it's shown, [Grid_DrawImage](#grid_drawimage), [Grid_DrawSquare](#grid_drawsquare), [Grid_DrawLine](#grid_drawline) and the other drawing functions draw onto it rather than onto the map, until the map next draws a room or the player (usually when the player moves). Hiding it hides what's on it without clearing it.
+
+In the [classic interface](/customise/classic/) this has no effect: the custom layer stays hidden, and the drawing functions draw onto the map itself, on the level the player is on.
 
 ## HandleCommand
 ```quest
