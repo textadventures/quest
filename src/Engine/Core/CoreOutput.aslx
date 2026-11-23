@@ -1204,6 +1204,17 @@
     game.defaultwebfont = font
   </function>
 
+  <function name="AddFontFiles">
+    // The game's own fonts: each a stylesheet in the game's folder with the @font-face rules for
+    // one font and the font's files in them, which the editor's Fonts dialog adds. Any font
+    // setting can then name them, and nothing is downloaded from anywhere else.
+    if (HasAttribute(game, "fontfiles")) {
+      foreach (fontfile, game.fontfiles) {
+        JS.QuestUI.addStylesheet (GetFileURL(fontfile))
+      }
+    }
+  </function>
+
   <function name="AddExternalStylesheet" parameters="stylesheet">
     if (game.externalstylesheets = null) {
       game.externalstylesheets = NewStringList()

@@ -51,6 +51,9 @@
          its rules are contained to `.qv-chrome` subtrees so they can't affect the
          game UI. -->
     <link rel="stylesheet" type="text/css" href="chrome.css" />
+    <!-- The fonts built into the player (the themes' fonts), which any game can name. A font's
+         files are only downloaded once something uses it. See scripts/fetch-builtin-fonts.mjs. -->
+    <link rel="stylesheet" type="text/css" href="fonts/fonts.css" />
     <script type="text/javascript" src="game-saver.js"></script>
     <!-- VERSION_SCRIPT: spliced in at build time by scripts/inject-version.mjs
          (into wwwroot/index.html) — sets window.QuestVivaVersion from the

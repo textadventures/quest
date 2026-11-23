@@ -871,8 +871,9 @@ public sealed class EditorController : IDisposable
     /// The game's current value of each attribute on its editor's &lt;liveinterface/&gt; tabs (the
     /// Display and Interface tabs), including inherited ones, for the editor's Preview to copy onto
     /// the running game before re-running InitInterface. Only strings, booleans and numbers: the
-    /// tabs' other controls (scripts, lists) aren't what InitInterface reads. A null value means the
-    /// game doesn't set the attribute.
+    /// tabs' other controls (scripts, most lists) aren't what InitInterface reads. The exception is
+    /// a list of strings, such as the game's font files (fontfiles), given as a copy. A null value
+    /// means the game doesn't set the attribute.
     /// </summary>
     public IDictionary<string, object?> GetLiveInterfaceAttributes()
     {
@@ -890,6 +891,10 @@ public sealed class EditorController : IDisposable
             if (value is null or string or bool or int or double)
             {
                 result[attribute] = value;
+            }
+            else if (value is QuestList<string> list)
+            {
+                result[attribute] = list.ToList();
             }
         }
 
@@ -1481,7 +1486,6 @@ public sealed class EditorController : IDisposable
             var darkBackground = Value(type, "darkbackground");
             result.Add(new DropdownTypePreview(
                 typeName,
-                Value(type, "defaultwebfont"),
                 Value(type, "defaultfont"),
                 background,
                 background == null ? null : Value(type, "defaultforeground") ?? "Black",

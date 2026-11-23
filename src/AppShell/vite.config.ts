@@ -1,7 +1,7 @@
 import adapter from '@sveltejs/adapter-static'
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
 import { sveltekit } from '@sveltejs/kit/vite'
-import { defineConfig } from 'vite'
+import { defineConfig, searchForWorkspaceRoot } from 'vite'
 import tailwindcss from '@tailwindcss/vite'
 import { fileURLToPath } from 'node:url'
 import { join, extname } from 'node:path'
@@ -88,6 +88,10 @@ export default defineConfig({
     // Fail rather than move to the next free port: dev.sh prints this port, and
     // the WasmPlayer on the port after it belongs to this checkout.
     strictPort: true,
+    fs: {
+      // The fonts built into the player (#lib/builtin-fonts.ts), which the editor shows too
+      allow: [searchForWorkspaceRoot(process.cwd()), fileURLToPath(new URL('../WasmPlayer/wwwroot/fonts', import.meta.url))]
+    },
     proxy: {
       // Proxy WasmPlayer through the same origin so BroadcastChannel works between editor and player tabs.
       '/player': {

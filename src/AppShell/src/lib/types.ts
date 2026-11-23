@@ -109,7 +109,6 @@ export interface ControlInfo {
 // and a null darkBackground with a background means the theme has colours for one scheme only.
 export interface DropdownTypePreview {
   type: string
-  webFont: string | null
   font: string | null
   background: string | null
   text: string | null

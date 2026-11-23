@@ -237,6 +237,9 @@ public partial class WasmPlayerBridge
                 JsonValueKind.False => false,
                 JsonValueKind.Number when property.Value.TryGetInt32(out var i) => i,
                 JsonValueKind.Number => property.Value.GetDouble(),
+                // A list of strings, such as the game's font files
+                JsonValueKind.Array => new QuestList<string>(property.Value.EnumerateArray()
+                    .Select(item => item.GetString() ?? "")),
                 _ => null,
             };
             worldModel.SetGameAttributeFromEditor(property.Name, value);

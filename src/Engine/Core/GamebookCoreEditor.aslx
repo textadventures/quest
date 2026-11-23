@@ -321,37 +321,33 @@
         <caption>[EditorGameFont]</caption>
       </control>
 
+      <!-- As the text adventure's Appearance tab (CoreEditorGame.aslx) -->
       <control>
-        <controltype>dropdown</controltype>
+        <controltype>font</controltype>
         <caption>[EditorGameBasefont]</caption>
         <attribute>defaultfont</attribute>
-        <source>basefonts</source>
-        <freetext/>
-      </control>
-
-      <control>
-        <controltype>dropdown</controltype>
-        <caption>[EditorGameWebfont]</caption>
-        <attribute>defaultwebfont</attribute>
-        <source>webfonts</source>
-        <freetext/>
-      </control>
-
-      <control>
-        <controltype>label</controltype>
-        <caption>[EditorGameWebfontHelp]</caption>
-      </control>
-
-      <control>
-        <controltype>label</controltype>
-        <caption>[EditorGameBrowseavailable]</caption>
-        <href>https://fonts.google.com/</href>
       </control>
 
       <control>
         <controltype>number</controltype>
         <caption>[EditorGameFontsize]</caption>
         <attribute>defaultfontsize</attribute>
+        <samerow/>
+        <width>64</width>
+      </control>
+
+      <control>
+        <controltype>webfont</controltype>
+        <caption>[EditorGameWebfont]</caption>
+        <attribute>defaultwebfont</attribute>
+        <onlydisplayif>LengthOf(GetString(game, "defaultwebfont")) &gt; 0</onlydisplayif>
+      </control>
+
+      <!-- The Fonts dialog's button. Its attribute is only so a running Preview gets the game's
+           font files when they change (EditorController.GetLiveInterfaceAttributes). -->
+      <control>
+        <controltype>fonts</controltype>
+        <attribute>fontfiles</attribute>
       </control>
 
       <control>

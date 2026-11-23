@@ -315,6 +315,7 @@ A [Zarfian cruelty scale](https://www.ifwiki.org/Cruelty_scale) rating. Typical 
 -   [defaultforeground](/reference/attributes/all#defaultforeground)
 -   [defaultlinkforeground](/reference/attributes/all#defaultlinkforeground)
 -   [defaultwebfont](/reference/attributes/all#defaultwebfont)
+-   [fontfiles](/reference/attributes/all#fontfiles)
 -   [displayroomdescriptiononstart](/reference/attributes/all#displayroomdescriptiononstart)
 -   [echohyperlinks](/reference/attributes/all#echohyperlinks)
 -   [enablehyperlinks](/reference/attributes/all#enablehyperlinks)

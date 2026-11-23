@@ -1,18 +1,19 @@
-using System.Net.Http;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
 namespace QuestViva.EditorCore;
 
-[JsonSerializable(typeof(FontsManager.WebFontsResult))]
-internal partial class FontsManagerJsonContext : JsonSerializerContext { }
-
+// The fonts the editor offers in its font dropdowns (a control's <source>basefonts</source>):
+// the fonts built into the player, then fonts most computers have. The Appearance tab's own font
+// settings use AppShell's font picker instead, which also offers the game's own fonts.
 internal class FontsManager
 {
-    private static readonly HttpClient Client = new();
-
+    // Each the same font list as AppShell's lib/fonts.ts BUILT_IN_FONTS. The player has these
+    // fonts built in (WasmPlayer's wwwroot/fonts), so they look the same on every computer.
     private readonly List<string> _basefonts =
     [
+        "Literata, Georgia, serif",
+        "Nunito, 'Trebuchet MS', sans-serif",
+        "'Courier Prime', 'Courier New', Courier, monospace",
+        "'Special Elite', 'Courier New', Courier, monospace",
+        "VT323, 'Lucida Console', Monaco, monospace",
         "Georgia, serif",
         "'Palatino Linotype', 'Book Antiqua', Palatino, serif",
         "'Times New Roman', Times, serif",
@@ -28,44 +29,9 @@ internal class FontsManager
         "'Lucida Console', Monaco, monospace"
     ];
 
-    private List<string> _webFonts = [string.Empty];
-
-    public FontsManager()
-    {
-        _ = FetchWebFontsAsync();
-    }
-
-    private async Task FetchWebFontsAsync()
-    {
-        try
-        {
-            var json = await Client.GetStringAsync(
-                "https://www.googleapis.com/webfonts/v1/webfonts?key=AIzaSyDs93IH2UgudQK5IyNSdvKnm1N8TIYzlcM");
-            var result = JsonSerializer.Deserialize(json, FontsManagerJsonContext.Default.WebFontsResult);
-            if (result?.items != null)
-            {
-                _webFonts = [.. result.items.Select(i => i.family)];
-                _webFonts.Insert(0, string.Empty);
-            }
-        }
-        catch { }
-    }
-
     public List<string> GetBaseFonts() => _basefonts;
 
-    public List<string> GetWebFonts() => _webFonts;
-
-    internal class WebFontResult
-    {
-        public string kind { get; set; } = string.Empty;
-        public string family { get; set; } = string.Empty;
-        public List<string> variants { get; set; } = [];
-        public List<string> subsets { get; set; } = [];
-    }
-
-    internal class WebFontsResult
-    {
-        public string kind { get; set; } = string.Empty;
-        public List<WebFontResult> items { get; set; } = [];
-    }
+    // Google Fonts' names, for a SetWebFontName script a game already has. The list isn't fetched
+    // any more, so nothing asks Google for anything: the font's name is typed in.
+    public List<string> GetWebFonts() => [string.Empty];
 }

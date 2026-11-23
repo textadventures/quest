@@ -97,7 +97,7 @@ public class ThemeChooserTests
         Assert.AreEqual("#2a2119", parchment.DarkBackground);
         Assert.AreEqual("#efe4cf", parchment.DarkText);
         Assert.AreEqual("#e8a873", parchment.DarkLink);
-        Assert.AreEqual("Literata", parchment.WebFont);
+        Assert.AreEqual("Literata, Georgia, serif", parchment.Font);
 
         // One scheme only
         var terminal = previews["theme_terminal"];
@@ -108,6 +108,6 @@ public class ThemeChooserTests
         // A layout theme leaves the colours to the player, but has a font
         var typewriter = previews["theme_typewriter"];
         Assert.IsNull(typewriter.Background);
-        Assert.AreEqual("'Courier New', Courier, monospace", typewriter.Font);
+        Assert.AreEqual("'Special Elite', 'Courier New', Courier, monospace", typewriter.Font);
     }
 }

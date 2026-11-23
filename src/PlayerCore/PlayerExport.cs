@@ -97,9 +97,12 @@ public static class PlayerExport
         // adds them, with crossorigin when they come from another origin.
         if (cdnBase != null)
         {
-            html = ReplaceOrFail(html, StyleLine("chrome.css"),
-                line => Regex.Replace(line, @" />(\r?\n)$", " crossorigin=\"anonymous\" />$1"),
-                "the chrome.css stylesheet link");
+            foreach (var stylesheet in new[] { "chrome.css", "fonts/fonts.css" })
+            {
+                html = ReplaceOrFail(html, StyleLine(stylesheet),
+                    line => Regex.Replace(line, @" />(\r?\n)$", " crossorigin=\"anonymous\" />$1"),
+                    $"the {stylesheet} stylesheet link");
+            }
         }
 
         // Notes about the player shell's own implementation are no use in a game's page.

@@ -187,7 +187,7 @@ By inheriting the "container\_open" type in an object, it becomes by default [op
 
 ## defaultfont
 
-"defaultfont" is a [string](/reference/attributes/types#string) attribute which should be set to a valid font name. It specifies the default font for the game. If web fonts are available, the [defaultwebfont](#defaultwebfont) will be used instead.
+"defaultfont" is a [string](/reference/attributes/types#string) attribute: a list of fonts as CSS's `font-family` gives them, such as `'Lora', Georgia, serif`, with family names in single quotes. It specifies the default font for the game. It can name the game's own fonts (see [fontfiles](#fontfiles)), the fonts built into Quest Viva (Literata, Nunito, Courier Prime, Special Elite and VT323) or fonts the player's device has. If [defaultwebfont](#defaultwebfont) is set, that font is used in front of it.
 
 ## defaultfontsize
 
@@ -222,7 +222,7 @@ This type defines default behaviour for an object:
 
 ## defaultwebfont
 
-"defaultwebfont" is a [string](/reference/attributes/types#string) attribute which should be set to a valid web font name. It specifies the default web font for the game. This is used in preference to the [defaultfont](#defaultfont) if web fonts are available.
+"defaultwebfont" is a [string](/reference/attributes/types#string) attribute: the name of a font on [Google Fonts](https://fonts.google.com/), which the player downloads from Google when the game starts, if it's online, and uses in front of [defaultfont](#defaultfont). The editor no longer sets it: a game's own fonts ([fontfiles](#fontfiles)) work offline and don't ask Google for anything. For a game that has one, the Appearance tab offers to copy it into the game - see [Web fonts from older games](/customise/look-and-feel#web-fonts-from-older-games).
 
 ## descprefix
 
@@ -301,6 +301,10 @@ The "female" type is defined in CoreTypes.aslx. It sets the [gender](#gender) an
 ## femaleplural
 
 The "femaleplural" type is defined in CoreTypes.aslx. It sets the [gender](#gender) and [article](#article) as appropriate for female (plural) characters, and sets the [displayverbs](#displayverbs) to "Look at" and "Speak to".
+
+## fontfiles
+
+"fontfiles" is a [stringlist](/reference/attributes/types#stringlist) attribute of the game: the font files in the game's folder that the player loads when the game starts, such as `lora.font.css`. Each is a stylesheet with the `@font-face` rules for one font, with the font itself in them. The Appearance tab's **Fonts...** dialog adds the files and looks after this list - see [The game's own fonts](/customise/look-and-feel#the-games-own-fonts). It's available in games saved as version 610 or later.
 
 ## firstenter
 

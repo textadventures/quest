@@ -9,6 +9,8 @@
     // author's own look (<resetoverrides/>).
     import type { ControlOption, DropdownTypePreview } from "#lib/types.js";
     import Check from "@lucide/svelte/icons/check";
+    // The themes' fonts are built into the player
+    import "#lib/builtin-fonts.js";
 
     let { value, options, previews, onchange }: {
         value: string;

@@ -1,7 +1,9 @@
 <library>
   <!-- The game's themes, offered by the editor's Theme picker (a dropdowntypes control on the
        game's Appearance tab). Each sets some of the game's look: its fonts, colours and the
-       width of the text. Shared by text adventures (Core.aslx) and gamebooks (GamebookCore.aslx). -->
+       width of the text. Shared by text adventures (Core.aslx) and gamebooks (GamebookCore.aslx).
+       Their fonts are built into the player (WasmPlayer's wwwroot/fonts), so they're named in
+       defaultfont, not loaded from Google as a defaultwebfont. -->
 
   <type name="theme_novella">
     <setcustompadding/>
@@ -31,15 +33,13 @@
     <customwidth type="int">650</customwidth>
     <setcustompadding/>
     <custompaddingtop type="int">60</custompaddingtop>
-    <defaultfont>'Courier New', Courier, monospace</defaultfont>
-    <defaultwebfont>Special Elite</defaultwebfont>
+    <defaultfont>'Special Elite', 'Courier New', Courier, monospace</defaultfont>
   </type>
 
   <!-- Light and dark (#2656): each sets its colours for both schemes, so the game follows the
        player's light or dark choice. -->
   <type name="theme_parchment">
-    <defaultfont>Georgia, serif</defaultfont>
-    <defaultwebfont>Literata</defaultwebfont>
+    <defaultfont>Literata, Georgia, serif</defaultfont>
     <defaultbackground>#faf3e3</defaultbackground>
     <defaultforeground>#3b2f22</defaultforeground>
     <defaultlinkforeground>#8a3b12</defaultlinkforeground>
@@ -51,8 +51,7 @@
   </type>
 
   <type name="theme_noir">
-    <defaultfont>'Courier New', Courier, monospace</defaultfont>
-    <defaultwebfont>Courier Prime</defaultwebfont>
+    <defaultfont>'Courier Prime', 'Courier New', Courier, monospace</defaultfont>
     <defaultbackground>#f2f1ee</defaultbackground>
     <defaultforeground>#121212</defaultforeground>
     <defaultlinkforeground>#a31515</defaultlinkforeground>
@@ -64,8 +63,7 @@
   </type>
 
   <type name="theme_storybook">
-    <defaultfont>'Trebuchet MS', sans-serif</defaultfont>
-    <defaultwebfont>Nunito</defaultwebfont>
+    <defaultfont>Nunito, 'Trebuchet MS', sans-serif</defaultfont>
     <defaultfontsize type="int">14</defaultfontsize>
     <defaultbackground>#fff6ee</defaultbackground>
     <defaultforeground>#43305a</defaultforeground>
@@ -87,8 +85,7 @@
   </type>
 
   <type name="theme_terminal">
-    <defaultfont>'Lucida Console', Monaco, monospace</defaultfont>
-    <defaultwebfont>VT323</defaultwebfont>
+    <defaultfont>VT323, 'Lucida Console', Monaco, monospace</defaultfont>
     <defaultfontsize type="int">15</defaultfontsize>
     <defaultbackground>#0b0f0b</defaultbackground>
     <defaultforeground>#4ff07a</defaultforeground>

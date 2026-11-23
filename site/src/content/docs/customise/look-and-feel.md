@@ -26,13 +26,15 @@ The **Theme** is the quickest way to change the look of your game. Each theme is
 | Theme | What it does |
 |---|---|
 | Standard | The default: Georgia text in the default light or dark mode colours, whichever the player has chosen, with panes on the right. |
-| Parchment | Dark brown text on cream, with rust links, in the Literata web font (falling back to Georgia). In dark mode, cream text on deep brown. |
-| Noir | Near-black text on off-white, with deep red links, in the Courier Prime web font (falling back to Courier New). In dark mode, off-white on near-black. |
-| Storybook | Plum text on a soft peach page, with coral links, in the Nunito web font (falling back to Trebuchet MS), slightly larger. In dark mode, pale pink on deep plum. |
+| Parchment | Dark brown text on cream, with rust links, in the Literata font. In dark mode, cream text on deep brown. |
+| Noir | Near-black text on off-white, with deep red links, in the Courier Prime font. In dark mode, off-white on near-black. |
+| Storybook | Plum text on a soft peach page, with coral links, in the Nunito font, slightly larger. In dark mode, pale pink on deep plum. |
 | Novella | A narrow 650-pixel column of text with extra space at the top, like a page of a book. For more of a book's feel, turn off the panes, the location bar's room name and the border on the Interface tab. |
-| Typewriter | Novella's layout, in the Special Elite web font (falling back to Courier New). |
+| Typewriter | Novella's layout, in the Special Elite font. |
 | Midnight | Soft white text on deep navy, with amber links and a plain command bar, in dark mode or not. |
-| Terminal | Green text on black in the VT323 web font (falling back to Lucida Console), with a plain command bar and a `>` prompt, in dark mode or not. |
+| Terminal | Green text on black in the VT323 font, with a plain command bar and a `>` prompt, in dark mode or not. |
+
+The themes' fonts are built into Quest Viva, so they look the same on every device, online or not, and you can choose them for any game (see [Text](#text)).
 
 Parchment, Noir and Storybook have colours for both light and dark mode, so players can switch between them (see [Light and dark](#light-and-dark)). Standard, Novella and Typewriter use the default light or dark mode colours. Midnight and Terminal look the same in either.
 
@@ -48,10 +50,29 @@ Themes are made for the new interface. With **Use the classic interface** ticked
 
 ### Text
 
-- **Base font** - a font from the list, each with fallbacks, such as "Georgia, serif". These work on every device.
-- **Web font** - optionally, any font from [Google Fonts](https://fonts.google.com/) (the **Browse available web fonts** link opens the catalogue). The player's browser downloads it from Google when the game starts. If it can't - because the player is offline, for example - the base font is used instead, so choose a base font that's a reasonable substitute.
-- **Font size** - in points. The default is 12.
-- **Interface font** - the font of the location bar, panes, menus and buttons, and beside it the **Font size** of the location bar and panes, in points. Leave them empty for the defaults.
+- **Font** - the font of the game's text. Click it for a list of fonts, each shown in its own font:
+  - **This game's fonts** - fonts you've added with **Fonts...** (see below).
+  - **Built into Quest Viva** - Literata, Nunito, Courier Prime, Special Elite and VT323, the themes' fonts. They come with the player, so every player sees them.
+  - **On most computers** - fonts such as Georgia and Verdana, which most players' devices have. Each comes with fallbacks for devices that don't.
+  - **Custom...** - type a list of fonts yourself, as CSS's `font-family` gives them, such as `'Book Antiqua', Palatino, serif`.
+- **Font size** - beside the font, in points. The default is 12.
+- **Interface font** - the font of the location bar, panes, menus and buttons, from the same list, or **Default** for the player's own. Beside it, the **Font size** of the location bar and panes, in points. Leave it empty for the default.
+- **Fonts...** - add any of the fonts on [Fontsource](https://fontsource.org), which has all of Google Fonts and other open source fonts. It suggests some good fonts for games, and searches over 2,000 more, each shown in its own font. Choose one to see a sample, and which letters to include: Latin and Latin Extended, enough for English and most European languages, are chosen for you. Then click **Add to game**. Tick **Use it for the game's text** to make it the game's font straight away.
+
+### The game's own fonts
+
+A font you add is copied into your game's folder as one file, such as `lora.font.css`, with the font's regular and bold weights, in normal and italic, and its licence. Only adding a font needs the internet. After that it's part of your game like a picture is: the Preview works offline, publishing includes it, and your published game never asks Google, or anywhere else, for anything. The fonts on Fontsource are free to use in a game, and their licences say the licence has to stay with the font, which it does, inside the file.
+
+The game loads the fonts listed in its `fontfiles` attribute, which **Fonts...** looks after for you. To take a font out, click **Remove** beside it in **Fonts...**: this deletes its file, and any font setting that used it falls back on the fonts after it in the list.
+
+A game's own fonts can be used anywhere CSS can: in your [stylesheet](/customise/css), or with `SetFontName` during the game (see [Changing the look during the game](#changing-the-look-during-the-game)).
+
+### Web fonts from older games
+
+Before **Fonts...**, a game could name a **Web font** from Google Fonts, which the player's browser downloaded from Google when the game started, if it was online. A game that has one still works the same, and the Appearance tab shows it with two buttons:
+
+- **Copy into game** - adds the same font from Fontsource to the game, as **Fonts...** does, and puts it at the front of the game's **Font**. This needs the internet.
+- **Stop using it** - goes back to the game's **Font**.
 
 For all the colour boxes on these tabs, type any HTML colour, such as `DarkOrange` or `#336699`, or click the palette button beside the box to pick one. As you type, the matching colour names are suggested, and the ▾ button lists them all. To clear a colour, empty the box or click its ×. Cleared, the text, link and page colours go back to the theme's own, which for the Standard theme is **Default**: the game follows the player's light or dark mode.
 
@@ -182,7 +203,6 @@ Most of these options are read when the game starts. To change what's on screen 
 | To change | Use |
 |---|---|
 | The text font | `SetFontName("'Courier New', Courier, monospace")` |
-| To a web font | `SetWebFontName("Wallpoet")` |
 | Text size | `SetFontSize(14)` |
 | Text colour | `SetForegroundColour("DarkRed")` |
 | Page colour | `SetBackgroundColour("Ivory")` |
@@ -191,12 +211,14 @@ Most of these options are read when the game starts. To change what's on screen 
 The font, size and colour apply to text printed after the change, so you can switch fonts for one message and back again:
 
 ```quest
-SetWebFontName ("Wallpoet")
+SetFontName ("'Special Elite', 'Courier New', monospace")
 msg ("A message scrawled on the wall reads: KEEP OUT.")
 SetFontName ("Georgia, serif")
 msg ("You decide to keep out.")
 ```
 
-`SetWebFontName` loads the font from Google Fonts and switches to it; `SetFontName` switches back to a base font. You can use as many web fonts as you like this way, and switching back to one you've already used doesn't load it again. As with the Appearance tab's web font, it needs an internet connection, so if the player is offline the text appears in the current base font instead.
+`SetFontName` can use any font in the **Font** list: the game's own fonts, the ones built into Quest Viva, or the ones most computers have. To use a font of your own, add it with **Fonts...** first.
+
+`SetWebFontName`, which loads a font from Google Fonts while the game runs, still works in games that use it, but the editor no longer offers it: a font added with **Fonts...** works offline and doesn't ask Google for anything.
 
 For all the functions, see [User interface functions](/reference/functions/user-interface).

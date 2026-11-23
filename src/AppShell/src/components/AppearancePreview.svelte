@@ -7,6 +7,8 @@
     // The colours are worked out in lib/appearance.ts.
     import { computeAppearance, type SchemeLook } from "#lib/appearance.js";
     import { locale, t } from "#lib/i18n/index.js";
+    // The fonts built into the player. The game's own are loaded by lib/fonts.ts.
+    import "#lib/builtin-fonts.js";
 
     let { get, gamebook = false }: {
         // The game's value for an attribute, its own or its theme's
@@ -22,7 +24,8 @@
     let uiFont = $derived((get("interfacefont") ?? "").trim() || 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif');
     let placeholder = $derived((get("commandplaceholder") ?? "").trim() || t("appearancePreview.typeHere"));
 
-    // The web font, from Google Fonts as the player loads it (CoreOutput.aslx's SetWebFontName).
+    // A web font from before the Fonts dialog (defaultwebfont), from Google Fonts as the player
+    // loads it (CoreOutput.aslx's SetWebFontName). Only a game that already has one gets here.
     // Each family is added once and kept, so going back to it doesn't fetch it again.
     $effect(() => {
         const family = look.webFont;

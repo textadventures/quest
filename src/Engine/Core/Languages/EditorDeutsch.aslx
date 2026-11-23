@@ -166,7 +166,6 @@
   <template name="EditorGameOnScreenCaption">Auf dem Bildschirm</template>
   <template name="EditorGameLinksMenusCaption">Links und Menüs</template>
   <template name="EditorGameMenuFont">Schriftart</template>
-  <template name="EditorGameWebfontHelp">Von Google Fonts, wenn der Spieler online ist. Sonst wird die Grundschrift verwendet.</template>
   <template name="EditorGamePictureframeHelp">Jeder Raum kann ein eigenes Bild haben, oder ein Skript legt eines fest.</template>
   <template name="EditorGameShowCommandPaneHelp">Mit dem Skriptbefehl "Befehlsbereich festlegen" füllen.</template>
   <template name="EditorGameShowCustomStatusPaneHelp">Mit dem Skriptbefehl "Inhalt eines Bereichs festlegen" und der ID customstatus füllen.</template>
@@ -174,9 +173,8 @@
   <template name="EditorGameTheme">Thema</template>
   <template name="EditorGameThemeClassicHelp">Themen sind für die neue Oberfläche gemacht. Wenn „Klassische Oberfläche verwenden“ (auf der Registerkarte Oberfläche) eingeschaltet ist, wird nur ein Teil des Themas angezeigt, etwa die Schriftart und die Farben des Textes.</template>
   <template name="EditorGameFont">Schriftart</template>
-  <template name="EditorGameBasefont">Basisschriftart</template>
+  <template name="EditorGameBasefont">Schriftart</template>
   <template name="EditorGameWebfont">Webschriftart</template>
-  <template name="EditorGameBrowseavailable">Hier kannst du die verfügbaren Webschriftarten betrachten</template>
   <template name="EditorGameFontsize">Schriftgröße</template>
   <template name="EditorGameBackgroundColour">Spielfeldfarbe</template>
   <template name="EditorGameBackground2">Bild für die Seitenränder</template>
@@ -206,7 +204,7 @@
   <template name="EditorGamePanesCaption">Spielleisten</template>
   <template name="EditorGameMapinteractive">Karte kann verschoben und gezoomt werden</template>
   <template name="EditorGameInterfacefont">Schriftart der Oberfläche</template>
-  <template name="EditorGameInterfacefontHelp">Die Schriftart und -größe der Raumleiste, der Bereiche und der Schaltflächen. Leer lassen für die Standardwerte.</template>
+  <template name="EditorGameInterfacefontHelp">Die Schriftart und -größe der Raumleiste, der Bereiche und der Schaltflächen. Die Größe leer lassen für den Standardwert.</template>
   <template name="EditorGameAccentColour">Akzentfarbe</template>
   <template name="EditorGameAccentColourHelp">Die Akzentfarbe ist für Links, den Kompass und die Eingabeaufforderung.</template>
   <template name="EditorGameLightDarkHelp">So funktionieren der helle und der dunkle Modus</template>

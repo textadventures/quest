@@ -165,7 +165,6 @@
   <template name="EditorGameOnScreenCaption">On screen</template>
   <template name="EditorGameLinksMenusCaption">Links and menus</template>
   <template name="EditorGameMenuFont">Font</template>
-  <template name="EditorGameWebfontHelp">From Google Fonts, when the player is online. The base font is used otherwise.</template>
   <template name="EditorGamePictureframeHelp">Each room can have its own picture, or a script can set one.</template>
   <template name="EditorGameShowCommandPaneHelp">Fill it with the "Set the command pane" script command.</template>
   <template name="EditorGameShowCustomStatusPaneHelp">Fill it with the "Set the content of a pane" script command, using the ID customstatus.</template>
@@ -173,9 +172,8 @@
   <template name="EditorGameTheme">Theme</template>
   <template name="EditorGameThemeClassicHelp">Themes are made for the new interface. With "Use the classic interface" turned on (on the Interface tab), only some of a theme shows, such as its text font and colours.</template>
   <template name="EditorGameFont">Text</template>
-  <template name="EditorGameBasefont">Base font</template>
+  <template name="EditorGameBasefont">Font</template>
   <template name="EditorGameWebfont">Web font</template>
-  <template name="EditorGameBrowseavailable">Browse available web fonts</template>
   <template name="EditorGameFontsize">Font size</template>
   <template name="EditorGameBackgroundColour">Page colour</template>
   <template name="EditorGameBackground2">Margin image</template>
@@ -206,7 +204,7 @@
   <template name="EditorGamePanesCaption">Game panes</template>
   <template name="EditorGameMapinteractive">Map can be dragged and zoomed</template>
   <template name="EditorGameInterfacefont">Interface font</template>
-  <template name="EditorGameInterfacefontHelp">The font and size of the location bar, panes and buttons. Leave them empty for the default.</template>
+  <template name="EditorGameInterfacefontHelp">The font and size of the location bar, panes and buttons. Leave the size empty for the default.</template>
   <template name="EditorGameAccentColour">Accent colour</template>
   <template name="EditorGameAccentColourHelp">The accent colour is for links, the compass and the command prompt.</template>
   <template name="EditorGameLightDarkHelp">How light and dark mode work</template>
