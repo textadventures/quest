@@ -26,7 +26,7 @@ The stylesheet is applied whenever the game starts, and again whenever the playe
 
 Your rules always win over the player's own styles, whatever their specificity, so you never need `!important` to beat them. (The player keeps all its own CSS in cascade layers, and the stylesheet isn't in one.) The one exception is an option you've set on the Appearance or Interface tab, which the player applies to the element itself: change the option instead of overriding it.
 
-A `url(...)` in the stylesheet can't name a file in your game folder. For a picture in the margins or the location bar, use **Margin image** or the location bar's **Background image** on the Appearance tab. Anything else needs a full `https://` address.
+A `url(...)` in the stylesheet can't name a file in your game folder. For a picture in the margins or the location bar, use **Margin image** or the location bar's **Background image** on the Appearance tab. Anything else needs a full `https://` address. For a font of your own, don't embed it in the stylesheet: add it with **Fonts...** on the Appearance tab, which takes your own font files too (see [The game's own fonts](/customise/look-and-feel#the-games-own-fonts)), and then any CSS can name it.
 
 ## Custom properties
 

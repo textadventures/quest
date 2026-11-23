@@ -1,7 +1,7 @@
 // Fonts for a game. Three kinds can be chosen for its text and its interface:
 //
-// - The game's own fonts, added from Fontsource (Google Fonts and other open source fonts) by the
-//   Fonts dialog (FontsModal.svelte). Each is copied into the game's folder as one file,
+// - The game's own fonts, added by the Fonts dialog (FontsModal.svelte) from Fontsource (Google
+//   Fonts and other open source fonts) or from the author's own font files. Each is copied into the game's folder as one file,
 //   <id>.font.css: its @font-face rules with the font's files embedded as data: URLs, and its
 //   licence in a comment at the top. A game's files are flat and the player turns each into a URL
 //   of its own, so a stylesheet couldn't point at font files beside it. The game lists its font
@@ -251,7 +251,207 @@ export function fontFamilyIn(css: string): string | undefined {
 // The kind of font a file this file made is for, from its first line, so it can fall back on a
 // font of the same kind
 export function categoryIn(css: string): FontCategory | undefined {
-    return /^\/\* .+?, an? ([\w-]+) font from Fontsource/.exec(css)?.[1];
+    return /^\/\* .+?, an? ([\w-]+) font (?:from Fontsource|from the author's own files)/.exec(css)?.[1];
+}
+
+// ── Fonts from the author's own files ────────────────────────────────────────
+
+// The kinds of font to choose from for one added from a file, which decide the fonts it falls
+// back on
+export const FONT_CATEGORIES = ["serif", "sans-serif", "monospace", "display", "handwriting"];
+
+export const FONT_FILE_ACCEPT = ".ttf,.otf,.woff,.woff2";
+
+export type FontFormat = "truetype" | "opentype" | "woff" | "woff2";
+
+// One of the files of a font added from the author's own files: one weight and style
+export interface LocalFontFace {
+    name: string;
+    bytes: Uint8Array;
+    format: FontFormat;
+    weight: number;
+    style: "normal" | "italic";
+}
+
+// What a font file says about itself, where it can be read: TrueType, OpenType and WOFF files,
+// not WOFF2 ones, whose tables are compressed together
+export interface FontFileInfo {
+    family?: string;
+    weight?: number;
+    italic?: boolean;
+}
+
+const tagAt = (bytes: Uint8Array, at: number) => String.fromCharCode(bytes[at], bytes[at + 1], bytes[at + 2], bytes[at + 3]);
+
+// A font file's format, from its first bytes. A font collection (.ttc) isn't one the player can use.
+export function fontFormatOf(bytes: Uint8Array): FontFormat | undefined {
+    if (bytes.length < 12) return undefined;
+    const tag = tagAt(bytes, 0);
+    if (tag === "wOFF") return "woff";
+    if (tag === "wOF2") return "woff2";
+    if (tag === "OTTO") return "opentype";
+    if (tag === "true" || (bytes[0] === 0 && bytes[1] === 1 && bytes[2] === 0 && bytes[3] === 0)) return "truetype";
+    return undefined;
+}
+
+async function inflate(bytes: Uint8Array): Promise<Uint8Array> {
+    const stream = new Blob([bytes as BlobPart]).stream().pipeThrough(new DecompressionStream("deflate"));
+    return new Uint8Array(await new Response(stream).arrayBuffer());
+}
+
+// A table of a TrueType, OpenType or WOFF file
+async function fontTable(bytes: Uint8Array, format: FontFormat, tag: string): Promise<DataView | undefined> {
+    const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+    if (format === "truetype" || format === "opentype") {
+        const count = view.getUint16(4);
+        for (let i = 0; i < count; i++) {
+            const at = 12 + i * 16;
+            if (at + 16 > bytes.length) return undefined;
+            if (tagAt(bytes, at) !== tag) continue;
+            const offset = view.getUint32(at + 8), length = view.getUint32(at + 12);
+            return offset + length <= bytes.length ? new DataView(bytes.buffer, bytes.byteOffset + offset, length) : undefined;
+        }
+    } else if (format === "woff") {
+        const count = view.getUint16(12);
+        for (let i = 0; i < count; i++) {
+            const at = 44 + i * 20;
+            if (at + 20 > bytes.length) return undefined;
+            if (tagAt(bytes, at) !== tag) continue;
+            const offset = view.getUint32(at + 4), compressed = view.getUint32(at + 8), length = view.getUint32(at + 12);
+            if (offset + compressed > bytes.length) return undefined;
+            const data = bytes.subarray(offset, offset + compressed);
+            const table = compressed < length ? await inflate(data) : data;
+            return new DataView(table.buffer, table.byteOffset, table.byteLength);
+        }
+    }
+    return undefined;
+}
+
+// The family in a font's name table: its typographic family (name 16) if it has one, as that
+// groups a family's weights together, or else its family (name 1). Windows names (UTF-16) in US
+// English first, then any Windows name, then Mac Roman ones.
+function familyIn(name: DataView): string | undefined {
+    if (name.byteLength < 6) return undefined;
+    const count = name.getUint16(2), strings = name.getUint16(4);
+    const found: { id: number; rank: number; text: string }[] = [];
+    for (let i = 0; i < count && 6 + i * 12 + 12 <= name.byteLength; i++) {
+        const at = 6 + i * 12;
+        const platform = name.getUint16(at), language = name.getUint16(at + 4), id = name.getUint16(at + 6);
+        const length = name.getUint16(at + 8), offset = strings + name.getUint16(at + 10);
+        if ((id !== 1 && id !== 16) || offset + length > name.byteLength) continue;
+        let text = "";
+        if (platform === 3 || platform === 0) {
+            for (let j = 0; j + 1 < length; j += 2) text += String.fromCharCode(name.getUint16(offset + j));
+        } else if (platform === 1) {
+            for (let j = 0; j < length; j++) text += String.fromCharCode(name.getUint8(offset + j));
+        } else continue;
+        const rank = platform === 3 && language === 0x409 ? 0 : platform === 1 ? 2 : 1;
+        if (text.trim()) found.push({ id, rank, text: text.trim() });
+    }
+    found.sort((a, b) => (b.id - a.id) || (a.rank - b.rank));
+    return found[0]?.text;
+}
+
+export async function readFontFileInfo(bytes: Uint8Array, format: FontFormat): Promise<FontFileInfo> {
+    try {
+        const info: FontFileInfo = {};
+        const name = await fontTable(bytes, format, "name");
+        if (name) info.family = familyIn(name);
+        const os2 = await fontTable(bytes, format, "OS/2");
+        if (os2 && os2.byteLength >= 64) {
+            const weight = os2.getUint16(4);
+            if (weight >= 1 && weight <= 1000) info.weight = weight;
+            info.italic = (os2.getUint16(62) & 1) !== 0;
+        }
+        return info;
+    } catch {
+        // A file the browser can still use, but whose tables can't be read
+        return {};
+    }
+}
+
+const WEIGHT_WORDS: [RegExp, number][] = [
+    [/(?:extra|ultra)[-_ ]?light/i, 200], [/(?:semi|demi)[-_ ]?bold/i, 600], [/(?:extra|ultra)[-_ ]?bold/i, 800],
+    [/hairline|thin/i, 100], [/light/i, 300], [/medium/i, 500], [/bold/i, 700], [/black|heavy/i, 900],
+];
+
+// A font file's weight, style and family from its name, such as "MyFont-BoldItalic.ttf", for a
+// file that doesn't say (a WOFF2 one), or doesn't say it all
+export function guessFromFilename(filename: string): { family: string; weight: number; style: "normal" | "italic" } {
+    const base = filename.replace(/\.[^.]+$/, "");
+    const dash = base.search(/[-_](?=[^-_]*$)/);
+    const suffix = dash >= 0 ? base.slice(dash + 1) : "";
+    const styleWords = /^(?:(?:extra|ultra|semi|demi)?(?:light|bold)|thin|hairline|medium|black|heavy|regular|normal|book|roman|italic|oblique|it)+$/i;
+    const describesStyle = suffix !== "" && styleWords.test(suffix);
+    const weight = WEIGHT_WORDS.find(([pattern]) => pattern.test(suffix))?.[1] ?? 400;
+    const italic = describesStyle && /italic|oblique|it$/i.test(suffix);
+    const family = (describesStyle ? base.slice(0, dash) : base).replace(/[-_]+/g, " ").trim() || base;
+    return { family, weight, style: italic ? "italic" : "normal" };
+}
+
+// Reads font files the author chose, for the Fonts dialog to add as one font. Throws, naming the
+// file, for one that isn't a font the player can use.
+export async function readLocalFontFiles(files: File[]): Promise<{ family: string; faces: LocalFontFace[] }> {
+    let family: string | undefined;
+    const faces: LocalFontFace[] = [];
+    for (const file of files) {
+        const bytes = new Uint8Array(await file.arrayBuffer());
+        const format = fontFormatOf(bytes);
+        if (!format) throw new Error(file.name);
+        const info = await readFontFileInfo(bytes, format);
+        const guess = guessFromFilename(file.name);
+        family ??= info.family ?? guess.family;
+        faces.push({
+            name: file.name, bytes, format,
+            weight: info.weight ?? guess.weight,
+            style: (info.italic ?? guess.style === "italic") ? "italic" : "normal",
+        });
+    }
+    return { family: family ?? "", faces };
+}
+
+// The file for a font added from the author's own files
+export function localFontFileCss(family: string, category: FontCategory, faces: LocalFontFace[]): string {
+    const article = /^[aeiou]/.test(category) ? "an" : "a";
+    const lines = [
+        `/* ${commentText(family)}, ${article} ${category} font from the author's own files: ${commentText(faces.map(f => f.name).join(", "))}`,
+        "   Added by Quest Viva's Fonts dialog, which makes this file: there's no need to edit it.",
+        "*/",
+        "",
+    ];
+    for (const face of faces) {
+        const mime = { truetype: "font/ttf", opentype: "font/otf", woff: "font/woff", woff2: "font/woff2" }[face.format];
+        lines.push(
+            "@font-face {",
+            `    font-family: ${quoteFamily(family)};`,
+            `    font-style: ${face.style};`,
+            `    font-weight: ${face.weight};`,
+            "    font-display: swap;",
+            `    src: url(data:${mime};base64,${base64(face.bytes)}) format("${face.format}");`,
+            "}",
+            "",
+        );
+    }
+    return lines.join("\n");
+}
+
+// The game's file for a font added from the author's own files
+export const localFontFile = (family: string) => `${fontsourceId(family) || "font"}${FONT_FILE_EXTENSION}`;
+
+// Adds a font from the author's own files to the game, as one file, and lists it in
+// game.fontfiles. Returns the file.
+export async function addLocalFont(gameKey: string, listed: string | null, family: string, category: FontCategory,
+    faces: LocalFontFace[]): Promise<string> {
+    const file = localFontFile(family);
+    await putAssetText(file, localFontFileCss(family, category, faces), "text/css");
+    listFontFile(gameKey, listed, file);
+    return file;
+}
+
+function listFontFile(gameKey: string, listed: string | null, file: string) {
+    if (listedFontFiles(listed).some(f => f.file === file)) return;
+    const result = addListItem(gameKey, FONT_FILES_ATTRIBUTE, file);
+    if (result !== "ok") throw new Error(result);
 }
 
 // ── The game's own fonts ─────────────────────────────────────────────────────
@@ -349,10 +549,7 @@ export async function addFont(gameKey: string, listed: string | null, font: Font
     // Everything's downloaded, so nothing changes in the game unless the whole font can be added
     const file = `${font.id}${FONT_FILE_EXTENSION}`;
     await putAssetText(file, fontFileCss(font, faces, files, licence), "text/css");
-    if (!listedFontFiles(listed).some(f => f.file === file)) {
-        const result = addListItem(gameKey, FONT_FILES_ATTRIBUTE, file);
-        if (result !== "ok") throw new Error(result);
-    }
+    listFontFile(gameKey, listed, file);
     return file;
 }
 

@@ -1,18 +1,19 @@
 <script lang="ts">
     // The game's fonts: the ones copied into it, and adding more from Fontsource (Google Fonts and
-    // other open source fonts). An added font is copied into the game's folder as one file, so only
+    // other open source fonts) or from the author's own font files. An added font is copied into the game's folder as one file, so only
     // adding one needs the internet: the game's fonts work offline, in the Preview and when
     // publishing, and the published game doesn't ask Google for anything. See lib/fonts.ts.
     import { onMount } from "svelte";
     import {
-        addFont, DEFAULT_SUBSETS, fallbackFor, fetchCatalogue, fetchFontDetails, firstFamily, fontStack, gameFonts,
-        listFont, previewUrl, RECOMMENDED_FONTS, removeFont, subsetLabel,
-        type FontDetails, type FontSummary, type GameFont,
+        addFont, addLocalFont, DEFAULT_SUBSETS, fallbackFor, fetchCatalogue, fetchFontDetails, firstFamily, FONT_CATEGORIES,
+        FONT_FILE_ACCEPT, fontStack, gameFonts, listFont, localFontFile, previewUrl, readLocalFontFiles, RECOMMENDED_FONTS,
+        removeFont, subsetLabel,
+        type FontDetails, type FontSummary, type GameFont, type LocalFontFace,
     } from "#lib/fonts.js";
     import { setAttribute, removeAttribute } from "#lib/editor-store.js";
     import { confirmDialog } from "#lib/confirm.js";
     import { trapFocus } from "#lib/actions/trapFocus.js";
-    import { t } from "#lib/i18n/index.js";
+    import { hasMessage, t } from "#lib/i18n/index.js";
     import { docsUrlForPath } from "#lib/docs-links.js";
 
     interface Props {
@@ -127,6 +128,91 @@
         }
     }
 
+    // Adding a font from the author's own files: one file for each weight and style, which
+    // become one font. Needs no internet.
+    let fileInput = $state<HTMLInputElement>();
+    let localFont = $state<{ family: string; category: string; faces: LocalFontFace[] } | null>(null);
+    // The chosen files, loaded into the page for the sample to show them, under a name of their own
+    let localPreview = $state("");
+    let previewFaces: FontFace[] = [];
+    let previews = 0;
+    const WEIGHTS = [100, 200, 300, 400, 500, 600, 700, 800, 900];
+
+    function clearLocalPreview() {
+        for (const face of previewFaces) document.fonts.delete(face);
+        previewFaces = [];
+        localPreview = "";
+    }
+    onMount(() => clearLocalPreview);
+
+    $effect(() => {
+        const font = localFont;
+        if (!font) return;
+        // Track the faces' weights and styles, so the sample follows a change to one
+        const faces = font.faces.map(f => ({ bytes: f.bytes, weight: f.weight, style: f.style }));
+        clearLocalPreview();
+        const n = ++previews;
+        const family = `qv-local-preview-${n}`;
+        previewFaces = faces.map(f => new FontFace(family, f.bytes.slice().buffer, { weight: String(f.weight), style: f.style }));
+        Promise.all(previewFaces.map(face => face.load().then(loaded => { document.fonts.add(loaded); }))).then(() => {
+            if (previews === n) localPreview = family;
+        }, () => {});
+    });
+
+    async function chooseFiles(e: Event & { currentTarget: HTMLInputElement }) {
+        const input = e.currentTarget;
+        const files = [...(input.files ?? [])];
+        input.value = "";
+        if (!files.length) return;
+        error = "";
+        try {
+            const { family, faces } = await readLocalFontFiles(files);
+            if (localFont) {
+                localFont.faces = [...localFont.faces, ...faces];
+            } else {
+                localFont = { family, category: "serif", faces };
+                chosen = null;
+            }
+        } catch (err) {
+            error = t("fontsModal.notAFont", { file: err instanceof Error ? err.message : String(err) });
+        }
+    }
+
+    function removeLocalFace(index: number) {
+        if (!localFont) return;
+        localFont.faces = localFont.faces.filter((_, i) => i !== index);
+        if (!localFont.faces.length) closeLocal();
+    }
+
+    function closeLocal() {
+        localFont = null;
+        clearLocalPreview();
+    }
+
+    async function addLocal() {
+        if (!localFont) return;
+        const family = localFont.family.trim();
+        if (!family || !localFont.faces.length) return;
+        const { category, faces } = localFont;
+        const file = localFontFile(family);
+        if ($gameFonts.some(f => f.file === file)
+            && !(await confirmDialog(t("fontsModal.replace", { font: family, file }), { confirmLabel: t("fontsModal.replaceConfirm") }))) return;
+        busy = true;
+        error = "";
+        try {
+            await addLocalFont(gameKey, get("fontfiles"), family, category, faces);
+            if (useForText) {
+                const result = setAttribute(gameKey, "defaultfont", "font", fontStack(family, category));
+                if (result !== "ok") throw new Error(result);
+            }
+            closeLocal();
+        } catch (err) {
+            error = err instanceof Error ? err.message : String(err);
+        } finally {
+            busy = false;
+        }
+    }
+
     function load(font: GameFont) {
         const result = listFont(gameKey, font);
         if (result !== "ok") error = result;
@@ -166,7 +252,8 @@
 
     function handleKeydown(e: KeyboardEvent) {
         if (e.key !== "Escape") return;
-        if (chosen) chosen = null;
+        if (localFont) closeLocal();
+        else if (chosen) chosen = null;
         else oncancel();
     }
 </script>
@@ -219,8 +306,62 @@
 
             <section class="flex flex-col gap-2" aria-labelledby="add-font-heading">
                 <h3 id="add-font-heading" class="text-xs font-semibold uppercase tracking-wide text-surface-600-400">{t("fontsModal.addHeading")}</h3>
-                {#if !online}
+                <input bind:this={fileInput} type="file" accept={FONT_FILE_ACCEPT} multiple class="hidden" onchange={chooseFiles} data-font-file-input />
+                {#if localFont}
+                    {@const font = localFont}
+                    <div class="flex flex-col gap-3" data-local-font>
+                        <div class="flex items-center justify-between gap-2">
+                            <label class="flex flex-col gap-1 text-xs text-surface-600-400 flex-1 min-w-0">
+                                {t("fontsModal.fontName")}
+                                <input class="input text-sm" type="text" bind:value={font.family} disabled={busy} />
+                            </label>
+                            <label class="flex flex-col gap-1 text-xs text-surface-600-400">
+                                {t("fontsModal.kind")}
+                                <select class="select text-sm" bind:value={font.category} disabled={busy}>
+                                    {#each FONT_CATEGORIES as category (category)}
+                                        <option value={category}>{t(`fontsModal.kind.${category}`)}</option>
+                                    {/each}
+                                </select>
+                            </label>
+                        </div>
+                        <p class="text-lg leading-relaxed rounded border border-surface-200-800 p-3"
+                            style:font-family={localPreview ? `"${localPreview}", ${fallbackFor(font.category)}` : fallbackFor(font.category)}>
+                            {t("fontsModal.sample")} <b>{t("fontsModal.sampleBold")}</b>, <i>{t("fontsModal.sampleItalic")}</i>.
+                        </p>
+                        <div class="flex flex-col gap-1">
+                            <span class="text-xs text-surface-600-400">{t("fontsModal.files")}</span>
+                            {#each font.faces as face, i (i)}
+                                <div class="flex items-center gap-2 text-sm" data-local-face={face.name}>
+                                    <span class="flex-1 min-w-0 truncate">{face.name}</span>
+                                    <select class="select text-xs w-auto py-0.5" aria-label={t("fontsModal.weightOf", { file: face.name })} bind:value={face.weight} disabled={busy}>
+                                        {#each WEIGHTS.includes(face.weight) ? WEIGHTS : [...WEIGHTS, face.weight].sort((a, b) => a - b) as weight (weight)}
+                                            <option value={weight}>{hasMessage(`fontsModal.weight.${weight}`) ? t(`fontsModal.weight.${weight}`) : weight}</option>
+                                        {/each}
+                                    </select>
+                                    <label class="flex items-center gap-1 text-xs">
+                                        <input type="checkbox" class="checkbox" checked={face.style === "italic"} disabled={busy}
+                                            onchange={e => { face.style = e.currentTarget.checked ? "italic" : "normal"; }} />
+                                        {t("fontsModal.italic")}
+                                    </label>
+                                    <button type="button" class="btn btn-xs preset-tonal text-xs px-2 py-0.5" aria-label={t("fontsModal.removeFile", { file: face.name })}
+                                        disabled={busy} onclick={() => removeLocalFace(i)}>×</button>
+                                </div>
+                            {/each}
+                            <button type="button" class="btn btn-xs preset-tonal self-start" disabled={busy} onclick={() => fileInput?.click()}>{t("fontsModal.addFiles")}</button>
+                        </div>
+                        <p class="text-xs text-surface-600-400">{t("fontsModal.licenceNote")}</p>
+                        <label class="flex items-center gap-1.5 text-sm">
+                            <input type="checkbox" class="checkbox" bind:checked={useForText} disabled={busy} />
+                            {t("fontsModal.useItForText")}
+                        </label>
+                        <div class="flex items-center gap-2">
+                            <button type="button" class="btn btn-xs preset-filled-primary-500" onclick={addLocal} disabled={busy || !font.family.trim()}>{t("fontsModal.addToGame")}</button>
+                            <button type="button" class="btn btn-xs preset-tonal" onclick={closeLocal} disabled={busy}>{t("common.cancel")}</button>
+                        </div>
+                    </div>
+                {:else if !online}
                     <p class="text-sm">{t("fontsModal.offline")}</p>
+                    <button type="button" class="btn btn-xs preset-tonal self-start" onclick={() => fileInput?.click()}>{t("fontsModal.fromFile")}</button>
                 {:else if chosen}
                     {@const font = chosen}
                     <div class="flex flex-col gap-3">
@@ -261,6 +402,7 @@
                         aria-label={t("fontsModal.search")}
                         bind:value={search}
                     />
+                    <button type="button" class="btn btn-xs preset-tonal self-start" onclick={() => fileInput?.click()}>{t("fontsModal.fromFile")}</button>
                     {#if chosenError}<p class="text-xs text-error-500">{chosenError}</p>{/if}
                     {#if !search.trim()}
                         <p class="text-xs text-surface-600-400">{t("fontsModal.recommended")}</p>
