@@ -679,11 +679,31 @@ function transcriptText(html) {
 let currentGameName = '';
 let currentPlayerUiName = null; // 'legacy' or 'v2', once preparePlayerUi has picked it
 
+// Whether any transcript is already stored, from this game or another: the
+// viewer lists them all. Electron's store answers asynchronously
+// (player-preload.ts), so its answer is fetched as the player UI starts
+// (wireTranscriptsButton) and kept here.
+let electronTranscriptsStored = false;
+function anyTranscriptStored() {
+    if (navigator.userAgent.includes('Electron/')) return electronTranscriptsStored;
+    try {
+        for (let i = 0; i < localStorage.length; i++) {
+            if (localStorage.key(i)?.startsWith('questtranscript-')) return true;
+        }
+    } catch {
+        // Storage blocked (a private window, or site data turned off)
+    }
+    return false;
+}
+
 const transcript = {
     recording: false,
     // "kill": the game has turned transcripts off for good, until "revive".
     killed: false,
     name: '',
+    // Whether anything has been written since the page loaded. Electron's
+    // store hasn't been asked again since, so this stands in for it.
+    recorded: false,
 
     // Each Initialise: 610 Core's InitInterface turns it back on if the game
     // (or the save being restored) has it on.
@@ -696,23 +716,62 @@ const transcript = {
         if (this.killed) return;
         this.name = name || this.name || currentGameName || 'Transcript';
         this.recording = true;
+        updateTranscriptsButton();
     },
     disable() { this.recording = false; },
     kill() {
         this.killed = true;
         this.recording = false;
+        updateTranscriptsButton();
     },
-    revive() { this.killed = false; },
+    revive() {
+        this.killed = false;
+        updateTranscriptsButton();
+    },
     setName(name) { this.name = name || ''; },
     write(html) {
         if (!this.recording || this.killed) return;
         if (!appendToTranscript(this.name || currentGameName || 'Transcript', transcriptText(html))) {
             console.error('There is no localStorage. Disabling transcript functionality.');
             this.kill();
+            return;
         }
+        if (!this.recorded) {
+            this.recorded = true;
+            updateTranscriptsButton();
+        }
+    },
+    // Whether there's a transcript to view: this game is recording one, or
+    // one has been kept, unless the game has turned the feature off
+    // ("notranscript", which reaches the player as kill).
+    hasTranscript() {
+        return !this.killed && (this.recording || this.recorded || anyTranscriptStored());
     },
     viewerUrl: 'TranscriptViewer/index.html',
 };
+
+// v2's toolbar button for the transcript viewer, the button version of
+// "view transcript" (issue #2882), shown once there's a transcript to view.
+// Legacy has no such button, so this does nothing there.
+function updateTranscriptsButton() {
+    const button = document.getElementById('cmdTranscripts');
+    if (button) button.style.display = transcript.hasTranscript() ? 'initial' : 'none';
+}
+
+// Called after every WebPlayer.initUI(), like wireDebuggerButton, since the
+// player UI's markup is replaced on every boot and restart.
+function wireTranscriptsButton() {
+    const button = document.getElementById('cmdTranscripts');
+    if (!button) return;
+    // Opened as "view transcript"'s link is, so Electron gives it its viewer
+    // window (attachTranscriptWindowHandling).
+    button.addEventListener('click', () => window.open(transcript.viewerUrl, '_blank', 'noopener'));
+    updateTranscriptsButton();
+    window.electronTranscripts?.any?.().then((any) => {
+        electronTranscriptsStored = any;
+        updateTranscriptsButton();
+    }, () => {});
+}
 
 // The WebPlayer object — the host API that the shared playercore.js and
 // player.js call into. The name predates WasmPlayer and is kept as-is.
@@ -1287,6 +1346,7 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
     await WebPlayer.initUI();
     wireDebuggerButton();
     wireDebuggerRestartButton(isPreview);
+    wireTranscriptsButton();
     wireRecordingStopButton();
     // Editor-preview sessions (isPreview) don't offer saving at all — by
     // design: a save captures the whole game state, so reloading one while
@@ -1381,6 +1441,7 @@ async function applyInterfaceChangesCore(attributes) {
         playerUi.setGameName(currentGameName);
         wireDebuggerButton();
         wireDebuggerRestartButton(currentIsPreview);
+        wireTranscriptsButton();
         WebPlayer.setCanSave(!currentIsPreview);
         WebPlayer.setCanDebug((currentIsPreview || currentAllowDebug) && Bridge.IsDebugEnabled());
         await Bridge.ReapplyInterface(html);
@@ -1489,6 +1550,7 @@ async function restartGameCore(saveBytes) {
         await WebPlayer.initUI();
         wireDebuggerButton();
         wireDebuggerRestartButton(currentIsPreview);
+        wireTranscriptsButton();
         // Used to be an unconditional true — harmless while restartGame was only
         // ever reachable from the Saves dialog, which editor-preview sessions
         // never had access to in the first place (Save itself is hidden there).

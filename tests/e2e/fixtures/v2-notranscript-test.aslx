@@ -1,0 +1,20 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- A game with transcripts turned off (wasmplayer/v2-transcript.spec.mjs): the toolbar doesn't
+       offer the transcript viewer, even when other games' transcripts are kept. -->
+  <game name="V2NoTranscriptTest">
+    <notranscript />
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <description>A quiet room.</description>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+</asl>

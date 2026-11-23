@@ -13,7 +13,10 @@ import { contextBridge, ipcRenderer } from "electron";
 // transcript. transcript-store.ts always escapes `name` into a single path
 // segment before touching disk, so a game can't traverse outside
 // userData/transcripts or reach another transcript beyond appending to
-// whichever one it names.
+// whichever one it names. electronTranscripts.any: whether any transcript
+// is kept, so the player's toolbar can offer the viewer (wasm-player.js's
+// updateTranscriptsButton) - a yes or no, which tells a game nothing of what
+// they hold.
 //
 // electronGameSaves: save/list/load/rename/delete, keyed by [gameId, slotIndex]
 // exactly like the IndexedDB store this replaces (see save-store.ts) — same
@@ -29,6 +32,7 @@ import { contextBridge, ipcRenderer } from "electron";
 // UI outside the player window itself, so no second bridge is needed there).
 contextBridge.exposeInMainWorld("electronTranscripts", {
     append: (name: string, data: string): Promise<void> => ipcRenderer.invoke("transcript:append", name, data),
+    any: (): Promise<boolean> => ipcRenderer.invoke("transcript:any"),
 });
 
 contextBridge.exposeInMainWorld("electronGameSaves", {

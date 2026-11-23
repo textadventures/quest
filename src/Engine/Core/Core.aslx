@@ -36,7 +36,11 @@
       // The player UI is reached only through JS.QuestUI (the 610 UI contract, see
       // docs/ui-v2-contract.md), never by element ID, so the interface can change without
       // breaking games that carry this function.
-      if (GetBoolean(game,"savetranscript")){
+      // A game without transcripts says so, so the player doesn't offer the viewer either.
+      if (GetBoolean(game,"notranscript")){
+        JS.QuestUI.transcript.kill ()
+      }
+      else if (GetBoolean(game,"savetranscript")){
         JS.QuestUI.transcript.enable ()
         JS.QuestUI.transcript.setPrefix (game.transcriptstring)
       }

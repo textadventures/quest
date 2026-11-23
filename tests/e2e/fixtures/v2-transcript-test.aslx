@@ -5,7 +5,7 @@
 
   <!-- The transcript on player UI v2 and legacy (wasmplayer/v2-transcript.spec.mjs): the
        built-in "transcript on", "view transcript" and "transcript off", plus a picture with alt
-       text and a text effect to record. -->
+       text and a text effect to record, and "no transcripts" to turn the feature off. -->
   <game name="V2TranscriptTest">
   </game>
 
@@ -28,6 +28,14 @@
     <pattern>typewriter</pattern>
     <script>
       TextFX_Typewriter ("Typed for the record.", 10)
+    </script>
+  </command>
+
+  <command name="notranscripts">
+    <pattern>no transcripts</pattern>
+    <script>
+      game.notranscript = true
+      msg ("Transcripts are off.")
     </script>
   </command>
 
