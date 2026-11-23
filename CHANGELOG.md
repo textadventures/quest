@@ -1,5 +1,19 @@
 # Changelog
 
+## [6.1.0-beta.3](https://github.com/textadventures/quest/compare/v6.1.0-beta.2...v6.1.0-beta.3) (2026-11-23)
+
+
+### Features
+
+* **Desktop:** prepare the desktop app for Flathub ([#2941](https://github.com/textadventures/quest/issues/2941)) ([eba30ac](https://github.com/textadventures/quest/commit/eba30ac8583f99ebbc88d491a7bc2a9fa110cf4b))
+* **Editor:** publish a game to textadventures.co.uk from the Publish dialog ([#2942](https://github.com/textadventures/quest/issues/2942)) ([c642e57](https://github.com/textadventures/quest/commit/c642e579bdcec0b5c78c59cdab75a03f50fde266))
+
+
+### Bug Fixes
+
+* **Editor:** Appearance preview follows the command bar and verb menu settings ([#2939](https://github.com/textadventures/quest/issues/2939)) ([16bd898](https://github.com/textadventures/quest/commit/16bd898227aa14f04dab85b58b99d1356c3a5559))
+* qv preview could miss a reload sent as a page connected ([#2938](https://github.com/textadventures/quest/issues/2938)) ([bbf7226](https://github.com/textadventures/quest/commit/bbf7226de8a8898a5542619f40eadfaf5d2ef7e8))
+
 ## [6.1.0-beta.2](https://github.com/textadventures/quest/compare/v6.1.0-beta.1...v6.1.0-beta.2) (2026-11-23)
 
 
