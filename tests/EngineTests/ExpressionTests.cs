@@ -467,6 +467,10 @@ public class ExpressionTests
     [DataTestMethod]
     [DataRow("ToInt(5)", 5)]
     [DataRow($"ToInt({ObjectName}.{IntAttributeName})", IntAttributeValue)]
+    [DataRow("ToInt(4.9)", 4)]
+    [DataRow("ToInt(-4.9)", -4)]
+    [DataRow("ToInt(Floor(7 / 2.0))", 3)]
+    [DataRow("ToInt(2147483647.5)", int.MaxValue)]
     [DataRow("ToDouble(5)", 5.0)]
     [DataRow("ToDouble(4.9)", 4.9)]
     public async Task TestToIntAndToDoubleAcceptNumbers(string expression, object expectedResult)
@@ -475,12 +479,34 @@ public class ExpressionTests
         result.ShouldBe(expectedResult);
     }
 
-    // Dropping a double's fraction stays an explicit choice, made with cast.
-    [TestMethod]
-    public async Task TestToIntRejectsDoubleWithQuestTypeName()
+    // ToInt truncates a double the same way cast does.
+    [DataTestMethod]
+    [DataRow(4.9)]
+    [DataRow(-4.9)]
+    [DataRow(4.0)]
+    public async Task TestToIntOfDoubleMatchesCast(double value)
     {
-        var ex = await Should.ThrowAsync<Exception>(() => RunExpressionGeneric("ToInt(4.9)"));
-        GetExceptionMessages(ex).ShouldContain(m => m.Contains("ToInt function can't take a double"));
+        var number = value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        var toInt = await RunExpressionGeneric($"ToInt({number})");
+        var cast = await RunExpressionGeneric($"cast({number}, \"int\")");
+        toInt.ShouldBe(cast);
+    }
+
+    [DataTestMethod]
+    [DataRow("ToInt(1e20)")]
+    [DataRow("ToInt(-1e20)")]
+    [DataRow("ToInt(2147483648.0)")]
+    public async Task TestToIntRejectsOutOfRangeDouble(string expression)
+    {
+        var ex = await Should.ThrowAsync<Exception>(() => RunExpressionGeneric(expression));
+        GetExceptionMessages(ex).ShouldContain(m => m.Contains("out of range"));
+    }
+
+    // Parsing text stays strict: "4.9" typed where a whole number was wanted is bad input.
+    [TestMethod]
+    public async Task TestToIntStillRejectsDecimalString()
+    {
+        await Should.ThrowAsync<Exception>(() => RunExpressionGeneric("ToInt(\"4.9\")"));
     }
 
     [TestMethod]

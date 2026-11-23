@@ -24,7 +24,7 @@ cast (7, "double")
 
 Converting to `int` **truncates** towards zero rather than rounding, so `cast(4.9, "int")` is 4 and `cast(-4.9, "int")` is -4.
 
-This is the way to turn a double into an integer, since [ToInt](#toint) only accepts strings - see [Values and types](/understanding/values-and-types#converting-between-types). It is most often needed after [Floor, Ceiling, Round or Truncate](/reference/functions/maths), which return a whole number but as a `double`.
+To turn a double into an integer, [ToInt](#toint) does the same thing and is easier to find - see [Values and types](/understanding/values-and-types#converting-between-types).
 
 `cast` is not a library function and is not implemented in C# alongside the other hard-coded functions either; it is handled directly by the expression evaluator, which is why you will not find it in the editor's function list. It exists for compatibility with expressions written for older versions of Quest.
 
@@ -104,7 +104,7 @@ IsInt (value)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns a [boolean](/reference/attributes/types#boolean) indicating whether [ToInt](#toint) will accept **value**: true for an int or a string that represents an integer, and false for anything else - including a double, even a whole one like `5.0`.
+Returns a [boolean](/reference/attributes/types#boolean) indicating whether **value** is a whole number: true for an int or a string that represents an integer, and false for anything else - including a double, even a whole one like `5.0`. Whenever it returns true, [ToInt](#toint) will accept the same value. (`ToInt` also takes a double, dropping anything after the point, but `IsInt(4.9)` is still false, since 4.9 isn't a whole number.)
 
 Because it takes any value, it can check a variable that might hold either a number or a string, such as one set from what the player typed:
 
@@ -136,11 +136,17 @@ ToInt (value)
 
 <a href="/reference/functions/hardcoded" class="qv-badge">hard-coded</a>
 
-Returns an [int](/reference/attributes/types#int) - converts a string to an integer. Given an int, it returns it unchanged.
+Returns an [int](/reference/attributes/types#int) - converts a string or a double to an integer. Given an int, it returns it unchanged.
 
-Note: An error occurs if a string does not represent an integer. Use [IsInt](#isint) to check first.
+A double is **truncated** towards zero rather than rounded, the same as [cast](#cast): `ToInt(4.9)` is 4 and `ToInt(-4.9)` is -4. This is how to get an int from [Floor, Ceiling, Round or Truncate](/reference/functions/maths), which return a whole number but as a `double`:
 
-`ToInt` doesn't take a double, since that would mean throwing away anything after the point. Passing one stops with "ToInt function can't take a double" - use [cast](#cast) for that.
+```quest
+game.groups = ToInt(Floor(game.total / 3))
+```
+
+To round to the nearest whole number instead, use `ToInt(Round(x))`. A double too big to fit in an int is an error.
+
+Note: An error occurs if a string does not represent an integer - including a string with a decimal point, such as `"4.9"`. Use [IsInt](#isint) to check first.
 
 See also [GetInt](/reference/functions/attributes#getint) and [HasInt](/reference/functions/attributes#hasint)
 
