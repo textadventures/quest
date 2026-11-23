@@ -473,9 +473,10 @@ test('i18n-pseudoloc', async ({ baseURL }) => {
         assertPseudo('PublishModal title', await page.textContent('div[role="dialog"] h2'));
         assertPseudo('PublishModal Close button', await page.textContent('div[role="dialog"] button >> nth=0'));
         assertPseudo('PublishModal description', await page.textContent('div[role="dialog"] p'));
-        assertPseudo('PublishModal .quest option', await page.textContent('div[role="dialog"] label >> nth=0'));
-        assertPseudo('PublishModal CDN option', await page.textContent('div[role="dialog"] label >> nth=1'));
-        assertPseudo('PublishModal zip option', await page.textContent('div[role="dialog"] label >> nth=2'));
+        assertPseudo('PublishModal textadventures.co.uk option', await page.textContent('div[role="dialog"] label >> nth=0'));
+        assertPseudo('PublishModal .quest option', await page.textContent('div[role="dialog"] label >> nth=1'));
+        assertPseudo('PublishModal CDN option', await page.textContent('div[role="dialog"] label >> nth=2'));
+        assertPseudo('PublishModal zip option', await page.textContent('div[role="dialog"] label >> nth=3'));
         assertPseudo('PublishModal Publish button', await page.textContent('div[role="dialog"] button >> nth=1'));
         await page.check('div[role="dialog"] input[value="zip"]');
         assertPseudo('PublishModal HTML footnote', await page.textContent('div[role="dialog"] .publish-footnote'));

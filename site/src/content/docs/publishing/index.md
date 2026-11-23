@@ -1,15 +1,16 @@
 ---
 title: Publishing your game
-description: The three things the Publish dialog can make, and which one to choose for textadventures.co.uk, your own website, itch.io or a competition
+description: What the Publish dialog can do, and which option to choose for textadventures.co.uk, your own website, itch.io or a competition
 ---
 
 When your game is ready for other people, the editor packages it up for you. Open the **File** menu in the toolbar and choose **Publish…**.
 
-The dialog offers three things it can make. All three contain the same game - what differs is who hosts the player that runs it, and therefore where you can put the result.
+The dialog can put your game on textadventures.co.uk for you, or make one of three things for you to put somewhere yourself. All of them contain the same game - what differs is who hosts the player that runs it, and therefore where the game can go.
 
 | You want | Choose | What you get |
 |---|---|---|
-| Your game listed on textadventures.co.uk | **.quest file** | One file to submit to the site |
+| Your game listed on textadventures.co.uk | **textadventures.co.uk** | Your game on the site, or updated there - see [Publishing on textadventures.co.uk](#publishing-on-textadventurescouk) |
+| A file to hand to someone, or to upload to textadventures.co.uk yourself | **.quest file** | Your whole game in one file |
 | Your game on your own website | **Zip with player included** | A folder to upload: your game plus the Quest player |
 | Your game on itch.io | **Zip with player included** | The same folder, uploaded as a browser-playable project |
 | The smallest possible upload | **Small HTML file** | A single `.html` page; players fetch the Quest player from a CDN |
@@ -21,7 +22,7 @@ What the Publish dialog makes is a build for players, not your source: the edito
 
 ## .quest file
 
-A `.quest` file is your whole game in one file: the game itself, every picture and sound it uses, and the library code it was built with. It is what textadventures.co.uk accepts, what the [Quest Viva player](https://play.questviva.com/player/) and the desktop app open, and the format to use if you want to hand the game to someone rather than host a web page.
+A `.quest` file is your whole game in one file: the game itself, every picture and sound it uses, and the library code it was built with. It is what the **textadventures.co.uk** option uploads for you, what textadventures.co.uk accepts if you upload it yourself, what the [Quest Viva player](https://play.questviva.com/player/) and the desktop app open, and the format to use if you want to hand the game to someone rather than host a web page.
 
 It is not a web page, so it needs a player to run it. That is either a site that provides one (textadventures.co.uk, play.questviva.com) or one you host yourself - see [Hosting your game](/publishing/hosting).
 
@@ -94,7 +95,16 @@ Assume several rounds of beta versions, each better than the last, and consider 
 
 ## Publishing on textadventures.co.uk
 
-Publish a `.quest` file and upload it: on textadventures.co.uk, click _Create_ at the top, then _Submit_ below that, and follow the instructions.
+Choose **textadventures.co.uk** in the Publish dialog, which is where it starts for a game you haven't published before:
+
+1. The editor uploads your game, as a `.quest` file.
+2. It gives you a link to continue on textadventures.co.uk, and opens it for you if your browser lets it. Log in there, or create an account.
+3. The first time, fill in what players will see on your game's page. Its name, description and cover start as the ones on your game's [Setup tab](/publishing/game-details).
+4. The editor says when your game is published, with a link to its page.
+
+Nothing is published until you finish on textadventures.co.uk, and an upload you don't finish is deleted after an hour.
+
+You can also upload the file yourself: publish a **.quest file**, then on textadventures.co.uk click _Create_ at the top, then _Submit_ below that, and follow the instructions.
 
 The site asks "Who can access this game?". Choose **"Only people I give the link to"** while you are testing - that makes the game unlisted, so only people you send the link to can find it - and **"Everybody"** when you are ready to release. There is no separate "private" setting to worry about: unlisted is what keeps a work in progress out of public view while your testers can still reach it.
 
@@ -102,7 +112,7 @@ Your game then goes into a queue for moderation, which can take a few days. Very
 
 Once it is through moderation, your game is also listed in the **Play** tab of Quest Viva itself - at [play.questviva.com](https://play.questviva.com) and on the home screen of the desktop app. The Play tab is not a separate place to submit to: it reads the textadventures.co.uk listings live, so the games, categories and search results there are the ones from the site. An unlisted game is not shown in the Play tab either, which is why the beta-testing approach above keeps working - your testers play from the direct link you send them.
 
-To release a new version later, publish a fresh `.quest` file and use "Upload an updated game file" in the _Edit_ menu on your game's page. Read [Updating a released game](/publishing/updating-a-released-game) first - it explains why players part-way through carry on playing the old version, and what that means for how you fix things.
+To release a new version later, publish to **textadventures.co.uk** again. The site knows the game by its ID, so this time it shows one button to update it, and its page, reviews and link stay the same. Uploading yourself works too: publish a fresh `.quest` file and use "Upload an updated game file" in the _Edit_ menu on your game's page. Read [Updating a released game](/publishing/updating-a-released-game) first - it explains why players part-way through carry on playing the old version, and what that means for how you fix things.
 
 ## Announcing your game
 

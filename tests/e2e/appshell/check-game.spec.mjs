@@ -112,6 +112,8 @@ test('check-game', async ({ baseURL }) => {
         // --- Publish checks first ---
         await fileMenu('Publish');
         const dialog = page.locator('div[role="dialog"]');
+        // Not the default, textadventures.co.uk, so that nothing could be uploaded from here
+        await dialog.locator('input[type="radio"][value="quest"]').check();
         await dialog.locator('button', { hasText: 'Publish…' }).click();
         await dialog.locator('.publish-problems-warning', { hasText: 'This game has 4 problems' }).waitFor({ timeout: 30000 });
         if (await dialog.locator('.publish-anyway').count() !== 1) throw new Error('Publish anyway should be offered');
