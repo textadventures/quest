@@ -374,9 +374,10 @@
     ondragleave={handleDragLeave}
     ondrop={handleDrop}
 >
-    <!-- Not in the Microsoft Store build: the Store updates the app itself,
-         and the banner's link is the GitHub installer, a different install. -->
-    {#if isElectronApp && update && !window.electronApp?.windowsStore}
+    <!-- Not in the Microsoft Store or Flathub builds: they update the app
+         themselves, and the banner's link is the GitHub installer, a
+         different install. -->
+    {#if isElectronApp && update && !window.electronApp?.windowsStore && !window.electronApp?.flatpak}
         <UpdateBanner {update} />
     {/if}
 

@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Quest Viva
+Comment=Create and play text adventure games
+Exec=quest-viva %F
+Icon=com.questviva.QuestViva
+Terminal=false
+Categories=Game;AdventureGame;
+Keywords=text adventure;interactive fiction;IF;Quest;gamebook;
+MimeType=application/x-quest-viva-source;application/x-quest-viva-game;application/x-quest-legacy-game;
+StartupWMClass=quest-viva

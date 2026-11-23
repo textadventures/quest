@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- AppStream metadata for the Flathub package. scripts/dist.mjs fills in
+     @VERSION@, @DATE@ and @TAG@ and ships the result inside the stable .deb,
+     which the Flathub manifest repackages. See "Flathub" in
+     docs/electron-desktop-app.md. -->
+<component type="desktop-application">
+  <id>com.questviva.QuestViva</id>
+  <name>Quest Viva</name>
+  <summary>Create and play text adventure games</summary>
+  <developer id="com.questviva">
+    <name>Alex Warren</name>
+  </developer>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+  <launchable type="desktop-id">com.questviva.QuestViva.desktop</launchable>
+
+  <description>
+    <p>
+      Quest Viva is a system for writing and playing text adventure games. Write your own
+      game in the editor with no programming needed, add scripts when you want more control,
+      and try it out as you go. When it's finished, publish it to share with other players.
+    </p>
+    <p>Features:</p>
+    <ul>
+      <li>Browse and play games from the textadventures.co.uk catalog</li>
+      <li>Write text adventures, with rooms, objects, characters and commands</li>
+      <li>Write gamebooks, where the player picks a link on each page</li>
+      <li>Play games written for Quest 5 and earlier versions of Quest</li>
+      <li>Save your progress in any game and pick up where you left off</li>
+    </ul>
+  </description>
+
+  <screenshots>
+    <screenshot type="default">
+      <caption>Playing a game</caption>
+      <image>https://raw.githubusercontent.com/textadventures/quest/@TAG@/src/ElectronApp/flatpak/screenshots/player.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Writing a game in the editor</caption>
+      <image>https://raw.githubusercontent.com/textadventures/quest/@TAG@/src/ElectronApp/flatpak/screenshots/editor.png</image>
+    </screenshot>
+  </screenshots>
+
+  <url type="homepage">https://questviva.com</url>
+  <url type="help">https://questviva.com</url>
+  <url type="bugtracker">https://github.com/textadventures/quest/issues</url>
+  <url type="vcs-browser">https://github.com/textadventures/quest</url>
+
+  <categories>
+    <category>Game</category>
+    <category>AdventureGame</category>
+  </categories>
+  <keywords>
+    <keyword>text adventure</keyword>
+    <keyword>interactive fiction</keyword>
+    <keyword>gamebook</keyword>
+  </keywords>
+  <provides>
+    <mediatype>application/x-quest-viva-source</mediatype>
+    <mediatype>application/x-quest-viva-game</mediatype>
+    <mediatype>application/x-quest-legacy-game</mediatype>
+  </provides>
+
+  <branding>
+    <color type="primary" scheme_preference="light">#a9c9ff</color>
+    <color type="primary" scheme_preference="dark">#232941</color>
+  </branding>
+  <content_rating type="oars-1.1"/>
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+  </supports>
+  <requires>
+    <display_length compare="ge">768</display_length>
+  </requires>
+
+  <releases>
+    <release version="@VERSION@" date="@DATE@">
+      <url type="details">https://github.com/textadventures/quest/releases/tag/@TAG@</url>
+    </release>
+  </releases>
+</component>
