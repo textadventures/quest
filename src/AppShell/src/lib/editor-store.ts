@@ -869,7 +869,9 @@ function syncPreviewInterface(): void {
     if (!current) return;
     const changed: Record<string, unknown> = {};
     for (const [name, value] of Object.entries(current)) {
-        if (_previewInterface[name] !== value) changed[name] = value;
+        // A list (the game's font files) is a new array each time, so it's compared by its JSON
+        const old = _previewInterface[name];
+        if (Array.isArray(value) ? JSON.stringify(old) !== JSON.stringify(value) : old !== value) changed[name] = value;
     }
     if (Object.keys(changed).length === 0) return;
     _previewInterface = current;
@@ -1542,11 +1544,11 @@ export async function getAssetText(key: string): Promise<string | null> {
     return blob ? await blob.text() : null;
 }
 
-export async function putAssetText(key: string, text: string): Promise<void> {
+export async function putAssetText(key: string, text: string, type = "text/javascript"): Promise<void> {
     if (!_adapter) return;
     // The editor's own write, so checkForExternalChanges doesn't take it for an outside one.
     if (isLibraryFilename(key)) _libraryBaseline.set(key, new TextEncoder().encode(text));
-    await _adapter.putAsset(key, new Blob([text], { type: "text/javascript" }));
+    await _adapter.putAsset(key, new Blob([text], { type }));
     releaseAssetUrl(key);
     await refreshAssets();
 }

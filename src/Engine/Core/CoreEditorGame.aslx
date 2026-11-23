@@ -197,45 +197,37 @@
         <caption>[EditorGameFont]</caption>
       </control>
 
+      <!-- The game's fonts (AppShell's FontPicker): its own fonts, the ones built into the player
+           and the usual system fonts, each a list of fonts in CSS's font-family form. The Fonts
+           dialog (the "fonts" control) copies fonts into the game, which it lists in fontfiles. -->
       <control>
-        <controltype>dropdown</controltype>
+        <controltype>font</controltype>
         <caption>[EditorGameBasefont]</caption>
         <attribute>defaultfont</attribute>
-        <source>basefonts</source>
-        <freetext/>
-      </control>
-
-      <control>
-        <controltype>dropdown</controltype>
-        <caption>[EditorGameWebfont]</caption>
-        <attribute>defaultwebfont</attribute>
-        <source>webfonts</source>
-        <freetext/>
-      </control>
-
-      <control>
-        <controltype>label</controltype>
-        <caption>[EditorGameWebfontHelp]</caption>
-      </control>
-
-      <control>
-        <controltype>label</controltype>
-        <caption>[EditorGameBrowseavailable]</caption>
-        <href>https://fonts.google.com/</href>
       </control>
 
       <control>
         <controltype>number</controltype>
         <caption>[EditorGameFontsize]</caption>
         <attribute>defaultfontsize</attribute>
+        <samerow/>
+        <width>64</width>
+      </control>
+
+      <!-- Only for a game that already has one: a font from Google Fonts, loaded when the player is
+           online. The control offers to copy it into the game instead. -->
+      <control>
+        <controltype>webfont</controltype>
+        <caption>[EditorGameWebfont]</caption>
+        <attribute>defaultwebfont</attribute>
+        <onlydisplayif>LengthOf(GetString(game, "defaultwebfont")) &gt; 0</onlydisplayif>
       </control>
 
       <control>
-        <controltype>dropdown</controltype>
+        <controltype>font</controltype>
         <caption>[EditorGameInterfacefont]</caption>
         <attribute>interfacefont</attribute>
-        <source>basefonts</source>
-        <freetext/>
+        <nullable/>
         <onlydisplayif>not GetBoolean(game, "classicinterface")</onlydisplayif>
       </control>
 
@@ -252,6 +244,13 @@
         <controltype>label</controltype>
         <caption>[EditorGameInterfacefontHelp]</caption>
         <onlydisplayif>not GetBoolean(game, "classicinterface")</onlydisplayif>
+      </control>
+
+      <!-- The Fonts dialog's button. Its attribute is only so a running Preview gets the game's
+           font files when they change (EditorController.GetLiveInterfaceAttributes). -->
+      <control>
+        <controltype>fonts</controltype>
+        <attribute>fontfiles</attribute>
       </control>
 
       <control>

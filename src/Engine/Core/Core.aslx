@@ -59,6 +59,7 @@
           JS.QuestUI.addStylesheet (stylesheet)
         }
       }
+      AddFontFiles
       if (game.setbackgroundopacity) {
         SetBackgroundOpacity (game.backgroundopacity)
       }

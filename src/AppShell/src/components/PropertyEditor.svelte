@@ -31,6 +31,10 @@
     import ScriptEditor from "./ScriptEditor.svelte";
     import ColourInput from "./ColourInput.svelte";
     import ThemePicker from "./ThemePicker.svelte";
+    import FontPicker from "./FontPicker.svelte";
+    import FontsButton from "./FontsButton.svelte";
+    import WebFontControl from "./WebFontControl.svelte";
+    import { gameFonts } from "#lib/fonts.js";
     import AppearancePreview from "./AppearancePreview.svelte";
     import InterfacePreview from "./InterfacePreview.svelte";
     import { CLASSIC_COLOURS, computeAppearance } from "#lib/appearance.js";
@@ -760,6 +764,16 @@
                 {/each}
             </select>
         {/if}
+    {:else if ctrl.controlType === "font"}
+        <FontPicker
+            value={attrValue(ctrl.attribute!) ?? ""}
+            fonts={$gameFonts}
+            allowDefault={ctrl.nullable}
+            label={ctrl.caption ?? ctrl.attribute!}
+            onchange={(v) => onTextChange(ctrl.attribute!, "font", v, ctrl.nullable)}
+        />
+    {:else if ctrl.controlType === "webfont" && $selectedKey}
+        <WebFontControl value={attrValue(ctrl.attribute!) ?? ""} gameKey={$selectedKey} get={attrValue} />
     {:else if ctrl.controlType === "colour"}
         <ColourInput
             value={attrValue(ctrl.attribute!) ?? ""}
@@ -1306,6 +1320,8 @@
                     listFilter={ctrl.listFilter}
                 />
             </div>
+        {:else if ctrl.controlType === "fonts" && $selectedKey}
+            <FontsButton gameKey={$selectedKey} get={attrValue} />
         {:else if ctrl.controlType === "appearancepreview"}
             <AppearancePreview get={attrValue} gamebook={$isGamebook} />
         {:else if ctrl.controlType === "interfacepreview"}

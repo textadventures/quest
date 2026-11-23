@@ -178,6 +178,7 @@
     // The game's colours go to the UI in InitTextDefaults, only once it has changed one from the
     // editor's defaults, so a gamebook that hasn't follows the UI's light or dark colours.
     AddMenuTokens (tokens)
+    AddFontFiles
     InitTextDefaults (tokens)
     // The margin and border colours (the border colour also outlines the page's choices), with
     // their dark versions

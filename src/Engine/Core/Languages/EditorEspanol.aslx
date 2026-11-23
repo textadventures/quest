@@ -163,7 +163,6 @@
   <template name="EditorGameOnScreenCaption">En pantalla</template>
   <template name="EditorGameLinksMenusCaption">Enlaces y menús</template>
   <template name="EditorGameMenuFont">Fuente</template>
-  <template name="EditorGameWebfontHelp">De Google Fonts, cuando el jugador tiene conexión. Si no, se usa la fuente base.</template>
   <template name="EditorGamePictureframeHelp">Cada lugar puede tener su propia imagen, o un script puede asignar una.</template>
   <template name="EditorGameShowCommandPaneHelp">Rellénalo con el comando de script "Establecer el panel de comandos".</template>
   <template name="EditorGameShowCustomStatusPaneHelp">Rellénalo con el comando de script "Establecer el contenido de un panel", con el ID customstatus.</template>
@@ -171,9 +170,8 @@
   <template name="EditorGameTheme">Tema</template>
   <template name="EditorGameThemeClassicHelp">Los temas están hechos para la nueva interfaz. Con «Usar la interfaz clásica» activado (en la pestaña Interfaz), solo se ve parte del tema, como la fuente y los colores del texto.</template>
   <template name="EditorGameFont">Fuente</template>
-  <template name="EditorGameBasefont">Fuente base</template>
+  <template name="EditorGameBasefont">Fuente</template>
   <template name="EditorGameWebfont">Fuente web</template>
-  <template name="EditorGameBrowseavailable">Navegar por fuentes web disponibles</template>
   <template name="EditorGameFontsize">Tamaño de fuente</template>
   <template name="EditorGameBackgroundColour">Color de fondo</template>
   <template name="EditorGameBackground2">Imagen de fondo</template>
@@ -202,7 +200,7 @@
   <template name="EditorGamePanesCaption">Paneles de Juego</template>
   <template name="EditorGameMapinteractive">El mapa se puede arrastrar y ampliar</template>
   <template name="EditorGameInterfacefont">Fuente de la interfaz</template>
-  <template name="EditorGameInterfacefontHelp">La fuente y el tamaño de la barra de ubicación, los paneles y los botones. Déjalos vacíos para usar los predeterminados.</template>
+  <template name="EditorGameInterfacefontHelp">La fuente y el tamaño de la barra de ubicación, los paneles y los botones. Deja el tamaño vacío para usar el predeterminado.</template>
   <template name="EditorGameAccentColour">Color de acento</template>
   <template name="EditorGameAccentColourHelp">El color de acento es para los enlaces, la brújula y el indicador de comandos.</template>
   <template name="EditorGameLightDarkHelp">Cómo funcionan el modo claro y el oscuro</template>

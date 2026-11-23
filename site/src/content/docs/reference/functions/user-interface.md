@@ -295,7 +295,7 @@ Does not return a value.
 SetFontName(string fontname)
 ```
 
-Sets the font.
+Sets the font of the text printed from now on, as a list of fonts as CSS's `font-family` gives them, with family names in single quotes, such as `"'Lora', Georgia, serif"`. It can name the game's own fonts, the fonts built into Quest Viva or fonts the player's device has: see [Text](/customise/look-and-feel#text).
 
 ## SetFontSize
 ```quest
@@ -358,7 +358,9 @@ Does not return a value.
 SetWebFontName(string fontname)
 ```
 
-Sets the web font. Here you can see all available fonts: <https://fonts.google.com/>
+Loads a font from [Google Fonts](https://fonts.google.com/), if the player is online, and switches the text to it, in front of the game's [defaultfont](/reference/attributes/all#defaultfont).
+
+The editor no longer offers it, though games that use it keep working: a font added with the Appearance tab's **Fonts...** works offline and doesn't ask Google for anything, and [SetFontName](#setfontname) can switch to it. See [Changing the look during the game](/customise/look-and-feel#changing-the-look-during-the-game).
 
 ## ShowMenu
 ```quest

@@ -27,6 +27,7 @@ public class PlayerExportTests
             $"<head prefix=\"ifiction: http://babel.ifarchive.org/protocol/iFiction/\">\n    <base href=\"{Cdn}\" />\n" +
             "    <meta property=\"ifiction:ifid\" content=\"448E73DF-2D2F-47E7-A494-A46B40D4CFB3\" />");
         StringAssert.Contains(html, "<link rel=\"stylesheet\" type=\"text/css\" href=\"chrome.css\" crossorigin=\"anonymous\" />");
+        StringAssert.Contains(html, "<link rel=\"stylesheet\" type=\"text/css\" href=\"fonts/fonts.css\" crossorigin=\"anonymous\" />");
     }
 
     [TestMethod]

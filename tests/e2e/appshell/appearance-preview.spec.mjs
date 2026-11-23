@@ -3,7 +3,8 @@
 // A new game shows the player's own light and dark colours; an accent of its own is lightened in
 // dark mode; a page colour of its own makes the game look the same in both, said underneath,
 // until a dark page colour gives it dark ones; a margin colour, which has no dark version, keeps
-// it light; a dark-only theme is drawn dark, in its web font; font size and link underlining
+// it light; a dark-only theme is drawn dark, in its font, built into the player rather than
+// loaded from Google; font size and link underlining
 // follow; and the classic interface, which v2's preview doesn't describe, has none.
 // With SCREENSHOT_DIR set, it saves pictures of the preview along the way.
 //
@@ -171,17 +172,20 @@ test('appearance-preview', async ({ baseURL }) => {
         expectEqual('the note with dark versions', await fixedNote(), null);
         console.log('PASS: with dark versions of its margin and location bar colours, the game follows light and dark mode, each with its own');
 
-        // A dark-only theme with a web font: drawn once, as dark, in its web font.
+        // A dark-only theme with a font of its own: drawn once, as dark, in its font, which is built
+        // into the player (and the editor), not loaded from Google Fonts.
         await page.getByRole('group', { name: 'Theme', exact: true }).getByRole('button', { name: 'Terminal', exact: true }).click();
         await settle();
         s = await schemes();
         expectEqual('Terminal\'s schemes', s.map(x => `${x.scheme}:${x.label}`).join(','), 'dark:Light and dark mode');
         expectEqual('Terminal\'s page', s[0].background, 'rgb(11, 15, 11)');
         if (!s[0].fontFamily.includes('VT323')) throw new Error(`Terminal's sample is in ${s[0].fontFamily}, not VT323`);
-        const fontLink = await page.locator('link[data-appearance-font*="VT323"]').count();
-        if (fontLink !== 1) throw new Error(`Terminal's web font is linked ${fontLink} times`);
+        const googleLinks = await page.locator('link[href*="fonts.googleapis.com"]').count();
+        if (googleLinks !== 0) throw new Error(`Terminal's font is loaded from Google Fonts (${googleLinks} links)`);
+        const vt323 = await page.evaluate(async () => { await document.fonts.load('16px VT323'); return document.fonts.check('16px VT323'); });
+        if (!vt323) throw new Error('VT323, built into the player, isn\'t loaded in the editor');
         expectEqual('the note under a dark-only theme', await fixedNote(), 'The game looks the same in light and dark mode.');
-        console.log('PASS: a dark-only theme is drawn dark, in its web font, which is loaded once');
+        console.log('PASS: a dark-only theme is drawn dark, in its built-in font, with nothing loaded from Google');
         await shot('terminal');
 
         // The location bar and command bar follow the Interface tab.

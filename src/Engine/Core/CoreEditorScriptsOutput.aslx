@@ -250,6 +250,10 @@
     <category>[EditorScriptsOutputOutput]</category>
     <create>SetWebFontName ("")</create>
     <add>[EditorScriptsOutputChangefontWeb]</add>
+    <!-- Loads the font from Google Fonts. No longer offered: a game's own fonts (the Appearance
+         tab's Fonts dialog) work offline and ask Google for nothing, and Change font can use them.
+         A game that already calls it can still edit it here. -->
+    <onlydisplayif>false</onlydisplayif>
 
     <control>
       <controltype>label</controltype>

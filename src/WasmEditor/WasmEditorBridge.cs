@@ -874,7 +874,8 @@ public partial class WasmEditorBridge
     public static string GetOwnJavascriptFiles() => JsonSerializer.Serialize(
         _controller?.OwnJavascriptFiles.ToList() ?? [], WasmEditorJsonContext.Default.ListString);
 
-    // The Display and Interface tabs' attributes as one JSON object of plain values, for
+    // The Display and Interface tabs' attributes as one JSON object of plain values (and string
+    // lists, as arrays), for
     // editor-store.ts to send a running Preview whichever have changed (WasmPlayerBridge.ReapplyInterface).
     [JSExport]
     public static string GetLiveInterfaceAttributes()
@@ -892,6 +893,11 @@ public partial class WasmEditorBridge
                     case bool b: writer.WriteBooleanValue(b); break;
                     case int i: writer.WriteNumberValue(i); break;
                     case double d: writer.WriteNumberValue(d); break;
+                    case IEnumerable<string> list:
+                        writer.WriteStartArray();
+                        foreach (var item in list) writer.WriteStringValue(item);
+                        writer.WriteEndArray();
+                        break;
                     default: writer.WriteNullValue(); break;
                 }
             }
