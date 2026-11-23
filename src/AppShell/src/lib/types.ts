@@ -65,7 +65,7 @@ export interface ControlInfo {
   isWalkthrough?: boolean
   // <href> on a "label" control: a link, either a site-relative docs path (e.g.
   // /howto/world/wearables/), which goes to the docs site this editor build uses (docsUrlForPath),
-  // or an external URL.
+  // an external URL, or "#" and a tree node's key, which selects that node.
   href?: string | null
   newFile?: string | null
   lockedAfterCreate?: boolean

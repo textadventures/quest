@@ -35,7 +35,7 @@ The game's Display tab has been split in two. The **Appearance** tab sets the th
 - **Dark mode colours.** A new game doesn't set any colours of its own, so it uses the standard light or dark colours, depending on the player's setting. If you do choose your own colours, you can also choose a dark mode version of each one.
 - **Colour pickers** for every colour setting.
 - **Previews.** The Appearance tab shows some sample text in your game's fonts and colours, in both light and dark mode. The Interface tab shows a miniature version of your game's layout, on a desktop and on a phone.
-- **Your own stylesheet.** You can add your own CSS on the Appearance tab. The new interface is designed to be styled this way: it has named parts and CSS variables for you to use, so you don't need to rely on how the page happens to be built. See [Styling the player with CSS](/customise/css).
+- **Your own stylesheet.** You can add your own CSS, on the **Stylesheet** page under Advanced in the tree. The new interface is designed to be styled this way: it has named parts and CSS variables for you to use, so you don't need to rely on how the page happens to be built. See [Styling the player with CSS](/customise/css).
 - **Changes show up in Preview straight away.** If you have your game open in Preview, any changes you make on these tabs, including to your stylesheet, show up immediately, without restarting the game.
 - **Script commands for the interface.** A new Interface category of script commands lets you show and hide parts of the interface during the game, add panes, and more. Previously you'd have needed JavaScript for this, and the changes would be lost when the player loaded a saved game. See [Changing the interface during play](/customise/interface-scripts).
 

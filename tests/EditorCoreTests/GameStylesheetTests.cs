@@ -3,8 +3,8 @@ using QuestViva.EditorCore;
 
 namespace QuestViva.EditorCoreTests;
 
-// The game's stylesheet (game.stylesheet) is edited as CSS on the game's Interface tab: it has to
-// come back from each save exactly as written, line breaks and all, without gaining whitespace.
+// The game's stylesheet (game.stylesheet) is edited as CSS on the Stylesheet node in the tree: it has
+// to come back from each save exactly as written, line breaks and all, without gaining whitespace.
 [TestClass]
 public class GameStylesheetTests : EditorControllerTestBase
 {
@@ -22,5 +22,26 @@ public class GameStylesheetTests : EditorControllerTestBase
         using var reloaded2 = new EditorController();
         Assert.IsTrue(await reloaded2.Initialise(new GameData(System.Text.Encoding.UTF8.GetBytes(xml2), "test.aslx")));
         Assert.AreEqual(Css, reloaded2.GetEditorData("game")!.GetAttribute("stylesheet"));
+    }
+
+    [TestMethod]
+    public void TheStylesheetHasANodeUnderAdvanced()
+    {
+        var added = new List<(string Key, string? Parent)>();
+        Controller.AddedNode += (_, e) => added.Add((e.Key, e.Parent));
+        Controller.UpdateTree();
+        CollectionAssert.Contains(added, (EditorController.StylesheetNode, (string?)"_advanced"));
+    }
+
+    [TestMethod]
+    public async Task TheStylesheetNodeEditsTheGamesStylesheet()
+    {
+        Controller.StartTransaction("Set stylesheet");
+        Controller.GetEditorData(EditorController.StylesheetNode)!.SetAttribute("stylesheet", Css);
+        Controller.EndTransaction();
+        Assert.AreEqual(Css, Controller.GetEditorData("game")!.GetAttribute("stylesheet"));
+
+        await Controller.Undo();
+        Assert.IsNull(Controller.GetEditorData("game")!.GetAttribute("stylesheet"));
     }
 }

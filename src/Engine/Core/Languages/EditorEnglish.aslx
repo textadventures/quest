@@ -271,6 +271,7 @@
   <template name="EditorGameStylesheetTitle">Stylesheet</template>
   <template name="EditorGameStylesheetHelp">CSS for the game's interface, applied over the default styles when the game is played.</template>
   <template name="EditorGameStylesheetDocs">How to use CSS in a game</template>
+  <template name="EditorGameStylesheetMoved">The stylesheet has a page of its own: Stylesheet, under Advanced in the tree.</template>
   <template name="EditorGameStylesheetPlaceholder">/* For example, to show the game's links in bold:
 
 a.cmdlink {

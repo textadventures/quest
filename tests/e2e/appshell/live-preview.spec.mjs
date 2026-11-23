@@ -1,5 +1,5 @@
 // Checks the editor's live Preview (#2650 part 5): with a game running in Preview, changing the
-// accent colour and the stylesheet (Appearance tab) and the layout (Interface tab) in the editor shows
+// accent colour (Appearance tab), the stylesheet (its own node) and the layout (Interface tab) in the editor shows
 // in the Preview straight away, without it restarting or losing what's been played so far.
 // Turning an option back off takes it away again, since the Preview sets up a fresh UI each time.
 // In dark mode, a text colour of the game's own makes the Preview light (#2725).
@@ -144,9 +144,12 @@ test('live-preview', async ({ baseURL }) => {
         await preview.emulateMedia({ colorScheme: 'light' });
         console.log('PASS: clearing it follows dark mode again');
 
-        // The stylesheet, in the Appearance tab's Advanced section.
+        // The stylesheet, on the Stylesheet node under Advanced in the tree, which the Appearance
+        // tab's Advanced section links to.
+        await openGameTab('Appearance');
         const summary = page.locator('summary', { hasText: 'Advanced' });
         if (!(await summary.evaluate(el => el.closest('details')?.open))) await summary.click();
+        await page.getByRole('button', { name: /^The stylesheet has a page of its own/ }).click();
         const cm = page.getByRole('group', { name: 'Stylesheet' }).locator('.cm-content');
         await cm.click();
         await page.keyboard.press(selectAllKey);

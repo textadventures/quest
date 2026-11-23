@@ -76,7 +76,7 @@ The map works by keeping a dictionary attribute, `grid_coordinates`, on the play
 
 ### Changing the colour of the map
 
-This, in the game's **Stylesheet** (under Advanced on its _Appearance_ tab), makes the map's background red:
+This, in the game's **Stylesheet** (under Advanced in the tree), makes the map's background red:
 
 ```css
 [data-qv-part="map"] {

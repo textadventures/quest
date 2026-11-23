@@ -56,6 +56,7 @@
         _dynamictemplate: "treePanel.header.dynamicTemplates",
         _objecttype: "treePanel.header.objectTypes",
         _javascript: "treePanel.header.javascript",
+        _stylesheet: "treePanel.header.stylesheet",
         _gameVerbs: "verbsEditor.header",
         _gameCommands: "treePanel.header.commands",
     };
