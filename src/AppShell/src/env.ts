@@ -8,5 +8,7 @@ export const variables = defineEnvVars({
     PUBLIC_APPSHELL_VERSION: { public: true, static: true, schema: optional },
     PUBLIC_BETA_DOCS: { public: true, static: true, schema: optional },
     PUBLIC_BETA_SITE: { public: true, static: true, schema: optional },
+    // Points a development build at a local copy of textadventures.co.uk (see lib/publish-online.ts)
+    PUBLIC_PUBLISH_API_URL: { public: true, static: true, schema: optional },
     PUBLIC_WASM_PLAYER_URL: { public: true, static: true, schema: optional },
 });

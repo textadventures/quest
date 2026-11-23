@@ -65,13 +65,16 @@ test('export-html', async ({ baseURL }) => {
         if (!title?.includes('Publish')) throw new Error(`unexpected modal title: ${title}`);
         const radios = dialog.locator('input[type="radio"]');
         const values = await radios.evaluateAll(els => els.map(el => el.value));
-        if (values.join(',') !== 'quest,cdn,zip') throw new Error(`unexpected publish targets: ${values.join(',')}`);
+        if (values.join(',') !== 'online,quest,cdn,zip') throw new Error(`unexpected publish targets: ${values.join(',')}`);
         const questRadio = dialog.locator('input[type="radio"][value="quest"]');
         const zipRadio = dialog.locator('input[type="radio"][value="zip"]');
-        if (!(await questRadio.isChecked())) throw new Error('expected .quest option checked by default');
+        // textadventures.co.uk is the default (publish-online.spec.mjs covers it); the rest of this
+        // spec is about the files, so it never uploads anything.
+        if (!(await dialog.locator('input[type="radio"][value="online"]').isChecked())) throw new Error('expected textadventures.co.uk option checked by default');
+        await questRadio.check();
         if (await dialog.locator('input[type="checkbox"]').count() !== 0) throw new Error('unexpected checkbox (walkthrough option should be gone)');
         if (await dialog.locator('.publish-footnote').count() !== 0) throw new Error('HTML footnote should be hidden for the .quest target');
-        console.log('PASS: Publish modal offers quest/cdn/zip with .quest default');
+        console.log('PASS: Publish modal offers online/quest/cdn/zip with textadventures.co.uk default');
 
         // Each radio should sit on the visual centre of its caption's first line: midway between
         // the centres of a capital and a lowercase letter, measured from the real baseline (a

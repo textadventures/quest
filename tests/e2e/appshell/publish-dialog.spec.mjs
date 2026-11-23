@@ -39,6 +39,9 @@ test('publish-dialog', async ({ baseURL }) => {
         await page.waitForSelector('.absolute button', { timeout: 10000 });
         await page.locator('.absolute button', { hasText: 'Publish' }).click();
         await page.waitForSelector('div[role="dialog"]', { timeout: 10000 });
+        // The dialog starts on textadventures.co.uk for a game not published before
+        // (publish-online.spec.mjs covers that). This spec is about the files, so it never uploads.
+        await page.locator('div[role="dialog"] input[type="radio"][value="quest"]').check();
         return page.locator('div[role="dialog"]');
     }
 

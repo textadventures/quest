@@ -1400,9 +1400,24 @@ async function exportHtmlZip(signal: AbortSignal): Promise<void> {
     triggerDownload(zipBytes, baseName + "-html.zip");
 }
 
+// The .quest package, for the Publish dialog to upload to textadventures.co.uk (the "online"
+// target, see publish-online.ts). The dialog calls rememberPublishTarget once it's uploaded.
+export async function buildPackageForUpload(signal: AbortSignal): Promise<{ bytes: Uint8Array; filename: string }> {
+    try {
+        const { packageBytes, embeddedFilename } = await buildPublishPackageBytes(signal);
+        return { bytes: packageBytes, filename: embeddedFilename };
+    } finally {
+        publishProgress.set(null);
+    }
+}
+
+export function rememberPublishTarget(target: PublishTarget): void {
+    if (_loadedGameId) savePublishTarget(_loadedGameId, target);
+}
+
 // signal can cancel a publish while it's still reading files or fetching the player; the
 // synchronous build/zip steps themselves can't be interrupted.
-export async function publishGame(target: PublishTarget, signal: AbortSignal): Promise<void> {
+export async function publishGame(target: Exclude<PublishTarget, "online">, signal: AbortSignal): Promise<void> {
     if (!_bridge || !_adapter) return;
     const gameId = _loadedGameId;
     try {

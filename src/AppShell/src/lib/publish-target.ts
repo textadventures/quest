@@ -1,12 +1,15 @@
 import { isElectron } from "./runtime";
 import { localStorageOrNull } from "./web-storage";
 
-// "quest" is the plain .quest package, downloaded; "cdn" and "zip" wrap that same package
-// in the WasmPlayer.
-export type PublishTarget = "quest" | "cdn" | "zip";
+// "online" uploads the .quest package to textadventures.co.uk (see publish-online.ts); "quest"
+// is that same package, downloaded; "cdn" and "zip" wrap it in the WasmPlayer.
+export type PublishTarget = "online" | "quest" | "cdn" | "zip";
+
+// What the dialog starts on for a game that hasn't been published from here before
+export const DEFAULT_PUBLISH_TARGET: PublishTarget = "online";
 
 function isPublishTarget(value: unknown): value is PublishTarget {
-    return value === "quest" || value === "cdn" || value === "zip";
+    return value === "online" || value === "quest" || value === "cdn" || value === "zip";
 }
 
 // Per-game last-used Publish dialog target, keyed by the game's <gameid> — where a game
