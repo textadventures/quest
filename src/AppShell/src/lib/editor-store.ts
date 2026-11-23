@@ -1110,6 +1110,23 @@ export async function saveGame(): Promise<void> {
     if (get(isDirty)) await persistNow();
 }
 
+// The error page's save (routes/+error.svelte), after an exception the editor didn't catch has
+// replaced it. The game lives in the bridge, not the page, so it can still be saved. Asks the
+// bridge whether it's dirty instead of trusting isDirty, which the crash may have left stale.
+// "none": no game open. Otherwise null when the game is safely saved, or why it isn't.
+export async function saveAfterCrash(): Promise<"none" | string | null> {
+    if (!_bridge || !get(isLoaded)) return "none";
+    cancelPendingAutosave();
+    if (_bridge.IsDirty()) {
+        isDirty.set(true);
+        await persistNow();
+    }
+    if (get(savesHeld)) return t("errorPage.savesHeld");
+    if (get(gameFileMissing)) return t("errorPage.gameFileMissing");
+    if (get(saveError)) return get(saveError);
+    return _bridge.IsDirty() ? t("errorPage.notSaved") : null;
+}
+
 // The status pill's "Retry" action after a failed autosave.
 export function retrySave(): Promise<void> {
     cancelPendingAutosave();
