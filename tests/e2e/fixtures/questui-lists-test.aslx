@@ -1,0 +1,66 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- QuestUI.lists() and the list events, on v2 and legacy (wasmplayer/questui-lists.spec.mjs).
+       questui-lists-test.js records every list event. "summon" starts a timer that gives the
+       player a coin and raises their gold, so the lists change between turns. -->
+  <game name="QuestUIListsTest">
+    <showpanes />
+  </game>
+
+  <javascript src="questui-lists-test.js" />
+
+  <object name="hall">
+    <inherit name="editor_room" />
+    <description>A hall.</description>
+    <object name="player">
+      <inherit name="defaultplayer" />
+      <gold type="int">5</gold>
+      <statusattributes type="stringdictionary">
+        <item>
+          <key>gold</key>
+          <value>Gold: !</value>
+        </item>
+      </statusattributes>
+    </object>
+    <object name="torch">
+      <inherit name="editor_object" />
+      <take />
+    </object>
+    <exit alias="north" to="kitchen">
+      <inherit name="northdirection" />
+    </exit>
+  </object>
+
+  <object name="kitchen">
+    <inherit name="editor_room" />
+    <description>A kitchen.</description>
+    <exit alias="south" to="hall">
+      <inherit name="southdirection" />
+    </exit>
+  </object>
+
+  <object name="coin">
+    <inherit name="editor_object" />
+  </object>
+
+  <command name="summon">
+    <pattern>summon</pattern>
+    <script>
+      EnableTimer (coin_timer)
+      msg ("Wait for it.")
+    </script>
+  </command>
+
+  <timer name="coin_timer">
+    <interval>1</interval>
+    <script>
+      DisableTimer (coin_timer)
+      MoveObject (coin, player)
+      player.gold = player.gold + 1
+    </script>
+  </timer>
+
+</asl>

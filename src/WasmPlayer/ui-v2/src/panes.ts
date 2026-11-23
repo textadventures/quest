@@ -10,6 +10,7 @@
 // an object link in the transcript (#2613, decision 1).
 
 import { decorateLinks } from './links';
+import { type EngineListItem, listItem, setList } from './lists';
 import { player } from './player';
 import { state } from './state';
 
@@ -70,27 +71,23 @@ export function pane(name: string): QvPane | null {
 
 // ── Lists: inventory and places/objects ─────────────────────────────────────
 
-interface ListItem {
-    Text: string;
-    Verbs: string[];
-    ElementId: string | null;
-    ElementName: string;
-}
-
 // The engine's list names (ListHandler) for each pane.
-const listPanes: Record<string, string> = { inventory: 'inventory', placesobjects: 'objects' };
+const listPanes: Record<string, 'inventory' | 'objects'> = { inventory: 'inventory', placesobjects: 'objects' };
 
 /** The adapter's updateList: the whole list, in order, each item as JSON. */
 export function updateList(listName: string, items: Record<string, string>): void {
-    const target = pane(listPanes[listName] ?? '');
-    if (!target) return;
+    const name = listPanes[listName];
+    if (!name) return;
     const directions = new Set(state.compassDirections);
+    // Exits are listed among places and objects, but the compass already has them.
+    const kept = Object.values(items).map((json) => JSON.parse(json) as EngineListItem)
+        .filter((item) => listName !== 'placesobjects' || !directions.has(item.Text));
+    setList(name, kept.map(listItem));
+    const target = pane(name);
+    if (!target) return;
     const list = document.createElement('ul');
     list.className = 'qv-pane-list';
-    for (const json of Object.values(items)) {
-        const item = JSON.parse(json) as ListItem;
-        // Exits are listed among places and objects, but the compass already has them.
-        if (listName === 'placesobjects' && directions.has(item.Text)) continue;
+    for (const item of kept) {
         const button = document.createElement('button');
         button.type = 'button';
         button.className = 'qv-pane-item';
@@ -109,7 +106,7 @@ export function updateList(listName: string, items: Record<string, string>): voi
     if (!list.childElementCount) {
         const empty = document.createElement('p');
         empty.className = 'qv-pane-empty';
-        empty.innerHTML = state.interfaceStrings.get(listPanes[listName] === 'inventory' ? 'InventoryEmptyLabel' : 'PlacesObjectsEmptyLabel')
+        empty.innerHTML = state.interfaceStrings.get(name === 'inventory' ? 'InventoryEmptyLabel' : 'PlacesObjectsEmptyLabel')
             ?? state.interfaceStrings.get('EmptyListLabel') ?? '';
         target.body.replaceChildren(empty);
     } else {

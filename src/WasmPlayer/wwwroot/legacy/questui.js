@@ -99,6 +99,55 @@
         emit("locationChanged", { location: text });
     });
 
+    // The lists the panes show, for a game's own JavaScript to draw its own way: QuestUI.lists()
+    // and an event each time one changes. The engine sends them after every turn and timer tick.
+    var listEvents = { inventory: "inventoryChanged", objects: "objectsChanged", exits: "exitsChanged", status: "statusChanged" };
+    var lists, receivedLists;
+    function resetLists() {
+        lists = { inventory: [], objects: [], exits: [], status: [] };
+        receivedLists = {};
+    }
+    resetLists();
+    function copy(value) {
+        return JSON.parse(JSON.stringify(value));
+    }
+    function setList(name, value) {
+        // Status is sent every turn whether it changed or not, and a game only wants to hear of a change.
+        if (receivedLists[name] && JSON.stringify(value) === JSON.stringify(lists[name])) return;
+        receivedLists[name] = true;
+        lists[name] = value;
+        emit(listEvents[name], name === "exits" ? { exits: copy(value) } : { items: copy(value) });
+    }
+    wrapGlobal("updateList", function (listName, listData) {
+        if (listName !== "inventory" && listName !== "placesobjects") return;
+        var items = [];
+        $.each(listData, function (key, value) {
+            var data = JSON.parse(value);
+            // As the pane does, places and objects leaves out the exits the compass has.
+            if (listName === "placesobjects" && $.inArray(data.Text, _compassDirs) !== -1) return;
+            items.push({
+                text: String(data.Text == null ? "" : data.Text),
+                name: String(data.ElementName == null ? "" : data.ElementName),
+                elementId: String(data.ElementId == null ? "" : data.ElementId),
+                verbs: (data.Verbs || []).map(String)
+            });
+        });
+        setList(listName === "inventory" ? "inventory" : "objects", items);
+    });
+    wrapGlobal("updateCompass", function (data) {
+        setList("exits", String(data == null ? "" : data).split("/").filter(Boolean));
+    });
+    // setStatusAttributes passes its structured items to updateStatus as text, so it leaves them
+    // here for updateStatus's wrapper; an older game's status is only ever text.
+    var pendingStatus = null;
+    wrapGlobal("updateStatus", function (text) {
+        var items = pendingStatus || String(text == null ? "" : text).split(/\r?\n|<br\s*\/?>/i)
+            .filter(function (line) { return line.trim(); })
+            .map(function (line) { return { text: line }; });
+        pendingStatus = null;
+        setList("status", items);
+    });
+
     var originalScrollToEnd = window.scrollToEnd;
     window.scrollToEnd = function () {
         if (autoScroll) originalScrollToEnd.apply(this, arguments);
@@ -383,6 +432,7 @@
         setLocation: function (text) { updateLocation(text); },
         setStatusAttributes: function (items) {
             if (typeof items === "string") items = JSON.parse(items);
+            pendingStatus = (items || []).filter(function (item) { return item && typeof item === "object"; });
             updateStatus((items || []).map(function (item) {
                 return item.text != null ? item.text : "";
             }).join("<br/>"));
@@ -435,6 +485,7 @@
         },
         setCommandPlaceholder: function (text) { $("#txtCommand").attr("placeholder", text); },
         setMapInteractive: setMapInteractive,
+        lists: function () { return copy(lists); },
         on: function (event, fn) {
             if (typeof fn !== "function") return;
             (listeners[event] = listeners[event] || new Set()).add(fn);
@@ -450,6 +501,7 @@
     window.resetQuestUIState = function () {
         authorPanes = {};
         listeners = {};
+        resetLists();
         autoScroll = true;
         fadeOutput = false;
         continueOnClick = false;

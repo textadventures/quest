@@ -21,7 +21,30 @@ export interface StatusAttribute {
     pinned?: boolean;
 }
 
-export type QuestUIEvent = 'turnStarted' | 'turnEnded' | 'outputAdded' | 'locationChanged';
+/** An inventory or places-and-objects item, as QuestUI.lists() and the list events give it. */
+export interface QuestUIListItem {
+    /** The display name, as the pane shows it (it may have markup in it). */
+    text: string;
+    /** The object's name, as a command would use it. */
+    name: string;
+    /** The object's element ID, which an object link (a.elementmenu) gives as data-elementid. */
+    elementId: string;
+    /** The verbs its menu offers, such as "Look at" and "Take". */
+    verbs: string[];
+}
+
+/** QuestUI.lists(): what the inventory, places and objects, compass and status panes have now. */
+export interface QuestUILists {
+    inventory: QuestUIListItem[];
+    /** Places and objects, without the exits the compass has. */
+    objects: QuestUIListItem[];
+    /** The exits the player can take, by name: the compass enables those that are directions. */
+    exits: string[];
+    status: StatusAttribute[];
+}
+
+export type QuestUIEvent = 'turnStarted' | 'turnEnded' | 'outputAdded' | 'locationChanged'
+    | 'inventoryChanged' | 'objectsChanged' | 'exitsChanged' | 'statusChanged';
 export type QuestUIListener = (detail?: unknown) => void;
 
 /** Same arguments, in the same order, as the Grid_* functions they replace. */
@@ -112,6 +135,7 @@ export interface QuestUIContract {
     fadePreviousOutput(on: unknown): void;
     setCommandPlaceholder(text: string): void;
     setMapInteractive(on: unknown): void;
+    lists(): QuestUILists;
     on(event: QuestUIEvent | string, fn: QuestUIListener): void;
     off(event: QuestUIEvent | string, fn: QuestUIListener): void;
 }

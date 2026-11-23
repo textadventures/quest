@@ -7,6 +7,7 @@
 // lines instead (the adapter's updateStatus), which show as text.
 
 import type { StatusAttribute } from './contract';
+import { setList } from './lists';
 import { pane } from './panes';
 import { player } from './player';
 
@@ -14,6 +15,7 @@ let items: StatusAttribute[] = [];
 
 export function setStatusAttributes(list: StatusAttribute[]): void {
     items = Array.isArray(list) ? list.filter((item) => item && typeof item === 'object') : [];
+    setList('status', items);
     renderStatus();
 }
 
