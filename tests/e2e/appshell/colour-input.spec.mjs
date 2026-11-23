@@ -48,13 +48,24 @@ test('colour-input', async ({ baseURL }) => {
         const named = await page.locator('[data-colour-grid="defaultbackground"]').getByRole('combobox', { name: 'Text colour', exact: true }).count();
         if (named !== 1) throw new Error(`${named} text fields in the colour table are named "Text colour"`);
 
-        // As wide as the plain text fields around it (Font size, Interface font), set or not.
+        // As wide as a plain text field with the same classes, set or not, whatever its swatch and
+        // buttons take up. Nothing else on the tab is such a field any more (Font size is a narrow
+        // number box, Margin image fills the row), so the spec puts one in the colour's own cell,
+        // measures it and takes it out again.
         const checkWidth = async (when) => {
-            const fontSize = await page.locator('label', { hasText: /^\s*Font size:/ }).first().locator('input').evaluate(el => el.getBoundingClientRect().width);
+            const plain = await caption.evaluate(cell => {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'input text-xs py-0.5 px-1.5 w-auto';
+                cell.append(input);
+                const width = input.getBoundingClientRect().width;
+                input.remove();
+                return width;
+            });
             const colour = await control.evaluate(el => el.getBoundingClientRect().width);
             const field = await text.evaluate(el => el.getBoundingClientRect().width);
-            if (Math.abs(colour - fontSize) > 0.5 || Math.abs(field - fontSize) > 0.5) {
-                throw new Error(`${when}, the colour control is ${colour}px (its field ${field}px), Font size ${fontSize}px`);
+            if (plain < 100 || Math.abs(colour - plain) > 0.5 || Math.abs(field - plain) > 0.5) {
+                throw new Error(`${when}, the colour control is ${colour}px (its field ${field}px), a plain text field ${plain}px`);
             }
         };
         await checkWidth('before setting it');
@@ -66,7 +77,7 @@ test('colour-input', async ({ baseURL }) => {
         if (await picker.inputValue() !== '#ff0000') throw new Error(`the picker is seeded with ${await picker.inputValue()}, not #ff0000`);
         await checkWidth('with a colour set');
         console.log(`PASS [${colorScheme}]: a typed CSS colour shows on the swatch and seeds the picker`);
-        console.log(`PASS [${colorScheme}]: the control is as wide as the text fields beside it`);
+        console.log(`PASS [${colorScheme}]: the control is as wide as a plain text field`);
 
         // The picker is a visible button beside the field, and it (and the swatch) really open it: a
         // real click reaches them and calls showPicker. (The colour input used to be laid invisibly
