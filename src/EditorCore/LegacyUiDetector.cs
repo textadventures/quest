@@ -85,8 +85,9 @@ public static partial class LegacyUiDetector
         IEnumerable<(string Source, string Script)> scripts,
         IEnumerable<(string Filename, string Text)> javascriptFiles)
     {
-        var scriptList = scripts.ToList();
-        var fileList = javascriptFiles.ToList();
+        var scriptList = scripts.Select(script => (script.Source, Script: WithoutAslComments(script.Script))).ToList();
+        var fileList = javascriptFiles.Select(file => (file.Filename, file.Text, Code: WithoutJsComments(file.Text)))
+            .ToList();
 
         var calls = scriptList
             .SelectMany(script => JsCall().Matches(script.Script).Select(call => (
@@ -96,10 +97,10 @@ public static partial class LegacyUiDetector
             ).ToList();
         var evaluated = calls
             .Where(call => call.Name == "eval")
-            .Select(call => (call.Source, Call: call.Text, JavaScript: StringsIn(call.Text)))
+            .Select(call => (call.Source, Call: call.Text, JavaScript: WithoutJsComments(StringsIn(call.Text))))
             .ToList();
 
-        var ownFunctions = fileList.Select(file => file.Text)
+        var ownFunctions = fileList.Select(file => file.Code)
             .Concat(evaluated.Select(e => e.JavaScript))
             .SelectMany(OwnFunctions)
             .ToHashSet();
@@ -121,9 +122,11 @@ public static partial class LegacyUiDetector
             }
         }
 
-        foreach (var (filename, text) in fileList)
+        foreach (var (filename, text, code) in fileList)
         {
-            var match = FirstHack(text);
+            // The comments are blanked out, not removed, so the match is at the same place in the
+            // original text.
+            var match = FirstHack(code);
             if (match != null)
             {
                 hacks.Add(new LegacyUiHack(filename, Shorten(LineAt(text, match.Index))));
@@ -152,6 +155,67 @@ public static partial class LegacyUiDetector
     {
         return OwnFunction().Matches(javaScript)
             .Select(match => match.Groups[1].Success ? match.Groups[1].Value : match.Groups[2].Value);
+    }
+
+    // A script without its comment lines, which are the only kind ASL has: commented-out code
+    // isn't code the game runs.
+    private static string WithoutAslComments(string script)
+    {
+        return string.Join('\n', script.Split('\n').Where(line => !line.TrimStart().StartsWith("//", StringComparison.Ordinal)));
+    }
+
+    // JavaScript with its comments blanked out by spaces, keeping every other character where it
+    // was. A // or /* inside a string, as in a URL, isn't a comment. A regex literal is read as
+    // code, so a quote in one can hide a comment after it, which only means that comment is still
+    // searched.
+    private static string WithoutJsComments(string javaScript)
+    {
+        var result = javaScript.ToCharArray();
+        var quote = '\0';
+        for (var i = 0; i < result.Length; i++)
+        {
+            var c = result[i];
+            if (quote != '\0')
+            {
+                if (c == '\\')
+                {
+                    i++;
+                }
+                else if (c == quote || (c == '\n' && quote != '`'))
+                {
+                    quote = '\0';
+                }
+            }
+            else if (c is '"' or '\'' or '`')
+            {
+                quote = c;
+            }
+            else if (c == '/' && i + 1 < result.Length && result[i + 1] is '/' or '*')
+            {
+                var lineComment = result[i + 1] == '/';
+                var end = lineComment
+                    ? javaScript.IndexOf('\n', i)
+                    : javaScript.IndexOf("*/", i + 2, StringComparison.Ordinal) is var close and >= 0
+                        ? close + 2
+                        : -1;
+                if (end < 0)
+                {
+                    end = result.Length;
+                }
+
+                for (var j = i; j < end; j++)
+                {
+                    if (result[j] != '\n')
+                    {
+                        result[j] = ' ';
+                    }
+                }
+
+                i = end - 1;
+            }
+        }
+
+        return new string(result);
     }
 
     // The JavaScript inside a JS.* call's string arguments, with its ASL escapes removed. The

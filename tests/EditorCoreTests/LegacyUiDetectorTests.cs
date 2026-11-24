@@ -79,6 +79,51 @@ public class LegacyUiDetectorTests
         Assert.AreEqual(0, FindInFile(text).Count);
     }
 
+    // Commented-out code isn't code the game runs.
+    [TestMethod]
+    [DataRow("// JS.setCss (\"#gamePanes\", \"display:none\")")]
+    [DataRow("msg (\"Hello\")\n  // JS.scrollToEnd ()\nmsg (\"Goodbye\")")]
+    [DataRow("""JS.eval ("document.title = 'A game'; // $('#status').hide();")""")]
+    [DataRow("""JS.eval ("document.title = 'A game'; /* $('#status').hide(); */")""")]
+    public void CommentedOutScriptsAreNotFound(string script)
+    {
+        Assert.AreEqual(0, FindInScript(script).Count);
+    }
+
+    [TestMethod]
+    [DataRow("// $(\"#placesObjectsWrapper\").show();")]
+    [DataRow("var a = 1; // scrollToEnd = function () {};")]
+    [DataRow("/*\n$('#gamePanes').hide();\n*/")]
+    [DataRow("/* unclosed\n_waitMode = true;")]
+    public void CommentedOutJavascriptIsNotFound(string text)
+    {
+        Assert.AreEqual(0, FindInFile(text).Count);
+    }
+
+    [TestMethod]
+    public void CodeAfterACommentIsFound()
+    {
+        var hack = FindInFile("/* a comment */\nvar url = 'http://example.com'; // and another\n_waitMode = true;").Single();
+
+        Assert.AreEqual("_waitMode = true;", hack.Detail);
+    }
+
+    [TestMethod]
+    public void ACommentInsideAStringIsCode()
+    {
+        Assert.AreEqual(1, FindInFile("var s = '//'; $('#gamePanes').hide();").Count);
+        Assert.AreEqual(1, FindInScript("""JS.eval ("var s = '/*'; $('#status').hide(); var t = '*/';")""").Count);
+    }
+
+    [TestMethod]
+    public void AFunctionDefinedOnlyInACommentIsNotTheGamesOwn()
+    {
+        var hacks = LegacyUiDetector.Find([("start", """JS.colourBlend ("red", "blue")""")],
+            [("colours.js", "// function colourBlend(a, b) { return a; }")]);
+
+        Assert.AreEqual(1, hacks.Count);
+    }
+
     [TestMethod]
     public void AGameCanDefineAFunctionWithALegacyName()
     {
@@ -178,6 +223,21 @@ public class LegacyUiDetectorTests
         var hack = controller.FindLegacyUiHacks(new Dictionary<string, string> { ["mine.js"] = "_waitMode = true;" })
             .Single();
         Assert.AreEqual("mine.js", hack.Source);
+    }
+
+    [TestMethod]
+    public async Task ACommentedOutHackInAGameIsNotFound()
+    {
+        using var controller = await Load(
+            $"""
+             <function name="MyFunction"><![CDATA[
+               msg ("Hello")
+               // {Hack}
+               // and a second line
+             ]]></function>
+             """);
+
+        Assert.AreEqual(0, controller.FindLegacyUiHacks(new Dictionary<string, string>()).Count);
     }
 
     [TestMethod]
