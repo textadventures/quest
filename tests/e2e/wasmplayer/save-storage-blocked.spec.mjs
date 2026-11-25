@@ -26,7 +26,9 @@ test('save-storage-blocked', async ({ baseURL }) => {
     try {
         await page.goto(`${baseURL}/?url=/examples/simple.aslx`);
         // The boot-time "Continue your game?" check lists saves too; it should carry on into the game.
-        await page.waitForFunction(() => window.canSendCommand === true, null, { timeout: 30000 });
+        // canSendCommand alone isn't enough: loading the v2 UI bundle sets it partway through
+        // Bridge.Initialise, and the host only assigns WebPlayer.onSaveClick once that returns.
+        await page.waitForFunction(() => window.canSendCommand === true && typeof WebPlayer.onSaveClick === 'function', null, { timeout: 30000 });
 
         await page.evaluate(() => WebPlayer.onSaveClick());
         await page.locator('#qv-saves[open]').waitFor({ timeout: 5000 });
