@@ -6,7 +6,7 @@
   "description": "Playwright end-to-end tests for WasmPlayer, AppShell, Electron and the docs site — not part of the dotnet test suite.",
   "devDependencies": {
     "@playwright/test": "^1.65.1",
-    "axe-core": "4.14.0",
+    "axe-core": "4.14.1",
     "fflate": "^0.8.3",
     "playwright": "^1.65.0"
   }
