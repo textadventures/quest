@@ -335,6 +335,7 @@
     "updateBanner.downloadButton": "[Dównlóád]",
     "updateBanner.later": "[Látér]",
     "betaBanner.message": "[Thís ís thé Qúést Vívá bétá. Lócál dráfts ánd sávéd gámés héré áré képt sépáráté fróm pláy.qúéstvívá.cóm.]",
+    "betaBanner.noBetaMessage": "[Théré's nó bétá júst nów, só thís ís Qúést Vívá {version}, thé cúrrént vérsíón. Lócál dráfts ánd sávéd gámés héré áré képt sépáráté fróm pláy.qúéstvívá.cóm.]",
     "betaBanner.stableLink": "[Gó tó pláy.qúéstvívá.cóm]",
     "fileChangedBanner.conflictMessage": "[Thís fílé wás chángéd óútsídé thé édítór, só yóúr chángés héré hávén't béén sávéd. Whích vérsíón dó yóú wánt tó kéép?]",
     "fileChangedBanner.useChangedFile": "[Úsé thé chángéd fílé]",

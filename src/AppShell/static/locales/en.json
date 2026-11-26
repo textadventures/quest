@@ -450,6 +450,7 @@
     "updateBanner.later": "Later",
 
     "betaBanner.message": "This is the Quest Viva beta. Local drafts and saved games here are kept separate from play.questviva.com.",
+    "betaBanner.noBetaMessage": "There's no beta just now, so this is Quest Viva {version}, the current version. Local drafts and saved games here are kept separate from play.questviva.com.",
     "betaBanner.stableLink": "Go to play.questviva.com",
 
     "fileChangedBanner.conflictMessage": "This file was changed outside the editor, so your changes here haven't been saved. Which version do you want to keep?",
