@@ -54,7 +54,7 @@
          not Skeleton's paired light/dark-auto-switching tokens
          (bg-primary-100-900, preset-tonal, etc — see presets.css's use of
          light-dark()): the Play tab is force-dark regardless of system theme
-         (unlike the editor, where BackupBanner's use of those pairs is fine),
+         (unlike the editor, where BackupReminderCard's use of those pairs is fine),
          so an auto-switching background/text pair here would go low-contrast
          under a light-mode system. -->
     <div class="flex items-center gap-3 px-4 py-2 bg-primary-900 border-b border-primary-700 text-sm">

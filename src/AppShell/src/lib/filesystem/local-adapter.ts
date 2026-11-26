@@ -10,15 +10,22 @@ const ROOT = ["games"];
 interface DraftMeta {
     filename: string;
     lastModified: number;
-    // Counts saveFile() calls — the create/import flow's initial write is #1, so
-    // this is >1 only once the user has actually made and saved an edit. Gates
-    // the backup banner (see shouldShowBackupBanner) behind real activity rather
-    // than showing it the instant an empty game is created.
+    // Counts saveFile() calls. The create/import flow's initial write is #1, so
+    // this is >1 only once the user has actually made and saved an edit.
     saveCount?: number;
-    // When the backup banner was last resolved — an actual backup, or an
-    // explicit Dismiss — so a reminder can resurface after some time has passed.
-    // Lives on the draft itself, not localStorage, so it travels with the draft
-    // and disappears along with it on delete.
+    // When the draft was first edited: its first save after the create/import
+    // write. A draft from before this was kept has none, and counts as old
+    // enough for the backup reminder (see shouldShowBackupReminder).
+    firstEditedAt?: number;
+    // Set once the draft has also been edited on a later local day than
+    // firstEditedAt, which is when the backup reminder can first show: a game
+    // made a few minutes ago to try something out isn't much of a loss.
+    editedOnLaterDay?: boolean;
+    // When the backup reminder was last resolved (an actual backup, or Remind me
+    // later), so it can come back once some time has passed. Lives on the draft
+    // itself, not localStorage, so it travels with the draft and disappears
+    // along with it on delete. Keeps its old name so drafts saved before the
+    // banner became a reminder card keep their state.
     backupBannerResolvedAt?: number;
 }
 
@@ -42,25 +49,61 @@ async function writeMeta(gameId: string, meta: DraftMeta): Promise<void> {
     await writeOpfsFile(dirPath(gameId), "meta.json", new TextEncoder().encode(JSON.stringify(meta)));
 }
 
-// The initial creation/import write counts as save #1 — wait for at least one
-// more real save (i.e. an actual edit) before ever showing the banner.
-const ACTIVITY_THRESHOLD_SAVES = 2;
-// Once resolved (backed up or dismissed), don't ask again until this much time
-// has passed — matches the "Safari may clear local drafts after a week" notice
-// on the Open screen, since that's the point real data-loss risk starts to rise.
+// The initial creation/import write counts as save #1, so a draft has been
+// edited once saveCount reaches this.
+const EDITED_SAVE_COUNT = 2;
+// Once resolved (backed up, or Remind me later), don't ask again until this much
+// time has passed and the draft has changed since. A week matches the "Safari
+// may clear local drafts after a week" notice on the Open screen, since that's
+// the point real data-loss risk starts to rise. When the browser has agreed to
+// keep the storage (navigator.storage.persist()), it's less likely to be
+// cleared, so the reminder can wait longer.
 const REMINDER_AFTER_MS = 7 * 24 * 60 * 60 * 1000;
+const PERSISTED_REMINDER_AFTER_MS = 30 * 24 * 60 * 60 * 1000;
 
-export async function shouldShowBackupBanner(gameId: string): Promise<boolean> {
-    const meta = await readMeta(gameId);
-    if (!meta || (meta.saveCount ?? 0) < ACTIVITY_THRESHOLD_SAVES) return false;
-    if (meta.backupBannerResolvedAt == null) return true;
-    return Date.now() - meta.backupBannerResolvedAt >= REMINDER_AFTER_MS;
+function localDay(time: number): string {
+    return new Date(time).toDateString();
 }
 
-export async function markBackupBannerResolved(gameId: string): Promise<void> {
+export async function shouldShowBackupReminder(gameId: string, storagePersisted: boolean): Promise<boolean> {
+    const meta = await readMeta(gameId);
+    if (!meta || (meta.saveCount ?? 0) < EDITED_SAVE_COUNT) return false;
+    const oldEnough = meta.firstEditedAt == null || meta.editedOnLaterDay === true;
+    if (!oldEnough) return false;
+    const resolvedAt = meta.backupBannerResolvedAt;
+    if (resolvedAt == null) return true;
+    const wait = storagePersisted ? PERSISTED_REMINDER_AFTER_MS : REMINDER_AFTER_MS;
+    return meta.lastModified > resolvedAt && Date.now() - resolvedAt >= wait;
+}
+
+export async function markBackupReminderResolved(gameId: string): Promise<void> {
     const meta = await readMeta(gameId);
     if (!meta) return;
     await writeMeta(gameId, { ...meta, backupBannerResolvedAt: Date.now() });
+}
+
+// Asks the browser not to clear this site's storage under storage pressure.
+// Firefox asks the user, so this is only called when the backup reminder first
+// appears, with its explanation beside the prompt, and at most once per page
+// load. Chrome and Safari decide by themselves without asking. It doesn't help
+// against Safari's separate 7-day inactivity eviction.
+let _persistRequested = false;
+export async function requestPersistentStorage(): Promise<boolean> {
+    if (_persistRequested) return isStoragePersisted();
+    _persistRequested = true;
+    try {
+        return (await navigator.storage?.persist?.()) ?? false;
+    } catch {
+        return false;
+    }
+}
+
+export async function isStoragePersisted(): Promise<boolean> {
+    try {
+        return (await navigator.storage?.persisted?.()) ?? false;
+    } catch {
+        return false;
+    }
 }
 
 export interface LocalDraftSummary {
@@ -101,7 +144,6 @@ export async function loadLocalDraft(gameId: string): Promise<{ bytes: Uint8Arra
 export async function createLocalDraft(gameId: string, filename: string, bytes: Uint8Array | string): Promise<LocalDraftAdapter> {
     const adapter = new LocalDraftAdapter(gameId, filename);
     await adapter.saveFile(bytes);
-    void requestPersistentStorage();
     return adapter;
 }
 
@@ -209,18 +251,6 @@ export function ensureGameId(raw: Uint8Array): { bytes: Uint8Array; gameId: stri
     return { bytes: new TextEncoder().encode(patched), gameId };
 }
 
-let _persistRequested = false;
-async function requestPersistentStorage(): Promise<void> {
-    if (_persistRequested) return;
-    _persistRequested = true;
-    try {
-        await navigator.storage?.persist?.();
-    } catch {
-        // Best-effort only — reduces eviction risk under storage pressure, doesn't
-        // help against Safari's separate 7-day inactivity eviction.
-    }
-}
-
 export class LocalDraftAdapter implements FileAdapter {
     constructor(
         private _gameId: string,
@@ -237,15 +267,31 @@ export class LocalDraftAdapter implements FileAdapter {
     async saveFile(data: Uint8Array | string): Promise<void> {
         const bytes = typeof data === "string" ? new TextEncoder().encode(data) : data;
         await writeOpfsFile(dirPath(this._gameId), this._filename, bytes);
-        // Preserve the existing meta (saveCount, backupBannerResolvedAt) rather than
-        // overwriting wholesale — this runs on every save, so clobbering here would
-        // silently reset the backup-banner state on the very next edit.
+        // Preserve the existing meta (backupBannerResolvedAt and the rest) rather than
+        // overwriting wholesale. This runs on every save, so clobbering here would
+        // silently reset the backup reminder's state on the very next edit.
         const existing = await readMeta(this._gameId);
+        const now = Date.now();
+        const previousSaveCount = existing?.saveCount ?? 0;
+        const saveCount = previousSaveCount + 1;
+        let firstEditedAt = existing?.firstEditedAt;
+        let editedOnLaterDay = existing?.editedOnLaterDay;
+        if (saveCount >= EDITED_SAVE_COUNT) {
+            if (firstEditedAt == null) {
+                // Already edited before firstEditedAt was kept: old enough.
+                if (previousSaveCount >= EDITED_SAVE_COUNT) editedOnLaterDay = true;
+                firstEditedAt = now;
+            } else if (!editedOnLaterDay && localDay(now) !== localDay(firstEditedAt)) {
+                editedOnLaterDay = true;
+            }
+        }
         await writeMeta(this._gameId, {
             ...existing,
             filename: this._filename,
-            lastModified: Date.now(),
-            saveCount: (existing?.saveCount ?? 0) + 1,
+            lastModified: now,
+            saveCount,
+            firstEditedAt,
+            editedOnLaterDay,
         });
     }
 

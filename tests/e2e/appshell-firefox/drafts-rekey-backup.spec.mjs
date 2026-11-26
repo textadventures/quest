@@ -87,9 +87,8 @@ test('drafts-rekey-backup', async ({ baseURL }) => {
 
         // Backup… lives inside the File ▾ menu, not a standalone toolbar button
         // (see the responsive Toolbar rework, a50f713a) — open it first. The
-        // BackupBanner's own "Backup…" button isn't a reliable alternative here:
-        // it only appears after a couple of saves (ACTIVITY_THRESHOLD_SAVES in
-        // local-adapter.ts), which this draft hasn't hit yet at this point.
+        // backup reminder's own button isn't a reliable alternative here: it only
+        // appears once a draft has been edited on two different days.
         await page.click('button:has-text("File")');
         const [download] = await Promise.all([
             page.waitForEvent('download'),

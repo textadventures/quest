@@ -23,6 +23,7 @@
         codeViewPanelOpen,
         codeViewCloseRequested,
         applyPendingCodeViewEdits,
+        showBackupReminder, treePanelVisible, revealBackupReminder,
     } from "#lib/editor-store.js";
     import { hasActiveCmView, cmUndo, cmRedo } from "#lib/code-editor-registry.js";
     import { settingsModalOpen } from "#lib/settings-store.js";
@@ -276,6 +277,16 @@
                             onclick={handleSaveNow}
                             title={t("toolbar.saveNow")}
                         ><Circle size={8} fill="currentColor" /> <span class="hidden lg:inline">{t("toolbar.unsaved")}</span></button>
+                    {:else if $gameFilename && $showBackupReminder && !$treePanelVisible}
+                        <!-- Stands in for the backup reminder card while the tree isn't shown. The
+                             download icon takes the check's place, so the chip keeps its width. -->
+                        <button
+                            type="button"
+                            class="save-chip save-chip-saved save-chip-backup shrink-0"
+                            onclick={revealBackupReminder}
+                            title={t("backupReminder.chipTitle")}
+                            aria-label={t("backupReminder.chipTitle")}
+                        ><Download size={13} /> <span class="hidden lg:inline">{t("toolbar.saved")}</span></button>
                     {:else if $gameFilename}
                         <span class="save-chip save-chip-saved shrink-0"><Check size={13} /> <span class="hidden lg:inline">{t("toolbar.saved")}</span></span>
                     {/if}
@@ -411,6 +422,12 @@
         cursor: pointer;
     }
     .save-chip-unsaved:hover {
+        text-decoration: underline;
+    }
+    .save-chip-backup {
+        cursor: pointer;
+    }
+    .save-chip-backup:hover {
         text-decoration: underline;
     }
     .save-chip-error {

@@ -29,10 +29,10 @@
 // are good candidates to add here once that flow is worth the investment.
 //
 // PR 4 added banners/modals: DownloadButton, LibraryElementBanner, and
-// PublishModal are exercised below. BackupBanner, UpdateBanner,
+// PublishModal are exercised below. The backup reminder, UpdateBanner,
 // FileChangedExternallyBanner, and LibraryReloadBanner are NOT — each needs
 // state that's impractical to fake reliably from a dev-server session
-// (a real save-count threshold, live update-catalog data, Electron-only file
+// (a draft edited on two different days, live update-catalog data, Electron-only file
 // watching, and a genuine library edit, respectively). All four were verified
 // by svelte-check/eslint plus manual code review instead.
 //
