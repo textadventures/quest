@@ -280,7 +280,7 @@
                 <!-- Flat filtered list across all categories -->
                 <div class="flex-1 overflow-y-auto pb-2" role="listbox" aria-label={t("addScriptModal.matchingCommandsAriaLabel")}>
                     {#if filteredCommands.length === 0}
-                        <div class="px-5 py-3 text-xs text-surface-400">{t("addScriptModal.noMatches")}</div>
+                        <div class="px-5 py-3 text-xs text-surface-600-400">{t("addScriptModal.noMatches")}</div>
                     {/if}
                     {#each filteredCommands as cmd, idx (cmd.createString)}
                         {@const isSelected = selectedCommand?.createString === cmd.createString}
@@ -300,7 +300,7 @@
                         >
                             <span class="w-4 flex-shrink-0 text-primary-500 {isSelected ? "opacity-100" : "opacity-0"}">●</span>
                             <span class="flex-1">{cmd.add}</span>
-                            <span class="flex-shrink-0 text-xs text-surface-400">{cmd.categoryName}</span>
+                            <span class="flex-shrink-0 text-xs text-surface-600-400">{cmd.categoryName}</span>
                         </button>
                     {/each}
                 </div>

@@ -54,7 +54,7 @@
             {#if expanded}
                 <div class="absolute right-0 top-full z-[999] mt-1 w-56 bg-surface-50-950 border border-surface-200-800 rounded shadow-lg py-2 flex flex-col items-stretch gap-1 text-surface-900-100">
                     {#if versionLine}
-                        <p class="text-surface-500 text-xs px-3">{versionLine}</p>
+                        <p class="text-surface-600-400 text-xs px-3">{versionLine}</p>
                     {/if}
                     {#if links.primary}
                         <a href={links.primary.url} class="px-3 py-1 text-sm hover:bg-surface-200-800">{links.primary.label}</a>
@@ -71,7 +71,7 @@
     {:else}
         <div class="flex flex-col items-center gap-1 text-sm">
             {#if versionLine}
-                <p class="text-surface-500 text-xs">{versionLine}</p>
+                <p class="text-surface-300 text-xs">{versionLine}</p>
             {/if}
             {#if links.primary}
                 <a href={links.primary.url} class="btn btn-xs preset-outlined-primary-500">
@@ -81,7 +81,7 @@
             {#if links.others.length > 0 || !links.primary}
                 <button
                     type="button"
-                    class="text-surface-400 hover:text-surface-200 underline text-xs"
+                    class="text-surface-300 hover:text-surface-100 underline text-xs"
                     onclick={() => (expanded = !expanded)}
                 >
                     {links.primary ? t("downloadButton.otherPlatforms") : t("downloadButton.titleGeneric")}
@@ -94,7 +94,7 @@
                             {other.label}
                         </a>
                     {/each}
-                    <a href={links.releasePage} target="_blank" rel="noopener" class="text-surface-400 hover:text-surface-200 underline text-xs">
+                    <a href={links.releasePage} target="_blank" rel="noopener" class="text-surface-300 hover:text-surface-100 underline text-xs">
                         {t("downloadButton.allDownloads")}
                     </a>
                 </div>

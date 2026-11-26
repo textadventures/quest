@@ -75,7 +75,7 @@ test('expression-validation', async ({ baseURL }) => {
         await exprInput.fill(badExpression);
         await exprInput.blur();
 
-        const bracketError = page.locator('p.text-error-500', { hasText: /brackets/i });
+        const bracketError = page.locator('p.text-error-600-400', { hasText: /brackets/i });
         await bracketError.waitFor({ timeout: 5000 });
         console.log(`PASS: mismatched-brackets error shown inline: "${await bracketError.textContent()}"`);
 
@@ -94,7 +94,7 @@ test('expression-validation', async ({ baseURL }) => {
         // ── Mismatched quotes: same rejection ───────────────────────────────────────────────────
         await exprInput.fill('"no end quote');
         await exprInput.blur();
-        const quoteError = page.locator('p.text-error-500', { hasText: /quote/i });
+        const quoteError = page.locator('p.text-error-600-400', { hasText: /quote/i });
         await quoteError.waitFor({ timeout: 5000 });
         console.log(`PASS: missing-quote error shown inline: "${await quoteError.textContent()}"`);
 
@@ -102,7 +102,7 @@ test('expression-validation', async ({ baseURL }) => {
         const goodExpression = 'GetBoolean(game, "flag")';
         await exprInput.fill(goodExpression);
         await exprInput.blur();
-        await page.waitForSelector('p.text-error-500', { state: 'detached', timeout: 5000 });
+        await page.waitForSelector('p.text-error-600-400', { state: 'detached', timeout: 5000 });
         console.log('PASS: error clears once the expression is fixed');
 
         const borderClassAfterFix = await exprInput.getAttribute('class');

@@ -12,7 +12,7 @@
             disabled={page <= 1}
             onclick={() => onPage(page - 1)}
         >{t("pager.prev")}</button>
-        <span class="text-sm text-surface-400">{t("pager.pageOf", { page, pageCount })}</span>
+        <span class="text-sm text-surface-300">{t("pager.pageOf", { page, pageCount })}</span>
         <button
             type="button"
             class="btn btn-xs preset-outlined-surface-500"

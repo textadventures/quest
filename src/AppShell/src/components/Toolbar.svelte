@@ -431,7 +431,7 @@
         text-decoration: underline;
     }
     .save-chip-error {
-        color: var(--color-error-500);
+        color: var(--color-error-600-400);
         background-color: color-mix(in srgb, var(--color-error-500) 12%, transparent);
         cursor: pointer;
     }

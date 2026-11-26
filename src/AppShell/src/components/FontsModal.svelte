@@ -403,11 +403,11 @@
                         bind:value={search}
                     />
                     <button type="button" class="btn btn-xs preset-tonal self-start" onclick={() => fileInput?.click()}>{t("fontsModal.fromFile")}</button>
-                    {#if chosenError}<p class="text-xs text-error-500">{chosenError}</p>{/if}
+                    {#if chosenError}<p class="text-xs text-error-600-400">{chosenError}</p>{/if}
                     {#if !search.trim()}
                         <p class="text-xs text-surface-600-400">{t("fontsModal.recommended")}</p>
                     {:else if catalogueError}
-                        <p class="text-xs text-error-500">{t("fontsModal.catalogueError")}</p>
+                        <p class="text-xs text-error-600-400">{t("fontsModal.catalogueError")}</p>
                     {:else if !catalogue}
                         <p class="text-xs text-surface-600-400">{t("fontsModal.gettingList")}</p>
                     {:else if !results.length}
@@ -425,7 +425,7 @@
             </section>
         </div>
 
-        {#if error}<p class="text-xs text-error-500" role="alert">{error}</p>{/if}
+        {#if error}<p class="text-xs text-error-600-400" role="alert">{error}</p>{/if}
         <p class="text-xs text-surface-600-400">
             {t("fontsModal.about")}
             <a class="anchor" href={docsUrlForPath("/customise/look-and-feel/#text")} target="_blank" rel="noopener">{t("fontsModal.moreAboutFonts")}</a>

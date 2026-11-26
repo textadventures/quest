@@ -58,7 +58,7 @@
             </div>
         {:else if error}
             <div class="flex flex-col items-center gap-3 py-12 text-center">
-                <p class="text-error-500 text-sm">{t("categoryPage.loadError")}</p>
+                <p class="text-error-300 text-sm">{t("categoryPage.loadError")}</p>
                 <button
                     type="button"
                     class="btn preset-tonal"
@@ -68,7 +68,7 @@
         {:else}
             <h1 class="text-lg font-semibold">
                 {title}
-                <span class="text-surface-400 font-normal text-sm">({totalCount})</span>
+                <span class="text-surface-300 font-normal text-sm">({totalCount})</span>
             </h1>
             <div class="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-4">
                 {#each games as game (game.id)}

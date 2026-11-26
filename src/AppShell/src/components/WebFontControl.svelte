@@ -73,5 +73,5 @@
         >{t("webFont.remove")}</button>
     </div>
     <span class="text-xs text-surface-600-400 italic">{t("webFont.help")}</span>
-    {#if error}<span class="text-xs text-error-500" role="alert">{error}</span>{/if}
+    {#if error}<span class="text-xs text-error-600-400" role="alert">{error}</span>{/if}
 </div>

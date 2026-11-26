@@ -83,13 +83,13 @@
             </div>
         {:else if error}
             <div class="flex flex-col items-center gap-3 py-12 text-center">
-                <p class="text-error-500 text-sm">{t("search.loadError")}</p>
+                <p class="text-error-300 text-sm">{t("search.loadError")}</p>
                 <button type="button" class="btn preset-tonal" onclick={() => load(queryInput.trim(), currentPage)}>{t("search.tryAgain")}</button>
             </div>
         {:else if searched}
-            <p class="text-surface-400 text-sm">{tPlural("search.resultCount", totalCount)}</p>
+            <p class="text-surface-300 text-sm">{tPlural("search.resultCount", totalCount)}</p>
             {#if games.length === 0}
-                <p class="text-surface-400 text-sm">{t("search.noGamesFound")}</p>
+                <p class="text-surface-300 text-sm">{t("search.noGamesFound")}</p>
             {:else}
                 <div class="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-4">
                     {#each games as game (game.id)}

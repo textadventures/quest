@@ -38,7 +38,7 @@
     <div class="p-2 flex flex-col gap-1">
         <div class="text-sm font-semibold truncate">{game.name}</div>
         {#if game.author}
-            <div class="text-xs text-surface-400 truncate">{t("gameCard.byAuthor", { author: game.author })}</div>
+            <div class="text-xs text-surface-300 truncate">{t("gameCard.byAuthor", { author: game.author })}</div>
         {/if}
         <div class="flex flex-wrap gap-1">
             <span class="text-[10px] leading-none px-1.5 py-1 rounded-full bg-surface-800 text-surface-300">
@@ -51,7 +51,7 @@
             {/if}
         </div>
         {#if game.rating > 0}
-            <div class="text-xs text-primary-500">{ratingStars(game.rating)}</div>
+            <div class="text-xs text-primary-400">{ratingStars(game.rating)}</div>
         {/if}
     </div>
 {/snippet}

@@ -102,7 +102,7 @@
                 disabled={uploading}
             >{uploading ? t("assetManager.uploading") : t("assetManager.upload")}</button>
             <input bind:this={inputEl} type="file" class="hidden" onchange={handleUpload} />
-            {#if error}<p class="text-xs text-error-500">{error}</p>{/if}
+            {#if error}<p class="text-xs text-error-600-400">{error}</p>{/if}
         </div>
 
         <div class="flex-1 overflow-y-auto flex flex-col gap-1">
@@ -114,7 +114,7 @@
                     {#if thumbUrls[asset.key]}
                         <img src={thumbUrls[asset.key]} alt="" class="h-8 w-8 object-cover rounded border border-surface-200-800 shrink-0" />
                     {:else}
-                        <span class="h-8 w-8 rounded border border-surface-200-800 shrink-0 flex items-center justify-center text-surface-500-400"><FileIcon size={16} /></span>
+                        <span class="h-8 w-8 rounded border border-surface-200-800 shrink-0 flex items-center justify-center text-surface-600-400"><FileIcon size={16} /></span>
                     {/if}
                     <span class="text-xs flex-1 truncate" title={asset.key}>{asset.key}</span>
                     <button

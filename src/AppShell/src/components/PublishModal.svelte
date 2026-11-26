@@ -241,7 +241,7 @@
                         </a>
                     {/if}
                 {:else}
-                    <p class="publish-upload-error text-error-500" role="alert">{online.message}</p>
+                    <p class="publish-upload-error text-error-600-400" role="alert">{online.message}</p>
                     <div class="flex items-center gap-3">
                         <button type="button" class="btn btn-xs preset-filled-primary-500" onclick={handlePublish}>{t("publishModal.tryAgain")}</button>
                         <button type="button" class="btn btn-xs preset-tonal" onclick={() => (online = null)}>{t("publishModal.back")}</button>
@@ -269,11 +269,11 @@
             </fieldset>
 
             {#if target === "cdn" || target === "zip"}
-                <p class="publish-footnote text-xs text-surface-500">{t("publishModal.htmlFootnote")}</p>
+                <p class="publish-footnote text-xs text-surface-600-400">{t("publishModal.htmlFootnote")}</p>
             {/if}
 
             {#if filesError}
-                <p class="text-sm text-error-500">{t("publishModal.filesError", { error: filesError })}</p>
+                <p class="text-sm text-error-600-400">{t("publishModal.filesError", { error: filesError })}</p>
             {:else if files && files.length > 0}
                 <section class="publish-files rounded-lg bg-surface-100-900 p-3 text-sm flex flex-col gap-1">
                     <div class="flex items-baseline justify-between gap-2">
@@ -321,7 +321,7 @@
                 <p class="publish-problems-warning text-sm text-warning-700-300" role="alert">{tPlural("publishModal.problems", problemCount)}</p>
             {/if}
 
-            {#if error}<p class="text-xs text-error-500">{error}</p>{/if}
+            {#if error}<p class="text-xs text-error-600-400">{error}</p>{/if}
 
             <div class="flex items-center gap-3">
                 {#if publishing}

@@ -745,7 +745,7 @@
         </DropdownMenu>
     </div>
     {#if isFiltering && (collection.rootNode.children ?? []).length === 0}
-        <div class="px-3 py-2 text-xs text-surface-400">{t("treePanel.noMatches")}</div>
+        <div class="px-3 py-2 text-xs text-surface-600-400">{t("treePanel.noMatches")}</div>
     {/if}
     <!-- svelte-ignore a11y_no_static_element_interactions (keyboard shortcuts for the focused tree inside, not an interactive element of its own) -->
     <div class="flex-1 overflow-y-auto p-1 text-xs" onkeydown={onTreeKeydown}>
@@ -785,7 +785,7 @@
     {#if opts.length > 0}
         <span class="node-actions flex items-center ml-auto pr-1">
             <button
-                class="size-5 flex items-center justify-center rounded text-surface-400 hover:text-primary-500 hover:bg-surface-200-800 text-sm leading-none"
+                class="size-5 flex items-center justify-center rounded text-surface-600-400 hover:text-primary-600-400 hover:bg-surface-200-800 text-sm leading-none"
                 onclick={(e) => toggleDropdown(node.id + ":menu", opts, e)}
                 title={t("treePanel.nodeOptions")}
             >⋯</button>
@@ -808,7 +808,7 @@
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-4"><polyline points="9 18 15 12 9 6" /></svg>
                     </button>
-                    <Icon class="flex-shrink-0 size-3.5 text-surface-500 {node.isLibrary ? "opacity-60" : ""}" />
+                    <Icon class="flex-shrink-0 size-3.5 text-surface-600-400 {node.isLibrary ? "opacity-60" : ""}" />
                     <TreeView.BranchText class="flex-1 min-w-0 truncate {node.isLibrary ? "text-surface-600-400" : ""} {$cutElementKeys.has(node.id) ? "opacity-50 italic" : ""}">{node.text}</TreeView.BranchText>
                     <span class="opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 pointer-coarse:opacity-100">
                         {@render nodeActions(node)}
@@ -823,7 +823,7 @@
             </TreeView.Branch>
         {:else}
             <TreeView.Item class="group flex items-center gap-1.5" onclick={() => activateIfAlreadySelected(node.id)} oncontextmenu={(e: MouseEvent) => openContextMenu(node, e)}>
-                <Icon class="flex-shrink-0 size-3.5 text-surface-500 {node.isLibrary ? "opacity-60" : ""}" />
+                <Icon class="flex-shrink-0 size-3.5 text-surface-600-400 {node.isLibrary ? "opacity-60" : ""}" />
                 <span class="flex-1 min-w-0 truncate {node.isLibrary ? "text-surface-600-400" : ""} {$cutElementKeys.has(node.id) ? "opacity-50 italic" : ""}">{node.text}</span>
                 <span class="opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 pointer-coarse:opacity-100">
                     {@render nodeActions(node)}

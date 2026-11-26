@@ -16,7 +16,7 @@
     // the paired utilities would still resolve to their light-mode value.
     // forceDark instead picks the dark-side member of each pair explicitly.
     const activeText = $derived(forceDark ? "text-surface-100" : "text-surface-900-100");
-    const inactiveText = $derived(forceDark ? "text-surface-400 hover:text-surface-100" : "text-surface-600-400 hover:text-surface-900-100");
+    const inactiveText = $derived(forceDark ? "text-surface-300 hover:text-surface-100" : "text-surface-600-400 hover:text-surface-900-100");
 </script>
 
 <nav class="flex gap-1 px-4 border-b {forceDark ? "border-surface-800" : "border-surface-300-700"}">

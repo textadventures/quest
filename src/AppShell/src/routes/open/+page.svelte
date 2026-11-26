@@ -588,7 +588,7 @@
             {/if}
 
             {#if error}
-                <p class="text-error-500 text-sm whitespace-pre-wrap">{error}</p>
+                <p class="text-error-600-400 text-sm whitespace-pre-wrap">{error}</p>
                 {#if missingRecent}
                     <button type="button" class="btn btn-xs preset-tonal" onclick={handleRemoveMissingRecent}>
                         {t("openPage.removeFromRecent")}
@@ -697,7 +697,7 @@
             {#if nothingToOpen}
                 <!-- Nothing to create into: no OPFS and no folder access. The notice above says why. -->
             {:else if templatesError}
-                <p class="text-error-500 text-sm">{templatesError}</p>
+                <p class="text-error-600-400 text-sm">{templatesError}</p>
             {:else}
                 <div class="flex flex-col gap-3 w-full">
                     <input
@@ -815,7 +815,7 @@
                     {/if}
 
                     {#if createLocalError}
-                        <p class="text-error-500 text-sm whitespace-pre-wrap">{createLocalError}</p>
+                        <p class="text-error-600-400 text-sm whitespace-pre-wrap">{createLocalError}</p>
                         {#if $lastFailedGameBytes}
                             <button type="button" class="btn btn-xs preset-tonal" onclick={() => goto(`${base}/edit`)}>
                                 {t("openPage.fixInSafeMode")}

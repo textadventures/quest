@@ -64,7 +64,7 @@ test('rename-invalid-name', async ({ baseURL }) => {
 
         // Should show an inline validation error instead of silently accepting/discarding it, and it
         // should call out the specific offending character rather than a generic "invalid name".
-        const errorText = page.locator('p.text-error-500', { hasText: /invalid/i });
+        const errorText = page.locator('p.text-error-600-400', { hasText: /invalid/i });
         await errorText.waitFor({ timeout: 5000 });
         const errorMessage = await errorText.textContent();
         if (!errorMessage?.includes("'-'")) throw new Error(`Expected the error to call out the '-' character specifically, got: "${errorMessage}"`);

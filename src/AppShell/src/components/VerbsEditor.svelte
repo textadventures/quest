@@ -211,7 +211,7 @@
                             <td class="py-0.5 pr-2 text-right">
                                 <button
                                     type="button"
-                                    class="text-error-500 hover:text-error-700"
+                                    class="text-error-600-400 hover:text-error-800-200"
                                     onclick={(e) => onDeleteVerb(attr, e)}
                                     title={t("verbsEditor.removeVerb")}
                                 >✕</button>
@@ -242,7 +242,7 @@
                 >{t("elementAdders.verb")}</button>
             </div>
             {#if addError}
-                <p class="text-xs text-error-500">{addError}</p>
+                <p class="text-xs text-error-600-400">{addError}</p>
             {/if}
         </div>
     </div>

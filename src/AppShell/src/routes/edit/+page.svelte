@@ -265,7 +265,7 @@
          is caught by the lastFailedGameBytes branch above, but kept in case isLoaded somehow
          flips false without that store being set. -->
     <main class="flex flex-col items-center justify-center min-h-svh gap-6 p-8">
-        <p class="text-error-500 max-w-[40ch] text-center whitespace-pre-wrap">{$lastOpenGameError ?? t("editPage.loadError")}</p>
+        <p class="text-error-600-400 max-w-[40ch] text-center whitespace-pre-wrap">{$lastOpenGameError ?? t("editPage.loadError")}</p>
         <button type="button" class="btn preset-filled-primary-500" onclick={() => goto(`${base}/open`)}>{t("editPage.backToHome")}</button>
     </main>
 {:else}

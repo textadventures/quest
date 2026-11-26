@@ -10,7 +10,9 @@ import { cssLanguage } from "@codemirror/lang-css";
 // and stays consistent with every other panel. See the "invisible text in
 // modals in dark mode" fix (commit 3b1f2964) for why bare single-shade colors
 // (e.g. --color-primary-500 alone) are unsafe for backgrounds here — only use
-// them for accents/text against the paired surface background below.
+// them for accents (the caret, the selection) against the paired surface
+// background below. Text uses the X-600-400 pairings, which app.css darkens
+// enough to reach WCAG AA's 4.5:1 in both modes (#2948); a 500 shade doesn't.
 export const questEditorTheme = EditorView.theme({
     "&": {
         backgroundColor: "var(--color-surface-50-950)",
@@ -51,11 +53,11 @@ export const questEditorTheme = EditorView.theme({
 }, { dark: false });
 
 export const questHighlightStyle = HighlightStyle.define([
-    { tag: t.keyword, color: "var(--color-primary-500)", fontWeight: "bold" },
+    { tag: t.keyword, color: "var(--color-primary-600-400)", fontWeight: "bold" },
     { tag: [t.string, t.attributeValue], color: "var(--color-success-600-400)" },
     { tag: t.comment, color: "var(--color-surface-600-400)", fontStyle: "italic" },
-    { tag: t.number, color: "var(--color-tertiary-500)" },
-    { tag: [t.tagName, t.attributeName], color: "var(--color-primary-500)" },
+    { tag: t.number, color: "var(--color-tertiary-600-400)" },
+    { tag: [t.tagName, t.attributeName], color: "var(--color-primary-600-400)" },
     { tag: [t.bracket, t.paren, t.squareBracket, t.brace], color: "var(--color-surface-600-400)" },
 ]);
 
@@ -66,11 +68,11 @@ export const questHighlightStyle = HighlightStyle.define([
 // so the base style's bold keyword rule would reach them too: this one is listed first in
 // questEditorExtensions so its rules win, and they reset the weight explicitly.
 export const cssHighlightStyle = HighlightStyle.define([
-    { tag: [t.propertyName, t.variableName], color: "var(--color-primary-500)" },
-    { tag: [t.className, t.labelName], color: "var(--color-secondary-500)" },
+    { tag: [t.propertyName, t.variableName], color: "var(--color-primary-600-400)" },
+    { tag: [t.className, t.labelName], color: "var(--color-secondary-600-400)" },
     { tag: [t.atom, t.color], color: "var(--color-success-600-400)", fontWeight: "normal" },
-    { tag: t.unit, color: "var(--color-tertiary-500)", fontWeight: "normal" },
-    { tag: [t.operatorKeyword, t.modifier], color: "var(--color-primary-500)", fontWeight: "normal" },
+    { tag: t.unit, color: "var(--color-tertiary-600-400)", fontWeight: "normal" },
+    { tag: [t.operatorKeyword, t.modifier], color: "var(--color-primary-600-400)", fontWeight: "normal" },
 ], { scope: cssLanguage });
 
 export const questEditorExtensions = [
