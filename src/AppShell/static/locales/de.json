@@ -140,8 +140,6 @@
     "treePanel.showLibraryElements": "Bibliothekselemente anzeigen",
     "treePanel.deleteNamed": "Lösche \"{name}\"",
     "treePanel.nodeOptions": "Optionen",
-    "treePanel.expand": "Aufklappen",
-    "treePanel.collapse": "Zuklappen",
     "treePanel.expandAllBelow": "Alles darunter aufklappen",
     "treePanel.collapseAllBelow": "Alles darunter zuklappen",
     "treePanel.header.objects": "Objekte",

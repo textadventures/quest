@@ -27,7 +27,7 @@ test('add-language-library', async ({ baseURL }) => {
         for (let i = 0; i < 4; i++) {
             if (await content.isVisible()) return;
             await page
-                .locator(`[data-value="${value}"][data-part="branch-control"] button[aria-label="Expand"], [data-value="${value}"][data-part="branch-control"] button[aria-label="Collapse"]`)
+                .locator(`[data-value="${value}"][data-part="branch-control"] [data-tree-toggle="expand"], [data-value="${value}"][data-part="branch-control"] [data-tree-toggle="collapse"]`)
                 .first()
                 .click();
             await page.waitForTimeout(200);
@@ -38,7 +38,7 @@ test('add-language-library', async ({ baseURL }) => {
     async function addLibrary(page, filename) {
         await expandBranch(page, '_advanced');
         await expandBranch(page, '_include');
-        await page.locator('[data-value="_include"][data-part="branch-control"] .node-actions button').click();
+        await page.locator('[data-value="_include"][data-part="branch-control"] .node-actions [data-node-options]').click();
         await page.click('.tree-dropdown button:has-text("Add library")');
         await page.waitForSelector('[role="dialog"]', { timeout: 5000 });
         await page.setInputFiles('[role="dialog"] input[type="file"]', path.join(fixturesDir, filename));

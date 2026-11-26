@@ -48,7 +48,7 @@ test('tap-same-tree-node', async ({ baseURL }) => {
         // "player" lives inside the "room" branch, which now starts expanded all
         // the way down to the player (#827) — just make sure it's open (if a prior
         // state left it collapsed) before the leaf-node checks below.
-        const roomCaret = page.locator('[data-part="branch-control"]:has-text("room") >> button[aria-label="Expand"]');
+        const roomCaret = page.locator('[data-part="branch-control"]:has-text("room") >> [data-tree-toggle="expand"]');
         if (await roomCaret.count()) { await roomCaret.first().click(); }
         await page.click('text=player');
         await page.waitForSelector('button:has-text("player")', { timeout: 5000 });

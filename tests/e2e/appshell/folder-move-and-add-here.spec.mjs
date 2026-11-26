@@ -26,7 +26,7 @@ test('folder-move-and-add-here', async ({ baseURL }) => {
     }
 
     async function openNodeMenu(rowLocator) {
-        await rowLocator.locator('[title="Options"]').click();
+        await rowLocator.locator('[data-node-options]').click();
         const dropdown = page.locator('.tree-dropdown');
         await dropdown.waitFor({ state: 'visible', timeout: 5000 });
         return dropdown;
@@ -42,7 +42,7 @@ test('folder-move-and-add-here', async ({ baseURL }) => {
     // Double-clicking the row also works (see TreePanel's ondblclick) but doesn't select it - the
     // chevron button's own onclick stops propagation, so selecting a node is always a separate click.
     async function expandNode(rowLocator) {
-        const expandBtn = rowLocator.getByRole('button', { name: 'Expand' });
+        const expandBtn = rowLocator.locator('[data-tree-toggle="expand"]');
         if (await expandBtn.count() > 0) await expandBtn.click();
     }
 
@@ -114,7 +114,7 @@ test('folder-move-and-add-here', async ({ baseURL }) => {
         for (const name of ['Alpha', 'Beta']) {
             const row = page.locator('[data-part="item"]', { hasText: name }).first();
             const dropdown = await openNodeMenu(row);
-            await dropdown.getByRole('button', { name: 'Move to folder…' }).click();
+            await dropdown.getByRole('menuitem', { name: 'Move to folder…' }).click();
             await page.waitForSelector('text=Move "' + name + '" to folder', { timeout: 10000 });
             await chooseOrCreateOption(page.locator('[role="dialog"] [role="combobox"]'), 'Math');
             await page.click('[role="dialog"] button:has-text("Move")');
@@ -135,7 +135,7 @@ test('folder-move-and-add-here', async ({ baseURL }) => {
 
         // ── "Add Function here" defaults the create modal's folder picker to "Math" ────────────────
         dropdown = await openNodeMenu(mathRow);
-        await dropdown.getByRole('button', { name: 'Add Function here' }).click();
+        await dropdown.getByRole('menuitem', { name: 'Add Function here' }).click();
         await page.waitForSelector('#element-name', { timeout: 10000 });
         const folderPicker = page.locator('[role="dialog"] [role="combobox"]');
         const folderPickerValue = await folderPicker.inputValue();
@@ -167,7 +167,7 @@ test('folder-move-and-add-here', async ({ baseURL }) => {
         }
 
         dropdown = await openNodeMenu(mathRow);
-        await dropdown.getByRole('button', { name: 'Move up', exact: true }).click();
+        await dropdown.getByRole('menuitem', { name: 'Move up', exact: true }).click();
         await page.waitForTimeout(300);
 
         const after = (await topLevelFunctionOrder()).map(t => t.trim());
@@ -183,7 +183,7 @@ test('folder-move-and-add-here', async ({ baseURL }) => {
         // button, consistent with how the folder/function actions above are driven.
         const roomRow = page.locator('[data-part="item"], [data-part="branch-control"]', { hasText: 'room' }).first();
         dropdown = await openNodeMenu(roomRow);
-        await dropdown.getByRole('button', { name: 'Add Object here' }).click();
+        await dropdown.getByRole('menuitem', { name: 'Add Object here' }).click();
         await fillAndConfirmAddModal('Test Object');
 
         const objectRow = page.locator('[data-part="item"], [data-part="branch-control"]', { hasText: 'Test Object' }).first();
@@ -194,7 +194,7 @@ test('folder-move-and-add-here', async ({ baseURL }) => {
         }
         console.log('PASS: an object\'s own "..." menu now offers "Add Object here"');
 
-        await dropdown.getByRole('button', { name: 'Add Object here' }).click();
+        await dropdown.getByRole('menuitem', { name: 'Add Object here' }).click();
         await page.waitForSelector('#element-name', { timeout: 10000 });
         const parentPicker = page.locator('[role="dialog"] [role="combobox"]');
         const parentDefault = await parentPicker.inputValue();

@@ -39,7 +39,7 @@ test('library-editor', async ({ baseURL }) => {
         for (let i = 0; i < 4; i++) {
             if (await content.isVisible()) return;
             await page
-                .locator(`[data-value="${value}"][data-part="branch-control"] button[aria-label="Expand"], [data-value="${value}"][data-part="branch-control"] button[aria-label="Collapse"]`)
+                .locator(`[data-value="${value}"][data-part="branch-control"] [data-tree-toggle="expand"], [data-value="${value}"][data-part="branch-control"] [data-tree-toggle="collapse"]`)
                 .first()
                 .click();
             await page.waitForTimeout(200);
@@ -94,7 +94,7 @@ test('library-editor', async ({ baseURL }) => {
         console.log('PASS: the English.aslx built-in library is also read-only');
 
         // --- Add a custom library via the Included Libraries header menu ---
-        await page.locator('[data-value="_include"] .node-actions button').click();
+        await page.locator('[data-value="_include"] .node-actions [data-node-options]').click();
         await page.waitForSelector('.tree-dropdown button:has-text("Add library")', { timeout: 5000 });
         await page.click('.tree-dropdown button:has-text("Add library")');
         await page.waitForSelector('[role="dialog"]', { timeout: 5000 });

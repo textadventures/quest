@@ -58,7 +58,7 @@ test('empty-advanced-categories', async ({ baseURL }) => {
         // "_advanced" starts collapsed like every other branch now (#827), so
         // expand it via its own caret (there are several collapsed branches — room
         // and Included Libraries too — so target the Advanced row specifically).
-        await advancedSummary.locator('xpath=ancestor::*[@data-part="branch-control"]').locator('button[aria-label="Expand"]').click();
+        await advancedSummary.locator('xpath=ancestor::*[@data-part="branch-control"]').locator('[data-tree-toggle="expand"]').click();
         await page.waitForTimeout(300);
 
         await tree.getByText('Included Libraries', { exact: true }).waitFor({ state: 'visible', timeout: 5000 });

@@ -24,7 +24,7 @@ test('tree-dropdown-position', async ({ baseURL }) => {
         await page.click('button:has-text("Create local draft")');
         await page.waitForSelector('button[title="More"]', { timeout: 30000 });
 
-        await page.locator('[title="Options"]').first().click();
+        await page.locator('[data-node-options]').first().click();
         const dropdown = page.locator('.tree-dropdown');
         await dropdown.waitFor({ state: 'visible', timeout: 5000 });
         const box = await dropdown.boundingBox();

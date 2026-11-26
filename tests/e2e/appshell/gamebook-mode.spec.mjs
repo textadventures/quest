@@ -100,7 +100,7 @@ test('gamebook-mode', async ({ baseURL }) => {
         // Page1 per the Gamebook template — is expanded all the way down to the
         // player (whose nodeType is "page" in gamebook mode, not "object").
         const page1Row = tree.locator('[data-part="branch-control"]', { hasText: 'Page1' });
-        await page1Row.locator('button[aria-label="Collapse"]').waitFor({ state: 'visible', timeout: 5000 });
+        await page1Row.locator('[data-tree-toggle="collapse"]').waitFor({ state: 'visible', timeout: 5000 });
         await tree.getByText('player', { exact: true }).waitFor({ state: 'visible', timeout: 5000 });
         console.log('PASS: starting page is expanded down to the player (nodeType "page")');
 

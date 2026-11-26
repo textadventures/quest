@@ -54,9 +54,9 @@ test('dialogue-pages', async ({ baseURL }) => {
         // "…" context menu, so the parent-inheritance fix below has a non-null
         // parent to actually test against.
         const roomLabel = tree.getByText('room', { exact: true });
-        const roomOptionsButton = roomLabel.locator('xpath=ancestor::*[contains(@class,"group")][1]').locator('button[title="Options"]');
+        const roomOptionsButton = roomLabel.locator('xpath=ancestor::*[contains(@class,"group")][1]').locator('[data-node-options]');
         await roomOptionsButton.click();
-        await page.getByRole('button', { name: 'Add Page here', exact: true }).click();
+        await page.getByRole('menuitem', { name: 'Add Page here', exact: true }).click();
         await page.locator('text=Add Page in "room"').waitFor({ timeout: 5000 });
         console.log('PASS: adding a page under "room" prompts "Add Page in \\"room\\""');
         await page.fill('#element-name', 'guard_intro');

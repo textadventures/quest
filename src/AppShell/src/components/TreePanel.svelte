@@ -327,6 +327,15 @@
         }
     }
 
+    // Zag's own expand and collapse: the arrow keys, and * for a row's siblings
+    function onTreeExpandedChange(next: string[]) {
+        if (isFiltering) return;
+        for (const id of expandedIds) {
+            if (!next.includes(id)) selectBranchIfSelectedInside(id);
+        }
+        expandedIds = next;
+    }
+
     // If the currently-selected node sits inside the branch being collapsed,
     // select the branch node itself so the tree doesn't end up with its
     // selection hidden inside a closed branch.
@@ -411,7 +420,17 @@
     let dropdownPos = $state<{ x: number; y: number } | null>(null);
     let dropdownOpts = $state<Array<{ label: string; action: () => void }>>([]);
 
-    function closeDropdown() { dropdownKey = null; dropdownPos = null; }
+    let dropdownEl = $state<HTMLDivElement | undefined>();
+    let dropdownItemEls: (HTMLButtonElement | undefined)[] = $state([]);
+    // The tree row the menu was opened from, which gets the focus back when Escape closes it
+    let dropdownRow: HTMLElement | null = null;
+
+    function closeDropdown(restoreFocus = false) {
+        dropdownKey = null;
+        dropdownPos = null;
+        if (restoreFocus) dropdownRow?.focus();
+        dropdownRow = null;
+    }
 
     $effect(() => {
         if (!dropdownKey) return;
@@ -420,7 +439,7 @@
             if (!t.closest(".node-actions") && !t.closest(".tree-dropdown")) closeDropdown();
         }
         function onEscape(e: KeyboardEvent) {
-            if (e.key === "Escape") closeDropdown();
+            if (e.key === "Escape") closeDropdown(true);
         }
         document.addEventListener("mousedown", onOutside);
         document.addEventListener("keydown", onEscape);
@@ -436,7 +455,13 @@
     function toggleDropdown(key: string, opts: Array<{ label: string; action: () => void }>, e: MouseEvent) {
         e.stopPropagation();
         if (dropdownKey === key) { closeDropdown(); return; }
+        dropdownRow = rowElement(e.currentTarget as HTMLElement);
         openDropdownAt(key, opts, (e.currentTarget as HTMLElement).getBoundingClientRect());
+    }
+
+    // The focusable tree row (Zag's branch control or item) an element is in
+    function rowElement(el: Element | null): HTMLElement | null {
+        return el?.closest<HTMLElement>('[data-part="branch-control"], [data-part="item"]') ?? null;
     }
 
     // Right-click opens the same menu as the row's "..." button, at the pointer. Rows with
@@ -446,6 +471,11 @@
         if (opts.length === 0) return;
         e.preventDefault();
         e.stopPropagation();
+        // Already open: the Menu key opened it (onTreeKeydown), and on Windows the browser
+        // follows the key with a contextmenu event of its own. A second right-click can't get
+        // here with the menu open, since its mousedown closes the menu first.
+        if (dropdownKey === node.id + ":menu") return;
+        dropdownRow = rowElement(e.currentTarget as HTMLElement);
         openDropdownAt(node.id + ":menu", opts, new DOMRect(e.clientX, e.clientY, 0, 0));
     }
 
@@ -479,6 +509,22 @@
     function dropdownAction(fn: () => void) {
         fn();
         closeDropdown();
+    }
+
+    // Like DropdownMenu: the first item has the focus when the menu opens, the arrow keys,
+    // Home and End move it, and Escape (above) closes the menu
+    $effect(() => {
+        if (dropdownKey && dropdownEl) dropdownItemEls[0]?.focus({ preventScroll: true });
+    });
+
+    function onDropdownKeydown(e: KeyboardEvent) {
+        const items = dropdownItemEls.filter((el): el is HTMLButtonElement => !!el);
+        if (items.length === 0) return;
+        const i = items.indexOf(document.activeElement as HTMLButtonElement);
+        const next = { ArrowDown: i + 1, ArrowUp: i - 1, Home: 0, End: items.length - 1 }[e.key];
+        if (next === undefined) return;
+        e.preventDefault();
+        items[(next + items.length) % items.length].focus({ preventScroll: true });
     }
 
     function handleDelete(id: string) {
@@ -587,8 +633,20 @@
     }
 
     // Ctrl/Cmd+X/C/V while the tree has focus act on the selected node - the same actions
-    // (and the same rules) as its menu's Cut/Copy/Paste.
+    // (and the same rules) as its menu's Cut/Copy/Paste. The Menu key or Shift+F10 opens the
+    // focused row's menu, which the mouse gets from the row's ⋯ or a right-click.
     function onTreeKeydown(e: KeyboardEvent) {
+        if (e.key === "ContextMenu" || (e.key === "F10" && e.shiftKey && !e.ctrlKey && !e.metaKey && !e.altKey)) {
+            const row = rowElement(e.target as HTMLElement);
+            const node = row?.dataset.value ? findNode(filteredHierTree, row.dataset.value) : null;
+            if (!row || !node) return;
+            e.preventDefault();
+            const opts = nodeMenuOptions(node);
+            if (opts.length === 0) return;
+            dropdownRow = row;
+            openDropdownAt(node.id + ":menu", opts, row.getBoundingClientRect());
+            return;
+        }
         if (!(e.ctrlKey || e.metaKey) || e.altKey || e.shiftKey || !$selectedKey) return;
         const node = findNode(filteredHierTree, $selectedKey);
         if (!node) return;
@@ -754,12 +812,18 @@
             selectionMode="single"
             expandOnClick={false}
             expandedValue={effectiveExpandedIds}
+            onExpandedChange={(e) => onTreeExpandedChange(e.expandedValue)}
             selectedValue={$selectedKey ? [$selectedKey] : []}
             onSelectionChange={(e) => { if (e.selectedValue[0]) { selectNode(e.selectedValue[0]); onactivate?.(); } }}
         >
-            {#each collection.rootNode.children ?? [] as node, i (node.id)}
-                {@render treeNode(node, [i])}
-            {/each}
+            <!-- The Tree part is the role="tree" element, and carries Zag's arrow-key and
+                 typeahead handling: without it the rows had no tree parent and the keys did
+                 nothing (#2962) -->
+            <TreeView.Tree aria-label={t($isGamebook ? "treePanel.gamePages" : "treePanel.gameObjects")}>
+                {#each collection.rootNode.children ?? [] as node, i (node.id)}
+                    {@render treeNode(node, [i])}
+                {/each}
+            </TreeView.Tree>
         </TreeView>
     </div>
     {#if $showBackupReminder}
@@ -767,12 +831,20 @@
     {/if}
     {#if dropdownKey && dropdownPos}
         <div
+            bind:this={dropdownEl}
+            role="menu"
+            tabindex="-1"
             class="tree-dropdown fixed z-[999] w-44 bg-surface-50-950 border border-surface-200-800 rounded shadow-lg py-1"
             style="left: {dropdownPos.x}px; top: {dropdownPos.y}px"
+            onkeydown={onDropdownKeydown}
         >
-            {#each dropdownOpts as opt (opt.label)}
+            {#each dropdownOpts as opt, i (opt.label)}
                 <button
-                    class="w-full text-left px-3 py-1 text-xs text-surface-900-50 hover:bg-surface-200-800"
+                    bind:this={dropdownItemEls[i]}
+                    type="button"
+                    role="menuitem"
+                    tabindex="-1"
+                    class="w-full text-left px-3 py-1 text-xs text-surface-900-50 hover:bg-surface-200-800 focus:bg-surface-200-800 focus:outline-none"
                     onclick={() => dropdownAction(opt.action)}
                 >{opt.label}</button>
             {/each}
@@ -783,12 +855,17 @@
 {#snippet nodeActions(node: HierNode)}
     {@const opts = nodeMenuOptions(node)}
     {#if opts.length > 0}
+        <!-- Not a button: a tree row can't hold controls of its own (nested-interactive), so this
+             is for the mouse, and the keyboard opens the same menu with the Menu key or
+             Shift+F10 on the row (onTreeKeydown) -->
         <span class="node-actions flex items-center ml-auto pr-1">
-            <button
-                class="size-6 flex items-center justify-center rounded text-surface-600-400 hover:text-primary-600-400 hover:bg-surface-200-800 text-sm leading-none"
+            <span
+                data-node-options
+                aria-hidden="true"
+                class="size-6 flex items-center justify-center rounded cursor-pointer text-surface-600-400 hover:text-primary-600-400 hover:bg-surface-200-800 text-sm leading-none"
                 onclick={(e) => toggleDropdown(node.id + ":menu", opts, e)}
                 title={t("treePanel.nodeOptions")}
-            >⋯</button>
+            >⋯</span>
         </span>
     {/if}
 {/snippet}
@@ -799,15 +876,16 @@
         {#if node.children}
             <TreeView.Branch>
                 <TreeView.BranchControl class="group flex items-center gap-1.5" ondblclick={() => toggleExpand(node.id)} onclick={() => activateIfAlreadySelected(node.id)} oncontextmenu={(e: MouseEvent) => openContextMenu(node, e)}>
-                    <button
-                        type="button"
-                        tabindex="-1"
-                        class="flex-shrink-0 size-4 flex items-center justify-center transition-transform duration-150 {effectiveExpandedIds.includes(node.id) ? "rotate-90" : ""}"
+                    <!-- For the mouse: the row's aria-expanded says whether it's open, and the
+                         arrow keys open and close it -->
+                    <span
+                        data-tree-toggle={effectiveExpandedIds.includes(node.id) ? "collapse" : "expand"}
+                        aria-hidden="true"
+                        class="flex-shrink-0 size-4 flex items-center justify-center cursor-pointer transition-transform duration-150 {effectiveExpandedIds.includes(node.id) ? "rotate-90" : ""}"
                         onclick={(e) => { e.stopPropagation(); toggleExpand(node.id); }}
-                        aria-label={effectiveExpandedIds.includes(node.id) ? t("treePanel.collapse") : t("treePanel.expand")}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-4"><polyline points="9 18 15 12 9 6" /></svg>
-                    </button>
+                    </span>
                     <Icon class="flex-shrink-0 size-3.5 text-surface-600-400 {node.isLibrary ? "opacity-60" : ""}" />
                     <TreeView.BranchText class="flex-1 min-w-0 truncate {node.isLibrary ? "text-surface-600-400" : ""} {$cutElementKeys.has(node.id) ? "opacity-50 italic" : ""}">{node.text}</TreeView.BranchText>
                     <span class="opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 pointer-coarse:opacity-100">

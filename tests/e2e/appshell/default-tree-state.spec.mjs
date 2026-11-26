@@ -35,7 +35,7 @@ test('default-tree-state', async ({ baseURL }) => {
     async function openNodeMenu(name) {
         const row = tree.locator('[data-part="branch-control"], [data-part="item"]', { hasText: name }).last();
         await row.hover();
-        const opts = row.locator('button[title="Options"]');
+        const opts = row.locator('[data-node-options]');
         await opts.waitFor({ state: 'visible', timeout: 5000 });
         await opts.click();
         await page.waitForSelector('.tree-dropdown', { timeout: 5000 });
@@ -54,7 +54,7 @@ test('default-tree-state', async ({ baseURL }) => {
         // 1. game node collapsed by default → Verbs/Commands hidden
         const gameRow = branch('game');
         await gameRow.waitFor({ timeout: 10000 });
-        await gameRow.locator('button[aria-label="Expand"]').waitFor({ timeout: 5000 });
+        await gameRow.locator('[data-tree-toggle="expand"]').waitFor({ timeout: 5000 });
         const treeText = await tree.innerText();
         if (treeText.includes('Verbs') || treeText.includes('Commands')) {
             throw new Error('Expected "Verbs"/"Commands" (under game) to be hidden when game starts collapsed');
@@ -64,7 +64,7 @@ test('default-tree-state', async ({ baseURL }) => {
         // 2. starting room expanded all the way down to player
         const roomRow = branch('room');
         await roomRow.waitFor({ timeout: 10000 });
-        await roomRow.locator('button[aria-label="Collapse"]').waitFor({ timeout: 5000 });
+        await roomRow.locator('[data-tree-toggle="collapse"]').waitFor({ timeout: 5000 });
         const playerRow = tree.locator('[data-part="item"]', { hasText: 'player' });
         await playerRow.waitFor({ state: 'visible', timeout: 5000 });
         console.log('PASS: starting room is expanded down to the player object');
