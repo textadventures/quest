@@ -40,7 +40,7 @@ for (const colorScheme of ['light', 'dark']) {
                             // tree's ARIA structure (aria-required-parent, nested-interactive), the
                             // CodeMirror editors' and a script textarea's names (aria-input-field-name,
                             // label, label-content-name-mismatch), and the tree's and script rows'
-                            // 20px buttons (target-size)
+                            // 20px buttons (target-size) (#2962)
                             rules: Object.fromEntries([
                                 'meta-viewport', 'aria-required-parent', 'nested-interactive', 'aria-input-field-name',
                                 'label', 'label-content-name-mismatch', 'target-size',
