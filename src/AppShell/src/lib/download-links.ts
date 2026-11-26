@@ -17,20 +17,24 @@
 //
 // play-beta.questviva.com (PUBLIC_BETA_SITE) offers the newest prerelease
 // rather than GitHub's "latest", which is always the newest stable release.
+// The exception is when the beta site is running a stable release itself
+// (between a stable release and the next version's first beta, see
+// deploy-play.yml): the newest prerelease is then older than "latest".
 
 import { PUBLIC_BETA_SITE } from "$app/env/public";
+import { isStableBuild } from "#lib/channel.js";
 
-const isBetaSite = PUBLIC_BETA_SITE === "true";
+const offersPrerelease = PUBLIC_BETA_SITE === "true" && !isStableBuild;
 
 const LATEST_RELEASE_API_URL = "https://api.github.com/repos/textadventures/quest/releases/latest";
 const RELEASES_API_URL = "https://api.github.com/repos/textadventures/quest/releases?per_page=30";
-const RELEASES_PAGE_URL = isBetaSite
+const RELEASES_PAGE_URL = offersPrerelease
     ? "https://github.com/textadventures/quest/releases"
     : "https://github.com/textadventures/quest/releases/latest";
 
 // Short-lived cache only to avoid a duplicate fetch if the widget re-mounts
 // during one visit — not a substitute for GitHub's own CDN caching.
-const CACHE_KEY = isBetaSite ? "questviva-latest-prerelease" : "questviva-latest-release";
+const CACHE_KEY = offersPrerelease ? "questviva-latest-prerelease" : "questviva-latest-release";
 const CACHE_TTL_MS = 10 * 60 * 1000;
 
 export interface DownloadLink {
@@ -71,7 +75,7 @@ async function fetchJson<T>(url: string): Promise<T | null> {
 // finalize-release.yml) only show up for authenticated callers anyway. If no
 // prerelease is in the first page, fall back to the stable release.
 async function fetchRelease(): Promise<ReleaseResponse | null> {
-    if (isBetaSite) {
+    if (offersPrerelease) {
         const releases = await fetchJson<ReleaseResponse[]>(RELEASES_API_URL);
         const prerelease = releases?.find((r) => r.prerelease && !r.draft);
         if (prerelease) return prerelease;
@@ -150,7 +154,7 @@ function buildLinks(release: ReleaseResponse, detected: DetectedOs): DownloadLin
         others,
         // On the beta site, this prerelease's own page, since GitHub's
         // releases/latest is always the stable one.
-        releasePage: isBetaSite && release.html_url ? release.html_url : RELEASES_PAGE_URL,
+        releasePage: offersPrerelease && release.html_url ? release.html_url : RELEASES_PAGE_URL,
     };
 }
 

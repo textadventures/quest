@@ -8,7 +8,7 @@ Each version tag is either **stable** (`v6.0.0`, `v6.0.1`) or a **prerelease** (
 
 | Surface | Stable | Prerelease |
 |---|---|---|
-| Web app (`deploy-play.yml`) | play.questviva.com (Cloudflare Pages project `play-questviva`) | play-beta.questviva.com (project `play-questviva-beta`) |
+| Web app (`deploy-play.yml`) | play.questviva.com (Cloudflare Pages project `play-questviva`), and play-beta.questviva.com too unless a prerelease of a later version is out | play-beta.questviva.com (project `play-questviva-beta`) |
 | textadventures.co.uk `/questviva` (`finalize-release.yml`) | Redeployed, for a 6.0.x release only: the editor there stays on 6.0, and only `release/6.0` builds the `WebEditor.zip` it deploys | Not touched |
 | GitHub Release (`release-please.yml`, `finalize-release.yml`) | Not flagged as a prerelease, marked Latest | Stays flagged as a prerelease, so `releases/latest` never returns it |
 | WebPlayer Docker image (`docker-publish.yml`, on `release/6.0` only) | `:<version>` and `:latest` | None: WebPlayer was removed from `main` in 6.1, so there are no 6.1 images |
@@ -21,7 +21,9 @@ A manual `workflow_dispatch` run of `deploy-play.yml` from a branch always deplo
 
 The beta site shows a banner (`BetaBanner.svelte`) on its Play and Create tabs, saying that it's a beta and that its data is separate from play.questviva.com's. `deploy-play.yml` turns it on by setting `PUBLIC_BETA_SITE` when it deploys to the beta project.
 
-Because `releases/latest` skips prereleases, the download buttons (AppShell's `download-links.ts`, the docs site's `DownloadButton.astro`) and textadventures.co.uk's `LatestVersionService` keep pointing at the last stable release with no changes of their own.
+A stable release goes to the beta site as well, unless a prerelease of a later version is already out. Otherwise, from 6.1.0 until 6.2.0-beta.1, the beta site would keep the last 6.1 beta, older than the stable site and still calling itself a beta. `.github/scripts/newer-prerelease.sh` prints the newest prerelease tag newer than a stable one, counting a prerelease as older than its own release (`v6.1.0-rc.1` < `v6.1.0`), and `deploy-play.yml` deploys to the beta site too when it prints nothing. That deploy reuses the WasmEditor and WasmPlayer output and builds only AppShell again, with `PUBLIC_BETA_SITE` but not `PUBLIC_BETA_DOCS`, so its help links go to the stable docs that match it. The banner then says there's no beta just now and this is the current version, and that its data is still separate (`src/lib/channel.ts` decides this from the version: a stable one has no `-`). The check also means re-running the workflow for an older stable tag can't roll the beta site back past a newer beta. This only applies to stable tags from `main`: `v6.0.x` tags run `release/6.0`'s copy of the workflow, and 6.1 betas are newer anyway.
+
+Because `releases/latest` skips prereleases, the download buttons (AppShell's `download-links.ts`, the docs site's `DownloadButton.astro`) and textadventures.co.uk's `LatestVersionService` keep pointing at the last stable release with no changes of their own. The beta site's button offers the newest prerelease instead, except while it's running a stable release itself, when it uses `releases/latest` like the stable site.
 
 ## Branches
 

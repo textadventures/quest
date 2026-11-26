@@ -2,8 +2,8 @@ name: Deploy play.questviva.com and AppShell
 
 # Runs when a version tag is pushed (e.g. v6.0.0-rc.3, normally via
 # release-please merging its release PR), keeping play.questviva.com (stable
-# releases) and play-beta.questviva.com (prereleases) on the release
-# cadence. Tag pushes also attach WasmPlayer.zip to the GitHub Release
+# releases) and play-beta.questviva.com (prereleases, and stable releases
+# while no newer prerelease is out) on the release cadence. Tag pushes also attach WasmPlayer.zip to the GitHub Release
 # release-please already created. (release/6.0's copy of this workflow also
 # builds the textadventures.co.uk editor, which finalize-release.yml then
 # redeploys; that editor stays on 6.0, so main no longer builds it.)
@@ -46,6 +46,20 @@ jobs:
           fi
           if [ "$CHANNEL" == "stable" ]; then
             echo "pages_project=play-questviva" >> "$GITHUB_OUTPUT"
+            # Between a stable release and the next version's first beta,
+            # the beta site would otherwise keep the last beta, older than the
+            # stable site. So a stable release goes there too, unless a beta
+            # of a later version is already out. That also keeps a manual
+            # re-run for an older stable tag from rolling the beta site back
+            # past a newer beta.
+            NEWER="$(git ls-remote --tags --refs origin 'v*' | sed 's#.*refs/tags/##' \
+              | .github/scripts/newer-prerelease.sh "$GITHUB_REF_NAME")"
+            if [ -z "$NEWER" ]; then
+              echo "also_beta=true" >> "$GITHUB_OUTPUT"
+              echo "No newer prerelease, so this also deploys to play-beta.questviva.com"
+            else
+              echo "Newer prerelease $NEWER is out, so play-beta.questviva.com keeps it"
+            fi
           else
             echo "pages_project=play-questviva-beta" >> "$GITHUB_OUTPUT"
           fi
@@ -194,6 +208,36 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy deploy --project-name=${{ steps.channel.outputs.pages_project }} --branch=main
+
+      # A stable release with no newer prerelease also goes to the beta site
+      # (see "Determine the release channel"). The WasmEditor and WasmPlayer
+      # output is reused; only AppShell is built again, with the beta banner,
+      # which says there's no beta just now when the version is stable. Help
+      # links stay on the stable docs (no PUBLIC_BETA_DOCS), which match it.
+      - name: Build AppShell for the beta site
+        if: steps.channel.outputs.also_beta == 'true'
+        run: rm -rf build && npm run build
+        working-directory: src/AppShell
+        env:
+          PUBLIC_APPSHELL_VERSION: ${{ steps.version.outputs.build_version }}
+          PUBLIC_BETA_SITE: 'true'
+
+      - name: Assemble beta deploy directory
+        if: steps.channel.outputs.also_beta == 'true'
+        run: |
+          mkdir -p deploy-beta/AppBundle deploy-beta/player
+          cp -r src/AppShell/build/. deploy-beta/
+          cp -r src/WasmEditor/bin/Release/net11.0/browser-wasm/AppBundle/. deploy-beta/AppBundle/
+          cp -r src/WasmPlayer/bin/Release/net11.0/browser-wasm/AppBundle/. deploy-beta/player/
+          cp deploy/_headers deploy-beta/_headers
+
+      - name: Deploy to the beta site
+        if: steps.channel.outputs.also_beta == 'true'
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy deploy-beta --project-name=play-questviva-beta --branch=main
 
       - name: Package WasmPlayer artifact
         run: (cd src/WasmPlayer/bin/Release/net11.0/browser-wasm/AppBundle && zip -r $GITHUB_WORKSPACE/WasmPlayer.zip .)
