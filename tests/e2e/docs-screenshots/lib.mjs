@@ -368,24 +368,23 @@ async function saveIfDirty(page) {
     }, null, { timeout: 15000 }).catch(() => {});
 }
 
-// Dismisses the "This game is only stored in this browser" backup nudge (BackupBanner.svelte)
-// if it's showing. Checked after saveIfDirty(), not just once up front - editor-store.ts's
-// doPersist() re-evaluates shouldShowBackupBanner() on every save once a local draft crosses
-// its activity threshold, so the banner can reappear mid-script after the very save this
-// module's own saveIfDirty() just triggered. Dismissing goes through the adapter's own
-// markBackupBannerResolved(), not the save/dirty path, so no follow-up save is needed here.
-async function dismissBackupBannerIfShown(page) {
+// Hides the backup reminder card (BackupReminderCard.svelte) at the foot of the tree if it's
+// showing. It only appears once a draft has been edited on two different days, so a fresh
+// draft made by these scripts won't normally have it, but a run that crosses midnight would.
+// Checked after saveIfDirty(), as editor-store.ts's doPersist() re-checks
+// shouldShowBackupReminder() on every save. Remind me later goes through the adapter's own
+// markBackupReminderResolved(), not the save/dirty path, so no follow-up save is needed here.
+async function hideBackupReminderIfShown(page) {
     if (await page.locator('[role="dialog"]').count() > 0) return;
-    const dismissButton = page.getByRole('button', { name: 'Dismiss', exact: true });
-    if (await dismissButton.count() === 0) return;
-    if (!(await dismissButton.isVisible())) return;
-    await dismissButton.click();
-    await dismissButton.waitFor({ state: 'detached', timeout: 5000 }).catch(() => {});
+    const card = page.getByTestId('backup-reminder');
+    if (await card.count() === 0) return;
+    await card.getByRole('button', { name: 'Remind me later', exact: true }).click();
+    await card.waitFor({ state: 'detached', timeout: 5000 }).catch(() => {});
 }
 
 export async function capture(page, outputPath, { untilLocator, padding = 24, cursorAt } = {}) {
     await saveIfDirty(page);
-    await dismissBackupBannerIfShown(page);
+    await hideBackupReminderIfShown(page);
     let removeCursor;
     if (cursorAt) {
         const { locator, at } = typeof cursorAt.boundingBox === 'function' ? { locator: cursorAt, at: 'center' } : cursorAt;

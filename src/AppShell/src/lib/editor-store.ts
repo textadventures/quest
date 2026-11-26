@@ -6,7 +6,7 @@ import type { WasmBridge } from "./wasm";
 import { isLibraryFilename, type AssetInfo, type FileAdapter } from "./filesystem/types";
 import { sameBytes } from "./filesystem/disk-state";
 import { isElectron } from "./runtime";
-import { LocalDraftAdapter, shouldShowBackupBanner, markBackupBannerResolved } from "./filesystem/local-adapter";
+import { LocalDraftAdapter, shouldShowBackupReminder, markBackupReminderResolved, isStoragePersisted, requestPersistentStorage } from "./filesystem/local-adapter";
 import { triggerDownload } from "./filesystem/download";
 import { withGuessedMimeType } from "./filesystem/mime";
 import { savePublishTarget, type PublishTarget } from "./publish-target";
@@ -70,7 +70,25 @@ export function openMoveToFolderModal(key: string) {
 export const gameFilename = writable<string | null>(null);
 export const canSaveAs = writable(false);
 export const canBackup = writable(false);
-export const showBackupBanner = writable(false);
+// The backup reminder for a local draft: a card at the foot of the tree (BackupReminderCard),
+// or, while the tree isn't shown, a download icon on the toolbar's "Saved" chip.
+export const showBackupReminder = writable(false);
+// Whether the tree is on screen: not on a phone while the properties pane is up, nor while Code
+// View has taken over the workspace. Set by the edit page, read by the toolbar.
+export const treePanelVisible = writable(true);
+// Set by the "Saved" chip's download icon: the edit page brings the tree back, and the reminder
+// card focuses its download button once it's on screen, then clears this.
+export const backupReminderFocusPending = writable(false);
+export function revealBackupReminder() {
+    backupReminderFocusPending.set(true);
+}
+// Whether the browser has agreed to keep this site's storage. Checked when a draft opens, and
+// again when the reminder card asks for it; the reminder comes back less often when it's kept.
+let _storagePersisted = false;
+export async function requestStoragePersistence(): Promise<void> {
+    if (_storagePersisted) return;
+    _storagePersisted = await requestPersistentStorage();
+}
 // Set when an Included Library is added or removed: like Quest 5's desktop editor, a
 // library's own <editor>-defined panes are only picked up by EditorController.Initialise()
 // at load time (neither CreateNewIncludedLibrary nor DeleteElement re-run it), so pane
@@ -347,7 +365,12 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
     _adapter = adapter;
     canSaveAs.set(adapter.canSaveAs);
     canBackup.set(adapter instanceof LocalDraftAdapter);
-    showBackupBanner.set(adapter instanceof LocalDraftAdapter && await shouldShowBackupBanner(adapter.gameId));
+    if (adapter instanceof LocalDraftAdapter) {
+        _storagePersisted = await isStoragePersisted();
+        showBackupReminder.set(await shouldShowBackupReminder(adapter.gameId, _storagePersisted));
+    } else {
+        showBackupReminder.set(false);
+    }
     loadingStatus.set(t("editorStore.loadingGame"));
     await preloadAdjacentLibraryAssets(adapter);
     // Double rAF ensures the browser actually paints the status update before
@@ -1048,11 +1071,11 @@ async function doPersist(): Promise<void> {
         saveError.set(null);
         _retryAttempt = 0;
         if (_retryTimer !== null) { clearTimeout(_retryTimer); _retryTimer = null; }
-        // Re-check rather than only at load: this is what lets the banner appear the
-        // moment a fresh local draft crosses the activity threshold, instead of
-        // waiting for the user to close and reopen it.
+        // Re-check rather than only at load: this is what lets the reminder appear
+        // the moment a draft is first edited on a second day, instead of waiting for
+        // the user to close and reopen it.
         if (_adapter instanceof LocalDraftAdapter) {
-            showBackupBanner.set(await shouldShowBackupBanner(_adapter.gameId));
+            showBackupReminder.set(await shouldShowBackupReminder(_adapter.gameId, _storagePersisted));
         }
         if (_recheckAfterSave) {
             _recheckAfterSave = false;
@@ -1170,15 +1193,16 @@ export async function backupGame(): Promise<void> {
     const zipBytes = zipSync(zipEntries);
     const backupName = _adapter.filename.replace(/\.aslx$/i, "") + ".zip";
     triggerDownload(zipBytes, backupName);
-    showBackupBanner.set(false);
-    await markBackupBannerResolved(_adapter.gameId);
+    // Written before the reminder goes, so leaving the page straight after can't lose it.
+    await markBackupReminderResolved(_adapter.gameId);
+    showBackupReminder.set(false);
 }
 
-// The banner's own "Dismiss" action — distinct from backupGame() above, which
-// also silences the banner as a side effect of an actual backup.
-export async function dismissBackupBanner(): Promise<void> {
-    showBackupBanner.set(false);
-    if (_adapter instanceof LocalDraftAdapter) await markBackupBannerResolved(_adapter.gameId);
+// The reminder's own "Remind me later" action — distinct from backupGame() above, which
+// also silences the reminder as a side effect of an actual backup.
+export async function remindBackupLater(): Promise<void> {
+    if (_adapter instanceof LocalDraftAdapter) await markBackupReminderResolved(_adapter.gameId);
+    showBackupReminder.set(false);
 }
 
 // What a publish will include besides the game itself: every asset the adapter lists — for a

@@ -7,6 +7,7 @@
     import Check from "@lucide/svelte/icons/check";
     import { nodeIcon } from "#lib/node-icons.js";
     import DropdownMenu from "./DropdownMenu.svelte";
+    import BackupReminderCard from "./BackupReminderCard.svelte";
     import type { DropdownMenuItem } from "./DropdownMenu.svelte";
     import {
         treeNodes, selectedKey, selectNode, isGamebook,
@@ -19,6 +20,7 @@
         swapElements, getCurrentGameId,
         canMoveFunctionUp, canMoveFunctionDown,
         canMoveFunctionFolderUp, canMoveFunctionFolderDown, moveFunctionFolderUp, moveFunctionFolderDown,
+        showBackupReminder,
     } from "#lib/editor-store.js";
     import type { TreeNode } from "#lib/types.js";
     import { t } from "#lib/i18n/index.js";
@@ -760,6 +762,9 @@
             {/each}
         </TreeView>
     </div>
+    {#if $showBackupReminder}
+        <BackupReminderCard />
+    {/if}
     {#if dropdownKey && dropdownPos}
         <div
             class="tree-dropdown fixed z-[999] w-44 bg-surface-50-950 border border-surface-200-800 rounded shadow-lg py-1"

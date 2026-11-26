@@ -4,9 +4,8 @@
     import { goto } from "$app/navigation";
     import { base } from "#lib/base-path.js";
     import { get } from "svelte/store";
-    import { isLoaded, isDirty, isEditingField, watchForExternalChanges, markFieldEditing, clearFieldEditing, saveGame, loadingStatus, addElementModal, addJavascriptModalOpen, addLibraryModalOpen, assetManagerOpen, publishModalOpen, codeViewPanelOpen, checkPanelOpen, lastOpenGameError, lastFailedGameBytes, createRoom, createObject, createPage, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType, createJavascript, createIncludedLibrary, moveElementModal, moveElement, moveToFolderModal, setFunctionFolder } from "#lib/editor-store.js";
+    import { isLoaded, isDirty, isEditingField, watchForExternalChanges, markFieldEditing, clearFieldEditing, saveGame, loadingStatus, addElementModal, addJavascriptModalOpen, addLibraryModalOpen, assetManagerOpen, publishModalOpen, codeViewPanelOpen, checkPanelOpen, lastOpenGameError, lastFailedGameBytes, createRoom, createObject, createPage, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType, createJavascript, createIncludedLibrary, moveElementModal, moveElement, moveToFolderModal, setFunctionFolder, treePanelVisible, backupReminderFocusPending, codeViewCloseRequested } from "#lib/editor-store.js";
     import Toolbar from "#components/Toolbar.svelte";
-    import BackupBanner from "#components/BackupBanner.svelte";
     import UpgradeBanner from "#components/UpgradeBanner.svelte";
     import LibraryReloadBanner from "#components/LibraryReloadBanner.svelte";
     import FileChangedExternallyBanner from "#components/FileChangedExternallyBanner.svelte";
@@ -49,6 +48,19 @@
     // on whichever pane was active is less surprising than snapping back to
     // the tree.
     let mobilePane = $state<"tree" | "props">("tree");
+
+    // The toolbar shows the backup reminder on its "Saved" chip while the tree (and so the
+    // reminder card at its foot) isn't on screen.
+    $effect(() => {
+        treePanelVisible.set(!$codeViewPanelOpen && !(isNarrow.current && mobilePane !== "tree"));
+    });
+    // Clicking that chip brings the tree back so the card can take focus. Code View is asked to
+    // close rather than shut, as it may have edits that haven't been applied.
+    $effect(() => {
+        if (!$backupReminderFocusPending) return;
+        mobilePane = "tree";
+        if (get(codeViewPanelOpen)) codeViewCloseRequested.update(n => n + 1);
+    });
 
     function handleSplitterPointerDown(e: PointerEvent) {
         e.preventDefault();
@@ -166,7 +178,6 @@
     <main class="flex flex-col h-dvh overflow-hidden safe-area-inset">
         <Toolbar />
         <UpgradeBanner />
-        <BackupBanner />
         <LibraryReloadBanner />
         <FileChangedExternallyBanner />
         <div id="workspace-content" tabindex="-1" class="flex flex-1 overflow-hidden" oninput={handleFieldInput} onfocusout={clearFieldEditing}>
