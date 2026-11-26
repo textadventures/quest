@@ -251,7 +251,7 @@ test('i18n-pseudoloc', async ({ baseURL }) => {
         await page.evaluate(() => {
             const roomText = Array.from(document.querySelectorAll('span')).find(el => el.textContent.trim() === 'room');
             const control = roomText.closest('[data-part="branch-control"]') ?? roomText.parentElement;
-            control.querySelector('.node-actions button').click();
+            control.querySelector('.node-actions [data-node-options]').click();
         });
         await page.waitForSelector('.tree-dropdown', { timeout: 10000 });
         const treeMenuItems = await page.$$eval('.tree-dropdown button', els => els.map(el => el.textContent ?? ''));
@@ -269,7 +269,7 @@ test('i18n-pseudoloc', async ({ baseURL }) => {
         // verbsEditor.header IS in xx.json so it renders "[Vérbs]", while
         // treePanel.header.commands isn't and falls back to English). The "game"
         // node starts collapsed (#827), so expand it first. ---
-        await page.locator('[data-part="branch-control"]:has-text("game") >> button').first().click();
+        await page.locator('[data-part="branch-control"]:has-text("game") >> [data-tree-toggle="expand"]').first().click();
         await page.click('text="Commands"');
         await page.waitForSelector('.flex.items-center.gap-1.mb-2 button', { timeout: 10000 });
         assertPseudoWithPrefix('ElementsList add button', await page.textContent('.flex.items-center.gap-1.mb-2 button'), '+ ');
@@ -454,7 +454,7 @@ test('i18n-pseudoloc', async ({ baseURL }) => {
             const verbsText = Array.from(document.querySelectorAll('[data-part="branch-control"] span'))
                 .find(el => el.textContent.trim() === '[Vérbs]');
             const control = verbsText?.closest('[data-part="branch-control"]');
-            control?.querySelector('.node-actions button')?.click();
+            control?.querySelector('.node-actions [data-node-options]')?.click();
         });
         await page.waitForSelector('.tree-dropdown', { timeout: 10000 });
         await page.click('.tree-dropdown button:has-text("[Éxpánd áll bélów]")');

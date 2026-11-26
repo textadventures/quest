@@ -60,7 +60,7 @@ test('mobile-master-detail', async ({ baseURL }) => {
         // expansion survives the pane switch (the original intent of this check).
         await mobilePage.click('button:has-text("room")');
         await mobilePage.waitForSelector('input[placeholder="Filter..."]', { timeout: 5000 });
-        const roomCaret = mobilePage.locator('[data-part="branch-control"]:has-text("room") >> button[aria-label="Expand"]');
+        const roomCaret = mobilePage.locator('[data-part="branch-control"]:has-text("room") >> [data-tree-toggle="expand"]');
         if (await roomCaret.count()) { await roomCaret.first().click(); }
         await mobilePage.waitForSelector('text=player', { timeout: 5000 });
         await mobilePage.click('text=player');

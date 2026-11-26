@@ -27,7 +27,7 @@ test('touch-affordances', async ({ baseURL }) => {
         await page.waitForSelector('button[title="More"]', { timeout: 30000 });
 
         // Tree node "..." menu — visible without hover (no mouse.move at all here).
-        const nodeMenuBtn = page.locator('[title="Options"]').first();
+        const nodeMenuBtn = page.locator('[data-node-options]').first();
         await nodeMenuBtn.waitFor({ state: 'visible', timeout: 5000 });
         console.log('PASS: tree node "..." menu is visible without hover on a coarse pointer');
 

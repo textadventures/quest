@@ -35,12 +35,8 @@ for (const colorScheme of ['light', 'dark']) {
                         {
                             runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'] },
                             // Not yet: maximum-scale=1 stops iOS zooming in when a text box with
-                            // text under 16px gets the focus, but also stops pinch zoom on Android;
-                            // and the tree's ARIA structure (aria-required-parent,
-                            // nested-interactive) isn't fixed yet either (#2962)
-                            rules: Object.fromEntries([
-                                'meta-viewport', 'aria-required-parent', 'nested-interactive',
-                            ].map(rule => [rule, { enabled: false }])),
+                            // text under 16px gets the focus, but also stops pinch zoom on Android
+                            rules: { 'meta-viewport': { enabled: false } },
                         });
                     return result.violations.map(v => `${v.id} (${v.impact}): ${v.help}\n${v.nodes.slice(0, 8).map(n =>
                         `        ${n.target.join(' ')}: ${(n.failureSummary ?? '').split('\n').slice(1).join(' ').trim()}`).join('\n')}${v.nodes.length > 8 ? `\n        ...and ${v.nodes.length - 8} more` : ''}`);

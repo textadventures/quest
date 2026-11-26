@@ -38,7 +38,7 @@ test('tree-copy-paste', async ({ baseURL }) => {
         let labels = await menuLabels();
         if (!labels.includes('Cut') || !labels.includes('Copy')) throw new Error(`A function's right-click menu should offer Cut and Copy, got: ${labels.join(', ')}`);
         if (labels.includes('Paste')) throw new Error(`Nothing has been copied yet, so there should be no Paste, got: ${labels.join(', ')}`);
-        await menu.getByRole('button', { name: 'Copy', exact: true }).click();
+        await menu.getByRole('menuitem', { name: 'Copy', exact: true }).click();
         console.log('PASS: right-clicking a function offers Cut/Copy');
 
         // A room isn't somewhere a function can go.
@@ -53,7 +53,7 @@ test('tree-copy-paste', async ({ baseURL }) => {
         // ...but the Functions header is.
         await tree.getByText('Functions', { exact: true }).click({ button: 'right' });
         await menu.waitFor({ state: 'visible', timeout: 5000 });
-        await menu.getByRole('button', { name: 'Paste', exact: true }).click();
+        await menu.getByRole('menuitem', { name: 'Paste', exact: true }).click();
         await tree.getByText('BlankOV1', { exact: true }).waitFor({ state: 'visible', timeout: 5000 });
         console.log('PASS: pasting onto the Functions header adds a copy named BlankOV1');
 

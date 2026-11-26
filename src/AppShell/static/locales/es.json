@@ -140,8 +140,6 @@
     "treePanel.showLibraryElements": "Mostrar Elementos de Biblioteca",
     "treePanel.deleteNamed": "Eliminar \"{name}\"",
     "treePanel.nodeOptions": "Opciones",
-    "treePanel.expand": "Expandir",
-    "treePanel.collapse": "Contraer",
     "treePanel.expandAllBelow": "Expandir todo debajo",
     "treePanel.collapseAllBelow": "Contraer todo debajo",
     "treePanel.header.objects": "Objetos",
