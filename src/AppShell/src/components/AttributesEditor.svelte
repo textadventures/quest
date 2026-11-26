@@ -362,7 +362,7 @@
                                         {#if !inheritedType.isDefaultType}
                                             <button
                                                 type="button"
-                                                class="text-error-500 hover:text-error-700"
+                                                class="text-error-600-400 hover:text-error-800-200"
                                                 onclick={() => onDeleteInheritedType(inheritedType.name)}
                                                 title={t("attributesEditor.removeType")}
                                             >✕</button>
@@ -430,7 +430,7 @@
                                         <button
                                             type="button"
                                             tabindex="-1"
-                                            class="text-error-500 hover:text-error-700"
+                                            class="text-error-600-400 hover:text-error-800-200"
                                             onclick={(e) => onDeleteAttribute(attr, e)}
                                             title={t("attributesEditor.removeAttributeTitle")}
                                         >✕</button>

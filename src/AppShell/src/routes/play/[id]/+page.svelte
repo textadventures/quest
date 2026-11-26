@@ -62,7 +62,7 @@
             <div class="size-10 rounded-full border-4 border-surface-800 border-t-primary-500 animate-spin"></div>
         </div>
     {:else if error || !details}
-        <p class="text-error-500 text-sm">{t("playDetails.loadError")}</p>
+        <p class="text-error-300 text-sm">{t("playDetails.loadError")}</p>
     {:else}
         <div class="flex flex-col md:flex-row gap-6 max-w-2xl w-full">
             {#if details.cover || details.thumbnail}
@@ -71,7 +71,7 @@
             <div class="flex flex-col gap-3 flex-1">
                 <h1 class="text-2xl font-semibold">{details.name}</h1>
                 {#if details.author}
-                    <p class="text-surface-400 text-sm">{t("gameCard.byAuthor", { author: details.author })}</p>
+                    <p class="text-surface-300 text-sm">{t("gameCard.byAuthor", { author: details.author })}</p>
                 {/if}
                 <div class="flex flex-wrap gap-2">
                     <span class="text-xs px-2 py-1 rounded-full bg-surface-800 text-surface-300">

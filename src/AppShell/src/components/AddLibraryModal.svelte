@@ -93,7 +93,7 @@
                 >{uploading ? t("assetManager.uploading") : filename ? t("addLibraryModal.change") : t("assetManager.upload")}</button>
                 <input bind:this={inputEl} type="file" accept=".aslx,.xml" class="hidden" onchange={handleUpload} />
             </div>
-            {#if error}<p class="text-xs text-error-500">{error}</p>{/if}
+            {#if error}<p class="text-xs text-error-600-400">{error}</p>{/if}
         </div>
 
         <div class="flex justify-end gap-2">

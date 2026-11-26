@@ -60,7 +60,7 @@
                 <span class="text-xs text-error-200">{t("playCatalog.fileNotFoundHint")}</span>
             </div>
             <div class="p-2 flex flex-col gap-2">
-                <div class="text-sm font-semibold truncate text-surface-400" title={game.dirPath}>{game.filename}</div>
+                <div class="text-sm font-semibold truncate text-surface-300" title={game.dirPath}>{game.filename}</div>
                 <button type="button" class="btn btn-sm preset-tonal self-start" onclick={handleRemove}>
                     {t("playCatalog.remove")}
                 </button>
@@ -81,11 +81,11 @@
             </div>
             <div class="p-2 flex flex-col gap-1">
                 <div class="text-sm font-semibold truncate">{game.filename}</div>
-                <div class="flex items-center gap-1 text-xs text-surface-400 min-w-0">
+                <div class="flex items-center gap-1 text-xs text-surface-300 min-w-0">
                     <Laptop size={12} class="shrink-0" aria-hidden="true" />
                     <span class="truncate">{folderName(game.dirPath)}</span>
                 </div>
-                <div class="text-xs text-surface-500">{relativeTime(game.lastOpened)}</div>
+                <div class="text-xs text-surface-300">{relativeTime(game.lastOpened)}</div>
             </div>
         </button>
     {/if}

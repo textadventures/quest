@@ -489,8 +489,8 @@ test('i18n-pseudoloc', async ({ baseURL }) => {
         assertPseudo('Search input placeholder', await page.getAttribute('input[type="search"]', 'placeholder'));
         assertPseudo('Search input title (hint)', await page.getAttribute('input[type="search"]', 'title'));
         assertPseudo('Search submit button', await page.textContent('form button[type="submit"]'));
-        await page.waitForSelector('p.text-surface-400, p.text-error-500', { timeout: 20000 });
-        assertPseudo('Search result/status message', await page.textContent('p.text-surface-400, p.text-error-500'));
+        await page.waitForSelector('p.text-surface-300, p.text-error-300', { timeout: 20000 });
+        assertPseudo('Search result/status message', await page.textContent('p.text-surface-300, p.text-error-300'));
 
         console.log('PASS');
     }

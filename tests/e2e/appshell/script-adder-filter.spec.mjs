@@ -150,7 +150,7 @@ test('script-adder-filter', async ({ baseURL }) => {
         console.log('PASS: category sidebar hidden while filtering');
 
         // Scope past the "Move" quick-add shortcut pill, which also matches /move/i, to just the
-        // flat results list (identified by its category-tag rows using text-surface-400).
+        // flat results list (identified by its category-tag rows).
         const matchRows = dialog.locator('.flex-1.overflow-y-auto button', { hasText: /move/i });
         const matchCount = await matchRows.count();
         if (matchCount === 0) {

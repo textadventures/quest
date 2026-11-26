@@ -59,8 +59,8 @@ test('expression-template-nested-commas', async ({ baseURL }) => {
         const brokenFragment = values.find(v => v.trim() === '";")' || v.includes('?", Split('));
         if (brokenFragment !== undefined) throw new Error(`Found a mis-split field: ${brokenFragment}`);
 
-        const errors = await page.locator('p.text-error-500').count();
-        if (errors !== 0) throw new Error(`Expected no field errors, found ${errors}: ${await page.locator('p.text-error-500').allTextContents()}`);
+        const errors = await page.locator('p.text-error-600-400').count();
+        if (errors !== 0) throw new Error(`Expected no field errors, found ${errors}: ${await page.locator('p.text-error-600-400').allTextContents()}`);
         console.log('PASS: no bracket-mismatch errors shown');
 
         // Each ShowMenu parameter has <breakbefore/>, so caption, options and allow cancel each start

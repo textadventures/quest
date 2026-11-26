@@ -472,11 +472,11 @@
         {#if loading}
             <div class="flex flex-col items-center gap-3 py-12">
                 <div class="size-10 rounded-full border-4 border-surface-800 border-t-primary-500 animate-spin"></div>
-                <p class="text-surface-400 text-sm">{t("playCatalog.loadingGames")}</p>
+                <p class="text-surface-300 text-sm">{t("playCatalog.loadingGames")}</p>
             </div>
         {:else if error}
             <div class="flex flex-col items-center gap-3 py-12 text-center">
-                <p class="text-error-500 text-sm">{t("playCatalog.loadError")}</p>
+                <p class="text-error-300 text-sm">{t("playCatalog.loadError")}</p>
                 <button type="button" class="btn preset-tonal" onclick={load}>{t("search.tryAgain")}</button>
             </div>
         {:else if categories}
@@ -503,13 +503,13 @@
      on its own card instead (see LocalFileRecentCard's missing state). -->
 {#snippet openErrors()}
     {#if electronOpenError && !missingRecent}
-        <p class="text-error-500 text-sm mb-3" role="alert">{electronOpenError}</p>
+        <p class="text-error-300 text-sm mb-3" role="alert">{electronOpenError}</p>
     {/if}
     {#if !isElectronApp && pickError}
-        <p class="text-error-500 text-sm mb-3" role="alert">{pickError}</p>
+        <p class="text-error-300 text-sm mb-3" role="alert">{pickError}</p>
     {/if}
     {#if !isElectronApp && startError}
-        <p class="text-error-500 text-sm mb-3" role="alert">{startError}</p>
+        <p class="text-error-300 text-sm mb-3" role="alert">{startError}</p>
     {/if}
 {/snippet}
 
@@ -521,7 +521,7 @@
             <FolderOpen size={28} class="text-primary-400" aria-hidden="true" />
             <span class="text-sm font-semibold break-all line-clamp-3">{pickedFile.name}</span>
             {#if pickedLibraryCount > 0}
-                <span class="text-xs text-surface-400">{tPlural("playCatalog.withLibraries", pickedLibraryCount)}</span>
+                <span class="text-xs text-surface-300">{tPlural("playCatalog.withLibraries", pickedLibraryCount)}</span>
             {/if}
             <button type="button" class="btn preset-filled-primary-500 w-full" onclick={handleBrowserStart} disabled={starting}>
                 {starting ? t("playCatalog.starting") : t("playCatalog.startButton") + " ▶"}
@@ -543,8 +543,8 @@
             <span class="text-sm font-semibold text-surface-50">
                 {electronOpenBusy ? t("playCatalog.opening") : t("playCatalog.openGameFile")}
             </span>
-            <span class="text-xs text-surface-400">{t("playCatalog.fileTypes")}</span>
-            <span class="text-xs text-surface-500">{t("playCatalog.dropHint")}</span>
+            <span class="text-xs text-surface-300">{t("playCatalog.fileTypes")}</span>
+            <span class="text-xs text-surface-300">{t("playCatalog.dropHint")}</span>
         </button>
     {/if}
 {/snippet}
@@ -564,7 +564,7 @@
         <div class="flex items-center gap-2">
             <span class="text-sm text-surface-300 truncate max-w-[20ch]">{pickedFile.name}</span>
             {#if pickedLibraryCount > 0}
-                <span class="text-xs text-surface-400">{tPlural("playCatalog.withLibraries", pickedLibraryCount)}</span>
+                <span class="text-xs text-surface-300">{tPlural("playCatalog.withLibraries", pickedLibraryCount)}</span>
             {/if}
             <button type="button" class="btn btn-sm preset-tonal" onclick={handleClearPicked} disabled={starting}>
                 {t("playCatalog.change")}

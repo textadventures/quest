@@ -70,7 +70,7 @@ test('recent-missing-file', async () => {
         await editEntry.waitFor({ timeout: 30000 });
         await editEntry.click();
 
-        const editError = win.locator('p.text-error-500', { hasText: filename });
+        const editError = win.locator('p.text-error-600-400', { hasText: filename });
         await editError.waitFor({ timeout: 10000 });
         const editText = await editError.innerText();
         console.log('[create] error shown:', editText);

@@ -122,7 +122,7 @@
                 placeholder={t("addElementModal.namePlaceholder")}
             />
             {#if error}
-                <p class="text-xs text-error-500">{error}</p>
+                <p class="text-xs text-error-600-400">{error}</p>
             {/if}
         </div>
 

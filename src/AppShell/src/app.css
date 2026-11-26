@@ -221,3 +221,48 @@ input.input:not([type='color']):not([type='range']):active {
     background-color: color-mix(in oklab, var(--color-surface-50) 5%, transparent);
     color: var(--color-primary-50);
 }
+
+/* Text colours that reach WCAG AA's 4.5:1 (#2948). Wintry's paired text colours (600 in light
+   mode, 400 in dark, and so on) don't on the editor's backgrounds, so they're each a shade or two
+   further from the background here. Redefined in @theme inline, as Skeleton defines them, so the
+   text-* and other utilities Tailwind generates from them pick these up too. Only the pairings
+   change: the single shades (primary-500 and so on), which most fills and borders use, are left
+   alone. tests/e2e/appshell/accessibility.spec.mjs checks them with axe. Light first, then dark. */
+@theme inline {
+    --color-surface-600-400: light-dark(var(--color-surface-600), var(--color-surface-300));
+    --color-primary-600-400: light-dark(var(--color-primary-700), var(--color-primary-400));
+    --color-secondary-600-400: light-dark(var(--color-secondary-800), var(--color-secondary-400));
+    --color-tertiary-600-400: light-dark(var(--color-tertiary-700), var(--color-tertiary-400));
+    --color-success-600-400: light-dark(var(--color-success-900), var(--color-success-400));
+    --color-warning-600-400: light-dark(var(--color-warning-800), var(--color-warning-300));
+    --color-warning-700-300: light-dark(var(--color-warning-800), var(--color-warning-300));
+    --color-error-600-400: light-dark(var(--color-error-600), var(--color-error-300));
+}
+
+[data-theme='wintry'] {
+    --typo-anchor--color-light: var(--color-primary-700);
+    --typo-anchor--color-dark: var(--color-primary-400);
+}
+
+/* Skeleton's .anchor links are told from the text around them only by colour, which isn't
+   enough (WCAG 1.4.1), so they're underlined too */
+.anchor {
+    text-decoration-line: underline;
+}
+
+/* Filled primary and error buttons: Skeleton's near-white text on the 500 shade is 3.3:1 and
+   3.7:1, so they're a shade darker, with white text */
+@utility preset-filled-primary-500 {
+    background-color: var(--color-primary-600);
+    color: white;
+}
+@utility preset-filled-error-500 {
+    background-color: var(--color-error-600);
+    color: white;
+}
+
+/* .anchor picks its light-mode colour under a light theme, which is too dark for the always-dark
+   Play pages (see .play-dark above), so they use the dark-mode one */
+.play-dark .anchor {
+    color: var(--typo-anchor--color-dark);
+}

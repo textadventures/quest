@@ -1232,7 +1232,7 @@
             class="input text-xs py-0.5 px-1.5 w-auto min-w-24"
         />
         {#if attributeErrors[ctrl.attribute!]}
-            <p class="text-xs text-error-500" role="alert">{attributeErrors[ctrl.attribute!]}</p>
+            <p class="text-xs text-error-600-400" role="alert">{attributeErrors[ctrl.attribute!]}</p>
         {/if}
     </div>
 {/snippet}
@@ -1452,7 +1452,7 @@
                             {@render controlOnly(ctrl)}
                         </svelte:element>
                         {#if ctrl.attribute && attributeErrors[ctrl.attribute]}
-                            <p class="text-xs text-error-500" role="alert">{attributeErrors[ctrl.attribute]}</p>
+                            <p class="text-xs text-error-600-400" role="alert">{attributeErrors[ctrl.attribute]}</p>
                         {/if}
                     </div>
                 {:else}
@@ -1462,7 +1462,7 @@
                             {@render controlOnly(ctrl)}
                         </label>
                         {#if ctrl.attribute && attributeErrors[ctrl.attribute]}
-                            <p class="text-xs text-error-500" role="alert">{attributeErrors[ctrl.attribute]}</p>
+                            <p class="text-xs text-error-600-400" role="alert">{attributeErrors[ctrl.attribute]}</p>
                         {/if}
                     </div>
                 {/if}

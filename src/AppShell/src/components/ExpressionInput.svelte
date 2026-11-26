@@ -272,6 +272,6 @@
         {/if}
     </div>
     {#if error}
-        <p class="text-xs text-error-500" role="alert">{error}</p>
+        <p class="text-xs text-error-600-400" role="alert">{error}</p>
     {/if}
 </div>
