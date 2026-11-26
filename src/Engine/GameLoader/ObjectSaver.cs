@@ -22,25 +22,22 @@ internal partial class GameSaver
             // isn't written by this save (e.g. it comes from an included library in an Editor
             // save), the object is written at the top level instead, and ObjectSaver writes its
             // "parent" attribute explicitly so the relationship survives.
+            var childrenByParent = allObjects.Where(o => o.Parent != null && GameSaver.CanSave(o)).ToLookup(o => o.Parent!);
             foreach (var e in allObjects.Where(e => GameSaver.CanSave(e) && !GameSaver.IsSavedNested(e)))
             {
-                SaveObjectAndChildren(writer, allObjects, e, elementSaver);
+                SaveObjectAndChildren(writer, childrenByParent, e, elementSaver);
             }
         }
 
         public GameSaver GameSaver { get; set; } = null!;
 
-        private void SaveObjectAndChildren(GameXmlWriter writer, Element[] allObjects, Element e, ObjectSaver saver)
+        private void SaveObjectAndChildren(GameXmlWriter writer, ILookup<Element, Element> childrenByParent, Element e, ObjectSaver saver)
         {
             saver.StartSave(writer, e);
-            var orderedChildren = from child in allObjects
-                where child.Parent == e && GameSaver.CanSave(child)
-                orderby child.MetaFields[MetaFieldDefinitions.SortIndex]
-                select child;
-
-            foreach (var child in orderedChildren)
+            // allObjects is already in SortIndex order, and ToLookup keeps that order.
+            foreach (var child in childrenByParent[e])
             {
-                SaveObjectAndChildren(writer, allObjects, child, saver);
+                SaveObjectAndChildren(writer, childrenByParent, child, saver);
             }
 
             saver.EndSave(writer, e);
