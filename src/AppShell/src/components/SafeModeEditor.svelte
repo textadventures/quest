@@ -200,7 +200,7 @@
             </main>
         {:else}
             <div class="flex-1 min-h-0 p-2">
-                <CodeEditor value={currentXml} language="xml" onChange={handleChange} class="h-full" />
+                <CodeEditor value={currentXml} language="xml" ariaLabel={t("codeViewPanel.editorLabel", { filename: currentFile?.filename ?? "" })} onChange={handleChange} class="h-full" />
             </div>
         {/if}
 

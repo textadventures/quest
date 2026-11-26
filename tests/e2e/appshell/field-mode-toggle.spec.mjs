@@ -52,7 +52,7 @@ test('field-mode-toggle', async ({ baseURL }) => {
         await page.waitForSelector('button:has-text("Code view")', { timeout: 5000 });
         console.log('PASS: scripts entered via code view');
 
-        const toggle = name => page.getByRole('button', { name: `Use an expression for ${name}`, exact: true });
+        const toggle = name => page.getByRole('button', { name: `fx: Use an expression for ${name}`, exact: true });
         const label = text => page.getByText(text, { exact: true });
         const pressed = async name => (await toggle(name).getAttribute('aria-pressed')) === 'true';
 

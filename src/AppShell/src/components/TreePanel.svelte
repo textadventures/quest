@@ -785,7 +785,7 @@
     {#if opts.length > 0}
         <span class="node-actions flex items-center ml-auto pr-1">
             <button
-                class="size-5 flex items-center justify-center rounded text-surface-600-400 hover:text-primary-600-400 hover:bg-surface-200-800 text-sm leading-none"
+                class="size-6 flex items-center justify-center rounded text-surface-600-400 hover:text-primary-600-400 hover:bg-surface-200-800 text-sm leading-none"
                 onclick={(e) => toggleDropdown(node.id + ":menu", opts, e)}
                 title={t("treePanel.nodeOptions")}
             >⋯</button>

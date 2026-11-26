@@ -35,15 +35,11 @@ for (const colorScheme of ['light', 'dark']) {
                         {
                             runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'] },
                             // Not yet: maximum-scale=1 stops iOS zooming in when a text box with
-                            // text under 16px gets the focus, but also stops pinch zoom on Android
-                            // and these, which aren't about colour, aren't fixed yet either: the
-                            // tree's ARIA structure (aria-required-parent, nested-interactive), the
-                            // CodeMirror editors' and a script textarea's names (aria-input-field-name,
-                            // label, label-content-name-mismatch), and the tree's and script rows'
-                            // 20px buttons (target-size) (#2962)
+                            // text under 16px gets the focus, but also stops pinch zoom on Android;
+                            // and the tree's ARIA structure (aria-required-parent,
+                            // nested-interactive) isn't fixed yet either (#2962)
                             rules: Object.fromEntries([
-                                'meta-viewport', 'aria-required-parent', 'nested-interactive', 'aria-input-field-name',
-                                'label', 'label-content-name-mismatch', 'target-size',
+                                'meta-viewport', 'aria-required-parent', 'nested-interactive',
                             ].map(rule => [rule, { enabled: false }])),
                         });
                     return result.violations.map(v => `${v.id} (${v.impact}): ${v.help}\n${v.nodes.slice(0, 8).map(n =>

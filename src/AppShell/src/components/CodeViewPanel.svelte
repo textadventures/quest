@@ -255,7 +255,7 @@
                  of the page-level isEditingField/"Unsaved" tracking that assumes input events mean an
                  edit already landed in the bridge, same as ListEditor/DictionaryEditor. -->
             <div class="flex-1 min-h-0 p-2" data-staging>
-                <CodeEditor value={xml} language="xml" readonly={isReadOnly} onChange={handleChange} class="h-full" />
+                <CodeEditor value={xml} language="xml" ariaLabel={t("codeViewPanel.editorLabel", { filename: currentFile?.filename ?? "" })} readonly={isReadOnly} onChange={handleChange} class="h-full" />
             </div>
         {/if}
 
