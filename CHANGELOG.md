@@ -1,5 +1,24 @@
 # Changelog
 
+## [6.1.0-beta.4](https://github.com/textadventures/quest/compare/v6.1.0-beta.3...v6.1.0-beta.4) (2026-11-26)
+
+
+### Features
+
+* **Editor:** add a font to the game from your own font files ([#2943](https://github.com/textadventures/quest/issues/2943)) ([9827873](https://github.com/textadventures/quest/commit/98278738636d5162fd9cd058695a140696d124fd))
+* **Editor:** give the game's stylesheet a page of its own in the tree ([#2944](https://github.com/textadventures/quest/issues/2944)) ([faa72db](https://github.com/textadventures/quest/commit/faa72db5b6665316a879e42b1feb7f4eed4e28d2))
+* **Editor:** make the backup reminder a sidebar card that waits for real work ([#2960](https://github.com/textadventures/quest/issues/2960)) ([05b94aa](https://github.com/textadventures/quest/commit/05b94aaafa67337a8ad529094060317c86f27a5e))
+
+
+### Bug Fixes
+
+* deploy stable releases to play-beta.questviva.com until the next beta ([#2958](https://github.com/textadventures/quest/issues/2958)) ([b56c70f](https://github.com/textadventures/quest/commit/b56c70fad7102a3273b34abfccbb7bf0c04dfc22))
+* **Editor:** ignore commented-out code when offering the classic interface ([#2947](https://github.com/textadventures/quest/issues/2947)) ([bb37614](https://github.com/textadventures/quest/commit/bb37614f6b02f17f1b89672346cb5faa3d37a17e))
+* **Editor:** make the editor's tree work from the keyboard and screen readers ([#2964](https://github.com/textadventures/quest/issues/2964)) ([a128a57](https://github.com/textadventures/quest/commit/a128a57f014b3e18afac3d5fa5cfa8a4fabfe75d))
+* **Editor:** name the code editors and script fields, and enlarge small buttons ([#2963](https://github.com/textadventures/quest/issues/2963)) ([9baffb8](https://github.com/textadventures/quest/commit/9baffb8d622990bca0ae74c8a207b5cd644ddfec))
+* **Editor:** raise text colour contrast to WCAG AA ([#2961](https://github.com/textadventures/quest/issues/2961)) ([44ad236](https://github.com/textadventures/quest/commit/44ad236f0923479b2fb1e12c035910627064427a))
+* **Editor:** stop saving slowing down quadratically with the number of objects ([#2959](https://github.com/textadventures/quest/issues/2959)) ([b588ba6](https://github.com/textadventures/quest/commit/b588ba6811889643c89f776ff4b53938e0404eba))
+
 ## [6.1.0-beta.3](https://github.com/textadventures/quest/compare/v6.1.0-beta.2...v6.1.0-beta.3) (2026-11-23)
 
 
