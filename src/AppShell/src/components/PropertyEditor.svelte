@@ -810,6 +810,7 @@
                 {@render textProcessorPanel(ctrl.textProcessorCommands, ctrl.attribute!, ctrl.controlType)}
                 <textarea
                     id={textProcessorTextareaId(ctrl.attribute!)}
+                    aria-label={ctrl.caption ?? ctrl.attribute!}
                     autocapitalize="off"
                     class="input text-xs py-0.5 px-1.5 flex-1 min-h-32 resize-y"
                     value={attrValue(ctrl.attribute!) ?? ""}
@@ -818,6 +819,7 @@
             </div>
         {:else}
             <textarea
+                aria-label={ctrl.caption ?? ctrl.attribute!}
                 autocapitalize="off"
                 class="input text-xs py-0.5 px-1.5 w-full min-h-24 resize-y"
                 value={attrValue(ctrl.attribute!) ?? ""}
@@ -1064,6 +1066,7 @@
                         {@render textProcessorPanel(ctrl.textProcessorCommands, ctrl.subAttribute, "richtext")}
                         <textarea
                             id={textProcessorTextareaId(ctrl.subAttribute)}
+                            aria-label={ctrl.caption ?? ctrl.subAttribute}
                             autocapitalize="off"
                             class="input text-xs py-0.5 px-1.5 flex-1 min-h-32 resize-y"
                             value={attrValue(ctrl.subAttribute) ?? ""}
@@ -1072,6 +1075,7 @@
                     </div>
                 {:else}
                     <textarea
+                        aria-label={ctrl.caption ?? ctrl.subAttribute}
                         autocapitalize="off"
                         class="input text-xs py-0.5 px-1.5 w-full min-h-24 resize-y"
                         value={attrValue(ctrl.subAttribute) ?? ""}
@@ -1131,6 +1135,7 @@
             <CodeEditor
                 value={attrValue(ctrl.attribute) ?? ""}
                 language="css"
+                ariaLabel={ctrl.caption ?? ctrl.attribute}
                 placeholder={ctrl.placeholder ?? undefined}
                 toolbarUndo={false}
                 onChange={(v) => {
@@ -1165,6 +1170,7 @@
                         <CodeEditor
                             value={content}
                             language={language}
+                            ariaLabel={filename}
                             readonly
                             minHeight="16rem"
                             class="h-full"
@@ -1178,6 +1184,7 @@
                     <CodeEditor
                         value={content ?? ""}
                         language={language}
+                        ariaLabel={filename}
                         onChange={(v) => handleTexteditorChange(filename, content ?? "", v)}
                         minHeight="16rem"
                         class="h-full"

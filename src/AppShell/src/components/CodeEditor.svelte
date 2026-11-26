@@ -16,6 +16,9 @@
     interface Props {
         value: string;
         language: "xml" | "quest-script" | "javascript" | "css";
+        // The text area's accessible name, such as "Raw XML of game.aslx": CodeMirror's editable
+        // element has no label of its own (#2962)
+        ariaLabel: string;
         readonly?: boolean;
         // Whether the toolbar's Undo and Redo act on this editor's text (code-editor-registry).
         // Right for a buffer that isn't applied to the game yet (Code view, the raw XML panel);
@@ -30,13 +33,18 @@
         class?: string;
     }
 
-    let { value, language, readonly = false, toolbarUndo = true, onChange, placeholder, minHeight = "10rem", class: className = "" }: Props = $props();
+    let { value, language, ariaLabel, readonly = false, toolbarUndo = true, onChange, placeholder, minHeight = "10rem", class: className = "" }: Props = $props();
 
     let editorEl = $state<HTMLDivElement | null>(null);
     let view: EditorView | null = null;
 
     const languageCompartment = new Compartment();
     const readonlyCompartment = new Compartment();
+    const labelCompartment = new Compartment();
+
+    function labelExtension(label: string) {
+        return EditorView.contentAttributes.of({ "aria-label": label });
+    }
 
     function languageExtension(lang: "xml" | "quest-script" | "javascript" | "css") {
         if (lang === "xml") return xmlWithScript();
@@ -76,6 +84,7 @@
                 // one, so Enter can be left out of it (#2669).
                 autocompletion({ defaultKeymap: false }),
                 EditorView.lineWrapping,
+                labelCompartment.of(labelExtension(untrack(() => ariaLabel))),
                 ...(untrack(() => placeholder) ? [placeholderText(untrack(() => placeholder)!)] : []),
                 // Ahead of the main keymap so the arrow keys move through an open completion
                 // list rather than the cursor. Enter is left out: the list opens by itself as
@@ -139,6 +148,12 @@
             ],
         });
         if (toolbarUndo) registerActiveCmView(readonly ? null : view);
+    });
+
+    // The name can change without a remount, such as the raw XML panel switching file
+    $effect(() => {
+        if (!view) return;
+        view.dispatch({ effects: labelCompartment.reconfigure(labelExtension(ariaLabel)) });
     });
 
     // External value sync: only replace the doc when the incoming prop actually differs from

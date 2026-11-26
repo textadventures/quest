@@ -932,6 +932,7 @@
         <CodeEditor
             value={scriptCode}
             language="quest-script"
+            ariaLabel={t("scriptEditor.codeEditorLabel")}
             readonly={isLocked}
             onChange={onCodeViewSave}
             minHeight="auto"
@@ -962,21 +963,21 @@
                         <div class="absolute right-1 top-1 flex gap-0.5 opacity-0 group-hover:opacity-100 focus-within:opacity-100 pointer-coarse:opacity-100 has-[[aria-expanded=true]]:opacity-100 has-[[aria-expanded=true]]:z-30 transition-opacity z-10">
                             <button
                                 type="button"
-                                class="btn btn-xs preset-outlined-primary-500 px-1 py-0 text-xs leading-none pointer-coarse:hidden"
+                                class="btn btn-xs preset-outlined-primary-500 min-w-6 px-1 py-0 text-xs leading-none pointer-coarse:hidden"
                                 title={t("common.moveUp")}
                                 disabled={i === 0}
                                 onclick={() => onMoveUp(i)}
                             >↑</button>
                             <button
                                 type="button"
-                                class="btn btn-xs preset-outlined-primary-500 px-1 py-0 text-xs leading-none pointer-coarse:hidden"
+                                class="btn btn-xs preset-outlined-primary-500 min-w-6 px-1 py-0 text-xs leading-none pointer-coarse:hidden"
                                 title={t("common.moveDown")}
                                 disabled={i === scripts().length - 1}
                                 onclick={() => onMoveDown(i)}
                             >↓</button>
                             <button
                                 type="button"
-                                class="btn btn-xs preset-outlined-error-500 px-1 py-0 text-xs leading-none pointer-coarse:hidden"
+                                class="btn btn-xs preset-outlined-error-500 min-w-6 px-1 py-0 text-xs leading-none pointer-coarse:hidden"
                                 title={t("common.delete")}
                                 onclick={() => onDelete(i)}
                             >×</button>
@@ -984,7 +985,7 @@
                                 {#snippet trigger(toggle, open)}
                                     <button
                                         type="button"
-                                        class="btn btn-xs preset-outlined-primary-500 px-0.5 py-0 text-xs leading-none h-full"
+                                        class="btn btn-xs preset-outlined-primary-500 min-w-6 px-0.5 py-0 text-xs leading-none h-full"
                                         title={t("scriptEditor.moreActions")}
                                         aria-label={t("scriptEditor.moreActions")}
                                         aria-haspopup="menu"
@@ -1178,7 +1179,7 @@
     {@const label = accessibleName ? t("scriptEditor.useExpressionFor", { field: accessibleName }) : t("scriptEditor.useExpression")}
     <button
         type="button"
-        class="shrink-0 rounded-sm border px-1 text-xs leading-4 italic font-serif {expression
+        class="shrink-0 min-w-6 min-h-6 inline-flex items-center justify-center rounded-sm border px-1 text-xs leading-4 italic font-serif {expression
             ? "border-primary-500 preset-filled-primary-500"
             : "border-surface-400-600 text-surface-600-400 hover:preset-tonal-surface"}"
         aria-pressed={expression}
@@ -1219,6 +1220,7 @@
                 <input
                     type="text"
                     autocapitalize="off"
+                    aria-label={names.accessible ?? undefined}
                     class="input text-xs py-0 px-1 min-w-16 max-w-48 flex-1"
                     value={ctrl.value ?? ""}
                     onchange={(e) => onSetParam(scriptIndex, ctrl.attribute!, (e.target as HTMLInputElement).value)}
@@ -1241,6 +1243,7 @@
                         options={objectOptions(namesForControl(ctrl))}
                         onchange={(v) => onSimpleValueChange(scriptIndex, ctrl, v)}
                         strict
+                        ariaLabel={names.accessible ?? undefined}
                         class="input text-xs py-0 px-1 max-w-40"
                     />
                 {:else if ctrl.simpleEditor === "colour"}
@@ -1248,7 +1251,7 @@
                         value={toSimpleDisplay(ctrl)}
                         options={ctrl.options ?? []}
                         onchange={(v) => onSimpleValueChange(scriptIndex, ctrl, v)}
-                        ariaLabel={ctrl.caption ?? undefined}
+                        ariaLabel={names.accessible ?? undefined}
                         class="input text-xs py-0 px-1 max-w-40"
                     />
                 {:else if ctrl.simpleEditor === "dropdown" && ctrl.options && ctrl.freetext}
@@ -1257,10 +1260,12 @@
                         value={toSimpleDisplay(ctrl)}
                         options={ctrl.options}
                         onchange={(v) => onSimpleValueChange(scriptIndex, ctrl, v)}
+                        ariaLabel={names.accessible ?? undefined}
                         class="input text-xs py-0 px-1 max-w-32"
                     />
                 {:else if ctrl.simpleEditor === "dropdown" && ctrl.options}
                     <select
+                        aria-label={names.accessible ?? undefined}
                         class="select text-xs py-0 px-1 max-w-32"
                         value={toSimpleDisplay(ctrl)}
                         onchange={(e) => onSimpleValueChange(scriptIndex, ctrl, (e.target as HTMLSelectElement).value)}
@@ -1275,6 +1280,7 @@
                         min={ctrl.minimum ?? undefined}
                         max={ctrl.maximum ?? undefined}
                         step={ctrl.increment ?? (ctrl.simpleEditor === "numberdouble" ? "any" : undefined)}
+                        aria-label={names.accessible ?? undefined}
                         class="input text-xs py-0 px-1 min-w-12 max-w-24"
                         value={ctrl.value ?? "0"}
                         onchange={(e) => onSetParam(scriptIndex, ctrl.attribute!, (e.target as HTMLInputElement).value)}
@@ -1290,6 +1296,7 @@
                     <!-- multiline textbox (e.g. Print's message) - keeps embedded newlines,
                          auto-sized to the height of its content rather than a fixed row count -->
                     <textarea
+                        aria-label={names.accessible ?? undefined}
                         autocapitalize="off"
                         rows="1"
                         class="input text-xs py-0.5 px-1 min-w-16 w-full resize-none overflow-hidden"
@@ -1302,6 +1309,7 @@
                     <input
                         type="text"
                         autocapitalize="off"
+                        aria-label={names.accessible ?? undefined}
                         class={"input text-xs py-0 px-1 min-w-16 flex-1" + (ctrl.expand ? " w-full" : " max-w-48")}
                         value={toSimpleDisplay(ctrl)}
                         onchange={(e) => onSimpleValueChange(scriptIndex, ctrl, (e.target as HTMLInputElement).value)}
@@ -1316,6 +1324,7 @@
                         value={ctrl.value ?? ""}
                         onchange={(v) => onSetParam(scriptIndex, ctrl.attribute!, v)}
                         {objectNames}
+                        ariaLabel={names.accessible ?? undefined}
                         class={"input text-xs py-0 px-1 min-w-16" + (ctrl.expand ? " w-full" : " max-w-48")}
                     />
                 </div>
@@ -1351,6 +1360,7 @@
         <!-- multiline textbox (e.g. @failed's fallback-script text, a // comment) - keeps
              embedded newlines, auto-sized to the height of its content. -->
         <textarea
+            aria-label={fieldNames(siblingControls, controlIndex).accessible ?? undefined}
             autocapitalize="off"
             rows="1"
             class={"input text-xs py-0.5 px-1 min-w-16 resize-none overflow-hidden" + (ctrl.expand ? " w-full" : " max-w-48")}
@@ -1362,6 +1372,7 @@
     {:else if ctrl.controlType === "textbox" || ctrl.controlType === "richtext"}
         <input
             type="text"
+            aria-label={fieldNames(siblingControls, controlIndex).accessible ?? undefined}
             autocapitalize="off"
             class={"input text-xs py-0 px-1 min-w-16 flex-1" + (ctrl.expand ? " w-full" : " max-w-48")}
             style={ctrl.colour ? `color: ${ctrl.colour}` : undefined}
