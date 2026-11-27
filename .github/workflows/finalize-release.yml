@@ -126,9 +126,19 @@ jobs:
             # Only a stable release is marked Latest. A prerelease keeps its
             # prerelease flag (see release-please.yml), which GitHub never
             # lets hold Latest anyway, so stable users keep being pointed at
-            # the last stable release.
+            # the last stable release. A stable release of an older line
+            # (6.0.N after 6.1.0) isn't marked Latest either, and needs
+            # --latest=false: GitHub otherwise makes a newly published stable
+            # release Latest by default.
             if [ "${{ steps.channel.outputs.channel }}" == "stable" ]; then
-              gh release edit "$TAG" --repo ${{ github.repository }} --draft=false --latest
+              NEWER_STABLE="$(git ls-remote --tags --refs origin 'v*' | sed 's#.*refs/tags/##' \
+                | .github/scripts/newer-stable.sh "$TAG")"
+              if [ -n "$NEWER_STABLE" ]; then
+                echo "Newer stable release $NEWER_STABLE is out, so $TAG isn't marked Latest"
+                gh release edit "$TAG" --repo ${{ github.repository }} --draft=false --latest=false
+              else
+                gh release edit "$TAG" --repo ${{ github.repository }} --draft=false --latest
+              fi
             else
               gh release edit "$TAG" --repo ${{ github.repository }} --draft=false
             fi
