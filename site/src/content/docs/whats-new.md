@@ -33,6 +33,7 @@ The game's Display tab has been split in two. The **Appearance** tab sets the th
 - **New themes.** There are five new themes: Parchment, Noir, Storybook, Midnight and Terminal. The theme chooser shows you what each one looks like before you pick it. The Retro and Hot Dog Stand themes have been retired, but games that already use them aren't affected.
 - **Themes don't turn things on and off any more.** Choosing a theme used to change settings such as whether the panes were shown. Now a theme only sets fonts, colours and spacing, and leaves your Interface tab settings alone. If you've changed any of a theme's fonts or colours, the new **Reset** button puts them back.
 - **Dark mode colours.** A new game doesn't set any colours of its own, so it uses the standard light or dark colours, depending on the player's setting. If you do choose your own colours, you can also choose a dark mode version of each one.
+- **Your own fonts.** You can add a font to your game with the **Fonts...** button on the Appearance tab, either from Fontsource or from your own font files. It's copied into your game's folder, so your published game works offline and never fetches a font from anywhere else. See [The game's own fonts](/customise/look-and-feel#the-games-own-fonts).
 - **Colour pickers** for every colour setting.
 - **Previews.** The Appearance tab shows some sample text in your game's fonts and colours, in both light and dark mode. The Interface tab shows a miniature version of your game's layout, on a desktop and on a phone.
 - **Your own stylesheet.** You can add your own CSS, on the **Stylesheet** page under Advanced in the tree. The new interface is designed to be styled this way: it has named parts and CSS variables for you to use, so you don't need to rely on how the page happens to be built. See [Styling the player with CSS](/customise/css).
@@ -59,6 +60,9 @@ See [Working with a script](/tutorial/using-scripts#working-with-a-script).
 - **Turning off a feature.** Unticking a feature on the Features tab hides its tab, but anything you set up on that tab still applies in the game. The editor now asks whether you want to remove those settings too. See [Turning a feature off](/howto/objects/features#turning-a-feature-off).
 - **A warning about function names.** If a function that returns a value has the same name as one of the engine's built-in functions, such as `CapFirst`, the engine always calls its own one instead, so yours can never be used in an expression. The editor now warns you about this. See [Overriding Core library functions](/customise/overriding).
 - **Pasting a list.** If you paste several lines into a list, each line is added as a separate item.
+- **Editing a game in another program.** If your game file changes while it's open in the editor, for example because you edited it in a text editor or an AI agent changed it, the editor reloads it and keeps your place. If you have changes that haven't been saved yet, it asks which version to keep instead. See [Writing with an AI agent](/howto/testing/ai-agents).
+- **Faster saving.** Saving a game with a lot of objects is much quicker.
+- **Keyboard and screen reader access.** The tree can be used from the keyboard and with a screen reader, the code editors and script fields are labelled for screen readers, small buttons are bigger, and text has more contrast.
 
 ### Reproducing bugs that players find
 
@@ -74,6 +78,7 @@ Walkthroughs in the editor also now use the same random numbers every time they'
 
 ### For players
 
+- **A new Play tab.** The games you've played recently come first, with **Open a game file** as the first tile, and you can drop a game file anywhere on the tab to play it. Below that, **Discover games** has a search box and the textadventures.co.uk categories.
 - **A redesigned Save / Load dialog.** Saving now takes one click, and you don't have to type a name. A save without a name is labelled with the room the player was in. The newest saves are at the top, and each save has a menu to overwrite, rename or delete it, or save it to a file. The dialog checks with the player before loading a game or starting again if they'd lose any progress, and when a game starts, it offers to carry on from their most recent save.
 - **A button for transcripts.** Once a player has recorded a [transcript](/howto/testing/transcripts), a **Your Transcripts** button at the top of the game opens the transcript viewer, so testers no longer need to type `VIEW TRANSCRIPT`.
 - **Exit buttons on phones.** On a phone, a row of buttons under the text shows which way the player can go, so they don't have to open the drawer to get to the compass. This works with the classic interface too.
@@ -90,8 +95,9 @@ You can also use `qv` to let an AI agent such as Claude play your game, and tell
 
 ### Publishing
 
+- **Publish straight to textadventures.co.uk.** Choose **textadventures.co.uk** in the Publish dialog, and the editor uploads your game for you. You finish on textadventures.co.uk, where you fill in your game's page. See [Publishing on textadventures.co.uk](/publishing#publishing-on-textadventurescouk).
 - **Link previews.** When you publish your game as HTML, the page now includes your game's title and description. So when you share a link to it on Discord, a forum or social media, the preview shows your game's details instead of Quest Viva's. If you use the zip option, the preview shows your cover art too. See [Where these are used](/publishing/game-details#where-these-are-used).
-- **WebPlayer has been removed.** WebPlayer, the server-based player, isn't part of 6.1. The 6.0 version is still available, but it can't play games saved in 6.1. See [WebPlayer](/publishing/webplayer).
+- **WebPlayer has been removed.** WebPlayer, the server-based player, isn't part of 6.1. The 6.0 version is still available and still gets bug fixes, but it can't play games saved in 6.1. See [WebPlayer](/publishing/webplayer).
 
 ### Games saved in 6.1 are version 610
 
@@ -106,7 +112,7 @@ The online editor at textadventures.co.uk, which opens games stored on your text
 1. Go to [Your games](https://textadventures.co.uk/your-games) on textadventures.co.uk and click **Download** next to the game, under "Quest online editor games". That gives you a `.zip` of the game and its assets.
 2. In Quest Viva, go to the **Create** tab and either click **Import game file** and choose the `.zip`, which makes it a local draft in your browser, or unzip it first and open the folder with **Open game folder** (**Open game…** in the desktop app).
 
-Once you have, publish it as a `.quest` file and upload that to textadventures.co.uk - see [Publishing on textadventures.co.uk](/publishing#publishing-on-textadventurescouk).
+Once you have, you can publish it to textadventures.co.uk from the Publish dialog - see [Publishing on textadventures.co.uk](/publishing#publishing-on-textadventurescouk).
 
 There are plenty of smaller improvements and bug fixes too - see the [changelog](https://github.com/textadventures/quest/blob/main/CHANGELOG.md).
 
