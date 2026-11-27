@@ -90,11 +90,22 @@ jobs:
       # guess a dist-tag for a prerelease-looking version and errors instead.
       # `latest` only ever points at a stable release; prereleases get `beta`
       # — see docs/release-channels.md. Game exports pin an exact version, so
-      # this only affects anyone installing the package without one.
+      # this only affects anyone installing the package without one. A stable
+      # release of an older line (6.0.N after 6.1.0) gets `release-6.0`
+      # instead, so `latest` stays on the newest one. (npm rejects a dist-tag
+      # that is also a valid semver range, such as a bare `6.0`.)
       - name: Determine the dist-tag
         run: |
           if [ "$(.github/scripts/release-channel.sh "$GITHUB_REF_NAME")" == "stable" ]; then
-            echo "DIST_TAG=latest" >> $GITHUB_ENV
+            NEWER_STABLE="$(git ls-remote --tags --refs origin 'v*' | sed 's#.*refs/tags/##' \
+              | .github/scripts/newer-stable.sh "$GITHUB_REF_NAME")"
+            if [ -n "$NEWER_STABLE" ]; then
+              LINE="$(echo "${GITHUB_REF_NAME#v}" | cut -d. -f1,2)"
+              echo "Newer stable release $NEWER_STABLE is out, so this gets dist-tag release-$LINE"
+              echo "DIST_TAG=release-$LINE" >> $GITHUB_ENV
+            else
+              echo "DIST_TAG=latest" >> $GITHUB_ENV
+            fi
           else
             echo "DIST_TAG=beta" >> $GITHUB_ENV
           fi
