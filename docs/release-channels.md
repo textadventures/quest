@@ -25,6 +25,16 @@ A stable release goes to the beta site as well, unless a prerelease of a later v
 
 Because `releases/latest` skips prereleases, the download buttons (AppShell's `download-links.ts`, the docs site's `DownloadButton.astro`) and textadventures.co.uk's `LatestVersionService` keep pointing at the last stable release with no changes of their own. The beta site's button offers the newest prerelease instead, except while it's running a stable release itself, when it uses `releases/latest` like the stable site.
 
+### Maintenance releases
+
+A stable tag with a newer stable tag out (a 6.0.N released after 6.1.0, for textadventures.co.uk's editor) is a maintenance release. `.github/scripts/newer-stable.sh` prints the newest stable tag newer than a given one, and when it prints one:
+
+- `deploy-play.yml` deploys neither site, which keep the newer release, but still attaches its builds to the GitHub Release, including the `WebEditor.zip` textadventures.co.uk redeploys from.
+- `npm-publish.yml` gives it a `release-<major>.<minor>` dist-tag (`release-6.0`) instead of `latest`. npm rejects a dist-tag that is also a valid semver range, such as a bare `6.0`.
+- `finalize-release.yml` publishes it with `--latest=false`. Just leaving out `--latest` wouldn't do, since GitHub makes a newly published stable release Latest by default.
+
+NuGet needs nothing: its "latest" is always the highest version. `deploy-play.yml` and `npm-publish.yml` run from the tagged commit, so `release/6.0` has its own copy of this change; `finalize-release.yml` always runs from `main`'s.
+
 ## Branches
 
 - `main` is where development happens. After 6.0.0 it becomes the 6.1 line and keeps producing prereleases (`prerelease-type: beta`).
@@ -117,12 +127,7 @@ The 6.1.0 cut is mostly the 6.0.0 one again, with one difference: `release/6.0` 
 
 ### Before the cut
 
-- [ ] **Make 6.0.x releases after 6.1.0 maintenance-only.** As things stand, a `v6.0.N` tag pushed after `v6.1.0` would:
-  - deploy 6.0 to play.questviva.com, since `release/6.0`'s `deploy-play.yml` sends every stable tag to `play-questviva`.
-  - be marked Latest by `finalize-release.yml`, which always runs from `main`'s copy and passes `--latest` for any stable tag. The download buttons, `/download`, the desktop update banner and `LatestVersionService` would then all go back to 6.0. Leaving out `--latest` isn't enough, because GitHub makes a newly published release Latest by default. An older stable release needs `--latest=false`.
-  - move npm's `latest` dist-tag back to 6.0.N (`release/6.0`'s `npm-publish.yml`).
-
-  Fix this on both branches. Have `finalize-release.yml` pass `--latest` only for the highest stable tag (`sort -V`, like `newer-prerelease.sh`) and `--latest=false` otherwise. Have `release/6.0`'s `deploy-play.yml` skip both Pages deploys but still attach `WasmPlayer.zip`, `AppBundle.zip` and `WebEditor.zip`, since the textadventures.co.uk redeploy needs them. Have its `npm-publish.yml` use a `6.0` dist-tag. Then add a "6.0.x after 6.1.0" column to the table at the top of this page. Until this lands, don't merge a `release/6.0` release PR after 6.1.0 (one for 6.0.5 is open now), and either merge it before the cut or leave it.
+- [ ] **Make 6.0.x releases after 6.1.0 maintenance-only.** Without this, a `v6.0.N` tag pushed after `v6.1.0` would deploy 6.0 to play.questviva.com, become GitHub's Latest release (and with it the download buttons, `/download`, the desktop update banner and `LatestVersionService`), and move npm's `latest` dist-tag back to 6.0.N. The fix is in, on `main` and `release/6.0` both, as described in "Maintenance releases" above. Merge both PRs before 6.1.0. Until the `release/6.0` one has merged, don't merge a `release/6.0` release PR after 6.1.0 (one for 6.0.5 is open now): either merge it before the cut, or leave it.
 - [ ] **Docs pass on `main`.** The stable site is built from `main`'s next release branch (see "Docs site" above), so everything `main` says becomes the questviva.com docs. In particular:
   - remove the WebPlayer and Docker pages, which were kept only until 6.1 is stable: `publishing/webplayer.mdx`, and the WebPlayer parts of `publishing/hosting.md` and `contribute/building-from-source.md`.
   - make sure `whats-new.md` covers all of 6.1.
