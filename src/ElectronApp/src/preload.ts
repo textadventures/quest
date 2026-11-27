@@ -51,8 +51,6 @@ contextBridge.exposeInMainWorld("electronApp", {
     // Set when running from the Microsoft Store package; the sandboxed
     // preload's process object includes it. See electron-types.d.ts.
     windowsStore: process.windowsStore === true,
-    // Set when running from the Flathub package; main.ts adds the argument.
-    flatpak: process.argv.includes("--quest-viva-flatpak"),
     fs: {
         readFile: (path: string): Promise<Uint8Array> => ipcRenderer.invoke("fs:readFile", path),
         writeFile: (path: string, data: Uint8Array | string): Promise<void> => ipcRenderer.invoke("fs:writeFile", path, data),
