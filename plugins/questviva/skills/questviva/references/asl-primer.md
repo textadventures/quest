@@ -165,7 +165,7 @@ Core already has the common verbs, so check before adding one: objects answer `t
 - Editing a published `.quest` file. It's a zip package, not XML. Edit the `.aslx` the game was published from.
 - Guessing a function's name or parameters. Look it up in the reference, and check which of Core's functions the game itself replaces.
 
-**After editing, check the file and play your change.** The `qv` command-line tool (`dotnet tool install -g QuestViva.Cli --prerelease`) finds problems without playing, and runs the game's walkthroughs:
+**After editing, check the file and play your change.** The `qv` command-line tool (`dotnet tool install -g QuestViva.Cli`) finds problems without playing, and runs the game's walkthroughs:
 
 - `qv check game.aslx` reports script commands and functions that don't exist, expressions that don't parse, functions given the wrong number of arguments, duplicate names, and anything that stops the game loading. The engine only parses a script when it first runs, so without this most mistakes only show when a player reaches them. Run it after every edit.
 - `qv walkthrough game.aslx [name]` plays a walkthrough and fails if a step's script errors, an `assert:` is false, or the game ends early. To test a change, add a walkthrough that reaches it and ends in `assert:` steps, which are ASL expressions ([walkthroughs](/howto/testing/walkthroughs/)). An error in the game's `start` script doesn't fail a walkthrough, so read the opening text too.

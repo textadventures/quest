@@ -38,16 +38,17 @@ NuGet needs nothing: its "latest" is always the highest version. `deploy-play.ym
 ## Branches
 
 - `main` is where development happens. After 6.0.0 it becomes the 6.1 line and keeps producing prereleases (`prerelease-type: beta`).
-- `release/6.0` is created from the `v6.0.0` tag and produces 6.0.x patch releases. It gets its own `release-please-config.json` with the `always-bump-patch` versioning strategy and `prerelease: false`. Fixes land on `main` first and are cherry-picked back.
+- `release/6.1` is the stable release branch, created from the `v6.1.0` tag, and produces 6.1.x patch releases. Like each release branch, it has its own `release-please-config.json` with the `always-bump-patch` versioning strategy and `prerelease: false`. Fixes land on `main` first and are cherry-picked back.
+- `release/6.0`, created from `v6.0.0`, carries on for textadventures.co.uk's editor, which stays on 6.0. A 6.0.x released now is a maintenance release (see "Maintenance releases" above).
 - `release-please.yml` needs to run on pushes to both `main` and `release/**`, passing `target-branch: ${{ github.ref_name }}`, so each branch keeps its own release PR.
-- A tag push runs the workflow files as they are in the tagged commit, so a `v6.0.x` tag runs `release/6.0`'s copies. Fixes to the release workflows need backporting there too.
+- A tag push runs the workflow files as they are in the tagged commit, so a `v6.1.x` tag runs `release/6.1`'s copies and a `v6.0.x` tag `release/6.0`'s. Fixes to the release workflows need backporting to both.
 
 ## Backporting
 
-Fixes land on `main` first, then go to `release/6.0` through a PR of their own:
+Fixes land on `main` first, then go to the stable release branch, `release/6.1`, through a PR of their own (or to `release/6.0`, the same way, for a fix textadventures.co.uk's editor needs):
 
-1. Branch from `release/6.0` and `git cherry-pick -x` the squash commit from `main`. Several related fixes can go in one PR.
-2. Title the PR `chore(release/6.0): backport #1234` (listing every PR it brings in).
+1. Branch from `release/6.1` and `git cherry-pick -x` the squash commit from `main`. Several related fixes can go in one PR.
+2. Title the PR `chore(release/6.1): backport #1234` (listing every PR it brings in).
 3. Put the original PR titles, each followed by its PR number, in a commit override block in the PR description, separated by blank lines:
 
    ```
@@ -85,7 +86,7 @@ So docs for a new feature are written on `main` as if it already shipped: pages 
 
 Both are one Cloudflare Pages project, set up in its dashboard (nothing in the repo sets this):
 
-- **Production branch:** `release/6.0`, serving questviva.com. When a new stable release branch is cut, point production at it.
+- **Production branch:** `release/6.1`, serving questviva.com (`release/6.0` until 6.1.0). When a new stable release branch is cut, point production at it.
 - **`main`**, serving beta.questviva.com through a custom domain on the `main` branch deployment.
 - **`PUBLIC_BETA_SITE=true`** in the Preview environment's variables, so every non-production build is a beta build: `main`, and PR previews.
 
@@ -101,7 +102,7 @@ The editor links to its own channel's docs. AppShell's help links (`docs-links.t
 
 ### Backporting docs fixes
 
-A docs fix that applies to the stable release lands on `main` first and is backported like a code fix (see "Backporting" above). To have it done for you, add the **`backport release/6.0`** label to the PR, before or after merging it. `backport.yml` then cherry-picks the squash commit onto `release/6.0` and opens `chore(release/6.0): backport #N` with the override block already in its description, which you squash-merge. If the cherry-pick conflicts, or the push is refused, it comments on the PR with the steps to do it by hand. The label works for code fixes too, and any `backport <branch>` label targets that branch. It pushes with the `RELEASE_PAT` secret, which needs the Workflows permission: many fixes change `.github/workflows/e2e.yml`, and GitHub refuses those pushes without it.
+A docs fix that applies to the stable release lands on `main` first and is backported like a code fix (see "Backporting" above). To have it done for you, add the **`backport release/6.1`** label to the PR, before or after merging it. `backport.yml` then cherry-picks the squash commit onto `release/6.1` and opens `chore(release/6.1): backport #N` with the override block already in its description, which you squash-merge. If the cherry-pick conflicts, or the push is refused, it comments on the PR with the steps to do it by hand. The label works for code fixes too, and any `backport <branch>` label targets that branch. It pushes with the `RELEASE_PAT` secret, which needs the Workflows permission: many fixes change `.github/workflows/e2e.yml`, and GitHub refuses those pushes without it.
 
 ## 6.0.0 cut runbook
 
@@ -136,6 +137,8 @@ The 6.1.0 cut is mostly the 6.0.0 one again, with one difference: `release/6.0` 
 - [x] **Check the Microsoft Store package builds.** It had never been built: `v6.0.x` tags run `release/6.0`'s workflow, which has no `.appx` target. If it failed on the `v6.1.0` tag, `electron-publish.yml` would fail and `finalize-release.yml` would leave the release a draft. A manual stable run on `main` (run 45976628118) built `Quest Viva 6.1.0-beta.4.appx` on Windows, unsigned as the Store expects, along with the other installers. Whether Partner Center accepts its identity values (the `appx` block in `package.json`, particularly `publisherDisplayName`) only matters for the Store submission after the cut, and a wrong value can be fixed in 6.1.1.
 
 ### The cut
+
+Done on 2026-11-27: 6.1.0 was released from #2969, `release/6.1` set up in #2972, and steps 5–8 done in the PR that added this line.
 
 1. Merge a PR whose squash commit message carries a `Release-As: 6.1.0` footer. As for 6.0.0, GitHub's default squash message won't keep the footer, so type it in by hand when merging. The PR can be any change, for example the docs pass.
 2. Merge the resulting `chore(main): release 6.1.0` PR, and check that the release landed everywhere in the table at the top of this page:

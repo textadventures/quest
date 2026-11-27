@@ -14,7 +14,7 @@ It adds:
 /plugin install questviva@questviva
 ```
 
-The MCP server needs `qv` on your `PATH`: `dotnet tool install -g QuestViva.Cli --prerelease`, or a standalone download from a 6.1 beta release. See [Writing with an AI agent](https://beta.questviva.com/howto/testing/ai-agents/) for more.
+The MCP server needs `qv` on your `PATH`: `dotnet tool install -g QuestViva.Cli`, or a standalone download from the [latest release](https://github.com/textadventures/quest/releases/latest). See [Writing with an AI agent](https://questviva.com/howto/testing/ai-agents/) for more.
 
 ## Developing
 
