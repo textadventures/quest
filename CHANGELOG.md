@@ -1,5 +1,22 @@
 # Changelog
 
+## [6.1.0](https://github.com/textadventures/quest/compare/v6.1.0-beta.4...v6.1.0) (2026-11-27)
+
+The first stable release of Quest Viva 6.1, with everything from the 6.1 betas: a new player interface with light and dark mode, new themes, your own fonts and stylesheet, Check game, a better script editor, bug reports you can replay, publishing straight to textadventures.co.uk, and `qv`, a command-line tool for authors. See [What's new in Quest Viva 6.1](https://questviva.com/whats-new/#quest-viva-61) for the full story, and the [changelog](https://github.com/textadventures/quest/blob/main/CHANGELOG.md) for every change in the 6.1.0 betas.
+
+Changes since 6.1.0-beta.4:
+
+
+### Features
+
+* **Editor:** tell play-beta users how to move a draft to the stable site ([#2970](https://github.com/textadventures/quest/issues/2970)) ([e01ebc5](https://github.com/textadventures/quest/commit/e01ebc587bc7e36f9d9c3157eebbd2453e264d00))
+
+
+### Bug Fixes
+
+* **Player:** show games saved for 6.1 in the Play tab ([#2968](https://github.com/textadventures/quest/issues/2968)) ([292307e](https://github.com/textadventures/quest/commit/292307ed433fdfcaad8f12a329f7a6b9044b9393))
+
+
 ## [6.1.0-beta.4](https://github.com/textadventures/quest/compare/v6.1.0-beta.3...v6.1.0-beta.4) (2026-11-26)
 
 
