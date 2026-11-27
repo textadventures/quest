@@ -44,7 +44,18 @@ jobs:
           else
             CHANNEL=prerelease
           fi
+          # A stable release of an older line (6.0.N after 6.1.0, for
+          # textadventures.co.uk's editor) is a maintenance release: it
+          # deploys neither site, which keep the newer release, but still
+          # attaches its builds to the GitHub Release below.
+          NEWER_STABLE=""
           if [ "$CHANNEL" == "stable" ]; then
+            NEWER_STABLE="$(git ls-remote --tags --refs origin 'v*' | sed 's#.*refs/tags/##' \
+              | .github/scripts/newer-stable.sh "$GITHUB_REF_NAME")"
+          fi
+          if [ -n "$NEWER_STABLE" ]; then
+            echo "Newer stable release $NEWER_STABLE is out, so this maintenance release deploys neither site"
+          elif [ "$CHANNEL" == "stable" ]; then
             echo "pages_project=play-questviva" >> "$GITHUB_OUTPUT"
             # Between a stable release and the next version's first beta,
             # the beta site would otherwise keep the last beta, older than the
@@ -203,6 +214,7 @@ jobs:
           EOF
 
       - name: Deploy to Cloudflare Pages
+        if: steps.channel.outputs.pages_project != ''
         uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}

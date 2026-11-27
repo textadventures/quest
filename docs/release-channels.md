@@ -25,6 +25,16 @@ A stable release goes to the beta site as well, unless a prerelease of a later v
 
 Because `releases/latest` skips prereleases, the download buttons (AppShell's `download-links.ts`, the docs site's `DownloadButton.astro`) and textadventures.co.uk's `LatestVersionService` keep pointing at the last stable release with no changes of their own. The beta site's button offers the newest prerelease instead, except while it's running a stable release itself, when it uses `releases/latest` like the stable site.
 
+### Maintenance releases
+
+A stable tag with a newer stable tag out (a 6.0.N released after 6.1.0, for textadventures.co.uk's editor) is a maintenance release. `.github/scripts/newer-stable.sh` prints the newest stable tag newer than a given one, and when it prints one:
+
+- `deploy-play.yml` deploys neither site, which keep the newer release, but still attaches its builds to the GitHub Release, including the `WebEditor.zip` textadventures.co.uk redeploys from.
+- `npm-publish.yml` gives it a `release-<major>.<minor>` dist-tag (`release-6.0`) instead of `latest`. npm rejects a dist-tag that is also a valid semver range, such as a bare `6.0`.
+- `finalize-release.yml` publishes it with `--latest=false`. Just leaving out `--latest` wouldn't do, since GitHub makes a newly published stable release Latest by default.
+
+NuGet needs nothing: its "latest" is always the highest version. `deploy-play.yml` and `npm-publish.yml` run from the tagged commit, so `release/6.0` has its own copy of this change; `finalize-release.yml` always runs from `main`'s.
+
 ## Branches
 
 - `main` is where development happens. After 6.0.0 it becomes the 6.1 line and keeps producing prereleases (`prerelease-type: beta`).
@@ -110,3 +120,44 @@ A docs fix that applies to the stable release lands on `main` first and is backp
 - [x] Separate identity for beta Electron builds (see above).
 - [x] A distinct icon for Quest Viva Beta (purple, with a "BETA" band).
 - [x] A banner on the beta site saying it's a beta, that its data is separate from play.questviva.com's, and linking back to the stable site.
+
+## 6.1.0 cut runbook
+
+The 6.1.0 cut is mostly the 6.0.0 one again, with one difference: `release/6.0` doesn't stop. textadventures.co.uk's editor stays on 6.0 (see [deployment-domains.md](./deployment-domains.md)), so 6.0.x releases can still come after 6.1.0, and today's workflows would treat each one as the newest stable release.
+
+### Before the cut
+
+- [ ] **Make 6.0.x releases after 6.1.0 maintenance-only.** Without this, a `v6.0.N` tag pushed after `v6.1.0` would deploy 6.0 to play.questviva.com, become GitHub's Latest release (and with it the download buttons, `/download`, the desktop update banner and `LatestVersionService`), and move npm's `latest` dist-tag back to 6.0.N. The fix is in, on `main` and `release/6.0` both, as described in "Maintenance releases" above. Merge both PRs before 6.1.0. Until the `release/6.0` one has merged, don't merge a `release/6.0` release PR after 6.1.0 (one for 6.0.5 is open now): either merge it before the cut, or leave it.
+- [ ] **Docs pass on `main`.** The stable site is built from `main`'s next release branch (see "Docs site" above), so everything `main` says becomes the questviva.com docs. In particular:
+  - remove the WebPlayer and Docker pages, which were kept only until 6.1 is stable: `publishing/webplayer.mdx`, and the WebPlayer parts of `publishing/hosting.md` and `contribute/building-from-source.md`.
+  - make sure `whats-new.md` covers all of 6.1.
+  - check for wording that only makes sense on a beta.
+- [ ] **Raise `MAX_ASL_VERSION`** in AppShell's `src/lib/home-catalog.ts` from 600 to 610, so the Play tab shows games saved for 6.1. Check that textadventures.co.uk records ASL 610 for uploaded games and that its catalog API returns them.
+- [ ] **Fix the open editor bugs worth fixing first**, such as #2891 (a spurious "changed outside the editor" message, with a freeze, on auto-save).
+- [ ] **Test the build that ships.** Get a green nightly e2e run on `main`, run the quest-e2e-tests corpus against the latest beta, and play a few real games on play-beta.questviva.com, which runs the same trimmed Release build that 6.1.0 will.
+- [ ] **Tell beta users how to move their work.** play-beta.questviva.com and Quest Viva Beta keep their data apart from the stable ones, and 6.1.0 doesn't move it. Say in the release notes, and in `BetaBanner.svelte`'s stable-version text if it fits, that they can back up a game on the beta and open it on the stable site or app.
+- [ ] **Check the Microsoft Store package.** Stable builds of `electron-publish.yml` make one (see "Microsoft Store" in [electron-desktop-app.md](./electron-desktop-app.md)), and 6.1.0 is the first release to go to the Store, so check that its Partner Center identity values are the real ones.
+
+### The cut
+
+1. Merge a PR whose squash commit message carries a `Release-As: 6.1.0` footer. As for 6.0.0, GitHub's default squash message won't keep the footer, so type it in by hand when merging. The PR can be any change, for example the docs pass.
+2. Merge the resulting `chore(main): release 6.1.0` PR, and check that the release landed everywhere in the table at the top of this page:
+   - play.questviva.com serves 6.1.0, and so does play-beta.questviva.com, whose banner says there's no beta just now.
+   - `v6.1.0` is GitHub's Latest release. Its installers and `qv` binaries are attached, so `releases/latest/download/qv-<rid>.tar.gz` works.
+   - npm's `latest` and NuGet (including `QuestViva.Cli`) have 6.1.0.
+   - `finalize-release.yml` logged "textadventures.co.uk stays on 6.0" and didn't redeploy it.
+   - A 6.0 desktop app is offered the update. Quest Viva Beta is offered 6.1.0 too, since `LatestVersionService` offers a prerelease client the highest release. That installs the separate stable app.
+3. Create `release/6.1` from `v6.1.0`. Give it `release/6.0`'s `release-please-config.json` (`versioning: always-bump-patch`, `prerelease: false`) and a `.release-please-manifest.json` of `6.1.0`. The workflows already run on `release/**`, so nothing else needs adding. Its `deploy-play.yml` is `main`'s, which sends a 6.1.x release to the beta site too until a 6.2 beta is out.
+4. In the docs site's Cloudflare Pages project, point the production branch at `release/6.1`. Check that questviva.com now shows the 6.1 docs with no beta banner, and that beta.questviva.com is still built from `main` and still shows the banner.
+5. Create the `backport release/6.1` label. From now on, fixes and docs fixes for the stable release are backported to `release/6.1`, and only fixes the textadventures.co.uk editor needs go to `release/6.0`. Update "Backporting" and "Backporting docs fixes" above, and the Git Workflow section of `CLAUDE.md`, to name `release/6.1`.
+6. Move the Claude Code plugin onto the stable release. Its docs links now resolve on questviva.com, and NuGet has a stable `QuestViva.Cli`:
+   - in `plugins/questviva/skills/questviva/SKILL.md`, `references/asl-primer.md` and `references/gamebooks.md`, change beta.questviva.com to questviva.com, drop `--prerelease`, and point the `qv` download at the latest release instead of "the newest `6.1.0-beta` release".
+   - do the same in the plugin's `.claude-plugin/plugin.json` homepage and `README.md`.
+   - remove "Until 6.1.0 itself ships" from `docs/qv.md`, and the matching note on the plugin in `CLAUDE.md`.
+7. Seed the 6.2 prerelease line on `main` with a commit carrying a `Release-As: 6.2.0-beta.1` footer. Without it, release-please works out the next prerelease from `6.1.0` by itself, which won't be `6.2.0-beta.1` (see "Releasing" in `CLAUDE.md`). That commit opens the `6.2.0-beta.1` release PR straight away. Leave it unmerged until there's something to ship: until then, play-beta.questviva.com and the beta docs keep 6.1.0.
+8. Update `CLAUDE.md`: the stable release branch in the Overview and "Documentation Site" sections, the Releasing section's 6.0.0/6.1 wording, and the `release/6.0` references that now mean `release/6.1`. Update this page's "Branches" section and the textadventures.co.uk row of its table too.
+
+### After the cut
+
+- [ ] Submit the desktop app to Flathub (#2888). It needs a stable release's `.deb`, so it couldn't happen earlier.
+- [ ] Submit the Microsoft Store package from the `electron-publish.yml` run's artifacts to Partner Center.
