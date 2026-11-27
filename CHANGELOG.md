@@ -1,5 +1,22 @@
 # Changelog
 
+## [6.1.0](https://github.com/textadventures/quest/compare/v6.1.0-beta.4...v6.1.0) (2026-11-27)
+
+
+### Features
+
+* **Editor:** tell play-beta users how to move a draft to the stable site ([#2970](https://github.com/textadventures/quest/issues/2970)) ([e01ebc5](https://github.com/textadventures/quest/commit/e01ebc587bc7e36f9d9c3157eebbd2453e264d00))
+
+
+### Bug Fixes
+
+* **Player:** show games saved for 6.1 in the Play tab ([#2968](https://github.com/textadventures/quest/issues/2968)) ([292307e](https://github.com/textadventures/quest/commit/292307ed433fdfcaad8f12a329f7a6b9044b9393))
+
+
+### Miscellaneous Chores
+
+* start the 6.1.0 release ([#2971](https://github.com/textadventures/quest/issues/2971)) ([b995cd7](https://github.com/textadventures/quest/commit/b995cd76defb9469da28953fb5341d6cf0c0ae8f))
+
 ## [6.1.0-beta.4](https://github.com/textadventures/quest/compare/v6.1.0-beta.3...v6.1.0-beta.4) (2026-11-26)
 
 
