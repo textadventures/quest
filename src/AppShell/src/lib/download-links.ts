@@ -37,6 +37,13 @@ const RELEASES_PAGE_URL = offersPrerelease
 const CACHE_KEY = offersPrerelease ? "questviva-latest-prerelease" : "questviva-latest-release";
 const CACHE_TTL_MS = 10 * 60 * 1000;
 
+// Stable releases go to the Microsoft Store too (see "Microsoft Store" in
+// docs/electron-desktop-app.md). The Store signs the package, so a Store install
+// gets no SmartScreen warning, which the unsigned NSIS installer always does. The
+// web listing rather than an ms-windows-store: link, so it works from any browser
+// and offers to open the Store app itself.
+const MICROSOFT_STORE_URL = "https://apps.microsoft.com/detail/9N3N7KDB2TPM";
+
 export interface DownloadLink {
     label: string;
     url: string;
@@ -132,7 +139,13 @@ function buildLinks(release: ReleaseResponse, detected: DetectedOs): DownloadLin
     // Linux" button when both exist (best desktop integration, see
     // docs/electron-desktop-app.md).
     const candidates: { os: Exclude<DetectedOs, null>; label: string; link: DownloadLink | null }[] = [
-        { os: "Windows", label: "Windows", link: findAsset(assets, ".exe") },
+        // Betas aren't in the Store, so a prerelease offers only the installer.
+        ...(release.prerelease
+            ? [{ os: "Windows" as const, label: "Windows", link: findAsset(assets, ".exe") }]
+            : [
+                { os: "Windows" as const, label: "Windows (Microsoft Store)", link: { label: "Microsoft Store", url: MICROSOFT_STORE_URL } },
+                { os: "Windows" as const, label: "Windows (installer)", link: findAsset(assets, ".exe") },
+            ]),
         { os: "Mac", label: "Mac (Apple Silicon)", link: findAsset(assets, ".dmg") },
         { os: "Linux", label: "Linux (.deb)", link: findAsset(assets, ".deb", false) },
         { os: "Linux", label: "Linux (.AppImage)", link: findAsset(assets, ".appimage", false) },

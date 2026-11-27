@@ -11,6 +11,7 @@ test('download-page', async ({ baseURL }) => {
 
     const sampleRelease = {
         tag_name: 'v6.0.0-beta.42',
+        prerelease: true,
         published_at: '2026-07-19T07:30:55Z',
         assets: [
             { name: 'Quest.Viva.Setup.6.0.0-beta.42.exe', browser_download_url: 'https://example.com/win.exe' },
@@ -156,6 +157,7 @@ test('download-page', async ({ baseURL }) => {
         page.on('pageerror', err => console.log('[pageerror]', err.message));
         const noDebRelease = {
             tag_name: 'v6.0.0-beta.42',
+            prerelease: true,
             assets: [
                 { name: 'Quest.Viva-6.0.0-beta.42-arm64.AppImage', browser_download_url: 'https://example.com/linux-arm64.AppImage' },
                 { name: 'Quest.Viva-6.0.0-beta.42.AppImage', browser_download_url: 'https://example.com/linux.AppImage' },
@@ -192,4 +194,54 @@ test('download-page', async ({ baseURL }) => {
 
     if (failed) throw new Error('One or more checks failed (see the output above)');
     console.log('ALL PASS');
+});
+
+const STORE_URL = 'https://apps.microsoft.com/detail/9N3N7KDB2TPM';
+const WINDOWS_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36';
+
+function windowsRelease(tag, prerelease) {
+    return {
+        tag_name: tag,
+        published_at: '2026-11-27T10:00:00Z',
+        prerelease,
+        assets: [
+            { name: `Quest.Viva.Setup.${tag}.exe`, browser_download_url: 'https://example.com/win.exe' },
+            { name: `Quest.Viva-${tag}-arm64.dmg`, browser_download_url: 'https://example.com/mac.dmg' },
+        ],
+    };
+}
+
+// A stable release is in the Microsoft Store, which installs without a SmartScreen warning, so
+// Windows visitors get the Store first and the GitHub installer after it.
+test('download page offers the Microsoft Store to Windows for a stable release', async ({ browser, baseURL }) => {
+    const page = await browser.newPage({ userAgent: WINDOWS_UA });
+    await page.route('https://api.github.com/repos/textadventures/quest/releases/latest', route => route.fulfill({
+        status: 200, contentType: 'application/json', body: JSON.stringify(windowsRelease('v6.1.0', false)),
+    }));
+    await page.goto(`${baseURL}/download/`);
+    const primary = page.locator('a.download-primary-link');
+    await primary.waitFor({ timeout: 10000 });
+    const text = await primary.textContent();
+    if (text !== 'Download for Windows (Microsoft Store)') throw new Error(`expected the Store as primary, got "${text}"`);
+    const href = await primary.getAttribute('href');
+    if (href !== STORE_URL) throw new Error(`expected the Store listing, got ${href}`);
+    const installerHref = await page.locator('a:has-text("Windows (installer)")').getAttribute('href');
+    if (installerHref !== 'https://example.com/win.exe') throw new Error(`expected the installer as another option, got ${installerHref}`);
+});
+
+test('download page offers only the installer to Windows for a prerelease', async ({ browser, baseURL }) => {
+    const page = await browser.newPage({ userAgent: WINDOWS_UA });
+    await page.route('https://api.github.com/repos/textadventures/quest/releases/latest', route => route.fulfill({
+        status: 200, contentType: 'application/json', body: JSON.stringify(windowsRelease('v6.2.0-beta.1', true)),
+    }));
+    await page.goto(`${baseURL}/download/`);
+    const primary = page.locator('a.download-primary-link');
+    await primary.waitFor({ timeout: 10000 });
+    const text = await primary.textContent();
+    if (text !== 'Download for Windows') throw new Error(`expected the installer as primary, got "${text}"`);
+    const href = await primary.getAttribute('href');
+    if (href !== 'https://example.com/win.exe') throw new Error(`expected win.exe, got ${href}`);
+    // Scoped to the widget: the page's own text links the Store too.
+    const storeLinks = await page.locator(`#download-widget a[href="${STORE_URL}"]`).count();
+    if (storeLinks !== 0) throw new Error('a prerelease offered the Microsoft Store, which only has stable releases');
 });
