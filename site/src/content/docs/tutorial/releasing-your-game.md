@@ -12,7 +12,7 @@ One piece of advice before you go: however tempting it is, do not release the ga
 
 ## The finished game
 
-If you want to compare your game with ours, or you skipped ahead and would rather read the finished thing than build it, here it is: [tutorial-game.aslx](/examples/tutorial-game.aslx). Download it and open it in the editor with "Open a game file…", or with "Save to folder…" if you want to keep editing it.
+If you want to compare your game with ours, or you skipped ahead and would rather read the finished thing than build it, here it is: [tutorial-game.aslx](/examples/tutorial-game.aslx). Download it and open it in the editor: on the **Create** tab, choose **Import game file**, or **Open game…** in the desktop app.
 
 It's the game as this tutorial leaves it, minus the exercises - a lounge, a kitchen, a dead man, a bee, and a locked back door worth ten points.
 
