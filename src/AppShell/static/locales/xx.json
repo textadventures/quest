@@ -340,6 +340,7 @@
     "updateBanner.later": "[Látér]",
     "betaBanner.message": "[Thís ís thé Qúést Vívá bétá. Lócál dráfts ánd sávéd gámés héré áré képt sépáráté fróm pláy.qúéstvívá.cóm.]",
     "betaBanner.noBetaMessage": "[Théré's nó bétá júst nów, só thís ís Qúést Vívá {version}, thé cúrrént vérsíón. Lócál dráfts ánd sávéd gámés héré áré képt sépáráté fróm pláy.qúéstvívá.cóm.]",
+    "betaBanner.moveDrafts": "[Tó móvé á dráft óvér, dównlóád ít héré wíth {backup} ín thé édítór's {file} ménú, thén ímpórt ít ón pláy.qúéstvívá.cóm's Créáté táb wíth {import}.]",
     "betaBanner.stableLink": "[Gó tó pláy.qúéstvívá.cóm]",
     "fileChangedBanner.conflictMessage": "[Thís fílé wás chángéd óútsídé thé édítór, só yóúr chángés héré hávén't béén sávéd. Whích vérsíón dó yóú wánt tó kéép?]",
     "fileChangedBanner.useChangedFile": "[Úsé thé chángéd fílé]",

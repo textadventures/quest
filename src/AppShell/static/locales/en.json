@@ -455,6 +455,7 @@
 
     "betaBanner.message": "This is the Quest Viva beta. Local drafts and saved games here are kept separate from play.questviva.com.",
     "betaBanner.noBetaMessage": "There's no beta just now, so this is Quest Viva {version}, the current version. Local drafts and saved games here are kept separate from play.questviva.com.",
+    "betaBanner.moveDrafts": "To move a draft over, download it here with {backup} in the editor's {file} menu, then import it on play.questviva.com's Create tab with {import}.",
     "betaBanner.stableLink": "Go to play.questviva.com",
 
     "fileChangedBanner.conflictMessage": "This file was changed outside the editor, so your changes here haven't been saved. Which version do you want to keep?",
