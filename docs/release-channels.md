@@ -127,11 +127,8 @@ The 6.1.0 cut is mostly the 6.0.0 one again, with one difference: `release/6.0` 
 
 ### Before the cut
 
-- [ ] **Make 6.0.x releases after 6.1.0 maintenance-only.** Without this, a `v6.0.N` tag pushed after `v6.1.0` would deploy 6.0 to play.questviva.com, become GitHub's Latest release (and with it the download buttons, `/download`, the desktop update banner and `LatestVersionService`), and move npm's `latest` dist-tag back to 6.0.N. The fix is in, on `main` and `release/6.0` both, as described in "Maintenance releases" above. Merge both PRs before 6.1.0. Until the `release/6.0` one has merged, don't merge a `release/6.0` release PR after 6.1.0 (one for 6.0.5 is open now): either merge it before the cut, or leave it.
-- [ ] **Docs pass on `main`.** The stable site is built from `main`'s next release branch (see "Docs site" above), so everything `main` says becomes the questviva.com docs. In particular:
-  - remove the WebPlayer and Docker pages, which were kept only until 6.1 is stable: `publishing/webplayer.mdx`, and the WebPlayer parts of `publishing/hosting.md` and `contribute/building-from-source.md`.
-  - make sure `whats-new.md` covers all of 6.1.
-  - check for wording that only makes sense on a beta.
+- [x] **Make 6.0.x releases after 6.1.0 maintenance-only.** Without this, a `v6.0.N` tag pushed after `v6.1.0` would deploy 6.0 to play.questviva.com, become GitHub's Latest release (and with it the download buttons, `/download`, the desktop update banner and `LatestVersionService`), and move npm's `latest` dist-tag back to 6.0.N. The fix is in, on `main` (#2965) and `release/6.0` (#2966) both, as described in "Maintenance releases" above.
+- [x] **Docs pass on `main`.** The stable site is built from `main`'s next release branch (see "Docs site" above), so everything `main` says becomes the questviva.com docs. The WebPlayer page stays, since 6.0.x WebPlayer is still supported: it says WebPlayer was removed in 6.1, and that 6.0.x still gets bug fixes. `whats-new.md` covers all of 6.1, and nothing in the docs only makes sense on a beta. Check `whats-new.md` again for anything merged after this.
 - [ ] **Raise `MAX_ASL_VERSION`** in AppShell's `src/lib/home-catalog.ts` from 600 to 610, so the Play tab shows games saved for 6.1. Check that textadventures.co.uk records ASL 610 for uploaded games and that its catalog API returns them.
 - [ ] **Fix the open editor bugs worth fixing first**, such as #2891 (a spurious "changed outside the editor" message, with a freeze, on auto-save).
 - [ ] **Test the build that ships.** Get a green nightly e2e run on `main`, run the quest-e2e-tests corpus against the latest beta, and play a few real games on play-beta.questviva.com, which runs the same trimmed Release build that 6.1.0 will.
