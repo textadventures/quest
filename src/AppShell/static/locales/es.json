@@ -455,6 +455,7 @@
 
     "betaBanner.message": "Esta es la beta de Quest Viva. Los borradores locales y las partidas guardadas aquí se guardan aparte de los de play.questviva.com.",
     "betaBanner.noBetaMessage": "Ahora mismo no hay ninguna beta, así que esta es Quest Viva {version}, la versión actual. Los borradores locales y las partidas guardadas aquí se guardan aparte de los de play.questviva.com.",
+    "betaBanner.moveDrafts": "Para pasar un borrador, descárgalo aquí con {backup} en el menú {file} del editor e impórtalo luego en la pestaña Crear de play.questviva.com con {import}.",
     "betaBanner.stableLink": "Ir a play.questviva.com",
 
     "fileChangedBanner.conflictMessage": "Este archivo se modificó fuera del editor, así que tus cambios aquí no se han guardado. ¿Qué versión quieres conservar?",
