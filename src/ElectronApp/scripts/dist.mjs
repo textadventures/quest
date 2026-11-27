@@ -57,7 +57,12 @@ const channelConfig = isBeta
           // package.json's nsis target rather than replacing it, and only
           // takes effect when packaging on Windows. The package version is
           // VERSION's major.minor.patch plus ".0", the form the Store needs.
-          win: { target: [{ target: "appx", arch: ["x64"] }] },
+          // x64 and arm64 make two .appx files with the same identity and
+          // version, which Partner Center accepts as one submission, so
+          // Windows on Arm gets a native build instead of x64 under
+          // emulation. (The NSIS installer stays x64-only; see "Microsoft
+          // Store" in docs/electron-desktop-app.md.)
+          win: { target: [{ target: "appx", arch: ["x64", "arm64"] }] },
           // The Flathub package repackages the stable .deb, and takes the
           // files only Flatpak needs from here (see stageFlatpakFiles below).
           linux: { extraResources: [{ from: "resources/flatpak", to: "flatpak" }] },

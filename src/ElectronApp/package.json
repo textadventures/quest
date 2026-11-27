@@ -85,7 +85,10 @@
       "publisherDisplayName": "Alex Warren",
       "applicationId": "QuestViva",
       "displayName": "Quest Viva",
-      "backgroundColor": "transparent"
+      "backgroundColor": "transparent",
+      "artifactName": "${productName} ${version} ${arch}.${ext}",
+      "minVersion": "10.0.17763.0",
+      "maxVersionTested": "10.0.26100.0"
     },
     "linux": {
       "icon": "build/icons",
