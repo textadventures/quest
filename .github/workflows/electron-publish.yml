@@ -31,10 +31,11 @@ jobs:
             upload-artifact-path: "src/ElectronApp/release/*.dmg"
           - os: windows-latest
             artifact-glob: "*.exe"
-            # Stable builds also produce the Microsoft Store package (see
-            # scripts/dist.mjs). It's a workflow artifact only, uploaded to
-            # Partner Center by hand: it's unsigned until the Store signs it,
-            # so it can't be installed from the GitHub Release.
+            # Stable builds also produce the Microsoft Store packages, one
+            # .appx each for x64 and arm64 (see scripts/dist.mjs). They're a
+            # workflow artifact only, uploaded to Partner Center by hand:
+            # they're unsigned until the Store signs them, so they can't be
+            # installed from the GitHub Release.
             upload-artifact-path: |
               src/ElectronApp/release/*.exe
               src/ElectronApp/release/*.appx
