@@ -1,6 +1,6 @@
 # Gamebooks
 
-A gamebook is pages of text with links between them, and no parser: the reader clicks a link to turn to the next page. It's a different game type from a text adventure, with its own library, `GamebookCore.aslx`, and its own functions ([gamebook functions](/reference/functions/gamebook/)). The text adventure's rooms, exits, commands and verbs don't apply. A complete example is https://beta.questviva.com/examples/lighthouse.aslx.
+A gamebook is pages of text with links between them, and no parser: the reader clicks a link to turn to the next page. It's a different game type from a text adventure, with its own library, `GamebookCore.aslx`, and its own functions ([gamebook functions](/reference/functions/gamebook/)). The text adventure's rooms, exits, commands and verbs don't apply. A complete example is https://questviva.com/examples/lighthouse.aslx.
 
 ## The file
 

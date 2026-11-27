@@ -6,7 +6,7 @@
     "name": "Quest Viva",
     "url": "https://questviva.com"
   },
-  "homepage": "https://beta.questviva.com/howto/testing/ai-agents/",
+  "homepage": "https://questviva.com/howto/testing/ai-agents/",
   "repository": "https://github.com/textadventures/quest",
   "license": "MIT",
   "keywords": ["quest", "questviva", "interactive-fiction", "text-adventure", "gamebook", "aslx"]

@@ -87,15 +87,15 @@ The player is built into `qv` (the published WasmPlayer, about 5.6 MB), so it's 
 
 ## Installing
 
-Every release from 6.1 publishes `qv` two ways. Until 6.1.0 itself ships, only beta releases include it.
+Every release from 6.1 publishes `qv` two ways.
 
 **As a dotnet tool**, for anyone with the .NET 11 SDK:
 
 ```bash
-dotnet tool install -g QuestViva.Cli --prerelease
+dotnet tool install -g QuestViva.Cli
 ```
 
-Leave out `--prerelease` once a stable 6.1 is out. `dotnet tool update -g QuestViva.Cli` updates it.
+Add `--prerelease` for a beta. `dotnet tool update -g QuestViva.Cli` updates it.
 
 **As a standalone binary**, which needs no .NET install. Each GitHub Release has one per platform:
 

@@ -7,7 +7,7 @@ description: Write, edit, check, play and publish Quest Viva and Quest 5 games. 
 
 Quest Viva is a system for text adventures and gamebooks, the successor to Quest 5. A game is one `.aslx` file: XML holding the game, its rooms, objects, commands and functions, with scripts in Quest's own language, ASL. Publishing makes a `.quest` file, a zip package to play or upload.
 
-Links in this skill such as [elements](/reference/elements/) are pages of Quest Viva's documentation. Read one with the `docs` tool of the `qv` MCP server, giving the link as `page` (`reference/elements`), or on the web under https://beta.questviva.com, such as https://beta.questviva.com/reference/elements/. https://beta.questviva.com/llms.txt lists every page.
+Links in this skill such as [elements](/reference/elements/) are pages of Quest Viva's documentation. Read one with the `docs` tool of the `qv` MCP server, giving the link as `page` (`reference/elements`), or on the web under https://questviva.com, such as https://questviva.com/reference/elements/. https://questviva.com/llms.txt lists every page.
 
 ## Before you change anything
 
@@ -25,8 +25,8 @@ For a new game, start from the template at the top of the primer, with a new GUI
 
 If `qv` isn't found, or the MCP server's tools aren't there, it isn't installed. Tell the author how to install it, and then to restart the agent (in Claude Code, `/mcp` can reconnect the server instead):
 
-- with the [.NET 11 SDK](https://dotnet.microsoft.com/download): `dotnet tool install -g QuestViva.Cli --prerelease`
-- or, without .NET: the `qv-<platform>` download from the newest `6.1.0-beta` release at https://github.com/textadventures/quest/releases, put somewhere on the `PATH`. Releases before 6.1 don't have `qv`.
+- with the [.NET 11 SDK](https://dotnet.microsoft.com/download): `dotnet tool install -g QuestViva.Cli`
+- or, without .NET: the `qv-<platform>` download from the latest release at https://github.com/textadventures/quest/releases/latest, put somewhere on the `PATH`. Releases before 6.1 don't have `qv`.
 
 Until then, edit carefully from the primer and the docs, and tell the author that nothing has been checked.
 
