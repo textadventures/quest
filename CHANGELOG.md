@@ -1,5 +1,13 @@
 # Changelog
 
+## [6.0.5](https://github.com/textadventures/quest/compare/v6.0.4...v6.0.5) (2026-11-27)
+
+
+### Bug Fixes
+
+* **Editor:** don't share a function call's callback script with its copy ([#2926](https://github.com/textadventures/quest/issues/2926)) ([4a47fda](https://github.com/textadventures/quest/commit/4a47fda0c981972a0030d69263d4cf15ed8758a8))
+* **Editor:** indent a multi-line script's closing tag again ([#2871](https://github.com/textadventures/quest/issues/2871)) ([e44742d](https://github.com/textadventures/quest/commit/e44742dbd596b3401a46b3df240cd6ecda35b0d2))
+
 ## [6.0.4](https://github.com/textadventures/quest/compare/v6.0.3...v6.0.4) (2026-11-08)
 
 
