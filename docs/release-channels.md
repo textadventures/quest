@@ -129,7 +129,7 @@ The 6.1.0 cut is mostly the 6.0.0 one again, with one difference: `release/6.0` 
 
 - [x] **Make 6.0.x releases after 6.1.0 maintenance-only.** Without this, a `v6.0.N` tag pushed after `v6.1.0` would deploy 6.0 to play.questviva.com, become GitHub's Latest release (and with it the download buttons, `/download`, the desktop update banner and `LatestVersionService`), and move npm's `latest` dist-tag back to 6.0.N. The fix is in, on `main` (#2965) and `release/6.0` (#2966) both, as described in "Maintenance releases" above.
 - [x] **Docs pass on `main`.** The stable site is built from `main`'s next release branch (see "Docs site" above), so everything `main` says becomes the questviva.com docs. The WebPlayer page stays, since 6.0.x WebPlayer is still supported: it says WebPlayer was removed in 6.1, and that 6.0.x still gets bug fixes. `whats-new.md` covers all of 6.1, and nothing in the docs only makes sense on a beta. Check `whats-new.md` again for anything merged after this.
-- [ ] **Raise `MAX_ASL_VERSION`** in AppShell's `src/lib/home-catalog.ts` from 600 to 610, so the Play tab shows games saved for 6.1. Check that textadventures.co.uk records ASL 610 for uploaded games and that its catalog API returns them.
+- [x] **Raise `MAX_ASL_VERSION`** in AppShell's `src/lib/home-catalog.ts` from 600 to 610, so the Play tab shows games saved for 6.1. textadventures.co.uk already records ASL 610 for uploaded games: its submit code reads the version with `QuestViva.PlayerCore` 6.1.0-beta.2, which knows 610, and its catalog API filters on the `maxAslVersion` the Play tab sends.
 - [ ] **Fix the open editor bugs worth fixing first**, such as #2891 (a spurious "changed outside the editor" message, with a freeze, on auto-save).
 - [ ] **Test the build that ships.** Get a green nightly e2e run on `main`, run the quest-e2e-tests corpus against the latest beta, and play a few real games on play-beta.questviva.com, which runs the same trimmed Release build that 6.1.0 will.
 - [ ] **Tell beta users how to move their work.** play-beta.questviva.com and Quest Viva Beta keep their data apart from the stable ones, and 6.1.0 doesn't move it. Say in the release notes, and in `BetaBanner.svelte`'s stable-version text if it fits, that they can back up a game on the beta and open it on the stable site or app.
@@ -156,5 +156,6 @@ The 6.1.0 cut is mostly the 6.0.0 one again, with one difference: `release/6.0` 
 
 ### After the cut
 
+- [ ] textadventures.co.uk repo: raise `QuestStablePlayerMaxAslVersion` in `appsettings.json` from 600 to 610. Until then, its game pages send ASL 610 games to play-beta.questviva.com instead of play.questviva.com (`Config.QuestPlayerUrl`).
 - [ ] Submit the desktop app to Flathub (#2888). It needs a stable release's `.deb`, so it couldn't happen earlier.
 - [ ] Submit the Microsoft Store package from the `electron-publish.yml` run's artifacts to Partner Center.
