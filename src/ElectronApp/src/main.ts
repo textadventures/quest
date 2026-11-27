@@ -444,11 +444,6 @@ function createEditorWindow(port: number, initialPath?: string | null, initialRo
         ...(process.platform === "linux" ? { icon: aboutIconPath() } : {}),
         webPreferences: {
             preload: path.join(__dirname, "preload.js"),
-            // Tells the preload it's running inside Flatpak (Flathub), where
-            // Flathub delivers updates. Flatpak sets FLATPAK_ID for the app's
-            // own process; passing it down as an argument doesn't depend on
-            // the environment reaching the sandboxed renderer through zypak.
-            ...(process.env.FLATPAK_ID ? { additionalArguments: ["--quest-viva-flatpak"] } : {}),
             contextIsolation: true,
             nodeIntegration: false,
             // This window never actually plays untrusted game content itself

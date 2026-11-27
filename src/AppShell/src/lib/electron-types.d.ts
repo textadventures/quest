@@ -200,10 +200,6 @@ interface ElectronApi {
     // itself, so PlayCatalog hides the "new version, download it" banner.
     // Absent in desktop builds older than this field.
     windowsStore?: boolean;
-    // True when running from the Flathub package (Flatpak). Flathub installs
-    // updates itself, so PlayCatalog hides the update banner here too.
-    // Absent in desktop builds older than this field.
-    flatpak?: boolean;
 }
 
 declare global {

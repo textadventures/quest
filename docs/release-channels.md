@@ -160,5 +160,4 @@ Done on 2026-11-27: 6.1.0 was released from #2969, `release/6.1` set up in #2972
 ### After the cut
 
 - [ ] textadventures.co.uk repo: raise `QuestStablePlayerMaxAslVersion` in `appsettings.json` from 600 to 610. Until then, its game pages send ASL 610 games to play-beta.questviva.com instead of play.questviva.com (`Config.QuestPlayerUrl`).
-- [ ] Submit the desktop app to Flathub (#2888). It needs a stable release's `.deb`, so it couldn't happen earlier.
 - [ ] Submit the Microsoft Store package from the `electron-publish.yml` run's artifacts to Partner Center.
