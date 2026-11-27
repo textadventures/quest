@@ -13,6 +13,7 @@ test('download-button', async ({ baseURL }) => {
 
     const sampleRelease = {
         tag_name: 'v6.0.0-beta.42',
+        prerelease: true,
         published_at: '2026-07-19T07:30:55Z',
         assets: [
             { name: 'Quest.Viva.Setup.6.0.0-beta.42.exe', browser_download_url: 'https://example.com/win.exe' },
@@ -150,6 +151,7 @@ test('download-button', async ({ baseURL }) => {
         page.on('pageerror', err => console.log('[pageerror]', err.message));
         const noDebRelease = {
             tag_name: 'v6.0.0-beta.42',
+            prerelease: true,
             assets: [
                 { name: 'Quest.Viva-6.0.0-beta.42-arm64.AppImage', browser_download_url: 'https://example.com/linux-arm64.AppImage' },
                 { name: 'Quest.Viva-6.0.0-beta.42.AppImage', browser_download_url: 'https://example.com/linux.AppImage' },
@@ -188,4 +190,47 @@ test('download-button', async ({ baseURL }) => {
 
     if (failed) throw new Error('One or more checks failed (see the output above)');
     console.log('ALL PASS');
+});
+
+const STORE_URL = 'https://apps.microsoft.com/detail/9N3N7KDB2TPM';
+const WINDOWS_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36';
+
+function windowsRelease(tag, prerelease) {
+    return {
+        tag_name: tag,
+        published_at: '2026-11-27T10:00:00Z',
+        prerelease,
+        assets: [
+            { name: `Quest.Viva.Setup.${tag}.exe`, browser_download_url: 'https://example.com/win.exe' },
+            { name: `Quest.Viva-${tag}-arm64.dmg`, browser_download_url: 'https://example.com/mac.dmg' },
+        ],
+    };
+}
+
+// A stable release is in the Microsoft Store, which installs without a SmartScreen warning, so
+// Windows visitors get the Store first and the GitHub installer after it. The beta site doesn't
+// build with this path (it offers prereleases), so only the stable case is exercised here.
+test('download button offers the Microsoft Store to Windows for a stable release', async ({ baseURL }) => {
+    const browser = await chromium.launch();
+    try {
+        const page = await browser.newPage({ userAgent: WINDOWS_UA });
+        await page.route('https://api.github.com/repos/textadventures/quest/releases/latest', route => route.fulfill({
+            status: 200, contentType: 'application/json', body: JSON.stringify(windowsRelease('v6.1.0', false)),
+        }));
+        await page.goto(`${baseURL}/`);
+        const toggle = page.locator('button[aria-label="Download the desktop app"]');
+        await toggle.waitFor({ timeout: 10000 });
+        await toggle.click();
+
+        const primary = page.locator('a:has-text("Download for Windows")');
+        await primary.waitFor({ timeout: 10000 });
+        const text = await primary.textContent();
+        if (text?.trim() !== 'Download for Windows (Microsoft Store)') throw new Error(`expected the Store as primary, got "${text}"`);
+        const href = await primary.getAttribute('href');
+        if (href !== STORE_URL) throw new Error(`expected the Store listing, got ${href}`);
+        const installerHref = await page.locator('a:has-text("Windows (installer)")').getAttribute('href');
+        if (installerHref !== 'https://example.com/win.exe') throw new Error(`expected the installer as another option, got ${installerHref}`);
+    } finally {
+        await browser.close();
+    }
 });
