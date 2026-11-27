@@ -257,6 +257,7 @@ Stable releases also go to the Microsoft Store, as the "Quest Viva" listing in t
 - **Submitting.** Done by hand for now: download the `electron-windows-latest` artifact from the tag's run and upload both `.appx` files to a new submission in Partner Center. A listing's package version can only go up.
 - **In the app.** `preload.ts` exposes Electron's `process.windowsStore` as `electronApp.windowsStore`, and the Play tab hides its update banner when it's set. The Store updates the app itself, and the banner links to the GitHub installer, a separate install.
 - **MSIX file virtualization.** Writes into `%AppData%` (including Electron's `userData`) are redirected to `%LocalAppData%\Packages\<package family>\LocalCache\Roaming`. The app only reads its own `userData` back, so that's harmless, but anything that shows a `userData` path to the user, or hands one to another process, would point at the wrong place.
+- **Download links.** The listing is [9N3N7KDB2TPM](https://apps.microsoft.com/detail/9N3N7KDB2TPM). questviva.com's `/download` page (`site/src/components/DownloadButton.astro`) and the Play tab's download button (`src/AppShell/src/lib/download-links.ts`) make it the Windows primary link for a stable release, with the NSIS installer listed after it, and keep the installer alone for a prerelease.
 - **Betas** aren't in the Store. They stay on the GitHub Release.
 
 ### Not on Flathub

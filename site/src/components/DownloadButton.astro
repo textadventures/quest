@@ -25,6 +25,13 @@ const fallbackUrl = betaSite
 <script>
     const LATEST_RELEASE_API_URL = "https://api.github.com/repos/textadventures/quest/releases/latest";
     const RELEASES_API_URL = "https://api.github.com/repos/textadventures/quest/releases?per_page=30";
+    // Stable releases go to the Microsoft Store too (see "Microsoft Store" in
+    // docs/electron-desktop-app.md in the quest repo). The Store signs the
+    // package, so a Store install gets no SmartScreen warning, which the unsigned
+    // NSIS installer always does. The web listing rather than an
+    // ms-windows-store: link, so it works from any browser and offers to open the
+    // Store app itself.
+    const MICROSOFT_STORE_URL = "https://apps.microsoft.com/detail/9N3N7KDB2TPM";
 
     interface ReleaseAsset {
         name: string;
@@ -122,12 +129,20 @@ const fallbackUrl = betaSite
         // matters: .deb listed first so it's the one picked as the
         // primary/"Download for Linux" button when both exist (best desktop
         // integration, see docs/electron-desktop-app.md in the quest repo).
+        // Betas aren't in the Store, so a prerelease offers only the installer.
+        const storeAsset = { name: "Microsoft Store", browser_download_url: MICROSOFT_STORE_URL };
+        const windows = release.prerelease
+            ? [{ os: "Windows", label: "Windows", asset: findAsset(release.assets, ".exe") }]
+            : [
+                  { os: "Windows", label: "Windows (Microsoft Store)", asset: storeAsset },
+                  { os: "Windows", label: "Windows (installer)", asset: findAsset(release.assets, ".exe") },
+              ];
         const candidates = [
-            { os: "Windows", label: "Windows", asset: findAsset(release.assets, ".exe") },
+            ...windows,
             { os: "Mac", label: "Mac (Apple Silicon)", asset: findAsset(release.assets, ".dmg") },
             { os: "Linux", label: "Linux (.deb)", asset: findAsset(release.assets, ".deb", false) },
             { os: "Linux", label: "Linux (.AppImage)", asset: findAsset(release.assets, ".appimage", false) },
-        ] as const;
+        ];
 
         const primary = detected ? candidates.find((c) => c.os === detected && c.asset) : undefined;
         const others = candidates.filter((c) => c !== primary && c.asset);
