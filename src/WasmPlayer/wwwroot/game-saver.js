@@ -168,13 +168,16 @@ const GameSaver = (() => {
 
     // Saves the game as it is now into slotIndex, or a new slot. A save with no name is shown by
     // where the player was and when (see renderSavesList in wasm-player.js), so none is made up.
-    async function saveCurrentGame(slotIndex, name) {
+    // announced: the caller already showed "Game saved." (saveRequested), so only clear the
+    // unsaved-progress flag.
+    async function saveCurrentGame(slotIndex, name, announced = false) {
         const gameId = WebPlayer.gameId;
         const saveData = playerUi.getOutputHtml();
         const result = await WebPlayer.uiSaveGame(saveData);
         slotIndex ??= await nextSlotIndex(gameId);
         await saveGame(gameId, slotIndex, result, name, playerUi.getLocation?.() || null);
-        playerUi.gameSaved();
+        if (announced) playerUi.clearUnsavedProgress();
+        else playerUi.gameSaved();
         WebPlayer.onGameSaved?.();
         if (!persistenceRequested) {
             await ensurePersistentStorage();
@@ -189,6 +192,15 @@ const GameSaver = (() => {
 
     return {
         save: async (name) => saveCurrentGame(null, name),
+        // request (RequestSave, "") from a game's script, which the bridge passes on in order with
+        // the turn's output. "Game saved." goes there and then, after what the script printed
+        // before asking and before what it prints after, instead of wherever the save happens to
+        // finish; the save itself waits for the turn to be over, so it has all of it (#2985).
+        saveRequested: async () => {
+            playerUi.gameSaved();
+            await WebPlayer.whenTurnOver();
+            return saveCurrentGame(null, undefined, true);
+        },
         // Replaces a save with the game as it is now, keeping its name.
         overwrite: async (slotIndex) => {
             const existing = (await listSaves(WebPlayer.gameId)).find(s => s.slotIndex === slotIndex);
