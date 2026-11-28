@@ -36,14 +36,22 @@ test('surface-shade-fix', async ({ baseURL }) => {
         // 1. Compiled CSS: the valid pair exists, the invalid ones don't.
         const page0 = await browser.newPage();
         await page0.goto(`${baseUrl}/open`);
-        await page0.waitForTimeout(1000);
-        const css = await page0.evaluate(() => {
+        // The Vite dev server injects the stylesheet from JS, so wait for the
+        // page to render and the rule to arrive instead of sleeping a fixed time
+        // (a 1s sleep lost that race on a busy CI runner).
+        await page0.locator('text=Create new game').waitFor({ timeout: 10000 });
+        const readCss = () => page0.evaluate(() => {
             let all = '';
             for (const s of document.styleSheets) {
                 try { for (const r of s.cssRules) all += r.cssText + '\n'; } catch { /* cross-origin sheet */ }
             }
             return all;
         });
+        let css = await readCss();
+        for (let i = 0; i < 50 && !css.includes('.text-surface-600-400'); i++) {
+            await page0.waitForTimeout(200);
+            css = await readCss();
+        }
         if (!css.includes('.text-surface-600-400')) throw new Error('Compiled CSS is missing .text-surface-600-400 rule');
         if (css.includes('.text-surface-400-500') || css.includes('.text-surface-500-400')) {
             throw new Error('Compiled CSS still contains a dead .text-surface-400-500/500-400 rule');
