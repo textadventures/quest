@@ -1,0 +1,48 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- For wasmplayer/splash-isolation.spec.mjs: a game whose stylesheet restyles <body> and plain
+       elements, and whose colours are dark ones, while its start plays a sound and waits for it,
+       so the start screen stays up (with its Begin card) after all of that has been applied. -->
+  <game name="SplashIsolation">
+    <stylesheet><![CDATA[body {
+    font-family: "Courier New", monospace;
+    font-size: 30px;
+    font-weight: 700;
+    font-style: italic;
+    color: rgb(0, 255, 0);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    text-shadow: 2px 2px red;
+}
+
+h1, p, span, button {
+    font-family: "Courier New", monospace;
+    color: rgb(255, 0, 0);
+    font-weight: 100;
+    text-decoration: underline;
+}
+
+img {
+    border: 5px solid red;
+}]]></stylesheet>
+    <start type="script">
+      SetBackgroundColour ("black")
+      SetForegroundColour ("white")
+      msg ("Before the sound.")
+      play sound ("intro.wav", true, false)
+      msg ("After the sound.")
+    </start>
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="editor_object" />
+      <inherit name="editor_player" />
+    </object>
+  </object>
+
+</asl>
