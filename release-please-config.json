@@ -7,7 +7,8 @@
       "version-file": "VERSION",
       "versioning": "prerelease",
       "prerelease-type": "beta",
-      "prerelease": true
+      "prerelease": true,
+      "exclude-paths": ["site"]
     }
   }
 }
