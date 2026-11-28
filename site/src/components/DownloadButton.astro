@@ -197,7 +197,9 @@ const fallbackUrl = betaSite
         padding: 0.75rem 1.5rem;
         border-radius: 0.5rem;
         background: var(--sl-color-accent);
-        color: var(--sl-color-black);
+        /* Plain white, not --sl-color-white/-black: those swap with the theme,
+           and the accent background is mid-tone in both themes. */
+        color: #fff;
         font-weight: 600;
         text-decoration: none;
     }
