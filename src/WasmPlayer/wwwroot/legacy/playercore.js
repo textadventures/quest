@@ -1673,6 +1673,17 @@ function EndOutputSection(name) {
 
 function HideOutputSection(name) {
     EndOutputSection(name);
+    // A section above where the coming turn's output starts (a ShowMenu's options, hidden once
+    // it's answered) is gone by the time that turn has scrolled, so the start moves up by its
+    // height: otherwise the scroll overshoots the response by as much.
+    var contentOffset = $("#gameContent").offset();
+    var contentTop = contentOffset ? contentOffset.top : 0;
+    $("." + name).each(function () {
+        var height = $(this).outerHeight(true);
+        if ($(this).offset().top - contentTop + height <= beginningOfCurrentTurnScrollPosition + 1) {
+            beginningOfCurrentTurnScrollPosition = Math.max(0, beginningOfCurrentTurnScrollPosition - height);
+        }
+    });
     $("." + name + " a").attr("onclick", "");
     setTimeout(function () {
         $("." + name).hide(250, function () {

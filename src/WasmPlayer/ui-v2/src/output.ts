@@ -155,7 +155,13 @@ export class QvOutput extends HTMLElement {
 
     hideSection(name: string): void {
         this.endSection(name);
+        const top = this.getBoundingClientRect().top;
         for (const block of this.#sectionBlocks(name)) {
+            // A section above where the coming turn's output starts (a ShowMenu's options, hidden
+            // once it's answered) is gone by the time that turn has scrolled, so the start moves
+            // up by its height: otherwise the scroll overshoots the response by as much.
+            const rect = block.getBoundingClientRect();
+            if (rect.bottom - top <= this.#turnStart + 1) this.#turnStart = Math.max(0, this.#turnStart - rect.height);
             block.classList.add('qv-hiding');
             disableLinks(block);
             // Long enough for the fade in v2.css, which reduced motion turns off.
