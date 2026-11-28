@@ -60,14 +60,40 @@ const fallbackUrl = betaSite
     // prerelease. The beta site wants the newest prerelease: the releases list
     // is newest first, and drafts (a release still waiting for its installers,
     // see finalize-release.yml) only show up for authenticated callers anyway.
-    // If no prerelease is in the first page, fall back to the stable release.
+    // Between a stable release and the next version's first beta, the newest
+    // prerelease is a beta of that stable release (6.1.0-beta.N after 6.1.0),
+    // so it's offered only if its version comes after the stable one. If no
+    // prerelease is in the first page, fall back to the stable release.
     async function fetchRelease(beta: boolean): Promise<ReleaseResponse | null> {
+        const latestPromise = fetchJson<ReleaseResponse>(LATEST_RELEASE_API_URL);
         if (beta) {
             const releases = await fetchJson<ReleaseResponse[]>(RELEASES_API_URL);
             const prerelease = releases?.find((r) => r.prerelease && !r.draft);
-            if (prerelease) return prerelease;
+            const latest = await latestPromise;
+            if (prerelease && (!latest || isNewerPrerelease(prerelease.tag_name, latest.tag_name))) {
+                return prerelease;
+            }
+            return latest;
         }
-        return fetchJson<ReleaseResponse>(LATEST_RELEASE_API_URL);
+        return latestPromise;
+    }
+
+    // "v6.2.0-beta.1" → [6, 2, 0]; null if the tag isn't a version.
+    function baseVersion(tag: string): number[] | null {
+        const match = /^v?(\d+)\.(\d+)\.(\d+)/.exec(tag);
+        return match ? match.slice(1, 4).map(Number) : null;
+    }
+
+    // A prerelease comes before the stable release of the same version, so it's
+    // newer only if its major.minor.patch is higher.
+    function isNewerPrerelease(prereleaseTag: string, stableTag: string): boolean {
+        const pre = baseVersion(prereleaseTag);
+        const stable = baseVersion(stableTag);
+        if (!pre || !stable) return true;
+        for (let i = 0; i < 3; i++) {
+            if (pre[i] !== stable[i]) return pre[i] > stable[i];
+        }
+        return false;
     }
 
     // Uses the visitor's own browser locale (undefined locale arg) rather
@@ -161,8 +187,8 @@ const fallbackUrl = betaSite
             if (!other.asset) continue;
             nodes.push(makeLink(other.label, other.asset.browser_download_url, "download-secondary-link"));
         }
-        // The beta site links to this prerelease's own page, since GitHub's
-        // releases/latest is always the stable one.
+        // The beta site links to the chosen release's own page, since its
+        // static fallback is the whole releases list.
         const allDownloadsUrl = beta && release.html_url ? release.html_url : fallbackUrl;
         nodes.push(makeLink("All downloads", allDownloadsUrl, "download-fallback-link"));
 
