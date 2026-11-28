@@ -23,15 +23,17 @@
 /* Dark mode follows the game's light or dark scheme rather than only the device's, so the
    dialogs match a v2 game whose player has chosen Light or Dark (ui-v2's scheme.ts sets
    data-qv-scheme on <html>, and wasm-player.js sets it light for a legacy game, which has no
-   dark scheme). Until a game has set it (the start screen), they follow the device. Skeleton's dark: variants and the
-   light-dark() paired tokens both key off this, as AppShell's app.css does with its .dark. */
+   dark scheme). Until a game has set it, they follow the device. The start screen (#qv-start)
+   always follows the device: it stays up while the game starts behind it, which sets the scheme,
+   and switching then would flash. Skeleton's dark: variants and the light-dark() paired tokens
+   both key off this, as AppShell's app.css does with its .dark. */
 @custom-variant dark {
-    &:where([data-qv-scheme="dark"], [data-qv-scheme="dark"] *) {
+    &:where([data-qv-scheme="dark"] :not(#qv-start, #qv-start *)) {
         @slot;
     }
 
     @media (prefers-color-scheme: dark) {
-        &:where(:root:not([data-qv-scheme]) *) {
+        &:where(:root:not([data-qv-scheme]) *, #qv-start, #qv-start *) {
             @slot;
         }
     }
@@ -41,12 +43,12 @@
     color-scheme: light;
 }
 
-:scope:where([data-qv-scheme="dark"] *) {
+:scope:where([data-qv-scheme="dark"] :not(#qv-start)) {
     color-scheme: dark;
 }
 
 @media (prefers-color-scheme: dark) {
-    :scope:where(:root:not([data-qv-scheme]) *) {
+    :scope:where(:root:not([data-qv-scheme]) *, #qv-start) {
         color-scheme: dark;
     }
 }
@@ -83,6 +85,37 @@
 :scope#qv-restarting,
 :scope#qv-recording {
     font-family: var(--font-sans);
+}
+
+/* The start screen and the restart overlay stay up while the game starts behind them, by which
+   time its stylesheets are in the page: the player UI's, the game's own (game.stylesheet), and
+   any its scripts add. Those can restyle <body>, which the text in these inherits from, and plain
+   elements (`h1`, `p`, `button`), and they aren't in a cascade layer, so they win over every
+   Tailwind/Skeleton rule here, which are. So the text these inherit is set here in full, and
+   `revert-layer` on everything inside them throws away every unlayered rule, the game's included,
+   leaving the layered ones and inline styles. Nothing else in this file that's unlayered may
+   match inside them for that reason: .qv-icon is in a layer below. */
+:scope#qv-start,
+:scope#qv-restarting {
+    font-size: 1rem;
+    font-weight: 400;
+    font-style: normal;
+    font-variant: normal;
+    line-height: 1.5;
+    letter-spacing: normal;
+    word-spacing: normal;
+    text-align: start;
+    text-indent: 0;
+    text-transform: none;
+    text-shadow: none;
+    white-space: normal;
+    color: light-dark(var(--typo-base--color-light), var(--typo-base--color-dark));
+}
+
+:scope:is(#qv-start, #qv-restarting) *,
+:scope:is(#qv-start, #qv-restarting) *::before,
+:scope:is(#qv-start, #qv-restarting) *::after {
+    all: revert-layer;
 }
 
 /* z-index:9999 on both this and #qv-restarting below: the shared game chrome
@@ -659,19 +692,22 @@
 /* Icons reference the inline sprite in index.html (a curated subset of Lucide's sprite,
    see scripts/build-icons.mjs) via <use>. Lucide's per-icon SVG files carry
    these presentation attributes on their own root <svg> — <symbol>/<use>
-   doesn't preserve that, so the consuming element needs them again here. */
-.qv-icon {
-    width: 1.25rem;
-    height: 1.25rem;
-    flex-shrink: 0;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
+   doesn't preserve that, so the consuming element needs them again here. In a layer, because
+   the start screen reverts unlayered rules (see #qv-start's at the top). */
+@layer components {
+    .qv-icon {
+        width: 1.25rem;
+        height: 1.25rem;
+        flex-shrink: 0;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
 
-.qv-icon.qv-icon-sm {
-    width: 1rem;
-    height: 1rem;
+    .qv-icon.qv-icon-sm {
+        width: 1rem;
+        height: 1rem;
+    }
 }
