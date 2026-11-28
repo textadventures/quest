@@ -1,0 +1,77 @@
+<asl version="610">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!-- Autoscroll after choosing a ShowMenu option (wasmplayer/showmenu-scroll.spec.mjs). talk
+       prints most of a screenful and then a menu. Each answer prints a long response that starts
+       with #responsemark, which has to be scrolled into view. talk also prints an old-style link
+       for option b, with the inline onclick="ASLEvent(...)" that games published before 6.1 have
+       baked into their copy of ShowMenu. -->
+  <game name="ShowMenuScrollTest">
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+  <command name="talk">
+    <pattern>talk</pattern>
+    <script><![CDATA[
+      msg ("<span id='talkmark'>You start talking.</span>")
+      msg ("Talk, filler line 1.")
+      msg ("Talk, filler line 2.")
+      msg ("Talk, filler line 3.")
+      msg ("Talk, filler line 4.")
+      msg ("Talk, filler line 5.")
+      msg ("Talk, filler line 6.")
+      msg ("Talk, filler line 7.")
+      msg ("Talk, filler line 8.")
+      msg ("Talk, filler line 9.")
+      msg ("Talk, filler line 10.")
+      msg ("Talk, filler line 11.")
+      msg ("Talk, filler line 12.")
+      msg ("Talk, filler line 13.")
+      msg ("Talk, filler line 14.")
+      options = Split("a;b;c", ";")
+      ShowMenu ("What do you say?", options, false) {
+        msg ("<span id='responsemark'>You said " + result + ".</span>")
+        msg ("Response, filler line 1.")
+        msg ("Response, filler line 2.")
+        msg ("Response, filler line 3.")
+        msg ("Response, filler line 4.")
+        msg ("Response, filler line 5.")
+        msg ("Response, filler line 6.")
+        msg ("Response, filler line 7.")
+        msg ("Response, filler line 8.")
+        msg ("Response, filler line 9.")
+        msg ("Response, filler line 10.")
+        msg ("Response, filler line 11.")
+        msg ("Response, filler line 12.")
+        msg ("Response, filler line 13.")
+        msg ("Response, filler line 14.")
+        msg ("Response, filler line 15.")
+        msg ("Response, filler line 16.")
+        msg ("Response, filler line 17.")
+        msg ("Response, filler line 18.")
+        msg ("Response, filler line 19.")
+        msg ("Response, filler line 20.")
+        msg ("Response, filler line 21.")
+        msg ("Response, filler line 22.")
+        msg ("Response, filler line 23.")
+        msg ("Response, filler line 24.")
+        msg ("Response, filler line 25.")
+        msg ("Response, filler line 26.")
+        msg ("Response, filler line 27.")
+        msg ("Response, filler line 28.")
+        msg ("Response, filler line 29.")
+        msg ("Response, filler line 30.")
+      }
+      msg ("<a class=\"cmdlink\" id=\"oldstylelink\" onclick=\"ASLEvent('ShowMenuResponse','b')\">b, the old way</a>")
+    ]]></script>
+  </command>
+
+</asl>
