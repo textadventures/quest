@@ -6,7 +6,8 @@
       "release-type": "simple",
       "version-file": "VERSION",
       "versioning": "always-bump-patch",
-      "prerelease": false
+      "prerelease": false,
+      "exclude-paths": ["site"]
     }
   }
 }
