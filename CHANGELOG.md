@@ -1,5 +1,25 @@
 # Changelog
 
+## [6.2.0-beta.1](https://github.com/textadventures/quest/compare/v6.1.0...v6.2.0-beta.1) (2026-11-28)
+
+
+### Features
+
+* **Desktop:** build the Microsoft Store package for arm64 as well as x64 ([#2977](https://github.com/textadventures/quest/issues/2977)) ([463e38a](https://github.com/textadventures/quest/commit/463e38aa1786327552a1feb39c98e4a5d054a8e7))
+
+
+### Bug Fixes
+
+* **Player:** don't scroll for an event that prints nothing ([#2993](https://github.com/textadventures/quest/issues/2993)) ([03cd25e](https://github.com/textadventures/quest/commit/03cd25e6998ffb186bc2ae045a62245de0860976))
+* **Player:** keep the splash screen's own look while the game starts ([#2998](https://github.com/textadventures/quest/issues/2998)) ([7256bbe](https://github.com/textadventures/quest/commit/7256bbe90422c31a6fc0b0ae3daf086f6f1546d7))
+* **Player:** print "Game saved." in order when a game asks for a save ([#2999](https://github.com/textadventures/quest/issues/2999)) ([73f5b3b](https://github.com/textadventures/quest/commit/73f5b3b11c819183b212e9c71634125324f77bd7))
+* **Player:** scroll to a ShowMenu response ([#2989](https://github.com/textadventures/quest/issues/2989)) ([a6071c8](https://github.com/textadventures/quest/commit/a6071c8356e5c774431c34214835b251bb52411d))
+
+
+### Documentation
+
+* move the plugin and the release docs on to 6.1 being stable ([#2973](https://github.com/textadventures/quest/issues/2973)) ([42c6223](https://github.com/textadventures/quest/commit/42c6223534f91e6ef3a5e0669d3bbeb2171bf0c6))
+
 ## [6.1.0](https://github.com/textadventures/quest/compare/v6.1.0-beta.4...v6.1.0) (2026-11-27)
 
 The first stable release of Quest Viva 6.1, with everything from the 6.1 betas: a new player interface with light and dark mode, new themes, your own fonts and stylesheet, Check game, a better script editor, bug reports you can replay, publishing straight to textadventures.co.uk, and `qv`, a command-line tool for authors. See [What's new in Quest Viva 6.1](https://questviva.com/whats-new/#quest-viva-61) for the full story, and the [changelog](https://github.com/textadventures/quest/blob/main/CHANGELOG.md) for every change in the 6.1.0 betas.
