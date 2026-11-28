@@ -776,6 +776,7 @@ function wireTranscriptsButton() {
 // The WebPlayer object — the host API that the shared playercore.js and
 // player.js call into. The name predates WasmPlayer and is kept as-is.
 window.WebPlayer = {
+    whenTurnOver,
     gameId: null,
     chromeStrings: null,
     transcript,
@@ -822,6 +823,7 @@ window.WebPlayer = {
         } finally {
             turnsInFlight--;
             scheduleInterfaceChanges();
+            notifyIfTurnOver();
         }
     },
     async uiEndWait() { await playerTurn(() => Bridge.FinishWait()); },
@@ -855,6 +857,7 @@ async function playerTurn(run) {
         turnsInFlight--;
         window.notifyQuestUITurn?.(false);
         scheduleInterfaceChanges();
+        notifyIfTurnOver();
     }
 }
 
@@ -863,6 +866,22 @@ async function playerTurn(run) {
 // change waits for both to be over.
 let turnsInFlight = 0;
 let turnPending = false;
+
+// Whoever is waiting for the turn to be over (whenTurnOver): a save a game's script asks for waits
+// until then, so it has the whole turn rather than however much had run when it was asked for.
+let turnOverWaiters = [];
+
+function whenTurnOver() {
+    if (turnsInFlight === 0 && !turnPending) return Promise.resolve();
+    return new Promise(resolve => turnOverWaiters.push(resolve));
+}
+
+function notifyIfTurnOver() {
+    if (turnsInFlight > 0 || turnPending || !turnOverWaiters.length) return;
+    const waiters = turnOverWaiters;
+    turnOverWaiters = [];
+    for (const resolve of waiters) resolve();
+}
 
 // Exported bridge reference — set once WASM is loaded.
 var Bridge;
@@ -1482,6 +1501,8 @@ let restartInProgress = false;
 async function restartGame(saveBytes) {
     if (restartInProgress) return;
     restartInProgress = true;
+    // A save asked for before the restart is of the game being thrown away.
+    turnOverWaiters = [];
     try {
         await restartGameCore(saveBytes);
     } finally {

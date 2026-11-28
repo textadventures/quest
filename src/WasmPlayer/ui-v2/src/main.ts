@@ -150,7 +150,7 @@ const adapter: PlayerUiAdapter = {
     markScrollPosition: () => output()?.markScrollPosition(),
     scrollToEnd: () => output()?.scrollToEnd(),
     requestSave() {
-        setTimeout(() => void GameSaver.save(), 100);
+        void GameSaver.saveRequested();
     },
 
     // Lifecycle

@@ -1121,7 +1121,14 @@ public partial class WasmPlayerBridge
 
         void IPlayer.Speak(string text) { }
 
-        void IPlayer.RequestSave(string? html) => JsRequestSave();
+        // In order with the turn's output, like ClearScreen, so the UI's "Game saved." comes after
+        // what the script printed before asking and before what it prints after. Sent straight
+        // away instead, it raced the rest of the turn's buffered text (#2985).
+        void IPlayer.RequestSave(string? html)
+        {
+            FlushText();
+            _uiBuffer.Add(JsRequestSave);
+        }
 
         void IPlayer.Show(string element)
         {
