@@ -7,7 +7,8 @@
        prints most of a screenful and then a menu. Each answer prints a long response that starts
        with #responsemark, which has to be scrolled into view. talk also prints an old-style link
        for option b, with the inline onclick="ASLEvent(...)" that games published before 6.1 have
-       baked into their copy of ShowMenu. -->
+       baked into their copy of ShowMenu. Silent is an event that prints nothing, as an author's
+       script might send in the background: it mustn't scroll. -->
   <game name="ShowMenuScrollTest">
   </game>
 
@@ -73,5 +74,8 @@
       msg ("<a class=\"cmdlink\" id=\"oldstylelink\" onclick=\"ASLEvent('ShowMenuResponse','b')\">b, the old way</a>")
     ]]></script>
   </command>
+
+  <function name="Silent" parameters="param">
+  </function>
 
 </asl>
