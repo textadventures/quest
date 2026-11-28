@@ -14,6 +14,9 @@
 //   copy of ShowMenu, on legacy;
 // - typing the option's number, a command rather than an event, on v2 and legacy.
 //
+// An event that prints nothing, as an author's script might send in the background, mustn't
+// scroll: a player who has scrolled up to read stays where they are.
+//
 // Requires the WasmPlayer dev server running locally:
 //   node src/WasmPlayer/dev-server.mjs
 import { test } from '@playwright/test';
@@ -68,6 +71,32 @@ test('showmenu-scroll', async ({ baseURL }) => {
         }
     }
 
+    // After the response, scrolls to the top as a player reading back would, then sends an event
+    // that prints nothing.
+    async function silent(ui, input) {
+        const page = await (await browser.newContext({ viewport: VIEWPORT })).newPage();
+        page.on('pageerror', err => console.log('[pageerror]', err.message));
+        try {
+            await page.goto(`${baseURL}/?url=/e2e-fixtures/showmenu-scroll-test.aslx&ui=${ui}`);
+            await page.waitForSelector(input, { state: 'visible', timeout: 30000 });
+            await page.waitForFunction(() => window.canSendCommand === true, null, { timeout: 15000 });
+            await page.fill(input, 'talk');
+            await page.press(input, 'Enter');
+            await page.waitForSelector('#oldstylelink', { state: 'attached', timeout: 15000 });
+            await page.$eval('a[data-qv-event="ShowMenuResponse"][data-qv-param="a"]', el => el.click());
+            await page.waitForSelector('#responsemark', { timeout: 15000 });
+            await page.waitForTimeout(SETTLE_MS);
+
+            await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+            await page.evaluate(() => window.ASLEvent('Silent', ''));
+            await page.waitForTimeout(SETTLE_MS);
+            const after = await page.evaluate(() => window.scrollY);
+            check(after === 0, `[${ui}] an event that prints nothing leaves the page where it was (at ${after})`);
+        } finally {
+            await page.context().close();
+        }
+    }
+
     const v2Top = page => page.$eval('.qv-header', el => el.getBoundingClientRect().bottom);
     const legacyTop = async () => 0;
 
@@ -78,6 +107,8 @@ test('showmenu-scroll', async ({ baseURL }) => {
         await run('legacy', '#txtCommand', option, legacyTop);
         await run('legacy', '#txtCommand', '#oldstylelink', legacyTop);
         await run('legacy', '#txtCommand', 'typed', legacyTop);
+        await silent('v2', 'qv-command-bar input');
+        await silent('legacy', '#txtCommand');
     } finally {
         await browser.close();
     }
