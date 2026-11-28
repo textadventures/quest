@@ -43,6 +43,13 @@ export class QvOutput extends HTMLElement {
     // The turn start the last scroll was for, to scroll again once an image settles: by then
     // markScrollPosition may already have moved #turnStart on to the next turn.
     #lastTurnStart = 0;
+    // What scrollToEnd last scrolled for, so it can leave the page alone when nothing has been
+    // added since: an event an author's script sends in the background, say, which shouldn't pull
+    // a player who has scrolled up to read back down to the end. The height catches output an
+    // author's script adds to the page itself; the flag, output added through addText after
+    // something was taken away (a cleared screen, or a ShowMenu's options).
+    #addedSinceScroll = true;
+    #bottomAtLastScroll = 0;
 
     connectedCallback(): void {
         this.setAttribute('role', 'log');
@@ -69,6 +76,7 @@ export class QvOutput extends HTMLElement {
         markUndescribedImages(block);
         applyKnownImageSizes(block);
         decorateLinks(block);
+        this.#addedSinceScroll = true;
         WebPlayer.transcript?.write(html);
         emit('outputAdded', { html });
     }
@@ -80,6 +88,7 @@ export class QvOutput extends HTMLElement {
     addNodes(nodes: Node[], html: string): void {
         const block = this.#current ?? this.setAlignment('left');
         block.append(...nodes);
+        this.#addedSinceScroll = true;
         WebPlayer.transcript?.write(html);
         emit('outputAdded', { html });
     }
@@ -102,6 +111,7 @@ export class QvOutput extends HTMLElement {
         this.#current = null;
         this.setAlignment('left');
         this.#turnStart = 0;
+        this.#addedSinceScroll = true;
         const top = this.#top();
         if (window.scrollY > top) window.scrollTo({ top, behavior: 'instant' });
     }
@@ -114,6 +124,7 @@ export class QvOutput extends HTMLElement {
         stopRestoredVideos(template.content);
         finishRestoredEffects(template.content);
         this.replaceChildren(template.content);
+        this.#addedSinceScroll = true;
         decorateLinks(this);
         resetRestoredLinks(this);
         // Show where the restored game left off, once it's laid out.
@@ -136,6 +147,8 @@ export class QvOutput extends HTMLElement {
         this.#sections = [];
         this.#turnStart = 0;
         this.#lastTurnStart = 0;
+        this.#addedSinceScroll = true;
+        this.#bottomAtLastScroll = 0;
     }
 
     // ── Output sections ─────────────────────────────────────────────────────
@@ -197,17 +210,26 @@ export class QvOutput extends HTMLElement {
 
     /** Records where the coming turn's output will start, for scrollToEnd. */
     markScrollPosition(): void {
-        // Not offsetHeight: the output stretches to fill the column, so on a short page it ends
-        // well below its text.
+        this.#turnStart = this.#contentBottom();
+    }
+
+    // Not offsetHeight: the output stretches to fill the column, so on a short page it ends well
+    // below its text.
+    #contentBottom(): number {
         const last = this.lastElementChild;
-        this.#turnStart = last ? last.getBoundingClientRect().bottom - this.getBoundingClientRect().top : 0;
+        return last ? last.getBoundingClientRect().bottom - this.getBoundingClientRect().top : 0;
     }
 
     /**
      * Brings the current turn's output into view: as much of it as fits, starting from the top
-     * of the turn, so a long turn is read from its beginning. Only ever scrolls forwards.
+     * of the turn, so a long turn is read from its beginning. Only ever scrolls forwards, and
+     * only when something has been added since it last did.
      */
     scrollToEnd(): void {
+        const bottom = this.#contentBottom();
+        if (!this.#addedSinceScroll && bottom <= this.#bottomAtLastScroll + 1) return;
+        this.#addedSinceScroll = false;
+        this.#bottomAtLastScroll = bottom;
         this.#scrollToTurn(this.#turnStart);
     }
 

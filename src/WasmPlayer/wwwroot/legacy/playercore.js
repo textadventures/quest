@@ -350,6 +350,7 @@ function initPlayerUI() {
 
 function loadHtml(html) {
     $("#divOutput").html(html);
+    outputAddedSinceScroll = true;
     makeCmdlinksFocusable($("#divOutput"));
     // The injected HTML carries its own divOutputAlign<N> ids from whenever the
     // game was saved, but _currentDiv/_divCount (used by addText/createNewDiv)
@@ -802,9 +803,25 @@ function verbMenuHasFocus() {
     return !!(active && active.closest && active.closest("div[id^=jjmenu]"));
 }
 
+// What scrollToEnd() last scrolled for, so it can leave the page alone when
+// nothing has been added since: an event an author's script sends in the
+// background, say, which shouldn't pull a player who has scrolled up to read
+// back down to the end. The height catches output an author's script adds to
+// the page itself; the flag, output added through addText() after something
+// was taken away (a cleared screen, or a ShowMenu's options).
+var outputAddedSinceScroll = true;
+var outputHeightAtLastScroll = 0;
+
 // beginningOfCurrentTurnScrollPosition is set by markScrollPosition() before
 // the turn began (see its own doc comment).
 function scrollToEnd() {
+    var height = $("#gameContent").height();
+    if (!outputAddedSinceScroll && height <= outputHeightAtLastScroll + 1) {
+        focusCommandInput();
+        return;
+    }
+    outputAddedSinceScroll = false;
+    outputHeightAtLastScroll = height;
     scrollToTurnStart(beginningOfCurrentTurnScrollPosition);
 }
 
@@ -1292,6 +1309,7 @@ function addText(text) {
     }
     var $div = getCurrentDiv();
     $div.append(text);
+    outputAddedSinceScroll = true;
     makeCmdlinksFocusable($div);
     applyKnownImageSizes($div);
     $("#divOutput").css("min-height", $("#divOutput").height());
@@ -1438,6 +1456,8 @@ function clearScreen() {
         $("#divOutput").html("");
         createNewDiv("left");
         beginningOfCurrentTurnScrollPosition = 0;
+        outputAddedSinceScroll = true;
+        outputHeightAtLastScroll = 0;
         // scrollToTurnStart(0), not a bare scrollTop(0) — the new page's
         // content starts at #gameContent height 0, but #gameContent itself
         // isn't necessarily at the very top of the *page*: a static picture
@@ -1462,6 +1482,8 @@ function clearScreen() {
         $('#divOutput').css('min-height', 0);
         createNewDiv('left');
         beginningOfCurrentTurnScrollPosition = 0;
+        outputAddedSinceScroll = true;
+        outputHeightAtLastScroll = 0;
         setTimeout(function () {
             scrollToTurnStart(0, true);
         }, 100);
@@ -1480,6 +1502,8 @@ function resetGameOutput() {
     saveClearedText = false;
     clearedOnce = false;
     beginningOfCurrentTurnScrollPosition = 0;
+    outputAddedSinceScroll = true;
+    outputHeightAtLastScroll = 0;
     $("#divOutput").css("min-height", 0).html("");
     createNewDiv("left");
     clearUnsavedProgress();
