@@ -1,5 +1,20 @@
 # Changelog
 
+## [6.1.1](https://github.com/textadventures/quest/compare/v6.1.0...v6.1.1) (2026-11-28)
+
+
+### Features
+
+* **Desktop:** build the Microsoft Store package for arm64 as well as x64 ([#2977](https://github.com/textadventures/quest/issues/2977)) ([289c277](https://github.com/textadventures/quest/commit/289c277e6166e7bf739f39ef743389bb205014ae))
+
+
+### Bug Fixes
+
+* **Player:** don't scroll for an event that prints nothing ([#2993](https://github.com/textadventures/quest/issues/2993)) ([7d855a9](https://github.com/textadventures/quest/commit/7d855a918a0625f8886b45e52b4aaf51e09a1171))
+* **Player:** keep the splash screen's own look while the game starts ([#2998](https://github.com/textadventures/quest/issues/2998)) ([813ba45](https://github.com/textadventures/quest/commit/813ba454af1820c96796ac6fdd1eda9f1498b7cd))
+* **Player:** print "Game saved." in order when a game asks for a save ([#2999](https://github.com/textadventures/quest/issues/2999)) ([501201f](https://github.com/textadventures/quest/commit/501201f1c8bd5f6f67d29e68fe727af7d2e24594))
+* **Player:** scroll to a ShowMenu response ([#2989](https://github.com/textadventures/quest/issues/2989)) ([a4b262c](https://github.com/textadventures/quest/commit/a4b262cacdb653a0f0a5b5d374241739a2ecfc0f))
+
 ## [6.1.0](https://github.com/textadventures/quest/compare/v6.1.0-beta.4...v6.1.0) (2026-11-27)
 
 The first stable release of Quest Viva 6.1, with everything from the 6.1 betas: a new player interface with light and dark mode, new themes, your own fonts and stylesheet, Check game, a better script editor, bug reports you can replay, publishing straight to textadventures.co.uk, and `qv`, a command-line tool for authors. See [What's new in Quest Viva 6.1](https://questviva.com/whats-new/#quest-viva-61) for the full story, and the [changelog](https://github.com/textadventures/quest/blob/main/CHANGELOG.md) for every change in the 6.1.0 betas.
