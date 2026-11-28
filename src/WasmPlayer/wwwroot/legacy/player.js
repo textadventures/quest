@@ -213,10 +213,10 @@ function goUrl(href) {
     window.open(href);
 }
 
+// request (RequestSave) from the game, as adapter.js's requestSave. A global, so a game's own
+// JS can replace it.
 function saveGame() {
-    setTimeout(async () => {
-        await GameSaver.save();
-    }, 100);
+    void GameSaver.saveRequested();
 }
 
 // The "write log to file" feature itself was removed from Core.aslx (#1924) - a game authored

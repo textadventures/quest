@@ -33,7 +33,7 @@ export interface WebPlayerHost {
 
 declare global {
     const WebPlayer: WebPlayerHost;
-    const GameSaver: { save(): Promise<void> };
+    const GameSaver: { save(): Promise<void>; saveRequested(): Promise<void> };
     /** A game's own stylesheet, added after the player UI's. */
     function addExternalStylesheet(url: string): void;
     /** Resume the engine after a wait or pause, then call the adapter's waitEnded/pauseEnded. */

@@ -1,0 +1,32 @@
+<asl version="600">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <game name="Save request order test">
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="editor_object" />
+      <inherit name="editor_player" />
+    </object>
+  </object>
+
+  <!-- A game's own save command (#2985): something printed before asking for the save, slow work
+       after it so the turn runs on well past the moment it asked, then something printed after. -->
+  <command name="savenow">
+    <pattern>savenow</pattern>
+    <script>
+      msg ("BEFORE-SAVE")
+      request (RequestSave, "")
+      count = 0
+      for (i, 1, 3000) {
+        count = count + i
+      }
+      msg ("AFTER-SAVE " + count)
+    </script>
+  </command>
+
+</asl>
