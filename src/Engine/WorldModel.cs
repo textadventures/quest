@@ -653,7 +653,26 @@ public partial class WorldModel : IGame, IGameDebug
             return Task.CompletedTask;
         }
 
-        return SignalIfResumedAsync(() => SendEventCore(eventName, param));
+        return SendEventAndScrollAsync(eventName, param);
+    }
+
+    // As SignalIfResumedAsync, and an event that resumed nothing still scrolls to its output as
+    // the end of a turn does: a ShowMenu option's response, say, which would otherwise be left
+    // below the window. Quest 5 scrolled whenever the engine went back to waiting for the
+    // player, events included.
+    private async Task SendEventAndScrollAsync(string eventName, string param)
+    {
+        var turn = _turnSuspendedTcs;
+        await SendEventCore(eventName, param);
+        if (_turnSuspendedTcs != turn)
+        {
+            SignalTurnSuspended();
+        }
+        else if (Version >= WorldModelVersion.v540)
+        {
+            ScrollToEnd();
+            MarkScrollPosition();
+        }
     }
 
     private async Task SendEventCore(string eventName, string param)
@@ -1427,7 +1446,8 @@ public partial class WorldModel : IGame, IGameDebug
     // resume - synchronously, inside TrySetResult - and start the next command while this one is
     // still running. The script's execution still ends in an ordinary SignalTurnSuspended, which
     // resolves the turn then: HandleCommandAsyncInternal's or BeginInternalAsync's finally, the
-    // finally of the callback it was running in, or SignalIfResumedAsync for Tick and SendEvent.
+    // finally of the callback it was running in, or SignalIfResumedAsync for Tick and
+    // SendEventAndScrollAsync for SendEvent.
     // A non-blocking prompt is already showing before then, so it can be answered early:
     // FinishWait, FinishPause, SetMenuResponse and SetQuestionResponse each await the running
     // turn before starting their own, rather than replacing a _turnSuspendedTcs that turn's
